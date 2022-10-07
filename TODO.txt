@@ -1,0 +1,85 @@
+
+Before Public Tests:-
+
+Currently Done-
+- Added back Camouflager and Drunk
+- Added settings to customise role colors
+- Added more win cons to Survivor
+- Gave Impostor roles their own colors (to make it even)
+- Added better settings
+- Gave Neutral Killers their own kill buttons
+- Reworked and added Shifter
+- Added custom colors and hats
+- New banner for the mod
+- Added custom vent and interaction highlight colors for roles
+- Neater looking settings
+- Shifter cannot steal Lovers anymore
+- Juggernaut is no longer a secret role
+- Reorganised settings and role alignments
+- Color correction of roles to their ToS counterparts
+- Renamed the Crewmate faction to Crew and the Impostor faction to Intruder
+- Teeny weeny bit of code optimisation
+- Removed needless data
+- Removed the 'The' in 'The Glitch'
+- Added Dwarf (Child but better and replaces Flash)
+- Fixed an issue with Poisoner
+- Removed crappy settings
+- Separated the ignite and douse cooldowns for the Arsonist
+- All NKs win with other NKs with the same role, along with their Amnesiac partners
+- Reworked Amnesiac into copying roles rather than stealing them
+- Brought back old Seer as Consigliere (but it doesn't work)
+- Set conditions for allowing multiple of the same roles to spawn
+- Reworked Guardian Angel into being able to have anyone as a target, as long as they are not Jester, Executioner or another Guardian Angel
+
+Partially Done-
+- Added Camouflaged Meetings (although it doesn't work yet)
+- Better buttons
+- Added code for custom kill backgrounds (doesn't work either)
+- Fused Snitch and Town Of Impostors's Informant into one role, but it only works in meetings as of right now
+- Haunter works similar to the Snitch version mentioned above
+- Fix Disguiser role
+- Fix Time Master role
+- Fix Consigliere role
+- Adding features from ToU forks that have never been touched
+- Integrating other mods into this one
+
+Need To Be Done-
+- Turn Underdog, Button Barry, Lovers, Traitor and Snitch into Objectifiers
+- Rework Arsonist into passively dousing whoever interacts with them
+- Rework new Vigilante where if they shoot someone they are not supposed to, the Vigilante will just die after the next meeting, like a Lover disappearing after their Lover has been ejected
+- Rework Spy by giving it abilities from the Agent from Town Of Impostors
+- Rework Undertaker into being able to hide bodies in vents
+- Rework Guardian Angel so that they should win only when their target lives to the end, not wins (even if the target loses, like a Crewmate target stuck in a 2v2 with Impostors, the Guardian Angel will still win)
+- Reowrk Drunk into making it so that at random intervals the controls will change
+- Add menus-in-menus in the settings menus
+- Learn how to add a faction
+- Add Killer (NK with no abilities aside from venting)
+- Make Imp ability buttons work
+
+Priorities:-
+
+High Priority-
+New Roles
+New Factions
+New Modifiers
+New Objectifiers
+New Alignments
+
+Medium Priority-
+QoL Features
+New Gamemodes
+Reworks
+Better/New Settings
+
+Low Priority-
+Better Buttons
+Neater Appearances
+Cosmetics
+
+Changelog (1.0.0dev7 to 1.0.0dev8)
+- New Role: Dracula [Neutral (Chaos)]
+- New Role: Vampire [Neutral (Power)]
+- New Alignments: Crew (Sovereign), Neutral (Chaos), Neutral (Power)
+- Reworks: Improved win cons of NK roles
+- Visual Fix: Vanilla Settings now appear again in the lobby
+- Bug Fix: Squashed the countless role gen bugs
