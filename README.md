@@ -99,10 +99,6 @@ Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or wa
 - [Sidekick](#sidekick)
 - [Warper](#warper)
 
-[**Other Roles**](#other-roles)
-- [Game Master](#game-master)
-- [Spectator](#spectator)
-
 [**Modifiers**](#modifiers)
 - [Bait](#bait)
 - [Coward](#coward)
