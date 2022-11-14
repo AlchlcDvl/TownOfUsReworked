@@ -27,25 +27,26 @@ Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or wa
 [**Roles**](#roles)
 
 [**Crew Roles**](#crew-roles)
+- [Agent](#agent)
 - [Altruist](#altruist)
+- [Coroner](#coroner)
 - [Crewmate](#crewmate)
 - [Detective](#detective)
+- [Escort](#escort)
 - [Engineer](#engineer)
-- [Haunter](#haunter)
+- [Inspector](#inspector)
 - [Investigator](#investigator)
 - [Mayor](#mayor)
 - [Medic](#medic)
 - [Medium](#medium)
-- [Mystic](#mystic)
+- [Operative](#operative)
 - [Shifter](#shifter)
 - [Sheriff](#sheriff)
-- [Snitch](#snitch)
-- [Spy](#spy)
 - [Swapper](#swapper)
 - [Time Lord](#time-lord)
 - [Tracker](#tracker)
 - [Transporter](#transporter)
-- [Trapper](#trapper)
+- [Vampire Hunter](#vampire-hunter)
 - [Veteran](#veteran)
 - [Vigilante](#vigilante)
 
@@ -53,47 +54,86 @@ Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or wa
 - [Amnesiac](#amnesiac)
 - [Arsonist](#arsonist)
 - [Cannibal](#cannibal)
+- [Cryomaniac](#cryomaniac)
+- [Dampyr](#dampyr)
+- [Dracula](#dracula)
 - [Executioner](#executioner)
 - [Glitch](#glitch)
 - [Guardian Angel](#guardian-angel)
 - [Jester](#jester)
 - [Juggernaut](#juggernaut)
+- [Murderer](#murderer)
 - [Pestilence](#pestilence)
-- [Phantom](#phantom)
 - [Plaguebearer](#plaguebearer)
+- [Serial Killer](#serial-killer)
 - [Survivor](#survivor)
 - [Taskmaster](#taskmaster)
+- [Thief](#thief)
+- [Vampire](#vampire)
 - [Werewolf](#werewolf)
 
 [**Intruder Roles**](#intruder-roles)
 - [Blackmailer](#blackmailer)
 - [Camouflager](#camouflager)
+- [Consigliere](#consigliere)
+- [Consort](#consort)
+- [Disguiser](#disguiser)
+- [Godfather](#godfather)
 - [Grenadier](#grenadier)
 - [Impostor](#impostor)
 - [Janitor](#janitor)
+- [Mafioso](#mafioso)
 - [Miner](#miner)
 - [Morphling](#morphling)
 - [Poisoner](#poisoner)
-- [Traitor](#traitor)
-- [Underdog](#underdog)
+- [Teleporter](#teleporter)
+- [Time Master](#time-master)
 - [Undertaker](#undertaker)
 - [Wraith](#wraith)
 
+[**Syndicate Roles**](#syndicate-roles)
+- [Anarchist](#anarchist)
+- [Concealer](#concealer)
+- [Puppeteer](#puppeteer)
+- [Rebel](#rebel)
+- [Sidekick](#sidekick)
+- [Warper](#warper)
+
+[**Other Roles**](#other-roles)
+- [Game Master](#game-master)
+- [Spectator](#spectator)
+
 [**Modifiers**](#modifiers)
 - [Bait](#bait)
-- [Button Barry](#button-barry)
 - [Coward](#coward)
 - [Diseased](#diseased)
 - [Drunk](#drunk)
 - [Dwarf](#dwarf)
+- [Flincher](#flincher)
 - [Giant](#giant)
-- [Lovers](#lovers)
-- [Tiebreaker](#tiebreaker)
-- [Torch](#torch)
+- [VIP](#vip)
 - [Volatile](#volatile)
 
-[**Objectifiers**](#objectifiers)
+[**Abilities**](#abilities)
 - [Assassin](#assassin)
+- [Button Barry](#button-barry)
+- [Lighter](#lighter)
+- [Multitasker](#multitasker)
+- [Professional](#professional)
+- [Radar](#radar)
+- [Revealer](#revealer)
+- [Snitch](#snitch)
+- [Tiebreaker](#tiebreaker)
+- [Torch](#torch)
+- [Tunneler](#tunneler)
+- [Underdog](#underdog)
+
+[**Objectifiers**](#objectifiers)
+- [Fanatic](#fanatic)
+- [Lovers](#lovers)
+- [Phantom](#phantom)
+- [Rivals](#rivals)
+- [Traitor](#traitor)
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Game Mode Settings](#game-mode-settings)
@@ -123,7 +163,7 @@ Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or wa
 
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2022.9.20s & 2022.9.20e | Base Mod | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v3.3.2/ToU.v3.3.2.zip) |
+| 2022.10.25 (s & e) | Base Mod (v3.4.0) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v3.4.0/ToU.v3.4.0.zip) |
 
 <details>
   <summary> Change Log </summary>
@@ -773,7 +813,7 @@ When a certain number of tasks are remaining, the Taskmaster is revealed to Impo
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-Although the Werwolf has a kill button, they can't use it unless they are Rampaged.
+Although the Werewolf has a kill button, they can't use it unless they are Rampaged.
 Once the Werewolf rampages they gain the ability to kill.
 However, unlike most killers their kill cooldown is really short for the duration of the rampage.
 
@@ -862,7 +902,7 @@ Both their Kill and Clean ability have a shared cooldown, meaning they have to c
 ### **Alignment: Intruder (Support)**
 
 The Miner is an Intruder that can create new vents.
-These vents only connect to each other, forming a new passway.
+These vents only connect to each other, forming a new passageway.
 
 ### Game Options
 
@@ -1106,7 +1146,7 @@ The Torch's vision doesn't get reduced when the lights are sabotaged.
 ### **Alignment: Negative**
 ### Applied To: Everyone
 
-You see see and hear things and might lash out on others.
+You see and hear things and might lash out on others.
 
 ### Game Options
 
@@ -1189,7 +1229,7 @@ If they guess wrong, they die instead.
 - Donation - Lighter
 - Cherry - Darker
 - Toy - Lighter
-- Pizzaria - Lighter
+- Pizzeria - Lighter
 - Starlight - Lighter
 - Softball - Lighter
 - Dark Jester - Darker
@@ -1206,7 +1246,7 @@ If they guess wrong, they die instead.
 - Patience - Patience
 - Bravery - Darker
 - Integrity - Darker
-- Perserverance - Darker
+- Perseverance - Darker
 - Kindness - Darker
 - Bravery - Lighter
 - Purple Plumber - Darker
@@ -1257,23 +1297,23 @@ If they guess wrong, they die instead.
 | Mira HQ Decreased Cooldowns | How much less time the cooldowns are set to for Mira HQ | Time | 0s |
 | Airship/Submerged Increased Cooldowns | How much more time the cooldowns are set to for Airship/Submerged | Time | 0s |
 | Skeld/Mira HQ Increased Short Tasks | How many extra short tasks when the map is Skeld/Mira HQ | Number | 0 |
-| Skeld/Mira HQ Increased Longt Tasks | How many extra long tasks when the map is Skeld/Mira HQ | Number | 0 |
+| Skeld/Mira HQ Increased Long Tasks | How many extra long tasks when the map is Skeld/Mira HQ | Number | 0 |
 | Airship/Submerged Decreased Short Tasks | How many less short tasks when the map is Airship/Submerged | Number | 0 |
-| Airship/Submerged Decreased Longt Tasks | How many less long tasks when the map is Airship/Submerged | Number | 0 |
+| Airship/Submerged Decreased Long Tasks | How many less long tasks when the map is Airship/Submerged | Number | 0 |
 
 ## Better Polus Settings
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Better Polus Vent Layout | Optimises Vent Layout on Polus | Toggle | False |
+| Better Polus Vent Layout | Optimizes Vent Layout on Polus | Toggle | False |
 | Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
-| Cole Temp Moved to Death Valley | Whether the cold temperaure task is moved to death valley | Toggle | False |
+| Cole Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
 | Reboot Wifi and Chart Course Swapped | Whether the Reboot Wifi and Chart Course swap locations | Toggle | False |
 
 ## Game Modifiers
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | False |
-| Camouflaged Meetings | Whether everyone becomes camouflaged when a metting is called when Comms are sabotaged | Toggle | False |
+| Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
 | Serial Venters | Whether everyone, no one or the default roles can vent | Default / Everyone / No One | Default |
 | All Crew Must Die | Win conditions for killing roles become more sophisticated and specific | Toggle | False |
 
@@ -1340,7 +1380,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
 [Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth, and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
-[Alexejhero](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
+[Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued
 
