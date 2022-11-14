@@ -1,0 +1,17 @@
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.csproj.AssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.GeneratedMSBuildEditorConfig.editorconfig
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.AssemblyInfoInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.AssemblyInfo.cs
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\bin\Debug\netstandard2.1\TownOfUsReworked.deps.json
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\bin\Debug\netstandard2.1\TownOfUsReworked.dll
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\source\obj\Debug\netstandard2.1\TownOfUsReworked.dll
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\bin\Debug\netstandard2.1\TownOfUsReworked.deps.json
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\bin\Debug\netstandard2.1\TownOfUsReworked.dll
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.csproj.AssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.GeneratedMSBuildEditorConfig.editorconfig
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.AssemblyInfoInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.AssemblyInfo.cs
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\TownOfUsReworked.dll
+C:\Program Files (x86)\Steam\steamapps\common\Modded Mogus\Town Of Us Re\Code\TownOfUsReworked\TownOfUsReworked\obj\Debug\netstandard2.1\GitInfo.cache
