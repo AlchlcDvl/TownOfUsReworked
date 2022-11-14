@@ -1,6 +1,6 @@
 ### ***Note: This repo is a fork of Town of Us Reactivated and is currently under development. The official builds will also be posted here until the new version of the mod is ready. Please be patient.***
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
-### ***Also Also Note: This README page is currently under editing, most things here are subject to change.***
+### ***Also Also Note: This README page is currently under editing, most things here are either missing or subject to change.***
 
 ![LOGO](./Images/ToU-Rew.png)
 
@@ -256,44 +256,70 @@ Delete these files and you're good to go!
 
 # Crew Roles
 
-## Altruist
-### **Alignment: Crew (Support)**
+## Agent
+### **Alignment: Crew (Investigative)**
 
-The Altruist is a Crewmate that is capable of reviving dead players.
-Upon finding a dead body, the Altruist can hit their revive button, risking sacrificing themselves for the revival of another player.
-If enabled, the dead body disappears, so only they Altruist's body remains at the scene.
-After a set period of time, the player will be resurrected, if the revival isn't interrupted.
+The Agent gains more information when on Admin Table. On Admin Table, the Agent can see the colors of every person on the map.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Agent | The percentage probability of the Agent appearing | Percentage | 0% |
+| Agent Count | How many Agents should spawn in Custom Mode | Number | 1 |
+
+## Altruist
+### **Alignment: Crew (Protective)**
+
+The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, risking sacrificing themselves for the revival of another player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Altruist | The percentage probability of the Altruist appearing | Percentage | 0% |
-| Altruist Count | How many of the Altruist should spawn in Custom Mode | Number | 1 |
+| Altruist Count | How many Altruists should spawn in Custom Mode | Number | 1 |
 | Altruist Revive Duration | The time it takes for the Altruist to revive a dead body | Time | 10s |
 | Target Body Disappears On Beginning Of Revive | Whether the dead body of the player the Altruist is reviving disappears upon revival | Toggle | False |
+
+## Coroner
+### **Alignment: Crew (Investigative)**
+
+The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) killer's name.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Coroner | The percentage probability of the Coroner appearing | Percentage | 0% |
+| Coroner Count | How many Coroners should spawn in Custom Mode | Number | 1 |
+| Arrow Duration | The duration of the arrows pointing to the bodies | Time | 0.1s |
+| Coroner Gets Roles | This dictates whether the Coroner gets the killer's and body's role, otherwise only their factions are revealed | Toggle | False |
+| Coroner Gets Killer's Name | This dictates whether the Coroner gets the killer's name from the report | Toggle | False |
 
 ## Crewmate
 ### **Alignment: Crew (Utility)**
 
-This is just a plain Crewmate with no abilities and only spawns if all the other roles are taken.
+Just a plain Crewmate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
 ### Game Options
 
-None
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Crewmate | The percentage probability of the Crewmate appearing | Percentage | 0% |
+| Crewmate Count | How many Crewmates should spawn in Custom Mode | Number | 1 |
 
 ## Detective
 ### **Alignment: Crew (Investigative)**
 
-The Detective is a Crewmate that can examine other players for suspicious behavior.
-If the examined player has killed recently, the Detective will be alerted about it.
+The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Detective | The percentage probability of the Detective appearing | Percentage | 0% |
-| Detective Count | How many of the Detective should spawn in Custom Mode | Number | 1 |
+| Detective Count | How many Detectives should spawn in Custom Mode | Number | 1 |
 | Initial Examine Cooldown | The initial cooldown of the Detective's Examine button | Time | 25s |
 | Examine Cooldown | The cooldown of the Detective's Examine button | Time | 10s |
 | Bloody Duration | How long players remain bloody after a kill | Time | 25s |
@@ -301,48 +327,27 @@ If the examined player has killed recently, the Detective will be alerted about 
 ## Engineer
 ### **Alignment: Crew (Support)**
 
-The Engineer is a Crewmate that can fix sabotages from anywhere on the map.
-They can use vents to get across the map easily.
+The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Engineer | The percentage probability of the Engineer appearing | Percentage | 0% |
-| Engineer Count | How many of the Taskmaster should spawn in Custom Mode | Number | 1 |
+| Engineer Count | How many Engineers should spawn in Custom Mode | Number | 1 |
 | Engineer Fix Per | Whether the Engineer can fix 1 sabotage per round or per game | Round / Game | Round |
-
-## Haunter
-### **Alignment: Crew (Postmortal)**
-
-The Haunter is a dead Crewmate that can reveal Intruders if they finish all their tasks.
-Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crewmates after a meeting is called.
-However, if the Haunter is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Haunter | The percentage probability of the Haunter appearing | Percentage | 0% |
-| When Haunter Can Be Clicked | The amount of tasks remaining when the Haunter Can Be Clicked | Number | 5 |
-| Haunter Alert | The amount of tasks remaining when the Impostors are alerted that the Haunter is nearly finished | Number | 1 |
-| Haunter Reveals Neutral Roles | Whether the Haunter also Reveals Neutral Roles | Toggle | False |
-| Haunter Reveals Crew Roles | Whether the Haunter also Reveals Crew Roles | Toggle | False |
-| Haunter Reveals Exact Roles | Whether the Haunter also Reveals all Roles | Toggle | False |
-| Who can Click Haunter | Whether even other Crewmates can click the Haunter | All / Non-Crew / Imps Only | All |
 
 ## Investigator
 ### **Alignment: Crew (Investigative)**
 
-The Investigator is a Crewmate that can see the footprints of players.
-Every footprint disappears after a set amount of time and only the Investigator can see the footprints.
+The Investigator can see the footprints of players. All footprints disappear after a set amount of time and only the Investigator can see them.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Investigator | The percentage probability of the Investigator appearing | Percentage | 0% |
-| Investigator Count | How many of the Investigator should spawn in Custom Mode | Number | 1 |
+| Investigator Count | How many Investigators should spawn in Custom Mode | Number | 1 |
 | Footprint Size | The size of the footprint on a scale of 1 to 10 | Number | 4 |
 | Footprint Interval | The time interval between two footprints | Time | 0.1s |
 | Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
@@ -350,36 +355,30 @@ Every footprint disappears after a set amount of time and only the Investigator 
 | Footprint Vent Visible | Whether footprints near vents are shown | Toggle | False |
 
 ## Mayor
-### **Alignment: Crew (Support)**
+### **Alignment: Crew (Sovereign)**
 
-The Mayor is a Crewmate that can vote multiple times.
-The Mayor has a Vote Bank, which is the number of times they can vote.
-They have the option to abstain their vote during a meeting, adding that vote to the Vote Bank.
-As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.
+The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option to abstain their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Mayor | The percentage probability of the Mayor appearing | Percentage | 0% |
-| Mayor Count | How many of the Mayor should spawn in Custom Mode | Number | 1 |
+| Mayor Count | How many Mayors should spawn in Custom Mode | Number | 1 |
 | Initial Mayor Vote Bank | The number of votes in the Vote Bank at the start of a game | Number | 1 |
 | Anonymous Mayor Votes | Whether the Mayor's extra votes will show up anonymously | Toggle | False |
 
 ## Medic
 ### **Alignment: Crew (Protective)**
 
-The Medic is a Crewmate that can give any player a shield that will make them immortal until the Medic dies.
-A Shielded player cannot be Shifted into, Hacked or Killed by anyone, unless by suicide.
-If the Medic reports a dead body, they can get a report containing clues to the Killer's identity.
-A report can contain the name of the killer or the color type (Darker/Lighter).
+The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide suicide.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Medic | The percentage probability of the Medic appearing | Percentage | 0% |
-| Medic Count | How many of the Medic should spawn in Custom Mode | Number | 1 |
+| Medic Count | How many Medics should spawn in Custom Mode | Number | 1 |
 | Show Shielded Player | Who should be able to see who is Shielded | Self / Medic / Self + Medic / Everyone | Self |
 | Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | Medic / Shielded / Everyone / Nobody | Medic |
 | Shield Breaks On Murder Attempt | Whether the Shield breaks when someone attempts to Kill them | Toggle | False |
@@ -387,68 +386,44 @@ A report can contain the name of the killer or the color type (Darker/Lighter).
 ## Medium
 ### **Alignment: Crew (Investigative)**
 
-The Medium is a Crewmate that can see ghosts.
-During each round the Medium has an ability called Mediate.
-If the Medium uses this ability and no one is dead, nothing will happen.
-However, if someone is dead, the Medium and the dead player will be able to see each other and communicate from beyond the grave!
+The Medium can see ghosts. During each round the Medium has an ability called Mediate. If the Medium uses this ability, the Medium and the dead player will be able to see each other and communicate from beyond the grave!
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Medium | The percentage probability of the Medium appearing | Percentage | 0% |
-| Medium Count | How many of the Medium should spawn in Custom Mode | Number | 1 |
+| Medium Count | How many Mediums should spawn in Custom Mode | Number | 1 |
 | Mediate Cooldown | The cooldown of the Medium's Mediate button | Time | 10s |
 | Reveal Appearance Of Mediate Target | Whether the Ghosts will show as themselves, or camouflaged | Toggle | True |
 | Reveal The Medium To The Mediate Target | Whether the ghosts can see that the Medium is the Medium | Toggle | True |
 | Who Is Revealed | Which players are revealed to the Medium | Oldest Dead / Newest Dead / All Dead | Oldest Dead |
 
-## Mystic
-### **Alignment: Crew (Investigative)**
-
-The Mystic is a Crewmate that gets an alert revealing when someone has died.
-On top of this, the Mystic briefly gets an arrow pointing in the direction of the body.
-The Mystic also gets reports every meeting, regarding info from a dead player.
-These messages are like automated reports of the Detective or Medic.
-A report can include the player's faction, color, role and probably even their killer's name.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Mystic | The percentage probability of the Mystic appearing | Percentage | 0% |
-| Mystic Count | How many of the Taskmaster should spawn in Custom Mode | Number | 1 |
-| Arrow Duration | The duration of the arrows pointing to the bodies | Time | 0.1s |
-| Mystic Gets Roles | This dictates whether the Mystic gets the dead player's or the killer's roles, otherwise only the faction is revealed | Toggle | False |
-| Mystic Gets Names | This dictates whether the Mystic gets the killer's name from the ghost | Toggle | False |
-
 ## Shifter
 ### **Alignment: Crew (Support)**
 
-The Shifter is a Crewmate who can swap roles with someone, as long as they are Crew.
-If the shift is successful, the Shifter can also steal that player's modifier.
+The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
-| Shifter Count | How many of the Shifter should spawn in Custom Mode | Number | 1 |
+| Shifter Count | How many Shifters should spawn in Custom Mode | Number | 1 |
 | Shift Cooldown | The cooldown on the Shifter's shift button | Time | 25s |
 | Shifted Becomes | Dictates what the shift target becomes after getting shifted | Shifter / Crewmate | Shifter |
 
 ## Sheriff
 ### **Alignment: Crew (Investigative)**
 
-The Sheriff is a Crewmate that can reveal the alliance of other players.
-Based on settings, the Sheriff can find out whether a role is Good or Evil.
-A player's name will change color to their team.
+The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or Evil. A player's name will change color according to their results.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Sheriff | The percentage probability of the Sheriff appearing | Percentage | 0% |
+| Sheriff Count | How many Sheriffs should spawn in Custom Mode | Number | 1 |
 | Interrogate Cooldown | The Cooldown of the Sheriff's interrogate button | Time | 25s |
 | Neutral Evils Show Up As Evil | Neutral Evil roles show up as Red | Toggle | False |
 | Neutral Killing Show Up As Evil | Neutral Killing roles show up as Red | Toggle | False |
@@ -456,49 +431,17 @@ A player's name will change color to their team.
 | Interrogate Once Per | Decides whether the Sheriff can only reveal once the entire game, or once per round | Round / Game | Round |
 | Sheriff Accuracy | How accurate the Sheriff results will be | Toggle | False |
 
-## Snitch
-### **Alignment: Crew (Investigative)**
-
-The Snitch is a Crewmate that can get arrows pointing towards the Impostors, once all their tasks are finished.
-The names of the Impostors will also show up as red on their screen.
-Based on game settings, the Snitch may not know who they are until they have one task left.
-However, when they only have a single task left, the Impostors get an arrow pointing towards the Snitch.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Snitch | The percentage probability of the Snitch appearing | Percentage | 0% |
-| Snitch Sees Neutral Roles | Whether the Snitch also Reveals Neutral Roles | Toggle | False |
-| Snitch Sees Crew Roles | Whether the Snitch also Reveals Crew Roles | Toggle | False |
-| Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
-| Snitch Sees Traitor | Whether the Snitch sees the Traitor | Toggle | True |
-| Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
-| Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
-
-## Spy
-### **Alignment: Crew (Investigative)**
-
-The Spy is a Crewmate that gains more information when on Admin Table and Vitals.
-On Admin Table, the Spy can see the colors of every person on the map.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Spy | The percentage probability of the Spy appearing | Percentage | 0% |
-
 ## Swapper
-### **Alignment: Crew (Support)**
+### **Alignment: Crew (Sovereign)**
 
-The Swapper is a Crewmate that can swap the votes on 2 players during a meeting.
-All the votes for the first player will instead be counted towards the second player and vice versa.
+The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Swapper | The percentage probability of the Swapper appearing | Percentage | 0% |
+| Swapper Count | How many Swappers should spawn in Custom Mode | Number | 1 |
 | Swapper Can Button | Whether the Swapper Can Press the Button | Toggle | True |
 
 ## Time Lord
@@ -1188,6 +1131,41 @@ If they guess wrong, they die instead.
 | Assassin Guess Certain Modifiers | Whether the Assassin can Guess Crewmate Modifiers | Toggle | False |
 | Assassin Can Guess Lovers | Whether the Assassin can Guess Lovers | Toggle | False |
 | Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
+
+## Revealer
+
+The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crewmates after a meeting is called. However, if the Haunter is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Haunter | The percentage probability of the Haunter appearing | Percentage | 0% |
+| When Haunter Can Be Clicked | The amount of tasks remaining when the Haunter Can Be Clicked | Number | 5 |
+| Haunter Alert | The amount of tasks remaining when the Impostors are alerted that the Haunter is nearly finished | Number | 1 |
+| Haunter Reveals Neutral Roles | Whether the Haunter also Reveals Neutral Roles | Toggle | False |
+| Haunter Reveals Crew Roles | Whether the Haunter also Reveals Crew Roles | Toggle | False |
+| Haunter Reveals Exact Roles | Whether the Haunter also Reveals all Roles | Toggle | False |
+| Who can Click Haunter | Whether even other Crewmates can click the Haunter | All / Non-Crew / Imps Only | All |
+
+## Snitch
+
+The Snitch is a Crewmate that can get arrows pointing towards the Impostors, once all their tasks are finished.
+The names of the Impostors will also show up as red on their screen.
+Based on game settings, the Snitch may not know who they are until they have one task left.
+However, when they only have a single task left, the Impostors get an arrow pointing towards the Snitch.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Snitch | The percentage probability of the Snitch appearing | Percentage | 0% |
+| Snitch Sees Neutral Roles | Whether the Snitch also Reveals Neutral Roles | Toggle | False |
+| Snitch Sees Crew Roles | Whether the Snitch also Reveals Crew Roles | Toggle | False |
+| Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
+| Snitch Sees Traitor | Whether the Snitch sees the Traitor | Toggle | True |
+| Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
+| Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
 
 -----------------------
 
