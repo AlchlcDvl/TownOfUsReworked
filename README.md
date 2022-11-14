@@ -2,7 +2,7 @@
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
 ### ***Also Also Note: This README page is currently under editing, most things here are subject to change.***
 
-![LOGO](./Images/Tou-Rew.png)
+![LOGO](./Images/ToU-Rew.png)
 
 An Among Us mod that adds a bunch of roles, modifiers, objectifiers and game settings.
 
