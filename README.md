@@ -246,6 +246,8 @@ If you have issues installing Town of Us, you can join our [Discord](https://dis
 
 Delete these files and you're good to go!
 
+![image](https://user-images.githubusercontent.com/56699741/201765022-a784c89f-23c7-448f-9ca2-6359fbaecb24.png)
+
 -----------------------
 
 # Roles
