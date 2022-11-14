@@ -1,0 +1,103 @@
+{
+  "format": 1,
+  "restore": {
+    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {}
+  },
+  "projects": {
+    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {
+      "version": "1.0.0.8",
+      "restore": {
+        "projectUniqueName": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "projectName": "TownOfUsReworked",
+        "projectPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
+        "outputPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\NuGet.Config",
+          "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.bepinex.dev/v3/index.json": {},
+          "https://nuget.reactor.gg/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreLockProperties": {
+          "restorePackagesWithLockFile": "true"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AmongUs.GameLibs.Steam": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2022.10.25, )"
+            },
+            "BepInEx.AutoPlugin": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "BepInEx.IL2CPP.MSBuild": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "BepInEx.Unity.IL2CPP": {
+              "target": "Package",
+              "version": "[6.0.0-be.662, )"
+            },
+            "GitInfo": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.20, )"
+            },
+            "Reactor": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
+            "System.Text.Json": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.403\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
