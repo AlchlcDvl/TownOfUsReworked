@@ -4,9 +4,9 @@
 
 ![LOGO](./Images/ToU-Rew.png)
 
-An Among Us mod that adds a bunch of roles, modifiers, objectifiers and game settings.
+An Among Us mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
-Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or want to find people to play with!
+Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or want to find people to play with!
 
 -----------------------
 
@@ -166,7 +166,7 @@ Join our [Discord](https://discord.gg/ugyc4EVUYZ) if you have any problems or wa
   <details>
     <summary> Base Mod </summary>
     <ul>
-      - Base mod, the next update will contain the actual features and roles
+      - Base mod, the first release will contain the actual features and roles
     </ul>
   </details>
 </details>
@@ -239,6 +239,12 @@ A first launch may take up to 5 minutes, so be patient if it doesn't launch imme
 
 ## Issues
 If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/ugyc4EVUYZ) to receive help.
+
+-----------------------
+
+# Uninstallation
+
+Delete these files and you're good to go!
 
 -----------------------
 
