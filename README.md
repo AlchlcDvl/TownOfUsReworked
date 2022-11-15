@@ -349,6 +349,7 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 | Escort | The percentage probability of the Escort appearing | Percentage | 0% |
 | Escort Count | How many Escorts should spawn in Custom Mode | Number | 1 |
 | Roleblock Cooldown | The cooldown of the Escort's roleblock button | Time | 25s |
+| Roleblock Duration | The duration of the Escort's roleblock | Time | 10s |
 
 ## Inspector
 ### **Alignment: Crew (Investigative)**
