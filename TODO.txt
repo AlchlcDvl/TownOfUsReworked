@@ -39,18 +39,18 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Serial Killer [Neutral (Killing)] 
 - New Role: Cryomaniac [Neutral (Evil)] 
 - New Role: Troll [Neutral (Evil)] 
+- New Role: Pirate [Neutral (Evil)] |
 - New Role: Thief [Neutral (Benign)] |
-- New Role: Pirate [Neutral (Haven't Decided The Alignment Yet)] |
 - New Role: Vampire Hunter [Crew (Checker)] 
 - New Role: Escort [Crew (Support)] |
 - New Role: Inspector [Crew (Investigative)] |
 - New Modifier: Flincher
 - New Modifier: VIP |
+- New Modifier: Professional |
 - New Objectifier: Rivals |
 - New Objectifier: Fanatic |
 - New Ability: Tunneler |
 - New Ability: Multitasker |
-- New Ability: Professional |
 - New Ability: Radar |
 - New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens |
@@ -82,13 +82,13 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Rework: Drunk can now reverse controls over time |
 - Rework: The Volatile interval of seeing/hearing things is now changable
 - Rework: Plaguebearer infect spread can be toggled |
-- Rework: Added option for Pestilence to directly spawn in |
+- Rework: Added option for Pestilence to directly spawn in
 - Rework: Added Arsonist passive dousing which can be toggled |
 - Rework: Jester and Executioner no longer end the game when their objectives are complete
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
 - Rename: Haunter has been renamed to Revealer
-- Rewrite: Glitch has been completely rewritten |
+- Rewrite: Glitch has been completely rewritten
 - Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their bloodlust cooldown (meaning if the Serial Killer is not on bloodlust, if roleblocked, the Serial Killer will kill them) |
 - Nerf: Mystic (now Coroner) no longer gets info from every body, every meeting, basically now they have to report a body to get info specific to that body
 - Major Improvements: The code got rewritten, restructured, reorganised and reformatted for smoother (and hopefully less buggy) gameplay
@@ -99,6 +99,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Improvements: Medbay scan messages scale with the Dwarf/Giant settings
 - Improvements: Reworked the Color system for roles
 - Update: Updated mod to v2022.10.25s
+- Changes: The blackmailed screen has been changed from "YOU ARE BLACKMAILED" to "YOU HAVE BEEN SILENCED"
 - Changes: The blackmailed screen has been changed from "YOU ARE BLACKMAILED" to "YOU HAVE BEEN SILENCED"
 - Visual Fix: Vanilla Settings now appear in the lobby again
 - Visual Fix: Fixed color mismatch for certain areas
@@ -117,3 +118,5 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Removed: Max Doused option for Arsonist because it's unnecessary
 - Temporary Removal: Intruder (Killing) as there are currently no roles belonging to this alignment
 - Temporary Removal: CrowdedMod integration, it's currently broken
+
+Note to self: Lines ending in | mean that they are not fully implemented yet

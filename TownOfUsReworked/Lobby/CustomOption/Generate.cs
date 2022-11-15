@@ -55,6 +55,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption TrollOn;
         public static CustomNumberOption TaskmasterOn;
         public static CustomNumberOption CryomaniacOn;
+        public static CustomNumberOption PirateOn;
 
         public static CustomHeaderOption NeutralKillingRoles;
         public static CustomNumberOption ArsonistOn;
@@ -699,6 +700,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JesterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0f, 0f, 100f, 10f, PercentFormat);
             TaskmasterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#ABABFFFF>Taskmaster</color>", 0f, 0f, 100f, 10f, PercentFormat);
             TrollOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0f, 0f, 100f, 10f, PercentFormat);
+            PirateOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EDC240FF>Pirate</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
             NeutralKillingRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
             ArsonistOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>", 0f, 0f, 100f, 10f, PercentFormat);
@@ -1090,19 +1092,19 @@ namespace TownOfUsReworked.Lobby.CustomOption
             SKCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Count", 1, 1, 14, 1);
             BloodlustCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bloodlust Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             BloodlustDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bloodlust Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            LustKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bloodlust Kill Cooldown", 10f, 0.5f, 15f, 0.5f, CooldownFormat);
+            LustKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Stab Cooldown", 10f, 0.5f, 15f, 0.5f, CooldownFormat);
             SKVentOptions = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Can Vent", new[] {"Always", "Bloodlust", "Never"});
 
             Werewolf = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color>");
             WerewolfCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Count", 1, 1, 14, 1);
-            MaulCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maul Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            MaulCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maul Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
             MaulRadius = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maul Radius", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
             WerewolfVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", false);
 
             NeutralPowerSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Power</color> Settings");
             
             Vampire = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#7B8968FF>Vampire</color>");
-            AliveVampCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Alive <color=#7B8968FF>Vampire</color> Count", 1, 1, 14, 1);
+            AliveVampCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Alive <color=#7B8968FF>Vampire</color> Count", 3, 1, 14, 1);
             VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#7B8968FF>Vampire</color> Can Vent", false);
 
             ImpConcealingSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings");

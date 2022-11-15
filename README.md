@@ -585,7 +585,7 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 
 ## Amnesiac
 ### **Alignment: Neutral (Benign)**
-### Win Condition: Find a dead body and take their role, then win as that role.
+### Win Condition: Find a dead body, take their role and then win as that role.
 
 The Amnesiac is essentially roleless and cannot win without remembering a role.
 
@@ -649,6 +649,35 @@ The Cryomaniac is essentially the old Arsonist. They can douse players and once 
 | Douse Cooldown | The cooldown of the Cryomaniac's douse button | Time | 25s |
 | Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
 | Vigilante Kills Cryomaniac | Whether the Vigilante is able to kill the Cryomaniac | Toggle | False |
+
+## Dampyr
+### **Alignment: Neutral (Proselyte)**
+### Win Condition: Kill off others to help the Vampires gain a majority.
+
+The Dampyr appears only when a player with the ability to kill gets bitten by the Dracula. The Dampyr has no special abilities aside from being able to kill like normal.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Bite Cooldown | The cooldown of the Dampyr's bite button | Time | 25s |
+| Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
+
+## Dracula
+### **Alignment: Neutral (Neophyte)**
+### Win Condition: Convert the Crew to gain a majority.
+
+The Dracula is the only Vampire that spawns in. The Dracula is the leader of the Vampire who can convert others into Vampires. If the target they choose to convert can kill, the target becomes a Dampyr. Otherwise, the target becomes a Vampire. If the target cannot be converted, they will be killed instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Dracula | The percentage probability of the Dracula appearing | Percentage | 0% |
+| Dracula Count | How many Draculas should spawn in Custom Mode | Number | 1 |
+| Bite Cooldown | The cooldown of the Dracula's bite button | Time | 25s |
+| Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
+| Dracula Can Convert Neutrals | Whether the Dracula is able to convert Neutrals | Toggle | False |
 
 ## Executioner
 ### **Alignment: Neutral (Evil)**
@@ -745,8 +774,23 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 | Kill Bonus | By how much the Juggernaut's kill cooldown decrease | Time | 5s |
 | Juggernaut Can Vent | Toggle's the Juggernaut's ability to vent | Toggle | False|
 
-## Pestilence
+## Murderer
 ### **Alignment: Neutral (Killing)**
+### Win Condition: Kill all non-Neutral Benign roles.
+
+The Murderer is a simple Neutral Killer with no special abilities.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Murderer | The percentage probability of the Murderer appearing | Percentage | 0% |
+| Murderer Count | How many Murderers should spawn in Custom Mode | Number | 1 |
+| Murderer Kill Cooldown | The cooldown on the Murderer's kill cooldown | Time | 25s |
+| Murderer Can Vent | Toggles the Murderer's ability to vent | Toggle | False|
+
+## Pestilence
+### **Alignment: Neutral (Proselyte)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
 Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).
@@ -759,6 +803,22 @@ Pestilence is always on permanent alert, where anyone who tries to interact with
 | Pestilence Transform Alerts Everyone | Dictates whether everyone is alerted when the Plaguebearer turns into Pestilence | Toggle | False |
 | Pestilence Kill Cooldown | The cooldown on Pestilence's kill cooldown | Timer | 25s |
 | Pestilence Can Vent | Whether Pestilence Can Vent | Toggle | False |
+
+## Pirate
+### **Alignment: Neutral (Evil)**
+### Win Condition: Win a certain number of duels.
+
+The Pirate can duel players. Upon dueling them, the players will be rendered immovable and unable to use their abilities. During the duel period, the Pirate picks 1 of 3 attacking options and the duelled player(s) pick 1 of 3 defending options. If the Pirate is unable to get past the defence, the duel is over and both parties are released. However, if the Pirate overcomes the defence, the duelled player will be killed by the Pirate.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Pirate | The percentage probability of the Pirate appearing | Percentage | 0% |
+| Pirate Count | How many Pirates should spawn in Custom Mode | Number | 1 |
+| Duel Cooldown | The cooldown of the Pirate's duel button | Time | 25s |
+| Duel Duration | The duration of the duel | Time | 25s |
+| Pirate Can Vent | Decides whether the Pirate can vent | Toggle | False |
 
 ## Plaguebearer
 ### **Alignment: Neutral (Killing)**
@@ -774,6 +834,23 @@ The Plaguebearer can infect other players. Once infected, the infected player ca
 | Plaguebearer Count | How many Plaguebearers should spawn in Custom Mode | Number | 1 |
 | Infect Cooldown | The cooldown of the Plaguebearer's Infect button | Time | 25s |
 | Plaguebearer can Vent | Whether the Plaguebearer can Vent | Toggle | False |
+
+## Serial Killer
+### **Alignment: Neutral (Killing)**
+### Win Condition: Kill all non-Neutral Benign roles.
+
+Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Serial Killer | The percentage probability of the Serial Killer appearing | Percentage | 0% |
+| Serial Killer Count | How many Serial Killers should spawn in Custom Mode | Number | 1 |
+| Bloodlust Cooldown | The cooldown of the Serial Killer's bloodlust button | Time | 25s |
+| Bloodlust Duration | The duration of the Serial Killer's bloodlust | Time | 25s |
+| Stab Cooldown | The cooldown of the Serial Killer's Kill button | Time | 10s |
+| Serial Killer Can Vent | Whether the Serial Killer can Vent when Rampaged | Always / Bloodlust / Never | Always |
 
 ## Survivor
 ### **Alignment: Neutral (Benign)**
@@ -809,23 +886,65 @@ The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are
 | Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
 | Vigilante Kills Taskmaster | Whether the Vigilante is able to kill the Taskmaster | Toggle | False |
 
+## Thief
+### **Alignment: Neutral (Benign)**
+### Win Condition: Kill a killer and win as their role.
+
+The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will kill themselves. After stealing their target's role, the Thief can now win as whatever role they have become.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Thief | The percentage probability of the Thief appearing | Percentage | 0% |
+| Thief Count | How many Thieves should spawn in Custom Mode | Number | 1 |
+| Thief Kill Cooldown | The cooldown of the Thief's kill button | Time | 25s |
+| Thief Can Vent | Whether Thief Can Vent | Toggle | False |
+
+## Troll
+### **Alignment: Neutral (Evil)**
+### Win Condition: Get killed.
+
+The Troll just wants to be killed, but not ejected. Only spawns in Custom Mode. The Troll can fake interact with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Troll | The percentage probability of the Troll appearing | Percentage | 0% |
+| Troll Count | How many Trolls should spawn in Custom Mode | Number | 1 |
+| Troll Can Interact | Toggles the Troll's ability to interact with players | Toggle | False |
+| Interaction Cooldown | The cooldown of the Troll's interact button | Time | 25s |
+| Troll Can Vent | Whether Troll Can Vent | Toggle | False |
+
+## Vampire
+### **Alignment: Neutral (Proselyte)**
+### Win Condition: Help the Vampires gain a majority.
+
+The Vampire has no special abilities and just exists to be additional voting power.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Alive Vampires Count | Limits the number of Vampires that can be alive, attempting to convert player after this limit has been reached will kill the target player | Number | 3 |
+| Vampire Can Vent | Whether Vampire Can Vent | Toggle | False |
+
 ## Werewolf
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-Although the Werewolf has a kill button, they can't use it unless they are Rampaged.
-Once the Werewolf rampages they gain the ability to kill.
-However, unlike most killers their kill cooldown is really short for the duration of the rampage.
+The Werewolf can kill players within a certain radius.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Werewolf | The percentage probability of the Werewolf appearing | Percentage | 0% |
-| Rampage Cooldown | The cooldown of the Werewolf's Rampage button | Time | 25s |
-| Rampage Duration | The duration of the Werewolf's Rampage | Time | 25s |
-| Rampage Kill Cooldown | The cooldown of the Werewolf's Kill button | Time | 10s |
-| Werewolf can Vent when Rampaged | Whether the Werewolf can Vent when Rampaged | Toggle | False |
+| Werewolf Count | How many Werewolves should spawn in Custom Mode | Number | 1 |
+| Maul Cooldown | The cooldown on the Werewolf's kill button | Time | 30s |
+| Maul Radius | How far must a player be to survive a Werewolf's attack | Factor | 1x |
+| Werewolf Can Vent | Toggles the Murderer's ability to vent | Toggle | False|
 
 -----------------------
 
