@@ -96,6 +96,7 @@ namespace TownOfUsReworked
         public static Sprite TeleportSprite;
         public static Sprite MarkSprite;
         public static Sprite Placeholder;
+        public static Sprite Clear;
 
         public static Sprite SettingsButtonSprite;
         public static Sprite CrewSettingsButtonSprite;
@@ -213,6 +214,7 @@ namespace TownOfUsReworked
             MarkSprite = CreateSprite("TownOfUsReworked.Resources.Mark.png");
             WarpSprite = CreateSprite("TownOfUsReworked.Resources.Disperse.png");
             Placeholder = CreateSprite("TownOfUsReworked.Resources.Placeholder.png");
+            Clear = CreateSprite("TownOfUsReworked.Resources.Clear.png");
 
             //Settings buttons
             SettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.SettingsButton.png");

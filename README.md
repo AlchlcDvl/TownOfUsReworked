@@ -337,6 +337,32 @@ The Engineer can fix sabotages from anywhere on the map. They can also use vents
 | Engineer Count | How many Engineers should spawn in Custom Mode | Number | 1 |
 | Engineer Fix Per | Whether the Engineer can fix 1 sabotage per round or per game | Round / Game | Round |
 
+## Escort
+### **Alignment: Crew (Support)**
+
+The Escort can roleblock players and prevent them from doing anything for a short while.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Escort | The percentage probability of the Escort appearing | Percentage | 0% |
+| Escort Count | How many Escorts should spawn in Custom Mode | Number | 1 |
+| Roleblock Cooldown | The cooldown of the Escort's roleblock button | Time | 25s |
+
+## Inspector
+### **Alignment: Crew (Investigative)**
+
+The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what roles could the target possibly be.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Inspector | The percentage probability of the Inspector appearing | Percentage | 0% |
+| Inspector Count | How many Inspectors should spawn in Custom Mode | Number | 1 |
+| Inspect Cooldown | The cooldown on the Inspector's inspect button. | Time | 5s |
+
 ## Investigator
 ### **Alignment: Crew (Investigative)**
 
@@ -399,6 +425,24 @@ The Medium can see ghosts. During each round the Medium has an ability called Me
 | Reveal The Medium To The Mediate Target | Whether the ghosts can see that the Medium is the Medium | Toggle | True |
 | Who Is Revealed | Which players are revealed to the Medium | Oldest Dead / Newest Dead / All Dead | Oldest Dead |
 
+## Operative
+### **Alignment: Crew (Investigative)**
+
+The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Operative | The percentage probability of the Operative appearing | Percentage | 0% |
+| Operative Count | How many Operatives should spawn in Custom Mode | Number | 1 |
+| Minimum Amount Of Time Required For Bug To Trigger | How long a player must stay in the bug for it to trigger | Time | 1s |
+| Bug Cooldown | The cooldown on the operative's bug button | Time | 25s |
+| Bugs Removed Each Round | Whether the Operative's bugs are removed after each meeting | Toggle | True |
+| Maximum Number Of Bugs Per Game | The number of bgus they can place in a game | Number | 5 |
+| Bug Range | The size of each trap | Factor | 1x |
+| Minimum Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 3 |
+
 ## Shifter
 ### **Alignment: Crew (Support)**
 
@@ -445,18 +489,18 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 | Swapper Can Button | Whether the Swapper Can Press the Button | Toggle | True |
 
 ## Time Lord
-### **Alignment: Crew (Support)**
+### **Alignment: Crew (Protective)**
 
-The Time Lord is a Crewmate that can rewind time and reverse the positions of all players.
-If enabled, any players killed during this time will be revived.
-Nothing but movements and kills are affected.
+The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be revived. Nothing but movements and kills are affected.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Time Lord | The percentage probability of the Time Lord appearing | Percentage | 0% |
+| Time Lord Count | How many Time Lords should spawn in Custom Mode | Number | 1 |
 | Revive During Rewind | Whether the Time Lord revives dead players when rewinding | Toggle | False |
+| Time Lord Immunity | Whether the Time Lord is immune to their own rewind and the Time Master's time freeze | Toggle | False |
 | Rewind Duration | How far the rewind goes back in time | Time | 2s |
 | Rewind Cooldown | The cooldown of the Time Lord's Rewind button | Time | 25s |
 | Max Uses | The amount of times the Rewind ability can be used | Number | 5 |
@@ -464,14 +508,14 @@ Nothing but movements and kills are affected.
 ## Tracker
 ### **Alignment: Crew (Investigative)**
 
-The Tracker is a Crewmate that can track other players by tracking them during a round.
-Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.
+The Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Tracker | The percentage probability of the Tracker appearing | Percentage | 0% |
+| Tracker Count | How many Trackers should spawn in Custom Mode | Number | 1 |
 | Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
 | Track Cooldown | The cooldown on the Tracker's track button | Time | 25s |
 | Tracker Arrows Reset Each Round | Whether Tracker Arrows are removed after each meeting | Toggle | False |
@@ -480,48 +524,41 @@ Once they track someone, an arrow is continuously pointing to them, which update
 ## Transporter
 ### **Alignment: Crew (Support)**
 
-The Transporter is a Crewmate that can change the locations of two random players at will.
-Players who have been transported are alerted with a blue flash on their screen.
+The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue flash on their screen.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Transporter | The percentage probability of the Transporter appearing | Percentage | 0% |
+| Transporter Count | How many Transporters should spawn in Custom Mode | Number | 1 |
 | Transport Cooldown | The cooldown of the Transporter's transport ability | Time | 25s |
 | Max Uses | The amount of times the Transport ability can be used | Number | 5 |
 
-## Trapper
-### **Alignment: Crew (Investigative)**
+## Vampire Hunter
+### **Alignment: Crew (Killing)**
 
-The Trapper is a Crewmate that can place traps around the map.
-When players enter a trap they trigger the trap.
-In the following meeting, all players who triggered a trap will have their role displayed to the Trapper.
-However, this is done so in a random order, not stating who entered the trap, nor what role a specific player is.
+The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter checks them and finds them guilty, they are killed. Otherwise they only interact and nothing else happens.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Trapper | The percentage probability of the Trapper appearing | Percentage | 0% |
-| Minimum Amount Of Time Required For Trap To Trigger | How long a player must stay in the trap for it to trigger | Time | 1s |
-| Trap Cooldown | The cooldown on the Trapper's trap button | Time | 25s |
-| Traps Removed Each Round | Whether the Trapper's traps are removed after each meeting | Toggle | True |
-| Maximum Number Of Traps Per Game | The number of traps they can place in a game | Number | 5 |
-| Trap Size | The size of each trap | Factor | 1x |
-| Minimum Number Of Roles Required To Trigger Trap | The number of players that must enter the trap for it to be triggered | Number | 3 |
+| Vampire Hunter | The percentage probability of the Vampire Hunter appearing | Percentage | 0% |
+| Vampire Hunter Count | How many Vampire Hunters should spawn in Custom Mode | Number | 1 |
+| Stake Cooldown | The cooldown on the Vampire Hunter's stake button. | Time | 5s |
 
 ## Veteran
 ### **Alignment: Crew (Killing)**
 
-The Veteran is a Crewmate that can go on alert.
-When the Veteran is on alert, anyone, whether Crew, Neutral or Intruder, if they interact with the Veteran, they die.
+The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Veteran | The percentage probability of the Veteran appearing | Percentage | 0% |
+| Veteran Count | How many Veterans should spawn in Custom Mode | Number | 1 |
 | Alert Cooldown | The cooldown on the Veteran's alert button. | Time | 5s |
 | Alert Duration | The duration of the alert | Time | 25s |
 | Maximum Number Of Alerts | The number of times the Veteran can alert throughout the game | Number | 3 |
@@ -529,18 +566,17 @@ When the Veteran is on alert, anyone, whether Crew, Neutral or Intruder, if they
 ## Vigilante
 ### **Alignment: Crew (Killing)**
 
-The Vigilante is a Crewmate that has the ability to eliminate the Intruder using their kill button.
-However, if they kill a Crewmate or a Neutral player they can't kill, they instead die themselves.
+The Vigilante is a Crewmate that has the ability to eliminate the Intruder using their kill button. However, if they kill a Crewmate or a Neutral player they can't kill, they instead die themselves.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Vigilante | The percentage probability of the Vigilante appearing | Percentage | 0% |
+| Vigilante Count | How many Vigilantes should spawn in Custom Mode | Number | 1 |
 | Vigilante Miskill Kills Crewmate | Whether the other player is killed if the Vigilante misfires | Toggle | False |
-| Vigilante Kills Jester | Whether the Vigilante is able to kill the Jester | Toggle | False |
-| Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
-| Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
+| How Does Vigilante Die | Dictates how does the Vigilante die, should they kill someone they shouldn't | Immediately / Pre-Meeting / Post-Meeting | Immediately |
+| Vigilante Knows Their Target Was Innocent | Whether the Vigilante, upon shooting someone they shouldn't have, realising that they killed someone who was innocent | Toggle | False |
 | Vigilante Kill Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
 
 -----------------------
@@ -558,39 +594,61 @@ The Amnesiac is essentially roleless and cannot win without remembering a role.
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Amnesiac | The percentage probability of the Amnesiac appearing | Percentage | 0% |
+| Amnesiac Count | How many Amnesiacs should spawn in Custom Mode | Number | 1 |
 | Amnesiac Gets Arrows | Whether the Amnesiac has arrows pointing to dead bodies | Toggle | False |
 | Arrow Appear Delay | The delay of the arrows appearing after the person died | Time | 5s |
+| Amnesiac Can Vent | Decides whether the Amnesiac can vent | Toggle | False |
+| Amnesiac Can Switch Vents | Decides whether the Amnesiac can switch while in vents | Toggle | True |
 
 ## Arsonist
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-The Arsonist has 2 abilities.
-One is to douse other players with gasoline.
-The other is to ignite all doused players which kills all doused players at once.
+The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Arsonist | The percentage probability of the Arsonist appearing | Percentage | 0% |
-| Douse Cooldown | The cooldown of the Arsonist's Douse button | Time | 25s |
+| Arsonist Count | How many Arsonists should spawn in Custom Mode | Number | 1 |
+| Douse Cooldown | The cooldown of the Arsonist's douse button | Time | 25s |
+| Ignite Cooldown | The cooldown of the Arsonist's ignite button | Time | 25s |
 | Maximum Alive Players Doused | The maximum amount of players that the Arsonist can have doused | Number | 5 |
-| Arsonist Can Vent | Decides whether the Arsonist can vent | Time | 25s |
+| Arsonist Can Vent | Decides whether the Arsonist can vent | Toggle | True |
 
 ## Cannibal
 ### **Alignment: Neutral (Evil)**
 ### Win Condition: Eat a certain number of bodies.
 
-The Cannibal has an ability to eat the body, which wipes away the body, like the Janitor.
+The Cannibal can eat the body which wipes away the body, like the Janitor.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Cannibal | The percentage probability of the Cannibal appearing | Percentage | 0% |
-| Eat Cooldown | The cooldown of the Cannibal's Eat button | Time | 25s |
-| Bodies Needed To Win | How many bodies must the Cannibal consume to win | Number | 5 |
+| Cannibal Count | How many Cannibals should spawn in Custom Mode | Number | 1 |
+| Eat Cooldown | The cooldown of the Cannibal's eat button | Time | 25s |
+| Bodies Needed To Win | How many bodies must the Cannibal consume to win | Number | 5 (or changes to half the lobby size if not enough players) |
+| Cannibal Can Vent | Decides whether the Cannibal can vent | Toggle | False |
+| Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
+
+## Cryomaniac
+### **Alignment: Neutral (Evil)**
+### Win Condition: Douse everyone and freeze them all.
+
+The Cryomaniac is essentially the old Arsonist. They can douse players and once everyone is doused, they can freeze everyone which kills all of them.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Cryomaniac | The percentage probability of the Cryomaniac appearing | Percentage | 0% |
+| Cryomaniac Count | How many Cryomaniacs should spawn in Custom Mode | Number | 1 |
+| Douse Cooldown | The cooldown of the Cryomaniac's douse button | Time | 25s |
+| Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
+| Vigilante Kills Cryomaniac | Whether the Vigilante is able to kill the Cryomaniac | Toggle | False |
 
 ## Executioner
 ### **Alignment: Neutral (Evil)**
@@ -603,51 +661,56 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Executioner | The percentage probability of the Executioner appearing | Percentage | 0% |
+| Executioner Count | How many Executioners should spawn in Custom Mode | Number | 1 |
 | Executioner becomes on Target Dead | Which role the Executioner becomes when their target dies | Crewmate / Amnesiac / Survivor / Jester | Crewmate |
 | Executioner Can Button | Whether the Executioner Can Press the Button | Toggle | True |
+| Executioner Knows Target's Role | Whether the Executioner knows their target's role like the Guardian Angel | Toggle | False |
+| Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
 | Executioner Can Vent | Whether the Executioner Can Vent | Toggle | False |
+| Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
+| Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
 
 ## Glitch
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-The Glitch has 2 abilities.
-The Glitch can hack players, resulting in them being unable to use their abilities, report bodies and do tasks.
-Glitch can Mimic someone, which results in them looking exactly like the other person.
+The Glitch has 2 abilities. The Glitch can hack players, resulting in them being unable to do anything. The Glitch can also mimic someone, which results in them looking exactly like the other person.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Glitch | The percentage probability of Glitch appearing | Percentage | 0% |
+| Glitch Count | How many Glitches should spawn in Custom Mode | Number | 1 |
 | Mimic Cooldown | The cooldown of Glitch's Mimic button | Time | 30s |
 | Mimic Duration | How long Glitch can Mimic a player | Time | 10s |
 | Hack Cooldown | The cooldown of Glitch's Hack button | Time | 30s |
 | Hack Duration | How long Glitch can Hack a player | Time | 10s |
 | Glitch Kill Cooldown | The cooldown of Glitch's Kill button | Time | 30s |
-| Glitch Hack Distance | How far away Glitch can Hack someone from | Short / Normal / Long | Short |
-| Glitch can Vent | Whether Glitch can Vent | Toggle | False |
+| Glitch Can Vent | Whether Glitch can Vent | Toggle | False |
 
 ## Guardian Angel
 ### **Alignment: Neutral (Benign)**
-### WIn Condition: Protect their target to the end of the game.
+### WIn Condition: Have their target live to see the end of the game.
 
-The Guardian Angel is a Neutral role which aligns with the faction of their target.
-The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses (like in case of a Jester Win).
+The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses (like in case of a Cannibal Win).
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Guardian Angel | The percentage probability of the Guardian Angel appearing | Percentage | 0% |
+| Guardian Angel Count | How many Guardian Angels should spawn in Custom Mode | Number | 1 |
 | Protect Cooldown | The cooldown of the Guardian Angel's Protect button | Time | 25s |
 | Protect Duration | How long The Guardian Angel's Protect lasts | Time | 10s |
 | Kill Cooldown Reset on Attack | The attackers kill cooldown after they attacked the protected target | Time | 2.5s |
 | Max Uses | The amount of times the Protect ability can be used | Number | 5 |
 | Show Protected Player | Who should be able to see who is Protected | Self / GA / Self + GA / Everyone | Self |
 | Guardian Angel becomes on Target Dead | Which role the Guardian Angel becomes when their target dies | Crewmate / Amnesiac / Survivor / Jester | Crewmate |
-| Target Knows GA Exists | Whether the GA's Target knows they have a GA | Toggle | False |
-| GA Knows Targets Role | Whether the GA knows their target's role | Toggle | False |
+| Target Knows Guardian Angel Exists | Whether the Guardian Angel's Target knows they have a Guardian Angel | Toggle | False |
+| Guardian Angel Can Vent | Whether the Guardian Angel Can Vent | Toggle | False |
+| Guardian Angel Can Switch Vents | Whether the Guardian Angel Can Switch while in Vents | Toggle | False |
+| Guardian Angel Knows Targets Role | Whether the Guardian Angel knows their target's role | Toggle | False |
 
 ## Jester
 ### **Alignment: Neutral (Evil)**
@@ -660,21 +723,24 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Jester | The percentage probability of the Jester appearing | Percentage | 0% |
+| Jester Count | How many Jesters should spawn in Custom Mode | Number | 1 |
 | Jester Can Button | Whether the Jester Can Press the Button | Toggle | True |
 | Jester Can Vent | Whether the Jester Can Vent | Toggle | False |
+| Jester Can Switch Vents | Whether the Jester Can Switch while in Vents | Toggle | False |
+| Vigilante Kills Jester | Whether the Vigilante is able to kill the Jester | Toggle | False |
 
 ## Juggernaut
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-The Juggernaut's kill cooldown decreases with every kill they make.
-When they reach a certain number of kills, the kill cooldown no longer decreases and instead gives them other buffs, like bypassing protections.
+The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer decreases and instead gives them other buffs, like bypassing protections.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Juggernaut | The percentage probability of the Juggernaut appearing | Percentage | 0% |
+| Juggernaut Count | How many Juggernauts should spawn in Custom Mode | Number | 1 |
 | Juggernaut Kill Cooldown | The cooldown on the Juggernaut's initial kill cooldown | Time | 25s |
 | Kill Bonus | By how much the Juggernaut's kill cooldown decrease | Time | 5s |
 | Juggernaut Can Vent | Toggle's the Juggernaut's ability to vent | Toggle | False|
@@ -683,44 +749,29 @@ When they reach a certain number of kills, the kill cooldown no longer decreases
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-Pestilence is always on permanent alert, where anyone who tries to interact with them will die.
-Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone.
-Pestilence cannot die unless they have been voted out, and they can't be guessed.
+Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
+| Pestilence Can Spawn Directly | Dictates whether Pestilence can appear even if no one is infected | Toggle | False |
+| Pestilence Transform Alerts Everyone | Dictates whether everyone is alerted when the Plaguebearer turns into Pestilence | Toggle | False |
 | Pestilence Kill Cooldown | The cooldown on Pestilence's kill cooldown | Timer | 25s |
 | Pestilence Can Vent | Whether Pestilence Can Vent | Toggle | False |
-
-## Phantom
-### **Alignment: Neutral (Postmortal)**
-### Win Condition: Finish your tasks without getting clicked or having the game end.
-
-The Phantom spawns when a Neutral dies.
-They become half-invisible when they die and has to complete all their tasks without getting caught.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
-| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 
 ## Plaguebearer
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off all Non-Neutral Benign roles.
 
-The Plaguebearer has one ability, which allows them to infect other players.
-Once infected, the infected player can go and infect other players via interacting with them.
-Once all players are infected, the Plaguebearer becomes Pestilence.
+The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Plaguebearer | The percentage probability of the Plaguebearer appearing | Percentage | 0% |
+| Plaguebearer Count | How many Plaguebearers should spawn in Custom Mode | Number | 1 |
 | Infect Cooldown | The cooldown of the Plaguebearer's Infect button | Time | 25s |
 | Plaguebearer can Vent | Whether the Plaguebearer can Vent | Toggle | False |
 
@@ -728,33 +779,35 @@ Once all players are infected, the Plaguebearer becomes Pestilence.
 ### **Alignment: Neutral (Benign)**
 ### Win Condition: Live to see the end of the game.
 
-The Survivor is a Neutral role which can wins by simply surviving.
-They can vest which makes them immune to death for a short duration.
-However, if Lovers win the game, the Survivor loses, unless the Survivor themselves is a Lover.
+The Survivor wins by simply surviving. They can vest which makes them immune to death for a short duration.
 
 ### Game Options
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Survivor | The percentage probability of the Survivor appearing | Percentage | 0% |
+| Survivor Count | How many Survivors should spawn in Custom Mode | Number | 1 |
 | Vest Cooldown | The cooldown of the Survivor's Vest button | Time | 25s |
 | Vest Duration | How long The Survivor's Vest lasts | Time | 10s |
 | Kill Cooldown Reset on Attack | The attackers kill cooldown after they attack a vested Survivor | Time | 2.5s |
 | Max Uses | The amount of times the Vest ability can be used | Number | 5 |
+| Survivor Can Vent | Whether the Survivor Can Vent | Toggle | False |
+| Survivor Can Switch Vents | Whether the Survivor Can Switch while in Vents | Toggle | False |
 
 ## Taskmaster
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Finish tasks before the game ends without dying
+### Win Condition: Finish tasks before the game ends without dying.
 
-The Taskmaster is basically a Neutral Snitch.
-When a certain number of tasks are remaining, the Taskmaster is revealed to Impostors and the Crew only sees a flash to indicate the Taskmaster's existence
+The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Taskmaster | The percentage probability of the Taskmaster appearing | Percentage | 0% |
-| Taskmaster Count | How many of the Taskmaster should spawn in Custom Mode | Number | 1 |
+| Taskmaster Count | How many Taskmasters should spawn in Custom Mode | Number | 1 |
 | Taskmaster Can Vent | Whether Taskmaster Can Vent | Toggle | False |
+| Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
+| Vigilante Kills Taskmaster | Whether the Vigilante is able to kill the Taskmaster | Toggle | False |
 
 ## Werewolf
 ### **Alignment: Neutral (Killing)**
@@ -1105,6 +1158,20 @@ You see and hear things and might lash out on others.
 
 # Objectifiers
 Objectifiers are added on top of players' roles and modifiers. A 3rd player layer, if you will.
+
+## Phantom
+### **Alignment: Neutral (Postmortal)**
+### Win Condition: Finish your tasks without getting clicked or having the game end.
+
+The Phantom spawns when a Neutral dies.
+They become half-invisible when they die and has to complete all their tasks without getting caught.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
+| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 
 ## Assassin
 ### **Alignment: Ability**

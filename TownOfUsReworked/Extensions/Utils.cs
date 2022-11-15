@@ -40,9 +40,13 @@ namespace TownOfUsReworked.Extensions
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 var color = new Color32 (0, 0, 0, 0);
+                var playerName = " ";
 
-                if (player.Is(Faction.Syndicate) | player.Data.IsDead)
+                if (player.Is(Faction.Syndicate) | player.Data.IsDead | PlayerControl.LocalPlayer == player)
+                {
                     color.a = 26;
+                    playerName = player.name;
+                }
 
                 if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
                     player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
@@ -54,7 +58,7 @@ namespace TownOfUsReworked.Extensions
                         HatId = "",
                         SkinId = "",
                         VisorId = "",
-                        PlayerName = " "
+                        PlayerName = playerName
                     });
                     PlayerMaterial.SetColors(color, player.myRend());
                     player.nameText().color = Color.clear;
@@ -547,6 +551,7 @@ namespace TownOfUsReworked.Extensions
                 yield return new WaitForSeconds(CustomGameOptions.BaitMaxDelay + 0.01f);
             else
                 yield return new WaitForSeconds(CustomGameOptions.BaitMinDelay + 0.01f + extraDelay/100f);
+                
             var bodies = Object.FindObjectsOfType<DeadBody>();
 
             if (AmongUsClient.Instance.AmHost)
@@ -559,7 +564,6 @@ namespace TownOfUsReworked.Extensions
                     }
                     catch {}
                 }
-                
             }
             else
             {
@@ -583,9 +587,7 @@ namespace TownOfUsReworked.Extensions
                     }
                     catch {}
                 }
-                
             }
-
         }
 
         public static IEnumerator FlashCoroutine(Color color)

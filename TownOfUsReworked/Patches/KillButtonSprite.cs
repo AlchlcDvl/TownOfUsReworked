@@ -2,6 +2,8 @@
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.Patches
 {
@@ -43,8 +45,8 @@ namespace TownOfUsReworked.Patches
         private static Sprite EraseData => TownOfUsReworked.EraseDataSprite;
         private static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
         private static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        private static Sprite Clear => TownOfUsReworked.Clear;
         private static Sprite Kill;
-
 
         public static void Postfix(HudManager __instance)
         {
@@ -55,6 +57,7 @@ namespace TownOfUsReworked.Patches
                 Kill = __instance.KillButton.graphic.sprite;
 
             var flag = false;
+            var sk = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord))
             {
@@ -148,7 +151,11 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
             {
-                __instance.KillButton.graphic.sprite = Placeholder;
+                if (sk.Lusted)
+                    __instance.KillButton.graphic.sprite = Placeholder;
+                else
+                    __instance.KillButton.graphic.sprite = Clear;
+
                 flag = true;
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))

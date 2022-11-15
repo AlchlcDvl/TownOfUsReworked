@@ -56,9 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notInfected);
             }
 
-            if (role.CanTransform && (PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1) && !isDead)
+            if (role.CanTransform && (PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1) &&
+                !isDead)
             {
-                var transform = false;
+                var transform = CustomGameOptions.PestSpawn;
                 var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
 
                 if (alives.Count == 2)
