@@ -66,7 +66,8 @@ namespace TownOfUsReworked.Patches
                     if (PlayerControl.GameOptions.MapId == 1)
                         AdjustCooldowns(CustomGameOptions.SmallMapDecreasedCooldown);
 
-                    if (PlayerControl.GameOptions.MapId >= 4) AdjustCooldowns(-CustomGameOptions.LargeMapIncreasedCooldown);
+                    if (PlayerControl.GameOptions.MapId >= 4)
+                        AdjustCooldowns(-CustomGameOptions.LargeMapIncreasedCooldown);
                 }
 
                 if (CustomGameOptions.RandomMapEnabled)

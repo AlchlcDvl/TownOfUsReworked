@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;

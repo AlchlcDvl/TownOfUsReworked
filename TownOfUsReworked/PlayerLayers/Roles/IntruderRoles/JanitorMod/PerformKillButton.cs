@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {

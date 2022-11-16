@@ -223,7 +223,8 @@ namespace TownOfUsReworked.Patches
                 __instance.KillButton.graphic.sprite = Kill;
                 __instance.KillButton.buttonLabelText.gameObject.SetActive(true);
 
-                flag = PlayerControl.LocalPlayer.Is(Faction.Intruders) && !PlayerControl.LocalPlayer.Is(RoleEnum.Poisoner);
+                flag = (PlayerControl.LocalPlayer.Is(Faction.Intruders) && !PlayerControl.LocalPlayer.Is(RoleEnum.Poisoner)) |
+                    PlayerControl.LocalPlayer.Is(Faction.Syndicate);
 
                 if (flag) 
                     __instance.KillButton.buttonLabelText.text = "Kill";

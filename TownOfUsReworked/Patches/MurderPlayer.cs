@@ -39,6 +39,7 @@ namespace TownOfUsReworked.Patches
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
                     }
+                    
                     __instance.SetTarget(null);
                 }
                 return false;

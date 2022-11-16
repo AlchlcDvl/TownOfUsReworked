@@ -5,7 +5,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {

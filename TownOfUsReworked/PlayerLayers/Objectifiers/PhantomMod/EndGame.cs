@@ -2,6 +2,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 {

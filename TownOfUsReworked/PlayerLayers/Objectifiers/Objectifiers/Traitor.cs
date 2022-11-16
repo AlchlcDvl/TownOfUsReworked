@@ -3,7 +3,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
+namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Traitor : Objectifier
     {

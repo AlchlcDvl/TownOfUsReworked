@@ -6,7 +6,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod

@@ -1,6 +1,5 @@
 ﻿using Hazel;
 using System;
-using Reactor.Utilities;
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
@@ -8,10 +7,9 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformKill
@@ -21,15 +19,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Detective))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Escort))
                 return true;
 
-            var role = Role.GetRole<Detective>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
             if (!PlayerControl.LocalPlayer.CanMove | role.ClosestPlayer == null)
                 return false;
 
-            var flag2 = role.ExamineTimer() == 0f;
+            var flag2 = role.RoleblockTimer() == 0f;
 
             if (!flag2)
                 return false;
@@ -64,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                     if (CustomGameOptions.ShieldBreaks)
-                        role.LastExamined = DateTime.UtcNow;
+                        role.LastBlock = DateTime.UtcNow;
 
                     StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId,
                         CustomGameOptions.ShieldBreaks);
@@ -76,25 +74,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     return false;
                 }
 
-                role.LastExamined = DateTime.UtcNow;
+                role.LastBlock = DateTime.UtcNow;
                 return false;
             }
 
-            var hasKilled = false;
-
-            foreach (var player in Murder.KilledPlayers)
-            {
-                if (player.KillerId == role.ClosestPlayer.PlayerId && (float)(DateTime.UtcNow - player.KillTime).TotalSeconds <
-                    CustomGameOptions.RecentKill)
-                    hasKilled = true;
-            }
-
-            if (hasKilled)
-                Coroutines.Start(Utils.FlashCoroutine(Color.red));
-            else
-                Coroutines.Start(Utils.FlashCoroutine(Color.green));
+            Utils.Block(role.Player, role.ClosestPlayer);
                 
-            role.LastExamined = DateTime.UtcNow;
+            role.LastBlock = DateTime.UtcNow;
 
             return false;
         }

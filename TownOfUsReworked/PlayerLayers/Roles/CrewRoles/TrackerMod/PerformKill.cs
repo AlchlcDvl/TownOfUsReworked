@@ -8,7 +8,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod

@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod

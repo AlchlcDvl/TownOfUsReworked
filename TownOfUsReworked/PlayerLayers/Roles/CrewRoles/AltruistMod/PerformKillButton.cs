@@ -4,7 +4,6 @@ using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 

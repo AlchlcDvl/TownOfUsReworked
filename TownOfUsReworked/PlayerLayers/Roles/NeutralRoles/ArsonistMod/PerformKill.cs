@@ -88,10 +88,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
                 role.LastIgnited = DateTime.UtcNow;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Ignite,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                unchecked
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Ignite,
+                        SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
                 role.Ignite();
                 return false;
             }
@@ -152,11 +156,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 return false;
             }
 
-            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte)CustomRPC.Douse, SendOption.Reliable, -1);
-            writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer2.Write(role.ClosestPlayerDouse.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer2);
+            unchecked
+            {
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse,
+                    SendOption.Reliable, -1);
+                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer2.Write(role.ClosestPlayerDouse.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+            }
+            
             role.DousedPlayers.Add(role.ClosestPlayerDouse.PlayerId);
             role.LastDoused = DateTime.UtcNow;
             role.LastIgnited = DateTime.UtcNow;

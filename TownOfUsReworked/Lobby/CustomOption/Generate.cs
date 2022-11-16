@@ -570,6 +570,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption AliveVampCount;
         public static CustomToggleOption VampVent;
 
+        public static CustomHeaderOption Dampyr;
+        public static CustomNumberOption DampBiteCooldown;
+        public static CustomToggleOption DampVent;
+
         public static CustomHeaderOption Taskmaster;
         public static CustomNumberOption TaskmasterCount;
         public static CustomNumberOption TMTasksRemaining;

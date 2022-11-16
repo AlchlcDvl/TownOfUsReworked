@@ -10,7 +10,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
+namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Lovers : Objectifier
     {

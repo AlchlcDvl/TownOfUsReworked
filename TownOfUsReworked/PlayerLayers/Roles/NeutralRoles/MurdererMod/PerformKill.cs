@@ -42,33 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
 
             if (!flag3)
                 return false;
-
-            if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                if (role.Player.IsShielded())
-                {
-                    var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                        SendOption.Reliable, -1);
-                    writer.Write(medic);
-                    writer.Write(role.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastKill = DateTime.UtcNow;
-
-                    StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-
-                if (role.Player.IsProtected())
-                {
-                    role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    return false;
-                }
-
-                Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
-                return false;
-            }
             
             if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
             {
@@ -76,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert())
+            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {

@@ -326,6 +326,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int LargeMapDecreasedLongTasks => (int)Generate.LargeMapDecreasedLongTasks.Get();
         public static bool JuggVent => Generate.JuggVent.Get();
         public static bool ArsoVent => Generate.ArsoVent.Get();
+        public static bool DampVent => Generate.DampVent.Get();
         public static bool PBVent => Generate.PBVent.Get();
         public static DisableSkipButtonMeetings SkipButtonDisable => (DisableSkipButtonMeetings)Generate.SkipButtonDisable.Get();
         public static GameMode GameMode => (GameMode)Generate.GameMode.Get();

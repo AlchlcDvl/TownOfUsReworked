@@ -7,7 +7,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
 {

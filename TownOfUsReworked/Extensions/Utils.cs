@@ -33,7 +33,6 @@ namespace TownOfUsReworked.Extensions
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
         public static Dictionary<byte, DateTime> tickDictionary = new Dictionary<byte, DateTime>();
         public static Sprite LockSprite = TownOfUsReworked.LockSprite;
-        public static PlayerPhysics __instance;
 
         public static void Conceal()
         {
@@ -820,7 +819,8 @@ namespace TownOfUsReworked.Extensions
             player.NetTransform.SnapTo(vector);
         }
 
-        public static PlayerControl SetClosestPlayerToPlayer(PlayerControl fromPlayer, ref PlayerControl closestPlayer, float maxDistance = float.NaN, List<PlayerControl> targets = null)
+        public static PlayerControl SetClosestPlayerToPlayer(PlayerControl fromPlayer, ref PlayerControl closestPlayer,
+            float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance)) 
                 maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
@@ -828,33 +828,6 @@ namespace TownOfUsReworked.Extensions
             var player = GetClosestPlayer(fromPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
             return closestPlayer = closeEnough ? player : null;
-        }
-
-        public static void TimeFreeze(List<PlayerControl> frozen)
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                Coroutines.Start(FlashCoroutine(Colors.TimeMaster));
-
-            foreach (var player in frozen)
-            {
-                if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-                    __instance.body.velocity *= 0;
-            }
-        }
-        
-        public static void TimeUnfreeze(List<PlayerControl> frozen)
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                Coroutines.Start(FlashCoroutine(Colors.TimeMaster));
-
-            foreach (var player in frozen)
-            {
-                if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-                {
-                    var y = __instance.body.velocity.y;
-                    __instance.body.velocity = new Vector2(PlayerControl.GameOptions.PlayerSpeedMod, y);
-                }
-            }
         }
 
         public static bool LastImp()
@@ -877,15 +850,18 @@ namespace TownOfUsReworked.Extensions
             return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
         }
 
+        public static bool LastNonCrew()
+        {
+            return LastImp() && LastNeut() && LastSyn();
+        }
+
         public static IEnumerator Block(PlayerControl blocker, PlayerControl target)
         {
             GameObject[] lockImg = { null, null, null, null };
             ImportantTextTask hackText;
-            var role2 = GetRole(blocker);
-            var rolePlayer = Role.GetRoleValue(role2).Player;
-            var roleRole = Role.GetRole(rolePlayer);
+            var roleRole = Role.GetRole(blocker);
 
-            if (!rolePlayer.Is(RoleEnum.Glitch))
+            if (!(blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort)))
                 yield break;
             
             if (target.Is(RoleEnum.SerialKiller))

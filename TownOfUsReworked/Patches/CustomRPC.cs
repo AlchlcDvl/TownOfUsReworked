@@ -73,6 +73,9 @@ namespace TownOfUsReworked.Patches
         SetTroll,
         SetGlitch,
         SetConcealer,
+        SetEscort,
+        SetPirate,
+        SetConsort,
 
         SetDiseased,
         SetGiant,

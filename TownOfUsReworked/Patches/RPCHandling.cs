@@ -20,7 +20,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod;
 using TownOfUsReworked.PlayerLayers.Modifiers.FlincherMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 //using TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -29,7 +29,7 @@ using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod;
 using TownOfUsReworked.PlayerLayers.Abilities.LighterMod;
 using TownOfUsReworked.PlayerLayers.Abilities.MultitaskerMod;
-using TownOfUsReworked.PlayerLayers.Abilities.ProfessionalMod;
+using TownOfUsReworked.PlayerLayers.Modifiers.ProfessionalMod;
 using TownOfUsReworked.PlayerLayers.Abilities.RadarMod;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Abilities.TiebreakerMod;
@@ -417,13 +417,10 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (player.Is(Faction.Neutral))
                 {
-                    if (!player.Is(RoleEnum.Jester))
+                    if (!(player.Is(RoleEnum.Jester) | player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Troll)))
                     {
-                        if (!player.Is(RoleEnum.Executioner))
-                        {
-                            if (!player.Is(RoleEnum.GuardianAngel))
-                                gaTargets.Add(player);
-                        }
+                        if (!player.Is(RoleEnum.GuardianAngel))
+                            gaTargets.Add(player);
                     }
                 }
                 else if (player.Is(Faction.Intruders))
@@ -496,7 +493,7 @@ namespace TownOfUsReworked.Patches
             SortRoles(IntruderRoles, impostors.Count, impostors.Count);
 
             NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, 50, true));
-            //NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, 50, true));
+            NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, 50, true));
             NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, 50, true));
             NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, 50, true));
             NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, 5, true));
@@ -1054,6 +1051,18 @@ namespace TownOfUsReworked.Patches
                         new Executioner(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.SetEscort:
+                        new Escort(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetConsort:
+                        new Consort(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTroll:
+                        new Troll(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
                     case CustomRPC.SetGuardianAngel:
                         new GuardianAngel(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1413,10 +1422,6 @@ namespace TownOfUsReworked.Patches
                         new Radar(Utils.PlayerById(reader.ReadByte()));
                         break;
                         
-                    case CustomRPC.SetTroll:
-                        new Troll(Utils.PlayerById(reader.ReadByte()));
-                        break;
-                        
                     case CustomRPC.SetInsepctor:
                         new Inspector(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1667,7 +1672,10 @@ namespace TownOfUsReworked.Patches
                         PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
                         PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                        if (CustomGameOptions.AutoAdjustSettings) RandomMap.AdjustSettings(readByte);
+
+                        if (CustomGameOptions.AutoAdjustSettings)
+                            RandomMap.AdjustSettings(readByte);
+
                         break;
 
                     case CustomRPC.Camouflage:
@@ -2358,6 +2366,23 @@ namespace TownOfUsReworked.Patches
                     }
 
                     PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dracula Done");
+
+                    /*if (CustomGameOptions.TrollOn > 0)
+                    {
+                        if (CustomGameOptions.GameMode == GameMode.Custom)
+                        {
+                            var number = CustomGameOptions.TrollCount;
+                            do
+                            {
+                                NeutralNonKillingRoles.Add((typeof(Troll), CustomRPC.SetTroll, CustomGameOptions.TrollOn, true));
+                                number--;
+                            } while (number > 0);
+                        }
+                        else
+                            NeutralNonKillingRoles.Add((typeof(Troll), CustomRPC.SetTroll, CustomGameOptions.TrollOn, true));
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Troll Done");*/
                     #endregion
 
                     #region Intruder Roles

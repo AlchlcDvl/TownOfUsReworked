@@ -11,7 +11,6 @@ namespace TownOfUsReworked.Enums
         Lighter,
         Torch,
         Multitasker,
-        Professional,
         Radar,
         Revealer,
         

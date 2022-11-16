@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             if (role.CamouflageButton == null)
             {
                 role.CamouflageButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.CamouflageButton.name = "CamouflageButton";
                 role.CamouflageButton.graphic.enabled = true;
                 role.CamouflageButton.graphic.sprite = Camouflage;
                 role.CamouflageButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;

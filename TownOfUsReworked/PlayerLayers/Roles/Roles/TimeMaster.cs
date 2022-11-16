@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float TimeRemaining;
         public DateTime LastFrozen { get; set; }
         public bool Frozen => TimeRemaining > 0f;
-        public System.Collections.Generic.List<PlayerControl> FrozenPlayers = new System.Collections.Generic.List<PlayerControl>();
 
         public TimeMaster(PlayerControl player) : base(player)
         {
@@ -62,9 +61,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public System.Collections.Generic.List<PlayerControl> Freeze()
         {
+            var FrozenPlayers = new System.Collections.Generic.List<PlayerControl>();
+
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (!(player.Data.IsDead | player.Data.Disconnected | player.Is(RoleEnum.TimeLord) | player.Is(Faction.Intruders)))
+                if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
+                    player.Is(Faction.Intruders)))
                     FrozenPlayers.Add(player);
             }
 
@@ -75,14 +77,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.TimeFreeze(Freeze());
         }
 
         public void Unfreeze()
         {
             Enabled = false;
             LastFrozen = DateTime.UtcNow;
-            Utils.TimeUnfreeze(Freeze());
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -2,9 +2,9 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.ProfessionalMod
+namespace TownOfUsReworked.PlayerLayers.Modifiers.ProfessionalMod
 {
-    public class Professional : Ability
+    public class Professional : Modifier
     {
         public bool LifeUsed;
 
@@ -13,10 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ProfessionalMod
             Name = "Professional";
             TaskText = () => "You have an extra life when assassinating";
             if (CustomGameOptions.CustomModifierColors) Color = Colors.Professional;
-            else Color = Colors.Ability;
-            AbilityType = AbilityEnum.Professional;
+            else Color = Colors.Modifier;
+            ModifierType = ModifierEnum.Professional;
             LifeUsed = false;
-            AddToAbilityHistory(AbilityType);
+            AddToModifierHistory(ModifierType);
         }
     }
 }

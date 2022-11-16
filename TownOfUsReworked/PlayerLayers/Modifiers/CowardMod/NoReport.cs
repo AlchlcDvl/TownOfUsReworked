@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 
-namespace TownOfUsReworked.Patches.Modifiers
+namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class NoReport
     {

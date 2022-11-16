@@ -69,7 +69,6 @@ namespace TownOfUsReworked.Patches
 
                 if (template != null)
                 {
-
                     var submergedButton = UnityEngine.Object.Instantiate(template, null);
                     submergedButton.transform.localPosition = new Vector3(submergedButton.transform.localPosition.x, submergedButton.transform.localPosition.y + 1.2f, submergedButton.transform.localPosition.z);
 
@@ -124,9 +123,9 @@ namespace TownOfUsReworked.Patches
             string codeBase = Assembly.GetExecutingAssembly().Location;
             System.UriBuilder uri = new System.UriBuilder(codeBase);
             string submergedPath = System.Uri.UnescapeDataString(uri.Path.Replace("TownOfUsReworked", "Submerged"));
-            if (File.Exists(submergedPath)) {
+
+            if (File.Exists(submergedPath))
                 checkForUpdate("Submerged").GetAwaiter().GetResult();
-            }
 
             clearOldVersions();
         }
@@ -143,18 +142,12 @@ namespace TownOfUsReworked.Patches
                 if (updateTOUTask == null)
                 {
                     if (updateTOUURI != null)
-                    {
                         updateTOUTask = downloadUpdate("TOU");
-                    }
                     else
-                    {
                         info = "Unable to auto-update\nPlease update manually";
-                    }
                 }
                 else
-                {
                     info = "Update might already\nbe in progress";
-                }
             }
             else if (updateType == "Submerged")
             {
@@ -164,18 +157,12 @@ namespace TownOfUsReworked.Patches
                 if (updateSubmergedTask == null)
                 {
                     if (updateSubmergedURI != null)
-                    {
                         updateSubmergedTask = downloadUpdate("Submerged");
-                    }
                     else
-                    {
                         info = "Unable to auto-update\nPlease update manually";
-                    }
                 }
                 else
-                {
                     info = "Update might already\nbe in progress";
-                }
             }
 
             ModUpdater.InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>((p) => { ModUpdater.setPopupText(info); })));
@@ -206,13 +193,9 @@ namespace TownOfUsReworked.Patches
                 string githubURI = "";
 
                 if (updateType == "TOU")
-                {
                     githubURI = "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest";
-                }
                 else if (updateType == "Submerged")
-                {
                     githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
-                }
 
                 HttpClient http = new HttpClient();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
@@ -230,25 +213,25 @@ namespace TownOfUsReworked.Patches
                 string tagname = data.tag_name;
 
                 if (tagname == null)
-                {
                     return false; // Something went wrong
-                }
 
                 int diff = 0;
                 System.Version ver = System.Version.Parse(tagname.Replace("v", ""));
 
                 if (updateType == "TOU")
-                { //Check TOU version
+                {
+                    //Check TOU version
                     diff = TownOfUsReworked.Version.CompareTo(ver);
 
                     if (diff < 0)
-                    { // TOU update required
+                    {
+                        // TOU update required
                         hasTOUUpdate = true;
                     }
                 }
                 else if (updateType == "Submerged")
                 {
-                    //account for broken version
+                    //Accounts for broken version
                     if (SubmergedCompatibility.Version == null)
                         hasSubmergedUpdate = true;
                     else
@@ -256,7 +239,8 @@ namespace TownOfUsReworked.Patches
                         diff = SubmergedCompatibility.Version.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
 
                         if (diff < 0)
-                        { // Submerged update required
+                        {
+                            // Submerged update required
                             hasSubmergedUpdate = true;
                         }
                     } 
@@ -274,13 +258,10 @@ namespace TownOfUsReworked.Patches
                     if (asset.browser_download_url.EndsWith(".dll"))
                     {
                         if (updateType == "TOU")
-                        {
                             updateTOUURI = asset.browser_download_url;
-                        }
                         else if (updateType == "Submerged")
-                        {
                             updateSubmergedURI = asset.browser_download_url;
-                        }
+                        
                         return true;
                     }
                 }
@@ -327,9 +308,7 @@ namespace TownOfUsReworked.Patches
                 string fullname = System.Uri.UnescapeDataString(uri.Path);
 
                 if (updateType == "Submerged")
-                {
                     fullname = fullname.Replace("TownOfUsReworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
-                }
 
                 if (File.Exists(fullname + ".old")) // Clear old file in case it wasnt;
                     File.Delete(fullname + ".old");
@@ -368,9 +347,7 @@ namespace TownOfUsReworked.Patches
                 return;
 
             if (InfoPopup.TextAreaTMP != null)
-            {
                 InfoPopup.TextAreaTMP.text = message;
-            }
         }
 
         class GitHubApiObject

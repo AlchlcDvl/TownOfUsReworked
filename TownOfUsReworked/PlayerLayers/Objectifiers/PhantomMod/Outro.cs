@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 {

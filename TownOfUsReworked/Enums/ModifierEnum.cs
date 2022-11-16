@@ -11,6 +11,7 @@ namespace TownOfUsReworked.Enums
         Volatile,
         Flincher,
         VIP,
+        Professional,
         
         None
     }

@@ -1,14 +1,13 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -94,8 +93,7 @@ namespace TownOfUsReworked.Patches
             try
             {
                 minigame.Cast<IDoorMinigame>().SetDoor(__instance.MyDoor);
-            }
-            catch (InvalidCastException) {}
+            } catch (InvalidCastException) {}
 
             minigame.Begin(null);
             return false;

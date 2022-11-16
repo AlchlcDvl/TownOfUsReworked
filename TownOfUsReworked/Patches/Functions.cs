@@ -20,7 +20,8 @@ namespace TownOfUsReworked.Patches
                 player.Is(Faction.Intruders) | player.Is(RoleEnum.Sheriff) | player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Amnesiac) |
                 player.Is(RoleEnum.Cannibal) | player.Is(RoleEnum.Detective) | player.Is(RoleEnum.Dracula) | player.Is(RoleEnum.Dampyr) |
                 player.Is(RoleEnum.VampireHunter) | player.Is(RoleEnum.Medic) | player.Is(RoleEnum.Shifter) | player.Is(RoleEnum.Tracker) |
-                player.Is(RoleEnum.Vigilante));
+                player.Is(RoleEnum.Vigilante) | player.Is(Faction.Syndicate) | player.Is(RoleEnum.Inspector) | player.Is(RoleEnum.Escort) |
+                player.Is(RoleEnum.Troll) | player.Is(RoleEnum.Thief));
 
             if (isActive)
             {
@@ -47,8 +48,9 @@ namespace TownOfUsReworked.Patches
                 player.Is(RoleEnum.Blackmailer) | player.Is(RoleEnum.Disguiser) | player.Is(RoleEnum.Camouflager) | (player.Is(RoleEnum.Poisoner) &&
                 CustomGameOptions.PoisonerVent) | player.Is(RoleEnum.Impostor) | (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) |
                 (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) | (player.Is(RoleEnum.Taskmaster) && CustomGameOptions.TaskmasterVent) |
-                (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent));
-                //(player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent)
+                (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) |
+                (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) |
+                CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone);
 
             Color color = Role.GetRole(player).Color;
 

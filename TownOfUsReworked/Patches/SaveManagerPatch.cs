@@ -7,7 +7,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(ref string __result)
         {
-            __result += "_TOU";
+            __result += "_ToU-Rew";
         }
     }
 
@@ -16,7 +16,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(ref string __result)
         {
-            __result += "_TOU";
+            __result += "_ToU-Rew";
         }
     }
 }

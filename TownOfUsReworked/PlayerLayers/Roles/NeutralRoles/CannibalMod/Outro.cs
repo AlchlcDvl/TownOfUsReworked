@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {

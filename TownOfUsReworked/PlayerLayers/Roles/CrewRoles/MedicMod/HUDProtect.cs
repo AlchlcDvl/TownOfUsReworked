@@ -38,7 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             {
                 protectButton.gameObject.SetActive(!MeetingHud.Instance);
                 protectButton.SetCoolDown(0f, 1f);
-                if (role.UsedAbility) return;
+
+                if (role.UsedAbility)
+                    return;
+
                 Utils.SetTarget(ref role.ClosestPlayer, protectButton);
             }
         }

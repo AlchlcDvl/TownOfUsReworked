@@ -13,6 +13,7 @@ using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {

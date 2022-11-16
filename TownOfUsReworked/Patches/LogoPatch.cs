@@ -27,7 +27,10 @@ namespace TownOfUsReworked.Patches
             renderer.sprite = Sprite;
 
             var InvButton = GameObject.Find("InventoryButton");
-            if (InvButton == null) return;
+
+            if (InvButton == null)
+                return;
+
             var horseObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
 
             var iconrenderer = horseObj.GetComponent<SpriteRenderer>();

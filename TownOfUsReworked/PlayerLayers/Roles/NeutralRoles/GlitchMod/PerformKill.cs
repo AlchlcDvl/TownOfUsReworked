@@ -7,6 +7,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
@@ -23,14 +24,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             if (!flag)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (!PlayerControl.LocalPlayer.CanMove | PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
+            var distBetweenPlayers = Utils.GetDistBetweenPlayers(role.Player, target);
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+
+            if (!flag3)
+                return false;
 
             if (__instance == role.GlitchButton)
             {
@@ -43,9 +46,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                         return false;
 
                     role.HackTarget = target;
-                    role.GlitchButton.graphic.sprite = HackSprite;
-                    role.GlitchButton.SetTarget(null);
-                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
+                    role.GlitchButton.SetTarget(target);
+                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(target);
 
                     if (role.HackTimer() < 5f)
                         role.LastMimic = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MimicCooldown);
@@ -78,8 +80,131 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                         SoundManager.Instance.PlaySound(MorphSFX, false, 0.4f);
                     } catch {}
                 }
+                
+                if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+                {
+                    foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
+                        ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
+                }
+
+                if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                {
+                    if (role.ClosestPlayer.IsShielded())
+                    {
+                        var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                            SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                        if (CustomGameOptions.ShieldBreaks)
+                            role.LastKill = DateTime.UtcNow;
+
+                        StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+
+                        if (!role.Player.IsProtected())
+                            Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                    }
+                    else if (role.Player.IsShielded())
+                    {
+                        var medic = role.Player.GetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                            SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(role.Player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                        if (CustomGameOptions.ShieldBreaks)
+                            role.LastKill = DateTime.UtcNow;
+
+                        StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                    }
+                    else
+                        Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                        
+                    return false;
+                }
 
                 return false;
+            }
+            else if (__instance == role.KillButton)
+            {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+                
+                if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+                {
+                    foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
+                        ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
+                }
+
+                if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                {
+                    if (role.ClosestPlayer.IsShielded())
+                    {
+                        var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                            SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                        if (CustomGameOptions.ShieldBreaks)
+                            role.LastKill = DateTime.UtcNow;
+
+                        StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+
+                        if (!role.Player.IsProtected())
+                            Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                    }
+                    else if (role.Player.IsShielded())
+                    {
+                        var medic = role.Player.GetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                            SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(role.Player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                        if (CustomGameOptions.ShieldBreaks)
+                            role.LastKill = DateTime.UtcNow;
+
+                        StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                    }
+                    else
+                        Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                        
+                    return false;
+                }
+                else if (role.ClosestPlayer.IsShielded())
+                {
+                    var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                        SendOption.Reliable, -1);
+                    writer.Write(medic);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    if (CustomGameOptions.ShieldBreaks)
+                        role.LastKill = DateTime.UtcNow;
+
+                    StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+
+                    return false;
+                }
+                else if (role.ClosestPlayer.IsVesting())
+                {
+                    role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
+
+                    return false;
+                }
+                else if (role.ClosestPlayer.IsProtected())
+                {
+                    role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                    return false;
+                }
             }
 
             return true;

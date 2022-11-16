@@ -22,14 +22,14 @@ Cosmetics
 
 Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Faction: Syndicate |
-- New Role: Warper [Syndicate (Support)] |
+- New Role: Warper [Syndicate (Support)]
 - New Role: Rebel [Syndicate (Support)] |
 - New Role: Concealer [Syndicate (Support)] 
-- New Role: Puppeteer [Syndicate (Disruption)] |
+- New Role: Puppeteer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
-- New Role: Teleporter [Intruder (Support)] |
-- New Role: Consort [Intruder (Support)] |
+- New Role: Teleporter [Intruder (Support)]
+- New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
 - New Role: Mafioso [Intruder (Utility)] |
 - New Role: Dracula [Neutral (Neophyte)] |
@@ -42,8 +42,8 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Pirate [Neutral (Evil)] |
 - New Role: Thief [Neutral (Benign)] |
 - New Role: Vampire Hunter [Crew (Checker)] 
-- New Role: Escort [Crew (Support)] |
-- New Role: Inspector [Crew (Investigative)] |
+- New Role: Escort [Crew (Support)]
+- New Role: Inspector [Crew (Investigative)]
 - New Modifier: Flincher
 - New Modifier: VIP |
 - New Modifier: Professional |
@@ -51,7 +51,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Objectifier: Fanatic |
 - New Ability: Tunneler |
 - New Ability: Multitasker |
-- New Ability: Radar |
+- New Ability: Radar
 - New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens |
 - Addition: You can now customise the spawn chance of Crewmate and Impostor (they will still spawn by default if the number of Crew is more than the number of Crew roles that are active, same for the Impostors) |

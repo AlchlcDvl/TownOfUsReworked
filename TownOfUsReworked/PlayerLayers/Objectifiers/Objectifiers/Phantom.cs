@@ -4,7 +4,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
+namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Phantom : Objectifier
     {

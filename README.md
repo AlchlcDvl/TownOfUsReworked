@@ -107,6 +107,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Dwarf](#dwarf)
 - [Flincher](#flincher)
 - [Giant](#giant)
+- [Professional](#professional)
 - [VIP](#vip)
 - [Volatile](#volatile)
 
@@ -115,7 +116,6 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Button Barry](#button-barry)
 - [Lighter](#lighter)
 - [Multitasker](#multitasker)
-- [Professional](#professional)
 - [Radar](#radar)
 - [Revealer](#revealer)
 - [Snitch](#snitch)
@@ -952,17 +952,16 @@ The Werewolf can kill players within a certain radius.
 # Intruder Roles
 
 ## Blackmailer
-### **Alignment: Intruder (Support)**
+### **Alignment: Intruder (Concealing)**
 
-The Blackmailer is an Intruder that can silence people in meetings.
-During each round, the Blackmailer can go up to someone and blackmail them.
-This prevents the blackmailed person from speaking during the next meeting.
+The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents the blackmailed person from speaking during the next meeting.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Blackmailer | The percentage probability of the Blackmailer appearing | Percentage | 0% |
+| Blackmailer Count | How many Blackmailers should spawn in Custom Mode | Number | 1 |
 | Initial Blackmail Cooldown | The initial cooldown of the Blackmailer's Blackmail button | Time | 10s |
 
 ## Camouflager
@@ -976,8 +975,11 @@ Camouflaged players can kill in front everyone and no one will know who it is.
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Camouflager | The percentage probability of the Camouflager appearing | Percentage | 0% |
+| Camouflager Count | How many Camouflagers should spawn in Custom Mode | Number | 1 |
 | Camouflage Cooldown | The cooldown of the Camouflager's Camouflage button | Time | 25s |
 | Camouflage Duration | How long the Camouflage lasts for | Time | 10s |
+| Camouflage Hides Size | Whether the camouflage can change a player's size to match that of the other players | Toggle | False |
+| Camouflage Hides Speed | Whether the camouflage can change a player's speed to match that of the other players | Toggle | False |
 
 ## Grenadier
 ### **Alignment: Intruder (Concealing)**
@@ -1119,6 +1121,13 @@ The Wraith is an Intruder that can temporarily turn invisible.
 | Wraith Cooldown | The cooldown of the Wraith's Swoop button | Time | 25s |
 | Wraith Duration | How long the Invisibility lasts for | Time | 10s |
 | Wraith can Vent | Whether the Wraith can Vent | Toggle | False |
+
+-----------------------
+
+# Intruder Roles
+
+## Blackmailer
+### **Alignment: Intruder (Concealing)**
 
 -----------------------
 

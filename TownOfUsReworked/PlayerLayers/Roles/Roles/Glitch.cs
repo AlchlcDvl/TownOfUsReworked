@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -22,6 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastHack { get; set; }
         public DateTime LastKill { get; set; }
         public KillButton _glitchButton { get; set; }
+        public KillButton _killButton { get; set; }
         public PlayerControl HackTarget { get; set; }
         public ChatController MimicList { get; set; }
         public float TimeRemaining;
@@ -435,6 +435,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _glitchButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }

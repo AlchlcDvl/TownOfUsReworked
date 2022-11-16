@@ -29,8 +29,7 @@ namespace TownOfUsReworked.Patches
                 try
                 {
                     body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
-                }
-                catch {}
+                } catch {}
             }
         }
     }

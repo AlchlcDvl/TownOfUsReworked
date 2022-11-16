@@ -15,6 +15,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.ColourblindComms)
             {
                 if (ShipStatus.Instance != null)
+                {
                     switch (PlayerControl.GameOptions.MapId)
                     {
                         case 0:
@@ -41,6 +42,7 @@ namespace TownOfUsReworked.Patches
 
                             break;
                     }
+                }
 
                 if (CommsEnabled)
                 {

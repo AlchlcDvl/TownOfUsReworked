@@ -1,12 +1,10 @@
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
-using Reactor.Utilities;
 using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Extensions;
 
@@ -81,8 +79,6 @@ namespace TownOfUsReworked.Patches
 
                     if (glitch.GlitchWins)
                     {
-                        
-
                         foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
                         {
                             var surv = (Survivor)role2;

@@ -67,6 +67,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 role.GlitchButton.graphic.color = Palette.EnabledColor;
                 role.GlitchButton.graphic.material.SetFloat("_Desat", 0f);
             }
+
+            role.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.GlitchKillCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
         }
     }
 }

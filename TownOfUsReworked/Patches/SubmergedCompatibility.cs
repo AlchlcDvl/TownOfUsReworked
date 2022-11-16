@@ -10,8 +10,8 @@ using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -28,9 +28,7 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
         {
             if (SubmergedCompatibility.isSubmerged())
-            {
                 Coroutines.Start(SubmergedCompatibility.waitStart(SubmergedCompatibility.resetTimers));
-            }
         }
     }
 
@@ -43,13 +41,17 @@ namespace TownOfUsReworked.Patches
             {
                 if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
                 {
-                    if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught) __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                    else __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
+                    if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
+                    else
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
                 }
                 if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
                 {
-                    if (!Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught) __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                    else  __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
+                    if (!Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
+                    else 
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
                 }
             }
                 
@@ -75,7 +77,6 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-
     public static class SubmergedCompatibility
     {
         public static class Classes
@@ -99,30 +100,23 @@ namespace TownOfUsReworked.Patches
         {
             get
             {
-                if (!Loaded) return null;
+                if (!Loaded)
+                    return null;
 
                 if (_submarineStatus is null || _submarineStatus.WasCollected || !_submarineStatus || _submarineStatus == null)
                 {
                     if (ShipStatus.Instance is null || ShipStatus.Instance.WasCollected || !ShipStatus.Instance || ShipStatus.Instance == null)
-                    {
                         return _submarineStatus = null;
-                    }
                     else
                     {
                         if (ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE)
-                        {
                             return _submarineStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
-                        }
                         else
-                        {
                             return _submarineStatus = null;
-                        }
                     }
                 }
                 else
-                {
                     return _submarineStatus;
-                }
             }
         }
 
@@ -130,7 +124,9 @@ namespace TownOfUsReworked.Patches
         {
             set
             {
-                if (!Loaded) return;
+                if (!Loaded)
+                    return;
+
                 DisableO2MaskCheckField.SetValue(null, value);
             }
         }
@@ -172,7 +168,9 @@ namespace TownOfUsReworked.Patches
         public static void Initialize()
         {
             Loaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SUBMERGED_GUID, out PluginInfo plugin);
-            if (!Loaded) return;
+
+            if (!Loaded)
+                return;
 
             Plugin = plugin!.Instance as BasePlugin;
             Version = plugin.Metadata.Version;
@@ -224,47 +222,59 @@ namespace TownOfUsReworked.Patches
 
         public static void CheckOutOfBoundsElevator(PlayerControl player)
         {
-            if (!Loaded) return;
-            if (!isSubmerged()) return;
+            if (!Loaded)
+                return;
+
+            if (!isSubmerged())
+                return;
 
             Tuple<bool, object> elevator = GetPlayerElevator(player);
-            if (!elevator.Item1) return;
+
+            if (!elevator.Item1)
+                return;
+
             bool CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
             bool PlayerFloor = player.transform.position.y > -7f; //true is top, false is bottom
             
             if (CurrentFloor != PlayerFloor)
-            {
                 ChangeFloor(CurrentFloor);
-            }
         }
 
         public static void MoveDeadPlayerElevator(PlayerControl player)
         {
-            if (!isSubmerged()) return;
+            if (!isSubmerged())
+                return;
+
             Tuple<bool, object> elevator = GetPlayerElevator(player);
-            if (!elevator.Item1) return;
+
+            if (!elevator.Item1)
+                return;
 
             int MovementStage = (int)GetMovementStageFromTime.Invoke(elevator.Item2, null);
+
             if (MovementStage >= 5)
             {
                 //Fade to clear
                 bool topfloortarget = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
                 bool topintendedtarget = player.transform.position.y > -7f; //true is top, false is bottom
+
                 if (topfloortarget != topintendedtarget)
-                {
                     ChangeFloor(!topintendedtarget);
-                }
             }
         }
 
         public static Tuple<bool, object> GetPlayerElevator(PlayerControl player)
         {
-            if (!isSubmerged()) return Tuple.Create(false, (object)null);
+            if (!isSubmerged())
+                return Tuple.Create(false, (object)null);
+
             IList elevatorlist = Utils.createList(SubmarineElevator);
             elevatorlist = (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null));
+
             foreach (object elevator in elevatorlist)
             {
-                if ((bool)GetInElevator.Invoke(elevator, new object[] { player })) return Tuple.Create(true, elevator);
+                if ((bool)GetInElevator.Invoke(elevator, new object[] { player }))
+                    return Tuple.Create(true, elevator);
             }
 
             return Tuple.Create(false, (object)null);
@@ -278,7 +288,6 @@ namespace TownOfUsReworked.Patches
 
             Coroutines.Start(waitMeeting(resetTimers));
             Coroutines.Start(waitMeeting(GhostRoleBegin));
-            
         }
 
         public static IEnumerator waitStart(Action next)
@@ -287,24 +296,31 @@ namespace TownOfUsReworked.Patches
             {
                 yield return null;
             }
+
             yield return new WaitForSeconds(0.5f);
+
             while (DestroyableSingleton<HudManager>.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
             {
                 yield return null;
             }
+
             next();
         }
+
         public static IEnumerator waitMeeting(Action next)
         {
             while (!PlayerControl.LocalPlayer.moveable)
             {
                 yield return null;
             }
+
             yield return new WaitForSeconds(0.5f);
+
             while (DestroyableSingleton<HudManager>.Instance.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
             {
                 yield return null;
-            }       
+            } 
+
             next();
         }
 
@@ -314,21 +330,21 @@ namespace TownOfUsReworked.Patches
             Utils.ResetCustomTimers();
         }
 
-
         public static void GhostRoleBegin()
         {
-            if (!PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (!PlayerControl.LocalPlayer.Data.IsDead)
+                return;
+
             if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
             {
                 if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
                 {
                     var startingVent =
                         ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
                     while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                    {
-                        startingVent =
-                            ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-                    }
+                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
                     unchecked
@@ -349,13 +365,11 @@ namespace TownOfUsReworked.Patches
             {
                 if (!Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
                 {
-                    var startingVent =
-                        ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
                     while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                    {
-                        startingVent =
-                            ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-                    }
+                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
                     unchecked
@@ -382,12 +396,13 @@ namespace TownOfUsReworked.Patches
 
                 if (player.Is(ObjectifierEnum.Phantom))
                 {
-
                     if (!Objectifier.GetObjectifier<Phantom>(player).Caught)
                     {
+                        if (player.AmOwner) 
+                            MoveDeadPlayerElevator(player);
+                        else    
+                            player.Collider.enabled = false;
 
-                        if (player.AmOwner) MoveDeadPlayerElevator(player);
-                        else player.Collider.enabled = false;
                         Transform transform = __instance.transform;
                         Vector3 position = transform.position;
                         position.z = position.y/1000;
@@ -396,13 +411,16 @@ namespace TownOfUsReworked.Patches
                         __instance.myPlayer.gameObject.layer = 8;
                     }
                 }
+
                 if (player.Is(AbilityEnum.Revealer))
                 {
                     if (!Ability.GetAbility<Revealer>(player).Caught)
                     {
+                        if (player.AmOwner)
+                            MoveDeadPlayerElevator(player);
+                        else
+                            player.Collider.enabled = false;
 
-                        if (player.AmOwner) MoveDeadPlayerElevator(player);
-                        else player.Collider.enabled = false;
                         Transform transform = __instance.transform;
                         Vector3 position = transform.position;
                         position.z = position.y / 1000;
@@ -415,40 +433,49 @@ namespace TownOfUsReworked.Patches
         }
         public static MonoBehaviour AddSubmergedComponent(this GameObject obj, string typeName)
         {
-            if (!Loaded) return obj.AddComponent<MissingSubmergedBehaviour>();
+            if (!Loaded)
+                return obj.AddComponent<MissingSubmergedBehaviour>();
+
             bool validType = InjectedTypes.TryGetValue(typeName, out Type type);
             return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
         }
 
         public static float GetSubmergedNeutralLightRadius(bool isImpostor)
         {
-            if (!Loaded) return 0;
+            if (!Loaded)
+                return 0;
+
             return (float)CalculateLightRadiusMethod.Invoke(SubmarineStatus, new object[] { null, true, isImpostor });
         }
 
         public static void ChangeFloor(bool toUpper)
         {
-            if (!Loaded) return;
+            if (!Loaded)
+                return;
+
             MonoBehaviour _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
         public static bool getInTransition()
         {
-            if (!Loaded) return false;
+            if (!Loaded)
+                return false;
+
             return (bool)InTransitionField.GetValue(null);
         }
 
 
         public static void RepairOxygen()
         {
-            if (!Loaded) return;
+            if (!Loaded)
+                return;
+
             try
             {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
-            }
-            catch (System.NullReferenceException) {}
+            } catch (System.NullReferenceException) {}
         }
 
         public static bool isSubmerged()

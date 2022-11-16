@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;

@@ -5,7 +5,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
@@ -15,9 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
                 return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Escort))
+            foreach (var role in Role.GetRoles(RoleEnum.Consort))
             {
-                var role2 = (Escort) role;
+                var role2 = (Consort) role;
                 role2.LastBlock = DateTime.UtcNow;
                 role2.LastBlock = role2.LastBlock.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ExamineCd);
             }

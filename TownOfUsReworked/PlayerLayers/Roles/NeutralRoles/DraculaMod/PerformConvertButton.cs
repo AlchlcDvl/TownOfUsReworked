@@ -3,7 +3,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.VampireMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod;

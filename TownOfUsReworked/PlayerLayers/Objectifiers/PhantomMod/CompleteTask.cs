@@ -4,6 +4,7 @@ using Hazel;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 {

@@ -8,7 +8,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {

@@ -3,7 +3,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.Patches.Modifiers
+namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class IncreasedCD
     {
