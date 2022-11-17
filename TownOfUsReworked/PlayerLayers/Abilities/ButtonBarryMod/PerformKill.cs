@@ -3,6 +3,7 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {

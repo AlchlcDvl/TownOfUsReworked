@@ -45,8 +45,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string IntroText { get; set; }
         protected internal string CoronerDeadReport { get; set; }
         protected internal string CoronerKillerReport { get; set; }
-        public Func<string> ImpostorText;
-        public Func<string> TaskText;
+        protected internal AudioClip IntroSound { get; set; }
+        public Func<string> ImpostorText { get; set; }
+        public Func<string> TaskText { get; set; }
         public Func<string> AlignmentName { get; set; }
 
         protected Role(PlayerControl player)
@@ -97,9 +98,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Role)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (obj.GetType() != typeof(Role))
+                return false;
+
             return Equals((Role)obj);
         }
 
@@ -437,7 +444,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var modifier = Modifier.GetModifier(player);
                     var objectifier = Objectifier.GetObjectifier(player);
                     var ability = Ability.GetAbility(player);
-                    var flag = modifier != null | ability != null | objectifier != null;
+                    var flag = modifier != null && ability != null && objectifier != null;
 
                     if (flag)
                         StatusText = Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false);
@@ -482,6 +489,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.YouAreText.color = role.Color;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
+                        SoundManager.Instance.PlaySound(role.IntroSound, false, 0.4f);
                     }
 
                     if (StatusText != null)
@@ -540,6 +548,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.YouAreText.color = role.Color;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
+                        SoundManager.Instance.PlaySound(role.IntroSound, false, 0.4f);
                     }
 
                     if (StatusText != null)
@@ -590,6 +599,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.YouAreText.color = role.Color;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
+                        SoundManager.Instance.PlaySound(role.IntroSound, false, 0.4f);
                     }
 
                     if (StatusText != null)
@@ -810,13 +820,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         player.NameText.color = role.Color;
                     }
                     else
-                    {
-                        try
-                        {
-                            player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
-                        }
-                        catch {}
-                    }
+                        player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
                 }
             }
 

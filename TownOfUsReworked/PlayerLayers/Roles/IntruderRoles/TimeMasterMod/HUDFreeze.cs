@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             if (role.FreezeButton == null)
             {
                 role.FreezeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.FreezeButton.name = "FreezeButton";
                 role.FreezeButton.graphic.enabled = true;
                 role.FreezeButton.graphic.sprite = Freeze;
                 role.FreezeButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;

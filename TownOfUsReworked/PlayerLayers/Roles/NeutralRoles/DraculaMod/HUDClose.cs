@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
     {
         public static void Postfix(Object __instance)
         {
-            if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject) return;
+            if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
+                return;
             
             foreach (var role in Role.GetRoles(RoleEnum.Dracula))
             {

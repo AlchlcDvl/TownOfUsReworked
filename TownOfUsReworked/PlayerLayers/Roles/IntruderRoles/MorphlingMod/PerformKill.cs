@@ -49,12 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
                     if (role.MorphTimer() < 5f)
                         role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
-
-                    try
-                    {
-                        AudioClip SampleSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Sample.raw");
-                        SoundManager.Instance.PlaySound(SampleSFX, false, 0.4f);
-                    } catch {}
+                        
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 0.4f);
                 }
                 else
                 {
@@ -71,12 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                     role.TimeRemaining = CustomGameOptions.MorphlingDuration;
                     role.MorphedPlayer = role.SampledPlayer;
                     Utils.Morph(role.Player, role.SampledPlayer);
-
-                    try
-                    {
-                        AudioClip MorphSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Morph.raw");
-                        SoundManager.Instance.PlaySound(MorphSFX, false, 0.4f);
-                    } catch {}
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 0.4f);
                 }
 
                 return false;

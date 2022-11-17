@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TMPro;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {

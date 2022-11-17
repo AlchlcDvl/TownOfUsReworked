@@ -63,13 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
         public static void Rewind()
         {
             if (Minigame.Instance)
-            {
-                try
-                {
-                    Minigame.Instance.Close();
-                }
-                catch {}
-            }
+                Minigame.Instance.Close();
 
             if (points.Count > 2)
             {
@@ -92,8 +86,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 
                         unchecked
                         {
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                (byte) CustomRPC.FixAnimation, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixAnimation,
+                                SendOption.Reliable, -1);
                             writer.Write(PlayerControl.LocalPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }

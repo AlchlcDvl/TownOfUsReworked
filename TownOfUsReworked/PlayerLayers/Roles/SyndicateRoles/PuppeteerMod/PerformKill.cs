@@ -61,19 +61,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
                 return false;
             }
 
+            role.lastPossess = DateTime.UtcNow;
             return true;
-        }
-    }
-    
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-    public class PerformKill
-    {
-        public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
-        {
-            var role = Role.GetRole(__instance);
-
-            if (role?.RoleType == RoleEnum.Puppeteer)
-                ((Puppeteer)role).lastPossess = DateTime.UtcNow;
         }
     }
 }

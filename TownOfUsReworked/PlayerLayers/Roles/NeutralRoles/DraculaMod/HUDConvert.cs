@@ -16,10 +16,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
         public static void UpdateConvertButton(PlayerControl __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1) return;
-            if (PlayerControl.LocalPlayer == null) return;
-            if (PlayerControl.LocalPlayer.Data == null) return;
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Dracula)) return;
+            if (PlayerControl.AllPlayerControls.Count <= 1)
+                return;
+
+            if (PlayerControl.LocalPlayer == null)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data == null)
+                return;
+
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
+                return;
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
 {

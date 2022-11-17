@@ -48,13 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             var camouflager = Role.GetRoles(RoleEnum.Camouflager);
             var camo = (Camouflager)camouflager;
-
-            try
-            {
-                AudioClip EngineerSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.EngineerFix.raw");
-                SoundManager.Instance.PlaySound(EngineerSFX, false, 0.4f);
-            }
-            catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 0.4f);
 
             switch (PlayerControl.GameOptions.MapId)
             {

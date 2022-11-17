@@ -35,6 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = () => "Intruder (Deception)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.DisgMorphCamoAgent;
+            IntroSound = TownOfUsReworked.MorphlingIntro;
             AddToRoleHistory(RoleType);
         }
 

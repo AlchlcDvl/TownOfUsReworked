@@ -29,9 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (role.DouseTimer() != 0)
-                return false;
-
             if (role.IgniteTimer() != 0)
                 return false;
 
@@ -100,6 +97,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 return false;
             }
 
+            if (role.DouseTimer() != 0)
+                return false;
+
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
             
@@ -146,12 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 }
 
                 role.LastDoused = DateTime.UtcNow;
-
-                try
-                {
-                    AudioClip douseSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Douse.raw");
-                    SoundManager.Instance.PlaySound(douseSFX, false, 0.4f);
-                } catch {}
+                SoundManager.Instance.PlaySound(TownOfUsReworked.DouseSound, false, 0.4f);
 
                 return false;
             }

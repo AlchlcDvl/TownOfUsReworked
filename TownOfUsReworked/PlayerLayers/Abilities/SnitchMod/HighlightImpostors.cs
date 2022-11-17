@@ -6,6 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod
 {

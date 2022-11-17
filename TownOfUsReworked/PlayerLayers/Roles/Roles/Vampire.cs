@@ -12,13 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public bool AlreadyConverted;
         public int VampCounter;
-        public int DeadVamps;
         public bool VampWins;
         public PlayerControl ClosestPlayerBite;
-        public List<byte> AliveVamps = new List<byte>();
-        public PlayerControl OldestVamp;
-        public int VampsAlive => AliveVamps.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead
-            && (Utils.PlayerById(x).Is(RoleEnum.Vampire) | Utils.PlayerById(x).Is(RoleEnum.Dracula)));
+        public List<PlayerControl> AllVamps = new List<PlayerControl>();
 
         public Vampire(PlayerControl player) : base(player)
         {
@@ -46,13 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void Loses()
         {
             LostByRPC = true;
-        }
-
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
-        {
-            var vampTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            vampTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = vampTeam;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

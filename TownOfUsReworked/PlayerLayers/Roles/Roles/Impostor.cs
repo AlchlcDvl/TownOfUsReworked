@@ -24,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = () => "Intruder (Utility)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.CrewImpAnMurd;
+            IntroSound = TownOfUsReworked.ImpostorIntro;
             AddToRoleHistory(RoleType);
         }
 

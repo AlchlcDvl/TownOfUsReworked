@@ -54,12 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-
-                try
-                {
-                    AudioClip GASFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Guardian Angel.raw");
-                    SoundManager.Instance.PlaySound(GASFX, false, 0.4f);
-                } catch {}
+                
+                SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 0.4f);
                 
                 return false;
             }

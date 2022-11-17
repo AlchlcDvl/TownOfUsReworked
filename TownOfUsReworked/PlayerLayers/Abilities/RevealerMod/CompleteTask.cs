@@ -5,6 +5,7 @@ using UnityEngine;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 {

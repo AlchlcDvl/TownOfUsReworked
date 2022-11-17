@@ -4,9 +4,7 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
-using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using UnityEngine;
 using HarmonyLib;
 

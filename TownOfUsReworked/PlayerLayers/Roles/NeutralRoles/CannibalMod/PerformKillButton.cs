@@ -46,12 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-            try
-            {
-                AudioClip EatSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Clean.mp3");
-                SoundManager.Instance.PlaySound(EatSFX, false, 0.4f);
-            } catch {}
+            //SoundManager.Instance.PlaySound(TownOfUsReworked.EatSound, false, 0.4f);
 
             role.LastEaten = DateTime.UtcNow;
 

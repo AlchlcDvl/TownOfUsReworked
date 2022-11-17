@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 {

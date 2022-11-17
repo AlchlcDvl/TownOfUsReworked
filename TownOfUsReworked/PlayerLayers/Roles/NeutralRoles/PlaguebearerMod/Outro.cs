@@ -41,6 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
+            SoundManager.Instance.PlaySound(TownOfUsReworked.PlaguebearerWin, false, 0.3f);
         }
     }
 }

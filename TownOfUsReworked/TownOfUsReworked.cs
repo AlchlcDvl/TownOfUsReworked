@@ -32,7 +32,7 @@ namespace TownOfUsReworked
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
-        public const int MaxImpostors = 127 / 2;
+        public const int MaxImpostors = 62;
         
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -75,7 +75,6 @@ namespace TownOfUsReworked
         public static Sprite LighterSprite;
         public static Sprite DarkerSprite;
         public static Sprite InfectSprite;
-        public static Sprite RampageSprite;
         public static Sprite BugSprite;
         public static Sprite ExamineSprite;
         public static Sprite HackSprite;
@@ -109,6 +108,43 @@ namespace TownOfUsReworked
         public static Sprite ToUBanner;
         public static Sprite UpdateTOUButton;
         public static Sprite UpdateSubmergedButton;
+
+        public static AudioClip JuggernautWin;
+        public static AudioClip AlertSound;
+        public static AudioClip ArsonistWin;
+        public static AudioClip AttemptSound;
+        public static AudioClip CleanSound;
+        public static AudioClip DouseSound;
+        public static AudioClip FixSound;
+        public static AudioClip EngineerIntro;
+        public static AudioClip FlashSound;
+        public static AudioClip GlitchWin;
+        public static AudioClip HackSound;
+        public static AudioClip TrollWin;
+        public static AudioClip MedicIntro;
+        public static AudioClip MineSound;
+        public static AudioClip MorphSound;
+        public static AudioClip PhantomWin;
+        public static AudioClip PlaguebearerWin;
+        public static AudioClip PoisonSound;
+        public static AudioClip ProtectSound;
+        public static AudioClip RememberSound;
+        public static AudioClip ReviveSound;
+        public static AudioClip RewindSound;
+        public static AudioClip SampleSound;
+        public static AudioClip RevealSound;
+        public static AudioClip ShieldSound;
+        public static AudioClip VestSound;
+        public static AudioClip TrackSound;
+        public static AudioClip TransportSound;
+        public static AudioClip WerewolfWin;
+        public static AudioClip NBWin;
+        public static AudioClip CrewmateIntro;
+        public static AudioClip ImpostorIntro;
+        public static AudioClip IntruderWin;
+        public static AudioClip CrewWin;
+        public static AudioClip MorphlingIntro;
+        public static AudioClip KillSFX;
         
         /*public static Sprite NormalKill;
         public static Sprite ShiftKill;
@@ -155,84 +191,83 @@ namespace TownOfUsReworked
             GameOptionsData.MinPlayers = Enumerable.Repeat(4, 127).ToArray();
 
             //Ability buttons
-            JanitorClean = CreateSprite("TownOfUsReworked.Resources.Clean.png");
-            EngineerFix = CreateSprite("TownOfUsReworked.Resources.Fix.png");
-            SwapperSwitch = CreateSprite("TownOfUsReworked.Resources.SwapActive.png");
-            SwapperSwitchDisabled = CreateSprite("TownOfUsReworked.Resources.SwapDisabled.png");
-            Footprint = CreateSprite("TownOfUsReworked.Resources.Footprint.png");
-            Rewind = CreateSprite("TownOfUsReworked.Resources.Rewind.png");
-            MedicSprite = CreateSprite("TownOfUsReworked.Resources.Medic.png");
-            SeerSprite = CreateSprite("TownOfUsReworked.Resources.Seer.png");
-            SampleSprite = CreateSprite("TownOfUsReworked.Resources.Sample.png");
-            MorphSprite = CreateSprite("TownOfUsReworked.Resources.Morph.png");
-            Arrow = CreateSprite("TownOfUsReworked.Resources.Arrow.png");
-            MineSprite = CreateSprite("TownOfUsReworked.Resources.Mine.png");
-            InvisSprite = CreateSprite("TownOfUsReworked.Resources.Invis.png");
-            DouseSprite = CreateSprite("TownOfUsReworked.Resources.Douse.png");
-            IgniteSprite = CreateSprite("TownOfUsReworked.Resources.Ignite.png");
-            ReviveSprite = CreateSprite("TownOfUsReworked.Resources.Revive.png");
-            ButtonSprite = CreateSprite("TownOfUsReworked.Resources.Button.png");
-            DragSprite = CreateSprite("TownOfUsReworked.Resources.Drag.png");
-            DropSprite = CreateSprite("TownOfUsReworked.Resources.Drop.png");
-            CycleBackSprite = CreateSprite("TownOfUsReworked.Resources.CycleBack.png");
-            CycleForwardSprite = CreateSprite("TownOfUsReworked.Resources.CycleForward.png");
-            GuessSprite = CreateSprite("TownOfUsReworked.Resources.Guess.png");
-            FlashSprite = CreateSprite("TownOfUsReworked.Resources.Flash.png");
-            AlertSprite = CreateSprite("TownOfUsReworked.Resources.Alert.png");
-            RememberSprite = CreateSprite("TownOfUsReworked.Resources.Remember.png");
-            TrackSprite = CreateSprite("TownOfUsReworked.Resources.Track.png");
-            PoisonSprite = CreateSprite("TownOfUsReworked.Resources.Poison.png");
-            PoisonedSprite = CreateSprite("TownOfUsReworked.Resources.Poisoned.png");
-            TransportSprite = CreateSprite("TownOfUsReworked.Resources.Transport.png");
-            MediateSprite = CreateSprite("TownOfUsReworked.Resources.Mediate.png");
-            VestSprite = CreateSprite("TownOfUsReworked.Resources.Vest.png");
-            ProtectSprite = CreateSprite("TownOfUsReworked.Resources.Protect.png");
-            BlackmailSprite = CreateSprite("TownOfUsReworked.Resources.Blackmail.png");
-            BlackmailLetterSprite = CreateSprite("TownOfUsReworked.Resources.Blackmailed.png");
-            BlackmailOverlaySprite = CreateSprite("TownOfUsReworked.Resources.BlackmailOverlay.png");
-            LighterSprite = CreateSprite("TownOfUsReworked.Resources.Lighter.png");
-            DarkerSprite = CreateSprite("TownOfUsReworked.Resources.Darker.png");
-            InfectSprite = CreateSprite("TownOfUsReworked.Resources.Infect.png");
-            RampageSprite = CreateSprite("TownOfUsReworked.Resources.Rampage.png");
-            BugSprite = CreateSprite("TownOfUsReworked.Resources.Trap.png");
-            ExamineSprite = CreateSprite("TownOfUsReworked.Resources.Examine.png");
-            HackSprite = CreateSprite("TownOfUsReworked.Resources.Hack.png");
-            MimicSprite = CreateSprite("TownOfUsReworked.Resources.Mimic.png");
-            LockSprite = CreateSprite("TownOfUsReworked.Resources.Lock.png");
-            Camouflage = CreateSprite("TownOfUsReworked.Resources.Camouflage.png");
-            Shift = CreateSprite("TownOfUsReworked.Resources.Shift.png");
-            ShootSprite = CreateSprite("TownOfUsReworked.Resources.Shoot.png");
-            MaulSprite = CreateSprite("TownOfUsReworked.Resources.Maul.png");
-            ObliterateSprite = CreateSprite("TownOfUsReworked.Resources.Obliterate.png");
-            AssaultSprite = CreateSprite("TownOfUsReworked.Resources.Assault.png");
-            EraseDataSprite = CreateSprite("TownOfUsReworked.Resources.EraseData.png");
-            DisguiseSprite = CreateSprite("TownOfUsReworked.Resources.Disguise.png");
-            CannibalEat = CreateSprite("TownOfUsReworked.Resources.Eat.png");
-            FreezeSprite = CreateSprite("TownOfUsReworked.Resources.Freeze.png");
-            MeasureSprite = CreateSprite("TownOfUsReworked.Resources.Measure.png");
-            TeleportSprite = CreateSprite("TownOfUsReworked.Resources.Recall.png");
-            MarkSprite = CreateSprite("TownOfUsReworked.Resources.Mark.png");
-            WarpSprite = CreateSprite("TownOfUsReworked.Resources.Disperse.png");
-            Placeholder = CreateSprite("TownOfUsReworked.Resources.Placeholder.png");
-            Clear = CreateSprite("TownOfUsReworked.Resources.Clear.png");
+            JanitorClean = CreateSprite("TownOfUsReworked.Resources.Buttons.Clean.png");
+            EngineerFix = CreateSprite("TownOfUsReworked.Resources.Buttons.Fix.png");
+            SwapperSwitch = CreateSprite("TownOfUsReworked.Resources.Buttons.SwapActive.png");
+            SwapperSwitchDisabled = CreateSprite("TownOfUsReworked.Resources.Buttons.SwapDisabled.png");
+            Footprint = CreateSprite("TownOfUsReworked.Resources.Misc.Footprint.png");
+            Rewind = CreateSprite("TownOfUsReworked.Resources.Buttons.Rewind.png");
+            MedicSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Medic.png");
+            SeerSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Seer.png");
+            SampleSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Sample.png");
+            MorphSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Morph.png");
+            Arrow = CreateSprite("TownOfUsReworked.Resources.Misc.Arrow.png");
+            MineSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mine.png");
+            InvisSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Invis.png");
+            DouseSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Douse.png");
+            IgniteSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Ignite.png");
+            ReviveSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Revive.png");
+            ButtonSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Button.png");
+            DragSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Drag.png");
+            DropSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Drop.png");
+            CycleBackSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.CycleBack.png");
+            CycleForwardSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.CycleForward.png");
+            GuessSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Guess.png");
+            FlashSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Flash.png");
+            AlertSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Alert.png");
+            RememberSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Remember.png");
+            TrackSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Track.png");
+            PoisonSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Poison.png");
+            PoisonedSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Poisoned.png");
+            TransportSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Transport.png");
+            MediateSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mediate.png");
+            VestSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Vest.png");
+            ProtectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Protect.png");
+            BlackmailSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Blackmail.png");
+            BlackmailLetterSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Blackmailed.png");
+            BlackmailOverlaySprite = CreateSprite("TownOfUsReworked.Resources.Misc.BlackmailOverlay.png");
+            LighterSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Lighter.png");
+            DarkerSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Darker.png");
+            InfectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Infect.png");
+            BugSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Trap.png");
+            ExamineSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Examine.png");
+            HackSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Hack.png");
+            MimicSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mimic.png");
+            LockSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Lock.png");
+            Camouflage = CreateSprite("TownOfUsReworked.Resources.Buttons.Camouflage.png");
+            Shift = CreateSprite("TownOfUsReworked.Resources.Buttons.Shift.png");
+            ShootSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Shoot.png");
+            MaulSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Maul.png");
+            ObliterateSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Obliterate.png");
+            AssaultSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Assault.png");
+            EraseDataSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.EraseData.png");
+            DisguiseSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Disguise.png");
+            CannibalEat = CreateSprite("TownOfUsReworked.Resources.Buttons.Eat.png");
+            FreezeSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Freeze.png");
+            MeasureSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Measure.png");
+            TeleportSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Recall.png");
+            MarkSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mark.png");
+            WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Disperse.png");
+            Placeholder = CreateSprite("TownOfUsReworked.Resources.Buttons.Placeholder.png");
+            Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");
 
             //Settings buttons
-            SettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.SettingsButton.png");
-            CrewSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Crew.png");
-            NeutralSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Neutral.png");
-            IntruderSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Intruders.png");
-            SyndicateSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Syndicate.png");
-            ModifierSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Modifiers.png");
-            ObjectifierSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Objectifiers.png");
-            AbilitySettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Abilities.png");
-            ToUBanner = CreateSprite("TownOfUsReworked.Resources.TownOfUsReworkedBanner.png");
-            UpdateTOUButton = CreateSprite("TownOfUsReworked.Resources.UpdateToUButton.png");
-            UpdateSubmergedButton = CreateSprite("TownOfUsReworked.Resources.UpdateSubmergedButton.png");
+            SettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.SettingsButton.png");
+            CrewSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Crew.png");
+            NeutralSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Neutral.png");
+            IntruderSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Intruders.png");
+            SyndicateSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Syndicate.png");
+            ModifierSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Modifiers.png");
+            ObjectifierSettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Objectifiers.png");
+            AbilitySettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Abilities.png");
+            ToUBanner = CreateSprite("TownOfUsReworked.Resources.Misc.TownOfUsReworkedBanner.png");
+            UpdateTOUButton = CreateSprite("TownOfUsReworked.Resources.Misc.UpdateToUButton.png");
+            UpdateSubmergedButton = CreateSprite("TownOfUsReworked.Resources.Misc.UpdateSubmergedButton.png");
 
             //Menu settings
-            HorseEnabledImage = CreateSprite("TownOfUsReworked.Resources.HorseOn.png");
-            HorseDisabledImage = CreateSprite("TownOfUsReworked.Resources.HorseOff.png");
-            DiscordImage = CreateSprite("TownOfUsReworked.Resources.HorseOff.png");
+            HorseEnabledImage = CreateSprite("TownOfUsReworked.Resources.Misc.HorseOn.png");
+            HorseDisabledImage = CreateSprite("TownOfUsReworked.Resources.Misc.HorseOff.png");
+            DiscordImage = CreateSprite("TownOfUsReworked.Resources.Misc.Discord.png");
 
             /*//Custom Kill backgrounds
             NormalKill = CreateSprite("TownOfUsReworked.Resources.NormalKill.png");
@@ -251,9 +286,47 @@ namespace TownOfUsReworked
             VetKill = CreateSprite("TownOfUsReworked.Resources.VetKill.png");*/
 
             //Hand Raising feature, Thanks to https://github.com/xxomega77xx for the code
-            MeetingOverlay = CreateSprite("TownOfUsReworked.Resources.RaisedHandOverlay.png");
-            RaiseHandInactive = CreateSprite("TownOfUsReworked.Resources.RaiseHandInactive.png");
-            RaiseHandActive = CreateSprite("TownOfUsReworked.Resources.RaiseHandActive.png");
+            MeetingOverlay = CreateSprite("TownOfUsReworked.Resources.Misc.RaisedHandOverlay.png");
+            RaiseHandInactive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandInactive.png");
+            RaiseHandActive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandActive.png");
+
+            //Sound effects, msot of them are from 
+            JuggernautWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.JuggernautWin.raw");
+            AlertSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Alert.raw");
+            ArsonistWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.ArsonistWin.raw");
+            AttemptSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Attempt.raw");
+            CleanSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Clean.raw");
+            DouseSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Douse.raw");
+            FixSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Fix.raw");
+            EngineerIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.EngineerIntro.raw");
+            FlashSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Flash.raw");
+            GlitchWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.GlitchWin.raw");
+            HackSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Hack.raw");
+            TrollWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.TrollWin.raw");
+            MedicIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MedicIntro.raw");
+            MineSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Mine.raw");
+            MorphSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Morph.raw");
+            PhantomWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.PhantomWin.raw");
+            PlaguebearerWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.PlaguebearerWin.raw");
+            PoisonSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Poison.raw");
+            ProtectSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Protect.raw");
+            RememberSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Remember.raw");
+            ReviveSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Revive.raw");
+            RewindSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Rewind.raw");
+            SampleSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Sample.raw");
+            RevealSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Reveal.raw");
+            ShieldSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Shield.raw");
+            VestSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Vest.raw");
+            TrackSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Track.raw");
+            TransportSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Transport.raw");
+            WerewolfWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.WerewolfWin.raw");
+            NBWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.NBWin.raw");
+            CrewmateIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.CrewmateIntro.raw");
+            ImpostorIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.ImpostorIntro.raw");
+            IntruderWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.IntruderWin.raw");
+            CrewWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.CrewWin.raw");
+            MorphlingIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
 
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
@@ -306,33 +379,28 @@ namespace TownOfUsReworked
 
         private delegate bool DLoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
 
-        public static AudioClip loadAudioClipFromResources(string path, string sfxName = "")
+        public static AudioClip LoadAudioClipFromResources(string path, string sfxName = "")
         {
             if (CustomGameOptions.SFXOn)
             {
-                try
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                Stream stream = assembly.GetManifestResourceStream(path);
+                var byteAudio = new byte[stream.Length];
+                _ = stream.Read(byteAudio, 0, (int)stream.Length);
+                float[] samples = new float[byteAudio.Length / 4];
+                int offset;
+
+                for (int i = 0; i < samples.Length; i++)
                 {
-                    Assembly assembly = Assembly.GetExecutingAssembly();
-                    Stream stream = assembly.GetManifestResourceStream(path);
-                    var byteAudio = new byte[stream.Length];
-                    _ = stream.Read(byteAudio, 0, (int)stream.Length);
-                    float[] samples = new float[byteAudio.Length / 4];
-                    int offset;
-
-                    for (int i = 0; i < samples.Length; i++)
-                    {
-                        offset = i * 4;
-                        samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
-                    }
-
-                    int channels = 2;
-                    int sampleRate = 48000;
-                    AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
-                    audioClip.SetData(samples, 0);
-                    return audioClip;
+                    offset = i * 4;
+                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
                 }
 
-                catch {}
+                int channels = 2;
+                int sampleRate = 48000;
+                AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
+                audioClip.SetData(samples, 0);
+                return audioClip;
             }
 
             return null;

@@ -41,12 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-
-            try
-            {
-                AudioClip GlitchWinSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.ExecutionerWin.raw");
-                SoundManager.Instance.PlaySound(GlitchWinSFX, false, 0.3f);
-            } catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.TrollWin, false, 0.3f);
         }
     }
 }

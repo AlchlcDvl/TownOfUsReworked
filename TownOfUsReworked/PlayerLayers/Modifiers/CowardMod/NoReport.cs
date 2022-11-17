@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 
-namespace TownOfUsReworked.PlayerLayers.Modifiers
+namespace TownOfUsReworked.PlayerLayers.Modifiers.CowardMod
 {
     public class NoReport
     {
@@ -13,11 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             {
                 if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
                 {
-                    try
-                    {
-                        DestroyableSingleton<HudManager>.Instance.ReportButton.SetActive(false);
-                    }
-                    catch {}
+                    DestroyableSingleton<HudManager>.Instance.ReportButton.SetActive(false);
                 }
             }
         }

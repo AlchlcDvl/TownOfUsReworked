@@ -10,12 +10,14 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Warper : Role
     {
         public KillButton WarpButton;
+        public DateTime LastWarped;
 
         public Warper(PlayerControl player) : base(player)
         {
@@ -48,6 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     writer.Write(key);
                     writer.Write(value);
                 }
+
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
@@ -61,13 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Warper));
 
                 if (Minigame.Instance)
-                {
-                    try
-                    {
-                        Minigame.Instance.Close();
-                    }
-                    catch {}
-                }
+                    Minigame.Instance.Close();
 
                 if (PlayerControl.LocalPlayer.inVent)
                 {
@@ -87,10 +84,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
             List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
-
             HashSet<Vent> vents = Object.FindObjectsOfType<Vent>().ToHashSet();
-
             Dictionary<byte, Vector2> coordinates = new Dictionary<byte, Vector2>(targets.Count);
+
             foreach (PlayerControl target in targets)
             {
                 Vent vent = vents.Random();
@@ -98,6 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Vector3 destination = SendPlayerToVent(vent);
                 coordinates.Add(target.PlayerId, destination);
             }
+
             return coordinates;
         }
 
@@ -107,6 +104,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Vector3 destination = vent.transform.position;
             destination.y += 0.3636f;
             return destination;
+        }
+
+        public float WarpTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastWarped;
+            var num = CustomGameOptions.WarpCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

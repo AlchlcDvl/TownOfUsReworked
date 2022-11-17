@@ -26,10 +26,7 @@ namespace TownOfUsReworked.Patches
 
             foreach (var body in bodies)
             {
-                try
-                {
-                    body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
-                } catch {}
+                body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
             }
         }
     }

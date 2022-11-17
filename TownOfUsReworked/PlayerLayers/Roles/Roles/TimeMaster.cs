@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -59,30 +60,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public System.Collections.Generic.List<PlayerControl> Freeze()
-        {
-            var FrozenPlayers = new System.Collections.Generic.List<PlayerControl>();
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
-                    player.Is(Faction.Intruders)))
-                    FrozenPlayers.Add(player);
-            }
-
-            return FrozenPlayers;
-        }
-
         public void TimeFreeze()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+            Freeze.PlayerPhysics_FixedUpdate.FreezeAll();
         }
 
         public void Unfreeze()
         {
             Enabled = false;
             LastFrozen = DateTime.UtcNow;
+            Freeze.PlayerPhysics_FixedUpdate.UnfreezeAll();
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

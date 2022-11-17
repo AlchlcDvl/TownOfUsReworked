@@ -41,12 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-
-            try
-            {
-                AudioClip ArsonistWinSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.ArsonistWin.raw");
-                SoundManager.Instance.PlaySound(ArsonistWinSFX, false, 0.3f);
-            } catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.ArsonistWin, false, 0.3f);
         }
     }
 }

@@ -3,7 +3,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.PlayerLayers.Modifiers
+namespace TownOfUsReworked.PlayerLayers.Modifiers.CowardMod
 {
     public class IncreasedCD
     {

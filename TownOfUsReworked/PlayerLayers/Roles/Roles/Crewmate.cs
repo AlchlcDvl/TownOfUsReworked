@@ -23,6 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.CrewImpAnMurd;
             SubFaction = SubFaction.None;
+            IntroSound = TownOfUsReworked.CrewmateIntro;
             AddToRoleHistory(RoleType);
         }
 

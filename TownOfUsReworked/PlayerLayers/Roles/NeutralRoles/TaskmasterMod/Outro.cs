@@ -35,12 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-
-            try
-            {
-                AudioClip TMWinSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.ExecutionerWin.raw");
-                SoundManager.Instance.PlaySound(TMWinSFX, false, 0.3f);
-            } catch {}
+            //SoundManager.Instance.PlaySound(TownOfUsReworked.TaskmasterWin, false, 0.3f);
         }
     }
 }

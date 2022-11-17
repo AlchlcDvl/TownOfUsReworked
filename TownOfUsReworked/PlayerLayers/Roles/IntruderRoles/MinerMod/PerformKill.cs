@@ -56,12 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 writer.Write(0.01f);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 SpawnVent(id, role, position, 0.01f);
-
-                try
-                {
-                    AudioClip MineSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Mine.raw");
-                    SoundManager.Instance.PlaySound(MineSFX, false, 0.4f);
-                } catch {}
+                SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 0.4f);
 
                 return false;
             }

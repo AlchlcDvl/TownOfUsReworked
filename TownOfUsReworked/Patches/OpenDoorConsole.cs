@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.Patches

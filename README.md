@@ -981,17 +981,73 @@ Camouflaged players can kill in front everyone and no one will know who it is.
 | Camouflage Hides Size | Whether the camouflage can change a player's size to match that of the other players | Toggle | False |
 | Camouflage Hides Speed | Whether the camouflage can change a player's speed to match that of the other players | Toggle | False |
 
+## Consigliere
+### **Alignment: Intruder (Support)**
+
+The Consigliere can reveal people's roles. They cannot get Assassin unless they see factions for obvious reasons.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Consigliere | The percentage probability of the Consigliere appearing | Percentage | 0% |
+| Consigliere Count | How many Consiglieres should spawn in Custom Mode | Number | 1 |
+| Reveal Cooldown | The initial cooldown of the Consigliere's reveal button | Time | 10s |
+| Info That Consigliere Sees | Decides what the Consigliere gets as a result of checking someone | Role / Faction | Role |
+
+## Consort
+### **Alignment: Intruder (Support)**
+
+The Consort can roleblock players and prevent them from doing anything for a short while.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Consort | The percentage probability of the Consort appearing | Percentage | 0% |
+| Consort Count | How many Consorts should spawn in Custom Mode | Number | 1 |
+| Roleblock Cooldown | The cooldown of the Consort's roleblock button | Time | 25s |
+| Roleblock Duration | The duration of the Consort's roleblock | Time | 10s |
+
+## Disguiser
+### **Alignment: Intruder (Concealing)**
+
+The Disguiser can disguise into other players. At the beginning of the game and after every meeting, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay. The disguised player will not be aware they they have been disguised.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Disguiser | The percentage probability of the Disguiser appearing | Percentage | 0% |
+| Disguiser Count | How many Disguisers should spawn in Custom Mode | Number | 1 |
+| Disguise Cooldown | The cooldown of the Disguiser's disguise button | Time | 25s |
+| Disguise Duration | How long the disguise lasts for | Time | 10s |
+| Disguise Delay | The time it takes for the disguise to take place | Time | 25s |
+
+## Godfather
+### **Alignment: Intruder (Support)**
+
+The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso becomes the new Godfather and has lowered cooldowns.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Godfather | The percentage probability of the Godfather appearing | Percentage | 0% |
+| Godfather Count | How many Godfathers should spawn in Custom Mode | Number | 1 |
+| Initial Promotion Cooldown | The initial cooldown of the Godfather's promote button | Time | 10s |
+
 ## Grenadier
 ### **Alignment: Intruder (Concealing)**
 
-The Grenadier is an Intruder that can throw flash grenades which blinds Crewmates so they can't see.
-However, a sabotage and a smoke grenade can not be active at the same time.
+The Grenadier can throw flash grenades which blinds nearby players. However, a sabotage and a flash grenade can not be active at the same time.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Grenadier | The percentage probability of the Grenadier appearing | Percentage | 0% |
+| Grenadier Count | How many Godfathers should spawn in Custom Mode | Number | 1 |
 | Flash Grenade Cooldown | The cooldown of the Grenadier's Flash button | Time | 25s |
 | Flash Grenade Duration | How long the Flash Grenade lasts for | Time | 10s |
 | Flash Radius | How wide the flash radius is | Factor | 1x |
@@ -1001,24 +1057,28 @@ However, a sabotage and a smoke grenade can not be active at the same time.
 ## Impostor
 ### **Alignment: Intruder (Utility)**
 
-This is just a plain Impostor with no abilities and only spawns if all the other roles are taken.
+Just a plain Impostor with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
 ### Game Options
 
-None
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Impostor | The percentage probability of the Impostor appearing | Percentage | 0% |
+| Impostor Count | How many Impostors should spawn in Custom Mode | Number | 1 |
 
 ## Janitor
 ### **Alignment: Intruder (Concealing)**
 
-The Janitor is an Intruder that can clean up bodies.\
-Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use.
+The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Janitor | The percentage probability of the Janitor appearing | Percentage | 0% |
+| Janitor Count | How many Janitors should spawn in Custom Mode | Number | 1 |
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
+| <color=#2647A2FF>Janitor</color> Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
 
 ## Miner
 ### **Alignment: Intruder (Support)**

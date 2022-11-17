@@ -49,12 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
                     if (role.DisguiseTimer() < 5f)
                         role.LastDisguised = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.DisguiseCooldown);
-
-                    try
-                    {
-                        AudioClip SampleSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Sample.raw");
-                        SoundManager.Instance.PlaySound(SampleSFX, false, 0.4f);
-                    } catch {}
+                        
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 0.4f);
                 }
                 else
                 {
@@ -71,12 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     role.TimeRemaining = CustomGameOptions.DisguiseDuration;
                     role.DisguisedPlayer = role.MeasuredPlayer;
                     Utils.Morph(role.Player, role.MeasuredPlayer);
-
-                    try
-                    {
-                        AudioClip MorphSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Morph.raw");
-                        SoundManager.Instance.PlaySound(MorphSFX, false, 0.4f);
-                    } catch {}
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 0.4f);
                 }
 
                 return false;

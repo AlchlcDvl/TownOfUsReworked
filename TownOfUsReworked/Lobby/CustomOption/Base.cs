@@ -54,32 +54,28 @@ namespace TownOfUsReworked.Lobby.CustomOption
             if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc)
                 Rpc.SendRpc(this);
 
-            try
+            if (Setting is ToggleOption toggle)
             {
-                if (Setting is ToggleOption toggle)
-                {
-                    var newValue = (bool) Value;
-                    toggle.oldValue = newValue;
+                var newValue = (bool) Value;
+                toggle.oldValue = newValue;
 
-                    if (toggle.CheckMark != null)
-                        toggle.CheckMark.enabled = newValue;
-                }
-                else if (Setting is NumberOption number)
-                {
-                    var newValue = (float) Value;
-
-                    number.Value = number.oldValue = newValue;
-                    number.ValueText.text = ToString();
-                }
-                else if (Setting is StringOption str)
-                {
-                    var newValue = (int) Value;
-
-                    str.Value = str.oldValue = newValue;
-                    str.ValueText.text = ToString();
-                }
+                if (toggle.CheckMark != null)
+                    toggle.CheckMark.enabled = newValue;
             }
-            catch {}
+            else if (Setting is NumberOption number)
+            {
+                var newValue = (float) Value;
+
+                number.Value = number.oldValue = newValue;
+                number.ValueText.text = ToString();
+            }
+            else if (Setting is StringOption str)
+            {
+                var newValue = (int) Value;
+
+                str.Value = str.oldValue = newValue;
+                str.ValueText.text = ToString();
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 {
     public static class CustomGameOptions
     {
-        public static int KillCooldown => (int)PlayerControl.GameOptions.killCooldown;
+        public static float KillCooldown => (float)PlayerControl.GameOptions.killCooldown;
         public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.Get();
         public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.Get();
         public static int MayorOn => (int)Generate.MayorOn.Get();
@@ -396,6 +396,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int DragModifier => (int)Generate.DragModifier.Get();
         public static int TMTasksRemaining => (int)Generate.TMTasksRemaining.Get();
         public static int TaskmasterCount => (int)Generate.TaskmasterCount.Get();
+        public static int AnarchistCount => (int)Generate.AnarchistCount.Get();
+        public static int WarperCount => (int)Generate.WarperCount.Get();
         public static bool TaskmasterVent => Generate.TaskmasterVent.Get();
         public static bool JestVentSwitch => Generate.JestSwitchVent.Get();
         public static bool ExeVentSwitch => Generate.ExeSwitchVent.Get();
@@ -411,8 +413,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool DraculaConvertNeuts => Generate.DraculaConvertNeuts.Get();
         public static bool MurdVent => Generate.MurdVent.Get();
         public static int MurdCount => (int)Generate.MurdCount.Get();
+        public static int TrollCount => (int)Generate.TrollCount.Get();
+        public static int CryomaniacCount => (int)Generate.CryomaniacCount.Get();
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
-        public static int MurdKCD => (int)Generate.MurdKillCooldownOption.Get();
+        public static float MurdKCD => (float)Generate.MurdKillCooldownOption.Get();
         public static bool DrunkControlsSwap => Generate.DrunkControlsSwap.Get();
         public static float DrunkInterval => (float)Generate.DrunkInterval.Get();
         public static float FlinchInterval => (float)Generate.FlinchInterval.Get();
@@ -421,9 +425,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool VigiKnowsInno => Generate.VigiKnowsInno.Get();
         public static bool PlayersAlerted => Generate.PlayersAlerted.Get();
         public static bool LighterDarker => Generate.LighterDarker.Get();
-        public static int PossessCooldown => (int)Generate.PossessCooldown.Get();
-        public static int ConcealCooldown => (int)Generate.ConcealCooldown.Get();
-        public static int ConcealDuration => (int)Generate.ConcealDuration.Get();
-        public static int PossessDuration => (int)Generate.PossessDuration.Get();
+        public static bool TrollVent => Generate.TrollVent.Get();
+        public static bool CryoVent => Generate.CryoVent.Get();
+        public static float PossessCooldown => (float)Generate.PossessCooldown.Get();
+        public static float InteractCooldown => (float)Generate.InteractCooldown.Get();
+        public static float ConcealCooldown => (float)Generate.ConcealCooldown.Get();
+        public static float ConcealDuration => (float)Generate.ConcealDuration.Get();
+        public static float PossessDuration => (float)Generate.PossessDuration.Get();
+        public static float WarpCooldown => (float)Generate.WarpCooldown.Get();
     }
 }

@@ -54,11 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
             role.ShieldedPlayer = role.ClosestPlayer;
             role.UsedAbility = true;
-
-            try {
-                AudioClip shieldSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Shield.raw");
-                SoundManager.Instance.PlaySound(shieldSFX, false, 1f);
-            } catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.ShieldSound, false, 1f);
 
             return false;
         }

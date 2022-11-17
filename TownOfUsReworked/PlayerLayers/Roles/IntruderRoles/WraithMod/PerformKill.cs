@@ -45,12 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.InvisDuration;
                 role.Invis();
-
-                try
-                {
-                    AudioClip InvisSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Morph.raw");
-                    SoundManager.Instance.PlaySound(InvisSFX, false, 0.4f);
-                } catch {}
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.InvisSound, false, 0.4f);
 
                 return false;
             }

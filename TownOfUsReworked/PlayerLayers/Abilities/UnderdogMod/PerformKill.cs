@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
+﻿using HarmonyLib;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 

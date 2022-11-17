@@ -100,7 +100,7 @@ namespace TownOfUsReworked.Patches
         //Ability Colors
         public readonly static Color32 Assassin = new Color32(7, 55, 99, 255); //#073763FF
         public readonly static Color32 Torch = new Color32(255, 255, 153, 255); //#FFFF99FF
-        public readonly static Color32 Tunneler = new Color32(220, 238, 133, 255); //#DCEE85FF
+        public readonly static Color32 Tunneler = new Color32(233, 30, 99, 255); //#E91E63FF
         public readonly static Color32 Lighter = new Color32(26, 255, 116, 255); //#1AFF74FF
         public readonly static Color32 ButtonBarry = new Color32(230, 0, 255, 255); //#E600FFFF
         public readonly static Color32 Tiebreaker = new Color32(153, 230, 153, 255); //#99E699FF
@@ -129,9 +129,11 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 I = new Color32(128, 179, 255, 255); //#26FCFBFF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        //#dcee85 #2bd29c #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #a84300 #e74c3c #992d22 #00FFFD
+        //#dcee85 #2bd29c #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #a84300 #e74c3c #992d22 #00FFFD #917ac0
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d #F6AAB7
-        //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #e91e63 #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
-        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d
+        //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731 #aab43e
+        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #1002c5 #612bef #45076a #e7dae2 #8d0f8c
+        //#311C45 #EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
+        //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7E4D00 #7EFBC2 #8637C2 #
     }
 }

@@ -55,13 +55,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-
-                try
-                {
-                    AudioClip AlertSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Alert.raw");
-                    SoundManager.Instance.PlaySound(AlertSFX, false, 0.4f);
-                }
-                catch {}
+                
+                SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 0.4f);
                 
                 return false;
             }

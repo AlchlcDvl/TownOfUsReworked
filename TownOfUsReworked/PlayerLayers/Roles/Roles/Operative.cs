@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public static AssetBundle loadBundle()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream("TownOfUsReworked.Resources.operativeshader");
+            var stream = assembly.GetManifestResourceStream("TownOfUsReworked.Resources.Sounds.operativeshader");
             var assets = stream.ReadFully();
             return AssetBundle.LoadFromMemory(assets);
         }

@@ -25,12 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
             Utils.Morph(__instance.Player, mimicPlayer);
 
-            try
-            {
-                AudioClip MorphSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Morph.raw");
-                SoundManager.Instance.PlaySound(MorphSFX, false, 0.4f);
-            } catch {}
-
             var mimicActivation = DateTime.UtcNow;
             var mimicText = new GameObject("_Player").AddComponent<ImportantTextTask>();
             mimicText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
@@ -56,11 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     __instance.MimicTarget = null;
                     Utils.Unmorph(__instance.Player);
 
-                    try
-                    {
-                        AudioClip MorphSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Morph.raw");
-                        SoundManager.Instance.PlaySound(MorphSFX, false, 0.4f);
-                    } catch {}
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.GlitchWin, false, 0.4f);
 
                     yield break;
                 }

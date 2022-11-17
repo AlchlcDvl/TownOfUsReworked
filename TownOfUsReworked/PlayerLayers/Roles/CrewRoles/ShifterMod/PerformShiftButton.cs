@@ -13,6 +13,7 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod

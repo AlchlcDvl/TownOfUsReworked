@@ -7,6 +7,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using UnityEngine.UI;

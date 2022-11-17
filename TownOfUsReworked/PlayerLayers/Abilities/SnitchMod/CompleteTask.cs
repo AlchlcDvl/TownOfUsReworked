@@ -5,6 +5,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {

@@ -15,6 +15,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;

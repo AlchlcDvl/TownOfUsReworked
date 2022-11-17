@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Lists;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -12,6 +11,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using System;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
@@ -75,12 +75,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
-
-            try
-            {
-                AudioClip RememberSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Remember.raw");
-                SoundManager.Instance.PlaySound(RememberSFX, false, 0.4f);
-            } catch {}
+            
+            SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 0.4f);
 
             Remember(role, player);
             return false;

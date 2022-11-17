@@ -26,45 +26,38 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                     
                     if (_time >= CustomGameOptions.VolatileInterval)
                     {
-                        randomNumber = Random.RandomRangeInt(0, 6);
+                        randomNumber = Random.RandomRangeInt(0, 3);
                         _time -= CustomGameOptions.VolatileInterval;
 
-                        try
+                        if (randomNumber == 0)
                         {
-                            if (randomNumber == 0)
-                            {
-                                //Press kill button
-                                __instance.KillButton.DoClick();
-                            }
-                            else if (randomNumber == 1)
-                            {
-                                //Fake sabotage flash
-                                Coroutines.Start(Utils.FlashCoroutine(Colors.Intruder));
-                            }
-                            else if (randomNumber == 2)
-                            {
-                                //Fake death sound
-                                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.25f);
-                            }
-                            else if (randomNumber == 3)
-                            {
-                                //Fake you killed you
-                                DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(PlayerControl.LocalPlayer.Data, PlayerControl.LocalPlayer.Data);
-                            }
-                            else if (randomNumber == 4)
-                            {
-                                //Fake role sound effects
-                                otherNumber = Random.RandomRangeInt(0, 6);
-
-                                try
-                                {
-                                    AudioClip VolatileSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Sample.raw");
-                                    SoundManager.Instance.PlaySound(VolatileSFX, false, 0.4f);
-                                }
-                                catch {}
-                            }
+                            //Press kill button
+                            __instance.KillButton.DoClick();
                         }
-                        catch {}
+                        else if (randomNumber == 1)
+                        {
+                            //Flashes
+                            otherNumber = Random.RandomRangeInt(0, DefinedLists.AllRoles.Count);
+                            var role = DefinedLists.AllRoles[otherNumber];
+
+                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                        }
+                        else if (randomNumber == 2)
+                        {
+                            //Fake someone killing you
+                            otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
+                            var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
+
+                            DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
+                        }
+                        else if (randomNumber == 3)
+                        {
+                            //Fake role sound effects
+                            otherNumber = Random.RandomRangeInt(0, DefinedLists.Sounds.Count);
+                            var sound = DefinedLists.Sounds[otherNumber];
+
+                            SoundManager.Instance.PlaySound(sound, false, 0.4f);
+                        }
                     }
                 }
             }

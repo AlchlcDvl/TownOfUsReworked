@@ -51,36 +51,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
 
             role.Player.SetKillTimer(1f);
 
-            try
+            if (role.Poisoned)
             {
-                if (role.Poisoned)
+                role.PoisonButton.graphic.sprite = PoisonedSprite;
+                role.Poison();
+                role.PoisonButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.PoisonDuration);
+            }
+            else
+            {
+                role.PoisonButton.graphic.sprite = PoisonSprite;
+
+                if (role.PoisonedPlayer && role.PoisonedPlayer != PlayerControl.LocalPlayer)
+                    role.PoisonKill();
+                        
+                if (role.ClosestPlayer != null)
                 {
-                    role.PoisonButton.graphic.sprite = PoisonedSprite;
-                    role.Poison();
-                    role.PoisonButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.PoisonDuration);
+                    role.PoisonButton.graphic.color = Palette.EnabledColor;
+                    role.PoisonButton.graphic.material.SetFloat("_Desat", 0f);
                 }
                 else
                 {
-                    role.PoisonButton.graphic.sprite = PoisonSprite;
-
-                    if (role.PoisonedPlayer && role.PoisonedPlayer != PlayerControl.LocalPlayer)
-                        role.PoisonKill();
-                        
-                    if (role.ClosestPlayer != null)
-                    {
-                        role.PoisonButton.graphic.color = Palette.EnabledColor;
-                        role.PoisonButton.graphic.material.SetFloat("_Desat", 0f);
-                    }
-                    else
-                    {
-                        role.PoisonButton.graphic.color = Palette.DisabledClear;
-                        role.PoisonButton.graphic.material.SetFloat("_Desat", 1f);
-                    }
-
-                    role.PoisonButton.SetCoolDown(role.PoisonTimer(), CustomGameOptions.PoisonCd);
-                    role.PoisonedPlayer = PlayerControl.LocalPlayer; //Only do this to stop repeatedly trying to re-kill poisoned player. null didn't work for some reason
+                    role.PoisonButton.graphic.color = Palette.DisabledClear;
+                    role.PoisonButton.graphic.material.SetFloat("_Desat", 1f);
                 }
-            } catch {}
+
+                role.PoisonButton.SetCoolDown(role.PoisonTimer(), CustomGameOptions.PoisonCd);
+                role.PoisonedPlayer = PlayerControl.LocalPlayer; //Only do this to stop repeatedly trying to re-kill poisoned player. null didn't work for some reason
+            }
         }
     }
 }

@@ -142,12 +142,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 
                 if (option == null)
                 {
-                    try
-                    {
-                        splitText.RemoveAt(0);
-                    }
-                    catch {}
-
+                    splitText.RemoveAt(0);
                     continue;
                 }
 

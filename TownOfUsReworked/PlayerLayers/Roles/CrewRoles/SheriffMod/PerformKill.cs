@@ -79,13 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
             role.Interrogated.Add(role.ClosestPlayer.PlayerId);
             role.LastInterrogated = DateTime.UtcNow;
-
-            try
-            {
-                AudioClip SeerSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Seer.raw");
-                SoundManager.Instance.PlaySound(SeerSFX, false, 0.4f);
-            }
-            catch {}
+            //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);
             
             return false;
         }

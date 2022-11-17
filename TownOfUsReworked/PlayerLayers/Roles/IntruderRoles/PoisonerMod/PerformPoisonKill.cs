@@ -181,11 +181,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
             
-            try
-            {
-                AudioClip PoisonSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Poison.raw");
-                SoundManager.Instance.PlaySound(PoisonSFX, false, 0.4f);
-            } catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.PoisonSound, false, 0.4f);
             
             return false;
         }

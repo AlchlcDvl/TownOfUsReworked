@@ -136,7 +136,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Is(this PlayerControl player, RoleEnum roleType)
         {
-            return Role.GetRole(player).RoleType == roleType;
+            return Role.GetRole(player)?.RoleType == roleType;
         }
 
         public static bool Is(this PlayerControl player, Role role)
@@ -146,37 +146,37 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Is(this PlayerControl player, SubFaction subFaction)
         {
-            return Role.GetRole(player).SubFaction == subFaction;
+            return Role.GetRole(player)?.SubFaction == subFaction;
         }
 
         public static bool Is(this PlayerControl player, ModifierEnum modifierType)
         {
-            return Modifier.GetModifier(player).ModifierType == modifierType;
+            return Modifier.GetModifier(player)?.ModifierType == modifierType;
         }
 
         public static bool Is(this PlayerControl player, ObjectifierEnum abilityType)
         {
-            return Objectifier.GetObjectifier(player).ObjectifierType == abilityType;
+            return Objectifier.GetObjectifier(player)?.ObjectifierType == abilityType;
         }
 
         public static bool Is(this PlayerControl player, AbilityEnum ability)
         {
-            return Ability.GetAbility(player).AbilityType == ability;
+            return Ability.GetAbility(player)?.AbilityType == ability;
         }
 
         public static bool Is(this PlayerControl player, InspResults results)
         {
-            return Role.GetRole(player).Results == results;
+            return Role.GetRole(player)?.Results == results;
         }
 
         public static bool Is(this PlayerControl player, Faction faction)
         {
-            return Role.GetRole(player).Faction == faction;
+            return Role.GetRole(player)?.Faction == faction;
         }
 
         public static bool Is(this PlayerControl player, RoleAlignment alignment)
         {
-            return Role.GetRole(player).RoleAlignment == alignment;
+            return Role.GetRole(player)?.RoleAlignment == alignment;
         }
 
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
@@ -409,21 +409,17 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.AmOwner)
                 {
-                    try
+                    if (Minigame.Instance)
                     {
-                        if (Minigame.Instance)
-                        {
-                            Minigame.Instance.Close();
-                            Minigame.Instance.Close();
-                        }
-
-                        if (MapBehaviour.Instance)
-                        {
-                            MapBehaviour.Instance.Close();
-                            MapBehaviour.Instance.Close();
-                        }
+                        Minigame.Instance.Close();
+                        Minigame.Instance.Close();
                     }
-                    catch {}
+
+                    if (MapBehaviour.Instance)
+                    {
+                        MapBehaviour.Instance.Close();
+                        MapBehaviour.Instance.Close();
+                    }
 
                     DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
                     DestroyableSingleton<HudManager>.Instance.ShadowQuad.gameObject.SetActive(false);
@@ -557,34 +553,30 @@ namespace TownOfUsReworked.Extensions
             {
                 foreach (var body in bodies)
                 {
-                    try
+                    if (body.ParentId == target.PlayerId)
                     {
-                        if (body.ParentId == target.PlayerId) { killer.ReportDeadBody(target.Data); break; }
+                        killer.ReportDeadBody(target.Data);
+                        break;
                     }
-                    catch {}
                 }
             }
             else
             {
                 foreach (var body in bodies)
                 {
-                    try
+                    if (body.ParentId == target.PlayerId)
                     {
-                        if (body.ParentId == target.PlayerId)
+                        unchecked
                         {
-                            unchecked
-                            {
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BaitReport,
-                                    SendOption.Reliable, -1);
-                                writer.Write(killer.PlayerId);
-                                writer.Write(target.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            }
-                            
-                            break;
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BaitReport,
+                                SendOption.Reliable, -1);
+                            writer.Write(killer.PlayerId);
+                            writer.Write(target.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
+                            
+                        break;
                     }
-                    catch {}
                 }
             }
         }

@@ -56,12 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                 }
                 
                 role.TimeRemaining = CustomGameOptions.GrenadeDuration;
-
-                try
-                {
-                    AudioClip FlashSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Flash.raw");
-                    SoundManager.Instance.PlaySound(FlashSFX, false, 0.4f);
-                } catch {}
+                SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 0.4f);
 
                 role.Flash();
                 return false;

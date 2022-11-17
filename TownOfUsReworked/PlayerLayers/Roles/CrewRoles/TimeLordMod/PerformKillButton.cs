@@ -47,13 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 (byte) CustomRPC.Rewind, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-            try
-            {
-                AudioClip RewindSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Rewind.raw");
-                SoundManager.Instance.PlaySound(RewindSFX, false, 0.4f);
-            }
-            catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 0.4f);
             
             return false;
         }

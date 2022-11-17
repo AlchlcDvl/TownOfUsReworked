@@ -28,10 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.VampireMod
             if (drac == null)
                 return;
 
-            drac.HasMaj = drac.AliveVamps.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead
-                && (Utils.PlayerById(x).Is(RoleEnum.Vampire) | Utils.PlayerById(x).Is(RoleEnum.Dracula) | Utils.PlayerById(x).Is(RoleEnum.Dampyr))) ==
-                PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected);
-
             if (drac.HasMaj)
             {
                 if (AmongUsClient.Instance.AmHost)

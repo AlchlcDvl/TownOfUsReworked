@@ -55,11 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                try
-                {
-                    AudioClip AlertSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Survivor.raw");
-                    SoundManager.Instance.PlaySound(AlertSFX, false, 0.4f);
-                } catch {}
+                SoundManager.Instance.PlaySound(TownOfUsReworked.VestSound, false, 0.4f);
 
                 return false;
             }

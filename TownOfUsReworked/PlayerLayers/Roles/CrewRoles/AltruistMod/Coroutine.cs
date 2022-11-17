@@ -82,14 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
-            {
-                try
-                {
-                    AudioClip ReviveSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Revive.raw");
-                    SoundManager.Instance.PlaySound(ReviveSFX, false, 0.2f);
-                }
-                catch {}
-            }
+                SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 0.2f);
 
             if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
@@ -114,12 +107,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             if (revived.Any(x => x.AmOwner))
             {
-                try
-                {
-                    Minigame.Instance.Close();
-                    Minigame.Instance.Close();
-                }
-                catch {}
+                Minigame.Instance.Close();
+                Minigame.Instance.Close();
             }
 
             if (PlayerControl.LocalPlayer.Data.IsImpostor() | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) |

@@ -341,11 +341,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
             {
-                try
-                {
-                    AudioClip TransportSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Transport.raw");
-                    SoundManager.Instance.PlaySound(TransportSFX, false, 0.4f);
-                } catch {}
+                SoundManager.Instance.PlaySound(TownOfUsReworked.TransportSound, false, 0.4f);
             }
 
             var TP1 = Utils.PlayerById(player1);

@@ -58,6 +58,7 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
             {
                 Log.LogError($"Error while loading hats: {e.Message}\nStack: {e.StackTrace}");
             }
+            
             yield return null;
         }
 

@@ -61,13 +61,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                         return false;
                 }
             }
-
-            try
-            {
-                AudioClip MediumSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Seer.raw");
-                SoundManager.Instance.PlaySound(MediumSFX, false, 0.4f);
-            }
-            catch {}
+            
+            //SoundManager.Instance.PlaySound(TownOfUsReworked.MediateSound, false, 0.4f);
 
             return false;
         }

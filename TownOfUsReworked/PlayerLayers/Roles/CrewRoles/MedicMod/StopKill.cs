@@ -13,44 +13,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     {
         public static void BreakShield(byte medicId, byte playerId, bool flag)
         {
+            var role = Role.GetRole<Medic>(Utils.PlayerById(medicId));
+
             if (PlayerControl.LocalPlayer.PlayerId == playerId && CustomGameOptions.NotificationShield == NotificationOptions.Shielded)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
-                
-                try
-                {
-                    AudioClip AttemptSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Attempt.raw");
-                    SoundManager.Instance.PlaySound(AttemptSFX, false, 0.2f);
-                } catch {}
+                Coroutines.Start(Utils.FlashCoroutine(role.Color));
 
             if (PlayerControl.LocalPlayer.PlayerId == medicId && CustomGameOptions.NotificationShield == NotificationOptions.Medic)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
-
-                try
-                {
-                    AudioClip AttemptSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Attempt.raw");
-                    SoundManager.Instance.PlaySound(AttemptSFX, false, 0.2f);
-                } catch {}
-
+                Coroutines.Start(Utils.FlashCoroutine(role.Color));
+            
             if (CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
-                Coroutines.Start(Utils.FlashCoroutine(new Color(0f, 0.5f, 0f, 1f)));
+                Coroutines.Start(Utils.FlashCoroutine(role.Color));
 
-                try
-                {
-                    AudioClip AttemptSFX = TownOfUsReworked.loadAudioClipFromResources("TownOfUsReworked.Resources.Attempt.raw");
-                    SoundManager.Instance.PlaySound(AttemptSFX, false, 0.2f);
-                } catch {}
+            SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 0.2f);
 
             if (!flag)
                 return;
 
             var player = Utils.PlayerById(playerId);
 
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
+            foreach (var role2 in Role.GetRoles(RoleEnum.Medic))
             {
-                if (((Medic) role).ShieldedPlayer.PlayerId == playerId)
+                if (((Medic)role2).ShieldedPlayer.PlayerId == playerId)
                 {
-                    ((Medic) role).ShieldedPlayer = null;
-                    ((Medic) role).exShielded = player;
+                    ((Medic)role2).ShieldedPlayer = null;
+                    ((Medic)role2).exShielded = player;
                     System.Console.WriteLine(player.name + " Is Ex-Shielded");
                 }
             }
