@@ -1078,7 +1078,7 @@ The Janitor can clean up bodies. Both their Kill and Clean ability have a shared
 | Janitor | The percentage probability of the Janitor appearing | Percentage | 0% |
 | Janitor Count | How many Janitors should spawn in Custom Mode | Number | 1 |
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
-| <color=#2647A2FF>Janitor</color> Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
+| <color=#2647A2>Janitor</color> Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
 
 ## Miner
 ### **Alignment: Intruder (Support)**
