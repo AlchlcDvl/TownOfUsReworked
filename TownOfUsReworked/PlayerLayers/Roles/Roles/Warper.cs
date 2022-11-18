@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Warper : Role
     {
-        public KillButton WarpButton;
+        public KillButton _warpButton;
         public DateTime LastWarped;
 
         public Warper(PlayerControl player) : base(player)
@@ -73,7 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 }
             }
 
-
             foreach ((byte key, Vector2 value) in coordinates)
             {
                 PlayerControl player = Utils.PlayerById(key);
@@ -83,7 +82,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         private Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
-            List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
+            List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead &&
+                !player.Data.Disconnected).ToList();
             HashSet<Vent> vents = Object.FindObjectsOfType<Vent>().ToHashSet();
             Dictionary<byte, Vector2> coordinates = new Dictionary<byte, Vector2>(targets.Count);
 
@@ -117,6 +117,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+        
+        public KillButton WarpButton
+        {
+            get => _warpButton;
+            set
+            {
+                _warpButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
     }
 }

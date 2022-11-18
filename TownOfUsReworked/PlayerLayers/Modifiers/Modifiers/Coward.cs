@@ -10,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             Name = "Coward";
             TaskText = () => "You are too afraid to report bodies";
-            if (CustomGameOptions.CustomModifierColors) Color = Colors.Coward;
-            else Color = Colors.Modifier;
+            Color = CustomGameOptions.CustomModifierColors ? Colors.Coward : Colors.Modifier;
             ModifierType = ModifierEnum.Coward;
             AddToModifierHistory(ModifierType);
         }

@@ -30,10 +30,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
-            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !exiled.IsLover()) WillBePhantom = exiled;
-            if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer) return;
-            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) return;
-            if (PlayerControl.LocalPlayer != WillBePhantom) return;
+
+            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !exiled.IsLover())
+                WillBePhantom = exiled;
+
+            if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
+                return;
+
+            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
+                return;
+
+            if (PlayerControl.LocalPlayer != WillBePhantom)
+                return;
 
             if (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
             {
@@ -54,9 +62,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            if (Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught) return;
-            var startingVent =
-                ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+            if (Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
+                return;
+
+            var startingVent = ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
                 
             unchecked
             {
@@ -80,7 +89,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
             var totalTasks = PlayerControl.GameOptions.NumCommonTasks + PlayerControl.GameOptions.NumLongTasks +
                 PlayerControl.GameOptions.NumShortTasks;
 
-
             foreach (var task in player.myTasks)
             {
                 if (task.TryCast<NormalPlayerTask>() != null)
@@ -91,13 +99,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                     
                     normalPlayerTask.taskStep = 0;
                     normalPlayerTask.Initialize();
+
                     if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
+                    {
                         foreach (var console in Object.FindObjectsOfType<TowelTaskConsole>())
                             console.Image.color = Color.white;
+                    }
+
                     normalPlayerTask.taskStep = 0;
 
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                         normalPlayerTask.taskStep = 1;
+
                     if (updateArrow)
                         normalPlayerTask.UpdateArrow();
                     
@@ -106,28 +119,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 }
             }
         }
-
-        /*public static void ResetTowels(NormalPlayerTask task)
-        {
-            var towelTask = task.Cast<TowelTask>();
-            var data = new byte[8];
-            var array = Enumerable.Range(0, 14).ToList();
-            array.Shuffle();
-            var b3 = 0;
-            while (b3 < data.Length)
-            {
-                data[b3] = (byte)array[b3];
-                b3++;
-            }
-
-            towelTask.Data = data;
-            return;
-        }
-
-        public static void ResetRecords(NormalPlayerTask task)
-        {
-            task.Data = new 
-        }*/
 
         public static void AddCollider(Phantom role)
         {
@@ -141,10 +132,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 
             button.OnClick.AddListener((Action) (() =>
             {
-                if (MeetingHud.Instance) return;
-                if (PlayerControl.LocalPlayer.Data.IsDead) return;
+                if (MeetingHud.Instance)
+                    return;
+
+                if (PlayerControl.LocalPlayer.Data.IsDead)
+                    return;
+
                 var taskinfos = player.Data.Tasks.ToArray();
                 var tasksLeft = taskinfos.Count(x => !x.Complete);
+
                 if (tasksLeft <= CustomGameOptions.PhantomTasksRemaining)
                 {
                     role.Caught = true;

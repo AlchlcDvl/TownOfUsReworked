@@ -10,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             Name = "Diseased";
             TaskText = () => "Your killers get a higher cooldown";
-            if (CustomGameOptions.CustomModifierColors) Color = Colors.Diseased;
-            else Color = Colors.Modifier;
+            Color = CustomGameOptions.CustomModifierColors ? Colors.Diseased : Colors.Modifier;
             ModifierType = ModifierEnum.Diseased;
             AddToModifierHistory(ModifierType);
         }

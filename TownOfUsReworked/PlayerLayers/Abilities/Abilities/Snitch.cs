@@ -21,8 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = () => TasksDone
                     ? "Follow the arrows pointing to the <color=#FF0000FF>Intruders</color>!"
                     : "Complete all your tasks to discover the <color=#FF0000FF>Intruders</color>!";
-            if (CustomGameOptions.CustomCrewColors) Color = Colors.Snitch;
-            else Color = Colors.Ability;
+            Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
             AbilityType = AbilityEnum.Snitch;
             AddToAbilityHistory(AbilityType);
         }

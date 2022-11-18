@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
             foreach (var objectifier in Objectifier.AllObjectifiers)
             {
                 if (objectifier.ObjectifierType == ObjectifierEnum.Phantom)
-                    ((Phantom) objectifier).Loses();
+                    ((Phantom)objectifier).Loses();
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.PhantomLose,

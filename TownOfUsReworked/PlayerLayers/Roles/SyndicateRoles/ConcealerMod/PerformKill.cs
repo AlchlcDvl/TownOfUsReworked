@@ -44,8 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                role.TimeRemaining = CustomGameOptions.CamouflagerDuration;
-                Utils.Camouflage();
+                role.TimeRemaining = CustomGameOptions.ConcealDuration;
+                Utils.Conceal();
                 return false;
             }
 

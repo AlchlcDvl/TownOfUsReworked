@@ -112,6 +112,7 @@ namespace TownOfUsReworked.Patches
         CatchRevealer,
 
         TraitorSpawn,
+        TurnTraitor,
 
         GlitchWin,
         JuggernautWin,

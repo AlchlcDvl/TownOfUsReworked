@@ -1620,7 +1620,7 @@ namespace TownOfUsReworked.Patches
                         var traitorRole = new Traitor(traitor);
                         traitorRole.formerRole = oldRole;
                         traitorRole.RegenTask();
-                        SetTraitor.TurnImp(traitor);
+                        SetTraitor.TurnTraitor(traitor);
                         break;
 
                     case CustomRPC.SetPlaguebearer:

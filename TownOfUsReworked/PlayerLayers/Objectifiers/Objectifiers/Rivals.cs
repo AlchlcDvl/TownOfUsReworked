@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TownOfUsReworked.Patches;
@@ -11,32 +11,32 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
-    public class Lovers : Objectifier
+    public class Rivals : Objectifier
     {
-        public Lovers(PlayerControl player) : base(player)
+        public Rivals(PlayerControl player) : base(player)
         {
-            Name = "Lover";
-            SymbolName = "♥";
-            TaskText = () => "You are in Love with " + OtherLover.Player.name;
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Lovers;
+            Name = "Rival";
+            SymbolName = "❧";
+            TaskText = () => "Your Rival is " + OtherRival.Player.name;
+            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
+            ObjectifierType = ObjectifierEnum.Rivals;
             AddToObjectifierHistory(ObjectifierType);
         }
 
-        public Lovers OtherLover { get; set; }
-        public PlayerControl OtherLoverPlayer { get; set; }
-        public bool LoveCoupleWins { get; set; }
+        public Rivals OtherRival { get; set; }
+        public PlayerControl OtherRivalPlayer { get; set; }
+        public bool RivalWins { get; set; }
         public int Num { get; set; }
 
         public List<PlayerControl> GetTeammates()
         {
-            var loverTeam = new List<PlayerControl>
+            var rivalTeam = new List<PlayerControl>
             {
                 PlayerControl.LocalPlayer,
-                OtherLover.Player
+                OtherRival.Player
             };
-            
-            return loverTeam;
+
+            return rivalTeam;
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var players = PlayerControl.AllPlayerControls.ToArray();
             var alives = players.Where(x => !x.Data.IsDead).ToList();
             var lover1 = Player;
-            var lover2 = OtherLover.Player;
+            var lover2 = OtherRival.Player;
             
             return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && alives.Count() == 4 &&
                 (lover1.Is(Faction.Intruders) | lover2.Is(Faction.Intruders));
@@ -110,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var players = PlayerControl.AllPlayerControls.ToArray();
             var alives = players.Where(x => !x.Data.IsDead).ToList();
             var lover1 = Player;
-            var lover2 = OtherLover.Player;
+            var lover2 = OtherRival.Player;
 
             return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && (alives.Count == 3) |
                 (alives.Count == 2);
@@ -127,11 +127,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Rivals).Any(x => ((Rivals)x).RivalWins))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Lovers).Any(x => ((Lovers)x).LoveCoupleWins))
                 return;
 
-            LoveCoupleWins = true;
-            OtherLover.LoveCoupleWins = true;
+            RivalWins = true;
+            OtherRival.RivalWins = true;
         }
     }
 }

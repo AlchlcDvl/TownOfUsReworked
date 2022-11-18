@@ -13,19 +13,28 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
     {
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1) return;
-            if (PlayerControl.LocalPlayer == null) return;
-            if (PlayerControl.LocalPlayer.Data == null) return;
-            if (PlayerControl.LocalPlayer != SetPhantom.WillBePhantom) return;
-            if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (PlayerControl.AllPlayerControls.Count <= 1)
+                return;
+
+            if (PlayerControl.LocalPlayer == null)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data == null)
+                return;
+
+            if (PlayerControl.LocalPlayer != SetPhantom.WillBePhantom)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+                return;
 
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead &&
                 !x.Data.Disconnected).ToList();
 
             if (!PlayerControl.LocalPlayer.Is(Faction.Neutral))
             {
-                var toChooseFromAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) &&
-                    !x.Data.Disconnected).ToList();
+                var toChooseFromAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && !x.Data.Disconnected).ToList();
+
                 if (toChooseFromAlive.Count() == 0)
                 {
                     SetPhantom.WillBePhantom = null;
@@ -47,9 +56,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                     writer3.Write(pc2.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer3);
                 }
+
                 return;
             }
-            if (toChooseFrom.Count == 0) return;
+
+            if (toChooseFrom.Count == 0)
+                return;
+
             var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
             var pc = toChooseFrom[rand];
 

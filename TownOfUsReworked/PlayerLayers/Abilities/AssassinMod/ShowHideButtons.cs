@@ -29,9 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             }
         }
 
-        public static void HideSingle(Assassin role, byte targetId, bool killedSelf)
+        public static void HideSingle(Assassin role, byte targetId, bool killedSelf, bool doubleshot)
         {
-            if (killedSelf | role.RemainingKills == 0 | !CustomGameOptions.AssassinMultiKill)
+            if ((killedSelf | role.RemainingKills == 0 | !CustomGameOptions.AssassinMultiKill) && doubleshot == false)
             {
                 HideButtons(role);
                 return;

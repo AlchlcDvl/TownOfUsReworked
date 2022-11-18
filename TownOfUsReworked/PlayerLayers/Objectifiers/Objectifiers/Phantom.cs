@@ -17,8 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             Name = "Phantom";
             SymbolName = "Ω";
             TaskText = () => "You can revenge from beyond the grave!";
-            if (CustomGameOptions.CustomNeutColors) Color = Colors.Phantom;
-            else Color = Colors.Objectifier;
+            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Phantom : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Phantom;
             AddToObjectifierHistory(ObjectifierType);
         }

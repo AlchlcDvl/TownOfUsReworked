@@ -10,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         {
             Name = "Torch";
             TaskText = () => "You can see in the dark";
-            if (CustomGameOptions.CustomAbilityColors) Color = Colors.Torch;
-            else Color = Colors.Ability;
+            Color = CustomGameOptions.CustomAbilityColors ? Colors.Torch : Colors.Ability;
             AbilityType = AbilityEnum.Torch;
             AddToAbilityHistory(AbilityType);
         }

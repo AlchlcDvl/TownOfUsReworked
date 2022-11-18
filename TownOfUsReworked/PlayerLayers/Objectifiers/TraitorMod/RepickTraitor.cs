@@ -15,12 +15,24 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
     {
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1) return;
-            if (PlayerControl.LocalPlayer == null) return;
-            if (PlayerControl.LocalPlayer.Data == null) return;
-            if (PlayerControl.LocalPlayer != SetTraitor.WillBeTraitor) return;
-            if (PlayerControl.LocalPlayer.Is(Faction.Intruders)) return;
-            if (!PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (PlayerControl.AllPlayerControls.Count <= 1)
+                return;
+
+            if (PlayerControl.LocalPlayer == null)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data == null)
+                return;
+
+            if (PlayerControl.LocalPlayer != SetTraitor.WillBeTraitor)
+                return;
+
+            if (PlayerControl.LocalPlayer.Is(Faction.Intruders))
+                return;
+
+            if (!PlayerControl.LocalPlayer.Data.IsDead)
+                return;
+
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Data.IsDead &&
                 !x.Data.Disconnected).ToList();
                 
@@ -29,10 +41,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 foreach (var role in Role.GetRoles(RoleEnum.Executioner))
                 {
                     var exeRole = (Executioner)role;
-                    if (player == exeRole.target) toChooseFrom.Remove(player);
+
+                    if (player == exeRole.target)
+                        toChooseFrom.Remove(player);
                 }
             }
-            if (toChooseFrom.Count == 0) return;
+
+            if (toChooseFrom.Count == 0)
+                return;
+
             var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
             var pc = toChooseFrom[rand];
 

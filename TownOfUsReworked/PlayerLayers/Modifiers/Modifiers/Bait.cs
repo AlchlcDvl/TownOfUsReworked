@@ -10,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             Name = "Bait";
             TaskText = () => "Killing you causes an instant self-report";
-            if (CustomGameOptions.CustomModifierColors) Color = Colors.Bait;
-            else Color = Colors.Modifier;
+            Color = CustomGameOptions.CustomModifierColors ? Colors.Bait : Colors.Modifier;
             ModifierType = ModifierEnum.Bait;
             AddToModifierHistory(ModifierType);
         }

@@ -14,8 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = () => Utils.LastImp()
                 ? "You have a shortened kill cooldown!"
                 : "You have a long kill cooldown until you're alone";
-            if (CustomGameOptions.CustomAbilityColors) Color = Colors.Underdog;
-            else Color = Colors.Ability;
+            Color = CustomGameOptions.CustomAbilityColors ? Colors.Underdog : Colors.Ability;
             AbilityType = AbilityEnum.Underdog;
             AddToAbilityHistory(AbilityType);
         }

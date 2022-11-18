@@ -5,18 +5,19 @@ using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
-    public class Traitor : Objectifier
+    public class Fanatic : Objectifier
     {
         public RoleEnum formerRole = new RoleEnum();
         public Role former;
+        public bool Turned;
 
-        public Traitor(PlayerControl player) : base(player)
+        public Fanatic(PlayerControl player) : base(player)
         {
-            Name = "Traitor";
-            SymbolName = "♣";
+            Name = "Fanatic";
+            SymbolName = "«";
             TaskText = () => "You are <color=#8BFDFDFF>Crew</color>, for now that is....";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Traitor;
+            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
+            ObjectifierType = ObjectifierEnum.Fanatic;
             AddToObjectifierHistory(ObjectifierType);
         }
     }

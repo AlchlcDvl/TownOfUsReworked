@@ -10,7 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
     {
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!__instance.myPlayer.Is(ObjectifierEnum.Phantom)) return;
+            if (!__instance.myPlayer.Is(ObjectifierEnum.Phantom))
+                return;
 
             var role = Objectifier.GetObjectifier<Phantom>(__instance.myPlayer);
             __instance.myPlayer.Collider.enabled = !role.Caught;

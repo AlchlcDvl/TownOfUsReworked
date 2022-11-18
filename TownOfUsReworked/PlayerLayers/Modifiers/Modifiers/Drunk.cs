@@ -10,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             Name = "Drunk";
             TaskText = () => "Inverrrrrted contrrrrols";
-            if (CustomGameOptions.CustomModifierColors) Color = Colors.Drunk;
-            else Color = Colors.Modifier;
+            Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
             ModifierType = ModifierEnum.Drunk;
             AddToModifierHistory(ModifierType);
         }

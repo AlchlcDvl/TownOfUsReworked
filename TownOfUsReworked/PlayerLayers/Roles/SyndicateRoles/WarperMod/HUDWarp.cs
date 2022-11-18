@@ -1,6 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
-using TMPro;
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -8,9 +8,9 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class Update
+    public class HUDWarp
     {
-        public static Sprite WarpButton => TownOfUsReworked.WarpSprite;
+        public static Sprite Warp => TownOfUsReworked.WarpSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -34,28 +34,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
 
+            if (isDead)
+                return;
+
             var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
             if (role.WarpButton == null)
             {
-                role.WarpButton = Object.Instantiate(__instance.KillButton, __instance.transform.parent);
-                role.WarpButton.GetComponentsInChildren<TextMeshPro>()[0].text = "";
+                role.WarpButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.WarpButton.graphic.enabled = true;
-                role.WarpButton.graphic.sprite = WarpButton;
+                role.WarpButton.graphic.sprite = Warp;
+                role.WarpButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.WarpButton.gameObject.SetActive(false);
             }
 
-            role.WarpButton.graphic.sprite = WarpButton;
-
             role.WarpButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.WarpButton.GetComponent<AspectPosition>().Update();
 
-            role.WarpButton.SetCoolDown(0f, 1f);
-            var renderer = role.WarpButton.graphic;
-
-            var position1 = __instance.UseButton.transform.position;
-            role.WarpButton.transform.position = TownOfUsReworked.BelowVentPosition;
-
-            renderer.color = Palette.DisabledClear;
-            renderer.material.SetFloat("_Desat", 1f);
+            role.WarpButton.SetCoolDown(role.WarpTimer(), CustomGameOptions.WarpCooldown);
+            role.WarpButton.graphic.color = Palette.EnabledColor;
+            role.WarpButton.graphic.material.SetFloat("_Desat", 0f);
         }
     }
 }

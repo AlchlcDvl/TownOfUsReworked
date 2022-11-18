@@ -17,9 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 return;
 
             var role = Objectifier.GetObjectifier<Phantom>(__instance);
-
             var taskinfos = __instance.Data.Tasks.ToArray();
-
             var tasksLeft = taskinfos.Count(x => !x.Complete);
 
             if (tasksLeft == 0 && !role.Caught)

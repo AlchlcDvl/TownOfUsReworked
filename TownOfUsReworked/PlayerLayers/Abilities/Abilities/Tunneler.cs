@@ -12,8 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         {
             Name = "Tunneler";
             TaskText = () => "You can dig yourself into the ground";
-            if (CustomGameOptions.CustomAbilityColors) Color = Colors.Tunneler;
-            else Color = Colors.Ability;
+            Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
             AbilityType = AbilityEnum.Tunneler;
             AddToAbilityHistory(AbilityType);
         }

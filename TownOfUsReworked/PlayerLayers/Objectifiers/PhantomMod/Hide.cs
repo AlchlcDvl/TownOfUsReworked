@@ -22,9 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 var caught = phantom.Caught;
                 
                 if (!caught)
-                {
                     phantom.Fade();
-                }
                 else if (phantom.Faded)
                 {
                     Utils.Unmorph(phantom.Player);

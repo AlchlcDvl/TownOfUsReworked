@@ -28,6 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
         public static PlayerControl WillBeTraitor;
         public static Sprite Sprite => TownOfUsReworked.Arrow;
 
+        public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
+
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
@@ -39,21 +41,17 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     return;
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsDead | exiled == PlayerControl.LocalPlayer) return;
-            if (alives.Count < CustomGameOptions.LatestSpawn) return;
-            if (PlayerControl.LocalPlayer != WillBeTraitor) return;
+            if (PlayerControl.LocalPlayer.Data.IsDead | exiled == PlayerControl.LocalPlayer)
+                return;
+
+            if (alives.Count < CustomGameOptions.LatestSpawn)
+                return;
+
+            if (PlayerControl.LocalPlayer != WillBeTraitor)
+                return;
 
             if (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor))
             {
-                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
-                {
-                    var snitchRole = Ability.GetAbility<Snitch>(PlayerControl.LocalPlayer);
-                    snitchRole.ImpArrows.DestroyAll();
-                    snitchRole.SnitchArrows.Values.DestroyAll();
-                    snitchRole.SnitchArrows.Clear();
-                    Abilities.SnitchMod.CompleteTask.Postfix(PlayerControl.LocalPlayer);
-                }
-
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Investigator))
                     Footprint.DestroyAll(Role.GetRole<Investigator>(PlayerControl.LocalPlayer));
 
@@ -108,11 +106,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                TurnImp(PlayerControl.LocalPlayer);
+                TurnTraitor(PlayerControl.LocalPlayer);
             }
         }
 
-        public static void TurnImp(PlayerControl player)
+        public static void TurnTraitor(PlayerControl player)
         {
             player.Data.Role.TeamType = RoleTeamTypes.Impostor;
             RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
@@ -171,6 +169,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             foreach (var haunter in Ability.GetAbilities(AbilityEnum.Revealer))
             {
                 var haunterRole = (Revealer)haunter;
+
                 if (haunterRole.Revealed && PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor))
                 {
                     var gameObj = new GameObject();
@@ -184,7 +183,5 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 }
             }
         }
-
-        public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
     }
 }

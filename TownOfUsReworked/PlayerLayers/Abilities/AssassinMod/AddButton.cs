@@ -1,5 +1,6 @@
 ﻿using System;
 using HarmonyLib;
+using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Extensions;
@@ -8,6 +9,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -188,16 +190,44 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                 if (!toDie.Is(RoleEnum.Pestilence) | PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
                 {
-                    AssassinKill.RpcMurderPlayer(role, toDie);
-                    role.RemainingKills--;
-                    ShowHideButtons.HideSingle(role, targetId, toDie == role.Player);
-
-                    if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                    if (PlayerControl.LocalPlayer.Is(ModifierEnum.Professional) && toDie == PlayerControl.LocalPlayer)
                     {
-                        var lover = ((Lovers)playerObjectifier).OtherLover.Player;
+                        var modifier = Modifier.GetModifier<Professional>(PlayerControl.LocalPlayer);
 
-                        if (!lover.Is(RoleEnum.Pestilence))
-                            ShowHideButtons.HideSingle(role, lover.PlayerId, false);
+                        if (modifier.LifeUsed == false)
+                        {
+                            modifier.LifeUsed = true;
+                            Coroutines.Start(Utils.FlashCoroutine(modifier.Color));
+                            ShowHideButtons.HideSingle(role, targetId, false, true);
+                        }
+                        else
+                        {
+                            AssassinKill.RpcMurderPlayer(role, toDie);
+                            role.RemainingKills--;
+                            ShowHideButtons.HideSingle(role, targetId, toDie == role.Player, true);
+
+                            if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                            {
+                                var lover = ((Lovers)playerObjectifier).OtherLover.Player;
+
+                                if (!lover.Is(RoleEnum.Pestilence))
+                                    ShowHideButtons.HideSingle(role, lover.PlayerId, false, true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        AssassinKill.RpcMurderPlayer(role, toDie);
+                        role.RemainingKills--;
+                        ShowHideButtons.HideSingle(role, targetId, toDie == role.Player, true);
+
+                        if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                        {
+                            var lover = ((Lovers)playerObjectifier).OtherLover.Player;
+
+                            if (!lover.Is(RoleEnum.Pestilence))
+                                ShowHideButtons.HideSingle(role, lover.PlayerId, false, true);
+                        }
                     }
                 }
             }
