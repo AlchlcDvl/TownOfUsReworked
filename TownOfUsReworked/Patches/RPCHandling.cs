@@ -1691,6 +1691,32 @@ namespace TownOfUsReworked.Patches
                         var puppeteer2 = Utils.PlayerById(reader.ReadByte());
                         Role.GetRole<Puppeteer>(puppeteer2).KillUnPossess();
                         break;
+
+                    case CustomRPC.Freeze:
+                        readByte = reader.ReadByte();
+                        readByte1 = reader.ReadByte();
+                        var freezer = Role.GetRole<Freezer>(Utils.PlayerById(readByte));
+                        freezer.freezeList.Add(readByte1, 0);
+
+                        if (readByte1 == PlayerControl.LocalPlayer.PlayerId)
+                        {
+                            PlayerControl.LocalPlayer.moveable = false;
+                            PlayerControl.LocalPlayer.NetTransform.Halt();
+                            ImportantTextTask freezeText;
+                            freezeText = new GameObject("_Player").AddComponent<ImportantTextTask>();
+                            freezeText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
+                            freezeText.Text = "<color=#00ACC2FF>FROZEN</color>";
+                            freezeText.Index = PlayerControl.LocalPlayer.PlayerId;
+                            PlayerControl.LocalPlayer.myTasks.Insert(0, freezeText);
+                            ShipStatus.Instance.StartCoroutine(Effects.SwayX(Camera.main.transform, 0.75f, 0.25f));
+                        }
+
+                        Utils.AirKill(freezer.Player, Utils.PlayerById(readByte1));
+                        break;
+
+                    case CustomRPC.SetFreezer:
+                        new Freezer(Utils.PlayerById(reader.ReadByte()));
+                        break;
                 }
             }
         }
@@ -2061,7 +2087,7 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shifter Done");
                     }
 
-                    if (CustomGameOptions.CrewmateOn > 0)
+                    if (CustomGameOptions.CrewmateOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
                     {
                         if (CustomGameOptions.GameMode == GameMode.Custom)
                         {
@@ -2554,7 +2580,7 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Poisoner Done");
                     }
 
-                    if (CustomGameOptions.ImpostorOn > 0)
+                    if (CustomGameOptions.ImpostorOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
                     {
                         if (CustomGameOptions.GameMode == GameMode.Custom)
                         {

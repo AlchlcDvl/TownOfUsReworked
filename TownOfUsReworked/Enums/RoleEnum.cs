@@ -71,6 +71,7 @@ namespace TownOfUsReworked.Enums
 
         Anarchist,
         Concealer,
+        Freezer,
         Puppeteer,
         Rebel,
         Sidekick,

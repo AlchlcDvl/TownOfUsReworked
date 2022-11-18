@@ -60,10 +60,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     if (role.DisguiseTimer() != 0)
                         return false;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Disguise, SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.MeasuredPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    unchecked
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Disguise,
+                            SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(role.MeasuredPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                    
                     role.TimeRemaining = CustomGameOptions.DisguiseDuration;
                     role.DisguisedPlayer = role.MeasuredPlayer;
                     Utils.Morph(role.Player, role.MeasuredPlayer);

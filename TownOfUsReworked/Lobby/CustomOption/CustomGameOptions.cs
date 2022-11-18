@@ -59,6 +59,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int RebelOn => (int)Generate.RebelOn.Get();
         public static int ConsortOn => (int)Generate.ConsortOn.Get();
         public static int RadarOn => (int)Generate.RadarOn.Get();
+        public static int FreezerOn => (int)Generate.FreezerOn.Get();
         public static int ProfessionalOn => (int)Generate.ProfessionalOn.Get();
         public static int MultitaskerOn => (int)Generate.MultitaskerOn.Get();
         public static int WarperOn => (int)Generate.WarperOn.Get();
@@ -341,7 +342,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool CannibalVent => Generate.CannibalVent.Get();
         public static int TimeMasterOn => (int)Generate.TimeMasterOn.Get();
         public static float FreezeDuration => Generate.FreezeDuration.Get();
-        public static float FreezeCooldown => Generate.FreezerCooldown.Get();
+        public static float FreezeCooldown => Generate.FreezeCooldown.Get();
         public static int MayorCount => (int)Generate.MayorCount.Get();
         public static int DetectiveCount => (int)Generate.DetectiveCount.Get();
         public static int InvestigatorCount => (int)Generate.DetectiveCount.Get();
@@ -413,6 +414,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool DraculaConvertNeuts => Generate.DraculaConvertNeuts.Get();
         public static bool MurdVent => Generate.MurdVent.Get();
         public static int MurdCount => (int)Generate.MurdCount.Get();
+        public static int FreezerCount => (int)Generate.FreezerCount.Get();
         public static int TrollCount => (int)Generate.TrollCount.Get();
         public static int CryomaniacCount => (int)Generate.CryomaniacCount.Get();
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
@@ -433,5 +435,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float ConcealDuration => (float)Generate.ConcealDuration.Get();
         public static float PossessDuration => (float)Generate.PossessDuration.Get();
         public static float WarpCooldown => (float)Generate.WarpCooldown.Get();
+        public static float FreezerCooldown => (float)Generate.FreezerCooldown.Get();
+        public static float FreezeTime => (float)Generate.FreezeTime.Get();
     }
 }

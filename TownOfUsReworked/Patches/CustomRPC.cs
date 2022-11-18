@@ -76,6 +76,7 @@ namespace TownOfUsReworked.Patches
         SetEscort,
         SetPirate,
         SetConsort,
+        SetFreezer,
 
         SetDiseased,
         SetGiant,
@@ -86,6 +87,7 @@ namespace TownOfUsReworked.Patches
         SetGuilty,
         SetVolatile,
         SetFlincher,
+        SetProfessional,
 
         SetTiebreaker,
         SetTorch,
@@ -94,7 +96,6 @@ namespace TownOfUsReworked.Patches
         SetTunneler,
         SetButtonBarry,
         SetRevealer,
-        SetProfessional,
         SetMultitasker,
         SetRadar,
 
@@ -310,6 +311,7 @@ namespace TownOfUsReworked.Patches
         InspExamine,
         Maul,
         Conceal,
+        Freeze,
 
         BypassKill,
         Mimic,

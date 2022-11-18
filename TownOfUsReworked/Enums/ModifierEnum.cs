@@ -2,16 +2,16 @@ namespace TownOfUsReworked.Enums
 {
     public enum ModifierEnum
     {
-        Diseased,
-        Giant,
         Bait,
         Coward,
-        Dwarf,
+        Diseased,
         Drunk,
-        Volatile,
+        Dwarf,
         Flincher,
-        VIP,
+        Giant,
         Professional,
+        VIP,
+        Volatile,
         
         None
     }

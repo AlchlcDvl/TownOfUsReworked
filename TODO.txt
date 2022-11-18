@@ -28,6 +28,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Puppeteer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
+- New Role: Freezer [Syndicate (Killing)] |
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
@@ -69,6 +70,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Addition: Added the option to change the max lobby size while in the lobby |
 - Addition: Added features from ToU-R v3.4.0
 - Addition: Added more camouflage options
+- Addition: Added role reveal screen sounds (for some roles)
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
 - Mega Rework: Split Objectifiers into Abilities (additional stuff) and Objectifiers (new win con)

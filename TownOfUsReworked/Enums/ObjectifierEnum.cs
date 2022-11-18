@@ -2,11 +2,11 @@ namespace TownOfUsReworked.Enums
 {
     public enum ObjectifierEnum
     {
+        Fanatic,
         Lovers,
-        Traitor,
         Phantom,
         Rivals,
-        Fanatic,
+        Traitor,
         
         None
     }

@@ -100,6 +100,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption SyndicateChaosRoles;
         public static CustomNumberOption PuppeteerOn;
 
+        public static CustomHeaderOption SyndicateKillingRoles;
+        public static CustomNumberOption FreezerOn;
+
         public static CustomHeaderOption SyndicateUtilityRoles;
         public static CustomNumberOption AnarchistOn;
 
@@ -370,7 +373,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption UndertakerCount;
         public static CustomNumberOption DragCooldown;
         public static CustomStringOption UndertakerVentOptions;
-        public static CustomToggleOption UndertakerVentHide;
         public static CustomNumberOption DragModifier;
 
         public static CustomHeaderOption Assassin;
@@ -554,6 +556,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption TimeMaster;
         public static CustomNumberOption TMCount;
         public static CustomNumberOption FreezeDuration;
+        public static CustomNumberOption FreezeCooldown;
+
+        public static CustomHeaderOption Freezer;
+        public static CustomNumberOption FreezerCount;
+        public static CustomNumberOption FreezeTime;
         public static CustomNumberOption FreezerCooldown;
 
         public static CustomHeaderOption Consigliere;
@@ -759,6 +766,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             SyndicateChaosRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Chaos</color> <color=#FFD700FF>Roles</color>");
             PuppeteerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Puppeteer</color>", 0f, 0f, 100f, 10f, PercentFormat);
+
+            SyndicateKillingRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
+            FreezerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Freezer</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
             SyndicateSupportRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
             ConcealerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0f, 0f, 100f, 10f, PercentFormat);
@@ -1169,8 +1179,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UndertakerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Count", 1, 1, 14, 1);
             DragCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Drag Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
             UndertakerVentOptions = new CustomStringOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Can Vent", new[] {"Never", "Body", "Bodyless", "Always"});
-            UndertakerVentHide = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Can Hide Bodies In Vents", false);
-            DragModifier = new CustomNumberOption(true, num++, MultiMenu.intruder, "Drag Speed", 0.1f, 0.5f, 10f, 0.5f, MultiplierFormat);
+            DragModifier = new CustomNumberOption(true, num++, MultiMenu.intruder, "Drag Speed", 0.1f, 0.5f, 2f, 0.5f, MultiplierFormat);
 
             ImpDeceptionSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> Settings");
             

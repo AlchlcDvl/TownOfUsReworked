@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
+            SoundManager.Instance.PlaySound(TownOfUsReworked.NBWin, false, 1f);
         }
     }
 }

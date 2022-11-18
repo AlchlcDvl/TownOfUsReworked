@@ -94,6 +94,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 [**Syndicate Roles**](#syndicate-roles)
 - [Anarchist](#anarchist)
 - [Concealer](#concealer)
+- [Freezer](#freezer)
 - [Puppeteer](#puppeteer)
 - [Rebel](#rebel)
 - [Sidekick](#sidekick)
@@ -967,8 +968,7 @@ The Blackmailer can silence people in meetings. During each round, the Blackmail
 ## Camouflager
 ### **Alignment: Intruder (Concealing)**
 
-The Camouflager does the same thing as the Comms Sabotage, but their camouflage can be stacked on top other sabotages.
-Camouflaged players can kill in front everyone and no one will know who it is.
+The Camouflager does the same thing as the Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged players can kill in front everyone and no one will know who it is.
 
 ### Game Options
 
@@ -1078,33 +1078,43 @@ The Janitor can clean up bodies. Both their Kill and Clean ability have a shared
 | Janitor | The percentage probability of the Janitor appearing | Percentage | 0% |
 | Janitor Count | How many Janitors should spawn in Custom Mode | Number | 1 |
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
-| <color=#2647A2>Janitor</color> Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
+| Janitor Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
+
+## Mafioso
+### **Alignment: Intruder (Utility)**
+
+The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies, the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Cooldown Multiplier | How much do the cooldowns decrease by upon promotion | Factor | x0.75 |
 
 ## Miner
 ### **Alignment: Intruder (Support)**
 
-The Miner is an Intruder that can create new vents.
-These vents only connect to each other, forming a new passageway.
+The Miner can create new vents. These vents only connect to each other, forming a new passageway.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Miner | The percentage probability of the Miner appearing | Percentage | 0% |
+| Miner Count | How many Miners should spawn in Custom Mode | Number | 1 |
 | Mine Cooldown | The cooldown of the Miner's Mine button | Time | 25s |
 
 ## Morphling
 ### **Alignment: Intruder (Deception)**
 
-The Morphling is an Intruder that can Morph into another player.
-At the beginning of the game and after every meeting, they can choose someone to Sample.
-They can then Morph into that person at any time for a limited amount of time.
+The Morphling can morph into another player. At the beginning of the game and after every meeting, they can choose someone to sample. They can then morph into that person at any time for a limited amount of time.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Morphling | The percentage probability of the Morphling appearing | Percentage | 0% |
+| Morphling Count | How many Morphlings should spawn in Custom Mode | Number | 1 |
 | Morph Cooldown | The cooldown of the Morphling's Morph button | Time | 25s |
 | Morph Duration | How long the Morph lasts for | Time | 10s |
 | Morphling can Vent | Whether the Morphling can Vent | Toggle | False |
@@ -1112,82 +1122,81 @@ They can then Morph into that person at any time for a limited amount of time.
 ## Poisoner
 ### **Alignment: Intruder (Deception)**
 
-The Poisoner is an Intruder who has to poison another player instead of killing.
-When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration.
+The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Poisoner | The percentage probability of the Poisoner appearing | Percentage | 0% |
+| Poisoner Count | How many Poisoners should spawn in Custom Mode | Number | 1 |
 | Poison Cooldown | The cooldown of the Poisoner's Poison button | Time | 25s |
 | Poison Kill Delay | The delay of the kill after being poisoned | Time | 5s |
 | Poisoner can Vent | Whether the Poisoner can Vent | Toggle | False |
 
-## Traitor
+## Teleporter
 ### **Alignment: Intruder (Support)**
 
-If all Intruders die before a certain point in the game, a random Crewmate is selected to become the Traitor.
-The Traitor has no additional abilities and their job is simply to avenge the dead Intruders.
-Once this player has turned into the Traitor their alliance sits with the Intruders.
+The Teleporter can teleport to a marked positions. Once per round, the Teleporter can mark a location which they can then teleport to later in the round.
+
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Teleporter | The percentage probability of the Teleporter appearing | Percentage | 0% |
+| Teleporter Count | How many Teleporters should spawn in Custom Mode | Number | 1 |
+| Recall Cooldown | The cooldown of the Teleporter's teleport button | Time | 25s |
+| Teleporter can Vent | Whether the Teleporter can Vent | Toggle | False |
+
+## Time Master
+### **Alignment: Intruder (Support)**
+
+The Time Master can freeze time, causing all non-Intruders (and the Time Lord if a certain setting is on) to freeze in place and unable to move for a short while. Time freeze and sabotages cannot happen for obvious reasons.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Traitor | The percentage probability of the Traitor appearing | Percentage | 0% |
-| Latest Spawn | The minimum number of people alive when a Traitor can spawn | Number | 5 |
-| Traitor Won't Spawn if Neutral Killing are Alive | Whether the Traitor won't spawn if any Neutral Killing roles are alive | Toggle | False |
-
-## Underdog
-### **Alignment: Intruder (Killing)**
-
-The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
-When they are the only remaining Intruder, they will have their kill cooldown shortened.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Underdog | The percentage probability of the Underdog appearing | Percentage | 0% |
-| Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
-| Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when 2+ Imps are alive | Toggle | True |
+| Time Master | The percentage probability of the Time Master appearing | Percentage | 0% |
+| Time Master Count | How many Time Masters should spawn in Custom Mode | Number | 1 |
+| Freeze Cooldown | The cooldown of the Time Master's freeze button | Time | 25s |
+| Freeze Duration | How long the time freeze lasts for | Time | 10s |
 
 ## Undertaker
 ### **Alignment: Intruder (Concealing)**
 
-The Undertaker is an Intruder that can drag and drop bodies and hide them in vents.
+The Undertaker can drag, drop bodies and hide them in vents.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Undertaker | The percentage probability of the Undertaker appearing | Percentage | 0% |
+| Undertaker Count | How many Undertakers should spawn in Custom Mode | Number | 1 |
 | Undertaker Drag Cooldown | The cooldown of the Undertaker Drag ability | Time | 25s |
-| Undertaker can Vent | Whether the Undertaker can Vent | Toggle | False |
-| Undertaker can Vent while Dragging | Whether the Undertaker can Vent when they are Dragging a Body | Toggle | False |
-| Undertaker can  Hide Bodies In Vents | Whether the Undertaker can hide bodies in vents, making them difficult to be found | Toggle | False |
+| Undertaker can Vent | Whether the Undertaker can Vent | Never / Body / Bodyless / Always | Never |
+| Drag Speed | How fast will the Undertaker become when dragging a body | Factor | x0.5 |
 
 ## Wraith
 ### **Alignment: Intruder (Deception)**
 
-The Wraith is an Intruder that can temporarily turn invisible.
+The Wraith can temporarily turn invisible.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Wraith | The percentage probability of the Wraith appearing | Percentage | 0% |
+| Wraith Count | How many Wraiths should spawn in Custom Mode | Number | 1 |
 | Wraith Cooldown | The cooldown of the Wraith's Swoop button | Time | 25s |
 | Wraith Duration | How long the Invisibility lasts for | Time | 10s |
 | Wraith can Vent | Whether the Wraith can Vent | Toggle | False |
 
 -----------------------
 
-# Intruder Roles
+# Syndicate Roles
 
-## Blackmailer
-### **Alignment: Intruder (Concealing)**
+## Anarchist
+### **Alignment: Syndicate (Utility)**
 
 -----------------------
 
@@ -1422,6 +1431,35 @@ However, when they only have a single task left, the Impostors get an arrow poin
 | Snitch Sees Traitor | Whether the Snitch sees the Traitor | Toggle | True |
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
 | Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
+
+## Traitor
+### **Alignment: Intruder (Support)**
+
+If all Intruders die before a certain point in the game, a random Crewmate is selected to become the Traitor.
+The Traitor has no additional abilities and their job is simply to avenge the dead Intruders.
+Once this player has turned into the Traitor their alliance sits with the Intruders.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Traitor | The percentage probability of the Traitor appearing | Percentage | 0% |
+| Latest Spawn | The minimum number of people alive when a Traitor can spawn | Number | 5 |
+| Traitor Won't Spawn if Neutral Killing are Alive | Whether the Traitor won't spawn if any Neutral Killing roles are alive | Toggle | False |
+
+## Underdog
+### **Alignment: Intruder (Killing)**
+
+The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
+When they are the only remaining Intruder, they will have their kill cooldown shortened.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Underdog | The percentage probability of the Underdog appearing | Percentage | 0% |
+| Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
+| Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when 2+ Imps are alive | Toggle | True |
 
 -----------------------
 

@@ -13,12 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public bool Revealed;
         public bool CompletedTasks;
         public bool Faded;
-        public bool HauntWin;
-
         public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
-
         public List<PlayerControl> RevealerTargets = new List<PlayerControl>();
-
         public List<ArrowBehaviour> RevealerArrows = new List<ArrowBehaviour>();
 
         public Revealer(PlayerControl player) : base(player)

@@ -450,7 +450,7 @@ namespace TownOfUsReworked.Extensions
                     target.myTasks.Insert(0, importantTextTask);
                 }
 
-                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster))
+                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Freezer))
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
                 else
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));

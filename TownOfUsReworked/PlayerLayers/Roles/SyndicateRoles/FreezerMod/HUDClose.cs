@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
@@ -14,10 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
                 return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Poisoner))
+            foreach (var role in Role.GetRoles(RoleEnum.Freezer))
             {
-                var role2 = (Poisoner) role;
-                role2.LastPoisoned = DateTime.UtcNow;
+                var role2 = (Freezer) role;
+                role2.LastFrozen = DateTime.UtcNow;
             }
         }
     }
