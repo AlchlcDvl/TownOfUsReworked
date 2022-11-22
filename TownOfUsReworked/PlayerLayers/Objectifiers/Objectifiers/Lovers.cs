@@ -13,6 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Lovers : Objectifier
     {
+        public Lovers OtherLover { get; set; }
+        public PlayerControl OtherLoverPlayer { get; set; }
+        public bool LoveCoupleWins { get; set; }
+        public int Num { get; set; }
+
         public Lovers(PlayerControl player) : base(player)
         {
             Name = "Lover";
@@ -22,11 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             ObjectifierType = ObjectifierEnum.Lovers;
             AddToObjectifierHistory(ObjectifierType);
         }
-
-        public Lovers OtherLover { get; set; }
-        public PlayerControl OtherLoverPlayer { get; set; }
-        public bool LoveCoupleWins { get; set; }
-        public int Num { get; set; }
 
         public List<PlayerControl> GetTeammates()
         {

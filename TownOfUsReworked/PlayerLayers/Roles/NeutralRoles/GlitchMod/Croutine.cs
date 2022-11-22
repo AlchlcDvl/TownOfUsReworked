@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     PlayerControl.LocalPlayer.myTasks.Remove(mimicText);
                     __instance.LastMimic = DateTime.UtcNow;
                     __instance.MimicTarget = null;
-                    Utils.Unmorph(__instance.Player);
+                    Utils.DefaultOutfit(__instance.Player);
 
                     SoundManager.Instance.PlaySound(TownOfUsReworked.GlitchWin, false, 0.4f);
 

@@ -33,10 +33,11 @@ namespace TownOfUsReworked.Patches
                         builder.Append(new StringBuilder(__result));
                     }
 
-                    if (option.Type == CustomOptionType.Button)
+                    if (option.Type == CustomOptionType.Button | option.Type == CustomOptionType.Tab)
                         continue;
-
-                    if (option.Type == CustomOptionType.Header)
+                    else if (option.ID == -1)
+                        continue;
+                    else if (option.Type == CustomOptionType.Header)
                         builder.AppendLine($"\n{option.Name}");
                     else if (option.Indent)
                         builder.AppendLine($"   {option.Name}: {option}");

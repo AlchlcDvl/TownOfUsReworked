@@ -101,26 +101,16 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
             if (max > min)
             {
                 if (g == max)
-                {
                     ret.h = (b - r) / dif * 60f + 120f;
-                }
                 else if (b == max)
-                {
                     ret.h = (r - g) / dif * 60f + 240f;
-                }
                 else if (b > g)
-                {
                     ret.h = (g - b) / dif * 60f + 360f;
-                }
                 else
-                {
                     ret.h = (g - b) / dif * 60f;
-                }
 
                 if (ret.h < 0)
-                {
                     ret.h = ret.h + 360f;
-                }
             }
             else
                 ret.h = 0;
@@ -232,10 +222,13 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
                 else
                 {
                     var angle = Mathf.LerpAngle(a.h * 360f, b.h * 360f, t);
+
                     while (angle < 0f)
                         angle += 360f;
+
                     while (angle > 360f)
                         angle -= 360f;
+                        
                     h = angle / 360f;
                 }
 

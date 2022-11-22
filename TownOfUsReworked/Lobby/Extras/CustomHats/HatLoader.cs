@@ -111,7 +111,6 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
             TownOfUsReworked.LoadImage(tex2D, mainImg, false);
             var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
 
-
             var hat = ScriptableObject.CreateInstance<HatData>();
             var a = new HatViewData();
             var b = new AddressableLoadWrapper<HatViewData>();

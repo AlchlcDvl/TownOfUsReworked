@@ -70,6 +70,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
                 (StringNames)999943,//"Purple Plumber",
                 (StringNames)999999,//"Rainbow",
             };
+
             Palette.PlayerColors = new[]
             {
                 new Color32(198, 17, 17, byte.MaxValue),
@@ -134,6 +135,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
                 new Color32(55, 7, 109, byte.MaxValue),
                 new Color32(10, 10, 10, byte.MaxValue),
             };
+            
             Palette.ShadowColors = new[]
             {
                 new Color32(122, 8, 56, byte.MaxValue),

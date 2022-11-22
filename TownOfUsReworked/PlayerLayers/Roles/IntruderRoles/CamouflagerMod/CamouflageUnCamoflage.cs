@@ -50,6 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                             }
 
                             break;
+                            
                         case 1:
                             var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
                             
@@ -67,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 if (CommsEnabled)
                 {
                     CommsEnabled = false;
-                    Utils.UnCamouflage();
+                    Utils.DefaultOutfitAll();
                 }
             }
         }

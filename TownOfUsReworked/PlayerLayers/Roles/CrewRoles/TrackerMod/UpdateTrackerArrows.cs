@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;

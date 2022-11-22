@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
@@ -20,7 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             {
                 if (player.PlayerId == ((Executioner)role).target.PlayerId)
                 {
-                    __instance.completeString = "You feel a sense of dread during the ejection. The Executioner has won!";
+                    if (CustomGameOptions.JestEjectScreen)
+                        __instance.completeString = "You feel a sense of dread during the ejection. The <color=#CCCCCCFF>Executioner</color> has won!";
+
                     ((Executioner)role).Wins();
                 }
             }        

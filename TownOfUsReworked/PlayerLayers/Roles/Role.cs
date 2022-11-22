@@ -18,6 +18,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -117,8 +118,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance) {}
 
-        protected virtual void IntroFactionPrefix(IntroCutscene._CoBegin_d__19 __instance) {}
-
         public static void NobodyWinsFunc()
         {
             NobodyWins = true;
@@ -145,7 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (role == null)
                         return false;
 
-                    var flag2 = role.Faction == Faction.Neutral && !(x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralPower));
+                    var flag2 = role.Faction == Faction.Neutral && x.Is(RoleAlignment.NeutralBen);
 
                     return flag2;
                 });
@@ -193,6 +192,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -201,12 +201,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return true;
         }
 
-        protected virtual string NameText(PlayerVoteArea player = null)
+        protected virtual string NameText(PlayerVoteArea player)
         {
             if (Player == null)
                 return "";
 
-            if (CamouflageUnCamouflage.IsCamoed && player == null)
+            if (CamouflageUnCamouflage.IsCamoed | player == null)
                 return "";
 
             string PlayerName = Player.GetDefaultOutfit().PlayerName;
@@ -425,7 +425,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return AllRoles.Where(x => x.RoleType == roletype);
         }
 
-        public static IEnumerable<Role> GetFactions(Faction faction)
+        public static IEnumerable<Role> GetRoles(Faction faction)
         {
             return AllRoles.Where(x => x.Faction == faction);
         }
@@ -695,29 +695,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         return true;
                 }
 
-                if (GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) return true;
+                if (GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks)
+                    return true;
 
                 var result = true;
 
                 foreach (var role in AllRoles)
                 {
                     var roleIsEnd = role.EABBNOODFGL(__instance);
-                    var modifier = Modifier.GetModifier(role.Player);
-                    bool modifierIsEnd = true;
+                    var objectifier = Modifier.GetModifier(role.Player);
+                    bool objectifierEnd = true;
                     var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var impsAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Data.IsImpostor()).ToList();
-                    var traitorIsEnd = true;
 
-                    if (SetTraitor.WillBeTraitor != null)
-                    {
-                        traitorIsEnd = SetTraitor.WillBeTraitor.Data.IsDead | SetTraitor.WillBeTraitor.Data.Disconnected |
-                            alives.Count < CustomGameOptions.LatestSpawn | impsAlive.Count * 2 >= alives.Count;
-                    }
+                    if (objectifier != null)
+                        objectifierEnd = objectifier.EABBNOODFGL(__instance);
 
-                    if (modifier != null)
-                        modifierIsEnd = modifier.EABBNOODFGL(__instance);
-
-                    if (!roleIsEnd | !modifierIsEnd | !traitorIsEnd)
+                    if (!roleIsEnd | !objectifierEnd)
                         result = false;
                 }
 
@@ -848,10 +842,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
 
                     var role = GetRole(player);
+                    var voteArea = Utils.GetVoteAreaFromPlayer(player);
 
                     if (role != null)
                     {
-                        player.nameText().text = role.NameText();
+                        player.nameText().text = role.NameText(voteArea);
                         player.nameText().color = role.Color;
                     }
 

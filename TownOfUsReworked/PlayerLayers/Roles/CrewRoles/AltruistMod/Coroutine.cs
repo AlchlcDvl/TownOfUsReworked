@@ -111,8 +111,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Minigame.Instance.Close();
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsImpostor() | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) |
-                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralChaos) | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPower))
+            if (PlayerControl.LocalPlayer.Data.IsImpostor() | !(PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) |
+                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil)))
             {
                 var gameObj = new GameObject();
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();

@@ -85,7 +85,8 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Rebel = new Color32(255, 252, 206, 255); //#FFFCCEFF
         public readonly static Color32 Sidekick = new Color32(151, 156, 159, 255); //#979C9FFF
         public readonly static Color32 Concealer = new Color32(192, 37, 37, 255); //#C02525FF
-        public readonly static Color32 Freezer = new Color32(126, 77, 0, 255); //#7E4D00FF
+        public readonly static Color32 Gorgon = new Color32(126, 77, 0, 255); //#7E4D00FF
+        public readonly static Color32 Shapeshifter = new Color32(49, 28, 69, 255); //#311C45FF
 
         //Modifier Colors
         public readonly static Color32 Bait = new Color32(0, 179, 179, 255); //#00B3B3FF
@@ -134,7 +135,7 @@ namespace TownOfUsReworked.Patches
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d #F6AAB7
         //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731 #aab43e
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #1002c5 #612bef #45076a #e7dae2 #8d0f8c
-        //#311C45 #EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
+        //#EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
         //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2
     }
 }

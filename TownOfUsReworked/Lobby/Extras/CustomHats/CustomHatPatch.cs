@@ -24,6 +24,7 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
             {
                 if (!hatGroups.ContainsKey(hat.StoreName))
                     hatGroups[hat.StoreName] = new List<HatData>();
+
                 hatGroups[hat.StoreName].Add(hat);
             }
 
@@ -51,6 +52,7 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
                 float yLerp = __instance.YStart - (hatIdx / __instance.NumPerRow) * __instance.YOffset;
                 text.transform.localPosition = new Vector3(xLerp, yLerp, -1f);
                 hatIdx += 5;
+
                 foreach (var hat in hats.OrderBy(HatManager.Instance.allHats.IndexOf))
                 {
                     float num = __instance.XRange.Lerp(hatIdx % __instance.NumPerRow / (__instance.NumPerRow - 1f));
@@ -60,10 +62,10 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
                     colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectHat(hat)));
                     colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : (int)DataManager.Player.Customization.Color);
                     colorChip.Inner.transform.localPosition = hat.ChipOffset + new Vector2(0f, -0.3f);
+
                     if (SubmergedCompatibility.Loaded)
-                    {
                         colorChip.gameObject.transform.Find("HatParent").transform.localPosition = new Vector3(-0.1f, 0.05f, -2);
-                    }
+                        
                     colorChip.Tag = hat;
                     __instance.ColorChips.Add(colorChip);
                     hatIdx += 1;

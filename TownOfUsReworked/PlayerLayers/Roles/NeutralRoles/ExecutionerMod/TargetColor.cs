@@ -4,9 +4,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
@@ -112,7 +109,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             else
             {
                 var crew = new Crewmate(player);
-                var task = new GameObject("CrewTask").AddComponent<ImportantTextTask>();
+                var task = new GameObject("CrewmateTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
                 task.Text = $"{crew.ColorString}Role: {crew.Name}\nYour target was killed. Now you side with the Crew!";
                 player.myTasks.Insert(0, task);

@@ -117,7 +117,8 @@ namespace TownOfUsReworked.Patches
                     (playerControl.Is(ObjectifierEnum.Phantom) && playerControl.Data.IsDead))
                     summary += " | " + playerTasksDone + "/" + TotalTasks;
 
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName = playerControl.Data.PlayerName, Role = summary});
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName =
+                    playerControl.Data.PlayerName, Role = summary});
             }
         }
     }

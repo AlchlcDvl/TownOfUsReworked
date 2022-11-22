@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     {
         public RoleEnum formerRole = new RoleEnum();
         public Role former;
-        public bool Turned;
+        public bool Turned = false;
 
         public Fanatic(PlayerControl player) : base(player)
         {

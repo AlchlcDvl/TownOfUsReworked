@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TownOfUsReworked.Extensions
 {
-    public static class DefinedLists
+    public static class Lists
     {
         public static List<Role> NeutralKillers = new List<Role>();
         public static List<Role> NeutralNeophytes = new List<Role>();
@@ -13,12 +13,16 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> NeutralEvils = new List<Role>();
         public static List<Role> NeutralBenigns = new List<Role>();
         public static List<Role> Neutrals = new List<Role>();
+
+        public static List<Role> Vampires = new List<Role>();
+
         public static List<Role> IntruderKillers = new List<Role>();
         public static List<Role> IntruderSupporters = new List<Role>();
         public static List<Role> IntruderDecievers = new List<Role>();
         public static List<Role> IntruderConcealers = new List<Role>();
         public static List<Role> IntruderUtility = new List<Role>();
         public static List<Role> Intruders = new List<Role>();
+
         public static List<Role> CrewUtility = new List<Role>();
         public static List<Role> CrewInvestigators = new List<Role>();
         public static List<Role> CrewSupporters = new List<Role>();
@@ -27,14 +31,16 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> CrewProtectors = new List<Role>();
         public static List<Role> CrewCheckers = new List<Role>();
         public static List<Role> Crew = new List<Role>();
+
         public static List<Role> SyndicateUtility = new List<Role>();
         public static List<Role> SyndicatePowers = new List<Role>();
         public static List<Role> SyndicateKillers = new List<Role>();
         public static List<Role> SyndicateSupporters = new List<Role>();
         public static List<Role> SyndicateDisruptors = new List<Role>();
         public static List<Role> Syndicate = new List<Role>();
-        public static List<Role> Others = new List<Role>();
+
         public static List<Role> AllRoles = new List<Role>();
+        
         public static List<AudioClip> Sounds = new List<AudioClip>();
         
         public static void Prefix()
@@ -64,14 +70,17 @@ namespace TownOfUsReworked.Extensions
                 {
                     if (role.RoleAlignment == RoleAlignment.NeutralBen)
                         NeutralBenigns.Add(role);
-                    else if (role.RoleAlignment == RoleAlignment.NeutralChaos)
+                    else if (role.RoleAlignment == RoleAlignment.NeutralNeo)
                         NeutralNeophytes.Add(role);
                     else if (role.RoleAlignment == RoleAlignment.NeutralEvil)
                         NeutralEvils.Add(role);
                     else if (role.RoleAlignment == RoleAlignment.NeutralKill)
                         NeutralKillers.Add(role);
-                    else if (role.RoleAlignment == RoleAlignment.NeutralPower)
+                    else if (role.RoleAlignment == RoleAlignment.NeutralPros)
                         NeutralProselytes.Add(role);
+                    
+                    if (role.SubFaction == SubFaction.Vampires)
+                        Vampires.Add(role);
                     
                     Neutrals.Add(role);
                 }
@@ -105,8 +114,6 @@ namespace TownOfUsReworked.Extensions
                     
                     Intruders.Add(role);
                 }
-                else if (role.Faction == Faction.Other)
-                    Others.Add(role);
 
                 AllRoles.Add(role);
             }
@@ -146,6 +153,19 @@ namespace TownOfUsReworked.Extensions
             Sounds.Add(TownOfUsReworked.IntruderWin);
             Sounds.Add(TownOfUsReworked.CrewWin);
             Sounds.Add(TownOfUsReworked.MorphlingIntro);
+            Sounds.Add(TownOfUsReworked.AgentIntro);
+            Sounds.Add(TownOfUsReworked.AmnesiacIntro);
+            Sounds.Add(TownOfUsReworked.BloodlustSound);
+            Sounds.Add(TownOfUsReworked.GlitchIntro);
+            Sounds.Add(TownOfUsReworked.WarperIntro);
+            Sounds.Add(TownOfUsReworked.GodfatherIntro);
+            Sounds.Add(TownOfUsReworked.CoronerIntro);
+            Sounds.Add(TownOfUsReworked.ShifterIntro);
+            Sounds.Add(TownOfUsReworked.StabSound);
+            Sounds.Add(TownOfUsReworked.IgniteSound);
+            Sounds.Add(TownOfUsReworked.InteractSound);
+            Sounds.Add(TownOfUsReworked.ShootingSound);
+            Sounds.Add(TownOfUsReworked.TimeFreezeSound);
             Sounds.Add(TownOfUsReworked.KillSFX);
         }
     }

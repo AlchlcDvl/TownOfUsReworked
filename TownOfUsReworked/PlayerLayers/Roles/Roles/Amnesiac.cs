@@ -29,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.EngiAmneThiefCann;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             SubFaction = SubFaction.None;
+            IntroSound = TownOfUsReworked.AmnesiacIntro;
             AddToRoleHistory(RoleType);
         }
 

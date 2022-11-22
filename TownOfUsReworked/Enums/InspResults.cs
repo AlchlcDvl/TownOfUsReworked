@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Enums
         ArsoCryoPBOpTroll,
         CoroJaniUTMed,
         TrackAltTLTM,
-        Conceal,
+        ConcealGorg,
 
         None
     }

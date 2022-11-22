@@ -132,8 +132,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.Convert, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Convert,
+                    SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -148,10 +148,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
         {
             var role = Utils.GetRole(other);
             var roleVal = Role.GetRoleValue(role);
-            var tm2 = Role.GetRole<Taskmaster>(other);
+            var tm = Role.GetRole<Taskmaster>(other);
             var drac = dracRole.Player;
             var ability = Utils.GetAbility(other);
+
             var convert = false;
+            var convertNeut = false;
 
             switch (role)
             {
@@ -174,6 +176,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Operative:
                 case RoleEnum.Detective:
                 case RoleEnum.Shifter:
+
+                    convert = true;
+
+                    break;
+
                 case RoleEnum.Amnesiac:
                 case RoleEnum.Survivor:
                 case RoleEnum.Jester:
@@ -193,12 +200,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.SerialKiller:
                 case RoleEnum.Arsonist:
 
-                    convert = true;
+                    convertNeut = true;
 
                     break;
             }
 
-            if (convert == true && CustomGameOptions.DraculaConvertNeuts)
+            if (convertNeut == true && CustomGameOptions.DraculaConvertNeuts)
             {
                 if (roleVal.RoleAlignment != RoleAlignment.NeutralKill)
                 {
@@ -216,7 +223,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         can.BodyArrows.Clear();
                         can.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
                     }
-                    else if (role == RoleEnum.Taskmaster && tm2.TasksLeft <= CustomGameOptions.TMTasksRemaining)
+                    else if (role == RoleEnum.Taskmaster && tm.TasksLeft <= CustomGameOptions.TMTasksRemaining)
                     {
                         Utils.RpcMurderPlayer(drac, other);
                         return;
@@ -233,38 +240,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             }
             else if (convert == true && ability != AbilityEnum.Snitch)
             {
-                if (role == RoleEnum.Investigator)
+                if (roleVal.RoleAlignment != RoleAlignment.CrewKill)
                 {
-                    var invRole = Role.GetRole<Investigator>(drac);
-                    Footprint.DestroyAll(invRole);
-                }
-                else if (role == RoleEnum.Tracker)
-                {
-                    var trackerRole = Role.GetRole<Tracker>(drac);
-                    trackerRole.TrackerArrows.Values.DestroyAll();
-                    trackerRole.TrackerArrows.Clear();
-                    trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
-                }
-                else if (role == RoleEnum.Coroner)
-                {
-                    var coronerRole = Role.GetRole<Coroner>(drac);
-                    coronerRole.BodyArrows.Values.DestroyAll();
-                    coronerRole.BodyArrows.Clear();
-                    DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-                }
-                else if (role == RoleEnum.Operative)
-                {
-                    var opRole = Role.GetRole<Operative>(drac);
-                    opRole.UsesLeft = CustomGameOptions.MaxBugs;
-                    opRole.buggedPlayers.Clear();
-                    opRole.bugs.ClearBugs();
-                }
+                    if (role == RoleEnum.Investigator)
+                    {
+                        var invRole = Role.GetRole<Investigator>(drac);
+                        Footprint.DestroyAll(invRole);
+                    }
+                    else if (role == RoleEnum.Tracker)
+                    {
+                        var trackerRole = Role.GetRole<Tracker>(drac);
+                        trackerRole.TrackerArrows.Values.DestroyAll();
+                        trackerRole.TrackerArrows.Clear();
+                        trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
+                    }
+                    else if (role == RoleEnum.Coroner)
+                    {
+                        var coronerRole = Role.GetRole<Coroner>(drac);
+                        coronerRole.BodyArrows.Values.DestroyAll();
+                        coronerRole.BodyArrows.Clear();
+                        DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
+                    }
+                    else if (role == RoleEnum.Operative)
+                    {
+                        var opRole = Role.GetRole<Operative>(drac);
+                        opRole.UsesLeft = CustomGameOptions.MaxBugs;
+                        opRole.buggedPlayers.Clear();
+                        opRole.bugs.ClearBugs();
+                    }
 
-                new Vampire(other);
-
-                //Role.RoleDictionary.Add(drac.PlayerId, newRole);
-                dracRole.AddToRoleHistory(dracRole.RoleType);
+                    Role.RoleDictionary.Remove(other.PlayerId);
+                    new Vampire(other);
+                }
+                else
+                {
+                    Role.RoleDictionary.Remove(other.PlayerId);
+                    new Dampyr(other);
+                }
             }
+            else if (other.Is(RoleEnum.VampireHunter))
+                Utils.RpcMurderPlayer(other, drac);
             else
                 Utils.RpcMurderPlayer(drac, other);
             

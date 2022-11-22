@@ -40,12 +40,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
 
-            var playerId = role.CurrentTarget.ParentId;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CannibalEat,
-                SendOption.Reliable, -1);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            unchecked
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CannibalEat,
+                    SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(role.CurrentTarget.ParentId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            
             //SoundManager.Instance.PlaySound(TownOfUsReworked.EatSound, false, 0.4f);
 
             role.LastEaten = DateTime.UtcNow;

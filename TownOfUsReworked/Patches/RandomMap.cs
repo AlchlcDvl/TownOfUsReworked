@@ -173,7 +173,7 @@ namespace TownOfUsReworked.Patches
             Generate.DragCooldown.Set((float)Generate.DragCooldown.Value + change, false);
             Generate.JanitorCleanCd.Set((float)Generate.JanitorCleanCd.Value + change, false);
             Generate.DisguiseCooldown.Set((float)Generate.DisguiseCooldown.Value + change, false);
-            Generate.FreezerCooldown.Set((float)Generate.FreezerCooldown.Value + change, false);
+            Generate.GazeCooldown.Set((float)Generate.GazeCooldown.Value + change, false);
             Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change, false);
             Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change, false);
             

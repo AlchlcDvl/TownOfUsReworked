@@ -17,6 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         private Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>();
         public Dictionary<string, Color> SortedColorMapping;
         public Dictionary<byte, string> Guesses = new Dictionary<byte, string>();
+        public bool GuessedThisMeeting { get; set; } = false;
+        public int RemainingKills { get; set; }
+        public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
 
         public Assassin(PlayerControl player) : base(player)
         {
@@ -83,6 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.PuppeteerOn > 0) ColorMapping.Add("Puppeteer", Colors.Puppeteer);
                 if (CustomGameOptions.WarperOn > 0) ColorMapping.Add("Warper", Colors.Warper);
                 if (CustomGameOptions.ConcealerOn > 0) ColorMapping.Add("Concealer", Colors.Concealer);
+                if (CustomGameOptions.GorgonOn > 0) ColorMapping.Add("Gorgon", Colors.Gorgon);
                 if (CustomGameOptions.RebelOn > 0)
                 {
                     ColorMapping.Add("Rebel", Colors.Rebel);
@@ -121,6 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ExecutionerOn > 0) ColorMapping.Add("Executioner", Colors.Executioner);
                 if (CustomGameOptions.TaskmasterOn > 0) ColorMapping.Add("Tasmaster", Colors.Taskmaster);
                 if (CustomGameOptions.CryomaniacOn > 0) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
+                //if (CustomGameOptions.PirateOn > 0) ColorMapping.Add("Pirate", Colors.Pirate);
                 if (CustomGameOptions.TrollOn > 0) ColorMapping.Add("Troll", Colors.Troll);
                 if (CustomGameOptions.JesterOn > 0 | (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester) | (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester)) ColorMapping.Add("Jester", Colors.Jester);
             }
@@ -130,6 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             {
                 if (CustomGameOptions.BaitOn > 0) ColorMapping.Add("Bait", Colors.Modifier);
                 if (CustomGameOptions.DiseasedOn > 0) ColorMapping.Add("Diseased", Colors.Modifier);
+                if (CustomGameOptions.ProfessionalOn > 0) ColorMapping.Add("Professional", Colors.Professional);
             }
 
             if (CustomGameOptions.AssassinGuessObjectifiers)
@@ -145,10 +151,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.AssassinOn > 0) ColorMapping.Add("Assassin", Colors.Assassin);
                 if (CustomGameOptions.TorchOn > 0) ColorMapping.Add("Torch", Colors.Torch);
                 if (CustomGameOptions.LighterOn > 0) ColorMapping.Add("Lighter", Colors.Lighter);
-                if (CustomGameOptions.RevealerOn > 0) ColorMapping.Add("Revealer", Colors.Revealer);
                 if (CustomGameOptions.UnderdogOn > 0) ColorMapping.Add("Underdog", Colors.Underdog);
                 if (CustomGameOptions.RadarOn > 0) ColorMapping.Add("Radar", Colors.Radar);
-                if (CustomGameOptions.ProfessionalOn > 0) ColorMapping.Add("Professional", Colors.Professional);
                 if (CustomGameOptions.TiebreakerOn > 0) ColorMapping.Add("Tiebreaker", Colors.Tiebreaker);
                 if (CustomGameOptions.MultitaskerOn > 0) ColorMapping.Add("Multitasker", Colors.Multitasker);
                 if (CustomGameOptions.TunnelerOn > 0) ColorMapping.Add("Tunneler", Colors.Tunneler);
@@ -158,9 +162,5 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             //Sorts the list alphabetically. 
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
-
-        public bool GuessedThisMeeting { get; set; } = false;
-        public int RemainingKills { get; set; }
-        public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
     }
 }

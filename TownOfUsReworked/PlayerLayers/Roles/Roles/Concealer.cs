@@ -3,6 +3,8 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
+using Hazel;
+using System.Linq;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 
@@ -15,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastConcealed { get; set; }
         public float TimeRemaining;
         public bool Concealed => TimeRemaining > 0f;
+        public bool SyndicateWin;
 
         public Concealer(PlayerControl player) : base(player)
         {
@@ -31,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Cause choas and kill your opposition";
             CoronerDeadReport = $"The camouflage suit indicate that this body is a Camouflager!";
             CoronerKillerReport = "There are marks of grey paint on the body. They were killed by a Camouflager!";
-            Results = InspResults.Conceal;
+            Results = InspResults.ConcealGorg;
             SubFaction = SubFaction.None;
             AddToRoleHistory(RoleType);
         }
@@ -58,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = false;
             LastConcealed = DateTime.UtcNow;
-            Utils.UnConceal();
+            Utils.DefaultOutfitAll();
         }
 
         public float ConcealTimer()
@@ -84,6 +87,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     synTeam.Add(player);
             }
             __instance.teamToShow = synTeam;
+        }
+
+        public void Wins()
+        {
+            SyndicateWin = true;
+        }
+
+        public void Loses()
+        {
+            LostByRPC = true;
+        }
+
+        internal override bool EABBNOODFGL(ShipStatus __instance)
+        {
+            if (Player.Data.IsDead | Player.Data.Disconnected)
+                return true;
+
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
+                (x.Data.IsImpostor() | x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) |
+                x.Is(RoleAlignment.NeutralPros))) == 0)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
+                    SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return false;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Enums
         Dampyr,
         Dracula,
         Other,
-        Freezer,
+        Gorgon,
         
         None
     }

@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 {

@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                     phantom.Fade();
                 else if (phantom.Faded)
                 {
-                    Utils.Unmorph(phantom.Player);
+                    Utils.DefaultOutfit(phantom.Player);
                     phantom.Player.myRend().color = Color.white;
                     phantom.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     phantom.Faded = false;

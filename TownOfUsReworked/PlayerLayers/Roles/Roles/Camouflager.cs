@@ -5,6 +5,8 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
+using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -15,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastCamouflaged { get; set; }
         public float TimeRemaining;
         public bool Camouflaged => TimeRemaining > 0f;
+        public bool IntruderWin;
 
         public Camouflager(PlayerControl player) : base(player)
         {
@@ -28,11 +31,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = () => "Intruder (Concealing)";
-            IntroText = "Kill those who oppose you";
+            IntroText = "Kill those who opposes you";
             CoronerDeadReport = $"The camouflage suit indicate that this body is a Camouflager!";
             CoronerKillerReport = "There are marks of grey paint on the body. They were killed by a Camouflager!";
             Results = InspResults.DisgMorphCamoAgent;
             SubFaction = SubFaction.None;
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -58,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = false;
             LastCamouflaged = DateTime.UtcNow;
-            Utils.UnCamouflage();
+            Utils.DefaultOutfitAll();
         }
 
         public float CamouflageTimer()
@@ -84,6 +88,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     intTeam.Add(player);
             }
             __instance.teamToShow = intTeam;
+        }
+
+        public void Wins()
+        {
+            IntruderWin = true;
+        }
+
+        public void Loses()
+        {
+            LostByRPC = true;
+        }
+
+        internal override bool EABBNOODFGL(ShipStatus __instance)
+        {
+            if (Player.Data.IsDead | Player.Data.Disconnected)
+                return true;
+
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
+                (x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
+                    SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return false;
         }
     }
 }

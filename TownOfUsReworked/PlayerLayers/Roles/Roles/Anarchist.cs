@@ -1,9 +1,11 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using System;
-using TownOfUsReworked.Extensions;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Extensions;
+using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -11,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKill { get; set; }
+        public bool SyndicateWin;
 
         public Anarchist(PlayerControl player) : base(player)
         {
@@ -27,6 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Cause choas and kill your opposition";
             Results = InspResults.CrewImpAnMurd;
             SubFaction = SubFaction.None;
+            CoronerDeadReport = "The body has marked down schematics of the place to plot something sinister. They are an Anarchist";
+            CoronerKillerReport = "The body seems to have been killed in a very rough manner, like an inexperienced killer. They were killed by an Anarchist!";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -53,6 +59,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     synTeam.Add(player);
             }
             __instance.teamToShow = synTeam;
+        }
+
+        public void Wins()
+        {
+            SyndicateWin = true;
+        }
+
+        public void Loses()
+        {
+            LostByRPC = true;
+        }
+
+        internal override bool EABBNOODFGL(ShipStatus __instance)
+        {
+            if (Player.Data.IsDead | Player.Data.Disconnected)
+                return true;
+
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
+                (x.Data.IsImpostor() | x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) |
+                x.Is(RoleAlignment.NeutralPros))) == 0)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
+                    SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return false;
         }
     }
 }

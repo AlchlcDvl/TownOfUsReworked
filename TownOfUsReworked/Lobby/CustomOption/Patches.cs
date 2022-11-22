@@ -86,6 +86,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         option.Setting = toggle2;
                         options.Add(toggle2);
                         break;
+                    case CustomOptionType.Tab:
+                        var tab = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        tab.transform.GetChild(2).gameObject.SetActive(false);
+                        tab.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
+                        option.Setting = tab;
+                        options.Add(tab);
+                        break;
                     case CustomOptionType.Number:
                         var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent);
                         option.Setting = number;
@@ -202,9 +209,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 passiveButton2.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
                 passiveButton2.OnClick.AddListener(ToggleButton(__instance, menug, menugs, 1));
 
-                __instance.RegularGameSettings.GetComponentInChildren<Scrollbar>().parent =
-                    __instance.RegularGameSettings.GetComponentInChildren<Scroller>();
-                __instance.RolesSettings.GetComponentInChildren<Scrollbar>().parent = __instance.RolesSettings.GetComponentInChildren<Scroller>();
+                __instance.RegularGameSettings.GetComponentInChildren<Scrollbar>().parent = __instance.RegularGameSettings.GetComponentInChildren<Scroller>();
             }
 
             private static Sprite GetSettingSprite(int index)
@@ -398,6 +403,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     return false;
 
                 CustomOption option2 = ExportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
+
                 if (option2 is CustomButtonOption button)
                 {
                     if (!AmongUsClient.Instance.AmHost)
@@ -408,6 +414,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 }
 
                 CustomOption option3 = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
+
                 if (option3 is CustomButtonOption button2)
                 {
                     if (!AmongUsClient.Instance.AmHost)
@@ -508,10 +515,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         private class HudManagerUpdate
         {
-            private const float
-                MinX = -5.233334F /*-5.3F*/,
-                OriginalY = 2.9F,
-                MinY = 3F; // Differs to cause excess options to appear cut off to encourage scrolling
+            private const float MinX = -5.233334F /*-5.3F*/, OriginalY = 2.9F, MinY = 3F;
+            // Differs to cause excess options to appear cut off to encourage scrolling
 
             private static Scroller Scroller;
             private static Vector3 LastPosition = new Vector3(MinX, MinY);
@@ -540,7 +545,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
                 Scroller.gameObject.SetActive(__instance.GameSettings.gameObject.activeSelf);
 
-                if (!Scroller.gameObject.active) return;
+                if (!Scroller.gameObject.active)
+                    return;
 
                 var rows = __instance.GameSettings.text.Count(c => c == '\n');
                 var maxY = Mathf.Max(MinY, rows * LobbyTextRowHeight + (rows - 38) * LobbyTextRowHeight);
@@ -563,7 +569,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             private static void CreateScroller(HudManager __instance)
             {
-                if (Scroller != null) return;
+                if (Scroller != null)
+                    return;
 
                 Scroller = new GameObject("SettingsScroller").AddComponent<Scroller>();
                 Scroller.transform.SetParent(__instance.GameSettings.transform.parent);

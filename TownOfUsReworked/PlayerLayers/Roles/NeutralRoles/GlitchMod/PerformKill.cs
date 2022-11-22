@@ -62,11 +62,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     if (role.MimicTimer() != 0)
                         return false;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Morph,
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.MimicTarget.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    unchecked
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Morph,
+                            SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(role.MimicTarget.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                    
                     role.TimeRemaining = CustomGameOptions.MorphlingDuration;
                     Utils.Morph(role.Player, role.MimicTarget);
                     SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 0.4f);

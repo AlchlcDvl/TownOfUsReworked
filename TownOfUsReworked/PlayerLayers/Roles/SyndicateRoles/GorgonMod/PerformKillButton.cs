@@ -7,7 +7,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformKillButton
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Freezer))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Gorgon))
                 return true;
 
             if (!PlayerControl.LocalPlayer.CanMove)
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
             if (!__instance.enabled)
                 return false;
 
-            var role = Role.GetRole<Freezer>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Gorgon>(PlayerControl.LocalPlayer);
 
             if (role.ClosestPlayer == null)
                 return false;
@@ -40,24 +40,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
             
-            if (role.freezeList.ContainsKey(role.ClosestPlayer.PlayerId))
+            if (role.gazeList.ContainsKey(role.ClosestPlayer.PlayerId))
                 return false;
 
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Freeze,
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Gaze,
                     SendOption.Reliable, -1);
                 writer.Write(role.Player.PlayerId);
                 writer.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             
-            role.freezeList.Add(role.ClosestPlayer.PlayerId, 0);
+            role.gazeList.Add(role.ClosestPlayer.PlayerId, 0);
 
             Utils.AirKill(role.Player, role.ClosestPlayer);
             SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.5f);
-            __instance.SetCoolDown(role.Player.killTimer, CustomGameOptions.FreezerCooldown);
-            role.Player.killTimer = CustomGameOptions.FreezerCooldown;
+            __instance.SetCoolDown(role.Player.killTimer, CustomGameOptions.GazeCooldown);
+            role.Player.killTimer = CustomGameOptions.GazeCooldown;
             return false;
         }
     }

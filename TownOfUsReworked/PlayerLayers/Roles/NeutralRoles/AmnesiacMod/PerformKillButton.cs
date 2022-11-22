@@ -95,6 +95,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             var rememberImp = true;
             var rememberNeut = true;
+            var rememberSyn = true;
+            var rememberCrew = true;
 
             Role newRole;
 
@@ -133,6 +135,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
                     rememberImp = false;
                     rememberNeut = false;
+                    rememberSyn = false;
+
+                    break;
+
+                case RoleEnum.Warper:
+                case RoleEnum.Anarchist:
+                case RoleEnum.Gorgon:
+                case RoleEnum.Concealer:
+                case RoleEnum.Rebel:
+                case RoleEnum.Sidekick:
+                case RoleEnum.Puppeteer:
+
+                    rememberImp = false;
+                    rememberNeut = false;
+                    rememberCrew = false;
 
                     break;
 
@@ -159,6 +176,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Cryomaniac:
 
                     rememberImp = false;
+                    rememberSyn = false;
+                    rememberCrew = false;
 
                     break;
             }
@@ -174,43 +193,65 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             Role.RoleDictionary.Remove(amnesiac.PlayerId);
 
-            if (rememberImp == false)
+            if (rememberCrew)
             {
-                if (rememberNeut == false)
-                {
-                    new Crewmate(other);
+                new Crewmate(other);
                     
+                if (CustomGameOptions.AmneTurnAssassin)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
+                        SendOption.Reliable, -1);
+                    writer.Write(amnesiac.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            else if (rememberSyn)
+            {
+                new Anarchist(other);
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    {
+                        var role2 = Role.GetRole(player);
+
+                        if (CustomGameOptions.FactionSeeRoles)
+                            player.nameText().color = role2.Color;
+                        else
+                            player.nameText().color = Colors.Syndicate;
+                    }
+                }
+
+                if (CustomGameOptions.AmneTurnAssassin)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
+                        SendOption.Reliable, -1);
+                    writer.Write(amnesiac.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            else if (rememberNeut)
+            {
+                if (Lists.NeutralKillers.Contains(role))
+                {
                     if (CustomGameOptions.AmneTurnAssassin)
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
+                            SendOption.Reliable, -1);
                         writer.Write(amnesiac.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
                 else
-                {
-                    if (DefinedLists.NeutralKillers.Contains(role))
-                    {
-                        if (!DefinedLists.NeutralKillers.Contains(role))
-                            new Amnesiac(other);
-                        else
-                        {
-                            if (CustomGameOptions.AmneTurnAssassin)
-                            {
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
-                                writer.Write(amnesiac.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            }
-                        }
-                    }
-                }
+                    new Amnesiac(other);
             }
-            else if (rememberImp == true)
+            else if (rememberImp)
             {
                 new Impostor(other);
                 amnesiac.Data.Role.TeamType = RoleTeamTypes.Impostor;
                 RoleManager.Instance.SetRole(amnesiac, RoleTypes.Impostor);
                 amnesiac.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     if (player.Data.IsImpostor() && PlayerControl.LocalPlayer.Data.IsImpostor())
@@ -223,12 +264,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                             player.nameText().color = Colors.Intruder;
                     }
                 }
+
                 if (CustomGameOptions.AmneTurnAssassin)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
+                        SendOption.Reliable, -1);
                     writer.Write(amnesiac.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
                 if (amnesiac.Is(RoleEnum.Poisoner))
                 {
                     if (PlayerControl.LocalPlayer == amnesiac)
@@ -346,6 +390,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 medRole.MediatedPlayers.Clear();
                 medRole.LastMediated = DateTime.UtcNow;
             }
+            else if (roleType == RoleEnum.Werewolf)
+            {
+                var wwRole = Role.GetRole<Werewolf>(amnesiac);
+                wwRole.LastMauled = DateTime.UtcNow;
+            }
             else if (roleType == RoleEnum.Sheriff)
             {
                 var sheriffRole = Role.GetRole<Sheriff>(amnesiac);
@@ -438,7 +487,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             else if (roleType == RoleEnum.Plaguebearer)
             {
                 var plagueRole = Role.GetRole<Plaguebearer>(amnesiac);
-                plagueRole.InfectedPlayers.RemoveRange(0, plagueRole.InfectedPlayers.Count);
                 plagueRole.InfectedPlayers.Add(amnesiac.PlayerId);
                 plagueRole.LastInfected = DateTime.UtcNow;
             }
@@ -480,6 +528,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {
                     var snitchRole = (Snitch)snitch;
+
                     if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();

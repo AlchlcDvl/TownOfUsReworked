@@ -14,7 +14,8 @@ namespace TownOfUsReworked.Patches
             var role = Role.GetRole(__instance);
             var objectifier = Objectifier.GetObjectifier(__instance);
 
-            if (role.Faction != Faction.Crew && (objectifier.ObjectifierType != ObjectifierEnum.Phantom | role.RoleType != RoleEnum.Taskmaster))
+            if (role.Faction != Faction.Crew && ((objectifier.ObjectifierType != ObjectifierEnum.Phantom && __instance.Data.IsDead) |
+                role.RoleType != RoleEnum.Taskmaster))
                 return;
 
             var taskinfos = __instance.Data.Tasks.ToArray();

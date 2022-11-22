@@ -55,6 +55,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
                 999999 => "Rainbow",
                 _ => null
             };
+            
             if (newResult != null)
             {
                 __result = newResult;

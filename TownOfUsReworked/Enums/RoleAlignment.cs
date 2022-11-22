@@ -17,10 +17,10 @@ namespace TownOfUsReworked.Enums
         IntruderUtil,
 
         NeutralKill,
-        NeutralChaos,
+        NeutralNeo,
         NeutralEvil,
         NeutralBen,
-        NeutralPower,
+        NeutralPros,
 
         SyndicateKill,
         SyndicateSupport,

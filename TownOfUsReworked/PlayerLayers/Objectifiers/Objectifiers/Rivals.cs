@@ -13,6 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Rivals : Objectifier
     {
+        public Rivals OtherRival { get; set; }
+        public PlayerControl OtherRivalPlayer { get; set; }
+        public bool RivalWins { get; set; }
+        public int Num { get; set; }
+
         public Rivals(PlayerControl player) : base(player)
         {
             Name = "Rival";
@@ -22,11 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             ObjectifierType = ObjectifierEnum.Rivals;
             AddToObjectifierHistory(ObjectifierType);
         }
-
-        public Rivals OtherRival { get; set; }
-        public PlayerControl OtherRivalPlayer { get; set; }
-        public bool RivalWins { get; set; }
-        public int Num { get; set; }
 
         public List<PlayerControl> GetTeammates()
         {

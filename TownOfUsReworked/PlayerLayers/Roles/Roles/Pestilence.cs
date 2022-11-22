@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
                 (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Pestilence) && !x.Is(RoleEnum.Plaguebearer)) |
-                x.Is(RoleAlignment.NeutralChaos) | x.Is(RoleAlignment.NeutralPower) | x.Is(Faction.Crew))) == 0)
+                x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PestilenceWin,
                     SendOption.Reliable, -1);

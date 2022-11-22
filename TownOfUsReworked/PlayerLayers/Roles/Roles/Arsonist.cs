@@ -36,10 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = () => "Neutral (Killing)";
             IntroText = "Ignite those who oppose you";
             CoronerDeadReport = "There are burn marks and a smell of gasoline. They must be an Arsonist!";
-            CoronerKillerReport = "The bodies have been completely charred. They were torched by an Arsonist!";
+            CoronerKillerReport = "The body have been completely charred. They were torched by an Arsonist!";
             Results = InspResults.ArsoCryoPBOpTroll;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             SubFaction = SubFaction.None;
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -70,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected) return true;
 
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Arsonist)) | x.Is(RoleAlignment.NeutralChaos) | x.Is(RoleAlignment.NeutralPower) |
+                (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Arsonist)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
                 x.Is(Faction.Crew))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArsonistWin,

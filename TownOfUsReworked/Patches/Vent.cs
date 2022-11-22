@@ -1,6 +1,8 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -32,25 +34,29 @@ namespace TownOfUsReworked.Patches
     {
         public static bool CanVent(PlayerControl player, GameData.PlayerInfo playerInfo)
         {
-            var role = Role.GetRole<Undertaker>(player);
+            var undertaker = Role.GetRole<Undertaker>(player);
+            var tunneler = Ability.GetAbility<Tunneler>(player);
             
             if (player.inVent)
                 return true;
 
             if (playerInfo.IsDead)
                 return false;
+            
+            if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
+                return true;
 
             if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone)
                 return false;
-            
-            if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
+                
+            if (player.Is(AbilityEnum.Tunneler) && tunneler.TasksDone)
                 return true;
 
             if ((player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) | (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) |
                 (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) | (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent) |
                 (player.Is(RoleEnum.Poisoner) && !CustomGameOptions.PoisonerVent) | ((player.Is(RoleEnum.Undertaker) &&
-                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Never) || (player.Is(RoleEnum.Undertaker) &&
-                role.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions != UndertakerOptions.Body)))
+                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Never) | (player.Is(RoleEnum.Undertaker) &&
+                undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions != UndertakerOptions.Body)))
                 return false;
 
             if (player.Is(RoleEnum.Engineer) | (player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) | (player.Is(RoleEnum.Glitch) &&
@@ -63,9 +69,9 @@ namespace TownOfUsReworked.Patches
                 (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) | (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) |
                 (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) | (player.Is(RoleEnum.Undertaker) &&
                 CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always) | (player.Is(RoleEnum.Undertaker) &&
-                role.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body) | (player.Is(RoleEnum.Undertaker) &&
-                role.CurrentlyDragging == null && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless) |
-                (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent))
+                undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body) |
+                (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging == null && CustomGameOptions.UndertakerVentOptions ==
+                UndertakerOptions.Bodyless) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent))
                 return true;
 
             if (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust)

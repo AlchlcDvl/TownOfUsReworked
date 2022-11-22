@@ -35,13 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             {
                 role.EatButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.EatButton.graphic.enabled = true;
-                role.EatButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.EatButton.gameObject.SetActive(false);
             }
 
             role.EatButton.GetComponent<AspectPosition>().Update();
-            role.EatButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            role.EatButton.graphic.sprite = TownOfUsReworked.JanitorClean;
+            role.EatButton.graphic.sprite = TownOfUsReworked.CannibalEat;
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
@@ -74,6 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             }
 
             KillButtonTarget.SetTarget(killButton, closestBody, role);
+            killButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
             role.EatButton.SetCoolDown(role.EatTimer(), CustomGameOptions.CannibalCd);
 
             if (CustomGameOptions.EatArrows && !PlayerControl.LocalPlayer.Data.IsDead)

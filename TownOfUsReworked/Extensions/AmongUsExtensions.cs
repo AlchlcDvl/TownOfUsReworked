@@ -6,6 +6,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = System.Object;
 using System;
+using System.Linq;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -15,6 +16,7 @@ namespace TownOfUsReworked.Extensions
         {
             tie = true;
             var result = new KeyValuePair<byte, int>(byte.MaxValue, int.MinValue);
+
             foreach (var keyValuePair in self)
             {
                 if (keyValuePair.Value > result.Value)
@@ -76,6 +78,17 @@ namespace TownOfUsReworked.Extensions
             return playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
         }
 
+        public static bool TasksDone(this GameData.PlayerInfo playerinfo)
+        {
+            var TasksLeft = playerinfo.Tasks.ToArray().Count(x => !x.Complete);
+            return TasksLeft == 0;
+        }
+
+        /*public static bool Sabotaged()
+        {
+            return room.getSabotageTimerIs0();
+        }*/
+
         public static void SetImpostor(this GameData.PlayerInfo playerinfo, bool impostor)
         {
             if (playerinfo.Role != null)
@@ -96,6 +109,7 @@ namespace TownOfUsReworked.Extensions
         public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType CustomOutfitType)
         {
             var outfitType = (PlayerOutfitType)CustomOutfitType;
+            
             if (!playerControl.Data.Outfits.ContainsKey(outfitType))
                 return;
             

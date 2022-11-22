@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (glitch.IsUsingMimic)
                     Utils.Morph(glitch.Player, glitch.MimicTarget);
                 else if (glitch.MimicTarget)
-                    Utils.Unmorph(glitch.Player);
+                    Utils.DefaultOutfit(glitch.Player);
             }
         }
     }

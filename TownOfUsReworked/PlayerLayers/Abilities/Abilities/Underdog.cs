@@ -8,6 +8,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class Underdog : Ability
     {
+        public float MaxTimer => Utils.LastImp() ? PlayerControl.GameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus :
+            (PerformKill.IncreasedKC() ? PlayerControl.GameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus :
+            PlayerControl.GameOptions.KillCooldown);
+
         public Underdog(PlayerControl player) : base(player)
         {
             Name = "Underdog";
@@ -19,13 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             AddToAbilityHistory(AbilityType);
         }
 
-        public float MaxTimer() => Utils.LastImp() ? PlayerControl.GameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus :
-            (PerformKill.IncreasedKC() ? PlayerControl.GameOptions.KillCooldown : PlayerControl.GameOptions.KillCooldown +
-            CustomGameOptions.UnderdogKillBonus);
-
         public void SetKillTimer()
         {
-            Player.SetKillTimer(MaxTimer());
+            Player.SetKillTimer(MaxTimer);
         }
     }
 }

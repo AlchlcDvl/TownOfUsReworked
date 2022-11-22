@@ -29,15 +29,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                 pos = __instance.WinText.transform.localPosition;
                 pos.y = 1.5f;
                 text.transform.position = pos;
-                //text.scale = 0.5f;
+                text.text = $"<size=4>{text.text}</size>";
                 return;
             }
 
-            if (Role.GetRoles(RoleEnum.Jester).Any(x => ((Jester)x).VotedOut)) return;
-            if (Role.GetRoles(RoleEnum.Executioner).Any(x => ((Executioner)x).TargetVotedOut)) return;
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone)) return;
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0)) return;
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks)) return;
+            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+                return;
+
+            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
+                return;
+
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
+                return;
 
             if (!Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Lovers).Any(x => ((Lovers)x).LoveCoupleWins))
                 return;
@@ -68,6 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
             text.transform.position = pos;
+            text.text = $"<size=4>{text.text}</size>";
         }
     }
 }

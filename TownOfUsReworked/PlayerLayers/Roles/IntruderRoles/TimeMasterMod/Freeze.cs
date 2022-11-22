@@ -13,8 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         public static class PlayerPhysics_FixedUpdate
         {
-            public static PlayerPhysics __instance;
-
             public static void FreezeAll()
             {
                 var tm = Role.GetRoleValue<TimeMaster>(RoleEnum.TimeMaster);
@@ -31,13 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 {
                     if (tm.Frozen)
                     {
-                        if (__instance.myPlayer.CanMove && !MeetingHud.Instance && player == __instance.myPlayer && !(__instance.myPlayer.Data.IsDead
-                            | __instance.myPlayer.Data.Disconnected))
+                        if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !(player.Data.IsDead | player.Data.Disconnected))
                         {
-                            __instance.myPlayer.NetTransform.Halt();
-                            
-                            if (__instance.AmOwner)
-                                __instance.body.velocity *= 0;
+                            if (player.MyPhysics.AmOwner)
+                                player.MyPhysics.body.velocity *= 0;
                         }
                     }
                 }
@@ -59,11 +54,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 {
                     if (tm.Frozen)
                     {
-                        if (__instance.myPlayer.CanMove && !MeetingHud.Instance && player == __instance.myPlayer && !(__instance.myPlayer.Data.IsDead
-                            | __instance.myPlayer.Data.Disconnected))
+                        if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && player == player.MyPhysics.myPlayer &&
+                            !(player.MyPhysics.myPlayer.Data.IsDead | player.MyPhysics.myPlayer.Data.Disconnected))
                         {
-                            if (__instance.AmOwner)
-                                __instance.body.velocity = new Vector2(PlayerControl.GameOptions.PlayerSpeedMod, 0f);
+                            if (player.MyPhysics.AmOwner)
+                                player.MyPhysics.body.velocity = new Vector2(PlayerControl.GameOptions.PlayerSpeedMod, 0f);
                         }
                     }
                 }

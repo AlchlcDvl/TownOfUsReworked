@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
@@ -22,8 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 
             if (role.RoleType == RoleEnum.Jester) 
             {
-                __instance.completeString = "You feel a sense of dread during this ejection. The Jester has won!";
-                ((Jester) role).Wins();
+                if (CustomGameOptions.JestEjectScreen)
+                    __instance.completeString = "You feel a sense of dread during this ejection. The <color=#F7B3DAFF>Jester</color> has won!";
+                    
+                ((Jester)role).Wins();
             }
         }
     }

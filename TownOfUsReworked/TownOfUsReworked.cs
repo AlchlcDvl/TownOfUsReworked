@@ -144,6 +144,19 @@ namespace TownOfUsReworked
         public static AudioClip IntruderWin;
         public static AudioClip CrewWin;
         public static AudioClip MorphlingIntro;
+        public static AudioClip AgentIntro;
+        public static AudioClip AmnesiacIntro;
+        public static AudioClip BloodlustSound;
+        public static AudioClip CoronerIntro;
+        public static AudioClip GlitchIntro;
+        public static AudioClip GodfatherIntro;
+        public static AudioClip IgniteSound;
+        public static AudioClip InteractSound;
+        public static AudioClip ShifterIntro;
+        public static AudioClip ShootingSound;
+        public static AudioClip TimeFreezeSound;
+        public static AudioClip WarperIntro;
+        public static AudioClip StabSound;
         public static AudioClip KillSFX;
         
         /*public static Sprite NormalKill;
@@ -247,7 +260,7 @@ namespace TownOfUsReworked
             MeasureSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Measure.png");
             TeleportSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Recall.png");
             MarkSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mark.png");
-            WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Disperse.png");
+            WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Warp.png");
             Placeholder = CreateSprite("TownOfUsReworked.Resources.Buttons.Placeholder.png");
             Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");
 
@@ -326,6 +339,19 @@ namespace TownOfUsReworked
             IntruderWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.IntruderWin.raw");
             CrewWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.CrewWin.raw");
             MorphlingIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            AgentIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            AmnesiacIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            BloodlustSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            CoronerIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            GlitchIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            GodfatherIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            IgniteSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            InteractSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            ShifterIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            ShootingSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            StabSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            TimeFreezeSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            WarperIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
 
             PalettePatch.Load();
@@ -381,29 +407,25 @@ namespace TownOfUsReworked
 
         public static AudioClip LoadAudioClipFromResources(string path, string sfxName = "")
         {
-            if (CustomGameOptions.SFXOn)
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Stream stream = assembly.GetManifestResourceStream(path);
+            var byteAudio = new byte[stream.Length];
+            float[] samples = new float[byteAudio.Length / 4];
+            int offset;
+
+            for (int i = 0; i < samples.Length; i++)
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                Stream stream = assembly.GetManifestResourceStream(path);
-                var byteAudio = new byte[stream.Length];
-                _ = stream.Read(byteAudio, 0, (int)stream.Length);
-                float[] samples = new float[byteAudio.Length / 4];
-                int offset;
-
-                for (int i = 0; i < samples.Length; i++)
-                {
-                    offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
-                }
-
-                int channels = 2;
-                int sampleRate = 48000;
-                AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
-                audioClip.SetData(samples, 0);
-                return audioClip;
+                offset = i * 4;
+                samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
             }
 
-            return null;
+            int channels = 2;
+            int sampleRate = 48000;
+
+            AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
+            audioClip.SetData(samples, 0);
+            
+            return audioClip;
         }
     }
 }

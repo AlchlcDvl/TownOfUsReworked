@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                     haunter.Fade();
                 else if (haunter.Faded)
                 {
-                    Utils.Unmorph(haunter.Player);
+                    Utils.DefaultOutfit(haunter.Player);
                     haunter.Player.myRend().color = Colors.Revealer;
                     haunter.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     haunter.Faded = false;

@@ -17,6 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
+            if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
+                return;
+
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
                 return;
 

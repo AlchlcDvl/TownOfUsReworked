@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var flag2 = role.VigilanteKillTimer() == 0f;
+            var flag2 = role.KillTimer() == 0f;
 
             if (!flag2)
                 return false;

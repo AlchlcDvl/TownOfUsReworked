@@ -1,5 +1,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;

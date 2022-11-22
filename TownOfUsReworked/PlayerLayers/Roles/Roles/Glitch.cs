@@ -61,11 +61,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected) return true;
 
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralChaos) |
-                x.Is(RoleAlignment.NeutralPower) | x.Is(Faction.Crew))) == 0)
+                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralNeo) |
+                x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.GlitchWin, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GlitchWin,
+                    SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -166,8 +166,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                 __instance.KillButton.gameObject.SetActive(__instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance &&
                     !__gInstance.Player.Data.IsDead);
-                __instance.KillButton.SetCoolDown(CustomGameOptions.GlitchKillCooldown -
-                    (float)(DateTime.UtcNow - __gInstance.LastKill).TotalSeconds, CustomGameOptions.GlitchKillCooldown);
+                __instance.KillButton.SetCoolDown(__gInstance.KillTimer(), CustomGameOptions.GlitchKillCooldown);
 
                 __instance.KillButton.SetTarget(null);
                 __gInstance.ClosestPlayer = null;
@@ -183,7 +182,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (__gInstance.ClosestPlayer != null)
                 {
-                    if (__gInstance.Player.inVent) return;
+                    if (__gInstance.Player.inVent)
+                        return;
+
                     if (__gInstance.ClosestPlayer.Is(RoleEnum.Pestilence))
                     {
                         if (__gInstance.Player.IsShielded())
@@ -200,18 +201,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             StopKill.BreakShield(medic, __gInstance.Player.PlayerId,
                                 CustomGameOptions.ShieldBreaks);
                         }
+
                         if (__gInstance.Player.IsProtected())
                         {
                             __gInstance.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
                             return;
                         }
+
                         Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
                         return;
                     }
+
                     if (__gInstance.ClosestPlayer.IsInfected() | __gInstance.Player.IsInfected())
                     {
-                        foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer)) ((Plaguebearer)pb).RpcSpreadInfection(__gInstance.ClosestPlayer, __gInstance.Player);
+                        foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
+                            ((Plaguebearer)pb).RpcSpreadInfection(__gInstance.ClosestPlayer, __gInstance.Player);
                     }
+
                     if (__gInstance.ClosestPlayer.IsOnAlert())
                     {
                         if (__gInstance.ClosestPlayer.IsShielded())
@@ -223,10 +229,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             writer.Write(__gInstance.ClosestPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                            if (CustomGameOptions.ShieldBreaks) __gInstance.LastKill = DateTime.UtcNow;
+                            if (CustomGameOptions.ShieldBreaks)
+                                __gInstance.LastKill = DateTime.UtcNow;
 
-                            StopKill.BreakShield(medic, __gInstance.ClosestPlayer.PlayerId,
-                                CustomGameOptions.ShieldBreaks);
+                            StopKill.BreakShield(medic, __gInstance.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+
                             if (!__gInstance.Player.IsProtected())
                                 Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
                         }
@@ -239,18 +246,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             writer.Write(__gInstance.Player.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                            if (CustomGameOptions.ShieldBreaks) __gInstance.LastKill = DateTime.UtcNow;
+                            if (CustomGameOptions.ShieldBreaks)
+                                __gInstance.LastKill = DateTime.UtcNow;
 
                             StopKill.BreakShield(medic, __gInstance.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                         }
                         else if (__gInstance.ClosestPlayer.IsProtected())
-                        {
                             Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-                        }
                         else
-                        {
                             Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-                        }
 
                         return;
                     }
@@ -263,7 +267,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                         writer.Write(__gInstance.ClosestPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                        if (CustomGameOptions.ShieldBreaks) __gInstance.LastKill = DateTime.UtcNow;
+                        if (CustomGameOptions.ShieldBreaks)
+                            __gInstance.LastKill = DateTime.UtcNow;
 
                         StopKill.BreakShield(medic, __gInstance.ClosestPlayer.PlayerId,
                             CustomGameOptions.ShieldBreaks);
@@ -308,8 +313,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 }
 
                 if (!__gInstance.IsUsingMimic)
-                    __gInstance.GlitchButton.SetCoolDown(CustomGameOptions.MimicCooldown -
-                        (float)(DateTime.UtcNow - __gInstance.LastMimic).TotalSeconds, CustomGameOptions.MimicCooldown);
+                    __gInstance.GlitchButton.SetCoolDown(__gInstance.MimicTimer(), CustomGameOptions.MimicCooldown);
             }
 
             public static void MimicButtonPress(Glitch __gInstance, KillButton __instance)
@@ -480,7 +484,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void Unmimic()
         {
             MimicTarget = null;
-            Utils.Unmorph(Player);
+            Utils.DefaultOutfit(Player);
             LastMimic = DateTime.UtcNow;
         }
     }

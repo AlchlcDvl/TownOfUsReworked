@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class Tunneler : Ability
     {
-        public bool TasksDone;
+        public bool TasksDone => TasksLeft <= 0;
         
         public Tunneler(PlayerControl player) : base(player)
         {

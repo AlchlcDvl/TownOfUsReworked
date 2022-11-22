@@ -30,8 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Vampires;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
-            RoleAlignment = RoleAlignment.NeutralChaos;
-            AlignmentName = () => "Neutral (Chaos)";
+            RoleAlignment = RoleAlignment.NeutralNeo;
+            AlignmentName = () => "Neutral (Neophyte)";
             IntroText = "Convert the <color=#8BFDFDFF>Crew</color> to gain a majority";
             CoronerDeadReport = "There are sharp fangs and pale skin on the body. They must be a Dracula!";
             CoronerKillerReport = "The body seems to have been drained of blood. They were sucked by a Dracula!";
@@ -75,8 +75,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return true;
 
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Crew) | (x.Is(RoleAlignment.NeutralChaos) &&
-                !x.Is(RoleEnum.Dracula)) | (x.Is(RoleAlignment.NeutralPower) && !x.Is(SubFaction.Vampires)))) == 0)
+                (x.Data.IsImpostor() | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Crew) && !(x.Is(SubFaction.Vampires) |
+                x.Is(RoleAlignment.NeutralBen)))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(
                     PlayerControl.LocalPlayer.NetId,

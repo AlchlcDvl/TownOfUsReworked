@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using TownOfUsReworked.Extensions;
 using UnityEngine;
 using System.Linq;
-using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
@@ -14,6 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
         public Dictionary<byte, ArrowBehaviour> SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
         public bool SnitchWin;
+        public bool Revealed => TasksLeft <= CustomGameOptions.SnitchTasksRemaining;
+        public bool TasksDone => TasksLeft <= 0;
 
         public Snitch(PlayerControl player) : base(player)
         {
@@ -25,17 +25,17 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             AbilityType = AbilityEnum.Snitch;
             AddToAbilityHistory(AbilityType);
         }
-
-        public bool Revealed => TasksLeft <= CustomGameOptions.SnitchTasksRemaining;
-        public bool TasksDone => TasksLeft <= 0;
         
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = SnitchArrows.FirstOrDefault(x => x.Key == targetPlayerId);
+
             if (arrow.Value != null)
                 Object.Destroy(arrow.Value);
+
             if (arrow.Value.gameObject != null)
                 Object.Destroy(arrow.Value.gameObject);
+                
             SnitchArrows.Remove(arrow.Key);
         }
     }

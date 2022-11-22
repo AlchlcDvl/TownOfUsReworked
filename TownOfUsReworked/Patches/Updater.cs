@@ -22,7 +22,7 @@ namespace TownOfUsReworked.Patches
 
         private static void Prefix(MainMenuManager __instance)
         {
-            //Check if there's a ToU update
+            //Check if there's a ToU-Rew update
             ModUpdater.LaunchUpdater();
 
             if (ModUpdater.hasTOUUpdate)

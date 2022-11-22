@@ -109,10 +109,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                         player.myTasks.RemoveAt(0);
                         deadTime = 0;
                         isDead = false;
-                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.RewindRevive, SendOption.Reliable, -1);
-                        write.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(write);
+
+                        unchecked
+                        {
+                            var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.RewindRevive,
+                                SendOption.Reliable, -1);
+                            write.Write(PlayerControl.LocalPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(write);
+                        }
                     }
                 }
 

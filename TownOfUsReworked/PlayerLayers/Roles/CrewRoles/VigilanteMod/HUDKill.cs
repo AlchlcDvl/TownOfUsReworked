@@ -29,36 +29,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             if (PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            var flag8 = PlayerControl.LocalPlayer.Is(RoleEnum.Vigilante);
+            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-            if (flag8)
-            {
-                var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
-                var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-
-                if (isDead)
-                    KillButton.gameObject.SetActive(false);
-                else
-                {
-                    KillButton.gameObject.SetActive(!MeetingHud.Instance);
-                    KillButton.SetCoolDown(role.VigilanteKillTimer(), CustomGameOptions.VigiKillCd);
-                    Utils.SetTarget(ref role.ClosestPlayer, KillButton);
-                }
-            }
-            else
-            {
-                var isImpostor = PlayerControl.LocalPlayer.Data.IsImpostor();
-
-                if (!isImpostor)
-                    return;
-
-                var isDead2 = PlayerControl.LocalPlayer.Data.IsDead;
-
-                if (isDead2)
-                    KillButton.gameObject.SetActive(false);
-                else
-                    __instance.KillButton.gameObject.SetActive(!MeetingHud.Instance);
-            }
+            if (isDead)
+                return;
+            
+            var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
+            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }
     }
 }

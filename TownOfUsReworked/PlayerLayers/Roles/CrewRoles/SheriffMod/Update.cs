@@ -7,6 +7,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {

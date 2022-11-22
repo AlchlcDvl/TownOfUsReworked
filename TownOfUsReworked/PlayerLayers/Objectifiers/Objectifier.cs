@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
         public static readonly List<KeyValuePair<byte, ObjectifierEnum>> ObjectifierHistory = new List<KeyValuePair<byte, ObjectifierEnum>>();
+        public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
         public Func<string> TaskText;
 
         protected Objectifier(PlayerControl player)
@@ -20,18 +21,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierDictionary.Add(player.PlayerId, this);
         }
 
-        public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
         protected internal string Name { get; set; }
         protected internal string SymbolName { get; set; }
+        protected internal Color Color { get; set; }
+        protected internal ObjectifierEnum ObjectifierType { get; set; }
 
         protected internal string GetColoredSymbol()
         {
-            if (SymbolName == null) return null;
-
             return $"{ColorString}{SymbolName}</color>";
         }
 
-        protected internal Color Color { get; set; }
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
         public bool LostByRPC { get; protected set; }
@@ -53,6 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public void RegenTask()
         {
             bool createTask;
+
             try
             {
                 var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
@@ -75,10 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
         }
 
-        protected internal ObjectifierEnum ObjectifierType { get; set; }
-
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
-
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Objectifier other)
@@ -98,9 +95,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Objectifier)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (obj.GetType() != typeof(Objectifier))
+                return false;
+
             return Equals((Objectifier)obj);
         }
 
@@ -111,8 +114,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public static bool operator ==(Objectifier a, Objectifier b)
         {
-            if (a is null && b is null) return true;
-            if (a is null | b is null) return false;
+            if (a is null && b is null)
+                return true;
+
+            if (a is null | b is null)
+                return false;
+
             return a.ObjectifierType == b.ObjectifierType && a.Player.PlayerId == b.Player.PlayerId;
         }
 

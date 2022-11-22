@@ -11,9 +11,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
             var r = rend.gameObject.GetComponent<RainbowBehaviour>();
             
             if (r == null)
-            {
                 r = rend.gameObject.AddComponent<RainbowBehaviour>();
-            }
 
             r.AddRend(rend, colorId);
             return !RainbowUtils.IsRainbow(colorId);
@@ -28,9 +26,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
             var r = rend.gameObject.GetComponent<RainbowBehaviour>();
 
             if (r == null)
-            {
                 r = rend.gameObject.AddComponent<RainbowBehaviour>();
-            }
 
             r.AddRend(rend, 0);
             return true;

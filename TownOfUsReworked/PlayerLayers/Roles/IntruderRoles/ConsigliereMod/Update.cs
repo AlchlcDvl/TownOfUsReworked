@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 

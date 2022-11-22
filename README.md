@@ -94,7 +94,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 [**Syndicate Roles**](#syndicate-roles)
 - [Anarchist](#anarchist)
 - [Concealer](#concealer)
-- [Freezer](#freezer)
+- [Gorgon](#gorgon)
 - [Puppeteer](#puppeteer)
 - [Rebel](#rebel)
 - [Sidekick](#sidekick)
@@ -301,7 +301,7 @@ The Coroner gets an alert when someone dies. On top of this, the Coroner briefly
 ## Crewmate
 ### **Alignment: Crew (Utility)**
 
-Just a plain Crewmate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
+Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
 ### Game Options
 
@@ -874,7 +874,7 @@ The Survivor wins by simply surviving. They can vest which makes them immune to 
 
 ## Taskmaster
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Finish tasks before the game ends without dying.
+### Win Condition: Finish tasks before the game ends or dying.
 
 The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
@@ -1057,7 +1057,7 @@ The Grenadier can throw flash grenades which blinds nearby players. However, a s
 ## Impostor
 ### **Alignment: Intruder (Utility)**
 
-Just a plain Impostor with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
+Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
 ### Game Options
 
@@ -1177,7 +1177,7 @@ The Undertaker can drag, drop bodies and hide them in vents.
 | Drag Speed | How fast will the Undertaker become when dragging a body | Factor | x0.5 |
 
 ## Wraith
-### **Alignment: Intruder (Deception)**
+### **Alignment: Intruder (Concealing)**
 
 The Wraith can temporarily turn invisible.
 
@@ -1198,13 +1198,49 @@ The Wraith can temporarily turn invisible.
 ## Anarchist
 ### **Alignment: Syndicate (Utility)**
 
+Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Anarchist | The percentage probability of the Anarchist appearing | Percentage | 0% |
+| Anarchist Count | How many Anarchists should spawn in Custom Mode | Number | 1 |
+
+## Concealer
+### **Alignment: Syndicate (Support)**
+
+The Concealer can make everyone invisible for a short while, allowing sneaky kills to be made.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Concealer | The percentage probability of the Concealer appearing | Percentage | 0% |
+| Concealer Count | How many Concealers should spawn in Custom Mode | Number | 1 |
+| Conceal Cooldown | The cooldown on the Concealer's conceal button | Time | 25s |
+| Conceal Duration | The duration of the Concealer's conceal | Time | 10s |
+
+## Gorgon
+### **Alignment: Syndicate (Killing)**
+
+The Gorgon can stone gaze people to freeze them in place. Upon getting stoned, if another player touches the stoned one, a meeting is called or when a certain amount of time elapses, the stoned will die.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Gorgon | The percentage probability of the Gorgon appearing | Percentage | 0% |
+| Gorgon Count | How many Gorgons should spawn in Custom Mode | Number | 1 |
+| Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
+| Gaze Timer | The duration on the Gorgon's gaze button | Time | 25s |
+
 -----------------------
 
 # Modifiers
-Modifiers are added on top of players' roles as a 2nd player layer.
+Modifiers are passive aflictions that change a player's gameplay.
 
 ## Bait
-### **Alignment: Positive**
 ### Applied To: Everyone
 
 Killing the Bait makes the killer auto self-report.
@@ -1218,8 +1254,7 @@ Killing the Bait makes the killer auto self-report.
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
 
 ## Button Barry
-### **Alignment: Positive**
-### Applied To: Everyone Except Glitch
+### Applied To: Everyone
 
 Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages.
 They have the same amount of meetings as a regular player.
@@ -1648,22 +1683,20 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch modifier\
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod\
-[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Vigilante, Tracker and Spy roles, as well as the Bait modifier\
+[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role, as well as the Bait modifier\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
-[Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, the Trapper role and support for the new Among Us version (v2022.6.21)\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Blind, Volatile, Bait, Shaman, Disguiser, Puppeteer, Time Master, Poisoner and Cannibal roles and partially for Tracker role, bug fixes, integration of CrowdedMod and addition of sound effects\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, the Trapper role\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles and partially for Tracker role, bug fixes, integration of CrowdedMod and addition of sound effects\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
 [Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth, and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
-[eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued
+[eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
+[Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects
 
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options\
-v1.0.3 uses [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) directly\
-v1.1.0 uses a modified version of Essentials that can be found [here](https://github.com/slushiegoose/Reactor-Essentials)\
-v1.2.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/Patches/CustomOption)
+v1.0.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/Patches/CustomOption)
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

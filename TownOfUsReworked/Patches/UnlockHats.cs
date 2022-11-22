@@ -11,10 +11,8 @@ namespace TownOfUsReworked.Patches
         {
             var array = (from h in __instance.allHats.ToArray()
                 where h.Free || AmongUs.Data.DataManager.Player.Purchases.GetPurchase(h.ProductId, h.BundleId)
-                select h
-                into o
-                orderby o.displayOrder descending, o.name
-                select o).ToArray();
+                select h into o orderby o.displayOrder descending, o.name select o).ToArray();
+                
             __result = array;
             return false;
         }

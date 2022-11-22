@@ -39,11 +39,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance) return false;
+            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+                return false;
 
-            if (role.ClosestPlayer == null) return false;
+            if (role.ClosestPlayer == null)
+                return false;
 
             var playerId = role.ClosestPlayer.PlayerId;
+
             if (__instance == role.InvestigateButton)
             {
                 if (!__instance.isActiveAndEnabled | role.ClosestPlayer == null)
@@ -77,10 +80,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                     return false;
 
                 role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Investigate, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                unchecked
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Investigate,
+                        SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
                 return false;
             }
 

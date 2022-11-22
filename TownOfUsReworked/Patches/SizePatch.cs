@@ -25,9 +25,7 @@ namespace TownOfUsReworked.Patches
             var bodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
 
             foreach (var body in bodies)
-            {
                 body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
-            }
         }
     }
 }

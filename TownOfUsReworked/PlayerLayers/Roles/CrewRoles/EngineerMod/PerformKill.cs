@@ -4,7 +4,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
-using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
@@ -46,8 +45,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             role.UsedThisRound = true;
 
-            var camouflager = Role.GetRoles(RoleEnum.Camouflager);
+            var camouflager = Role.GetRoleValue(RoleEnum.Camouflager);
             var camo = (Camouflager)camouflager;
+            var concealer = Role.GetRoleValue(RoleEnum.Concealer);
+            var conc = (Concealer)concealer;
+            var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
+            var ss = (Shapeshifter)shapeshifter;
+
             SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 0.4f);
 
             switch (PlayerControl.GameOptions.MapId)
@@ -78,6 +82,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                     if (camo.Camouflaged)
                         return FixCamo();
 
+                    if (conc.Concealed)
+                        return FixCamo();
+
+                    if (ss.Shapeshifted)
+                        return FixCamo();
+
                     break;
 
                 case 2:
@@ -97,6 +107,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         return FixLights(lights3);
 
                     if (camo.Camouflaged)
+                        return FixCamo();
+
+                    if (conc.Concealed)
+                        return FixCamo();
+
+                    if (ss.Shapeshifted)
                         return FixCamo();
 
                     break;
@@ -125,6 +141,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                     if (camo.Camouflaged)
                         return FixCamo();
 
+                    if (conc.Concealed)
+                        return FixCamo();
+
+                    if (ss.Shapeshifted)
+                        return FixCamo();
+
                     break;
 
                 case 4:
@@ -144,6 +166,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         return FixLights(lights4);
 
                     if (camo.Camouflaged)
+                        return FixCamo();
+
+                    if (conc.Concealed)
+                        return FixCamo();
+
+                    if (ss.Shapeshifted)
                         return FixCamo();
 
                     break;
@@ -173,11 +201,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                     if (camo.Camouflaged)
                         return FixCamo();
 
+                    if (conc.Concealed)
+                        return FixCamo();
+
+                    if (ss.Shapeshifted)
+                        return FixCamo();
+
                     break;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.EngineerFix, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFix,
+                SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -218,7 +252,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
         private static bool FixCamo()
         {
-            Utils.UnCamouflage();
+            Utils.DefaultOutfitAll();
+            return false;
+        }
+
+        private static bool FixConceal()
+        {
+            Utils.DefaultOutfitAll();
+            return false;
+        }
+
+        private static bool FixShapeshift()
+        {
+            Utils.DefaultOutfitAll();
             return false;
         }
 

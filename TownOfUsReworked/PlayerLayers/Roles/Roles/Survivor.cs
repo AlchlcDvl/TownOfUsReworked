@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void Wins()
         {
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!Player.Data.IsDead)
                 SurvWins = true;
         }
 

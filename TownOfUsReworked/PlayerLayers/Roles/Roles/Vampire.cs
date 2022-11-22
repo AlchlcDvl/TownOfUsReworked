@@ -10,11 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Vampire : Role
     {
-        public bool AlreadyConverted;
-        public int VampCounter;
-        public bool VampWins;
-        public PlayerControl ClosestPlayerBite;
-        public List<PlayerControl> AllVamps = new List<PlayerControl>();
+        public bool VampWin;
 
         public Vampire(PlayerControl player) : base(player)
         {
@@ -27,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Vampires;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
-            RoleAlignment = RoleAlignment.NeutralPower;
-            AlignmentName = () => "Neutral (Power)";
+            RoleAlignment = RoleAlignment.NeutralPros;
+            AlignmentName = () => "Neutral (Proselyte)";
             IntroText = "Gain a majority";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);
@@ -36,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void Wins()
         {
-            VampWins = true;
+            VampWin = true;
         }
 
         public void Loses()

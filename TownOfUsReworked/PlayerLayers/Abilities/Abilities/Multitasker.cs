@@ -1,6 +1,5 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities

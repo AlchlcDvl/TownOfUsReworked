@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
-            RoleAlignment = RoleAlignment.NeutralPower;
+            RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = () => "Neutral (Proselyte)";
             IntroText = "Kill off the Crew and help the Dracula";
             Results = InspResults.MineMafiSideDamp;

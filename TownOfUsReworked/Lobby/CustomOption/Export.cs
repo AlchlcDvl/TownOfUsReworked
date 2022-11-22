@@ -16,7 +16,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
     {
         public CustomButtonOption Loading;
         public List<OptionBehaviour> OldButtons;
-
         public List<CustomButtonOption> SlotButtons = new List<CustomButtonOption>();
 
         protected internal Export(int id) : base(id, MultiMenu.main, "Save Custom Settings")

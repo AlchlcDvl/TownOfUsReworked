@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ThiefMod
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
@@ -13,11 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
         {
             if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
                 return;
-
-            foreach (var role in Role.GetRoles(RoleEnum.Freezer))
+            
+            foreach (var role in Role.GetRoles(RoleEnum.Thief))
             {
-                var role2 = (Freezer) role;
-                role2.LastFrozen = DateTime.UtcNow;
+                var thief = (Thief) role;
+                thief.LastKilled = DateTime.UtcNow;
             }
         }
     }

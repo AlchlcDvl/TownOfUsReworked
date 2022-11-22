@@ -23,6 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
                 return;
 
+            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
+
+            if (isDead)
+                return;
+
             var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);
             __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
             __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.MurdKCD);

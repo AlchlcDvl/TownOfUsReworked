@@ -38,13 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
             if (role.ButtonButton == null)
             {
                 role.ButtonButton = Object.Instantiate(__instance.KillButton, __instance.transform.parent);
-                role.ButtonButton.GetComponentsInChildren<TextMeshPro>()[0].text = "";
                 role.ButtonButton.graphic.enabled = true;
                 role.ButtonButton.graphic.sprite = Button;
             }
 
             role.ButtonButton.graphic.sprite = Button;
-
 
             role.ButtonButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
 

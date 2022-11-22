@@ -57,6 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     PlayerName = ""
                 });
             }
+            
             Player.myRend().color = color;
             Player.nameText().color = Color.clear;
             Player.cosmetics.colorBlindText.color = Color.clear;

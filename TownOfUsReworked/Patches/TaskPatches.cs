@@ -45,12 +45,8 @@ namespace TownOfUsReworked.Patches
             {
                 var playerControl = playerInfo.Object;
 
-                var flag = playerControl.Is(RoleEnum.Jester)
-                           || playerControl.Is(RoleEnum.Executioner)
-                           || playerControl.Is(RoleEnum.Survivor)
-                           || playerControl.Is(RoleEnum.GuardianAngel)
-                           || playerControl.Is(Faction.Syndicate)
-                           || playerControl.Is(RoleAlignment.NeutralKill);
+                var flag = playerControl.Is(RoleEnum.Jester) || playerControl.Is(RoleEnum.Executioner) || playerControl.Is(RoleEnum.Survivor)
+                    || playerControl.Is(RoleEnum.GuardianAngel) || playerControl.Is(Faction.Syndicate) || playerControl.Is(RoleAlignment.NeutralKill);
 
                 // If the console is not a sabotage repair console
                 if (flag && !__instance.AllowImpostor)

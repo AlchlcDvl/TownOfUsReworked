@@ -56,8 +56,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return true;
 
             if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.SerialKiller)) | x.Is(RoleAlignment.NeutralChaos) |
-                x.Is(RoleAlignment.NeutralPower) | x.Is(Faction.Crew))) == 0)
+                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.SerialKiller)) | x.Is(RoleAlignment.NeutralNeo) |
+                x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SerialKillerWin,
                     SendOption.Reliable, -1);

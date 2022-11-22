@@ -9,6 +9,7 @@ using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {

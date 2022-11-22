@@ -9,6 +9,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using UD = TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -33,6 +34,7 @@ namespace TownOfUsReworked.Extensions
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
         public static Dictionary<byte, DateTime> tickDictionary = new Dictionary<byte, DateTime>();
         public static Sprite LockSprite = TownOfUsReworked.LockSprite;
+        public static MeetingHud __instance;
 
         public static void Conceal()
         {
@@ -68,18 +70,49 @@ namespace TownOfUsReworked.Extensions
 
         public static void Morph(PlayerControl player, PlayerControl MorphedPlayer)
         {
-            var role = Role.GetRole<Camouflager>(player);
-
-            if (Patches.CamouflageUnCamouflage.IsCamoed || role.Camouflaged)
+            if (CamouflageUnCamouflage.IsCamoed)
                 return;
 
             if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Morph)
                 player.SetOutfit(CustomPlayerOutfitType.Morph, MorphedPlayer.Data.DefaultOutfit);
+            
+            foreach (var player2 in PlayerControl.AllPlayerControls)
+            {
+                if (player2 == PlayerControl.LocalPlayer)
+                    player.SetOutfit(CustomPlayerOutfitType.Default);
+            }
         }
 
-        public static void Unmorph(PlayerControl player)
+        public static void DefaultOutfit(PlayerControl player)
         {
-           player.SetOutfit(CustomPlayerOutfitType.Default);
+            player.SetOutfit(CustomPlayerOutfitType.Default);
+        }
+
+        public static void Shapeshift()
+        {
+            var allPlayers = PlayerControl.AllPlayerControls;
+
+            foreach (var player in allPlayers)
+            {
+                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
+                    player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
+                    player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
+                {
+                    int random;
+
+                    while (true)
+                    {
+                        random = Random.RandomRangeInt(0, allPlayers.Count);
+
+                        if (player != allPlayers[random])
+                            break;
+                    }
+
+                    var otherPlayer = allPlayers[random];
+
+                    Morph(player, otherPlayer);
+                }
+            }
         }
 
         public static void Camouflage()
@@ -106,21 +139,28 @@ namespace TownOfUsReworked.Extensions
                         player.GetAppearance().SizeFactor.Set(1f, 1f, 1f);
 
                     if (CustomGameOptions.CamoHideSpeed)
-                        player.MyPhysics.body.velocity.Set(GameOptionsData.GameHostOptions.playerSpeedMod, GameOptionsData.GameHostOptions.playerSpeedMod);
+                        player.MyPhysics.body.velocity.Set(GameOptionsData.GameHostOptions.PlayerSpeedMod,
+                            GameOptionsData.GameHostOptions.PlayerSpeedMod);
                 }
             }
         }
 
-        public static void UnCamouflage()
+        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+        public static PlayerVoteArea GetVoteAreaFromPlayer(PlayerControl player)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                Unmorph(player);
+            foreach (var player2 in __instance.playerStates)
+            {
+                if (player2.TargetPlayerId == player.PlayerId)
+                    return player2;
+            }
+
+            return null;
         }
 
-        public static void UnConceal()
+        public static void DefaultOutfitAll()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
-                Unmorph(player);
+                DefaultOutfit(player);
         }
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
@@ -258,6 +298,17 @@ namespace TownOfUsReworked.Extensions
             }
 
             return null;
+        }
+
+        public static byte IdByPlayer(PlayerControl player)
+        {
+            foreach (var player2 in PlayerControl.AllPlayerControls)
+            {
+                if (player2.PlayerId == player.PlayerId)
+                    return player2.PlayerId;
+            }
+
+            return 255;
         }
 
         public static bool IsShielded(this PlayerControl player)
@@ -450,7 +501,7 @@ namespace TownOfUsReworked.Extensions
                     target.myTasks.Insert(0, importantTextTask);
                 }
 
-                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Freezer))
+                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Gorgon))
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
                 else
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));
@@ -684,12 +735,15 @@ namespace TownOfUsReworked.Extensions
 
         public static void ResetCustomTimers()
         {
-            #region CrewmateRoles
+            #region Crew Roles
             foreach (Medium role in Role.GetRoles(RoleEnum.Medium))
                 role.LastMediated = DateTime.UtcNow;
 
             foreach (Sheriff role in Role.GetRoles(RoleEnum.Sheriff))
                 role.LastInterrogated = DateTime.UtcNow;
+
+            foreach (Inspector role in Role.GetRoles(RoleEnum.Inspector))
+                role.LastExamined = DateTime.UtcNow;
 
             foreach (Vigilante role in Role.GetRoles(RoleEnum.Vigilante))
                 role.LastKilled = DateTime.UtcNow;
@@ -702,6 +756,9 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Tracker role in Role.GetRoles(RoleEnum.Tracker))
                 role.LastTracked = DateTime.UtcNow;
+
+            foreach (Escort role in Role.GetRoles(RoleEnum.Escort))
+                role.LastBlock = DateTime.UtcNow;
 
             foreach (Transporter role in Role.GetRoles(RoleEnum.Transporter))
                 role.LastTransported = DateTime.UtcNow;
@@ -719,7 +776,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastShifted = DateTime.UtcNow;
             #endregion
 
-            #region NeutralRoles
+            #region Neutral Roles
             foreach (Survivor role in Role.GetRoles(RoleEnum.Survivor))
                 role.LastVested = DateTime.UtcNow;
 
@@ -741,6 +798,9 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Juggernaut role in Role.GetRoles(RoleEnum.Juggernaut))
                 role.LastKill = DateTime.UtcNow;
+
+            foreach (Werewolf role in Role.GetRoles(RoleEnum.Werewolf))
+                role.LastMauled = DateTime.UtcNow;
 
             foreach (Murderer role in Role.GetRoles(RoleEnum.Murderer))
                 role.LastKill = DateTime.UtcNow;
@@ -767,7 +827,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastBitten = DateTime.UtcNow;
             #endregion
 
-            #region ImposterRoles
+            #region Intruder Roles
             foreach (Blackmailer role in Role.GetRoles(RoleEnum.Blackmailer))
                 role.LastBlackmailed = DateTime.UtcNow;
 
@@ -786,6 +846,9 @@ namespace TownOfUsReworked.Extensions
             foreach (Poisoner role in Role.GetRoles(RoleEnum.Poisoner))
                 role.LastPoisoned = DateTime.UtcNow;
 
+            foreach (Consort role in Role.GetRoles(RoleEnum.Consort))
+                role.LastBlock = DateTime.UtcNow;
+
             foreach (Wraith role in Role.GetRoles(RoleEnum.Wraith))
                 role.LastInvis = DateTime.UtcNow;
 
@@ -800,6 +863,9 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Consigliere role in Role.GetRoles(RoleEnum.Consigliere))
                 role.LastInvestigated = DateTime.UtcNow;
+            #endregion
+
+            #region Syndicate Roles
             #endregion
         }
         
@@ -849,8 +915,7 @@ namespace TownOfUsReworked.Extensions
 
         public static IEnumerator Block(PlayerControl blocker, PlayerControl target)
         {
-            GameObject[] lockImg = { null, null, null, null };
-            ImportantTextTask hackText;
+            GameObject[] lockImg = {null, null, null, null};
             var roleRole = Role.GetRole(blocker);
 
             if (!(blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort)))
@@ -868,12 +933,7 @@ namespace TownOfUsReworked.Extensions
                 yield break;
             }
 
-            hackText = new GameObject("_Player").AddComponent<ImportantTextTask>();
-            hackText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
-            hackText.Text = $"{roleRole.ColorString}Hacked {target.Data.PlayerName} ({CustomGameOptions.HackDuration}s)</color>";
-            hackText.Index = target.PlayerId;
             tickDictionary.Add(target.PlayerId, DateTime.UtcNow);
-            PlayerControl.LocalPlayer.myTasks.Insert(0, hackText);
 
             while (true)
             {
@@ -964,11 +1024,9 @@ namespace TownOfUsReworked.Extensions
                     }
                 }
 
-                var totalHacktime = (DateTime.UtcNow - tickDictionary[target.PlayerId]).TotalMilliseconds / 1000;
-                hackText.Text = $"{roleRole.ColorString}Hacked {target.Data.PlayerName}" +
-                    $" ({CustomGameOptions.HackDuration -Math.Round(totalHacktime)}s)</color>";
+                var totalBlocktime = (DateTime.UtcNow - tickDictionary[target.PlayerId]).TotalMilliseconds / 1000;
 
-                if (MeetingHud.Instance | totalHacktime > CustomGameOptions.HackDuration | target == null | target.Data.IsDead)
+                if (MeetingHud.Instance | totalBlocktime > CustomGameOptions.HackDuration | target == null | target.Data.IsDead)
                 {
                     foreach (var obj in lockImg)
                     {
@@ -997,7 +1055,6 @@ namespace TownOfUsReworked.Extensions
                     }
 
                     tickDictionary.Remove(target.PlayerId);
-                    PlayerControl.LocalPlayer.myTasks.Remove(hackText);
                     yield break;
                 }
 

@@ -7,39 +7,39 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public static class freezeBreak
+    public static class GazeBreak
     {
         public static void Postfix(PlayerControl __instance)
         {
-            if (!__instance.Is(RoleEnum.Freezer))
+            if (!__instance.Is(RoleEnum.Gorgon))
                 return;
             
-            var role = Role.GetRole<Freezer>(__instance);
+            var role = Role.GetRole<Gorgon>(__instance);
 
             if (LobbyBehaviour.Instance || MeetingHud.Instance)
                 return;
 
             var breakList = new Queue<byte>();
 
-            foreach (var freeze in role.freezeList)
+            foreach (var stoned in role.gazeList)
             {
-                if (GameData.Instance.GetPlayerById(freeze.Key).IsDead)
+                if (GameData.Instance.GetPlayerById(stoned.Key).IsDead)
                     continue;
                     
                 PlayerControl closestPlayer = null;
                 System.Collections.Generic.List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().ToList().FindAll(x =>
-                    x.PlayerId != role.Player.PlayerId && x.PlayerId != freeze.Key);
+                    x.PlayerId != role.Player.PlayerId && x.PlayerId != stoned.Key);
 
-                if (Utils.SetClosestPlayerToPlayer(GameData.Instance.GetPlayerById(freeze.Key)._object, ref closestPlayer, 0.8f, targets))
-                    breakList.Enqueue(freeze.Key);
+                if (Utils.SetClosestPlayerToPlayer(GameData.Instance.GetPlayerById(stoned.Key)._object, ref closestPlayer, 0.8f, targets))
+                    breakList.Enqueue(stoned.Key);
             }
 
             foreach (var breakQueue in breakList)
             {
-                role.freezeList.Remove(breakQueue);
+                role.gazeList.Remove(breakQueue);
                 Utils.RpcMurderPlayer(__instance, GameData.Instance.GetPlayerById(breakQueue)._object);
             }
         }
@@ -50,13 +50,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            if (!__instance.Is(RoleEnum.Freezer))
+            if (!__instance.Is(RoleEnum.Gorgon))
                 return;
                 
-            var role = Role.GetRole<Freezer>(__instance);
+            var role = Role.GetRole<Gorgon>(__instance);
 
             var breakList = new Queue<byte>();
-            var keys = role.freezeList.Keys.ToArray();
+            var keys = role.gazeList.Keys.ToArray();
 
             foreach (var key in keys)
             {
@@ -69,18 +69,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
                 if (key != PlayerControl.LocalPlayer.PlayerId)
                     continue;
                     
-                role.freezeList[key] += Time.fixedDeltaTime;
+                role.gazeList[key] += Time.fixedDeltaTime;
                 PlayerControl.LocalPlayer.moveable = false;
                 PlayerControl.LocalPlayer.NetTransform.Halt();
 
-                if (role.freezeList[key] >= CustomGameOptions.FreezeTime)
+                if (role.gazeList[key] >= CustomGameOptions.GazeTime)
                     breakList.Enqueue(key);
             }
 
             foreach (var breakQueue in breakList)
             {
                 Utils.RpcMurderPlayer(__instance, GameData.Instance.GetPlayerById(breakQueue)._object);
-                role.freezeList.Remove(breakQueue);
+                role.gazeList.Remove(breakQueue);
             }
         }
     }
@@ -93,15 +93,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FreezerMod
             if (__instance == null)
                 return;
                 
-            foreach (var role in Role.GetRoles(RoleEnum.Freezer))
+            foreach (var role in Role.GetRoles(RoleEnum.Gorgon))
             {
-                if (((Freezer)role).freezeList.Count <= 0)
+                if (((Gorgon)role).gazeList.Count <= 0)
                     continue;
 
-                foreach (var (key, _) in ((Freezer)role).freezeList)
+                foreach (var (key, _) in ((Gorgon)role).gazeList)
                     role.Player.MurderPlayer(GameData.Instance.GetPlayerById(key)._object);
 
-                ((Freezer)role).freezeList.Clear();
+                ((Gorgon)role).gazeList.Clear();
             }
         }
     }

@@ -56,7 +56,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
                 if (role.ButtonUsable)
                     bugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
-                
             }
 
             var renderer = bugButton.graphic;

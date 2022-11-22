@@ -4,6 +4,7 @@ using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
+using Hazel;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 
@@ -21,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         static readonly Color blindVision = new Color32(212, 212, 212, 255);
         public List<PlayerControl> flashedPlayers = new List<PlayerControl>();
         public bool Flashed => TimeRemaining > 0f;
+        public bool IntruderWin;
 
         public Grenadier(PlayerControl player) : base(player)
         {
@@ -236,6 +238,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     intTeam.Add(player);
             }
             __instance.teamToShow = intTeam;
+        }
+
+        public void Wins()
+        {
+            IntruderWin = true;
+        }
+
+        public void Loses()
+        {
+            LostByRPC = true;
+        }
+
+        internal override bool EABBNOODFGL(ShipStatus __instance)
+        {
+            if (Player.Data.IsDead | Player.Data.Disconnected)
+                return true;
+
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
+                (x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
+                    SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return false;
         }
     }
 }

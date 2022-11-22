@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.Data.IsImpostor())
+            if (!PlayerControl.LocalPlayer.Is(Faction.Intruders))
                 return true;
 
             var target = __instance.currentTarget;

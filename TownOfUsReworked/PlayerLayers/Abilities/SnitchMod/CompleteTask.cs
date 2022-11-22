@@ -35,12 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 
                         if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                        else if ((PlayerControl.LocalPlayer.Data.IsImpostor() && (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) |
-                            CustomGameOptions.SnitchSeesTraitor)) | ((PlayerControl.LocalPlayer.Is(RoleEnum.Glitch) |
-                            PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut) | PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) |
-                            PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller)| PlayerControl.LocalPlayer.Is(RoleEnum.Murderer) |
-                            PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer) | PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence)) &&
-                            CustomGameOptions.SnitchSeesNeutrals))
+                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruders) | (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
+                            CustomGameOptions.SnitchSeesNeutrals) | PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         {
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                             var gameObj = new GameObject();
@@ -53,35 +49,31 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                             role.ImpArrows.Add(arrow);
                         }
                     }
+
                     break;
                 case 0:
                     role.RegenTask();
+
                     if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                        var impostors = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Data.IsImpostor());
-                        var traitor = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(ObjectifierEnum.Traitor));
+                        var impostors = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruders));
 
                         foreach (var imp in impostors)
                         {
-                            if (!imp.Is(ObjectifierEnum.Traitor) | CustomGameOptions.SnitchSeesTraitor)
-                            {
-                                var gameObj = new GameObject();
-                                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                                renderer.sprite = Sprite;
-                                arrow.image = renderer;
-                                gameObj.layer = 5;
-                                role.SnitchArrows.Add(imp.PlayerId, arrow);
-                            }
+                            var gameObj = new GameObject();
+                            var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                            gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                            var renderer = gameObj.AddComponent<SpriteRenderer>();
+                            renderer.sprite = Sprite;
+                            arrow.image = renderer;
+                            gameObj.layer = 5;
+                            role.SnitchArrows.Add(imp.PlayerId, arrow);
                         }
                     }
-                    else if (PlayerControl.LocalPlayer.Data.IsImpostor() | (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
-                            CustomGameOptions.SnitchSeesNeutrals))
-                    {
+                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruders) | (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
+                            CustomGameOptions.SnitchSeesNeutrals) | PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                    }
 
                     break;
             }

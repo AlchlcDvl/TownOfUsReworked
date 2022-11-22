@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         String,
         Button,
         Menu,
-        Dropdown
+        Tab
     }
     
     public enum MultiMenu

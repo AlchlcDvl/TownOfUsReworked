@@ -17,6 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
+            if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
+                return;
+
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 

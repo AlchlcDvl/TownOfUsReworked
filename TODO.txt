@@ -25,10 +25,11 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Warper [Syndicate (Support)]
 - New Role: Rebel [Syndicate (Support)] |
 - New Role: Concealer [Syndicate (Support)] 
+- New Role: Shapeshifter [Syndicate (Support)] 
 - New Role: Puppeteer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
-- New Role: Freezer [Syndicate (Killing)] |
+- New Role: Gorgon [Syndicate (Killing)] |
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
@@ -53,7 +54,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Ability: Tunneler |
 - New Ability: Multitasker |
 - New Ability: Radar
-- New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Ability, Objectifier
+- New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens |
 - Addition: You can now customise the spawn chance of Crewmate and Impostor (they will still spawn by default if the number of Crew is more than the number of Crew roles that are active, same for the Impostors) |
 - Addition: Added venting options for Neutral Benign roles

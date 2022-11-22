@@ -5,7 +5,6 @@ using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {
@@ -31,14 +30,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 
                         if (randomNumber == 0)
                         {
-                            //Press kill button
-                            __instance.KillButton.DoClick();
+                            //Uses primary ability
+                            if (__instance.KillButton != null)
+                                __instance.KillButton.DoClick();
                         }
                         else if (randomNumber == 1)
                         {
                             //Flashes
-                            otherNumber = Random.RandomRangeInt(0, DefinedLists.AllRoles.Count);
-                            var role = DefinedLists.AllRoles[otherNumber];
+                            otherNumber = Random.RandomRangeInt(0, Lists.AllRoles.Count);
+                            var role = Lists.AllRoles[otherNumber];
 
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                         }
@@ -53,8 +53,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         else if (randomNumber == 3)
                         {
                             //Fake role sound effects
-                            otherNumber = Random.RandomRangeInt(0, DefinedLists.Sounds.Count);
-                            var sound = DefinedLists.Sounds[otherNumber];
+                            otherNumber = Random.RandomRangeInt(0, Lists.Sounds.Count);
+                            var sound = Lists.Sounds[otherNumber];
 
                             SoundManager.Instance.PlaySound(sound, false, 0.4f);
                         }
