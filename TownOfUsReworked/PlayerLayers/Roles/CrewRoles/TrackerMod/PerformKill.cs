@@ -106,7 +106,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             role.TrackerArrows.Add(target.PlayerId, arrow);
             role.UsesLeft--;
             role.LastTracked = DateTime.UtcNow;
-            SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 0.4f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
+            } catch {}
             
             return false;
         }

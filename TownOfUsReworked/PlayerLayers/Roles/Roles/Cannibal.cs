@@ -59,12 +59,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return true;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CannibalWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -30,12 +30,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AddToRoleHistory(RoleType);
         }
 
-        public void Wins()
+        public override void Wins()
         {
             DampWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -24,7 +24,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             if (CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
                 Coroutines.Start(Utils.FlashCoroutine(role.Color));
 
-            SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 0.2f);
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 1f);
+            } catch {}
 
             if (!flag)
                 return;

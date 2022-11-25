@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum MurderEnum
     {
-        Normal,
+        Normal = 0,
         Vigilante,
         Veteran,
         Shifter,

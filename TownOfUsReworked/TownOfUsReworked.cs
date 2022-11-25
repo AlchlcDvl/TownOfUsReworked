@@ -157,6 +157,7 @@ namespace TownOfUsReworked
         public static AudioClip TimeFreezeSound;
         public static AudioClip WarperIntro;
         public static AudioClip StabSound;
+        public static AudioClip VoteLockSound;
         public static AudioClip KillSFX;
         
         /*public static Sprite NormalKill;
@@ -303,7 +304,7 @@ namespace TownOfUsReworked
             RaiseHandInactive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandInactive.png");
             RaiseHandActive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandActive.png");
 
-            //Sound effects, msot of them are from 
+            //Sound effects, most of them are from Town Of H
             JuggernautWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.JuggernautWin.raw");
             AlertSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Alert.raw");
             ArsonistWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.ArsonistWin.raw");
@@ -352,6 +353,7 @@ namespace TownOfUsReworked
             StabSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             TimeFreezeSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             WarperIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
+            VoteLockSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.VoteLock.raw");
             KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
 
             PalettePatch.Load();
@@ -407,25 +409,31 @@ namespace TownOfUsReworked
 
         public static AudioClip LoadAudioClipFromResources(string path, string sfxName = "")
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream stream = assembly.GetManifestResourceStream(path);
-            var byteAudio = new byte[stream.Length];
-            float[] samples = new float[byteAudio.Length / 4];
-            int offset;
-
-            for (int i = 0; i < samples.Length; i++)
+            try
             {
-                offset = i * 4;
-                samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                Stream stream = assembly.GetManifestResourceStream(path);
+                var byteAudio = new byte[stream.Length];
+                _ = stream.Read(byteAudio, 0, (int)stream.Length);
+                float[] samples = new float[byteAudio.Length / 4];
+                int offset;
+                    
+                for (int i = 0; i < samples.Length; i++)
+                {
+                    offset = i * 4;
+                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
+                }
+
+                int channels = 2;
+                int sampleRate = 48000;
+                AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
+                audioClip.SetData(samples, 0);
+                return audioClip;
             }
-
-            int channels = 2;
-            int sampleRate = 48000;
-
-            AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
-            audioClip.SetData(samples, 0);
-            
-            return audioClip;
+            catch
+            {
+                return null;
+            }
         }
     }
 }

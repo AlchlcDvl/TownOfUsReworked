@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
@@ -10,8 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Vampire : Role
     {
-        public bool VampWin;
-
         public Vampire(PlayerControl player) : base(player)
         {
             Name = "Vampire";
@@ -30,12 +27,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AddToRoleHistory(RoleType);
         }
 
-        public void Wins()
+        public override void Wins()
         {
             VampWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -45,8 +42,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Crew))) == 0)
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
+                x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
+                (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampWin,
                     SendOption.Reliable, -1);

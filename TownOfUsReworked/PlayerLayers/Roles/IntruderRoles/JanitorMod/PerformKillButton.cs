@@ -57,7 +57,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
-                SoundManager.Instance.PlaySound(TownOfUsReworked.CleanSound, false, 0.4f);
+                
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.CleanSound, false, 1f);
+                } catch {}
 
                 return false;
             }

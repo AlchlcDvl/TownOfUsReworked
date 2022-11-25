@@ -56,7 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                             otherNumber = Random.RandomRangeInt(0, Lists.Sounds.Count);
                             var sound = Lists.Sounds[otherNumber];
 
-                            SoundManager.Instance.PlaySound(sound, false, 0.4f);
+                            try
+                            {
+                                SoundManager.Instance.PlaySound(sound, false, 1f);
+                            } catch {}
                         }
                     }
                 }

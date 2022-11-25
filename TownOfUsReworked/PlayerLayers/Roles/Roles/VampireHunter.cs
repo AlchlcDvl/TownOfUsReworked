@@ -11,13 +11,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class VampireHunter : Role
     {
-        public bool CrewWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked { get; set; }
-        public List<byte> Vampires = new List<byte>();
-        public int VampsAlive => Vampires.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null &&
-            !Utils.PlayerById(x).Data.IsDead && Utils.PlayerById(x).Is(SubFaction.Vampires));
-        public bool VampsDead => VampsAlive == 0;
+        public int VampsAlive => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && x.Data != null && !x.Data.IsDead &&
+            x.Is(SubFaction.Vampires));
+        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= VampsAlive;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
@@ -70,12 +68,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

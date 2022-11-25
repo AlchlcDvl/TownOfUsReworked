@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public Dictionary<byte, DateTime> UntransportablePlayers = new Dictionary<byte, DateTime>();
-        public bool CrewWin;
         
         public Transporter(PlayerControl player) : base(player)
         {
@@ -338,9 +337,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public static IEnumerator TransportPlayers(byte player1, byte player2, bool die)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter) | PlayerControl.LocalPlayer == Utils.PlayerById(player1) | PlayerControl.LocalPlayer
+                == Utils.PlayerById(player2))
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.TransportSound, false, 0.4f);
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+                } catch {}
             }
 
             var TP1 = Utils.PlayerById(player1);
@@ -493,12 +496,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

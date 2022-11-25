@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum RoleEnum
     {
-        Agent,
+        Agent = 0,
         Altruist,
         Coroner,
         Crewmate,

@@ -54,7 +54,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
             role.ShieldedPlayer = role.ClosestPlayer;
             role.UsedAbility = true;
-            SoundManager.Instance.PlaySound(TownOfUsReworked.ShieldSound, false, 1f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 1f);
+            } catch {}
 
             return false;
         }

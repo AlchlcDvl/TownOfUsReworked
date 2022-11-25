@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !exiled.IsLover())
+            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !exiled.Is(ObjectifierEnum.Lovers))
                 WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)

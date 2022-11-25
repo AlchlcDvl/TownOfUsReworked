@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastExamined { get; set; }
-        public bool CrewWin;
         public List<PlayerControl> Examined = new List<PlayerControl>();
 
         public Inspector(PlayerControl player) : base(player)
@@ -56,12 +55,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

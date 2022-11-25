@@ -1,5 +1,4 @@
 using HarmonyLib;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -25,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public class SetTraitor
     {
-        public static PlayerControl WillBeTraitor;
         public static Sprite Sprite => TownOfUsReworked.Arrow;
 
         public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
@@ -33,24 +31,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
-            var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
+            var traitorObj = Objectifier.GetObjectifier<Traitor>(exiled);
 
-            foreach (var player in alives)
-            {
-                if (player.Data.IsImpostor() | (player.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NeutralKillingStopsTraitor))
-                    return;
-            }
-
-            if (PlayerControl.LocalPlayer.Data.IsDead | exiled == PlayerControl.LocalPlayer)
+            if (PlayerControl.LocalPlayer.Data.IsDead | exiled == PlayerControl.LocalPlayer | exiled == traitorObj.Player)
                 return;
 
-            if (alives.Count < CustomGameOptions.LatestSpawn)
-                return;
-
-            if (PlayerControl.LocalPlayer != WillBeTraitor)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor))
+            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) && traitorObj.Turned)
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Investigator))
                     Footprint.DestroyAll(Role.GetRole<Investigator>(PlayerControl.LocalPlayer));
@@ -93,14 +79,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     var opRole = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
                     Object.Destroy(opRole.UsesText);
                 }
-
-                var oldRole = Role.GetRole(PlayerControl.LocalPlayer);
-                var oldRoleType = oldRole.RoleType;
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
-                var role = new Traitor(PlayerControl.LocalPlayer);
-                role.former = oldRole;
-                role.formerRole = oldRoleType;
-                role.RegenTask();
+                
+                var traitor = Objectifier.GetObjectifier<Traitor>(PlayerControl.LocalPlayer);
+                traitor.former = Role.GetRole(PlayerControl.LocalPlayer);
+                traitor.formerRole = traitor.former.RoleType;
+                traitor.RegenTask();
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TraitorSpawn,
                     SendOption.Reliable, -1);
@@ -110,33 +93,41 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             }
         }
 
-        public static void TurnTraitor(PlayerControl player)
+        public static void TurnTraitor(PlayerControl traitor)
         {
-            player.Data.Role.TeamType = RoleTeamTypes.Impostor;
-            RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
-            player.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+            var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
+            var random = Random.RandomRangeInt(0, 100);
 
-            //System.Console.WriteLine("PROOF I AM IMP VANILLA ROLE: " + player.Data.Role.IsImpostor);
+            if (random <= 50)
+                traitorObj.Side = Faction.Intruders;
+            else if (random > 50)
+                 traitorObj.Side = Faction.Syndicate;
+
+            var side = traitorObj.Side;
 
             foreach (var player2 in PlayerControl.AllPlayerControls)
             {
-                if (player2.Data.IsImpostor() && PlayerControl.LocalPlayer.Data.IsImpostor())
-                    player2.nameText().color = Colors.Traitor;
+                var playerRole = Role.GetRole(player2);
+
+                if (player2.Is(side) && traitor != player2)
+                {
+                    if (CustomGameOptions.FactionSeeRoles)
+                        player2.nameText().color = playerRole.Color;
+                    else
+                        player2.nameText().color = playerRole.FactionColor;
+                }
             }
 
             if (CustomGameOptions.TraitorCanAssassin)
             {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
-                writer2.Write(player.PlayerId);
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
+                    SendOption.Reliable, -1);
+                writer2.Write(traitor.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
             
-            if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
-            {
-                DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(true);
-                Coroutines.Start(Utils.FlashCoroutine(Color.red));
-            }
+            if (traitorObj.Turned)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
 
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
             {
@@ -151,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     renderer.sprite = Sprite;
                     arrow.image = renderer;
                     gameObj.layer = 5;
-                    snitchRole.SnitchArrows.Add(player.PlayerId, arrow);
+                    snitchRole.SnitchArrows.Add(traitor.PlayerId, arrow);
                 }
                 else if (snitchRole.Revealed && PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
                 {

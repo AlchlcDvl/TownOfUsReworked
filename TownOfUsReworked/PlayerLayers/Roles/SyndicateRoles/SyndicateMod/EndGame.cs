@@ -17,16 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             foreach (var role in Role.AllRoles)
             {
                 if (role.Faction == Faction.Syndicate)
-                {
-                    ((Anarchist)role).Loses();
-                    ((Concealer)role).Loses();
-                    ((Gorgon)role).Loses();
-                    ((Puppeteer)role).Loses();
-                    //((Rebel)role).Loses();
-                    //((Sidekick)role).Loses();
-                    ((Shapeshifter)role).Loses();
-                    ((Warper)role).Loses();
-                }
+                    role.Loses();
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateLose,

@@ -61,7 +61,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                     SpawnVent(id, role, position, 0.01f);
                 }
 
-                SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 0.4f);
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 1f);
+                } catch {}
 
                 return false;
             }

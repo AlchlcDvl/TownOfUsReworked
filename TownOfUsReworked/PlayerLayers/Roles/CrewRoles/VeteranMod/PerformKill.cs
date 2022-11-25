@@ -56,7 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 
-                SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 0.4f);
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
+                } catch {}
                 
                 return false;
             }

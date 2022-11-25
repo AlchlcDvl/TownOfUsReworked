@@ -9,8 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Crewmate : Role
     {
-        public bool CrewWin;
-
         public Crewmate(PlayerControl player) : base(player)
         {
             Name = "Crewmate";
@@ -27,6 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.CrewImpAnMurd;
             SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.CrewmateIntro;
+            Base = true;
             AddToRoleHistory(RoleType);
         }
 
@@ -37,12 +36,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

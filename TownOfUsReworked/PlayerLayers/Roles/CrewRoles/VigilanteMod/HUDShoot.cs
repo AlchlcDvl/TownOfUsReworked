@@ -1,22 +1,16 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDKill
+    public class HUDShoot
     {
         private static KillButton KillButton;
 
         public static void Postfix(HudManager __instance)
-        {
-            UpdateKillButton(__instance);
-        }
-
-        private static void UpdateKillButton(HudManager __instance)
         {
             KillButton = __instance.KillButton;
 
@@ -29,15 +23,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             if (PlayerControl.LocalPlayer.Data == null)
                 return;
 
+            var flag7 = PlayerControl.AllPlayerControls.Count > 1;
+
+            if (!flag7)
+                return;
+
+            var flag8 = PlayerControl.LocalPlayer.Is(RoleEnum.Vigilante);
+
+            if (!flag8)
+                return;
+
+            var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
             if (isDead)
-                return;
-            
-            var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
-            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
+                KillButton.gameObject.SetActive(false);
+            else
+            {
+                KillButton.gameObject.SetActive(!MeetingHud.Instance);
+                KillButton.SetCoolDown(role.KillTimer(), PlayerControl.GameOptions.KillCooldown);
+                Utils.SetTarget(ref role.ClosestPlayer, KillButton);
+            }
         }
     }
 }

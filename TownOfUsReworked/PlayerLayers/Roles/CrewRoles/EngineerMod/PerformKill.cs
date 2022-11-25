@@ -52,7 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
             var ss = (Shapeshifter)shapeshifter;
 
-            SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 0.4f);
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
+            } catch {}
 
             switch (PlayerControl.GameOptions.MapId)
             {

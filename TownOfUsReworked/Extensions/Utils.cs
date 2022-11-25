@@ -62,8 +62,8 @@ namespace TownOfUsReworked.Extensions
                         PlayerName = playerName
                     });
                     PlayerMaterial.SetColors(color, player.myRend());
-                    player.nameText().color = Color.clear;
-                    player.cosmetics.colorBlindText.color = Color.clear;
+                    player.nameText().color = color;
+                    player.cosmetics.colorBlindText.color = color;
                 }
             }
         }
@@ -145,18 +145,6 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        public static PlayerVoteArea GetVoteAreaFromPlayer(PlayerControl player)
-        {
-            foreach (var player2 in __instance.playerStates)
-            {
-                if (player2.TargetPlayerId == player.PlayerId)
-                    return player2;
-            }
-
-            return null;
-        }
-
         public static void DefaultOutfitAll()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
@@ -167,11 +155,6 @@ namespace TownOfUsReworked.Extensions
         {
             if (!self.Contains(item))
                 self.Add(item);
-        }
-
-        public static bool IsLover(this PlayerControl player)
-        {
-            return player.Is(ObjectifierEnum.Lovers);
         }
 
         public static bool Is(this PlayerControl player, RoleEnum roleType)
@@ -219,6 +202,16 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRole(player)?.RoleAlignment == alignment;
         }
 
+        public static bool Is(this PlayerControl player, AttackEnum attack)
+        {
+            return Role.GetRole(player)?.Attack == attack;
+        }
+
+        public static bool Is(this PlayerControl player, DefenseEnum defense)
+        {
+            return Role.GetRole(player)?.Defense == defense;
+        }
+
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
         {
             return PlayerControl.AllPlayerControls.ToArray().Where(player => !impostors.Any(imp => imp.PlayerId == player.PlayerId)).ToList();
@@ -232,6 +225,34 @@ namespace TownOfUsReworked.Extensions
                 impostors.Add(impData.Object);
 
             return impostors;
+        }
+        
+        public static AttackEnum GetAttack(PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+            var attack = role.Attack;
+
+            return attack;
+        }
+        
+        public static DefenseEnum GetDefense(PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+            var defense = role.Defense;
+
+            return defense;
+        }
+
+        public static bool IsStronger(PlayerControl attacker, PlayerControl target)
+        {
+            var flag = false;
+            var attack = GetAttack(attacker);
+            var defense = GetDefense(target);
+
+            if ((byte)defense < (byte)attack)
+                flag = true;
+
+            return flag;
         }
 
         public static RoleEnum GetRole(PlayerControl player)
@@ -351,7 +372,7 @@ namespace TownOfUsReworked.Extensions
         {
             return Role.GetRoles(RoleEnum.GuardianAngel).Any(role =>
             {
-                var gaTarget = ((GuardianAngel)role).target;
+                var gaTarget = ((GuardianAngel)role).TargetPlayer;
                 var ga = (GuardianAngel)role;
                 return gaTarget != null && ga.Protecting && player.PlayerId == gaTarget.PlayerId;
             });
@@ -450,7 +471,12 @@ namespace TownOfUsReworked.Extensions
             if (data != null && !data.IsDead)
             {
                 if (killer == PlayerControl.LocalPlayer)
-                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.8f);
+                {
+                    try
+                    {
+                        SoundManager.Instance.PlaySound(TownOfUsReworked.KillSFX, false, 1f);
+                    } catch {}
+                }
 
                 target.gameObject.layer = LayerMask.NameToLayer("Ghost");
                 target.Visible = false;
@@ -683,7 +709,10 @@ namespace TownOfUsReworked.Extensions
 
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
-            ShipStatus.RpcEndGame(reason, showAds);
+            if (Sabotaged())
+                ShipStatus.RpcEndGame(reason, showAds);
+            else
+                ShipStatus.RpcEndGame(reason, showAds);
         }
 
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
@@ -1059,7 +1088,74 @@ namespace TownOfUsReworked.Extensions
                 }
 
                 yield return null;
+                }
+        }
+
+        public static bool TasksDone()
+        {
+            
+            var TasksLeft = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) &&
+                !x.Is(ObjectifierEnum.Lovers));
+            
+            return TasksLeft == 0;
+        }
+
+        public static bool Sabotaged()
+        {
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var specials = system.specials.ToArray();
+            var sabActive = specials.Any(s => s.IsActive);
+
+            var sabotaged = false;
+
+            switch (PlayerControl.GameOptions.MapId)
+            {
+                case 0:
+
+                case 1:
+                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+
+                    if ((reactor2.IsActive && reactor2.timer == 0f) | (oxygen2.IsActive && oxygen2.timer == 0f))
+                        sabotaged = true;
+
+                    break;
+
+                case 2:
+                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+
+                    if (seismic.IsActive && seismic.timer == 0f)
+                            sabotaged = true;
+
+                    break;
+
+                case 3:
+                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+
+                    if ((reactor1.IsActive) | (oxygen1.IsActive))
+                        sabotaged = true;
+
+                    break;
+
+                case 4:
+                    var crash = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+
+                    if (crash.IsActive && crash.codeResetTimer == 0f)
+                        sabotaged = true;
+
+                    break;
+
+                case 5:
+                    var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+
+                    if (reactor5.IsActive && reactor5.timer == 0f)
+                        sabotaged = true;
+
+                    break;
             }
+
+            return sabotaged;
         }
     }
 }

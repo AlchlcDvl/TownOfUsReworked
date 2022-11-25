@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public bool CurrentlyReviving;
         public DeadBody CurrentTarget;
-        public bool CrewWin;
         public bool ReviveUsed;
         
         public Altruist(PlayerControl player) : base(player)
@@ -43,12 +42,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

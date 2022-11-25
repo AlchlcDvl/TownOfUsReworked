@@ -8,7 +8,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDConceal
+    public class HUDShapeshift
     {
         public static Sprite Shapeshift => TownOfUsReworked.Placeholder;
 

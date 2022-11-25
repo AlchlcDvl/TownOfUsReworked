@@ -12,8 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Investigator : Role
     {
         public readonly List<Footprint> AllPrints = new List<Footprint>();
-        public bool CrewWin;
-
+        
         public Investigator(PlayerControl player) : base(player)
         {
             Name = "Investigator";
@@ -41,12 +40,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

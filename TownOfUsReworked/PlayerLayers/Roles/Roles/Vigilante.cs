@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Vigilante : Role
     {
-        public bool CrewWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled { get; set; }
         public TextMeshPro UsesText;
@@ -55,12 +54,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastMediated { get; set; }
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new Dictionary<byte, ArrowBehaviour>();
         public static Sprite Arrow => TownOfUsReworked.Arrow;
-        public bool CrewWin;
         
         public Medium(PlayerControl player) : base(player)
         {
@@ -78,12 +77,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

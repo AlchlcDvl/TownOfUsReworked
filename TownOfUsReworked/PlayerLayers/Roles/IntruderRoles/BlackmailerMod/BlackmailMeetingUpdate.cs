@@ -56,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 var TempDuration = HudManager.Instance.shhhEmblem.HoldDuration;
                 HudManager.Instance.shhhEmblem.transform.localPosition = new Vector3(HudManager.Instance.shhhEmblem.transform.localPosition.x,
                     HudManager.Instance.shhhEmblem.transform.localPosition.y, HudManager.Instance.FullScreen.transform.position.z + 1f);
-                HudManager.Instance.shhhEmblem.TextImage.text = "YOU HAVE BEEN SILENCED";
+                HudManager.Instance.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
                 HudManager.Instance.shhhEmblem.HoldDuration = 2.5f;
                 yield return HudManager.Instance.ShowEmblem(true);
                 HudManager.Instance.shhhEmblem.transform.localPosition = TempPosition;

@@ -54,12 +54,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             PestilenceWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -52,7 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     if (role.HackTimer() < 5f)
                         role.LastMimic = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MimicCooldown);
 
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 0.4f);
+                    try
+                    {
+                        SoundManager.Instance.PlaySound(TownOfUsReworked.HackSound, false, 1f);
+                    } catch {}
                 }
                 else
                 {
@@ -73,7 +76,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     
                     role.TimeRemaining = CustomGameOptions.MorphlingDuration;
                     Utils.Morph(role.Player, role.MimicTarget);
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 0.4f);
+                    
+                    try
+                    {
+                        SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
+                    } catch {}
                 }
                 
                 if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())

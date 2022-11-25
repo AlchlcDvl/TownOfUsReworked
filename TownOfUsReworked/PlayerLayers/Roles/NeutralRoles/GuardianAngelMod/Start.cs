@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                 ga.LastProtected = DateTime.UtcNow;
                 ga.LastProtected = ga.LastProtected.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
                 
-                if (ga.target == null && PlayerControl.LocalPlayer == ga.Player)
+                if (ga.TargetPlayer == null && PlayerControl.LocalPlayer == ga.Player)
                 {
                     unchecked
                     {

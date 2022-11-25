@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public List<RoleEnum> buggedPlayers;
         public bool ButtonUsable => UsesLeft != 0;
-        public bool CrewWin;
 
         public Operative(PlayerControl player) : base(player)
         {
@@ -75,12 +74,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

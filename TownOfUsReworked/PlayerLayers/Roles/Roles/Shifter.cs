@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Shifter : Role
     {
-        public bool CrewWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastShifted { get; set; }
 
@@ -53,12 +52,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

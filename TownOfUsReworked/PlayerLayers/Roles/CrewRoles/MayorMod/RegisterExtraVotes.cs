@@ -182,7 +182,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     return false;
 
                 if (PlayerControl.LocalPlayer.PlayerId == srcPlayerId | AmongUsClient.Instance.GameMode != GameModes.LocalGame)
-                    SoundManager.Instance.PlaySound(__instance.VoteLockinSound, false, 1f);
+                {
+                    try
+                    {
+                        SoundManager.Instance.PlaySound(TownOfUsReworked.VoteLockSound, false, 1f);
+                    } catch {}
+                }
 
                 var role = Role.GetRole<Mayor>(player);
 

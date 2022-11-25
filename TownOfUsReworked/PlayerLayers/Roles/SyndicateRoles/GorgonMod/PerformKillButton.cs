@@ -55,9 +55,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             role.gazeList.Add(role.ClosestPlayer.PlayerId, 0);
 
             Utils.AirKill(role.Player, role.ClosestPlayer);
-            SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.5f);
             __instance.SetCoolDown(role.Player.killTimer, CustomGameOptions.GazeCooldown);
             role.Player.killTimer = CustomGameOptions.GazeCooldown;
+
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+            } catch {}
+            
             return false;
         }
     }

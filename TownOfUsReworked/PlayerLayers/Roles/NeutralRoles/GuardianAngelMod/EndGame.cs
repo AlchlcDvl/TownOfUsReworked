@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
         {
             foreach (var role in Role.AllRoles)
             {
-                if (role.RoleType == RoleEnum.GuardianAngel && !((GuardianAngel)role).target.Data.IsDead)
+                if (role.RoleType == RoleEnum.GuardianAngel && !((GuardianAngel)role).TargetPlayer.Data.IsDead)
                 {
                     if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
                     {

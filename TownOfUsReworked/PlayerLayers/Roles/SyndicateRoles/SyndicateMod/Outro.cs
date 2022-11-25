@@ -26,9 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Syndicate && (((Anarchist)x).SyndicateWin |
-                ((Concealer)x).SyndicateWin | ((Gorgon)x).SyndicateWin | ((Puppeteer)x).SyndicateWin | ((Shapeshifter)x).SyndicateWin |
-                ((Warper)x).SyndicateWin));
+            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Syndicate && Role.CrewWin);
 
             if (role == null)
                 return;

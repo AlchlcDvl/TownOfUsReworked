@@ -26,10 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             Utils.Morph(__instance.Player, mimicPlayer);
 
             var mimicActivation = DateTime.UtcNow;
-            var mimicText = new GameObject("_Player").AddComponent<ImportantTextTask>();
-            mimicText.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
-            mimicText.Text = $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName} ({CustomGameOptions.MimicDuration}s)</color>";
-            PlayerControl.LocalPlayer.myTasks.Insert(0, mimicText);
 
             while (true)
             {
@@ -39,19 +35,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (__instance.Player.Data.IsDead)
                     totalMimickTime = CustomGameOptions.MimicDuration;
 
-                mimicText.Text = $"{__instance.ColorString}Mimicking {mimicPlayer.Data.PlayerName}" +
-                    $" ({CustomGameOptions.MimicDuration - Math.Round(totalMimickTime)}s)</color>";
-
                 if (totalMimickTime > CustomGameOptions.MimicDuration | PlayerControl.LocalPlayer.Data.IsDead | AmongUsClient.Instance.GameState ==
                     InnerNetClient.GameStates.Ended)
                 {
-                    PlayerControl.LocalPlayer.myTasks.Remove(mimicText);
                     __instance.LastMimic = DateTime.UtcNow;
                     __instance.MimicTarget = null;
                     Utils.DefaultOutfit(__instance.Player);
-
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.GlitchWin, false, 0.4f);
-
                     yield break;
                 }
 

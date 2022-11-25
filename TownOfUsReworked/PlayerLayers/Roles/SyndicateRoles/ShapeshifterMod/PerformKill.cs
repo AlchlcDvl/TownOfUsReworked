@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Shapeshifter))
-                return true;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Shapeshifter))
+                return false;
 
             if (!PlayerControl.LocalPlayer.CanMove)
                 return false;
@@ -22,9 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var role = Role.GetRole<Concealer>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Shapeshifter>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.ConcealButton)
+            if (__instance == role.ShapeshiftButton)
             {
                 if (__instance.isCoolingDown)
                     return false;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.ConcealTimer() != 0)
+                if (role.ShapeshiftTimer() != 0)
                     return false;
 
                 unchecked
@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
                 }
 
                 role.TimeRemaining = CustomGameOptions.ConcealDuration;
-                Utils.Conceal();
+                Utils.Shapeshift();
                 return false;
             }
 

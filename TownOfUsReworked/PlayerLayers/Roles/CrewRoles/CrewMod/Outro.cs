@@ -26,11 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Crew && (((Agent)x).CrewWin | ((Altruist)x).CrewWin |
-                ((Coroner)x).CrewWin | ((Detective)x).CrewWin | ((Crewmate)x).CrewWin | ((Engineer)x).CrewWin | ((Escort)x).CrewWin |
-                ((Inspector)x).CrewWin | ((Investigator)x).CrewWin | ((Mayor)x).CrewWin | ((Medic)x).CrewWin | ((Medium)x).CrewWin |
-                ((Operative)x).CrewWin | ((Sheriff)x).CrewWin | ((Shifter)x).CrewWin | ((Swapper)x).CrewWin | ((TimeLord)x).CrewWin |
-                ((Tracker)x).CrewWin | ((Transporter)x).CrewWin | ((VampireHunter)x).CrewWin | ((Veteran)x).CrewWin | ((Vigilante)x).CrewWin));
+            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Crew && Role.CrewWin);
 
             if (role == null)
                 return;
@@ -48,7 +44,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            SoundManager.Instance.PlaySound(TownOfUsReworked.CrewWin, false, 0.3f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+            } catch {}
         }
     }
 }

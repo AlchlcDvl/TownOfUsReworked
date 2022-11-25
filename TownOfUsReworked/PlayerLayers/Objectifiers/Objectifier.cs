@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
         public static readonly List<KeyValuePair<byte, ObjectifierEnum>> ObjectifierHistory = new List<KeyValuePair<byte, ObjectifierEnum>>();
         public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
-        public Func<string> TaskText;
 
         protected Objectifier(PlayerControl player)
         {
@@ -21,10 +20,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierDictionary.Add(player.PlayerId, this);
         }
 
-        protected internal string Name { get; set; }
-        protected internal string SymbolName { get; set; }
         protected internal Color Color { get; set; }
         protected internal ObjectifierEnum ObjectifierType { get; set; }
+        protected internal string Name { get; set; }
+        protected internal string SymbolName { get; set; }
+        protected internal string ObjectifierDescription { get; set; }
+        public Func<string> TaskText;
 
         protected internal string GetColoredSymbol()
         {

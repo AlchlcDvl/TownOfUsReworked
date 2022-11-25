@@ -21,7 +21,7 @@ Neater Appearances
 Cosmetics
 
 Changelog (1.0.0-dev7 to 1.0.0-dev8)
-- New Faction: Syndicate |
+- New Faction: Syndicate
 - New Role: Warper [Syndicate (Support)]
 - New Role: Rebel [Syndicate (Support)] |
 - New Role: Concealer [Syndicate (Support)] 
@@ -29,30 +29,31 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Puppeteer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
-- New Role: Gorgon [Syndicate (Killing)] |
+- New Role: Gorgon [Syndicate (Killing)]
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
 - New Role: Mafioso [Intruder (Utility)] |
-- New Role: Dracula [Neutral (Neophyte)] |
-- New Role: Vampire [Neutral (Proselyte)] |
-- New Role: Dampyr [Neutral (Power)] |
+- New Role: Dracula [Neutral (Neophyte)]
+- New Role: Vampire [Neutral (Proselyte)]
+- New Role: Dampyr [Neutral (Power)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
 - New Role: Cryomaniac [Neutral (Evil)] 
 - New Role: Troll [Neutral (Evil)] 
 - New Role: Pirate [Neutral (Evil)] |
-- New Role: Thief [Neutral (Benign)] |
+- New Role: Thief [Neutral (Benign)]
 - New Role: Vampire Hunter [Crew (Checker)] 
 - New Role: Escort [Crew (Support)]
 - New Role: Inspector [Crew (Investigative)]
 - New Modifier: Flincher
-- New Modifier: VIP |
-- New Modifier: Professional |
+- New Modifier: VIP
+- New Modifier: Professional
+- New Modifier: Shy |
 - New Objectifier: Rivals |
 - New Objectifier: Fanatic |
 - New Ability: Tunneler |
-- New Ability: Multitasker |
+- New Ability: Multitasker
 - New Ability: Radar
 - New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens |
@@ -61,16 +62,14 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Addition: New Syndicate, Objectifiers and Abilities settings tabs
 - Addition: All players are alerted when the Phantom has a certain number of tasks left
 - Addition: More Assassin settings
-- Addition: Added Stalemate end screen
 - Addition: More better buttons
 - Addition: More settings
 - Addition: Added color coding to credits and updated them a bit
 - Addition: The end game summary now displays how many tasks did the player do and who is an Executioner/Guardian Angel target
 - Addition: More creddits
-- Addition: Added a lobby timer |
 - Addition: Added the option to change the max lobby size while in the lobby |
 - Addition: Added features from ToU-R v3.4.0
-- Addition: Added more camouflage options
+- Addition: Added a whole lot of options and simplified some other options
 - Addition: Added role reveal screen sounds (for some roles)
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
@@ -92,21 +91,20 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Rename: Mystic has been renamed to Coroner
 - Rename: Haunter has been renamed to Revealer
 - Rewrite: Glitch has been completely rewritten
-- Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their bloodlust cooldown (meaning if the Serial Killer is not on bloodlust, if roleblocked, the Serial Killer will kill them) |
+- Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their cooldown |
 - Nerf: Mystic (now Coroner) no longer gets info from every body, every meeting, basically now they have to report a body to get info specific to that body
 - Major Improvements: The code got rewritten, restructured, reorganised and reformatted for smoother (and hopefully less buggy) gameplay
-- Improvements: You are now told your Objectifiers on the intro screen |
+- Improvements: You are now told all of your player details in the tasks list and the role intro screen
 - Improvements: When the game starts, you can only see yourself on the role intro screen
 - Improvements: All settings are now indented to look a bit nicer and more consistent
 - Improvements: Shed some mod weight
 - Improvements: Medbay scan messages scale with the Dwarf/Giant settings
 - Improvements: Reworked the Color system for roles
 - Update: Updated mod to v2022.10.25s
-- Changes: The blackmailed screen has been changed from "YOU ARE BLACKMAILED" to "YOU HAVE BEEN SILENCED"
-- Changes: The blackmailed screen has been changed from "YOU ARE BLACKMAILED" to "YOU HAVE BEEN SILENCED"
 - Visual Fix: Vanilla Settings now appear in the lobby again
 - Visual Fix: Fixed color mismatch for certain areas
-- Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen |
+- Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
+- Visual Fix: Fixed Stalemate end screen
 - Bug Fix: Squashed the countless role gen bugs (hopefully)
 - Role Fix: Fixed the issue with Executioners and Guardian Angels having no or incorrect targets
 - Role Fix: Cannibal's button should light up when near bodies now

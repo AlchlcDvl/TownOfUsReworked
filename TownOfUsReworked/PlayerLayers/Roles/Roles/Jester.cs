@@ -44,12 +44,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             VotedOut = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Mayor : Role
     {
         public List<byte> ExtraVotes = new List<byte>();
-        public bool CrewWin;
         public int VoteBank { get; set; }
         public bool SelfVote { get; set; }
         public bool VotedOnce { get; set; }
@@ -44,12 +43,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

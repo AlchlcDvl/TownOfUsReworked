@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum InspResults
     {
-        SherConsigInspBm,
+        SherConsigInspBm = 0,
         CrewImpAnMurd,
         GAExeMedicPup,
         DisgMorphCamoAgent,

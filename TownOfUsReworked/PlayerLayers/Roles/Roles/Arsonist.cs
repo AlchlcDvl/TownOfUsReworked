@@ -85,12 +85,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             ArsonistWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -132,17 +132,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             System.Console.WriteLine("Ignite 1");
 
-            foreach (var playerId in DousedPlayers)
+            foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
             {
-                var player = Utils.PlayerById(playerId);
+                var arso2 = (Arsonist)arso;
 
-                if (player == null | player.Data.Disconnected | player.Data.IsDead | player.Is(RoleEnum.Pestilence))
-                    continue;
+                foreach (var playerId in arso2.DousedPlayers)
+                {
+                    var player = Utils.PlayerById(playerId);
 
-                Utils.MurderPlayer(Player, player);
+                    if (player == null | player.Data.Disconnected | player.Data.IsDead | player.Is(RoleEnum.Pestilence))
+                        continue;
+
+                    Utils.MurderPlayer(Player, player);
+                }
+
+                arso2.DousedPlayers.Clear();
             }
-
-            DousedPlayers.Clear();
+            
             System.Console.WriteLine("Ignite 2");
         }
     }

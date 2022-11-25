@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Engineer : Role
     {
-        public bool CrewWin;
         public bool UsedThisRound = false;
 
         public Engineer(PlayerControl player) : base(player)
@@ -41,12 +40,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

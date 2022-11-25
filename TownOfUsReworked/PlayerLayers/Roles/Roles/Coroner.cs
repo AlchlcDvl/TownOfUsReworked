@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
         public readonly List<GameObject> Buttons = new List<GameObject>();
         public List<byte> Reported = new List<byte>();
-        public bool CrewWin;
 
         public Coroner(PlayerControl player) : base(player)
         {
@@ -55,12 +54,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

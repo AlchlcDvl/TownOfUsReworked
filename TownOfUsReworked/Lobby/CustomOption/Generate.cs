@@ -98,6 +98,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         public static CustomHeaderOption SyndicateChaosRoles;
         public static CustomNumberOption PuppeteerOn;
+        public static CustomNumberOption ShapeshifterOn;
 
         public static CustomHeaderOption SyndicateKillingRoles;
         public static CustomNumberOption GorgonOn;
@@ -340,6 +341,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         public static CustomHeaderOption Phantom;
         public static CustomNumberOption PhantomTasksRemaining;
+        public static CustomToggleOption PhantomKnows;
 
         public static CustomHeaderOption Snitch;
         public static CustomNumberOption SnitchCount;
@@ -349,6 +351,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption SnitchTasksRemaining;
         public static CustomToggleOption SnitchSeesImpInMeeting;
         public static CustomToggleOption SnitchSeesTraitor;
+        public static CustomToggleOption SnitchKnows;
 
         public static CustomHeaderOption Altruist;
         public static CustomNumberOption AltruistCount;
@@ -470,8 +473,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption PoisonerVent;
 
         public static CustomHeaderOption Traitor;
-        public static CustomNumberOption LatestSpawn;
-        public static CustomToggleOption NeutralKillingStopsTraitor;
+        public static CustomToggleOption TraitorKnows;
 
         public static CustomHeaderOption Amnesiac;
         public static CustomNumberOption AmnesiacCount;
@@ -674,6 +676,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption VolatileInterval;
 
         public static CustomHeaderOption Fanatic;
+        public static CustomToggleOption FanaticKnows;
 
         public static CustomHeaderOption Multitasker;
         public static CustomNumberOption Transparancy;
@@ -1260,8 +1263,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Puppeteer = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Puppeteer</color>");
             PoisonerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Puppeteer</color> Count", 1, 1, 14, 1);
-            PossessCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Possess Cooldown", 3.0f, 1f, 10f, 0.5f, CooldownFormat);
-            PossessDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Possess Time", 3.0f, 1f, 5f, 0.5f, CooldownFormat);
+            PossessCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Possess Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            PossessDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Possess Duration", 10f, 5f, 15f, 1f, CooldownFormat);
 
             SyndicateKillingSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Settings");
 

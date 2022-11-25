@@ -90,6 +90,10 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
                         hatBehaviour.ProductId = hatCredit.Id;
                         hatBehaviour.name = hatCredit.Name;
                         hatBehaviour.Free = true;
+                        
+                        if (hatCredit.Adaptive)
+                            hatBehaviour.hatViewData.viewData.AltShader = new Material(Shader.Find("Unlit/PlayerShader"));
+                            
                         hatBehaviours.Add(hatBehaviour);
                     }
                 }

@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Concealer))
-                return true;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Concealer))
+                return false;
 
             if (!PlayerControl.LocalPlayer.CanMove)
                 return false;

@@ -8,18 +8,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Executioner : Role
     {
-        public PlayerControl target;
+        public PlayerControl TargetPlayer;
         public bool TargetVotedOut;
 
         public Executioner(PlayerControl player) : base(player)
         {
             Name = "Executioner";
-            ImpostorText = () => target == null
+            ImpostorText = () => TargetPlayer == null
                 ? "You don't have a target for some reason... weird..."
-                : $"Eject {target.name}";
-            TaskText = () => target == null
+                : $"Eject {TargetPlayer.name}";
+            TaskText = () => TargetPlayer == null
                     ? "You don't have a target for some reason... weird..."
-                    : $"Eject {target.name}!\nFake Tasks:";
+                    : $"Eject {TargetPlayer.name}!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Executioner;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = () => "Neutral (Evil)";
-            IntroText = $"Eject {target.name}";
+            IntroText = $"Eject {TargetPlayer.name}";
             CoronerDeadReport = "This body has tons of incriminating pictures of someone. They must be an Executioner!";
             CoronerKillerReport = "";
             Results = InspResults.GAExeMedicPup;
@@ -40,6 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var exeTeam = new List<PlayerControl>();
             exeTeam.Add(PlayerControl.LocalPlayer);
+            exeTeam.Add(TargetPlayer);
             __instance.teamToShow = exeTeam;
         }
 
@@ -48,14 +49,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead)
                 return true;
 
-            if (!TargetVotedOut | !target.Data.IsDead)
+            if (!TargetVotedOut | !TargetPlayer.Data.IsDead)
                 return true;
 
             Utils.EndGame();
             return false;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return;
@@ -63,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             TargetVotedOut = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

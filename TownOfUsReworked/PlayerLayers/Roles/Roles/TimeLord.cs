@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int UsesLeft;
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
-        public bool CrewWin;
         public DateTime StartRewind { get; set; }
         public DateTime FinishRewind { get; set; }
 
@@ -78,12 +77,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

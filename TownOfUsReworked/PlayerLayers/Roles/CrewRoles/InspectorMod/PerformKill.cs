@@ -132,8 +132,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             role.Examined.Add(role.ClosestPlayer);
             role.LastExamined = DateTime.UtcNow;
-            //SoundManager.Instance.PlaySound(TownOfUsReworked.InspectSound, false, 0.4f);
-            role.LastExamined = DateTime.UtcNow;
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+            } catch {}
+            
             return false;
         }
     }

@@ -76,7 +76,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             
-            SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 0.4f);
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
+            } catch {}
 
             Remember(role, player);
             return false;

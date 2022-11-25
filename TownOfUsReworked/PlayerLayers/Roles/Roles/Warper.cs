@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public KillButton _warpButton;
         public DateTime LastWarped;
-        public bool SyndicateWin;
 
         public Warper(PlayerControl player) : base(player)
         {
@@ -131,12 +130,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        public void Wins()
+        public override void Wins()
         {
             SyndicateWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -146,9 +145,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) |
-                x.Is(RoleAlignment.NeutralPros))) == 0)
+            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);

@@ -15,19 +15,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int UsesLeft;
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
-        public PlayerControl target;
+        public PlayerControl TargetPlayer;
         public bool GAWins { get; set; }
         public bool Protecting => TimeRemaining > 0f;
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            ImpostorText = () => target == null 
+            ImpostorText = () => TargetPlayer == null 
                     ? "You don't have a target for some reason... weird..."
-                    : $"Protect {target.name} With Your Life!";
-            TaskText = () => target == null
+                    : $"Protect {TargetPlayer.name} With Your Life!";
+            TaskText = () => TargetPlayer == null
                     ? "You don't have a target for some reason... weird..."
-                    : $"Protect {target.name}!";
+                    : $"Protect {TargetPlayer.name}!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastProtected = DateTime.UtcNow;
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = () => "Neutral (Benign)";
-            IntroText = $"Protect {target.name}";
+            IntroText = $"Protect {TargetPlayer.name}";
             CoronerDeadReport = "The body's anatomy is out of this world. They must be a Guardian Angel!";
             CoronerKillerReport = "";
             Results = InspResults.GAExeMedicPup;
@@ -71,13 +71,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastProtected = DateTime.UtcNow;
         }
 
-        public void Wins()
+        public override void Wins()
         {
-            if (!target.Data.IsDead)
+            if (!TargetPlayer.Data.IsDead)
                 GAWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -86,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var gaTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             gaTeam.Add(PlayerControl.LocalPlayer);
-            gaTeam.Add(target);
+            gaTeam.Add(TargetPlayer);
             __instance.teamToShow = gaTeam;
         }
     }

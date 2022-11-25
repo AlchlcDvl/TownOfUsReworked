@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum RoleAlignment
     {
-        CrewSupport,
+        CrewSupport = 0,
         CrewInvest,
         CrewProt,
         CrewKill,

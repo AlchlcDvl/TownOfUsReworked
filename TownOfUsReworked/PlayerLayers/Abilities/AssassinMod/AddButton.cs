@@ -206,7 +206,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                             role.RemainingKills--;
                             ShowHideButtons.HideSingle(role, targetId, toDie == role.Player, true);
 
-                            if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                            if (toDie.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
                             {
                                 var lover = ((Lovers)playerObjectifier).OtherLover.Player;
 
@@ -221,7 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                         role.RemainingKills--;
                         ShowHideButtons.HideSingle(role, targetId, toDie == role.Player, true);
 
-                        if (toDie.IsLover() && CustomGameOptions.BothLoversDie)
+                        if (toDie.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
                         {
                             var lover = ((Lovers)playerObjectifier).OtherLover.Player;
 

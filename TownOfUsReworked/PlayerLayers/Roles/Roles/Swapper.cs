@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public readonly List<GameObject> Buttons = new List<GameObject>();
         public readonly List<bool> ListOfActives = new List<bool>();
-        public bool CrewWin;
 
         public Swapper(PlayerControl player) : base(player)
         {
@@ -40,12 +39,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

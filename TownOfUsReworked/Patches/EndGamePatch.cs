@@ -62,7 +62,7 @@ namespace TownOfUsReworked.Patches
                     roleName = role2.Name;
                     endString = "</color> > ";
 
-                    summary = colorString + roleName + endString;
+                    summary += colorString + roleName + endString;
                 }
 
                 summary = summary.Remove(summary.Length - 3);
@@ -99,7 +99,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var ga = (GuardianAngel)role;
                         
-                    if (playerControl.PlayerId == ga.target.PlayerId)
+                    if (playerControl.PlayerId == ga.TargetPlayer.PlayerId)
                         summary += " <color=#FFFFFFFF>★</color>";
                 }
 
@@ -107,7 +107,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var exe = (Executioner)role;
                         
-                    if (playerControl.PlayerId == exe.target.PlayerId)
+                    if (playerControl.PlayerId == exe.TargetPlayer.PlayerId)
                         summary += " <color=#CCCCCCFF>§</color>";
                 }
 

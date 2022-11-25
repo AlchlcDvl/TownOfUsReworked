@@ -4,6 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
@@ -28,17 +29,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             area.UpdateCount(colorMapping.Count);
             var icons = area.myIcons.ToArray();
             colorMapping.Sort();
+            var useCompactText = icons.Count > 2 * area.MaxWidth;
 
             for (var i = 0;i < colorMapping.Count;i++)
             {
                 var icon = icons[i];
                 var sprite = icon.GetComponent<SpriteRenderer>();
+                var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
                 if (SubmergedCompatibility.Loaded)
                     sprite.color = new Color(1, 1, 1, 1);
 
                 if (sprite != null)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
+                
+                if (text != null)
+                {
+                    text.gameObject.SetActive(true);
+                    text.text = colorMapping[i].ToString();
+                    
+                    // Show first row numbers below player icons
+                    // Show second row numbers above player icons
+                    // show all icons on player icons when there are three rows
+
+                    if(useCompactText)
+                        text.transform.localPosition = new Vector3(0, 0, -20);
+					else if (i / area.MaxWidth == 0)
+                        text.transform.localPosition = new Vector3(0, -area.YOffset, -20);
+                    else
+                        text.transform.localPosition = new Vector3(0, area.YOffset, -20);
+                }
             }
         }
 

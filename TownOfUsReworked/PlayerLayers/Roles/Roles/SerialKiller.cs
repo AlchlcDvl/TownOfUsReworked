@@ -72,12 +72,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         }
 
 
-        public void Wins()
+        public override void Wins()
         {
             SerialKillerWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

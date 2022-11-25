@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             foreach (var player in __instance.playerStates)
             {
-                if (player.TargetPlayerId == role.target.PlayerId)
+                if (player.TargetPlayerId == role.TargetPlayer.PlayerId)
                 {
                     player.NameText.color = role.Color;
                     player.NameText.text += " ★";
@@ -59,11 +59,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             if (!CustomGameOptions.GAKnowsTargetRole)
             {
-                role.target.nameText().color = role.Color;
-                role.target.nameText().text += " ★";
+                role.TargetPlayer.nameText().color = role.Color;
+                role.TargetPlayer.nameText().text += " ★";
             }
 
-            if (!role.target.Data.IsDead && !role.target.Data.Disconnected)
+            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
                 return;
 
             unchecked

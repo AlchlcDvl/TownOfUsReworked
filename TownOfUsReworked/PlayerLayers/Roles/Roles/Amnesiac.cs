@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AddToRoleHistory(RoleType);
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

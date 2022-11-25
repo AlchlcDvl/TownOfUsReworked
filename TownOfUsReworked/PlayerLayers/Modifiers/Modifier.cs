@@ -13,8 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     {
         public static readonly Dictionary<byte, Modifier> ModifierDictionary = new Dictionary<byte, Modifier>();
         public static readonly List<KeyValuePair<byte, ModifierEnum>> ModifierHistory = new List<KeyValuePair<byte, ModifierEnum>>();
-        public Func<string> TaskText;
-        protected internal Color Color { get; set; }
 
         protected Modifier(PlayerControl player)
         {
@@ -23,8 +21,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         }
 
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
+
         protected internal string Name { get; set; }
         protected internal string SymbolName { get; set; }
+        protected internal string ModifierDescription { get; set; }
+        protected internal ModifierEnum ModifierType { get; set; }
+        public Func<string> TaskText;
+        protected internal Color Color { get; set; }
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -41,7 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             }
         }
 
-        protected internal ModifierEnum ModifierType { get; set; }
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 

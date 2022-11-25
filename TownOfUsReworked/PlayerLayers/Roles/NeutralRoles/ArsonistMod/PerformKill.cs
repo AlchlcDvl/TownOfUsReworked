@@ -92,6 +92,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+                
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.IgniteSound, false, 1f);
+                } catch {}
 
                 role.Ignite();
                 return false;
@@ -146,7 +151,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 }
 
                 role.LastDoused = DateTime.UtcNow;
-                SoundManager.Instance.PlaySound(TownOfUsReworked.DouseSound, false, 0.4f);
+                
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.DouseSound, false, 1f);
+                } catch {}
 
                 return false;
             }

@@ -44,7 +44,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            SoundManager.Instance.PlaySound(TownOfUsReworked.WerewolfWin, false, 0.3f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.WerewolfWin, false, 1f);
+            } catch {}
         }
     }
 }

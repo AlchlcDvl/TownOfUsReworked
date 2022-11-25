@@ -50,8 +50,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
-
-            SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 0.4f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
+            } catch {}
             
             return false;
         }

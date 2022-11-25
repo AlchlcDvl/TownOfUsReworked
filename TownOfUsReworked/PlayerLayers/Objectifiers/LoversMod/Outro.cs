@@ -19,20 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             TextMeshPro text;
             Vector3 pos;
 
-            if (Role.NobodyWins)
-            {
-                text = Object.Instantiate(__instance.WinText);
-                var color = __instance.WinText.color;
-                color.a = 1f;
-                text.color = Colors.Stalemate;
-                text.text = "Stalemate!";
-                pos = __instance.WinText.transform.localPosition;
-                pos.y = 1.5f;
-                text.transform.position = pos;
-                text.text = $"<size=4>{text.text}</size>";
-                return;
-            }
-
             if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 

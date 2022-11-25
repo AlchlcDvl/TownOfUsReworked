@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Plaguebearer : Role
     {
         public PlayerControl ClosestPlayer;
-        public List<byte> InfectedPlayers = new List<byte>();
         public DateTime LastInfected;
         public bool PlaguebearerWins { get; set; }
+        public List<byte> InfectedPlayers = new List<byte>();
         public int InfectedAlive => InfectedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead);
         public bool CanTransform => (PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= InfectedAlive) | CustomGameOptions.PestSpawn;
 
@@ -60,12 +60,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             PlaguebearerWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

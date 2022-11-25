@@ -5,32 +5,34 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using System.Linq;
+using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Agent : Role
     {
-        public bool CrewWin;
-        public bool TasksDone => TasksLeft == 0;
+        public System.Collections.Generic.Dictionary<byte, TMP_Text> PlayerNumbers = new System.Collections.Generic.Dictionary<byte, TMP_Text>();
 
         public Agent(PlayerControl player) : base(player)
         {
             Name = "Agent";
-            ImpostorText = () => "Snoop Around And Find Stuff Out";
-            TaskText = () => "Gain extra information from the Admin table!";
+            StartText = "Snoop Around And Find Stuff Out";
+            AbilitiesText = "Gain extra information from the Admin table!";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Agent : Colors.Crew;
             RoleType = RoleEnum.Agent;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             CoronerDeadReport = "The technology this one is carrying indicates that this body is an Agent!";
             CoronerKillerReport = "";
             Results = InspResults.DisgMorphCamoAgent;
             SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.AgentIntro;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
             AddToRoleHistory(RoleType);
         }
 
@@ -41,12 +43,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

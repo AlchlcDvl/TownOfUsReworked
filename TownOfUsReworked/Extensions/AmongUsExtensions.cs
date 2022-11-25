@@ -78,17 +78,6 @@ namespace TownOfUsReworked.Extensions
             return playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
         }
 
-        public static bool TasksDone(this GameData.PlayerInfo playerinfo)
-        {
-            var TasksLeft = playerinfo.Tasks.ToArray().Count(x => !x.Complete);
-            return TasksLeft == 0;
-        }
-
-        /*public static bool Sabotaged()
-        {
-            return room.getSabotageTimerIs0();
-        }*/
-
         public static void SetImpostor(this GameData.PlayerInfo playerinfo, bool impostor)
         {
             if (playerinfo.Role != null)

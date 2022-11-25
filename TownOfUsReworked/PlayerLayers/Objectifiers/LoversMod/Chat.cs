@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
 {
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                 if (localPlayer == null)
                     return true;
 
-                return MeetingHud.Instance != null | LobbyBehaviour.Instance != null | localPlayer.Data.IsDead | localPlayer.IsLover() |
+                return MeetingHud.Instance != null | LobbyBehaviour.Instance != null | localPlayer.Data.IsDead | localPlayer.Is(ObjectifierEnum.Lovers) |
                     sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
             }
         }
@@ -29,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
         {
             public static void Postfix(HudManager __instance)
             {
-                if (PlayerControl.LocalPlayer.IsLover() & !__instance.Chat.isActiveAndEnabled & CustomGameOptions.LoversChat)
+                if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) & !__instance.Chat.isActiveAndEnabled & CustomGameOptions.LoversChat)
                     __instance.Chat.SetVisible(true);
             }
         }

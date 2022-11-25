@@ -52,7 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             if (checkLover)
             {
-                SoundManager.Instance.PlaySound(player.KillSfx, false, 0.8f);
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.KillSFX, false, 1f);
+                } catch {}
 
                 if (PlayerControl.LocalPlayer == player)
                     hudManager.KillOverlay.ShowKillAnimation(assassinPlayer.Data, player.Data);
@@ -114,7 +117,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             player.Die(DeathReason.Kill);
 
-            if (checkLover && player.IsLover() && CustomGameOptions.BothLoversDie)
+            if (checkLover && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var otherLover = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer).Player;
                 

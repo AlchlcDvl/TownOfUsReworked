@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl PoisonedPlayer;
         public float TimeRemaining;
         public bool Enabled = false;
-        public bool IntruderWin;
 
         public Poisoner(PlayerControl player) : base(player)
         {
@@ -72,7 +71,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Utils.RpcMurderPlayer(Player, PoisonedPlayer);
 
                 if (!PoisonedPlayer.Data.IsDead)
-                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 0.5f);
+                {
+                    try
+                    {
+                        SoundManager.Instance.PlaySound(TownOfUsReworked.KillSFX, false, 1f);
+                    } catch {}
+                }
             }
 
             PoisonedPlayer = null;
@@ -105,12 +109,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = intTeam;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             IntruderWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -120,8 +124,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0)
+            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) |
+                Utils.Sabotaged())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);

@@ -42,6 +42,9 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> AllRoles = new List<Role>();
         
         public static List<AudioClip> Sounds = new List<AudioClip>();
+
+        public static List<AttackEnum> Attack = new List<AttackEnum>();
+        public static List<DefenseEnum> Defense = new List<DefenseEnum>();
         
         public static void Prefix()
         {
@@ -166,7 +169,20 @@ namespace TownOfUsReworked.Extensions
             Sounds.Add(TownOfUsReworked.InteractSound);
             Sounds.Add(TownOfUsReworked.ShootingSound);
             Sounds.Add(TownOfUsReworked.TimeFreezeSound);
+            Sounds.Add(TownOfUsReworked.VoteLockSound);
             Sounds.Add(TownOfUsReworked.KillSFX);
+
+            Attack.Add(AttackEnum.None);
+            Attack.Add(AttackEnum.Basic);
+            Attack.Add(AttackEnum.Powerful);
+            Attack.Add(AttackEnum.Unstoppable);
+            Attack.Add(AttackEnum.Infinite);
+
+            Defense.Add(DefenseEnum.None);
+            Defense.Add(DefenseEnum.Basic);
+            Defense.Add(DefenseEnum.Powerful);
+            Defense.Add(DefenseEnum.Invincible);
+            Defense.Add(DefenseEnum.Infinite);
         }
     }
 }

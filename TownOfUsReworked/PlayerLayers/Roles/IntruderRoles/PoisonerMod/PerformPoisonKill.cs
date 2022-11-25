@@ -181,7 +181,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
             
-            SoundManager.Instance.PlaySound(TownOfUsReworked.PoisonSound, false, 0.4f);
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.PoisonSound, false, 1f);
+            } catch {}
             
             return false;
         }

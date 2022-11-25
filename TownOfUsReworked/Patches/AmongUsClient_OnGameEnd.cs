@@ -56,7 +56,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var ga = (GuardianAngel)role;
 
-                    if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                    if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                         winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                 }
 
@@ -76,34 +76,7 @@ namespace TownOfUsReworked.Patches
 
                 if (faction == Faction.Crew)
                 {
-                    var agent = (Agent)role;
-                    var alt = (Altruist)role;
-                    var coro = (Coroner)role;
-                    var crew = (Crewmate)role;
-                    var det = (Detective)role;
-                    var engi = (Engineer)role;
-                    var esc = (Escort)role;
-                    var insp = (Inspector)role;
-                    var inv = (Investigator)role;
-                    var mayo = (Mayor)role;
-                    var medic = (Medic)role;
-                    var med = (Medium)role;
-                    var op = (Operative)role;
-                    var sher = (Sheriff)role;
-                    var shift = (Shifter)role;
-                    var swap = (Swapper)role;
-                    var tl = (TimeLord)role;
-                    var trans = (Transporter)role;
-                    var track = (Tracker)role;
-                    var vh = (VampireHunter)role;
-                    var vet = (Veteran)role;
-                    var vig = (Vigilante)role;
-
-                    var flag = agent.CrewWin | alt.CrewWin | coro.CrewWin | crew.CrewWin | det.CrewWin | engi.CrewWin | esc.CrewWin | insp.CrewWin |
-                        inv.CrewWin | mayo.CrewWin | medic.CrewWin | med.CrewWin | op.CrewWin | sher.CrewWin | shift.CrewWin | swap.CrewWin |
-                        tl.CrewWin | trans.CrewWin | track.CrewWin | vh.CrewWin | vet.CrewWin | vig.CrewWin;
-
-                    if (flag)
+                    if (Role.CrewWin)
                     {
                         foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
                         {
@@ -117,7 +90,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -151,6 +124,106 @@ namespace TownOfUsReworked.Patches
                         return;
                     }
                 }
+                else if (faction == Faction.Intruders)
+                {
+                    if (Role.IntruderWin)
+                    {
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        {
+                            var surv = (Survivor)role2;
+
+                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
+                            var ga = (GuardianAngel)role2;
+
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        {
+                            var jest = (Jester)role2;
+
+                            if (jest.VotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        {
+                            var exe = (Executioner)role2;
+
+                            if (exe.TargetVotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(Faction.Intruders))
+                        {
+                            if (!role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                        }
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+
+                        return;
+                    }
+                }
+                else if (faction == Faction.Syndicate)
+                {
+                    if (Role.SyndicateWin)
+                    {
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        {
+                            var surv = (Survivor)role2;
+
+                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
+                            var ga = (GuardianAngel)role2;
+
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        {
+                            var jest = (Jester)role2;
+
+                            if (jest.VotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        {
+                            var exe = (Executioner)role2;
+
+                            if (exe.TargetVotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(Faction.Syndicate))
+                        {
+                            if (!role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                        }
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+
+                        return;
+                    }
+                }
                 else if (type == RoleEnum.Glitch)
                 {
                     var glitch = (Glitch)role;
@@ -167,7 +240,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -214,7 +287,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -261,7 +334,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -308,7 +381,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
                             
@@ -358,7 +431,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
                             
@@ -408,7 +481,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -455,7 +528,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -502,7 +575,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -549,7 +622,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -595,7 +668,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -641,7 +714,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
@@ -687,7 +760,7 @@ namespace TownOfUsReworked.Patches
                         {
                             var ga = (GuardianAngel)role2;
 
-                            if (!ga.target.Data.IsDead && !ga.Player.Data.Disconnected)
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 

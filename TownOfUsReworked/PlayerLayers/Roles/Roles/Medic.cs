@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Medic : Role
     {
         public readonly List<GameObject> Buttons = new List<GameObject>();
-        public bool CrewWin;
         public PlayerControl ClosestPlayer;
         public bool UsedAbility { get; set; } = false;
         public PlayerControl ShieldedPlayer { get; set; }
@@ -45,12 +44,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

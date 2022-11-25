@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Escort : Role
     {
-        public bool CrewWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastBlock { get; set; }
         public float TimeRemaining;
@@ -73,12 +72,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 TimeRemaining = 0f;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

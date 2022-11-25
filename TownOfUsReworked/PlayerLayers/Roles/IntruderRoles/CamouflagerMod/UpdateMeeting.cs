@@ -1,6 +1,5 @@
 using HarmonyLib;
 using UnityEngine;
-using Unity;
 using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
@@ -10,16 +9,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         private static void Postfix(MeetingHud __instance)
         {
-            if (CustomGameOptions.MeetingColourblind)
-
+            if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
+            {
                 foreach (var state in __instance.playerStates)
                 {
-                    state.NameText.text = "";
-                    state.NameText.color = new Color32(0, 0, 0, 0);
+                    state.NameText.color = Color.clear;
                     state.PlayerIcon.SetBodyColor(6);
                     state.PlayerIcon.SetHat("None", 0);
                     state.PlayerIcon.SetSkin("None", 0);
                 }
+            }
         }
     }
 
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         private static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
         {
-            if (CustomGameOptions.MeetingColourblind)
+            if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
             {
                 __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
@@ -43,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         private static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] string plateId)
         {
-            if (CustomGameOptions.MeetingColourblind)
+            if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
             {
                 __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;

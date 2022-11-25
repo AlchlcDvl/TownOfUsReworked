@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
         public static readonly List<KeyValuePair<byte, AbilityEnum>> AbilityHistory = new List<KeyValuePair<byte, AbilityEnum>>();
-        public Func<string> TaskText;
 
         protected Ability(PlayerControl player)
         {
@@ -23,7 +22,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         }
 
         public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
+
         protected internal string Name { get; set; }
+        protected internal string AbilityDescription { get; set; }
+        public Func<string> TaskText;
+        protected internal Color Color { get; set; }
+        protected internal AbilityEnum AbilityType { get; set; }
+
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.Count;
 
@@ -42,8 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             }
         }
         
-        protected internal Color Color { get; set; }
-        protected internal AbilityEnum AbilityType { get; set; }
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 

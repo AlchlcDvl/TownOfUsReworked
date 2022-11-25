@@ -52,12 +52,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             DracWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

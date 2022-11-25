@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum ObjectifierEnum
     {
-        Fanatic,
+        Fanatic = 0,
         Lovers,
         Phantom,
         Rivals,

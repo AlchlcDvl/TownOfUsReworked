@@ -34,11 +34,15 @@ namespace TownOfUsReworked.Patches
                 if (PlayerControl.LocalPlayer.IsShielded())
                 {
                     var medic = PlayerControl.LocalPlayer.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer.Write(medic);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    unchecked
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                            SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
 
                     if (CustomGameOptions.ShieldBreaks)
                         PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);

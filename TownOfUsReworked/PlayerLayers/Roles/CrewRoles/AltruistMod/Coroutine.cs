@@ -82,7 +82,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
-                SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 0.2f);
+            {
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
+                } catch {}
+            }
 
             if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
@@ -90,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             if (target != null)
                 Object.Destroy(target.gameObject);
 
-            if (player.IsLover() && CustomGameOptions.BothLoversDie)
+            if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover.Player;
 

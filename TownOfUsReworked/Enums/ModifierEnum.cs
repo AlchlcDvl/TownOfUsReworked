@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum ModifierEnum
     {
-        Bait,
+        Bait = 0,
         Coward,
         Diseased,
         Drunk,
@@ -10,6 +10,7 @@ namespace TownOfUsReworked.Enums
         Flincher,
         Giant,
         Professional,
+        Shy,
         VIP,
         Volatile,
         

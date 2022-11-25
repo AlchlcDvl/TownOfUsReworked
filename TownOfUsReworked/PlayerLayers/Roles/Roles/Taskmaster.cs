@@ -36,12 +36,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AddToRoleHistory(RoleType);
         }
 
-        public void Wins()
+        public override void Wins()
         {
             TaskmasterWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
@@ -62,16 +62,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
         
-        protected override string NameText(PlayerVoteArea player = null)
+        protected override string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
         {
             if (CamouflageUnCamouflage.IsCamoed && player == null)
                 return "";
 
             if (PlayerControl.LocalPlayer.Data.IsDead)
-                return base.NameText(player);
+                return base.NameText(revealTasks, revealRole, revealObjectifier, player);
 
             if (Revealed)
-                return base.NameText(player);
+                return base.NameText(revealTasks, revealRole, revealObjectifier, player);
             
             var role = Role.GetRole<Taskmaster>(Player);
 
@@ -86,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             Player.nameText().transform.localPosition = new Vector3(0f, Player.Data.DefaultOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
 
-            if(Local)
+            if (Local)
                 return PlayerName + "\n" + "Taskmaster";
 
             return PlayerName;

@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             {
                 var ga = (GuardianAngel) role;
 
-                var player = ga.target;
+                var player = ga.TargetPlayer;
 
                 if (player == null)
                     continue;
@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                         player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
                     }
                 }
-                else if (ga.target.IsShielded())
+                else if (ga.TargetPlayer.IsShielded())
                 {
 
                     var showShielded = CustomGameOptions.ShowShielded;

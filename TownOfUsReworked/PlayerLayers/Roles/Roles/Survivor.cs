@@ -70,13 +70,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = survTeam;
         }
 
-        public void Wins()
+        public override void Wins()
         {
-            if (!Player.Data.IsDead)
+            if (!Player.Data.IsDead && !Player.Data.Disconnected)
                 SurvWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

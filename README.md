@@ -1,4 +1,4 @@
-### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development. The official builds will also be posted here until the new version of the mod is ready. Please be patient.***
+### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development. The official builds will also be posted here until the mod is ready. Please be patient.***
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
 ### ***Also Also Note: This README page is currently under editing, most things here are either missing or subject to change.***
 
@@ -97,6 +97,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Gorgon](#gorgon)
 - [Puppeteer](#puppeteer)
 - [Rebel](#rebel)
+- [Shapeshifter](#shapeshifter)
 - [Sidekick](#sidekick)
 - [Warper](#warper)
 
@@ -109,6 +110,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Flincher](#flincher)
 - [Giant](#giant)
 - [Professional](#professional)
+- [Shy](#shy)
 - [VIP](#vip)
 - [Volatile](#volatile)
 
@@ -1235,6 +1237,105 @@ The Gorgon can stone gaze people to freeze them in place. Upon getting stoned, i
 | Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
 | Gaze Timer | The duration on the Gorgon's gaze button | Time | 25s |
 
+## Puppeteer
+### **Alignment: Syndicate (Disruption)**
+
+The Puppeteer can control a player and force them to kill someone.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Puppeteer | The percentage probability of the Puppeteer appearing | Percentage | 0% |
+| Puppeteer Count | How many Puppeteers should spawn in Custom Mode | Number | 1 |
+| Possess Cooldown | The cooldown on the Puppeteer's possess button | Time | 25s |
+| Possess Duration | The duration of the Puppeteer's possess | Time | 10s |
+
+## Rebel
+### **Alignment: Syndicate (Support)**
+
+The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Rebel | The percentage probability of the Rebel appearing | Percentage | 0% |
+| Rebel Count | How many Rebels should spawn in Custom Mode | Number | 1 |
+| Initial Promotion Cooldown | The initial cooldown of the Rebel's promote button | Time | 10s |
+
+## Shapeshifter
+### **Alignment: Syndicate (Support)**
+
+The Shapeshifter can randomise everyone's appearances for a short while.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Shapeshifter | The percentage probability of the Shapeshifter appearing | Percentage | 0% |
+| Shapeshifter Count | How many Shapeshifters should spawn in Custom Mode | Number | 1 |
+| Shapeshift Cooldown | The cooldown on the Shapeshifter's shapeshift button | Time | 25s |
+| Shapeshift Duration | The duration of the Shapeshifter's shapeshift | Time | 10s |
+
+## Sidekick
+### **Alignment: Syndicate (Utility)**
+
+The Sidekick is promoted from a random non-Rebel Intruder role. The Sidekick by themself is nothing special, but when the Rebel dies, the Sidekick becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Cooldown Multiplier | How much do the cooldowns decrease by upon promotion | Factor | x0.75 |
+
+## Warper
+### **Alignment: Syndicate (Support)**
+
+The Warper can teleport everyone to a random vent every now and then.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Warper | The percentage probability of the Warper appearing | Percentage | 0% |
+| Warper Count | How many Warpers should spawn in Custom Mode | Number | 1 |
+| Warp Cooldown | The cooldown on the Warper's warp button | Time | 25s |
+
+-----------------------
+
+# Objectifiers
+Objectifiers are basically a second objective for the player. They can either choose to win the regular way, or win via their
+
+## Lovers
+### Applied To: Everyone
+### Win Condition: Be 2 of the 3 final crew.
+
+The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover. Intruders cannot be Lovers with other Intruders.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Lovers | The percentage probability of the Lovers appearing | Percentage | 0% |
+| Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
+| Loving Impostor Probability | The chances of one lover being an Impostor | Percentage | 20% |
+| Neutral Roles Can Be Lovers | Whether a Lover can be a Neutral Role | Toggle | True |
+
+## Phantom
+### Applied To: Neutrals
+### Win Condition: Finish your tasks without getting clicked or having the game end.
+
+The Phantom spawns when a Neutral dies.
+They become half-invisible when they die and has to complete all their tasks without getting caught.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
+| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
+
 -----------------------
 
 # Modifiers
@@ -1329,26 +1430,6 @@ The Giant is a gigantic player that has a decreased walk speed.
 | Giant Speed | How slow the Giant moves in comparison to normal | Factor | 0.75x |
 | Giant Scale | How big the Giant is in comparison to normal | Factor | 1.5x |
 
-## Lovers
-### **Alignment: Neutral**
-### Applied To: Everyone
-
-The Lovers are two players who are linked together.
-They gain the primary objective to stay alive together.
-If they are both among the last 3 players, they win as a Lover pair.
-In order to so, they gain access to a private chat, only visible by them in between meetings.
-However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover.
-Intruders cannot be Lovers with other Intruders.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Lovers | The percentage probability of the Lovers appearing | Percentage | 0% |
-| Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
-| Loving Impostor Probability | The chances of one lover being an Impostor | Percentage | 20% |
-| Neutral Roles Can Be Lovers | Whether a Lover can be a Neutral Role | Toggle | True |
-
 ## Tiebreaker
 ### **Alignment: Positive**
 ### Applied To: Everyone
@@ -1386,25 +1467,6 @@ You see and hear things and might lash out on others.
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Volatile | The percentage probability of the Volatile appearing | Percentage | 0% |
-
------------------------
-
-# Objectifiers
-Objectifiers are added on top of players' roles and modifiers. A 3rd player layer, if you will.
-
-## Phantom
-### **Alignment: Neutral (Postmortal)**
-### Win Condition: Finish your tasks without getting clicked or having the game end.
-
-The Phantom spawns when a Neutral dies.
-They become half-invisible when they die and has to complete all their tasks without getting caught.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
-| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 
 ## Assassin
 ### **Alignment: Ability**

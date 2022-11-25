@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
         public static bool Prefix(KillButton __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                 return false;
 
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);

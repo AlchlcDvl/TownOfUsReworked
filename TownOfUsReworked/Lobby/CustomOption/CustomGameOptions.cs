@@ -16,12 +16,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
 {
     public static class CustomGameOptions
     {
-        public static float KillCooldown => (float)PlayerControl.GameOptions.killCooldown;
+        public static float KillCooldown => (float)PlayerControl.GameOptions.KillCooldown;
+        public static int IntruderCount => (int)PlayerControl.GameOptions.NumImpostors;
         public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.Get();
         public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.Get();
         public static int MayorOn => (int)Generate.MayorOn.Get();
         public static int JesterOn => (int)Generate.JesterOn.Get();
         public static int SheriffOn => (int)Generate.SheriffOn.Get();
+        public static int ShapeshifterOn => (int)Generate.ShapeshifterOn.Get();
         public static int JanitorOn => (int)Generate.JanitorOn.Get();
         public static int EngineerOn => (int)Generate.EngineerOn.Get();
         public static int SwapperOn => (int)Generate.SwapperOn.Get();
@@ -182,6 +184,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float InvisDuration => Generate.InvisDuration.Get();
         public static bool WraithVent => Generate.WraithVent.Get();
         public static bool FactionSeeRoles => Generate.FactionSeeRoles.Get();
+        public static bool FanaticKnows => Generate.FanaticKnows.Get();
+        public static bool TraitorKnows => Generate.TraitorKnows.Get();
+        public static bool SnitchKnows => Generate.SnitchKnows.Get();
+        public static bool PhantomKnows => Generate.PhantomKnows.Get();
         public static bool DeadSeeRoles => Generate.DeadSeeRoles.Get();
         public static bool DisableLevels => Generate.DisableLevels.Get();
         public static bool WhiteNameplates => Generate.WhiteNameplates.Get();
@@ -254,8 +260,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float PoisonCd => Generate.PoisonCooldown.Get();
         public static float PoisonDuration => Generate.PoisonDuration.Get();
         public static bool PoisonerVent => Generate.PoisonerVent.Get();
-        public static int LatestSpawn => (int)Generate.LatestSpawn.Get();
-        public static bool NeutralKillingStopsTraitor => Generate.NeutralKillingStopsTraitor.Get();
         public static float TransportCooldown => Generate.TransportCooldown.Get();
         public static int TransportMaxUses => (int)Generate.TransportMaxUses.Get();
         public static bool RememberArrows => Generate.RememberArrows.Get();

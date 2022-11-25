@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             {
                 var exe = (Executioner) role;
 
-                if (exe.target == null && PlayerControl.LocalPlayer == exe.Player)
+                if (exe.TargetPlayer == null && PlayerControl.LocalPlayer == exe.Player)
                 {
                     unchecked
                     {

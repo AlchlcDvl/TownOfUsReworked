@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8wbsWBWuQtYh5i+yGXlnNRYJ+oIXHN0tP8DzZg6FjB2/LLYS1atJFOVtwWFPK24P7kO9U9NM9DlNwhbQkOIxwQ==",
+  "dgSpecHash": "nvvQ9k+TF30iXeepvrN80c8PYpaDxGH7WvNm7u73CWCqIC15lRenJeXxuOcECzhc8kwOmIUuJmg6ULjT+JsVig==",
   "success": true,
-  "projectFilePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+  "projectFilePath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Guest User\\.nuget\\packages\\amongus.gamelibs.steam\\2022.10.25\\amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\assetripper.versionutilities\\1.2.1\\assetripper.versionutilities.1.2.1.nupkg.sha512",

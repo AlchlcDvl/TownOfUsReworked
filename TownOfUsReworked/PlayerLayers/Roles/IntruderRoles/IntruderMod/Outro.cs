@@ -26,10 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Intruders && (((Blackmailer)x).IntruderWin |
-                ((Camouflager)x).IntruderWin | ((Consigliere)x).IntruderWin | ((Consort)x).IntruderWin | ((Disguiser)x).IntruderWin |
-                ((Grenadier)x).IntruderWin | ((Impostor)x).IntruderWin | ((Janitor)x).IntruderWin | ((Morphling)x).IntruderWin |
-                ((Poisoner)x).IntruderWin | ((Teleporter)x).IntruderWin | ((Undertaker)x).IntruderWin | ((Wraith)x).IntruderWin));
+            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Intruders && Role.IntruderWin);
 
             if (role == null)
                 return;
@@ -47,7 +44,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            SoundManager.Instance.PlaySound(TownOfUsReworked.IntruderWin, false, 0.3f);
+            
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.IntruderWin, false, 1f);
+            } catch {}
         }
     }
 }

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum AbilityEnum
     {
-        Assassin,
+        Assassin = 0,
         ButtonBarry,
         Lighter,
         Multitasker,

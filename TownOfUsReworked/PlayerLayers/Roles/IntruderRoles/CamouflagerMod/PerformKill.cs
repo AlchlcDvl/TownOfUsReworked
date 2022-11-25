@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
-                return true;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
+                return false;
 
             if (!PlayerControl.LocalPlayer.CanMove)
                 return false;

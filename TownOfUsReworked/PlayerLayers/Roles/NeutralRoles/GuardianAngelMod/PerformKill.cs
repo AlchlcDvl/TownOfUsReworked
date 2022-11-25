@@ -55,7 +55,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 
-                SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 0.4f);
+                try
+                {
+                    SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 1f);
+                } catch {}
                 
                 return false;
             }

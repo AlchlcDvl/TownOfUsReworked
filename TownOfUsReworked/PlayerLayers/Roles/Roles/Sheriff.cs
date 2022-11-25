@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Sheriff : Role
     {
         public List<byte> Interrogated = new List<byte>();
-        public bool CrewWin;
         public bool UsedThisRound { get; set; } = false;
         public int randomSheriffAccuracy = 100;
         public PlayerControl ClosestPlayer;
@@ -57,12 +56,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Wins()
+        public override void Wins()
         {
             CrewWin = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }

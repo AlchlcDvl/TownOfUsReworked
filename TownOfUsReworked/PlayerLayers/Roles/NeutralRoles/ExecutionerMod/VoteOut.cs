@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
             foreach (var role in Role.GetRoles(RoleEnum.Executioner))
             {
-                if (player.PlayerId == ((Executioner)role).target.PlayerId)
+                if (player.PlayerId == ((Executioner)role).TargetPlayer.PlayerId)
                 {
                     if (CustomGameOptions.JestEjectScreen)
                         __instance.completeString = "You feel a sense of dread during the ejection. The <color=#CCCCCCFF>Executioner</color> has won!";
