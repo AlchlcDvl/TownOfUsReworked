@@ -18,20 +18,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Coroner(PlayerControl player) : base(player)
         {
             Name = "Coroner";
-            ImpostorText = () => "Understand When, Where And How Kills Happen";
-            TaskText = () => "You get information from the dead";
+            StartText = "Examine The Dead For Info";
+            AbilitiesText = "- You know when players die and for a brief period know where their body is.";
+            AttributesText = "- When reporting a body, you get all of therequired info from it.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
-            CoronerDeadReport = $"The scalpels and human matter on the body indicate that this body is another Coroner!";
+            CoronerDeadReport = "The scalpels and human matter on the body indicate that this body is another Coroner!";
             CoronerKillerReport = "";
             Results = InspResults.CoroJaniUTMed;
             SubFaction = SubFaction.None;
+            IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
+            FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
+                " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
+            Objectives = "- Finish your tasks along with other Crew.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, <color=#008000FF>Syndicate</color>" + 
+                " and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
+                "<color=#1D7CF2FF>Neophytes</color>.";
+            AlignmentDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
+                " can deduce who is good and who is not.";
+            RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies to the point you even know when someone dies!" +
+                " Your strong ability makes you a very tempting target for evils so be careful when revealing information.";
             AddToRoleHistory(RoleType);
         }
 
@@ -71,8 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     public class Lovers : Objectifier
     {
         public Lovers OtherLover { get; set; }
-        public PlayerControl OtherLoverPlayer { get; set; }
         public bool LoveCoupleWins { get; set; }
         public int Num { get; set; }
 
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = () => "You are in Love with " + OtherLover.Player.name;
+            TaskText = "You are in Love with " + OtherLover.Player.name;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
             AddToObjectifierHistory(ObjectifierType);
@@ -112,13 +111,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover1 = Player;
             var lover2 = OtherLover.Player;
 
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && (alives.Count == 3) |
-                (alives.Count == 2);
+            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && ((alives.Count == 3) |
+                (alives.Count == 2));
         }
 
         public void Win()
         {
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))

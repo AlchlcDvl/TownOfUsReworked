@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Vigilante(PlayerControl player) : base(player)
         {
             Name = "Vigilante";
-            ImpostorText = () => "Shoot The <color=#FF0000FF>Intruders</color>";
-            TaskText = () => "Kill the <color=#FF0000FF>Intruders</color> but not the <color=#8BFDFDFF>Crew</color>";
+            StartText = "Shoot The <color=#FF0000FF>Intruders</color>";
+            AbilitiesText = "Kill the <color=#FF0000FF>Intruders</color> but not the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             SubFaction = SubFaction.None;
             LastKilled = DateTime.UtcNow;
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = () => "Crew (Killing)";
+            AlignmentName = "Crew (Killing)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);
@@ -71,8 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

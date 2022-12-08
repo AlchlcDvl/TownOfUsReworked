@@ -33,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Transporter(PlayerControl player) : base(player)
         {
             Name = "Transporter";
-            ImpostorText = () => "Choose Two Players To Swap Locations";
-            TaskText = () => "Choose two players to swap locations";
+            StartText = "Choose Two Players To Swap Locations";
+            AbilitiesText = "Choose two players to swap locations";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
             SubFaction = SubFaction.None;
             LastTransported = DateTime.UtcNow;
@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = () => "Crew (Support)";
+            AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.TransWarpTeleTask;
             AddToRoleHistory(RoleType);
@@ -513,8 +513,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

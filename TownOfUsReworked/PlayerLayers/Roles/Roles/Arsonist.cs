@@ -25,22 +25,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Arsonist(PlayerControl player) : base(player)
         {
             Name = "Arsonist";
-            ImpostorText = () => "Gasoline + Bean + Lighter = Bonfire";
-            TaskText = () => "Douse players in gas and ignite them\nFake Tasks:";
+            StartText = "Gasoline + Bean + Lighter = Bonfire";
+            AbilitiesText = "- You can douse players in gasoline.\n- Doused players can then be ignite to kill all doused players at once.";
+            AttributesText = "- People who interact with you will also get doused.";
             LastDoused = DateTime.UtcNow;
             RoleType = RoleEnum.Arsonist;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Ignite those who oppose you";
             CoronerDeadReport = "There are burn marks and a smell of gasoline. They must be an Arsonist!";
-            CoronerKillerReport = "The body have been completely charred. They were torched by an Arsonist!";
+            CoronerKillerReport = "The body has been completely charred. They were torched by an Arsonist!";
             Results = InspResults.ArsoCryoPBOpTroll;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             SubFaction = SubFaction.None;
             IntroSound = null;
+            Attack = AttackEnum.Unstoppable;
+            AttackString = "Unstoppable";
+            DefenseString = "Basic";
+            Defense = DefenseEnum.Basic;
+            RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +
+                " and igniting them later for mass murder. Be careful though, as you need be next to someone to ignite and if anyone sees you ignite," +
+                $" you are done for. There are currently {DousedAlive} players doused.";
+            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
+                " a certain objective.";
+            AlignmentDescription = "You are a Neutral (Killing) role! You side with no one and can only win by yourself. You have a special way to kill " +
+                "and gain a large body count. Make sure no one survives.";
+            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color>, <color=#008000FF>Syndicate</color> and other " +
+                "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>";
             AddToRoleHistory(RoleType);
         }
 
@@ -70,9 +84,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (Player.Data.IsDead | Player.Data.Disconnected) return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
                 (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Arsonist)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
-                x.Is(Faction.Crew))) == 0)
+                x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArsonistWin,
                     SendOption.Reliable, -1);

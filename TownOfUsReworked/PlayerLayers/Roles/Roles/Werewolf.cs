@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Werewolf(PlayerControl player) : base(player)
         {
             Name = "Werwolf";
-            ImpostorText = () => "Howl And Maul Everyone";
-            TaskText = () => "Kill everyone!\nFake Tasks:";
+            StartText = "Howl And Maul Everyone";
+            AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastMauled = DateTime.UtcNow;
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Maul those who oppose you";
             Results = InspResults.JestJuggWWInv;
             AddToRoleHistory(RoleType);

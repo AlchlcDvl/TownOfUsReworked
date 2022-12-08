@@ -16,21 +16,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Warper : Role
     {
-        public KillButton _warpButton;
+        private KillButton _warpButton;
         public DateTime LastWarped;
 
         public Warper(PlayerControl player) : base(player)
         {
             Name = "Warper";
-            ImpostorText = () => "Warp The Crew Away From Each Other";
-            TaskText = () => "Separate the Crew";
+            StartText = "Warp The Crew Away From Each Other";
+            AbilitiesText = "Separate the Crew";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Warper;
             Faction = Faction.Syndicate;
             FactionColor = Colors.Syndicate;
             FactionName = "Syndicate";
-            AlignmentName = () => "Syndicate (Support)";
+            AlignmentName = "Syndicate (Support)";
             Results = InspResults.TransWarpTeleTask;
             AddToRoleHistory(RoleType);
         }

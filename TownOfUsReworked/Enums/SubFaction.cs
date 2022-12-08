@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum SubFaction
     {
-        Vampires = 0,
+        Undead = 0,
         
         None
     }

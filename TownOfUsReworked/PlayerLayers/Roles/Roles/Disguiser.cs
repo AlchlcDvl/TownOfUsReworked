@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Disguiser : Role, IVisualAlteration
     {
-        public KillButton _disguiseButton;
+        private KillButton _disguiseButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastDisguised;
         public PlayerControl DisguisedPlayer;
@@ -28,8 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Disguiser(PlayerControl player) : base(player)
         {
             Name = "Disguiser";
-            ImpostorText = () => "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
-            TaskText = () => "Disguise the <color=#8BFDFD>Crew</color> to frame them";
+            StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
+            AbilitiesText = "- You can disguise a player to frame them.";
+            AttributesText = "- None.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Disguiser : Colors.Intruder;
             LastDisguised = DateTime.UtcNow;
             RoleType = RoleEnum.Disguiser;
@@ -37,12 +38,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = () => "Intruder (Deception)";
+            AlignmentName = "Intruder (Deception)";
             IntroText = "Kill those who oppose you";
             CoronerDeadReport = "The makeup on the body suggests they are a Disguiser!";
             CoronerKillerReport = "The fake eyelashes and makeup all over the body indicates that they were killed by a Disguiser!";
             Results = InspResults.DisgMorphCamoAgent;
             SubFaction = SubFaction.None;
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
+            AlignmentDescription = "You are an Intruder (Deception) role! It's your job to ensure there's only false information spreading around about you. Keep the " +
+                "misinformation circulating, for it can be advantageous to completely fool even one player.";
+            RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you.";
             AddToRoleHistory(RoleType);
         }
 

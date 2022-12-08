@@ -16,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Troll(PlayerControl player) : base(player)
         {
             Name = "Troll";
-            ImpostorText = () => "Troll Everyone With Your Death";
-            TaskText = () => "Die!\nFake Tasks:";
+            StartText = "Troll Everyone With Your Death";
+            AbilitiesText = "Die!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Troll;
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = () => "Neutral (Evil)";
+            AlignmentName = "Neutral (Evil)";
             IntroText = "Die";
             Results = InspResults.ArsoCryoPBOpTroll;
             LastInteracted = DateTime.UtcNow;

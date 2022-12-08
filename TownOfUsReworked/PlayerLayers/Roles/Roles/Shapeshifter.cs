@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Shapeshifter : Role
     {
-        public KillButton _shapeshiftButton;
+        private KillButton _shapeshiftButton;
         public bool Enabled;
         public DateTime LastShapeshifted { get; set; }
         public float TimeRemaining;
@@ -21,15 +21,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Shapeshifter(PlayerControl player) : base(player)
         {
             Name = "Shapeshifter";
-            ImpostorText = () => "Change Everyone's Appearances";
-            TaskText = () => "No one will know who they were";
+            StartText = "Change Everyone's Appearances";
+            AbilitiesText = "No one will know who they were";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
             RoleType = RoleEnum.Shapeshifter;
             Faction = Faction.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            AlignmentName = () => "Syndicate (Support)";
+            AlignmentName = "Syndicate (Support)";
             IntroText = "Kill those who opposes you";
             CoronerDeadReport = "The camouflage suit indicate that this body is a Camouflager!";
             CoronerKillerReport = "There are marks of grey paint on the body. They were killed by a Camouflager!";

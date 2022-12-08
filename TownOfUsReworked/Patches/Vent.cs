@@ -63,15 +63,14 @@ namespace TownOfUsReworked.Patches
                 CustomGameOptions.GlitchVent) | (player.Is(RoleEnum.Juggernaut) && CustomGameOptions.JuggVent) | (player.Is(RoleEnum.Pestilence) &&
                 CustomGameOptions.PestVent) | (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) | (player.Is(RoleEnum.Plaguebearer) &&
                 CustomGameOptions.PBVent) | (player.Is(RoleEnum.Arsonist) && CustomGameOptions.ArsoVent) | (player.Is(RoleEnum.Executioner) &&
-                CustomGameOptions.ExeVent) | (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) | (player.Is(RoleEnum.Taskmaster) &&
-                CustomGameOptions.TaskmasterVent) | (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) &&
-                CustomGameOptions.VampVent) | (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Always) |
-                (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) | (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) |
-                (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) | (player.Is(RoleEnum.Undertaker) &&
-                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always) | (player.Is(RoleEnum.Undertaker) &&
-                undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body) |
-                (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging == null && CustomGameOptions.UndertakerVentOptions ==
-                UndertakerOptions.Bodyless) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent))
+                CustomGameOptions.ExeVent) | (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) |
+                (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) |
+                (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Always) | (player.Is(RoleEnum.Survivor) &&
+                CustomGameOptions.SurvVent) | (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) | (player.Is(RoleEnum.Amnesiac) &&
+                CustomGameOptions.AmneVent) | (player.Is(RoleEnum.Undertaker) && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always) |
+                (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions ==
+                UndertakerOptions.Body) | (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging == null &&
+                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent))
                 return true;
 
             if (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust)

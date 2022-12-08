@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Mayor(PlayerControl player) : base(player)
         {
             Name = "Mayor";
-            ImpostorText = () => "Save Your Votes To Mayor Dump Someone";
-            TaskText = () => "Save your votes to vote multiple times";
+            StartText = "Save Your Votes To Mayor Dump Someone";
+            AbilitiesText = "Save your votes to vote multiple times";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Mayor;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSov;
-            AlignmentName = () => "Crew (Sovereign)";
+            AlignmentName = "Crew (Sovereign)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.GFMayorRebelPest;
             AddToRoleHistory(RoleType);
@@ -60,8 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

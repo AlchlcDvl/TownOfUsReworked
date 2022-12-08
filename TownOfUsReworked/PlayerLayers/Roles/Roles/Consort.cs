@@ -16,23 +16,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastBlock { get; set; }
         public float TimeRemaining;
-        public KillButton _roleblockButton;
+        private KillButton _roleblockButton;
 
         public Consort(PlayerControl player) : base(player)
         {
             Name = "Consort";
             Faction = Faction.Intruders;
             RoleType = RoleEnum.Consort;
-            ImpostorText = () => "Roleblock The Crew And Stop Them From Progressing";
-            TaskText = () => "Block people from using their abilities";
+            StartText = "Roleblock The Crew And Stop Them From Progressing";
+            AbilitiesText = "- You can seduce players.";
+            AttributesText = "- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
+                "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Consort : Colors.Crew;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Support)";
+            AlignmentName = "Intruder (Support)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.EscConsGliPois;
             SubFaction = SubFaction.None;
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            AlignmentDescription = "You are a Intruder (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
+                "everyway possible.";
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
+            RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
+                " everyone.";
             AddToRoleHistory(RoleType);
         }
 

@@ -35,6 +35,7 @@ using Coroutine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod.C
 using Eat = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod.Coroutine;
 using Revive = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.Coroutine;
 using PerformKillButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod.PerformKillButton;
+using PerformDeclareButton = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformKill;
 using PerformShiftButton = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShiftButton;
 using Reveal = TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using PerformConvertButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvertButton;
@@ -779,24 +780,6 @@ namespace TownOfUsReworked.Patches
 
                         break;
 
-                    case CustomRPC.VampLose:
-                        foreach (var role in Role.AllRoles)
-                        {
-                            if (role.RoleType == RoleEnum.Vampire)
-                                ((Vampire)role).Loses();
-                        }
-
-                        break;
-
-                    case CustomRPC.DracLose:
-                        foreach (var role in Role.AllRoles)
-                        {
-                            if (role.RoleType == RoleEnum.Dracula)
-                                ((Dracula)role).Loses();
-                        }
-
-                        break;
-
                     case CustomRPC.GlitchLose:
                         foreach (var role in Role.AllRoles)
                         {
@@ -846,8 +829,8 @@ namespace TownOfUsReworked.Patches
                         Role.NobodyWinsFunc();
                         break;
 
-                    case CustomRPC.NBOnlyWin:
-                        Role.NBOnlyWins();
+                    case CustomRPC.NeutralsWin:
+                        Role.NeutralsOnlyWin();
                         break;
 
                     case CustomRPC.SetCouple:
@@ -865,7 +848,7 @@ namespace TownOfUsReworked.Patches
                         Utils.ShowDeadBodies = false;
                         Murder.KilledPlayers.Clear();
                         Role.NobodyWins = false;
-                        Role.NBOnlyWin = false;
+                        Role.NeutralsWin = false;
                         RecordRewind.points.Clear();
                         PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
                         break;
@@ -919,6 +902,14 @@ namespace TownOfUsReworked.Patches
                         var amnesiac = Utils.PlayerById(readByte1);
                         var other = Utils.PlayerById(readByte2);
                         PerformKillButton.Remember(Role.GetRole<Amnesiac>(amnesiac), other);
+                        break;
+
+                    case CustomRPC.Declare:
+                        readByte1 = reader.ReadByte();
+                        readByte2 = reader.ReadByte();
+                        var gf = Utils.PlayerById(readByte1);
+                        var maf = Utils.PlayerById(readByte2);
+                        PerformDeclareButton.Declare(Role.GetRole<Godfather>(gf), maf);
                         break;
 
                     case CustomRPC.Shift:
@@ -1013,16 +1004,6 @@ namespace TownOfUsReworked.Patches
                         ((Glitch)theGlitch).Wins();
                         break;
 
-                    case CustomRPC.VampWin:
-                        var theVampire = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Vampire);
-                        ((Vampire)theVampire).Wins();
-                        break;
-
-                    case CustomRPC.DracWin:
-                        var theDracula = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Dracula);
-                        ((Dracula)theDracula).Wins();
-                        break;
-
                     case CustomRPC.JuggernautWin:
                         var juggernaut = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Juggernaut);
                         ((Juggernaut)juggernaut).Wins();
@@ -1046,6 +1027,24 @@ namespace TownOfUsReworked.Patches
                         foreach (var role in Role.AllRoles)
                         {
                             if (role.Faction == Faction.Crew)
+                                role.Loses();
+                        }
+
+                        break;
+
+                    case CustomRPC.UndeadWin:
+                        foreach (var role in Role.AllRoles)
+                        {
+                            if (role.SubFaction == SubFaction.Undead)
+                                role.Wins();
+                        }
+                            
+                        break;
+
+                    case CustomRPC.UndeadLose:
+                        foreach (var role in Role.AllRoles)
+                        {
+                            if (role.SubFaction == SubFaction.Undead)
                                 role.Loses();
                         }
 
@@ -1167,6 +1166,10 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetGuardianAngel:
                         new GuardianAngel(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGodfather:
+                        new Godfather(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.SetTarget:
@@ -1434,20 +1437,6 @@ namespace TownOfUsReworked.Patches
 
                         break;
 
-                    case CustomRPC.TaskmasterWin:
-                        var theTMTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Taskmaster);
-                        ((Taskmaster)theTMTheRole).Wins();
-                        break;
-
-                    case CustomRPC.TaskmasterLose:
-                        foreach (var role in Role.AllRoles)
-                        {
-                            if (role.RoleType == RoleEnum.Taskmaster)
-                                ((Taskmaster)role).Loses();
-                        }
-
-                        break;
-
                     case CustomRPC.CannibalEat:
                         readByte1 = reader.ReadByte();
                         var cannibalPlayer = Utils.PlayerById(readByte1);
@@ -1492,11 +1481,11 @@ namespace TownOfUsReworked.Patches
 
                     /*case CustomRPC.TurnRebel:
                         Role.GetRole<Sidekick>(Utils.PlayerById(reader.ReadByte())).TurnRebel();
-                        break;
+                        break;*/
 
                     case CustomRPC.TurnGodfather:
                         Role.GetRole<Mafioso>(Utils.PlayerById(reader.ReadByte())).TurnGodfather();
-                        break;*/
+                        break;
 
                     case CustomRPC.PestilenceWin:
                         var thePestilenceTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Pestilence);
@@ -1876,7 +1865,7 @@ namespace TownOfUsReworked.Patches
 
                 Utils.ShowDeadBodies = false;
                 Role.NobodyWins = false;
-                Role.NBOnlyWin = false;
+                Role.NeutralsWin = false;
 
                 CrewRoles.Clear();
                 NeutralNonKillingRoles.Clear();

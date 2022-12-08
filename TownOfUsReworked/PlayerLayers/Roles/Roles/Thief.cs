@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Thief(PlayerControl player) : base(player)
         {
             Name = "Thief";
-            ImpostorText = () => "Steal From The Killers";
-            TaskText = () => "Steal From The Killers";
+            StartText = "Steal From The Killers";
+            AbilitiesText = "Steal From The Killers";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastKilled = DateTime.UtcNow;
@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = () => "Neutral (Benign)";
+            AlignmentName = "Neutral (Benign)";
             IntroText = "Steal From The Killers";
             Results = InspResults.EngiAmneThiefCann;
             AddToRoleHistory(RoleType);

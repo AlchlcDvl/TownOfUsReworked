@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Undertaker : Role
     {
-        public KillButton _dragDropButton;
+        private KillButton _dragDropButton;
         public DateTime LastDragged { get; set; }
         public DeadBody CurrentTarget { get; set; }
         public DeadBody CurrentlyDragging { get; set; }
@@ -19,8 +19,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Undertaker(PlayerControl player) : base(player)
         {
             Name = "Undertaker";
-            ImpostorText = () => "Drag Bodies And Hide Them";
-            TaskText = () => "Drag bodies around to hide them from being reported";
+            StartText = "Drag Bodies And Hide Them";
+            AbilitiesText = "Drag bodies around to hide them from being reported";
             Color = CustomGameOptions.CustomImpColors? Colors.Undertaker : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastDragged = DateTime.UtcNow;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.CoroJaniUTMed;
             AddToRoleHistory(RoleType);

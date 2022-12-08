@@ -49,8 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             var flag4 = (role.ClosestPlayer.Data.IsImpostor() | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
                 role.ClosestPlayer.Is(Faction.Syndicate) | (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) |
                 (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) | (role.ClosestPlayer.Is(RoleEnum.Cannibal)
-                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleEnum.Taskmaster) && CustomGameOptions.VigiKillsTaskmaster) |
-                (role.ClosestPlayer.Is(RoleEnum.Cryomaniac) && CustomGameOptions.VigiKillsTaskmaster) |
+                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleEnum.Cryomaniac) && CustomGameOptions.VigiKillsTaskmaster) |
                 (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB));
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))

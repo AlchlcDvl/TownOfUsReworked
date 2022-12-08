@@ -20,18 +20,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Inspector";
             Faction = Faction.Crew;
             RoleType = RoleEnum.Inspector;
-            ImpostorText = () => "Inspect Player For Their Roles";
-            TaskText = () => "See if people really are what they claim to be";
+            StartText = "Inspect Player For Their Roles";
+            AbilitiesText = "See if people really are what they claim to be";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             SubFaction = SubFaction.None;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             CoronerDeadReport = "There are documents pertaining to everyone's identities on the body. They must be an Inspector!";
             CoronerKillerReport = "";
             Results = InspResults.SherConsigInspBm;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
+            FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
+                " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
+            AlignmentDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
+                " can deduce who is good and who is not.";
+            RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
+                "list, they are not Crew.";
             AddToRoleHistory(RoleType);
         }
 
@@ -72,8 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

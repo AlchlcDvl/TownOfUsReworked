@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Jester(PlayerControl player) : base(player)
         {
             Name = "Jester";
-            ImpostorText = () => "It Was Jest A Prank Bro";
-            TaskText = () => "Get ejected!\nFake Tasks:";
+            StartText = "It Was Jest A Prank Bro";
+            AbilitiesText = "Get ejected!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Jester;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = () => "Neutral (Evil)";
+            AlignmentName = "Neutral (Evil)";
             IntroText = "Get ejected";
             Results = InspResults.JestJuggWWInv;
             AddToRoleHistory(RoleType);

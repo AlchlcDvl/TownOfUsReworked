@@ -30,6 +30,7 @@ namespace TownOfUsReworked.Enums
 
         Amnesiac,
         Arsonist,
+        Bandit,
         Cannibal,
         Cryomaniac,
         Dampyr,
@@ -45,7 +46,6 @@ namespace TownOfUsReworked.Enums
         Plaguebearer,
         SerialKiller,
         Survivor,
-        Taskmaster,
         Thief,
         Troll,
         Vampire,

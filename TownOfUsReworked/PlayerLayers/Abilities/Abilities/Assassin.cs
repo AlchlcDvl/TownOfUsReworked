@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Assassin(PlayerControl player) : base(player)
         {
             Name = "Assassin";
-            TaskText = () => "Guess and shoot";
+            TaskText = "Guess and shoot";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;

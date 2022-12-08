@@ -51,6 +51,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
             var role = Role.GetRole<Executioner>(PlayerControl.LocalPlayer);
 
+            if (role.TargetPlayer == null)
+                return;
+
             if (MeetingHud.Instance != null)
                 UpdateMeeting(MeetingHud.Instance, role);
 

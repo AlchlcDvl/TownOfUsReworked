@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Rival";
             SymbolName = "❧";
-            TaskText = () => "Your Rival is " + OtherRival.Player.name;
+            TaskText = "Your Rival is " + OtherRival.Player.name;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
             AddToObjectifierHistory(ObjectifierType);
@@ -118,7 +118,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
         public void Win()
         {
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))

@@ -19,8 +19,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Juggernaut(PlayerControl player) : base(player)
         {
             Name = "Juggernaut";
-            ImpostorText = () => "Your Power Grows With Every Kill";
-            TaskText = () => "With each kill your kill cooldown decreases\nFake Tasks:";
+            StartText = "Your Power Grows With Every Kill";
+            AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Assault those who oppose you";
             Results = InspResults.JestJuggWWInv;
             AddToRoleHistory(RoleType);

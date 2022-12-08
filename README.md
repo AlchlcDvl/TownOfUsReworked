@@ -67,7 +67,6 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Plaguebearer](#plaguebearer)
 - [Serial Killer](#serial-killer)
 - [Survivor](#survivor)
-- [Taskmaster](#taskmaster)
 - [Thief](#thief)
 - [Vampire](#vampire)
 - [Werewolf](#werewolf)
@@ -132,6 +131,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Lovers](#lovers)
 - [Phantom](#phantom)
 - [Rivals](#rivals)
+- [Taskmaster](#taskmaster)
 - [Traitor](#traitor)
 
 [**Custom Game Settings**](#custom-game-settings)
@@ -288,7 +288,7 @@ The Altruist is capable of reviving dead players. Upon finding a dead body, the 
 ## Coroner
 ### **Alignment: Crew (Investigative)**
 
-The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) killer's name.
+The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
 
 ### Game Options
 
@@ -401,7 +401,7 @@ The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the numbe
 ## Medic
 ### **Alignment: Crew (Protective)**
 
-The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide suicide.
+The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide.
 
 ### Game Options
 
@@ -447,20 +447,6 @@ The Operative can place bugs around the map. When players enter the range of the
 | Bug Range | The size of each trap | Factor | 1x |
 | Minimum Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 3 |
 
-## Shifter
-### **Alignment: Crew (Support)**
-
-The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
-| Shifter Count | How many Shifters should spawn in Custom Mode | Number | 1 |
-| Shift Cooldown | The cooldown on the Shifter's shift button | Time | 25s |
-| Shifted Becomes | Dictates what the shift target becomes after getting shifted | Shifter / Crewmate | Shifter |
-
 ## Sheriff
 ### **Alignment: Crew (Investigative)**
 
@@ -478,6 +464,20 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 | Traitor Does Not Swap Colours | The Traitor remains their original colour | Toggle | False |
 | Interrogate Once Per | Decides whether the Sheriff can only reveal once the entire game, or once per round | Round / Game | Round |
 | Sheriff Accuracy | How accurate the Sheriff results will be | Toggle | False |
+
+## Shifter
+### **Alignment: Crew (Support)**
+
+The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
+| Shifter Count | How many Shifters should spawn in Custom Mode | Number | 1 |
+| Shift Cooldown | The cooldown on the Shifter's shift button | Time | 25s |
+| Shifted Becomes | Dictates what the shift target becomes after getting shifted | Shifter / Crewmate | Shifter |
 
 ## Swapper
 ### **Alignment: Crew (Sovereign)**
@@ -542,7 +542,7 @@ The Transporter can swap the locations of two players at will. Players who have 
 ## Vampire Hunter
 ### **Alignment: Crew (Killing)**
 
-The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter checks them and finds them guilty, they are killed. Otherwise they only interact and nothing else happens.
+The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.
 
 ### Game Options
 
@@ -671,7 +671,7 @@ The Dampyr appears only when a player with the ability to kill gets bitten by th
 ### **Alignment: Neutral (Neophyte)**
 ### Win Condition: Convert the Crew to gain a majority.
 
-The Dracula is the only Vampire that spawns in. The Dracula is the leader of the Vampire who can convert others into Vampires. If the target they choose to convert can kill, the target becomes a Dampyr. Otherwise, the target becomes a Vampire. If the target cannot be converted, they will be killed instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
+The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If the target they choose to convert can kill, the target becomes a Dampyr. Otherwise, the target becomes a Vampire. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
 
 ### Game Options
 
@@ -874,22 +874,6 @@ The Survivor wins by simply surviving. They can vest which makes them immune to 
 | Survivor Can Vent | Whether the Survivor Can Vent | Toggle | False |
 | Survivor Can Switch Vents | Whether the Survivor Can Switch while in Vents | Toggle | False |
 
-## Taskmaster
-### **Alignment: Neutral (Evil)**
-### Win Condition: Finish tasks before the game ends or dying.
-
-The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Taskmaster | The percentage probability of the Taskmaster appearing | Percentage | 0% |
-| Taskmaster Count | How many Taskmasters should spawn in Custom Mode | Number | 1 |
-| Taskmaster Can Vent | Whether Taskmaster Can Vent | Toggle | False |
-| Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
-| Vigilante Kills Taskmaster | Whether the Vigilante is able to kill the Taskmaster | Toggle | False |
-
 ## Thief
 ### **Alignment: Neutral (Benign)**
 ### Win Condition: Kill a killer and win as their role.
@@ -925,7 +909,7 @@ The Troll just wants to be killed, but not ejected. Only spawns in Custom Mode. 
 ### **Alignment: Neutral (Proselyte)**
 ### Win Condition: Help the Vampires gain a majority.
 
-The Vampire has no special abilities and just exists to be additional voting power.
+The Vampire has no special abilities and just exists to be additional voting power for the Undead subfaction.
 
 ### Game Options
 
@@ -938,7 +922,7 @@ The Vampire has no special abilities and just exists to be additional voting pow
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Kill all non-Neutral Benign roles.
 
-The Werewolf can kill players within a certain radius.
+The Werewolf can kill all players within a certain radius.
 
 ### Game Options
 
@@ -1529,8 +1513,22 @@ However, when they only have a single task left, the Impostors get an arrow poin
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
 | Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
 
+## Taskmaster
+### Win Condition: Finish tasks before the game ends or dying.
+
+The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Taskmaster | The percentage probability of the Taskmaster appearing | Percentage | 0% |
+| Taskmaster Count | How many Taskmasters should spawn in Custom Mode | Number | 1 |
+| Taskmaster Can Vent | Whether Taskmaster Can Vent | Toggle | False |
+| Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
+| Vigilante Kills Taskmaster | Whether the Vigilante is able to kill the Taskmaster | Toggle | False |
+
 ## Traitor
-### **Alignment: Intruder (Support)**
 
 If all Intruders die before a certain point in the game, a random Crewmate is selected to become the Traitor.
 The Traitor has no additional abilities and their job is simply to avenge the dead Intruders.

@@ -47,12 +47,11 @@ namespace TownOfUsReworked.Patches
                 player.Is(RoleEnum.Janitor) | (player.Is(RoleEnum.Undertaker) && CustomGameOptions.UndertakerVentOptions != UndertakerOptions.Never) |
                 player.Is(RoleEnum.Blackmailer) | player.Is(RoleEnum.Disguiser) | player.Is(RoleEnum.Camouflager) | (player.Is(RoleEnum.Poisoner) &&
                 CustomGameOptions.PoisonerVent) | player.Is(RoleEnum.Impostor) | (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) |
-                (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) | (player.Is(RoleEnum.Taskmaster) && CustomGameOptions.TaskmasterVent) |
+                (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) | CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone |
                 (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) |
-                (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) |
-                CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone);
+                (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent));
 
-            Color color = Role.GetRole(player).Color;
+            var color = Role.GetRole(player).Color;
 
             ((Renderer)__instance.myRend).material.SetColor("_OutlineColor", color);
             ((Renderer)__instance.myRend).material.SetColor("_AddColor", mainTarget ? color : Color.clear);

@@ -17,7 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Agent";
             StartText = "Snoop Around And Find Stuff Out";
-            AbilitiesText = "Gain extra information from the Admin table!";
+            AbilitiesText = "- You can see which colors are where on the admin table.";
+            AttributesText = "- None.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Agent : Colors.Crew;
             RoleType = RoleEnum.Agent;
             Faction = Faction.Crew;
@@ -32,7 +33,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.AgentIntro;
             Attack = AttackEnum.None;
+            AttackString = "None";
             Defense = DefenseEnum.None;
+            DefenseString = "None";
+            FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
+                " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
+            AlignmentDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
+                " can deduce who is good and who is not.";
+            RoleDescription = "Your are an Agent! You can see extra information from the admin table. When active, all players in detectable rooms" +
+                " will have their color revealed to you.";
+            Objectives = "- Finish your tasks along with other Crew.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, <color=#008000FF>Syndicate</color>" + 
+                " and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
+                "<color=#1D7CF2FF>Neophytes</color>.";
             AddToRoleHistory(RoleType);
         }
 
@@ -58,10 +70,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
+            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

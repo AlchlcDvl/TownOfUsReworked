@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {}
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {}
   },
   "projects": {
-    "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {
+    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {
       "version": "1.0.0.8",
       "restore": {
-        "projectUniqueName": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
         "projectName": "TownOfUsReworked",
-        "projectPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
         "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-        "outputPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+        "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\NuGet.Config",
+          "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\NuGet.Config",
           "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [

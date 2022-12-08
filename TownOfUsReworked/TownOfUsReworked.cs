@@ -18,6 +18,15 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
+using AmongUs.Data;
+using Reactor.Utilities.ImGui;
+using InnerNet;
+using TMPro;
+using Il2CppInterop.Runtime.Attributes;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Modifiers;
+using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
 
 namespace TownOfUsReworked
 {
@@ -138,7 +147,7 @@ namespace TownOfUsReworked
         public static AudioClip TrackSound;
         public static AudioClip TransportSound;
         public static AudioClip WerewolfWin;
-        public static AudioClip NBWin;
+        public static AudioClip NeutralsWin;
         public static AudioClip CrewmateIntro;
         public static AudioClip ImpostorIntro;
         public static AudioClip IntruderWin;
@@ -181,6 +190,7 @@ namespace TownOfUsReworked
 
         public static Sprite HorseEnabledImage;
         public static Sprite HorseDisabledImage;
+        public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
         public static Vector3 BelowVentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
@@ -195,6 +205,7 @@ namespace TownOfUsReworked
 
         public ConfigEntry<string> Ip { get; set; }
         public ConfigEntry<ushort> Port { get; set; }
+        //public DebuggerComponent Component { get; private set; }
 
         public override void Load()
         {
@@ -282,22 +293,7 @@ namespace TownOfUsReworked
             HorseEnabledImage = CreateSprite("TownOfUsReworked.Resources.Misc.HorseOn.png");
             HorseDisabledImage = CreateSprite("TownOfUsReworked.Resources.Misc.HorseOff.png");
             DiscordImage = CreateSprite("TownOfUsReworked.Resources.Misc.Discord.png");
-
-            /*//Custom Kill backgrounds
-            NormalKill = CreateSprite("TownOfUsReworked.Resources.NormalKill.png");
-            ShiftKill = CreateSprite("TownOfUsReworked.Resources.ShiftKill.png");
-            SheriffKill = CreateSprite("TownOfUsReworked.Resources.SheriffKill.png");
-            LoverKill = CreateSprite("TownOfUsReworked.Resources.LoverKill.png");
-            WraithKill = CreateSprite("TownOfUsReworked.Resources.WraithKill.png");
-            MeetingKill = CreateSprite("TownOfUsReworked.Resources.MeetingKill.png");
-            PoisKill = CreateSprite("TownOfUsReworked.Resources.PoisKill.png");
-            PestKill = CreateSprite("TownOfUsReworked.Resources.PestKill.png");
-            WWKill = CreateSprite("TownOfUsReworked.Resources.WWKill.png");
-            GlitchKill = CreateSprite("TownOfUsReworked.Resources.GlitchKill.png");
-            JuggKill = CreateSprite("TownOfUsReworked.Resources.JuggKill.png");
-            MorphKill = CreateSprite("TownOfUsReworked.Resources.MorphKill.png");
-            ArsoKill = CreateSprite("TownOfUsReworked.Resources.ArsoKill.png");
-            VetKill = CreateSprite("TownOfUsReworked.Resources.VetKill.png");*/
+            UpdateImage = CreateSprite("TownOfUsReworked.Resources.Misc.Update.png");
 
             //Hand Raising feature, Thanks to https://github.com/xxomega77xx for the code
             MeetingOverlay = CreateSprite("TownOfUsReworked.Resources.Misc.RaisedHandOverlay.png");
@@ -334,7 +330,7 @@ namespace TownOfUsReworked
             TrackSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Track.raw");
             TransportSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Transport.raw");
             WerewolfWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.WerewolfWin.raw");
-            NBWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.NBWin.raw");
+            NeutralsWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.NeutralsWin.raw");
             CrewmateIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.CrewmateIntro.raw");
             ImpostorIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.ImpostorIntro.raw");
             IntruderWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.IntruderWin.raw");
@@ -435,5 +431,267 @@ namespace TownOfUsReworked
                 return null;
             }
         }
+        
+        /*public class DebuggerComponent : MonoBehaviour
+        {
+            [HideFromIl2Cpp]
+
+            public static void increment(ref int variable, int max)
+            {
+                if (variable == max) variable = -1;
+                variable++;
+            }
+            static int roleindex;
+            static int modifierindex;
+
+            [HideFromIl2Cpp]
+            public DragWindow TestWindow { get; }
+
+            public DebuggerComponent(IntPtr ptr) : base(ptr)
+            {
+                TestWindow = new DragWindow(new Rect(20, 20, 0, 0), "Debugger", () =>
+                {
+                    GUILayout.Label("Name: " +  DataManager.Player.Customization.Name);
+
+                    if (TutorialManager.InstanceExists && PlayerControl.LocalPlayer)
+                    {
+                        var data = PlayerControl.LocalPlayer.Data;
+                        var player = PlayerControl.LocalPlayer;
+                        var newIsImpostor = GUILayout.Toggle(data.Role.IsImpostor, "Is Impostor");
+
+                        if (data.Role.IsImpostor != newIsImpostor)
+                            PlayerControl.LocalPlayer.RpcSetRole(newIsImpostor ? RoleTypes.Impostor : RoleTypes.Crewmate);
+
+                        if (GUILayout.Button("Spawn a dummy"))
+                        {
+                            var playerControl = Instantiate(TutorialManager.Instance.PlayerPrefab);
+                            var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
+                            GameData.Instance.AddPlayer(playerControl);
+                            AmongUsClient.Instance.Spawn(playerControl, -2, SpawnFlags.None);
+                            playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
+                            playerControl.GetComponent<DummyBehaviour>().enabled = true;
+                            playerControl.NetTransform.enabled = false;
+                            var name = $"{TranslationController.Instance.GetString(StringNames.Dummy, Array.Empty<Il2CppSystem.Object>())} {i}";
+                            name.Replace("\n", "");
+                            playerControl.SetName(name);
+                            var color = (byte) (i % Palette.PlayerColors.Length);
+                            playerControl.SetColor(color);
+                            playerControl.SetHat(HatManager.Instance.allHats[i % HatManager.Instance.allHats.Count].ProdId, playerControl.Data.DefaultOutfit.ColorId);
+                            playerControl.SetPet(HatManager.Instance.allPets[i % HatManager.Instance.allPets.Count].ProdId);
+                            playerControl.SetSkin(HatManager.Instance.allSkins[i % HatManager.Instance.allSkins.Count].ProdId, color);
+                            GameData.Instance.RpcSetTasks(playerControl.PlayerId, new Il2CppStructArray<byte>(0));
+                        }
+                        
+                        if (GUILayout.Button("Force game end"))
+                        {
+                            ShipStatus.Instance.enabled = false;
+                            ShipStatus.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
+                        }
+
+                        if (GUILayout.Button("Call a meeting"))
+                            PlayerControl.LocalPlayer.CmdReportDeadBody(null);
+                            
+                        if (GUILayout.Button("role"))
+                        {
+                            GameObject.FindObjectsOfType<KillButton>().ToList().ForEach((x) => x.transform.GetComponentsInChildren<TextMeshPro>().ToList().ForEach(x => 
+                            {if (x.alignment == TMPro.TextAlignmentOptions.Right) GameObject.Destroy(x);}));
+                            DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
+                            player.myTasks.RemoveAt(0);
+                            Role.RoleDictionary.Remove(player.PlayerId);
+                            var tasktext = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
+                            tasktext.transform.SetParent(player.transform, false);
+
+                            switch(roleindex)
+                            {
+                            case 0:
+                                var Sheriff = new Sheriff(player);
+                                tasktext.Text = $"{Sheriff.ColorString}Role: Sheriff\nYou can kill imposters but attempting a kill on a crew will kill you.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 1:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var medium = new Medium(player);
+                                tasktext.Text = $"{medium.ColorString}Role: Medium\nYou can see ghosts and follow them to bodies or killers\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 2:
+                                var mystic = new Coroner(player);
+                                tasktext.Text = $"{mystic.ColorString}Role: Mystic\nA arrow points to the body when it dies.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 3:
+                                var spy = new Agent(player);
+                                tasktext.Text = $"{spy.ColorString}Role: Spy\nSee colors on admin.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 4:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var tracker = new Tracker(player);
+                                tasktext.Text = $"{tracker.ColorString}Role: Tracker\nArrows of their colors point to tracked players.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 5:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var altruist = new Altruist(player);
+                                tasktext.Text = $"{altruist.ColorString}Role: Altruist\nYour ability kills you but revives another.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 6:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var medic = new Medic(player);
+                                tasktext.Text = $"{medic.ColorString}Role: Medic\nGet info about a killer when you report bodes and shield 1 person.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 7:
+                                var swapper = new Swapper(player);
+                                tasktext.Text = $"{swapper.ColorString}Role: Swapper\nSwap 2 player's votes in meetings.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 8:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var timelord = new TimeLord(player);
+                                tasktext.Text = $"{timelord.ColorString}Role: Timelord\nRewind to retrace you and other player's steps.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 9:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var engineer = new Engineer(player);
+                                tasktext.Text = $"{engineer.ColorString}Role: Engineer\nvent and fix 1 sabotage per round or game.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 10:
+                                var mayor = new Mayor(player);
+                                tasktext.Text = $"{mayor.ColorString}Role: Mayor\nsave up your votes through meetings and vot multiple times later.\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 11:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var detective = new Detective(player);
+                                tasktext.Text = $"{detective.ColorString}Role: Detective\nReport bodies to know the killer role or faction and\nexamine the living to know if they have killed recently\nTasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 12:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var plague = new Plaguebearer(player);
+                                tasktext.Text = $"{plague.ColorString}Role: Plaguebearer\nInfect everyone to turn to pestilance and then kill them all\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 13:
+                                DestroyableSingleton<HudManager>._instance.KillButton.buttonLabelText.text = null;
+                                var arsonist = new Arsonist(player);
+                                tasktext.Text = $"{arsonist.ColorString}Role: Arsonist\nDouse everyone to ignite and kill everyone together.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 14:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var werewolf = new Werewolf(player);
+                                tasktext.Text = $"{werewolf.ColorString}Role: Werewolf\nGo on a rampage to unlock imposter abilities with a low kill cooldown.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 15:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var grenadier = new Grenadier(player);
+                                tasktext.Text = $"{grenadier.ColorString}Role: Grenadier\nFlash grenade others to blind them temporarily.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 16:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var morphling = new Morphling(player);
+                                tasktext.Text = $"{morphling.ColorString}Role: Morphling\nSample someone each round and pose as them for a time.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 17:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var swooper = new Wraith(player);
+                                tasktext.Text = $"{swooper.ColorString}Role: Swooper\nTurn invisible and kill unseen.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break; 
+                            case 18:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var poisoner = new Poisoner(player);
+                                tasktext.Text = $"{poisoner.ColorString}Role: Poisoner\nYour kills have a delay and \nmeetings cause a instant kill on currently poisoned.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 19:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var blackmailer = new Blackmailer(player);
+                                tasktext.Text = $"{blackmailer.ColorString}Role: Blackmailer\nstop a person from talking during the next meeting.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 20:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var janitor = new Janitor(player);
+                                tasktext.Text = $"{janitor.ColorString}Role: Janitor\nErase bodies off the map and dead indicators on vitals.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 21:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var miner = new Miner(player);
+                                tasktext.Text = $"{miner.ColorString}Role: Miner\nCreate a connected network of vents anywhere.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 22:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var undertaker = new Undertaker(player);
+                                tasktext.Text = $"{undertaker.ColorString}Role: Undertaker\ndrag and drop dead bodies to places they wont be found.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 23:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                var escapist = new Teleporter(player);
+                                tasktext.Text = $"{escapist.ColorString}Role: Escapist\nmark a place on the map every round and teleport there when you want.\nFake Tasks:";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            case 24:
+                                GameObject.FindObjectOfType<KillButton>().gameObject.SetActive(false);
+                                tasktext.Text = "<#FFFF00>Resetting buttons for next loop, click again";
+                                player.myTasks.Insert(0, tasktext);
+                                break;
+                            }
+                            increment(ref roleindex, 24);    
+                        }
+
+                        if (GUILayout.Button("Modifier"))
+                        {
+                            DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
+                            player.myTasks.RemoveAt(1);
+                            Modifier.ModifierDictionary.Remove(player.PlayerId);
+                            var tasktext = new GameObject("RoleTask").AddComponent<ImportantTextTask>();
+                            tasktext.transform.SetParent(player.transform, false);
+                            switch(modifierindex)
+                            {
+                                case 3:
+                                    var giant = new Giant(player);
+                                    tasktext.Text = $"{giant.ColorString}Modifier: Giant\n Your huge and have a bigger dead body. You might be slower";
+                                    player.myTasks.Insert(1, tasktext);
+                                    break;
+                            }
+                            increment(ref modifierindex, 7);
+                        }
+                    }
+
+                    if (PlayerControl.LocalPlayer)
+                    {
+                        var position = PlayerControl.LocalPlayer.transform.position;
+                        GUILayout.Label($"x: {position.x}");
+                        GUILayout.Label($"y: {position.y}");
+                    }
+                })
+                {
+                    Enabled = false
+                };
+            }
+
+            private void Update()
+            {
+                if (Input.GetKeyDown(KeyCode.F1))
+                    TestWindow.Enabled = !TestWindow.Enabled;
+            }
+
+            private void OnGUI()
+            {
+                TestWindow.OnGUI();
+            }
+        }*/
     }
 }

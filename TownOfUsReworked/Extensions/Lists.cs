@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Modifiers;
+using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
 using UnityEngine;
 
 namespace TownOfUsReworked.Extensions
@@ -14,7 +17,7 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> NeutralBenigns = new List<Role>();
         public static List<Role> Neutrals = new List<Role>();
 
-        public static List<Role> Vampires = new List<Role>();
+        public static List<Role> Undead = new List<Role>();
 
         public static List<Role> IntruderKillers = new List<Role>();
         public static List<Role> IntruderSupporters = new List<Role>();
@@ -40,11 +43,11 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> Syndicate = new List<Role>();
 
         public static List<Role> AllRoles = new List<Role>();
+        public static List<Modifier> AllModifiers = new List<Modifier>();
+        public static List<Ability> AllAbilities = new List<Ability>();
+        public static List<Objectifier> AllObjectifiers = new List<Objectifier>();
         
         public static List<AudioClip> Sounds = new List<AudioClip>();
-
-        public static List<AttackEnum> Attack = new List<AttackEnum>();
-        public static List<DefenseEnum> Defense = new List<DefenseEnum>();
         
         public static void Prefix()
         {
@@ -82,8 +85,8 @@ namespace TownOfUsReworked.Extensions
                     else if (role.RoleAlignment == RoleAlignment.NeutralPros)
                         NeutralProselytes.Add(role);
                     
-                    if (role.SubFaction == SubFaction.Vampires)
-                        Vampires.Add(role);
+                    if (role.SubFaction == SubFaction.Undead)
+                        Undead.Add(role);
                     
                     Neutrals.Add(role);
                 }
@@ -121,6 +124,15 @@ namespace TownOfUsReworked.Extensions
                 AllRoles.Add(role);
             }
 
+            foreach (var modifier in Modifier.AllModifiers)
+                AllModifiers.Add(modifier);
+
+            foreach (var ability in Ability.AllAbilities)
+                AllAbilities.Add(ability);
+
+            foreach (var objectifier in Objectifier.AllObjectifiers)
+                AllObjectifiers.Add(objectifier);
+
             Sounds.Add(TownOfUsReworked.AlertSound);
             Sounds.Add(TownOfUsReworked.ArsonistWin);
             Sounds.Add(TownOfUsReworked.JuggernautWin);
@@ -150,7 +162,7 @@ namespace TownOfUsReworked.Extensions
             Sounds.Add(TownOfUsReworked.TrackSound);
             Sounds.Add(TownOfUsReworked.TransportSound);
             Sounds.Add(TownOfUsReworked.WerewolfWin);
-            Sounds.Add(TownOfUsReworked.NBWin);
+            Sounds.Add(TownOfUsReworked.NeutralsWin);
             Sounds.Add(TownOfUsReworked.CrewmateIntro);
             Sounds.Add(TownOfUsReworked.ImpostorIntro);
             Sounds.Add(TownOfUsReworked.IntruderWin);
@@ -171,18 +183,6 @@ namespace TownOfUsReworked.Extensions
             Sounds.Add(TownOfUsReworked.TimeFreezeSound);
             Sounds.Add(TownOfUsReworked.VoteLockSound);
             Sounds.Add(TownOfUsReworked.KillSFX);
-
-            Attack.Add(AttackEnum.None);
-            Attack.Add(AttackEnum.Basic);
-            Attack.Add(AttackEnum.Powerful);
-            Attack.Add(AttackEnum.Unstoppable);
-            Attack.Add(AttackEnum.Infinite);
-
-            Defense.Add(DefenseEnum.None);
-            Defense.Add(DefenseEnum.Basic);
-            Defense.Add(DefenseEnum.Powerful);
-            Defense.Add(DefenseEnum.Invincible);
-            Defense.Add(DefenseEnum.Infinite);
         }
     }
 }

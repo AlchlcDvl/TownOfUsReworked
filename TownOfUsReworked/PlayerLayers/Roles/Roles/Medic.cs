@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Medic(PlayerControl player) : base(player)
         {
             Name = "Medic";
-            ImpostorText = () => "Shield a <color=#8BFDFDFF>Crewmate</color> to protect them";
-            TaskText = () => "Protect a <color=#8BFDFDFF>Crewmate</color> using a shield";
+            StartText = "Shield a <color=#8BFDFDFF>Crewmate</color> to protect them";
+            AbilitiesText = "Protect a <color=#8BFDFDFF>Crewmate</color> using a shield";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Medic;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
-            AlignmentName = () => "Crew (Protective)";
+            AlignmentName = "Crew (Protective)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.GAExeMedicPup;
             IntroSound = TownOfUsReworked.MedicIntro;
@@ -61,8 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

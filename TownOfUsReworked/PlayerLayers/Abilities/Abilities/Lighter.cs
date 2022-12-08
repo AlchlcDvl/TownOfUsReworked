@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Lighter(PlayerControl player) : base(player)
         {
             Name = "Lighter";
-            TaskText = () => "You can see more than others";
+            TaskText = "You can see more than others";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Lighter : Colors.Ability;
             AbilityType = AbilityEnum.Lighter;
             AddToAbilityHistory(AbilityType);

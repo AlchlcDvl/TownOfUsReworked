@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class TimeMaster : Role
     {
-        public KillButton _freezeButton;
+        private KillButton _freezeButton;
         public bool Enabled;
         public float TimeRemaining;
         public DateTime LastFrozen { get; set; }
@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TimeMaster(PlayerControl player) : base(player)
         {
             Name = "Time Master";
-            ImpostorText = () => "Freeze Time To Stop The <color=#8BFDFDFF>Crew</color>";
-            TaskText = () => "Freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving";
+            StartText = "Freeze Time To Stop The <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = "Freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving";
             Color = CustomGameOptions.CustomImpColors ? Colors.TimeMaster : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastFrozen = DateTime.UtcNow;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Support)";
+            AlignmentName = "Intruder (Support)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.TrackAltTLTM;
             AddToRoleHistory(RoleType);

@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Revealer(PlayerControl player) : base(player)
         {
             Name = "Revealer";
-            TaskText = () => "Complete all your tasks to reveal impostors!";
+            TaskText = "Complete all your tasks to reveal impostors!";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Revealer : Colors.Ability;
             AbilityType = AbilityEnum.Revealer;
             AddToAbilityHistory(AbilityType);

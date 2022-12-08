@@ -5,6 +5,7 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -25,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal string Name { get; set; }
         protected internal string SymbolName { get; set; }
         protected internal string ObjectifierDescription { get; set; }
-        public Func<string> TaskText;
+        protected internal string TaskText { get; set; }
 
         protected internal string GetColoredSymbol()
         {
@@ -68,12 +69,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(Player.transform, false);
-                task.Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+                task.Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
                 Player.myTasks.Insert(0, task);
                 return;
             }
 
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
         }
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
@@ -148,6 +149,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype)
         {
             return AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
+        }
+
+        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
+        public static class LobbyBehaviour_Start
+        {
+            private static void Postfix(LobbyBehaviour __instance)
+            {
+                ObjectifierDictionary.Clear();
+            }
         }
     }
 }

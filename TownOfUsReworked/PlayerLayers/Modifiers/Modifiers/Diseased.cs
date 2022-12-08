@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Diseased(PlayerControl player) : base(player)
         {
             Name = "Diseased";
-            TaskText = () => "Your killers get a higher cooldown";
+            TaskText = "Your killers get a higher cooldown";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Diseased : Colors.Modifier;
             ModifierType = ModifierEnum.Diseased;
             AddToModifierHistory(ModifierType);

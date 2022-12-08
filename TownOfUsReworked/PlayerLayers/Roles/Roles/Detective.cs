@@ -16,8 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Detective(PlayerControl player) : base(player)
         {
             Name = "Detective";
-            ImpostorText = () => "Examine Players To Find Bloody Hands";
-            TaskText = () => "Examine suspicious players to find evildoers";
+            StartText = "Examine Players To Find Bloody Hands";
+            AbilitiesText = "- You can examine players to see if they have killed recently.";
+            AttributesText = $"- Your screen will flash red if your target has killed in the last {CustomGameOptions.RecentKill}s.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
             LastExamined = DateTime.UtcNow;
             RoleType = RoleEnum.Detective;
@@ -25,12 +26,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             CoronerDeadReport = "There are documents pertaining to everyone's activity on the body. They must be a Detective!";
             CoronerKillerReport = "";
             Results = InspResults.WraithDetGrenVet;
             SubFaction = SubFaction.None;
+            IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
+            FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
+                " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
+            Objectives = "- Finish your tasks along with other Crew.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, <color=#008000FF>Syndicate</color>" + 
+                " and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
+                "<color=#1D7CF2FF>Neophytes</color>.";
+            AlignmentDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
+                " can deduce who is good and who is not.";
+            RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers" +
+                " in the act!";
             AddToRoleHistory(RoleType);
         }
 
@@ -71,8 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

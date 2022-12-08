@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Medium(PlayerControl player) : base(player)
         {
             Name = "Medium";
-            ImpostorText = () => "Spooky Scary Ghosties Send Shivers Down Your Spine";
-            TaskText = () => "Follow ghosts to get clues from them";
+            StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
+            AbilitiesText = "Follow ghosts to get clues from them";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             SubFaction = SubFaction.None;
             LastMediated = DateTime.UtcNow;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Medium";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.CoroJaniUTMed;
             AddToRoleHistory(RoleType);
@@ -94,8 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

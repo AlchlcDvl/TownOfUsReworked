@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             TextMeshPro text;
             Vector3 pos;
 
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
@@ -50,7 +50,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             }
 
             __instance.BackgroundBar.material.color = Colors.Lovers;
-
             text = Object.Instantiate(__instance.WinText);
             text.text = "Love Wins!";
             text.color = Colors.Lovers;

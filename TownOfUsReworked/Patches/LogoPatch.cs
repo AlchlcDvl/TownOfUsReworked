@@ -2,7 +2,7 @@ using HarmonyLib;
 using System;
 using UnityEngine;
 using static UnityEngine.UI.Button;
-using TownOfUsReworked.Lobby.Extras;
+using TownOfUsReworked.Lobby;
 
 namespace TownOfUsReworked.Patches
 {
@@ -32,6 +32,7 @@ namespace TownOfUsReworked.Patches
                 return;
 
             var horseObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
+            var discObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
 
             var iconrenderer = horseObj.GetComponent<SpriteRenderer>();
             iconrenderer.sprite = ClientOptions.HorseEnabled ? TownOfUsReworked.HorseEnabledImage : TownOfUsReworked.HorseDisabledImage;
@@ -43,13 +44,20 @@ namespace TownOfUsReworked.Patches
                 ClientOptions.HorseEnabled = !ClientOptions.HorseEnabled;
                 iconrenderer.sprite = ClientOptions.HorseEnabled ? TownOfUsReworked.HorseEnabledImage : TownOfUsReworked.HorseDisabledImage;
                 var particles = GameObject.FindObjectOfType<PlayerParticles>();
-                
+
                 if (particles != null)
                 {
                     particles.pool.ReclaimAll();
                     particles.Start();
                 }
             }));
+
+            var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
+            iconrenderer1.sprite = TownOfUsReworked.DiscordImage;
+
+            var button1 = discObj.GetComponent<PassiveButton>();
+            button1.OnClick = new ButtonClickedEvent();
+            button1.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/cd27aDQDY9")));
         }
     }
 }

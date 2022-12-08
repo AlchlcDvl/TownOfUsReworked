@@ -19,20 +19,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Anarchist";
             Faction = Faction.Syndicate;
             RoleType = RoleEnum.Anarchist;
-            ImpostorText = () => "Imagine Being Boring Anarchist";
-            TaskText = () => "Imagine Being Boring Anarchist";
+            StartText = "Imagine Being Boring Anarchist";
+            AbilitiesText = "- None.";
+            AttributesText = "- None.";
             Color = Colors.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            AlignmentName = () => "Syndicate (Utility)";
-            IntroText = "Cause choas and kill your opposition";
+            AlignmentName = "Syndicate (Utility)";
+            IntroText = "Cause chaos";
             Results = InspResults.CrewImpAnMurd;
             SubFaction = SubFaction.None;
             CoronerDeadReport = "The body has marked down schematics of the place to plot something sinister. They are an Anarchist";
             CoronerKillerReport = "The body seems to have been killed in a very rough manner, like an inexperienced killer. They were killed by an Anarchist!";
             IntroSound = null;
             Base = true;
+            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
+            RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
+            FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
+                " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
+                "give you the ability to kill, if you didn't already.";
+            AlignmentDescription = "You are a Syndicate (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             AddToRoleHistory(RoleType);
         }
 
@@ -77,7 +85,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return true;
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) | 
+                (CustomGameOptions.AltImps && Utils.Sabotaged()))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);

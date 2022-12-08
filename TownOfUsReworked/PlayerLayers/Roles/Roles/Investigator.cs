@@ -16,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Investigator(PlayerControl player) : base(player)
         {
             Name = "Investigator";
-            ImpostorText = () => "Examine Footprints To Find The <color=#FF0000FF>Intruders</color>";
-            TaskText = () => "You can see everyone's footprints";
+            StartText = "Examine Footprints To Find The <color=#FF0000FF>Intruders</color>";
+            AbilitiesText = "You can see everyone's footprints";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Investigator : Colors.Crew;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Investigator;
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             CoronerDeadReport = "The body has documentated footprints of everyone. They must be an Investigator!";
             CoronerKillerReport = "";
@@ -57,8 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

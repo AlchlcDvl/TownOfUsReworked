@@ -1,4 +1,4 @@
-﻿namespace TownOfUsReworked.Lobby.Extras
+﻿namespace TownOfUsReworked.Lobby
 {
     public class ClientOptions
     {

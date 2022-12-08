@@ -14,17 +14,7 @@ namespace TownOfUsReworked.Patches
             position.AdjustPosition();
 
             __instance.text.text = "<color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color>\n<color=#0000FFFF>v1.0.0-dev8_test</color>\n" +
-                $"Ping: {AmongUsClient.Instance.Ping}ms\n" +
-                (!MeetingHud.Instance ?
-                    "<color=#FF00FFFF>Reworked By: Alcoholic Devil</color>\n" +
-                    "<color=#FFFFFFFF>With Help (And Code) From: Oper,</color>\n" +
-                    "<color=#FFFFFFFF>xxOm3ga77xx, Discussions, Detective,</color>\n" +
-                    "<color=#FFFFFFFF>& -H</color>\n" : "") +
-                (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started ?
-                    "<color=#FF0000FF>Made By: Slushiegoose</color>\n" +
-                    "<color=#6AA84FFF>Continued By: Polus.gg</color>\n" +
-                    "<color=#00FFFFFF>Reactivated By: Donners, Term, -H &</color>\n" +
-                    "<color=#00FFFFFF>MyDragonBreath</color>" : "");
+                $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (!MeetingHud.Instance ? "<color=#FF00FFFF>Reworked By: Alcoholic Devil</color>" : "");
         }
     }
 }

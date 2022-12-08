@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             var slowText = CustomGameOptions.GiantSpeed != 1? " and slow!" : "!";
             Name = "Giant";
-            TaskText = () => "You are ginormous" + slowText;
+            TaskText = "You are ginormous" + slowText;
             Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
             ModifierType = ModifierEnum.Giant;
             AddToModifierHistory(ModifierType);

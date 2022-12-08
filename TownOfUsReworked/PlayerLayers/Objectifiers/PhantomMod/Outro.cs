@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))

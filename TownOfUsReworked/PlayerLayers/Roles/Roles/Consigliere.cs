@@ -5,33 +5,50 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using System.Linq;
+using System.Collections.Generic;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Consigliere : Role
     {
-        public System.Collections.Generic.List<byte> Investigated = new System.Collections.Generic.List<byte>();
-        public KillButton _investigateButton;
+        public List<byte> Investigated = new List<byte>();
+        private KillButton _investigateButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastInvestigated { get; set; }
+        public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
 
         public Consigliere(PlayerControl player) : base(player)
         {
             Name = "Consigliere";
-            ImpostorText = () => "Reveal Everyone's Roles";
-            TaskText = () => "Investigate the roles of the <color=#8BFDFD>Crew</color>";
+            StartText = "See Players For Who They Really Are";
+            AbilitiesText = $"- You can reveal a player's {role}.";
+            AttributesText = "- None.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             Faction = Faction.Intruders;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Support)";
+            AlignmentName = "Intruder (Support)";
             IntroText = "Kill those who oppose you";
-            CoronerDeadReport = $"The gun, magnifying glass and documents on the body indicate that they are a Consigliere!";
-            CoronerKillerReport = "The gunshot mark seems to have been caused by a gun commonly used by Investigators. They were killed by a Consiliere!";
+            CoronerDeadReport = "The gun, magnifying glass and documents on the body indicate that they are a Consigliere!";
+            CoronerKillerReport = "The gunshot mark seems to have been caused by a gun commonly used by Sheriffs. They were killed by a Consiliere!";
             Results = InspResults.SherConsigInspBm;
             SubFaction = SubFaction.None;
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            RoleDescription = "You are a Consigliere! You are a corrupt Inspector who is so capable of finding someone's identity. Help your mate assassinate others" +
+                " by revealing players for who they are!";
+            AlignmentDescription = "You are a Intruder (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
+                "everyway possible.";
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 

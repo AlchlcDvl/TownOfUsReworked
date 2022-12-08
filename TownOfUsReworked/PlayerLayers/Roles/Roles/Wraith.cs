@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Wraith : Role
     {
-        public KillButton _invisButton;
+        private KillButton _invisButton;
         public bool Enabled;
         public DateTime LastInvis;
         public float TimeRemaining;
@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Wraith(PlayerControl player) : base(player)
         {
             Name = "Wraith";
-            ImpostorText = () => "Sneaky Sneaky";
-            TaskText = () => "Turn invisible and kill undetected";
+            StartText = "Sneaky Sneaky";
+            AbilitiesText = "Turn invisible and kill undetected";
             Color = CustomGameOptions.CustomImpColors ? Colors.Wraith : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastInvis = DateTime.UtcNow;
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.WraithDetGrenVet;
             AddToRoleHistory(RoleType);

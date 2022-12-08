@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.Lobby.Extras;
+using TownOfUsReworked.Lobby;
 
 namespace TownOfUsReworked.Patches
 {

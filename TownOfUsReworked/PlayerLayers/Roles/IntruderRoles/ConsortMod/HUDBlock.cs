@@ -4,7 +4,7 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDBlock
@@ -26,6 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
                 return;
 
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
+
+            if (isDead)
+                return;
+                
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
             if (role.RoleblockButton == null)

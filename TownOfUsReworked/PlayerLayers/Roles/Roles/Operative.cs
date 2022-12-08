@@ -28,8 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Operative(PlayerControl player) : base(player)
         {
             Name = "Operative";
-            ImpostorText = () => "Detect Which Roles Are Here";
-            TaskText = () => "Place bugs around the map to discover the <color=#FF0000FF>Intruders</color>";
+            StartText = "Detect Which Roles Are Here";
+            AbilitiesText = "Place bugs around the map to discover the <color=#FF0000FF>Intruders</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Operative;
@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxBugs;
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.ArsoCryoPBOpTroll;
             AddToRoleHistory(RoleType);
@@ -91,8 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

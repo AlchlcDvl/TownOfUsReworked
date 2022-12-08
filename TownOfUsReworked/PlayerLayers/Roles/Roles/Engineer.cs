@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using System.Linq;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -14,28 +15,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Engineer(PlayerControl player) : base(player)
         {
             Name = "Engineer";
-            ImpostorText = () => "Hop In, Hop Out, Daaaaaamn Sabo Fixed";
-            TaskText = () => "Vent around and fix sabotages";
+            StartText = "Just Fix It";
+            AbilitiesText = "- You can fix sabotages at any time during the game.\n- You can vent.";
+            AttributesText = "- None.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = () => "Crew (Support)";
+            AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             CoronerDeadReport = "The wrenches indicate that this body is an Engineer!";
             CoronerKillerReport = "";
             Results = InspResults.EngiAmneThiefCann;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.EngineerIntro;
+            FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
+                " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
+            Objectives = "- Finish your tasks along with other Crew.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, <color=#008000FF>Syndicate</color>" + 
+                " and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
+                "<color=#1D7CF2FF>Neophytes</color>.";
+            RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
+                " the systems you spent blood, sweat and tears to make. Make them pay.";
+            AlignmentDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on it's own. Use your" +
+                " abilities to their fullest extent to bring about a Crew victory.";
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+            var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);
             __instance.teamToShow = team;
         }
@@ -57,8 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

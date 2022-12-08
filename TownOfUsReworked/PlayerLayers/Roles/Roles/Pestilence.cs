@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Pestilence(PlayerControl owner) : base(owner)
         {
             Name = "Pestilence";
-            ImpostorText = () => "The Horseman Of The Apocalypse Has Arrived!";
-            TaskText = () => "Kill everyone with your unstoppable abilities!\nFake Tasks:";
+            StartText = "The Horseman Of The Apocalypse Has Arrived!";
+            AbilitiesText = "Kill everyone with your unstoppable abilities!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Obliterate those who oppose you";
             Results = InspResults.GFMayorRebelPest;
             AddToRoleHistory(RoleType);

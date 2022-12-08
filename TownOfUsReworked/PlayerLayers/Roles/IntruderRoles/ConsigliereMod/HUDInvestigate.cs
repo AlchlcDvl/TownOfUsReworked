@@ -34,14 +34,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
             if (isDead)
-                role.InvestigateButton.gameObject.SetActive(false);
-            else
-            {
-                role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance);
-                role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
-                var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton, float.NaN, notInvestigated);
-            }
+                return;
+            
+            role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance);
+            role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
+            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton, float.NaN, notInvestigated);
         }
     }
 }

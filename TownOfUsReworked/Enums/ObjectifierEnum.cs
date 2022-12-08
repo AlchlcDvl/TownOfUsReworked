@@ -6,6 +6,7 @@ namespace TownOfUsReworked.Enums
         Lovers,
         Phantom,
         Rivals,
+        Taskmaster,
         Traitor,
         
         None

@@ -25,7 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         protected internal string Name { get; set; }
         protected internal string AbilityDescription { get; set; }
-        public Func<string> TaskText;
+        protected internal string TaskText { get; set; }
+        protected internal string CommandInfo { get; set; }
         protected internal Color Color { get; set; }
         protected internal AbilityEnum AbilityType { get; set; }
 
@@ -155,12 +156,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             {
                 var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(Player.transform, false);
-                task.Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+                task.Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
                 Player.myTasks.Insert(0, task);
                 return;
             }
 
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText()}</color>";
+            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
         }
 
         [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
@@ -168,14 +169,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             private static void Postfix(LobbyBehaviour __instance)
             {
-                foreach (var ability in AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
-                {
-                    var snitch = (Snitch)ability;
-                    snitch.ImpArrows.DestroyAll();
-                    snitch.SnitchArrows.Values.DestroyAll();
-                    snitch.SnitchArrows.Clear();
-                }
-
                 AbilityDictionary.Clear();
             }
         }

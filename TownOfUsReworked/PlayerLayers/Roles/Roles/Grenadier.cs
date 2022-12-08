@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Grenadier : Role
     {
-        public KillButton _flashButton;
+        private KillButton _flashButton;
         public bool Enabled;
         public DateTime LastFlashed;
         public float TimeRemaining;
@@ -26,8 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Grenadier(PlayerControl player) : base(player)
         {
             Name = "Grenadier";
-            ImpostorText = () => "Use Your Grenades To Your Advantage";
-            TaskText = () => "Flashbang the <color=#8BFDFDFF>Crew</color>";
+            StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
+            AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.";
+            AttributesText = "- Blinding players will fill their screen with white for a short while, making them unable to see anything.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
             RoleType = RoleEnum.Grenadier;
@@ -35,12 +36,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName ="Intruder (Concealing)";
             IntroText = "Kill those who oppose you";
             CoronerDeadReport = "There are flashbangs under the body's belt. They must be a Grenadier!";
             CoronerKillerReport = "The body's eyes have been burned out. They were killed by a Grenadier!";
             Results = InspResults.WraithDetGrenVet;
             SubFaction = SubFaction.None;
+            IntroSound = null;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
+                " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again.";
             AddToRoleHistory(RoleType);
         }
 

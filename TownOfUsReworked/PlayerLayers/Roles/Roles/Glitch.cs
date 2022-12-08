@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastMimic { get; set; }
         public DateTime LastHack { get; set; }
         public DateTime LastKill { get; set; }
-        public KillButton _glitchButton { get; set; }
-        public KillButton _killButton { get; set; }
+        private KillButton _glitchButton { get; set; }
+        private KillButton _killButton { get; set; }
         public PlayerControl HackTarget { get; set; }
         public ChatController MimicList { get; set; }
         public float TimeRemaining;
@@ -42,27 +42,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             MimicList = null;
             PressedButton = false;
             RoleType = RoleEnum.Glitch;
-            ImpostorText = () => "foreach PlayerControl Glitch.MurderPlayer";
-            TaskText = () => "Hack your way to victory!\nFake Tasks:";
+            StartText = "foreach PlayerControl Glitch.MurderPlayer";
+            AbilitiesText = "- You can mimic players' appearances whenever you want to.\n- You can hack players to stop them from using their abilities.";
+            AttributesText = "- Hacking blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
+                "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "DDoS those who oppose you";
             CoronerDeadReport = "The abnormal condition of the body indicates they are not from this reality. They must be a Glitch!";
-            CoronerKillerReport = "The body has been left in a very abnormal state. They were killed by a Glitch";
+            CoronerKillerReport = "The body has been left in a very abnormal state. They were killed by a Glitch!";
             Results = InspResults.EscConsGliPois;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = TownOfUsReworked.GlitchIntro;
+            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
+                " a certain objective.";
+            AlignmentDescription = "You are a Neutral (Killing) role! You side with no one and can only win by yourself. You have a special way to kill " +
+                "and gain a large body count. Make sure no one survives.";
+            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color>, <color=#008000FF>Syndicate</color> and other " +
+                "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>";
+            RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
+                "unable to oppose you and mimic others to frame them! Do not let anyone live.";
             AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected) return true;
+            if (Player.Data.IsDead | Player.Data.Disconnected)
+                return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralNeo) |
-                x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0)
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
+                x.Is(Faction.Crew))) == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GlitchWin,
                     SendOption.Reliable, -1);
@@ -196,7 +212,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             writer.Write(__gInstance.Player.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                            if (CustomGameOptions.ShieldBreaks) __gInstance.LastKill = DateTime.UtcNow;
+                            if (CustomGameOptions.ShieldBreaks)
+                                __gInstance.LastKill = DateTime.UtcNow;
 
                             StopKill.BreakShield(medic, __gInstance.Player.PlayerId,
                                 CustomGameOptions.ShieldBreaks);

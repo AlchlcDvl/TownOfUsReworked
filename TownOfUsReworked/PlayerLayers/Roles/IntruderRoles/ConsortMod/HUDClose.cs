@@ -5,7 +5,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose

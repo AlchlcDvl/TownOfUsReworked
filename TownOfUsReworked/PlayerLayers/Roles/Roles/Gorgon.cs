@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Gorgon : Role
     {
-        public KillButton _gazeButton;
+        private KillButton _gazeButton;
         public Dictionary<byte, float> gazeList = new Dictionary<byte, float>();
         public PlayerControl ClosestPlayer;
         public DateTime LastGazed;
@@ -24,11 +24,34 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Gorgon(PlayerControl player) : base(player)
         {
             Name = "Gorgon";
-            ImpostorText = () => "Freeze the crewmates";
-            TaskText = () => "Freeze a crewmate to stick them in place and kill them";
-            Color = Colors.Gorgon;
+            StartText = "Turn The <color=#8BFDFD>Crew</color> Into Sculptures";
+            AbilitiesText = "- You can stone gaze players, that forces them to stand still till a meeting is called.";
+            AttributesText = "- Stoned players cannot move and will die when a meeting is called.";
+            Color = CustomGameOptions.CustomSynColors ? Colors.Gorgon : Colors.Syndicate;
             RoleType = RoleEnum.Gorgon;
             Faction = Faction.Syndicate;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            SubFaction = SubFaction.None;
+            FactionName = "Syndicate";
+            FactionColor = Colors.Syndicate;
+            CoronerDeadReport = "The body has strange snake hair! They must be a Gorgon!";
+            CoronerKillerReport = "The sculpture is eerily similar to a real person. They were killed by a Gorgon!";
+            Results = InspResults.ConcealGorg;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
+            RoleAlignment = RoleAlignment.SyndicateKill;
+            AlignmentName = "Syndicate (Killing)";
+            FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
+                " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
+                "give you the ability to kill, if you didn't already.";         
+            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
+            IntroText = "Cause chaos and kill your opposition";
+            RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
+            AlignmentDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
+            AddToRoleHistory(RoleType);
         }
         
         public KillButton GazeButton

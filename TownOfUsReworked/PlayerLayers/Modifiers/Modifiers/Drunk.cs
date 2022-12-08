@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Drunk(PlayerControl player) : base(player)
         {
             Name = "Drunk";
-            TaskText = () => "Inverrrrrted contrrrrols";
+            TaskText = "Inverrrrrted contrrrrols";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
             ModifierType = ModifierEnum.Drunk;
             AddToModifierHistory(ModifierType);

@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Volatile(PlayerControl player) : base(player)
         {
             Name = "Volatile";
-            TaskText = () => "You might see/hear things and lash out.";
+            TaskText = "You might see/hear things and lash out.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
             ModifierType = ModifierEnum.Volatile;
             AddToModifierHistory(ModifierType);

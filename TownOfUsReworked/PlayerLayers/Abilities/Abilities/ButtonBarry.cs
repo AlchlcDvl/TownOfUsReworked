@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public ButtonBarry(PlayerControl player) : base(player)
         {
             Name = "Button Barry";
-            TaskText = () => "Call a button from anywhere!";
+            TaskText = "Call a button from anywhere!";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
             AddToAbilityHistory(AbilityType);

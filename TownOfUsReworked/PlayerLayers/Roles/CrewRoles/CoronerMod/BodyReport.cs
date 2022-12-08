@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
     {
         private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            
             if (info == null)
                 return;
 

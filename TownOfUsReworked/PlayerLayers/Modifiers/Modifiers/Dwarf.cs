@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             var fastText = CustomGameOptions.DwarfSpeed != 1 ? " with zoomies!" : "!";
             Name = "Dwarf";
-            TaskText = () => "Smol bean" + fastText;
+            TaskText = "Smol bean" + fastText;
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
             ModifierType = ModifierEnum.Dwarf;
             AddToModifierHistory(ModifierType);

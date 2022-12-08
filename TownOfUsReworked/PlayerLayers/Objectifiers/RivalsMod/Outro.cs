@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
             TextMeshPro text;
             Vector3 pos;
 
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
             {
                 array[0].gameObject.transform.position -= new Vector3(1.5f, 0f, 0f);
                 array[0].SetFlipX(true);
-                array[0].NameText().color = Colors.Lovers;
+                array[0].NameText().color = Colors.Rivals;
             }
 
             if (array[1] != null)
@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
             __instance.BackgroundBar.material.color = Colors.Rivals;
 
             text = Object.Instantiate(__instance.WinText);
-            text.text = "Love Wins!";
+            text.text = "Rival Wins!";
             text.color = Colors.Rivals;
             pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;

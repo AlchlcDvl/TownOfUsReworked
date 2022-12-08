@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             if (!flag3)
                 return false;
 
-            var flag4 = (role.ClosestPlayer.Is(SubFaction.Vampires));
+            var flag4 = (role.ClosestPlayer.Is(SubFaction.Undead));
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {

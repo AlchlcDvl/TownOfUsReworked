@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public VIP(PlayerControl player) : base(player)
         {
             Name = "VIP";
-            TaskText = () => "Your death will alert everyone";
+            TaskText = "Your death will alert everyone";
             Color = CustomGameOptions.CustomModifierColors ? Colors.VIP : Colors.Modifier;
             ModifierType = ModifierEnum.Professional;
             AddToModifierHistory(ModifierType);

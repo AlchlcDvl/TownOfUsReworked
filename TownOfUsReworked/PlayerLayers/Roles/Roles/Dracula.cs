@@ -12,10 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Dracula : Role
     {
         public DateTime LastBitten { get; set; }
-        public bool AlreadyConverted;
         public bool HasMaj;
         private KillButton _biteButton;
-        public bool DracWins;
         public PlayerControl ClosestPlayer;
         public List<PlayerControl> AllVamps = new List<PlayerControl>();
 
@@ -24,17 +22,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Dracula";
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Dracula;
-            ImpostorText = () => "Lead The <color=#7B8968FF>Vampires</color> To Victory";
-            TaskText = () => "Convert the <color=#8BFDFDFF>Crew</color>!";
+            StartText = "Lead The <color=#7B8968FF>Vampires</color> To Victory";
+            AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction.";
+            AttributesText = "- If the target is a killing role, they are converted to <color=#DF7AE8FF>Dampyr</color>.\n- Else they convert into a " +
+                "<color=#7B8968FF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead.\n- There is a chance that there" +
+                " is a <color=#C0C0C0FF>Vampire Hunter</color> on the loose. Attempting to convert them will make them kill you.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
-            SubFaction = SubFaction.Vampires;
+            SubFaction = SubFaction.Undead;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = () => "Neutral (Neophyte)";
+            AlignmentName = "Neutral (Neophyte)";
             IntroText = "Convert the <color=#8BFDFDFF>Crew</color> to gain a majority";
             CoronerDeadReport = "There are sharp fangs and pale skin on the body. They must be a Dracula!";
-            CoronerKillerReport = "The body seems to have been drained of blood. They were sucked by a Dracula!";
+            CoronerKillerReport = "The body seems to have been drained of blood. They were drained by a Dracula!";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
+            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
+                " a certain objective.";
+            AlignmentDescription = "You are a Neutral (Neophyte) role! You are the leader of your little faction and your main purpose is to convert others" +
+                " to your cause. Gain a mojority and overrun the crew!";
+            RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
+                "gain a quick majority.";
             Results = InspResults.ShiftSwapSKDrac;
             AddToRoleHistory(RoleType);
         }
@@ -54,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            DracWins = true;
+            VampWin = true;
         }
 
         public override void Loses()
@@ -74,16 +86,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Crew) && !(x.Is(SubFaction.Vampires) |
-                x.Is(RoleAlignment.NeutralBen)))) == 0)
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
+                x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
+                (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(
-                    PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.DracWin,
-                    SendOption.Reliable,
-                    -1
-                );
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.UndeadWin,
+                    SendOption.Reliable,-1);
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -108,7 +116,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.Is(SubFaction.Vampires))
+                if (player.Is(SubFaction.Undead))
                     AllVamps.Add(player);
             }
 

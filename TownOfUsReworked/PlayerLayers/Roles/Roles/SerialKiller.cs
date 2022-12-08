@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public SerialKiller(PlayerControl player) : base(player)
         {
             Name = "Serial Killer";
-            ImpostorText = () => "You Like To Play With Knives";
-            TaskText = () => "Engage in your bloodlust to kill everyone\nFake Tasks:";
+            StartText = "You Like To Play With Knives";
+            AbilitiesText = "Engage in your bloodlust to kill everyone\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastLusted = DateTime.UtcNow;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Stab those who oppose you";
             Results = InspResults.ShiftSwapSKDrac;
             AddToRoleHistory(RoleType);

@@ -11,15 +11,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Janitor : Role
     {
-        public KillButton _cleanButton;
+        private KillButton _cleanButton;
         public DeadBody CurrentTarget { get; set; }
         public DateTime LastCleaned;
 
         public Janitor(PlayerControl player) : base(player)
         {
             Name = "Janitor";
-            ImpostorText = () => "Sanitise The Ship, By Any Means Neccessary";
-            TaskText = () => "Clean bodies to prevent the <color=#8BFDFDFF>Crew</color> from discovering them";
+            StartText = "Sanitise The Ship, By Any Means Neccessary";
+            AbilitiesText = "Clean bodies to prevent the <color=#8BFDFDFF>Crew</color> from discovering them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Janitor : Colors.Intruder;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Janitor;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill those who oppose you";
             CoronerDeadReport = "The smell of chlorine indicates that the body is an Janitor!";
             CoronerKillerReport = "The body has a sharp sense of chlorine. They were killed by a Janitor!";

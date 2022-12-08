@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
     [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__19), nameof(IntroCutscene._CoBegin_d__19.MoveNext))]
     public static class Start

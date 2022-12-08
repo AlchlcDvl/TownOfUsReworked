@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Poisoner : Role
     {
-        public KillButton _poisonButton;
+        private KillButton _poisonButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastPoisoned;
         public PlayerControl PoisonedPlayer;
@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
-            ImpostorText = () => "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
-            TaskText = () => "Poison the <color=#8BFDFDFF>Crew</color>";
+            StartText = "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
+            AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomImpColors? Colors.Poisoner : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastPoisoned = DateTime.UtcNow;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = () => "Intruder (Deception)";
+            AlignmentName = "Intruder (Deception)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.EscConsGliPois;
             AddToRoleHistory(RoleType);

@@ -4,7 +4,7 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-using TownOfUsReworked.Patches;
+using HarmonyLib;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
@@ -22,12 +22,11 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
 
-        protected internal string Name { get; set; }
-        protected internal string SymbolName { get; set; }
-        protected internal string ModifierDescription { get; set; }
-        protected internal ModifierEnum ModifierType { get; set; }
-        public Func<string> TaskText;
         protected internal Color Color { get; set; }
+        protected internal ModifierEnum ModifierType { get; set; }
+        protected internal string Name { get; set; }
+        protected internal string ModifierDescription { get; set; }
+        protected internal string TaskText { get; set; }
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -43,7 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
                 PlayerName = value.Data.PlayerName;
             }
         }
-
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 
@@ -119,6 +117,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         {
             var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
             return player == null ? null : GetModifier(player);
+        }
+
+        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
+        public static class LobbyBehaviour_Start
+        {
+            private static void Postfix(LobbyBehaviour __instance)
+            {
+                ModifierDictionary.Clear();
+            }
         }
     }
 }

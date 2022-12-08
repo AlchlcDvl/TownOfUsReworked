@@ -11,8 +11,7 @@ namespace TownOfUsReworked.Patches
 		private static class MedScanMinigamePatch
 		{
 			[HarmonyPatch(nameof(MedScanMinigame.Begin))]
-			[HarmonyPostfix]
-			private static void BeginPostfix(MedScanMinigame __instance)
+			private static void Postfix(MedScanMinigame __instance)
 			{
 				var oldHeightFeet = 3f;
 				var oldHeightInch = 6f;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.Patches
 				var weightString = "";
 				var heightString = "";
 
-				//Update medical details for Giant and Dwarf modifiers
+				//Update medical details for Giant and Dwarf modifiers based on game options
 				if (PlayerControl.LocalPlayer.Is(ModifierEnum.Giant))
 				{
 					var scale = CustomGameOptions.GiantScale;
@@ -32,19 +31,11 @@ namespace TownOfUsReworked.Patches
 					newHeightInch = oldHeightInch * scale;
 					newWeight = oldWeight * scale;
 
-					if (newHeightInch >= 12)
+					while (newHeightInch >= 12)
 					{
-						do
-						{
-							newHeightFeet += 1;
-							newHeightInch -= 12;
-						} while (newHeightInch >= 12);
+						newHeightFeet += 1;
+						newHeightInch -= 12;
 					}
-
-					weightString = $"{newWeight}lb";
-					heightString = $"{newHeightFeet}' {newHeightInch}\"";
-					
-					__instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
 				}
 				else if (PlayerControl.LocalPlayer.Is(ModifierEnum.Dwarf))
 				{
@@ -56,27 +47,21 @@ namespace TownOfUsReworked.Patches
 
 					if (newHeightFeet <= 1 && newHeightFeet > 0)
 					{
-						do
+						newHeightInch = newHeightInch + (12 * newHeightFeet);
+						newHeightFeet = 0;
+
+						while (newHeightInch >= 12)
 						{
-							newHeightInch = newHeightInch + (12 * newHeightFeet);
-							newHeightFeet = 0;
-
-							if (newHeightInch >= 12)
-							{
-								do
-								{
-									newHeightFeet += 1;
-									newHeightInch -= 12;
-								} while (newHeightInch >= 12);
-							}
-						} while (newHeightFeet <= 1 && newHeightFeet > 0);
+							newHeightFeet += 1;
+							newHeightInch -= 12;
+						}
 					}
-
-					weightString = $"{newWeight}lb";
-					heightString = $"{newHeightFeet}' {newHeightInch}\"";
-					
-					__instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
 				}
+
+				weightString = $"{newWeight}lb";
+				heightString = $"{newHeightFeet}' {newHeightInch}\"";
+					
+				__instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
 			}
 		}
 	}

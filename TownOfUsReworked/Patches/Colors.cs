@@ -4,15 +4,20 @@ namespace TownOfUsReworked.Patches
 {
     class Colors
     {
-        //Faction Colors
+        //Layer Colors
         public readonly static Color32 Role = new Color32(255, 215, 0, 255); //#FFD700FF
+        public readonly static Color32 Modifier = new Color32(128, 128, 128, 255); //#7F7F7FFF
+        public readonly static Color32 Ability = new Color32(255, 153, 0, 255); //#FF9900FF
+        public readonly static Color32 Objectifier = new Color32(221, 88, 91, 255); //#DD585BFF
+
+        //Faction Colors
         public readonly static Color32 Crew = new Color32(139, 253, 253, 255); //#8BFDFDFF
         public readonly static Color32 Neutral = new Color32(179, 179, 179, 255); //#B3B3B3FF
         public readonly static Color32 Intruder = new Color32(255, 0, 0, 255); //#FF0000FF
         public readonly static Color32 Syndicate = new Color32(0, 128, 0, 255); //#008000FF
-        public readonly static Color32 Modifier = new Color32(128, 128, 128, 255); //#7F7F7FFF
-        public readonly static Color32 Ability = new Color32(255, 153, 0, 255); //#FF9900FF
-        public readonly static Color32 Objectifier = new Color32(221, 88, 91, 255); //#DD585BFF
+
+        //Subfaction Colors
+        public readonly static Color32 Undead = new Color32(123, 137, 104, 255); //#7B8968FF
 
         //Crew Colors
         public readonly static Color32 Mayor = new Color32(112, 79, 168, 255); //#704FA8FF
@@ -51,7 +56,6 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Cannibal = new Color32(140, 64, 5, 255); //#8C4005FF
         public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
         public readonly static Color32 Juggernaut = new Color32(161, 43, 86, 255); //#A12B56FF
-        public readonly static Color32 Vampire = new Color32(123, 137, 104, 255); //#7B8968FF
         public readonly static Color32 Dracula = new Color32(172, 138, 0, 255); //#AC8A00FF
         public readonly static Color32 Dampyr = new Color32(223, 122, 232, 255); //#DF7AE8FF
         public readonly static Color32 Murderer = new Color32(111, 123, 234, 255); //#6F7BEAFF
@@ -60,6 +64,8 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Thief = new Color32(128, 255, 0, 255); //#80FF00FF
         public readonly static Color32 Troll = new Color32(103, 141, 54, 255); //#678D36FF
         public readonly static Color32 Pirate = new Color32(237, 194, 64, 255); //#EDC240FF
+        public readonly static Color32 Bandit = new Color32(168, 67, 0, 0); //#A84300FF
+        public readonly static Color32 Vampire = new Color32(43, 210, 156, 255); //#2BD29CFF
 
         //Intruder Colors
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
@@ -132,7 +138,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 I = new Color32(128, 179, 255, 255); //#26FCFBFF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        //#dcee85 #2bd29c #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #a84300 #e74c3c #992d22 #00FFFD #917ac0
+        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d #F6AAB7
         //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731 #aab43e
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #45076a #e7dae2 #8d0f8c

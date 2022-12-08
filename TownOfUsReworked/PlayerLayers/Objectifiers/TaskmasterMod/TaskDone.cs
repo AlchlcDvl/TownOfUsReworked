@@ -7,9 +7,10 @@ using System.Linq;
 using Reactor.Utilities;
 using UnityEngine;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
+namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
     internal class TaskDone
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
 
         private static void Postfix(PlayerControl __instance)
         {
-            if (!__instance.Is(RoleEnum.Taskmaster))
+            if (!__instance.Is(ObjectifierEnum.Taskmaster))
                 return;
 
             if (__instance.Data.IsDead)
@@ -26,8 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
 
             var taskinfos = __instance.Data.Tasks.ToArray();
             var tasksLeft = taskinfos.Count(x => !x.Complete);
-            var role = Role.GetRole<Taskmaster>(__instance);
-            var localRole = Role.GetRole(PlayerControl.LocalPlayer);
+            var role = Objectifier.GetObjectifier<Taskmaster>(__instance);
 
             if (role == null)
                 return;
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
                     {
                         role.RegenTask();
 
-                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Taskmaster))
+                        if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                             Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
                     break;
                 case 0:
                     role.RegenTask();
-                    if (PlayerControl.LocalPlayer.Is(RoleEnum.Taskmaster))
+                    if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         
                     break;

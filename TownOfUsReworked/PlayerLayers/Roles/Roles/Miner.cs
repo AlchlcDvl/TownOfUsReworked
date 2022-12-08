@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Miner : Role
     {
         public readonly System.Collections.Generic.List<Vent> Vents = new System.Collections.Generic.List<Vent>();
-        public KillButton _mineButton;
+        private KillButton _mineButton;
         public DateTime LastMined;
         public bool CanPlace { get; set; }
         public Vector2 VentSize { get; set; }
@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Miner(PlayerControl player) : base(player)
         {
             Name = "Miner";
-            ImpostorText = () => "From The Top, Make It Drop, Boom, That's A Vent";
-            TaskText = () => "Place vents around the map";
+            StartText = "From The Top, Make It Drop, Boom, That's A Vent";
+            AbilitiesText = "Place vents around the map";
             Color = CustomGameOptions.CustomImpColors ? Colors.Miner : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastMined = DateTime.UtcNow;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Support)";
+            AlignmentName = "Intruder (Support)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.MineMafiSideDamp;
             AddToRoleHistory(RoleType);

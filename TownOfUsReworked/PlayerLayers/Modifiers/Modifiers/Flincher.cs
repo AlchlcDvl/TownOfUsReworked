@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Flincher(PlayerControl player) : base(player)
         {
             Name = "Flincher";
-            TaskText = () => "EEEK";
+            TaskText = "EEEK";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Flincher : Colors.Modifier;
             ModifierType = ModifierEnum.Flincher;
             AddToModifierHistory(ModifierType);

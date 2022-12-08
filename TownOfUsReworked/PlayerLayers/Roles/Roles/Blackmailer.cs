@@ -11,16 +11,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Blackmailer : Role
     {
-        public KillButton _blackmailButton;
+        private KillButton _blackmailButton;
         public PlayerControl ClosestPlayer;
         public PlayerControl Blackmailed;
         public DateTime LastBlackmailed { get; set; }
+        public bool blackmailed => Blackmailed != null;
 
         public Blackmailer(PlayerControl player) : base(player)
         {
             Name = "Blackmailer";
-            ImpostorText = () => "You Know Their Dirty Little Secrets";
-            TaskText = () => "Use your information to silence players for the next meeting";
+            StartText = "You Know Their Dirty Little Secrets";
+            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting.";
+            AttributesText = "- You can blackmail fellow <color=#FF0000FF>Intruders</color>.\n- Everyone will be alerted at the start of the meeting" + 
+                " that someone has been blackmailed.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Blackmailer : Colors.Intruder;
             LastBlackmailed = DateTime.UtcNow;
             RoleType = RoleEnum.Blackmailer;
@@ -28,13 +31,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill anyone who opposes you";
             CoronerDeadReport = "This body has a ledger containing everyone's secrets! They must be a Blackmailer!";
-            CoronerKillerReport = "The hurried and tucked away letter on the body indicates blackmail. They were killed by a Blackmailer!";
+            CoronerKillerReport = "The crumpled letter on the body contains the body's secrets. They were killed by a Blackmailer!";
             Results = InspResults.SherConsigInspBm;
             SubFaction = SubFaction.None;
             IntroSound = null;
+            AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
+                " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            RoleDescription = blackmailed ? "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be " +
+                $"careful though, as you cannot blackmail yourself so the others will get wise to your identity pretty quickly. Currently {Blackmailed.name} is blackmailed." :
+                "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be careful though, as you cannot" +
+                " blackmail yourself so the others will get wise to your identity pretty quickly.";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 

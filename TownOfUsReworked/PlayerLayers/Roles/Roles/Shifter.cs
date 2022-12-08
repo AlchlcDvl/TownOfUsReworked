@@ -16,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Shifter(PlayerControl player) : base(player)
         {
             Name = "Shifter";
-            ImpostorText = () => "Shift around different roles";
-            TaskText = () => "Steal other people's roles";
+            StartText = "Shift around different roles";
+            AbilitiesText = "Steal other people's roles";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Shifter;
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = () => "Crew (Support)";
+            AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.ShiftSwapSKDrac;
             AddToRoleHistory(RoleType);
@@ -69,8 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

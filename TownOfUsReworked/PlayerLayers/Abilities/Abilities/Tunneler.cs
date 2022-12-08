@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Tunneler(PlayerControl player) : base(player)
         {
             Name = "Tunneler";
-            TaskText = () => "You can dig yourself into the ground";
+            TaskText = "You can dig yourself into the ground";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
             AbilityType = AbilityEnum.Tunneler;
             AddToAbilityHistory(AbilityType);

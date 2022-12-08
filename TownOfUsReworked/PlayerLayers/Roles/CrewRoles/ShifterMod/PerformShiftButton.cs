@@ -146,7 +146,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
                 var modifier = Modifier.GetModifier(other);
                 var modifier2 = Modifier.GetModifier(shifter);
-                var player = new PlayerControl();
 
                 if (modifier2 != null)
                 {
@@ -180,14 +179,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     snitchRole.SnitchArrows.Values.DestroyAll();
                     snitchRole.SnitchArrows.Clear();
                     CompleteTask.Postfix(shifter);
+
                     if (other.AmOwner)
                     {
                         foreach (var player1 in PlayerControl.AllPlayerControls)
                             player1.nameText().color = Color.white;
                     }
+
                     DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                 } 
-                else if (role == RoleEnum.Investigator)
+                
+                if (role == RoleEnum.Investigator)
                 {
                     var invRole = Role.GetRole<Investigator>(shifter);
                     Footprint.DestroyAll(invRole);
@@ -290,9 +292,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     Role.RoleDictionary.Add(other.PlayerId, shifterRole);
                 }
                 else
-                {
                     new Crewmate(other);
-                }
 
                 Role.RoleDictionary.Add(shifter.PlayerId, newRole);
                 shifterRole.AddToRoleHistory(shifterRole.RoleType);

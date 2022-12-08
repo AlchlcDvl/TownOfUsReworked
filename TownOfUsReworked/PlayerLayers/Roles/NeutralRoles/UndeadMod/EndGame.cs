@@ -2,9 +2,8 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.UndeadMod
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
     public class EndGame
@@ -16,11 +15,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TaskmasterMod
 
             foreach (var role in Role.AllRoles)
             {
-                if (role.RoleType == RoleEnum.Taskmaster)
-                    ((Taskmaster) role).Loses();
+                if (role.SubFaction == SubFaction.Undead)
+                    role.Loses();
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.TaskmasterLose,
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndeadLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

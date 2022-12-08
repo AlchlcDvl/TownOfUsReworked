@@ -14,14 +14,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked { get; set; }
         public int VampsAlive => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && x.Data != null && !x.Data.IsDead &&
-            x.Is(SubFaction.Vampires));
+            x.Is(SubFaction.Undead));
         public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= VampsAlive;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
             Name = "Vampire Hunter";
-            ImpostorText = () => "Stake The <color=#7B8968FF>Vampires</color>";
-            TaskText = () => "Stake the <color=#7B8968FF>Vampires</color>";
+            StartText = "Stake The <color=#7B8968FF>Vampires</color>";
+            AbilitiesText = "Stake the <color=#7B8968FF>Vampires</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             SubFaction = SubFaction.None;
             LastStaked = DateTime.UtcNow;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewCheck;
-            AlignmentName = () => "Crew (Checker)";
+            AlignmentName = "Crew (Checker)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);
@@ -85,8 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

@@ -39,6 +39,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Dampyr [Neutral (Power)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
+- New Role: Bandit [Neutral (Killing)] |
 - New Role: Cryomaniac [Neutral (Evil)] 
 - New Role: Troll [Neutral (Evil)] 
 - New Role: Pirate [Neutral (Evil)] |
@@ -49,16 +50,15 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Modifier: Flincher
 - New Modifier: VIP
 - New Modifier: Professional
-- New Modifier: Shy |
+- New Modifier: Shy
 - New Objectifier: Rivals |
 - New Objectifier: Fanatic |
 - New Ability: Tunneler |
 - New Ability: Multitasker
 - New Ability: Radar
-- New Alignments: Crew (Sovereign), Crew (Checker), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
-- Mega Addition: Better Crew and Intruder victory screens |
-- Addition: You can now customise the spawn chance of Crewmate and Impostor (they will still spawn by default if the number of Crew is more than the number of Crew roles that are active, same for the Impostors) |
-- Addition: Added venting options for Neutral Benign roles
+- New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
+- Mega Addition: Better Crew and Intruder victory screens
+- Addition: You can now customise the spawn chance of Crewmate and Impostor (they will still spawn by default if the number of Crew is more than the number of Crew roles that are active, same for the Impostors)
 - Addition: New Syndicate, Objectifiers and Abilities settings tabs
 - Addition: All players are alerted when the Phantom has a certain number of tasks left
 - Addition: More Assassin settings
@@ -66,11 +66,12 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Addition: More settings
 - Addition: Added color coding to credits and updated them a bit
 - Addition: The end game summary now displays how many tasks did the player do and who is an Executioner/Guardian Angel target
-- Addition: More creddits
+- Addition: More credits
 - Addition: Added the option to change the max lobby size while in the lobby |
 - Addition: Added features from ToU-R v3.4.0
 - Addition: Added a whole lot of options and simplified some other options
 - Addition: Added role reveal screen sounds (for some roles)
+- Addition: Added chat commands
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
 - Mega Rework: Split Objectifiers into Abilities (additional stuff) and Objectifiers (new win con)
@@ -86,6 +87,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Rework: Plaguebearer infect spread can be toggled |
 - Rework: Added option for Pestilence to directly spawn in
 - Rework: Added Arsonist passive dousing which can be toggled |
+- Rework: Taskmaster is now an Objectifier |
 - Rework: Jester and Executioner no longer end the game when their objectives are complete
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
@@ -104,7 +106,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Visual Fix: Vanilla Settings now appear in the lobby again
 - Visual Fix: Fixed color mismatch for certain areas
 - Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
-- Visual Fix: Fixed Stalemate end screen
+- Visual Fix: Fixed Stalemate and Survivor end screens
 - Bug Fix: Squashed the countless role gen bugs (hopefully)
 - Role Fix: Fixed the issue with Executioners and Guardian Angels having no or incorrect targets
 - Role Fix: Cannibal's button should light up when near bodies now

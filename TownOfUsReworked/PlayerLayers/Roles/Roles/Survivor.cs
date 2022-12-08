@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Survivor(PlayerControl player) : base(player)
         {
             Name = "Survivor";
-            ImpostorText = () => "Do Whatever It Takes To Live";
-            TaskText = () => "Stay alive to win";
+            StartText = "Do Whatever It Takes To Live";
+            AbilitiesText = "Stay alive to win";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastVested = DateTime.UtcNow;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxVests;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = () => "Neutral (Benign)";
+            AlignmentName = "Neutral (Benign)";
             IntroText = "Live to the end";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);

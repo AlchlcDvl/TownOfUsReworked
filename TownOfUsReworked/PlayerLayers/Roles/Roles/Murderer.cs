@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Murderer(PlayerControl player) : base(player)
         {
             Name = "Murderer";
-            ImpostorText = () => "Imagine Getting Boring Murderer";
-            TaskText = () => "Kill everyone!\nFake Tasks:";
+            StartText = "Imagine Getting Boring Murderer";
+            AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Murder those who oppose you";
             Results = InspResults.CrewImpAnMurd;
             AddToRoleHistory(RoleType);

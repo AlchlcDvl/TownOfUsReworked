@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Sheriff(PlayerControl player) : base(player)
         {
             Name = "Sheriff";
-            ImpostorText = () => "Reveal The Alignment Of Other Players";
-            TaskText = () => "Reveal alignments of other players to find the <color=#FF0000FF>Intruders</color>";
+            StartText = "Reveal The Alignment Of Other Players";
+            AbilitiesText = "Reveal alignments of other players to find the <color=#FF0000FF>Intruders</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             SubFaction = SubFaction.None;
             LastInterrogated = DateTime.UtcNow;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = () => "Crew (Investigative)";
+            AlignmentName = "Crew (Investigative)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SherConsigInspBm;
             AddToRoleHistory(RoleType);
@@ -73,8 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

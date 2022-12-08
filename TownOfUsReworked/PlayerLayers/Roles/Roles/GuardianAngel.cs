@@ -22,12 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            ImpostorText = () => TargetPlayer == null 
-                    ? "You don't have a target for some reason... weird..."
-                    : $"Protect {TargetPlayer.name} With Your Life!";
-            TaskText = () => TargetPlayer == null
-                    ? "You don't have a target for some reason... weird..."
-                    : $"Protect {TargetPlayer.name}!";
+            StartText = TargetPlayer == null 
+                ? "You don't have a target for some reason... weird..."
+                : $"Protect {TargetPlayer.name} With Your Life";
+            Objectives = TargetPlayer == null
+                ? "You don't have a target for some reason... weird..."
+                : $"- Have {TargetPlayer.name} live to the end.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastProtected = DateTime.UtcNow;
@@ -38,11 +38,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxProtects;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = () => "Neutral (Benign)";
+            AlignmentName = "Neutral (Benign)";
             IntroText = $"Protect {TargetPlayer.name}";
             CoronerDeadReport = "The body's anatomy is out of this world. They must be a Guardian Angel!";
             CoronerKillerReport = "";
             Results = InspResults.GAExeMedicPup;
+            AbilitiesText = "";
+            AttributesText = "";
+            RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
+                " instead need to win as the role you become after finding a dead body.";
+            AlignmentDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
+            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
+                " a certain objective.";
+            IntroSound = null;
+            AlignmentDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
             AddToRoleHistory(RoleType);
         }
 

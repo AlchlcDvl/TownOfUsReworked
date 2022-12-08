@@ -40,30 +40,33 @@ namespace TownOfUsReworked.Extensions
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                var color = new Color32 (0, 0, 0, 0);
-                var playerName = " ";
-
-                if (player.Is(Faction.Syndicate) | player.Data.IsDead | PlayerControl.LocalPlayer == player)
+                if (player != PlayerControl.LocalPlayer)
                 {
-                    color.a = 26;
-                    playerName = player.name;
-                }
+                    var color = new Color32 (0, 0, 0, 0);
+                    var playerName = " ";
 
-                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
-                    player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
-                    player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-                {
-                    player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
+                    if (player.Is(Faction.Syndicate) | player.Data.IsDead)
                     {
-                        ColorId = player.CurrentOutfit.ColorId,
-                        HatId = "",
-                        SkinId = "",
-                        VisorId = "",
-                        PlayerName = playerName
-                    });
-                    PlayerMaterial.SetColors(color, player.myRend());
-                    player.nameText().color = color;
-                    player.cosmetics.colorBlindText.color = color;
+                        color.a = 26;
+                        playerName = player.name;
+                    }
+
+                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
+                        player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
+                        player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
+                    {
+                        player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
+                        {
+                            ColorId = player.CurrentOutfit.ColorId,
+                            HatId = "",
+                            SkinId = "",
+                            VisorId = "",
+                            PlayerName = playerName
+                        });
+                        PlayerMaterial.SetColors(color, player.myRend());
+                        player.nameText().color = color;
+                        player.cosmetics.colorBlindText.color = color;
+                    }
                 }
             }
         }
@@ -710,7 +713,9 @@ namespace TownOfUsReworked.Extensions
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
             if (Sabotaged())
-                ShipStatus.RpcEndGame(reason, showAds);
+                ShipStatus.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
+            else if (TasksDone())
+                ShipStatus.RpcEndGame(GameOverReason.HumansByTask, showAds);
             else
                 ShipStatus.RpcEndGame(reason, showAds);
         }
@@ -945,9 +950,11 @@ namespace TownOfUsReworked.Extensions
         public static IEnumerator Block(PlayerControl blocker, PlayerControl target)
         {
             GameObject[] lockImg = {null, null, null, null};
-            var roleRole = Role.GetRole(blocker);
 
             if (!(blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort)))
+                yield break;
+
+            if (blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort))
                 yield break;
             
             if (target.Is(RoleEnum.SerialKiller))
@@ -1093,11 +1100,23 @@ namespace TownOfUsReworked.Extensions
 
         public static bool TasksDone()
         {
-            
-            var TasksLeft = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) &&
-                !x.Is(ObjectifierEnum.Lovers));
-            
-            return TasksLeft == 0;
+            var allCrew = new List<PlayerControl>();
+            var crewWithNoTasks = new List<PlayerControl>();
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (!player.Is(Faction.Crew) | player.Is(ObjectifierEnum.Lovers))
+                    continue;
+                else
+                    allCrew.Add(player);
+                
+                var TasksLeft = player.Data.Tasks.ToArray().Count(x => !x.Complete);
+
+                if (TasksLeft <= 0)
+                    crewWithNoTasks.Add(player);
+            }
+
+            return allCrew.Count == crewWithNoTasks.Count;
         }
 
         public static bool Sabotaged()

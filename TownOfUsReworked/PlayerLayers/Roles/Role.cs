@@ -17,6 +17,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
@@ -30,11 +31,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
         public static bool NobodyWins;
-        public static bool NBOnlyWin;
+        public static bool NeutralsWin;
+        public static bool VampWin;
+        
         public static bool CrewWin;
         public static bool IntruderWin;
         public static bool SyndicateWin;
-        public static bool VampWin;
 
         public static bool Base = false;
 
@@ -66,6 +68,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string CoronerKillerReport { get; set; }
         protected internal string FactionDescription { get; set; }
         protected internal string RoleDescription { get; set; }
+        protected internal string AlignmentDescription { get; set; }
+        protected internal string Objectives { get; set; }
 
         protected Role(PlayerControl player)
         {
@@ -139,9 +143,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             NobodyWins = true;
         }
 
-        public static void NBOnlyWins()
+        public static void NeutralsOnlyWin()
         {
-            NBOnlyWin = true;
+            NeutralsWin = true;
         }
 
         internal static bool NobodyEndCriteria(ShipStatus __instance)
@@ -189,11 +193,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (SurvOnly())
                 {
-                    var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NBOnlyWin,
+                    var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NeutralsWin,
                         SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
 
-                    NBOnlyWins();
+                    NeutralsOnlyWin();
                     Utils.EndGame();
                     return false;
                 }
@@ -234,7 +238,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var p = PlayerControl.LocalPlayer;
 
-            if (CustomGameOptions.SeeTasks && ((p.Is(Faction.Crew) && !p.Is(ObjectifierEnum.Lovers)) | p.Is(RoleEnum.Taskmaster) |
+            if (CustomGameOptions.SeeTasks && ((p.Is(Faction.Crew) && !p.Is(ObjectifierEnum.Lovers)) | p.Is(ObjectifierEnum.Taskmaster) |
                 (p.Is(ObjectifierEnum.Phantom) && p.Data.IsDead)))
                 return Utils.ShowDeadBodies;
 
@@ -421,8 +425,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void RegenTask()
         {
             bool createTask;
-            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective: {IntroText}\nAttack/Defense:" +
-                $" {AttackString}/{DefenseString}\nAbilities: {AbilitiesText}\nAttributes: {AttributesText}</color>";
+            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective: {Objectives}\nAttack/Defense:" +
+                $" {AttackString}/{DefenseString}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
 
             try
             {
@@ -510,6 +514,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static IEnumerable<Role> GetRoles(Faction faction)
         {
             return AllRoles.Where(x => x.Faction == faction);
+        }
+
+        public static IEnumerable<Role> GetRoles(SubFaction subfaction)
+        {
+            return AllRoles.Where(x => x.SubFaction == subfaction);
         }
 
         public static class IntroCutScenePatch
@@ -762,21 +771,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var objectifier = Objectifier.GetObjectifier(player);
                 var ability = Ability.GetAbility(player);
 
+                if (ability != null)
+                {
+                    var modTask = new GameObject(ability.Name + "Task").AddComponent<ImportantTextTask>();
+                    modTask.transform.SetParent(player.transform, false);
+                    modTask.Text = $"{ability.ColorString}Modifier: {ability.Name}\n{ability.TaskText}</color>";
+                    player.myTasks.Insert(0, modTask);
+                }
+
                 if (modifier != null)
                 {
                     var modTask = new GameObject(modifier.Name + "Task").AddComponent<ImportantTextTask>();
                     modTask.transform.SetParent(player.transform, false);
-                    modTask.Text = $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText()}</color>";
+                    modTask.Text = $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText}</color>";
                     player.myTasks.Insert(0, modTask);
                 }
 
-                if (role.RoleType == RoleEnum.Amnesiac && role.Player != PlayerControl.LocalPlayer)
-                    return;
+                if (objectifier != null)
+                {
+                    var modTask = new GameObject(objectifier.Name + "Task").AddComponent<ImportantTextTask>();
+                    modTask.transform.SetParent(player.transform, false);
+                    modTask.Text = $"{objectifier.ColorString}Modifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
+                    player.myTasks.Insert(0, modTask);
+                }
 
                 var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
                 task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective: {role.IntroText}\nAttack/Defense:" +
-                    $" {role.AttackString}/{role.DefenseString}\nAbilities: {role.AbilitiesText}\nAttributes: {role.AttributesText}</color>";
+                    $" {role.AttackString}/{role.DefenseString}\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
+
+                if (role.Faction != Faction.Crew)
+                    task.Text += "\nFake Tasks:";
+                    
                 player.myTasks.Insert(0, task);
             }
         }
@@ -821,8 +847,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var role in AllRoles)
                 {
                     var roleIsEnd = role.EABBNOODFGL(__instance);
-                    var objectifier = Modifier.GetModifier(role.Player);
-                    bool objectifierEnd = true;
+                    var objectifier = Objectifier.GetObjectifier(role.Player);
+                    var objectifierEnd = true;
                     var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var impsAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Data.IsImpostor()).ToList();
 
@@ -875,11 +901,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     ((Coroner)role).BodyArrows.Clear();
                 }
 
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Taskmaster))
+                foreach (var role in Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Taskmaster))
                 {
                     ((Taskmaster)role).ImpArrows.DestroyAll();
                     ((Taskmaster)role).TMArrows.Values.DestroyAll();
                     ((Taskmaster)role).TMArrows.Clear();
+                }
+
+                foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
+                {
+                    ((Snitch)role).ImpArrows.DestroyAll();
+                    ((Snitch)role).SnitchArrows.Values.DestroyAll();
+                    ((Snitch)role).SnitchArrows.Clear();
                 }
 
                 RoleDictionary.Clear();
@@ -941,9 +974,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool objectifierFlag = role.ObjectifierCriteria();
                         bool targetFlag = role.TargetCriteria();
                         player.NameText.text = role.NameText(taskFlag, selfFlag || deadFlag || factionFlag || targetFlag, objectifierFlag, player);
-                        
-                        if(role.ColorCriteria())
-                            player.NameText.color = role.Color;
+                        player.NameText.color = role.Color;
                     }
                     else
                         player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
@@ -984,9 +1015,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool objectifierFlag = role.ObjectifierCriteria();
                         bool targetFlag = role.TargetCriteria();
                         player.nameText().text = role.NameText(taskFlag, selfFlag || deadFlag || factionFlag || targetFlag, objectifierFlag);
-                        
-                        if(role.ColorCriteria())
-                            player.nameText().color = role.Color;
+                        player.nameText().color = role.Color;
                     }
 
                     if (player.Data != null && PlayerControl.LocalPlayer.Data.IsImpostor() && player.Data.IsImpostor())

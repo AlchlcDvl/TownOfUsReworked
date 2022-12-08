@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Tiebreaker(PlayerControl player) : base(player)
         {
             Name = "Tiebreaker";
-            TaskText = () => "Your vote breaks ties";
+            TaskText = "Your vote breaks ties";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tiebreaker : Colors.Ability;
             AbilityType = AbilityEnum.Tiebreaker;
             AddToAbilityHistory(AbilityType);

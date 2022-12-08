@@ -5,14 +5,15 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
     public class Outro
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Survivor && Role.NBOnlyWin);
+            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Survivor | x.RoleType == RoleEnum.Executioner |
+                x.RoleType == RoleEnum.GuardianAngel | x.RoleType == RoleEnum.Jester) && Role.NeutralsWin);
 
             if (role == null)
                 return;
@@ -24,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 
             __instance.BackgroundBar.material.color = Colors.Neutral;
             var text = Object.Instantiate(__instance.WinText);
-            text.text = "Neutral Benigns Win!";
+            text.text = "Neutrals Win!";
             text.color = Colors.Neutral;
             var pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
@@ -33,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.NBWin, false, 1f);
+                SoundManager.Instance.PlaySound(TownOfUsReworked.NeutralsWin, false, 1f);
             } catch {}
         }
     }

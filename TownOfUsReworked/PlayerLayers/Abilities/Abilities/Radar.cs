@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Radar(PlayerControl player) : base(player)
         {
             Name = "Radar";
-            TaskText = () => "Be on high alert";
+            TaskText = "Be on high alert";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
             AddToAbilityHistory(AbilityType);

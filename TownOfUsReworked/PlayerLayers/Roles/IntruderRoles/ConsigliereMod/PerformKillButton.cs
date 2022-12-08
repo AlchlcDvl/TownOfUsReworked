@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 return false;
             }
 
-            return true;
+            return false;
         }
     }
 }

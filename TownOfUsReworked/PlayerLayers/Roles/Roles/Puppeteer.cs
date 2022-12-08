@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Puppeteer : Role
     {
-        public KillButton _possessButton;
+        private KillButton _possessButton;
         public PlayerControl ClosestPlayer;
         public PlayerControl PossessPlayer;
         public DateTime PossStart;
@@ -27,8 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Puppeteer(PlayerControl player) : base(player)
         {
             Name = "Puppeteer";
-            ImpostorText = () => "Control Crew to Kill";
-            TaskText = () => "Control Crew to Kill";
+            StartText = "Control Crew to Kill";
+            AbilitiesText = "Control Crew to Kill";
             Color = CustomGameOptions.CustomSynColors ? Colors.Puppeteer : Colors.Syndicate;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Puppeteer;
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateChaos;
-            AlignmentName = () => "Syndicate (Chaos)";
+            AlignmentName = "Syndicate (Chaos)";
             IntroText = "Cause choas and murder your opposition";
             PossessPlayer = null;
             ClosestPlayer = null;

@@ -51,6 +51,7 @@ namespace TownOfUsReworked.Patches
                 var modifierString = "";
                 var objectifierString = "";
                 var abilityString = "";
+                var totalString = "";
                 var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
                 var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
                 
@@ -62,38 +63,50 @@ namespace TownOfUsReworked.Patches
                     roleName = role2.Name;
                     endString = "</color> > ";
 
-                    summary += colorString + roleName + endString;
+                    totalString = colorString + roleName + endString;
+                    summary += totalString;
                 }
 
                 summary = summary.Remove(summary.Length - 3);
 
                 var modifier = Modifier.GetModifier(playerControl);
 
-                colorString = " (<color=#" + modifier.Color.ToHtmlStringRGBA() + ">";
-                modifierName = modifier.Name;
-                endString = "</color>)";
+                if (modifier != null)
+                {
+                    colorString = " (<color=#" + modifier.Color.ToHtmlStringRGBA() + ">";
+                    modifierName = modifier.Name;
+                    endString = "</color>)";
 
-                modifierString = colorString + modifierName + endString;
+                    modifierString = colorString + modifierName + endString;
 
-                summary += modifierString;
+                    summary += modifierString;
+                }
 
                 var ability = Ability.GetAbility(playerControl);
 
-                colorString = " [<color=#" + ability.Color.ToHtmlStringRGBA() + ">";
-                abilityName = ability.Name;
-                endString = "</color>]";
+                if (ability != null)
+                {
+                    colorString = " [<color=#" + ability.Color.ToHtmlStringRGBA() + ">";
+                    abilityName = ability.Name;
+                    endString = "</color>]";
 
-                abilityString = colorString + abilityName + endString;
+                    abilityString = colorString + abilityName + endString;
 
-                summary += abilityString;
+                    summary += abilityString;
+                }
 
                 var objectifier = Objectifier.GetObjectifier(playerControl);
 
-                colorString = " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">";
-                objectifierSymbolName = objectifier.SymbolName;
-                endString = "</color>";
+                if (objectifier != null)
+                {
+                    colorString = " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">";
+                    objectifierSymbolName = objectifier.SymbolName;
+                    endString = "</color>";
 
-                objectifierString = colorString + objectifierSymbolName + endString;
+                    objectifierString = colorString + objectifierSymbolName + endString;
+
+                    summary += objectifierString;
+                }
 
                 foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
                 {
@@ -111,14 +124,12 @@ namespace TownOfUsReworked.Patches
                         summary += " <color=#CCCCCCFF>§</color>";
                 }
 
-                summary += objectifierString;
                 
-                if ((playerControl.Is(Faction.Crew) && !playerControl.Is(ObjectifierEnum.Lovers)) | playerControl.Is(RoleEnum.Taskmaster) |
+                if ((playerControl.Is(Faction.Crew) && !playerControl.Is(ObjectifierEnum.Lovers)) | playerControl.Is(ObjectifierEnum.Taskmaster) |
                     (playerControl.Is(ObjectifierEnum.Phantom) && playerControl.Data.IsDead))
                     summary += " | " + playerTasksDone + "/" + TotalTasks;
 
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName =
-                    playerControl.Data.PlayerName, Role = summary});
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName = playerControl.Data.PlayerName, Role = summary});
             }
         }
     }
@@ -143,7 +154,7 @@ namespace TownOfUsReworked.Patches
             var roleSummaryText = new StringBuilder();
             roleSummaryText.AppendLine("End game summary:");
 
-            foreach(var data in AdditionalTempData.playerRoles)
+            foreach (var data in AdditionalTempData.playerRoles)
             {
                 var role = string.Join(" ", data.Role);
                 roleSummaryText.AppendLine($"{data.PlayerName} - {role}");

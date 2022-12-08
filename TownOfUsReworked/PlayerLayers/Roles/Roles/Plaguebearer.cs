@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Plaguebearer(PlayerControl player) : base(player)
         {
             Name = "Plaguebearer";
-            ImpostorText = () => "Spread Disease To Become Pestilence";
-            TaskText = () => "Infect everyone to become Pestilence\nFake Tasks:";
+            StartText = "Spread Disease To Become Pestilence";
+            AbilitiesText = "Infect everyone to become Pestilence\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Plaguebearer;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = () => "Neutral (Killing)";
+            AlignmentName = "Neutral (Killing)";
             IntroText = "Infect everyone";
             Results = InspResults.ArsoCryoPBOpTroll;
             AddToRoleHistory(RoleType);

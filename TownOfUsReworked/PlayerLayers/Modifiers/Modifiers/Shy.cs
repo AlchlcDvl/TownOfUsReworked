@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Shy(PlayerControl player) : base(player)
         {
             Name = "Shy";
-            TaskText = () => "Ummmmmm";
+            TaskText = "Ummmmmm";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Shy : Colors.Modifier;
             ModifierType = ModifierEnum.Shy;
             AddToModifierHistory(ModifierType);

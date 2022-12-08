@@ -12,9 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Cannibal : Role
     {
-        public KillButton _eatButton;
+        private KillButton _eatButton;
         public DeadBody CurrentTarget { get; set; }
         public int EatNeed;
+        public string body;
         public bool CannibalWin;
         public DateTime LastEaten { get; set; }
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
@@ -22,24 +23,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Cannibal(PlayerControl player) : base(player)
         {
             Name = "Cannibal";
-            ImpostorText = () => "Eat Bodies";
+            StartText = "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
             Faction = Faction.Neutral;
             LastEaten = DateTime.UtcNow;
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ?
                 PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
-            var body = EatNeed == 1 ? "Body" : "Bodies";
-            TaskText = () => $"Eat {EatNeed} {body} to Win\nFake Tasks:";
+            body = EatNeed == 1 ? "body" : "bodies";
+            AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
+            AttributesText = "- None.";
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = () => "Neutral (Evil)";
+            AlignmentName = "Neutral (Evil)";
             IntroText = "Eat the bodies of the dead";
-            CoronerDeadReport = $"The sharp canines and traces of blood in the mouth indicate that this body is a Cannibal!";
+            CoronerDeadReport = "The sharp canines and traces of blood in the mouth indicate that this body is a Cannibal!";
             CoronerKillerReport = "";
             Results = InspResults.EngiAmneThiefCann;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             SubFaction = SubFaction.None;
+            RoleDescription = $"You are a Cannibal! You have an everlasting hunger for dead bodies. You need to eat {EatNeed} {body} to win!";
+            AlignmentDescription = "You are a Neutral (Evil) role! You have a confliction win condition over others and upon achieving it will end the game. " +
+                "Finish your objective before they finish you!";
+            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
+                " a certain objective.";
+            Objectives = $"- Eat {EatNeed} {body}.";
+            IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
         

@@ -14,14 +14,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Vampire";
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Vampire;
-            ImpostorText = () => "Bite The <color=#8BFDFDFF>Crew</color> To Gain A Majority";
-            TaskText = () => "Convert the <color=#8BFDFDFF>Crew</color>!";
+            StartText = "Bite The <color=#8BFDFDFF>Crew</color> To Gain A Majority";
+            AbilitiesText = "Convert the <color=#8BFDFDFF>Crew</color>!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Vampire : Colors.Neutral;
-            SubFaction = SubFaction.Vampires;
+            SubFaction = SubFaction.Undead;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
-            AlignmentName = () => "Neutral (Proselyte)";
+            AlignmentName = "Neutral (Proselyte)";
             IntroText = "Gain a majority";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
                 (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VampWin,
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndeadWin,
                     SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 Wins();

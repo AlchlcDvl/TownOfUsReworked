@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Role.GetRoles(RoleEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
+            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
                 return;
 
             if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+                SoundManager.Instance.PlaySound(TownOfUsReworked.CrewWin, false, 1f);
             } catch {}
         }
     }

@@ -13,15 +13,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Teleporter : Role
     {
-        public KillButton _teleportButton;
+        private KillButton _teleportButton;
         public DateTime LastTeleport;
         public Vector3 TeleportPoint;
 
         public Teleporter(PlayerControl player) : base(player)
         {
             Name = "Teleport";
-            ImpostorText = () => "Get Away From Kills With Ease";
-            TaskText = () => "Teleport to get away from bodies";
+            StartText = "Get Away From Kills With Ease";
+            AbilitiesText = "Teleport to get away from bodies";
             Color = CustomGameOptions.CustomImpColors ? Colors.Teleporter : Colors.Intruder;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Teleporter;

@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TimeLord(PlayerControl player) : base(player)
         {
             Name = "Time Lord";
-            ImpostorText = () => "Rewind Time";
-            TaskText = () => "Rewind Time!";
+            StartText = "Rewind Time";
+            AbilitiesText = "Rewind Time!";
             Color = CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew;
             SubFaction = SubFaction.None;
             StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = () => "Crew (Support)";
+            AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.TrackAltTLTM;
             AddToRoleHistory(RoleType);
@@ -94,8 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

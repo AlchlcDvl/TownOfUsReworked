@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Veteran(PlayerControl player) : base(player)
         {
             Name = "Veteran";
-            ImpostorText = () => "Alert To Kill Anyone Who Touches You";
-            TaskText = () => "Alert to kill whoever interacts with you";
+            StartText = "Alert To Kill Anyone Who Touches You";
+            AbilitiesText = "Alert to kill whoever interacts with you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
             SubFaction = SubFaction.None;
             LastAlerted = DateTime.UtcNow;
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = () => "Crew (Killing)";
+            AlignmentName = "Crew (Killing)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.WraithDetGrenVet;
             AddToRoleHistory(RoleType);
@@ -89,8 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
                 x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.Disconnected && x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Lovers)
-                && !x.Data.TasksDone()) == 0))
+                0) | Utils.TasksDone())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

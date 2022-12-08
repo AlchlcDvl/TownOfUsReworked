@@ -169,7 +169,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Pestilence:
                 case RoleEnum.SerialKiller:
                 case RoleEnum.Cannibal:
-                case RoleEnum.Taskmaster:
                 case RoleEnum.Werewolf:
                 case RoleEnum.Troll:
                 case RoleEnum.Thief:
@@ -190,9 +189,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             newRole = Role.GetRole(other);
             newRole.Player = amnesiac;
-
-            if (roleType == RoleEnum.Taskmaster)
-                CompleteTask.Postfix(amnesiac);
 
             Role.RoleDictionary.Remove(amnesiac.PlayerId);
 

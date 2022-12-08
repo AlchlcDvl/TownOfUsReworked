@@ -3,9 +3,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
@@ -141,6 +138,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             Convert(role, role.ClosestPlayer);
             role.LastBitten = DateTime.UtcNow;
+
+            foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
+            {
+                var dampyr = (Dampyr)role2;
+                dampyr.LastKill = DateTime.UtcNow;
+            }
             return false;
         }
 
@@ -148,7 +151,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
         {
             var role = Utils.GetRole(other);
             var roleVal = Role.GetRoleValue(role);
-            var tm = Role.GetRole<Taskmaster>(other);
             var drac = dracRole.Player;
             var ability = Utils.GetAbility(other);
 
@@ -186,7 +188,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Jester:
                 case RoleEnum.Cannibal:
                 case RoleEnum.Cryomaniac:
-                case RoleEnum.Taskmaster:
                 case RoleEnum.Thief:
                 case RoleEnum.Inspector:
                 case RoleEnum.Escort:
@@ -222,11 +223,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         can.BodyArrows.Values.DestroyAll();
                         can.BodyArrows.Clear();
                         can.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
-                    }
-                    else if (role == RoleEnum.Taskmaster && tm.TasksLeft <= CustomGameOptions.TMTasksRemaining)
-                    {
-                        Utils.RpcMurderPlayer(drac, other);
-                        return;
                     }
 
                     Role.RoleDictionary.Remove(other.PlayerId);

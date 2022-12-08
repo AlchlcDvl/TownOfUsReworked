@@ -54,6 +54,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
+            if (role.TargetPlayer == null)
+                return;
+
             if (MeetingHud.Instance != null)
                 UpdateMeeting(MeetingHud.Instance, role);
 

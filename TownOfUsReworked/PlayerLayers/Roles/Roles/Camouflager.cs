@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Camouflager : Role
     {
-        public KillButton _camouflageButton;
+        private KillButton _camouflageButton;
         public bool Enabled;
         public DateTime LastCamouflaged { get; set; }
         public float TimeRemaining;
@@ -21,21 +21,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Camouflager(PlayerControl player) : base(player)
         {
             Name = "Camouflager";
-            ImpostorText = () => "Throw paint everywhere and blend in with the <color=#8BFDFDFF>Crew</color>";
-            TaskText = () => "Camouflage among everyone and kill in front of them";
+            StartText = "Disrupt Everyone's Vision To Hinder The <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.";
+            AttributesText = "- When camouflaged, everyone will appear grey with no name or cosmetics.\n- If the Colorblind Meeting options is on, this effect " +
+                "carries over into the meeting if a meeting is called during a camouflage.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Camouflager : Colors.Intruder;
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Intruders;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = () => "Intruder (Concealing)";
+            AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill those who opposes you";
-            CoronerDeadReport = $"The camouflage suit indicate that this body is a Camouflager!";
-            CoronerKillerReport = "There are marks of grey paint on the body. They were killed by a Camouflager!";
+            CoronerDeadReport = "There is a strange device on the body that seems to be making the body appear grey. They must be a Camouflager!";
+            CoronerKillerReport = "The body's appearance cannot be distinguised properly. They were killed by a Camouflager!";
             Results = InspResults.DisgMorphCamoAgent;
             SubFaction = SubFaction.None;
+            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
+                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
             IntroSound = null;
+            AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
+                " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
+            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
+                " to ensure your victory over others.";
+            RoleDescription = "You are a Camouflager! You can choose to disrupt everyone's vision, causing them to be unable to recognise others. Use this to your " +
+                "advantage and kill while unsuspected in front of everyone!";
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 

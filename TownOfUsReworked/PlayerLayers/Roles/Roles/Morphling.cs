@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Morphling : Role, IVisualAlteration
     {
-        public KillButton _morphButton;
+        private KillButton _morphButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
@@ -24,8 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
-            ImpostorText = () => "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
-            TaskText = () => "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
+            StartText = "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
+            AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Morphling : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastMorphed = DateTime.UtcNow;
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Intruder";
             RoleAlignment = RoleAlignment.IntruderDecep;
             FactionColor = Colors.Intruder;
-            AlignmentName = () => "Intruder (Deception)";
+            AlignmentName = "Intruder (Deception)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.DisgMorphCamoAgent;
             IntroSound = TownOfUsReworked.MorphlingIntro;
