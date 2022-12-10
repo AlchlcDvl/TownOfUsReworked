@@ -70,6 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string RoleDescription { get; set; }
         protected internal string AlignmentDescription { get; set; }
         protected internal string Objectives { get; set; }
+        protected internal int RoleID { get; set; }
 
         protected Role(PlayerControl player)
         {
