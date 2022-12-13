@@ -18,12 +18,10 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object && (PlayerControl.GameOptions.GhostsDoTasks ||
-                        !playerInfo.IsDead) && !playerInfo.IsImpostor() && !(playerInfo._object.Is(RoleEnum.Jester) ||
-                        playerInfo._object.Is(RoleEnum.Amnesiac) || playerInfo._object.Is(RoleEnum.Survivor) ||
-                        playerInfo._object.Is(RoleEnum.GuardianAngel) || playerInfo._object.Is(RoleEnum.Executioner) ||
-                        playerInfo._object.Is(RoleAlignment.NeutralKill) || playerInfo._object.Is(ObjectifierEnum.Phantom) ||
-                        playerInfo._object.Is(AbilityEnum.Revealer)))
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object &&
+                        (GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks || !playerInfo.IsDead) &&
+                        !playerInfo._object.Is(Faction.Intruders) && !playerInfo._object.Is(Faction.Neutral) &&
+                        !playerInfo._object.Is(Faction.Syndicate) || playerInfo._object.Is(AbilityEnum.Revealer))
 
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {

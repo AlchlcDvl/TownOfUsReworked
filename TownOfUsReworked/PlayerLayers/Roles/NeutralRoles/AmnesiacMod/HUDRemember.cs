@@ -5,6 +5,7 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -34,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-            var flag = (PlayerControl.GameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver) &&
+            var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var flag = (GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver) &&
                 PlayerControl.LocalPlayer.CanMove;
 
             var killButton = __instance.KillButton;

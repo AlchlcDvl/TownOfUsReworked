@@ -18,6 +18,7 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
+using AmongUs.GameOptions;
 using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;
@@ -33,7 +34,7 @@ namespace TownOfUsReworked
     [BepInPlugin(Id, "TownOfUsReworked", VersionString)]
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] // fix debugger overwriting MinPlayers
+    [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "com.slushiegoose.townofus";
@@ -42,6 +43,10 @@ namespace TownOfUsReworked
 
         public const int MaxPlayers = 127;
         public const int MaxImpostors = 62;
+
+        public static string dev = VersionString.Substring(6);
+        public static bool isDev = dev != "0";
+        public static bool isTest = true;
         
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -209,11 +214,11 @@ namespace TownOfUsReworked
 
         public override void Load()
         {
-            _harmony = new Harmony("com.slushiegoose.townofus");
+            _harmony = new Harmony("com.alchlcdvl.townofusreworked");
             Generate.GenerateAll();
 
             GameOptionsData.RecommendedImpostors = GameOptionsData.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
-            GameOptionsData.MinPlayers = Enumerable.Repeat(4, 127).ToArray();
+            GameOptionsData.MinPlayers = Enumerable.Repeat(2, 127).ToArray();
 
             //Ability buttons
             JanitorClean = CreateSprite("TownOfUsReworked.Resources.Buttons.Clean.png");
@@ -435,12 +440,12 @@ namespace TownOfUsReworked
         /*public class DebuggerComponent : MonoBehaviour
         {
             [HideFromIl2Cpp]
-
             public static void increment(ref int variable, int max)
             {
                 if (variable == max) variable = -1;
                 variable++;
             }
+
             static int roleindex;
             static int modifierindex;
 
@@ -648,6 +653,7 @@ namespace TownOfUsReworked
                                 player.myTasks.Insert(0, tasktext);
                                 break;
                             }
+
                             increment(ref roleindex, 24);    
                         }
 
@@ -666,6 +672,7 @@ namespace TownOfUsReworked
                                     player.myTasks.Insert(1, tasktext);
                                     break;
                             }
+
                             increment(ref modifierindex, 7);
                         }
                     }

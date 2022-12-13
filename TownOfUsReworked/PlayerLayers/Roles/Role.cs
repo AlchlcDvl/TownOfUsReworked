@@ -47,6 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected internal Color32 Color { get; set; }
         protected internal Color32 FactionColor { get; set; }
+        protected internal Color32 SubFactionColor = Colors.Clear;
         protected internal RoleEnum RoleType { get; set; }
         protected internal Faction Faction { get; set; }
         protected internal RoleAlignment RoleAlignment { get; set; }
@@ -61,6 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string Name { get; set; }
         protected internal string AlignmentName { get; set; }
         protected internal string FactionName { get; set; }
+        protected internal string SubFactionName = "";
         protected internal string AttackString { get; set; }
         protected internal string DefenseString { get; set; }
         protected internal string IntroText { get; set; }
@@ -106,6 +108,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string PlayerName { get; set; }
 
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+        public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
+        public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
         public string ColorEnd => "</color>";
 
         private bool Equals(Role other)
@@ -137,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return HashCode.Combine(Player, (int)RoleType);
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance) {}
+        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
         public static void NobodyWinsFunc()
         {
@@ -229,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal virtual bool DeadCriteria()
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeRoles)
+            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)
                 return Utils.ShowDeadBodies;
 
             return false;
@@ -563,10 +567,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
             
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__19), nameof(IntroCutscene._CoBegin_d__19.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
             public static class IntroCutscene_CoBegin_d__19
             {
-                public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
+                public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -627,10 +631,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__21), nameof(IntroCutscene._ShowTeam_d__21.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__32), nameof(IntroCutscene._ShowTeam_d__32.MoveNext))]
             public static class IntroCutscene_ShowTeam__d_21
             {
-                public static void Prefix(IntroCutscene._ShowTeam_d__21 __instance)
+                public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -638,7 +642,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         role.IntroPrefix(__instance);
                 }
 
-                public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
+                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -696,10 +700,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__24), nameof(IntroCutscene._ShowRole_d__24.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
             public static class IntroCutscene_ShowRole_d__24
             {
-                public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
+                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -758,10 +762,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__110), nameof(PlayerControl._CoSetTasks_d__110.MoveNext))]
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__110 __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
             {
                 if (__instance == null)
                     return;
@@ -808,7 +812,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus))]
         public static class ShipStatus_KMPKPPGPNIH
         {
             public static bool Prefix(ShipStatus __instance)

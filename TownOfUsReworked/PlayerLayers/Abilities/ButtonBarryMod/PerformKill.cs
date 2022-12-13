@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
                 MeetingRoomManager.Instance.target = null;
                 AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
 
-                if (ShipStatus.Instance.CheckTaskCompletion())
+                if (Utils.TasksDone())
                     return false;
 
                 DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);

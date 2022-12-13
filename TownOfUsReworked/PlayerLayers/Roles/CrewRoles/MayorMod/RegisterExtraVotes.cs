@@ -13,6 +13,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -41,8 +42,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
                 var playerVoteArea = __instance.playerStates[i];
-                if (!playerVoteArea.DidVote | playerVoteArea.AmDead | playerVoteArea.VotedFor == PlayerVoteArea.MissedVote
-                    | playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
+                if (!playerVoteArea.DidVote | playerVoteArea.AmDead | playerVoteArea.VotedFor == PlayerVoteArea.MissedVote |
+                    playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
                     continue;
 
                 if (dictionary.TryGetValue(playerVoteArea.VotedFor, out var num))
@@ -181,7 +182,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 if (playerVoteArea.AmDead)
                     return false;
 
-                if (PlayerControl.LocalPlayer.PlayerId == srcPlayerId | AmongUsClient.Instance.GameMode != GameModes.LocalGame)
+                if (PlayerControl.LocalPlayer.PlayerId == srcPlayerId)
                 {
                     try
                     {
@@ -261,13 +262,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 {
                     var mayor = (Mayor)role;
                     var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);
-                    var anonVotesOption = PlayerControl.GameOptions.AnonymousVotes;
-                    PlayerControl.GameOptions.AnonymousVotes = true;
+                    var anonVotesOption = GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes;
+                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = true;
 
                     foreach (var extraVote in mayor.ExtraVotes)
                     {
                         if (extraVote == PlayerVoteArea.HasNotVoted | extraVote == PlayerVoteArea.MissedVote | extraVote == PlayerVoteArea.DeadVote)
                             continue;
+
                         if (extraVote == PlayerVoteArea.SkippedVote)
                         {
                             __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
@@ -287,7 +289,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                             }
                         }
                     }
-                    PlayerControl.GameOptions.AnonymousVotes = anonVotesOption;
+
+                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = anonVotesOption;
                 }
                 return false;
             }

@@ -110,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 switch (__instance.state)
                 {
                     case MeetingHud.VoteStates.Discussion:
-                        if (__instance.discussionTimer < PlayerControl.GameOptions.DiscussionTime)
+                        if (__instance.discussionTimer < GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime)
                         {
                             mayorRole.Abstain.SetDisabled();
                             break;

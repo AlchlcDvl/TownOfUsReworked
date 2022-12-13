@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
@@ -61,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
                 role.DisguiseButton.SetCoolDown(role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown);
 
-                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance]);
+                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance]);
                 role.DisguiseButton.graphic.color = Palette.EnabledColor;
                 role.DisguiseButton.graphic.material.SetFloat("_Desat", 0f);
             }

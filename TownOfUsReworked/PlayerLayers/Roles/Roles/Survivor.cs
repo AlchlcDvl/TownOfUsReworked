@@ -35,6 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Benign)";
             IntroText = "Live to the end";
             Results = InspResults.SurvVHVampVig;
+            IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -63,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastVested = DateTime.UtcNow;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var survTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             survTeam.Add(PlayerControl.LocalPlayer);

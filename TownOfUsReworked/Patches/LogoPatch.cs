@@ -17,7 +17,7 @@ namespace TownOfUsReworked.Patches
 
             if (amongUsLogo != null)
             {
-                amongUsLogo.transform.localScale *= 0.6f;
+                amongUsLogo.transform.localScale *= 0.5f;
                 amongUsLogo.transform.position += Vector3.up * 0.25f;
             }
 

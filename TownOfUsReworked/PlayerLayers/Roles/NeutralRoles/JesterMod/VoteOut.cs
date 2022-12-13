@@ -21,13 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             if (role == null)
                 return;
 
-            if (role.RoleType == RoleEnum.Jester) 
-            {
-                if (CustomGameOptions.JestEjectScreen)
-                    __instance.completeString = "You feel a sense of dread during this ejection. The <color=#F7B3DAFF>Jester</color> has won!";
-                    
+            if (role.RoleType == RoleEnum.Jester)
                 ((Jester)role).Wins();
-            }
         }
     }
 }

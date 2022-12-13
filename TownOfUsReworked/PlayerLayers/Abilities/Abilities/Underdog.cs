@@ -8,9 +8,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class Underdog : Ability
     {
-        public float MaxTimer => Utils.LastImp() ? PlayerControl.GameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus :
-            (PerformKill.IncreasedKC() ? PlayerControl.GameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus :
-            PlayerControl.GameOptions.KillCooldown);
+        public float MaxTimer => Utils.LastImp() ? GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus :
+            (PerformKill.IncreasedKC() ? GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus :
+            GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
 
         public Underdog(PlayerControl player) : base(player)
         {

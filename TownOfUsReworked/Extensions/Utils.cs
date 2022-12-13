@@ -22,6 +22,7 @@ using Object = UnityEngine.Object;
 using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -142,8 +143,8 @@ namespace TownOfUsReworked.Extensions
                         player.GetAppearance().SizeFactor.Set(1f, 1f, 1f);
 
                     if (CustomGameOptions.CamoHideSpeed)
-                        player.MyPhysics.body.velocity.Set(GameOptionsData.GameHostOptions.PlayerSpeedMod,
-                            GameOptionsData.GameHostOptions.PlayerSpeedMod);
+                        player.MyPhysics.body.velocity.Set(GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod,
+                            GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod);
                 }
             }
         }
@@ -439,7 +440,7 @@ namespace TownOfUsReworked.Extensions
             List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance))
-                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
 
             var player = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance);
@@ -508,7 +509,7 @@ namespace TownOfUsReworked.Extensions
                     var importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                     importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                    if (!PlayerControl.GameOptions.GhostsDoTasks)
+                    if (!GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks)
                     {
                         for (var i = 0; i < target.myTasks.Count; i++)
                         {
@@ -575,10 +576,10 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = (PlayerControl.GameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus) *
+                    var lowerKC = (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
-                    var normalKC = PlayerControl.GameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier;
-                    var upperKC = (PlayerControl.GameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus) *
+                    var normalKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier;
+                    var upperKC = (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
                     killer.SetKillTimer(LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
@@ -586,7 +587,7 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Data.IsImpostor())
                 {
-                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier);
+                    killer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
 
@@ -598,16 +599,16 @@ namespace TownOfUsReworked.Extensions
 
                 if (killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = PlayerControl.GameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus;
-                    var normalKC = PlayerControl.GameOptions.KillCooldown;
-                    var upperKC = PlayerControl.GameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus;
+                    var lowerKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus;
+                    var normalKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                    var upperKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus;
                     killer.SetKillTimer(Utils.LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
                 }
 
                 if (killer.Data.IsImpostor())
                 {
-                    killer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                    killer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                     return;
                 }
             }
@@ -713,11 +714,11 @@ namespace TownOfUsReworked.Extensions
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
             if (Sabotaged())
-                ShipStatus.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
+                GameManager.Instance.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
             else if (TasksDone())
-                ShipStatus.RpcEndGame(GameOverReason.HumansByTask, showAds);
+                GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, showAds);
             else
-                ShipStatus.RpcEndGame(reason, showAds);
+                GameManager.Instance.RpcEndGame(reason, showAds);
         }
 
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
@@ -915,7 +916,7 @@ namespace TownOfUsReworked.Extensions
             float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance)) 
-                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
                 
             var player = GetClosestPlayer(fromPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
@@ -1127,7 +1128,7 @@ namespace TownOfUsReworked.Extensions
 
             var sabotaged = false;
 
-            switch (PlayerControl.GameOptions.MapId)
+            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
             {
                 case 0:
 
@@ -1135,7 +1136,7 @@ namespace TownOfUsReworked.Extensions
                     var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
-                    if ((reactor2.IsActive && reactor2.timer == 0f) | (oxygen2.IsActive && oxygen2.timer == 0f))
+                    if ((reactor2.IsActive && reactor2.Countdown == 0f) | (oxygen2.IsActive && oxygen2.Countdown == 0f))
                         sabotaged = true;
 
                     break;
@@ -1143,7 +1144,7 @@ namespace TownOfUsReworked.Extensions
                 case 2:
                     var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
-                    if (seismic.IsActive && seismic.timer == 0f)
+                    if (seismic.IsActive && seismic.Countdown == 0f)
                             sabotaged = true;
 
                     break;
@@ -1160,7 +1161,7 @@ namespace TownOfUsReworked.Extensions
                 case 4:
                     var crash = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
 
-                    if (crash.IsActive && crash.codeResetTimer == 0f)
+                    if (crash.IsActive && crash.Countdown == 0f)
                         sabotaged = true;
 
                     break;
@@ -1168,7 +1169,7 @@ namespace TownOfUsReworked.Extensions
                 case 5:
                     var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
-                    if (reactor5.IsActive && reactor5.timer == 0f)
+                    if (reactor5.IsActive && reactor5.Countdown == 0f)
                         sabotaged = true;
 
                     break;

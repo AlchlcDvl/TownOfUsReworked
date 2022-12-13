@@ -6,6 +6,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
 {
@@ -23,11 +24,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
             while (true)
             {
                 var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, target);
-                var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
 
                 if (!flag3)
                 {
-                    puppeteer.PossStart = DateTime.UtcNow.AddSeconds(-PlayerControl.GameOptions.KillCooldown);
+                    puppeteer.PossStart = DateTime.UtcNow.AddSeconds(-GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                     puppeteer.possessStarting = false;
                     yield break;
                 }

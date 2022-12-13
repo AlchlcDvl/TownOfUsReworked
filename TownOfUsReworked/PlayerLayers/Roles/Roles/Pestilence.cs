@@ -30,6 +30,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Killing)";
             IntroText = "Obliterate those who oppose you";
             Results = InspResults.GFMayorRebelPest;
+            Attack = AttackEnum.Powerful;
+            Defense = DefenseEnum.None;
+            AttackString = "Powerful";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 

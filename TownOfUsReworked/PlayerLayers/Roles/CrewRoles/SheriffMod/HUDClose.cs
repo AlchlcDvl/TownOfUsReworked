@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 var role2 = (Sheriff) role;
                 role2.LastInterrogated = DateTime.UtcNow;
 
-                if (CustomGameOptions.SheriffFixPer == InterrogatePer.Round)
+                if (CustomGameOptions.InterrogatePer == InterrogatePer.Round)
                     role2.UsedThisRound = false;
             }
         }

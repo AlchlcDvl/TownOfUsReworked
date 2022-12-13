@@ -7,38 +7,50 @@ using TownOfUsReworked.Extensions;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation))]
-    [HarmonyPriority(Priority.Last)]
     public class KillBackground
     {
         private static List<PlayerControl> AllPlayers;
 
         private static MurderEnum GetKiller(GameData.PlayerInfo killer, GameData.PlayerInfo victim)
         {
-            if (victim.Object.Is(RoleEnum.Shifter) | (killer.Object.Is(RoleEnum.Shifter))) return MurderEnum.Shifter;
-            if (killer.Object.Is(RoleEnum.Vigilante)) return MurderEnum.Vigilante;
-            if (killer.Object.Is(RoleEnum.Glitch)) return MurderEnum.Glitch;
-            if (killer.Object.Is(RoleEnum.Veteran)) return MurderEnum.Veteran;
-            if (killer.Object.Is(RoleEnum.Juggernaut)) return MurderEnum.Juggernaut;
-            if (killer.Object.Is(RoleEnum.Arsonist)) return MurderEnum.Arsonist;
-            if (killer.Object.Is(RoleEnum.Pestilence)) return MurderEnum.Pestilence;
-            if (killer.Object.Is(RoleEnum.Werewolf)) return MurderEnum.Werewolf;
-            if (killer.Object.Is(ObjectifierEnum.Lovers)) return MurderEnum.Lover;
+            if (victim.Object.Is(RoleEnum.Shifter) | (killer.Object.Is(RoleEnum.Shifter)))
+                return MurderEnum.Shifter;
+
+            if (killer.Object.Is(RoleEnum.Vigilante))
+                return MurderEnum.Vigilante;
+
+            if (killer.Object.Is(RoleEnum.Glitch))
+                return MurderEnum.Glitch;
+
+            if (killer.Object.Is(RoleEnum.Veteran))
+                return MurderEnum.Veteran;
+
+            if (killer.Object.Is(RoleEnum.Juggernaut))
+                return MurderEnum.Juggernaut;
+
+            if (killer.Object.Is(RoleEnum.Arsonist))
+                return MurderEnum.Arsonist;
+
+            if (killer.Object.Is(RoleEnum.Pestilence))
+                return MurderEnum.Pestilence;
+
+            if (killer.Object.Is(RoleEnum.Werewolf))
+                return MurderEnum.Werewolf;
+
+            if (killer.Object.Is(ObjectifierEnum.Lovers))
+                return MurderEnum.Lover;
+
             return MurderEnum.Normal;
         }
 
         public static void Prefix(KillOverlay __instance, GameData.PlayerInfo pc)
         {
             var prefab = __instance;
-            var renderer = __instance.flameParent.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+            var renderer = __instance.background;
             var closestPlayer = Utils.GetClosestPlayer(PlayerControl.LocalPlayer, AllPlayers);
-            PlayerControl @object = pc.Object;
-
-            var option = GetOption(PlayerControl.LocalPlayer.Data, closestPlayer.Data);
+            var player = pc.Object;
+            var option = GetKiller(PlayerControl.LocalPlayer.Data, closestPlayer.Data);
             var wait = new WaitForSeconds(0.83333336f);
-            var hud = DestroyableSingleton<HudManager>.Instance;
-            var overlay = hud.KillOverlay;
-            var transform = overlay.flameParent.transform;
-            var flame = transform.GetChild(0).gameObject;
 
             switch (option)
             {

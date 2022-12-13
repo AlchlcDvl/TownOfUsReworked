@@ -43,14 +43,31 @@ namespace TownOfUsReworked.Lobby.CustomOption
         Classic,
         AllAny,
         KillingOnly,
-        Mafia,
         Custom
+        //Mafia
     }
 
     public enum NoSolo
     {
         Never,
         SameRoles,
-        AllNKs
+        AllNKs,
+        AllNeutrals
+    }
+
+    public enum Map
+    {
+        Skeld = 0,
+        MiraHQ = 1,
+        Polus = 2,
+        Airship = 4,
+        Submerged = 5
+    }
+
+    public enum TaskBarMode
+    {
+        Normal = 0,
+        MeetingOnly = 1,
+        Invisible = 2
     }
 }

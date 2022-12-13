@@ -36,6 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.DisgMorphCamoAgent;
             SubFaction = SubFaction.None;
             IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -77,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

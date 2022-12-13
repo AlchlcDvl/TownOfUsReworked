@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -80,7 +80,7 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -99,7 +99,7 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -125,7 +125,7 @@ namespace TownOfUsReworked.Patches
                 System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                 if (CustomGameOptions.ShieldBreaks)
-                    PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                    PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
                 else
                     PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -143,7 +143,7 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
             
-            PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+            PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
             Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, target);
             return false;
         }

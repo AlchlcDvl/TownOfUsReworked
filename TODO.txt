@@ -39,8 +39,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Role: Dampyr [Neutral (Power)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
-- New Role: Bandit [Neutral (Killing)] |
-- New Role: Cryomaniac [Neutral (Evil)] 
+- New Role: Cryomaniac [Neutral (Killing)] 
 - New Role: Troll [Neutral (Evil)] 
 - New Role: Pirate [Neutral (Evil)] |
 - New Role: Thief [Neutral (Benign)]
@@ -68,7 +67,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Addition: The end game summary now displays how many tasks did the player do and who is an Executioner/Guardian Angel target
 - Addition: More credits
 - Addition: Added the option to change the max lobby size while in the lobby |
-- Addition: Added features from ToU-R v3.4.0
+- Addition: Added features from ToU-R v3.4.0 and v4.0.0
 - Addition: Added a whole lot of options and simplified some other options
 - Addition: Added role reveal screen sounds (for some roles)
 - Addition: Added chat commands
@@ -87,7 +86,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Rework: Plaguebearer infect spread can be toggled |
 - Rework: Added option for Pestilence to directly spawn in
 - Rework: Added Arsonist passive dousing which can be toggled |
-- Rework: Taskmaster is now an Objectifier |
+- Rework: Taskmaster is now an Objectifier
 - Rework: Jester and Executioner no longer end the game when their objectives are complete
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
@@ -102,7 +101,7 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Improvements: Shed some mod weight
 - Improvements: Medbay scan messages scale with the Dwarf/Giant settings
 - Improvements: Reworked the Color system for roles
-- Update: Updated mod to v2022.10.25s
+- Update: Updated mod to v2022.12.8
 - Visual Fix: Vanilla Settings now appear in the lobby again
 - Visual Fix: Fixed color mismatch for certain areas
 - Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
@@ -123,3 +122,4 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Temporary Removal: CrowdedMod integration, it's currently broken
 
 Note to self: Lines ending in | mean that they are not fully implemented yet
+Note to self: PlayerControl.GameOptions was changed to GameOptionsManager.Instance.currentNormalGameOptions

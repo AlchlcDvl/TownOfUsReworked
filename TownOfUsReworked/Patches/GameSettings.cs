@@ -4,10 +4,11 @@ using System.Text;
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
     public static class GameSettings
     {
         public static bool AllOptions;
@@ -27,20 +28,14 @@ namespace TownOfUsReworked.Patches
                 foreach (var option in CustomOption.AllOptions)
                 {
                     if (option.Name == "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>")
-                    {
                         builder.Append("(Scroll for all settings)");
-                        builder.AppendLine("");
-                        builder.Append(new StringBuilder(__result));
-                    }
 
-                    if (option.Type == CustomOptionType.Button | option.Type == CustomOptionType.Tab)
-                        continue;
-                    else if (option.ID == -1)
+                    if (option.Type == CustomOptionType.Button | option.Type == CustomOptionType.Tab | option.ID == -1)
                         continue;
                     else if (option.Type == CustomOptionType.Header)
                         builder.AppendLine($"\n{option.Name}");
                     else if (option.Indent)
-                        builder.AppendLine($"   {option.Name}: {option}");
+                        builder.AppendLine($"    {option.Name}: {option}");
                     else
                         builder.AppendLine($"{option.Name}: {option}");
                 }

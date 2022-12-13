@@ -29,10 +29,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Die";
             Results = InspResults.ArsoCryoPBOpTroll;
             LastInteracted = DateTime.UtcNow;
+            IntroSound = null;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var Team = new List<PlayerControl>();
             Team.Add(PlayerControl.LocalPlayer);

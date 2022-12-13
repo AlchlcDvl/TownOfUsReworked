@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
@@ -51,8 +52,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                 var data = PlayerControl.LocalPlayer.Data;
                 var isDead = data.IsDead;
                 var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
-                var flag = (PlayerControl.GameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver)
+                var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+                var flag = (GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver)
                     && PlayerControl.LocalPlayer.CanMove;
                 var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
                 var killButton = role.DragDropButton;

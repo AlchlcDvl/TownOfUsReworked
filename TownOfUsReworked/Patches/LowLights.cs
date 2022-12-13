@@ -20,17 +20,17 @@ namespace TownOfUsReworked.Patches
 
             if (player.IsImpostor() | player._object.Is(RoleAlignment.NeutralKill))
             {
-                __result = __instance.MaxLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
+                __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
                 return false;
             }
 
             if (SubmergedCompatibility.isSubmerged())
             {
                 if (player._object.Is(AbilityEnum.Torch))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * PlayerControl.GameOptions.CrewLightMod;
+                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
 
                 if (player._object.Is(AbilityEnum.Lighter))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * PlayerControl.GameOptions.ImpostorLightMod;
+                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
                 return false;
             }
 
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.Patches
             if (player._object.Is(AbilityEnum.Torch))
                 t = 1;
 
-            __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * PlayerControl.GameOptions.CrewLightMod;
+            __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
             return false;
         }
     }

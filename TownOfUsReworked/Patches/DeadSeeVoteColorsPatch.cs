@@ -1,6 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.Patches
         {
             SpriteRenderer spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
 
-            if (PlayerControl.GameOptions.AnonymousVotes && (!CustomGameOptions.DeadSeeRoles | !PlayerControl.LocalPlayer.Data.IsDead))
+            if (CustomGameOptions.AnonymousFootPrint && (!CustomGameOptions.DeadSeeEverything | !PlayerControl.LocalPlayer.Data.IsDead))
                 PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
             else
                 PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);

@@ -1,5 +1,15 @@
 namespace TownOfUsReworked.Enums
 {
+    public enum Faction
+    {
+        Crew = 0,
+        Intruders,
+        Neutral,
+        Syndicate,
+        
+        None
+    }
+
     public enum RoleAlignment
     {
         CrewSupport = 0,
@@ -29,6 +39,13 @@ namespace TownOfUsReworked.Enums
         SyndicateUtil,
         
         Other,
+        
+        None
+    }
+
+    public enum SubFaction
+    {
+        Undead = 0,
         
         None
     }

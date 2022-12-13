@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "AmongUs.GameLibs.Steam/2022.10.25": {
+      "AmongUs.GameLibs.Steam/2022.12.8": {
         "type": "package",
         "build": {
           "build/AmongUs.GameLibs.Steam.props": {}
@@ -20,10 +20,10 @@
       "BepInEx.AutoPlugin/1.1.0": {
         "type": "package"
       },
-      "BepInEx.Core/6.0.0-be.662": {
+      "BepInEx.Core/6.0.0-be.664": {
         "type": "package",
         "dependencies": {
-          "HarmonyX": "2.10.0",
+          "HarmonyX": "2.10.1",
           "MonoMod.Utils": "22.5.1.1",
           "SemanticVersioning": "2.0.2"
         },
@@ -50,7 +50,7 @@
           "build/BepInEx.IL2CPP.MSBuild.props": {}
         }
       },
-      "BepInEx.Unity.Common/6.0.0-be.662": {
+      "BepInEx.Unity.Common/6.0.0-be.664": {
         "type": "package",
         "dependencies": {
           "AssetRipper.VersionUtilities": "1.2.1",
@@ -67,16 +67,16 @@
           }
         }
       },
-      "BepInEx.Unity.IL2CPP/6.0.0-be.662": {
+      "BepInEx.Unity.IL2CPP/6.0.0-be.664": {
         "type": "package",
         "dependencies": {
-          "BepInEx.Core": "6.0.0-be.662",
-          "BepInEx.Unity.Common": "6.0.0-be.662",
-          "HarmonyX": "2.10.0",
+          "BepInEx.Core": "6.0.0-be.664",
+          "BepInEx.Unity.Common": "6.0.0-be.664",
+          "HarmonyX": "2.10.1",
           "Iced": "1.17.0",
-          "Il2CppInterop.Generator": "1.3.0",
-          "Il2CppInterop.HarmonySupport": "1.3.0",
-          "Il2CppInterop.Runtime": "1.3.0",
+          "Il2CppInterop.Generator": "1.4.1",
+          "Il2CppInterop.HarmonySupport": "1.4.1",
+          "Il2CppInterop.Runtime": "1.4.1",
           "MonoMod.RuntimeDetour": "22.5.1.1",
           "Samboy063.Cpp2IL.Core": "2022.0.7.2"
         },
@@ -100,7 +100,7 @@
           "buildMultiTargeting/GitInfo.targets": {}
         }
       },
-      "HarmonyX/2.10.0": {
+      "HarmonyX/2.10.1": {
         "type": "package",
         "dependencies": {
           "MonoMod.RuntimeDetour": "22.3.23.4",
@@ -130,7 +130,7 @@
           }
         }
       },
-      "Il2CppInterop.Common/1.3.0": {
+      "Il2CppInterop.Common/1.4.1": {
         "type": "package",
         "dependencies": {
           "Iced": "1.17.0",
@@ -148,10 +148,10 @@
           }
         }
       },
-      "Il2CppInterop.Generator/1.3.0": {
+      "Il2CppInterop.Generator/1.4.1": {
         "type": "package",
         "dependencies": {
-          "Il2CppInterop.Common": "1.3.0",
+          "Il2CppInterop.Common": "1.4.1",
           "Mono.Cecil": "0.11.3"
         },
         "compile": {
@@ -165,11 +165,11 @@
           }
         }
       },
-      "Il2CppInterop.HarmonySupport/1.3.0": {
+      "Il2CppInterop.HarmonySupport/1.4.1": {
         "type": "package",
         "dependencies": {
           "HarmonyX": "2.10.0",
-          "Il2CppInterop.Runtime": "1.3.0"
+          "Il2CppInterop.Runtime": "1.4.1"
         },
         "compile": {
           "lib/net6.0/Il2CppInterop.HarmonySupport.dll": {
@@ -182,11 +182,11 @@
           }
         }
       },
-      "Il2CppInterop.Runtime/1.3.0": {
+      "Il2CppInterop.Runtime/1.4.1": {
         "type": "package",
         "dependencies": {
           "Iced": "1.17.0",
-          "Il2CppInterop.Common": "1.3.0"
+          "Il2CppInterop.Common": "1.4.1"
         },
         "compile": {
           "lib/net6.0/Il2CppInterop.Runtime.dll": {
@@ -1393,13 +1393,13 @@
     }
   },
   "libraries": {
-    "AmongUs.GameLibs.Steam/2022.10.25": {
-      "sha512": "PWgkH/VvMlShVhZB8G432q0tnMaNVZrbIdbEMCZN/fETUlT/ch+qQj4PdTcZhPHREbnJHH3ijHxlca1d7QMBcQ==",
+    "AmongUs.GameLibs.Steam/2022.12.8": {
+      "sha512": "IJsIi89xUYRvA54YtNVEJjf25hhF3LWzkNBslKCNDUpL1aQ/PhNyO4j18pO71DCgW/qr1P1j8+CwByuBLsInNA==",
       "type": "package",
-      "path": "amongus.gamelibs.steam/2022.10.25",
+      "path": "amongus.gamelibs.steam/2022.12.8",
       "files": [
         ".nupkg.metadata",
-        "amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
+        "amongus.gamelibs.steam.2022.12.8.nupkg.sha512",
         "amongus.gamelibs.steam.nuspec",
         "build/AddressablesPlayAssetDelivery.dll",
         "build/AmongUs.GameLibs.Steam.props",
@@ -1437,6 +1437,16 @@
         "build/Unity.Addressables.dll",
         "build/Unity.Analytics.DataPrivacy.dll",
         "build/Unity.ResourceManager.dll",
+        "build/Unity.Services.Analytics.dll",
+        "build/Unity.Services.Core.Configuration.dll",
+        "build/Unity.Services.Core.Device.dll",
+        "build/Unity.Services.Core.Environments.Internal.dll",
+        "build/Unity.Services.Core.Internal.dll",
+        "build/Unity.Services.Core.Registration.dll",
+        "build/Unity.Services.Core.Scheduler.dll",
+        "build/Unity.Services.Core.Telemetry.dll",
+        "build/Unity.Services.Core.Threading.dll",
+        "build/Unity.Services.Core.dll",
         "build/Unity.TextMeshPro.dll",
         "build/UnityEngine.AIModule.dll",
         "build/UnityEngine.AndroidJNIModule.dll",
@@ -1512,13 +1522,13 @@
         "bepinex.autoplugin.nuspec"
       ]
     },
-    "BepInEx.Core/6.0.0-be.662": {
-      "sha512": "VVBeCD/KQVy0/TK3V6SD8QZ/es35Xb1mEz/+PbBs3ST1yUC1r7k2JOymhSnmghVqf6UsvlMglOO9pljqhuE/Pw==",
+    "BepInEx.Core/6.0.0-be.664": {
+      "sha512": "44xtnHIQnOYfMGpQBzaDbKosdaoDE8huf3OyfpYtlQ3rZkWU79jjUGjH5+QYg+HzBQw1kqa/mlMujr5dhpU/Tg==",
       "type": "package",
-      "path": "bepinex.core/6.0.0-be.662",
+      "path": "bepinex.core/6.0.0-be.664",
       "files": [
         ".nupkg.metadata",
-        "bepinex.core.6.0.0-be.662.nupkg.sha512",
+        "bepinex.core.6.0.0-be.664.nupkg.sha512",
         "bepinex.core.nuspec",
         "lib/net35/BepInEx.Core.dll",
         "lib/net35/BepInEx.Core.xml",
@@ -1541,13 +1551,13 @@
         "logo.png"
       ]
     },
-    "BepInEx.Unity.Common/6.0.0-be.662": {
-      "sha512": "BgETw6+snwY//3xjQxLiiEAFRmXaMTcSkg+1UQz6fVBG0YA5Usm/m4GflhTc3nwF61KO3Iznn1AORi5CwLJoUw==",
+    "BepInEx.Unity.Common/6.0.0-be.664": {
+      "sha512": "MSA/w+6Zejm59NRjmh2tKwWOR1WPzT9PTGjGdiPzytRv9k2oA8UZsOl1N1pLNUkBrgVZJdjzSJHg61VA0eYUMg==",
       "type": "package",
-      "path": "bepinex.unity.common/6.0.0-be.662",
+      "path": "bepinex.unity.common/6.0.0-be.664",
       "files": [
         ".nupkg.metadata",
-        "bepinex.unity.common.6.0.0-be.662.nupkg.sha512",
+        "bepinex.unity.common.6.0.0-be.664.nupkg.sha512",
         "bepinex.unity.common.nuspec",
         "lib/net35/BepInEx.Unity.Common.dll",
         "lib/net35/BepInEx.Unity.Common.xml",
@@ -1556,13 +1566,13 @@
         "logo.png"
       ]
     },
-    "BepInEx.Unity.IL2CPP/6.0.0-be.662": {
-      "sha512": "fn7jQ88IBmjssoY9XjGBTg3cULkS+N/le/eUijYf2VV8raWok/6cU/GbU9bejkJS8g+2MvzIwnROAhAxvrGI2Q==",
+    "BepInEx.Unity.IL2CPP/6.0.0-be.664": {
+      "sha512": "y9vnaW6q+/Y3kjStV67kY5qdT/MxoEiEYTgLegHpNrCq+tM4g2x0p2sAU59VeONrWF+h06UQ3HNeoAww5S6Gwg==",
       "type": "package",
-      "path": "bepinex.unity.il2cpp/6.0.0-be.662",
+      "path": "bepinex.unity.il2cpp/6.0.0-be.664",
       "files": [
         ".nupkg.metadata",
-        "bepinex.unity.il2cpp.6.0.0-be.662.nupkg.sha512",
+        "bepinex.unity.il2cpp.6.0.0-be.664.nupkg.sha512",
         "bepinex.unity.il2cpp.nuspec",
         "lib/net6.0/BepInEx.Unity.IL2CPP.dll",
         "lib/net6.0/BepInEx.Unity.IL2CPP.xml",
@@ -1588,15 +1598,15 @@
         "readme.txt"
       ]
     },
-    "HarmonyX/2.10.0": {
-      "sha512": "4ayiy/dlCiW86K2N7Jvbf+VpI5wvP7dncv/6oRmfwRi32UCmCRzCGzsxdMfzJZkp6/26oBW+DrD8vi4UejzVAg==",
+    "HarmonyX/2.10.1": {
+      "sha512": "9LodMC9Y0u1TW96eKJoWrFJFpmzbgojEO38/Q+e7c1mFPhmHt8xcR8qhI06iF1rf0Dnsk+hqENFVSgbtwl/bEw==",
       "type": "package",
-      "path": "harmonyx/2.10.0",
+      "path": "harmonyx/2.10.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE",
-        "harmonyx.2.10.0.nupkg.sha512",
+        "harmonyx.2.10.1.nupkg.sha512",
         "harmonyx.nuspec",
         "lib/net35/0Harmony.dll",
         "lib/net35/0Harmony.xml",
@@ -1626,30 +1636,30 @@
         "logo.png"
       ]
     },
-    "Il2CppInterop.Common/1.3.0": {
-      "sha512": "IR3BrZXvL2nvJAn4pruPMgC78Y87hVa5xTYZCuHN67OzRD6WDl5dTO55vtvTl8dXFALKvlN+spja2tXhVuquOw==",
+    "Il2CppInterop.Common/1.4.1": {
+      "sha512": "Vy6m6IgyUStu5u4K1WhfmlGCrWAujwDCv/qImdVmU6EMVgOzsx8wNa/ckGIg5eKVh3GRFBhdoDy6Ej6kk3oJTA==",
       "type": "package",
-      "path": "il2cppinterop.common/1.3.0",
+      "path": "il2cppinterop.common/1.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "il2cppinterop.common.1.3.0.nupkg.sha512",
+        "il2cppinterop.common.1.4.1.nupkg.sha512",
         "il2cppinterop.common.nuspec",
         "lib/netstandard2.0/Il2CppInterop.Common.dll",
         "lib/netstandard2.0/Il2CppInterop.Common.xml",
         "logo_icon.png"
       ]
     },
-    "Il2CppInterop.Generator/1.3.0": {
-      "sha512": "FuhPxbh/K4K94U3xac/ClMaaBp+MZ4aIaqi5dR0QihyGQoombT+OM/A22RwAIzbaCTbFbvabWaAuOSgB69ZwWQ==",
+    "Il2CppInterop.Generator/1.4.1": {
+      "sha512": "KIOCVq2KM7bHMsEggghq7HWxRyZIsigfb6ZNRhyMOUwrdXCfc9YAuN2jO5ZlhN+W2ItroTEGG4xAmsKz3fJ80g==",
       "type": "package",
-      "path": "il2cppinterop.generator/1.3.0",
+      "path": "il2cppinterop.generator/1.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "il2cppinterop.generator.1.3.0.nupkg.sha512",
+        "il2cppinterop.generator.1.4.1.nupkg.sha512",
         "il2cppinterop.generator.nuspec",
         "lib/net472/Il2CppInterop.Generator.dll",
         "lib/net472/Il2CppInterop.Generator.xml",
@@ -1658,30 +1668,30 @@
         "logo_icon.png"
       ]
     },
-    "Il2CppInterop.HarmonySupport/1.3.0": {
-      "sha512": "VppBnXtbMNGFhX8a1gg/85E883t2pW/+FZyV7eOaOXMNQyorg++u+kUFOIYwNpzTVqxWmMeoPS0DH0toVpjoKA==",
+    "Il2CppInterop.HarmonySupport/1.4.1": {
+      "sha512": "6uvmnk1XsR6LGmZHJToxfY4IdvsjNVUr5V0mf2hLZasqXY6O25RBc6eMGC8daFuwof+sKpp4gVacoxDs4tXbZw==",
       "type": "package",
-      "path": "il2cppinterop.harmonysupport/1.3.0",
+      "path": "il2cppinterop.harmonysupport/1.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "il2cppinterop.harmonysupport.1.3.0.nupkg.sha512",
+        "il2cppinterop.harmonysupport.1.4.1.nupkg.sha512",
         "il2cppinterop.harmonysupport.nuspec",
         "lib/net6.0/Il2CppInterop.HarmonySupport.dll",
         "lib/net6.0/Il2CppInterop.HarmonySupport.xml",
         "logo_icon.png"
       ]
     },
-    "Il2CppInterop.Runtime/1.3.0": {
-      "sha512": "8A+N2yvja960Ap+s2RpW7Nb6HSpyuXJy2ipIlU+1erYU9SWHMyU9JZzUZGOhwWXJChKGvRmDdTZAg12k1+72dg==",
+    "Il2CppInterop.Runtime/1.4.1": {
+      "sha512": "TbEIlv7FAoKS85/290uX8MyUwuOBHXbfiP2me9+2SiL/UwqsS6r87DEAY0B+S0VJG7JnngxBTnr5yA2iruuRlg==",
       "type": "package",
-      "path": "il2cppinterop.runtime/1.3.0",
+      "path": "il2cppinterop.runtime/1.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "il2cppinterop.runtime.1.3.0.nupkg.sha512",
+        "il2cppinterop.runtime.1.4.1.nupkg.sha512",
         "il2cppinterop.runtime.nuspec",
         "lib/net6.0/Il2CppInterop.Runtime.dll",
         "lib/net6.0/Il2CppInterop.Runtime.xml",
@@ -4568,10 +4578,10 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "AmongUs.GameLibs.Steam >= 2022.10.25",
+      "AmongUs.GameLibs.Steam >= 2022.12.8",
       "BepInEx.AutoPlugin >= 1.1.0",
       "BepInEx.IL2CPP.MSBuild >= 2.0.1",
-      "BepInEx.Unity.IL2CPP >= 6.0.0-be.662",
+      "BepInEx.Unity.IL2CPP >= 6.0.0-be.664",
       "GitInfo >= 2.0.20",
       "Reactor >= 2.0.0",
       "System.Text.Json >= 5.0.2"
@@ -4583,14 +4593,14 @@
   "project": {
     "version": "1.0.0.8",
     "restore": {
-      "projectUniqueName": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectUniqueName": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
-      "projectPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-      "outputPath": "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+      "outputPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "c:\\Program Files (x86)\\Steam\\steamapps\\common\\Modded Mogus\\Town Of Us Re\\Code\\TownOfUsReworked\\NuGet.Config",
+        "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
         "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
@@ -4623,7 +4633,7 @@
           "AmongUs.GameLibs.Steam": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2022.10.25, )"
+            "version": "[2022.12.8, )"
           },
           "BepInEx.AutoPlugin": {
             "suppressParent": "All",
@@ -4637,7 +4647,7 @@
           },
           "BepInEx.Unity.IL2CPP": {
             "target": "Package",
-            "version": "[6.0.0-be.662, )"
+            "version": "[6.0.0-be.664, )"
           },
           "GitInfo": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",

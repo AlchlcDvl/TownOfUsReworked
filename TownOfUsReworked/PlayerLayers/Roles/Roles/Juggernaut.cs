@@ -32,6 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Killing)";
             IntroText = "Assault those who oppose you";
             Results = InspResults.JestJuggWWInv;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -78,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var juggTeam = new List<PlayerControl>();
             juggTeam.Add(PlayerControl.LocalPlayer);

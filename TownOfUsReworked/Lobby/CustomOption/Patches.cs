@@ -125,13 +125,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 return false;
             }
 
-            var customOption =
-                CustomOption.AllOptions.FirstOrDefault(option =>
-                    option.Setting == opt); // Works but may need to change to gameObject.name check
+            // Works but may need to change to gameObject.name check
+            var customOption = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == opt);
 
             if (customOption == null)
             {
                 customOption = ExportButton.SlotButtons.FirstOrDefault(option => option.Setting == opt);
+
                 if (customOption == null)
                 {
                     customOption = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == opt);

@@ -32,6 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Syndicate";
             AlignmentName = "Syndicate (Support)";
             Results = InspResults.TransWarpTeleTask;
+            IntroSound = TownOfUsReworked.WarperIntro;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -104,6 +109,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Vector3 destination = vent.transform.position;
             destination.y += 0.3636f;
             return destination;
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        {
+            var intTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Is(Faction.Syndicate))
+                    intTeam.Add(player);
+            }
+            __instance.teamToShow = intTeam;
         }
 
         public float WarpTimer()

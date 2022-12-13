@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
             var role = Role.GetRole<Puppeteer>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
 
-            if ((role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000.0f + PlayerControl.GameOptions.KillCooldown > 0)
+            if ((role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000.0f + GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown > 0)
                 return false;
 
             if (role.Player.killTimer > 0)

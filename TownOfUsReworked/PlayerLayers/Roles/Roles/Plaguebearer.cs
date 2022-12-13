@@ -36,6 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Killing)";
             IntroText = "Infect everyone";
             Results = InspResults.ArsoCryoPBOpTroll;
+            Attack = AttackEnum.None;
+            Defense = DefenseEnum.None;
+            AttackString = "None";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -70,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var plaguebearerTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             plaguebearerTeam.Add(PlayerControl.LocalPlayer);

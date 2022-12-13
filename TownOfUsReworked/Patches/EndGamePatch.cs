@@ -45,11 +45,9 @@ namespace TownOfUsReworked.Patches
                 var colorString = "";
                 var roleName = "";
                 var modifierName = "";
-                var objectifierSymbolName = "";
                 var abilityName = "";
                 var endString = "";
                 var modifierString = "";
-                var objectifierString = "";
                 var abilityString = "";
                 var totalString = "";
                 var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
@@ -59,12 +57,15 @@ namespace TownOfUsReworked.Patches
                 {
                     var role2 = Role.GetRoleValue(role.Value);
 
-                    colorString = "<color=#" + role2.Color.ToHtmlStringRGBA() + ">";
-                    roleName = role2.Name;
-                    endString = "</color> > ";
+                    if (role2 != null)
+                    {
+                        colorString = "<color=#" + role2.Color.ToHtmlStringRGBA() + ">";
+                        roleName = role2.Name;
+                        endString = "</color> > ";
 
-                    totalString = colorString + roleName + endString;
-                    summary += totalString;
+                        totalString = colorString + roleName + endString;
+                        summary += totalString;
+                    }
                 }
 
                 summary = summary.Remove(summary.Length - 3);
@@ -98,15 +99,7 @@ namespace TownOfUsReworked.Patches
                 var objectifier = Objectifier.GetObjectifier(playerControl);
 
                 if (objectifier != null)
-                {
-                    colorString = " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">";
-                    objectifierSymbolName = objectifier.SymbolName;
-                    endString = "</color>";
-
-                    objectifierString = colorString + objectifierSymbolName + endString;
-
-                    summary += objectifierString;
-                }
+                    summary += objectifier.GetColoredSymbol();
 
                 foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
                 {

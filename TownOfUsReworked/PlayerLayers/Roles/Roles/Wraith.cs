@@ -34,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Concealing)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.WraithDetGrenVet;
+            IntroSound = null;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -100,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Player.myRend().color = new Color32(255, 255, 255, 255);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

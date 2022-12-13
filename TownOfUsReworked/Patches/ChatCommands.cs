@@ -112,12 +112,11 @@ namespace TownOfUsReworked.Patches
                         var dev = TownOfUsReworked.VersionString.Substring(6);
                         var modVersion = TownOfUsReworked.VersionString.Remove(TownOfUsReworked.VersionString.Length - 2);
                         var devVersion = "";
-                        var privateTest = true;
 
-                        if (dev != "0")
+                        if (TownOfUsReworked.isDev)
                             devVersion = "dev" + dev;
                         
-                        if (privateTest)
+                        if (TownOfUsReworked.isTest)
                             devVersion += "_test";
 
                         var version = "v" + modVersion + devVersion;

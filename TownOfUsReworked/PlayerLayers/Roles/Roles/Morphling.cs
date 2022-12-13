@@ -38,6 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Kill those who oppose you";
             Results = InspResults.DisgMorphCamoAgent;
             IntroSound = TownOfUsReworked.MorphlingIntro;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -98,7 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

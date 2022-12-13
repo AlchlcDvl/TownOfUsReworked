@@ -88,9 +88,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
         public static void RemoveTasks(PlayerControl player)
         {
-            var totalTasks = PlayerControl.GameOptions.NumCommonTasks + PlayerControl.GameOptions.NumLongTasks +
-                PlayerControl.GameOptions.NumShortTasks;
-
             foreach (var task in player.myTasks)
             {
                 if (task.TryCast<NormalPlayerTask>() != null)

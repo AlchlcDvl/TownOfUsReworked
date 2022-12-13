@@ -6,6 +6,7 @@ using UnityEngine;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using System.Linq;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -43,6 +44,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             _possessButton = null;
             lastPossess = DateTime.UtcNow;
             Results = InspResults.GAExeMedicPup;
+            Attack = AttackEnum.Basic;
+            Defense = DefenseEnum.None;
+            AttackString = "Basic";
+            DefenseString = "None";
+            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -55,6 +61,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        {
+            var intTeam = new List<PlayerControl>();
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Is(Faction.Syndicate))
+                    intTeam.Add(player);
+            }
+            __instance.teamToShow = intTeam;
         }
 
         public void UnPossess()
@@ -71,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void KillUnPossess()
         {
             if (PlayerControl.LocalPlayer == Player)
-                Player.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                Player.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
 
             UnPossess();
         }

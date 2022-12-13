@@ -1,9 +1,25 @@
 using System;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
     public class Generate
     {
+        //Options For All Players
+        public static CustomHeaderOption GlobalSettings;
+        public static CustomNumberOption PlayerSpeed;
+        public static CustomNumberOption GhostSpeed;
+        public static CustomNumberOption InteractionDistance;
+        public static CustomNumberOption EmergencyButtonCount;
+        public static CustomNumberOption EmergencyButtonCooldown;
+        public static CustomNumberOption DiscussionTime;
+        public static CustomNumberOption VotingTime;
+        public static CustomToggleOption ConfirmEjects;
+        public static CustomToggleOption EjectionRevealsRole;
+        public static CustomStringOption TaskBarMode;
+        public static CustomStringOption LobbySize;
+
+        //CI Role Spawn
         public static CustomHeaderOption CrewInvestigativeRoles;
         public static CustomNumberOption DetectiveOn;
         public static CustomNumberOption InvestigatorOn;
@@ -15,49 +31,57 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption InspectorOn;
         public static CustomNumberOption OperativeOn;
 
+        //CSv Role Spawn
         public static CustomHeaderOption CrewSovereignRoles;
         public static CustomNumberOption MayorOn;
         public static CustomNumberOption SwapperOn;
 
+        //CP Role Spawn
         public static CustomHeaderOption CrewProtectiveRoles;
         public static CustomNumberOption AltruistOn;
         public static CustomNumberOption MedicOn;
         public static CustomNumberOption TimeLordOn;
 
+        //CK Role Spawn
         public static CustomHeaderOption CrewKillingRoles;
         public static CustomNumberOption VeteranOn;
         public static CustomNumberOption VigilanteOn;
         public static CustomNumberOption VampireHunterOn;
 
+        //CS Role Spawn
         public static CustomHeaderOption CrewSupportRoles;
         public static CustomNumberOption EngineerOn;
         public static CustomNumberOption ShifterOn;
         public static CustomNumberOption EscortOn;
         public static CustomNumberOption TransporterOn;
 
+        //CU Role Spawn
         public static CustomHeaderOption CrewUtilityRoles;
         public static CustomNumberOption CrewmateOn;
 
+        //NB Role Spawn
         public static CustomHeaderOption NeutralBenignRoles;
         public static CustomNumberOption AmnesiacOn;
         public static CustomNumberOption GuardianAngelOn;
         public static CustomNumberOption SurvivorOn;
         public static CustomNumberOption ThiefOn;
 
+        //NN Role Spawn
         public static CustomHeaderOption NeutralNeophyteRoles;
         public static CustomNumberOption DraculaOn;
 
+        //NE Role Spawn
         public static CustomHeaderOption NeutralEvilRoles;
         public static CustomNumberOption ExecutionerOn;
         public static CustomNumberOption JesterOn;
         public static CustomNumberOption CannibalOn;
         public static CustomNumberOption TrollOn;
-        public static CustomNumberOption TaskmasterOn;
-        public static CustomNumberOption CryomaniacOn;
         public static CustomNumberOption PirateOn;
 
+        //NK Role Spawn
         public static CustomHeaderOption NeutralKillingRoles;
         public static CustomNumberOption ArsonistOn;
+        public static CustomNumberOption CryomaniacOn;
         public static CustomNumberOption PlaguebearerOn;
         public static CustomNumberOption GlitchOn;
         public static CustomNumberOption MurdererOn;
@@ -65,6 +89,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption SerialKillerOn;
         public static CustomNumberOption JuggernautOn;
 
+        //IC Role Spawn
         public static CustomHeaderOption IntruderConcealingRoles;
         public static CustomNumberOption BlackmailerOn;
         public static CustomNumberOption CamouflagerOn;
@@ -72,14 +97,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption UndertakerOn;
         public static CustomNumberOption JanitorOn;
 
+        //ID Role Spawn
         public static CustomHeaderOption IntruderDeceptionRoles;
         public static CustomNumberOption MorphlingOn;
         public static CustomNumberOption DisguiserOn;
         public static CustomNumberOption PoisonerOn;
         public static CustomNumberOption WraithOn;
 
+        //IK Role Spawn
         public static CustomHeaderOption IntruderKillingRoles;
 
+        //IS Role Spawn
         public static CustomHeaderOption IntruderSupportRoles;
         public static CustomNumberOption ConsigliereOn;
         public static CustomNumberOption GodfatherOn;
@@ -88,24 +116,30 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption TimeMasterOn;
         public static CustomNumberOption TeleporterOn;
 
+        //IU Role Spawn
         public static CustomHeaderOption IntruderUtilityRoles;
         public static CustomNumberOption ImpostorOn;
 
+        //SSu Role Spawn
         public static CustomHeaderOption SyndicateSupportRoles;
         public static CustomNumberOption WarperOn;
         public static CustomNumberOption RebelOn;
         public static CustomNumberOption ConcealerOn;
 
-        public static CustomHeaderOption SyndicateChaosRoles;
+        //SD Role Spawn
+        public static CustomHeaderOption SyndicateDisruptionRoles;
         public static CustomNumberOption PuppeteerOn;
         public static CustomNumberOption ShapeshifterOn;
 
+        //SyK Role Spawn
         public static CustomHeaderOption SyndicateKillingRoles;
         public static CustomNumberOption GorgonOn;
 
+        //SU Role Spawn
         public static CustomHeaderOption SyndicateUtilityRoles;
         public static CustomNumberOption AnarchistOn;
 
+        //Modifier Spawn
         public static CustomHeaderOption Modifiers;
         public static CustomNumberOption BaitOn;
         public static CustomNumberOption DiseasedOn;
@@ -116,7 +150,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption DrunkOn;
         public static CustomNumberOption FlincherOn;
         public static CustomNumberOption VolatileOn;
+        public static CustomNumberOption ProfessionalOn;
 
+        //Ability Spawn
         public static CustomHeaderOption Abilities;
         public static CustomNumberOption AssassinOn;
         public static CustomNumberOption TorchOn;
@@ -129,15 +165,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption RevealerOn;
         public static CustomNumberOption RadarOn;
         public static CustomNumberOption MultitaskerOn;
-        public static CustomNumberOption ProfessionalOn;
 
+        //Objectifier Spawn
         public static CustomHeaderOption Objectifiers;
         public static CustomNumberOption LoversOn;
         public static CustomNumberOption PhantomOn;
         public static CustomNumberOption TraitorOn;
         public static CustomNumberOption RivalsOn;
         public static CustomNumberOption FanaticOn;
+        public static CustomNumberOption TaskmasterOn;
 
+        //Map Settings
         public static CustomHeaderOption MapSettings;
         public static CustomToggleOption RandomMapEnabled;
         public static CustomNumberOption RandomMapSkeld;
@@ -153,97 +191,136 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption SmallMapIncreasedLongTasks;
         public static CustomNumberOption LargeMapDecreasedShortTasks;
         public static CustomNumberOption LargeMapDecreasedLongTasks;
+        public static CustomStringOption Map;
+        public static bool loaded = SubmergedCompatibility.Loaded;
+        public static string[] maps = loaded ? new[] {"Skeld", "Mira HQ", "Polus", "Airship"} : new[] {"Skeld", "Mira HQ", "Polus", "Airship", "Submerged"};
 
+        //Modded Options
         public static CustomHeaderOption ModdedGameOptions;
         public static CustomNumberOption InitialCooldowns;
-
+        
+        //Game Modifier Options
         public static CustomHeaderOption GameModifiers;
         public static CustomToggleOption ColourblindComms;
         public static CustomToggleOption MeetingColourblind;
+        public static CustomToggleOption AnonymousVoting;
         public static CustomStringOption WhoCanVent;
-
-        public static CustomHeaderOption QualityChanges;
-        public static CustomToggleOption CustomImpColors;
-        public static CustomToggleOption CustomCrewColors;
-        public static CustomToggleOption CustomNeutColors;
-        public static CustomToggleOption CustomSynColors;
-        public static CustomToggleOption CustomAbilityColors;
-        public static CustomToggleOption CustomModifierColors;
-        public static CustomToggleOption CustomObjectifierColors;
+        public static CustomStringOption NoSolo;
+        public static CustomStringOption SkipButtonDisable;
         public static CustomToggleOption FactionSeeRoles;
-        public static CustomToggleOption DeadSeeRoles;
+        public static CustomToggleOption ParallelMedScans;
+        public static CustomToggleOption VisualTasks;
+        public static CustomToggleOption CustomEject;
+
+        //QoL Options
+        public static CustomHeaderOption QualityChanges;
+        public static CustomToggleOption DeadSeeEverything;
         public static CustomToggleOption DisableLevels;
         public static CustomToggleOption WhiteNameplates;
-        public static CustomStringOption NoSolo;
-        public static CustomToggleOption ParallelMedScans;
-        public static CustomStringOption SkipButtonDisable;
         public static CustomToggleOption LighterDarker;
         public static CustomToggleOption SeeTasks;
         public static CustomToggleOption AppearanceAnimation;
 
+        //Better Polus Options
         public static CustomHeaderOption BetterPolusSettings;
         public static CustomToggleOption VentImprovements;
         public static CustomToggleOption VitalsLab;
         public static CustomToggleOption ColdTempDeathValley;
         public static CustomToggleOption WifiChartCourseSwap;
 
+        //Game Modes
         public static CustomHeaderOption GameModeSettings;
         public static CustomStringOption GameMode;
 
+        //Classic Options
         public static CustomHeaderOption ClassicSettings;
         public static CustomNumberOption MinNeutralNonKillingRoles;
         public static CustomNumberOption MaxNeutralNonKillingRoles;
         public static CustomNumberOption MinNeutralKillingRoles;
         public static CustomNumberOption MaxNeutralKillingRoles;
 
+        //Killing Only Options
         public static CustomHeaderOption KillingOnlySettings;
         public static CustomNumberOption NeutralRoles;
         public static CustomToggleOption AddArsonist;
         public static CustomToggleOption AddPlaguebearer;
 
-        public static CustomHeaderOption CrewInvestigativeSettings;
-        public static CustomHeaderOption CrewProtectiveSettings;
-        public static CustomHeaderOption CrewSupportSettings;
-        public static CustomHeaderOption CrewSovereignSettings;
-        public static CustomHeaderOption CrewKillingSettings;
-        public static CustomHeaderOption IntruderConcealingSettings;
-        public static CustomHeaderOption IntruderDeceptionSettings;
-        public static CustomHeaderOption IntruderSupportSettings;
-        public static CustomHeaderOption IntruderKillingSettings;
-        public static CustomHeaderOption IntruderUtilitySettings;
-        public static CustomHeaderOption CrewUtilitySettings;
-        public static CustomHeaderOption SyndicateUtilitySettings;
-        public static CustomHeaderOption SyndicateSupportSettings;
-        public static CustomHeaderOption SyndicateDisruptionSettings;
-        public static CustomHeaderOption SyndicatePowerSettings;
-        public static CustomHeaderOption SyndicateKillingSettings;
-        public static CustomHeaderOption NeutralEvilSettings;
-        public static CustomHeaderOption NeutralKillingSettings;
-        public static CustomHeaderOption NeutralNeophyteSettings;
-        public static CustomHeaderOption NeutralProselyteSettings;
-        public static CustomHeaderOption ModifierSettings;
-        public static CustomHeaderOption AbilitySettings;
-        public static CustomHeaderOption ObjectifierSettings;
+        //Crew Options
         public static CustomHeaderOption CrewSettings;
-        public static CustomHeaderOption NeutralSettings;
-        public static CustomHeaderOption SyndicateSettings;
-        public static CustomHeaderOption IntruderSettings;
+        public static CustomToggleOption CustomCrewColors;
+        public static CustomNumberOption ShortTasks;
+        public static CustomNumberOption LongTasks;
+        public static CustomNumberOption CommonTasks;
+        public static CustomNumberOption CrewVision;
+        public static CustomToggleOption GhostTasksCountToWin;
 
+        //CSv Options
+        public static CustomHeaderOption CrewSovereignSettings;
+
+        //Mayor Options
         public static CustomHeaderOption Mayor;
         public static CustomNumberOption MayorCount;
         public static CustomNumberOption MayorVoteBank;
         public static CustomToggleOption MayorAnonymous;
 
+        //Swapper Options
+        public static CustomHeaderOption Swapper;
+        public static CustomButtonOption SwapperLore;
+        public static CustomNumberOption SwapperCount;
+        public static CustomToggleOption SwapperButton;
+        
+        //CK Options
+        public static CustomHeaderOption CrewKillingSettings;
+
+        //Vigilante Options
         public static CustomHeaderOption Vigilante;
         public static CustomNumberOption VigilanteCount;
         public static CustomStringOption VigiOptions;
         public static CustomToggleOption VigiKnowsInno;
         public static CustomNumberOption VigiKillCd;
 
+        //Veteran Options
+        public static CustomHeaderOption Veteran;
+        public static CustomNumberOption VeteranCount;
+        public static CustomNumberOption AlertCooldown;
+        public static CustomNumberOption AlertDuration;
+        public static CustomNumberOption MaxAlerts;
+
+        //Vampire Hunter Options
+        public static CustomHeaderOption VampireHunter;
+        public static CustomNumberOption VampireHunterCount;
+        public static CustomNumberOption StakeCooldown;
+        
+        //CS Options
+        public static CustomHeaderOption CrewSupportSettings;
+
+        //Engineer Options
         public static CustomHeaderOption Engineer;
         public static CustomNumberOption EngineerCount;
         public static CustomStringOption EngineerPer;
 
+        //Transporter Options
+        public static CustomHeaderOption Transporter;
+        public static CustomNumberOption TransporterCount;
+        public static CustomNumberOption TransportCooldown;
+        public static CustomNumberOption TransportMaxUses;
+
+        //Escort Options
+        public static CustomHeaderOption Escort;
+        public static CustomNumberOption EscortCount;
+        public static CustomNumberOption EscRoleblockCooldown;
+        public static CustomNumberOption EscRoleblockDuration;
+
+        //Shifter Options
+        public static CustomHeaderOption Shifter;
+        public static CustomNumberOption ShifterCount;
+        public static CustomNumberOption ShifterCd;
+        public static CustomStringOption ShiftedBecomes;
+        
+        //CI Options
+        public static CustomHeaderOption CrewInvestigativeSettings;
+
+        //Investigator Options
         public static CustomHeaderOption Investigator;
         public static CustomNumberOption InvestigatorCount;
         public static CustomNumberOption FootprintSize;
@@ -252,21 +329,55 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption AnonymousFootPrint;
         public static CustomToggleOption VentFootprintVisible;
 
-        public static CustomHeaderOption TimeLord;
-        public static CustomNumberOption TimeLordCount;
-        public static CustomToggleOption RewindRevive;
-        public static CustomToggleOption TLImmunity;
-        public static CustomNumberOption RewindDuration;
-        public static CustomNumberOption RewindCooldown;
-        public static CustomNumberOption RewindMaxUses;
+        //Tracker Options
+        public static CustomHeaderOption Tracker;
+        public static CustomNumberOption TrackerCount;
+        public static CustomNumberOption UpdateInterval;
+        public static CustomNumberOption TrackCooldown;
+        public static CustomToggleOption ResetOnNewRound;
+        public static CustomNumberOption MaxTracks;
 
-        public static CustomHeaderOption Medic;
-        public static CustomNumberOption MedicCount;
-        public static CustomStringOption ShowShielded;
-        public static CustomStringOption WhoGetsNotification;
-        public static CustomToggleOption ShieldBreaks;
-        public static CustomToggleOption MedicReportSwitch;
+        //Operative Options
+        public static CustomHeaderOption Operative;
+        public static CustomNumberOption OperativeCount;
+        public static CustomNumberOption BugCooldown;
+        public static CustomToggleOption BugsRemoveOnNewRound;
+        public static CustomNumberOption MaxBugs;
+        public static CustomNumberOption MinAmountOfTimeInBug;
+        public static CustomNumberOption BugRange;
+        public static CustomNumberOption MinAmountOfPlayersInBug;
 
+        //Detective Options
+        public static CustomHeaderOption Detective;
+        public static CustomNumberOption DetectiveCount;
+        public static CustomNumberOption InitialExamineCooldown;
+        public static CustomNumberOption ExamineCooldown;
+        public static CustomNumberOption RecentKill;
+        public static CustomToggleOption DetectiveReportOn;
+        public static CustomNumberOption DetectiveRoleDuration;
+        public static CustomNumberOption DetectiveFactionDuration;
+
+        //Coroner Options
+        public static CustomHeaderOption Coroner;
+        public static CustomNumberOption CoronerCount;
+        public static CustomNumberOption CoronerArrowDuration;
+        public static CustomToggleOption CoronerReportName;
+        public static CustomToggleOption CoronerReportRole;
+
+        //Inspector Options
+        public static CustomHeaderOption Inspector;
+        public static CustomNumberOption InspectorCount;
+        public static CustomNumberOption InspectCooldown;
+
+        //Medium Options
+        public static CustomHeaderOption Medium;
+        public static CustomNumberOption MediumCount;
+        public static CustomNumberOption MediateCooldown;
+        public static CustomToggleOption ShowMediatePlayer;
+        public static CustomToggleOption ShowMediumToDead;
+        public static CustomStringOption DeadRevealed;
+
+        //Sheriff Options
         public static CustomHeaderOption Sheriff;
         public static CustomNumberOption SheriffCount;
         public static CustomNumberOption InterrogateCooldown;
@@ -276,18 +387,193 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomStringOption InterrogatePer;
         public static CustomToggleOption TraitorColourSwap;
 
-        public static CustomHeaderOption Swapper;
-        public static CustomButtonOption SwapperLore;
-        public static CustomNumberOption SwapperCount;
-        public static CustomToggleOption SwapperButton;
-
+        //Agent Options
         public static CustomHeaderOption Agent;
         public static CustomNumberOption AgentCount;
+        
+        //CP Options
+        public static CustomHeaderOption CrewProtectiveSettings;
 
-        public static CustomHeaderOption Transporter;
-        public static CustomNumberOption TransporterCount;
-        public static CustomNumberOption TransportCooldown;
-        public static CustomNumberOption TransportMaxUses;
+        //Time Lord Options
+        public static CustomHeaderOption TimeLord;
+        public static CustomNumberOption TimeLordCount;
+        public static CustomToggleOption RewindRevive;
+        public static CustomToggleOption TLImmunity;
+        public static CustomNumberOption RewindDuration;
+        public static CustomNumberOption RewindCooldown;
+        public static CustomNumberOption RewindMaxUses;
+
+        //Altruist Options
+        public static CustomHeaderOption Altruist;
+        public static CustomNumberOption AltruistCount;
+        public static CustomNumberOption ReviveDuration;
+        public static CustomToggleOption AltruistTargetBody;
+
+        //Medic Options
+        public static CustomHeaderOption Medic;
+        public static CustomNumberOption MedicCount;
+        public static CustomStringOption ShowShielded;
+        public static CustomStringOption WhoGetsNotification;
+        public static CustomToggleOption ShieldBreaks;
+        public static CustomToggleOption MedicReportSwitch;
+        
+        //CU Options
+        public static CustomHeaderOption CrewUtilitySettings;
+
+        //Crewmate Options
+        public static CustomHeaderOption Crewmate;
+        public static CustomNumberOption CrewCount;
+        
+        public static CustomHeaderOption IntruderSettings;
+        public static CustomToggleOption CustomIntColors;
+        public static CustomNumberOption IntruderVision;
+        public static CustomToggleOption IntrudersVent;
+        public static CustomToggleOption IntrudersCanSabotage;
+        public static CustomNumberOption IntruderKillCooldown;
+        public static CustomNumberOption IntruderSabotageCooldown;
+        public static CustomNumberOption IntruderCount;
+
+        public static CustomHeaderOption IntruderConcealingSettings;
+
+        public static CustomHeaderOption Janitor;
+        public static CustomNumberOption JanitorCount;
+        public static CustomNumberOption JanitorCleanCd;
+        public static CustomToggleOption SoloBoost;
+
+        public static CustomHeaderOption Blackmailer;
+        public static CustomNumberOption BlackmailerCount;
+        public static CustomNumberOption BlackmailCooldown;
+
+        public static CustomHeaderOption Grenadier;
+        public static CustomNumberOption GrenadierCount;
+        public static CustomNumberOption GrenadeCooldown;
+        public static CustomNumberOption GrenadeDuration;
+        public static CustomToggleOption GrenadierIndicators;
+        public static CustomToggleOption GrenadierVent;
+        public static CustomNumberOption FlashRadius;
+
+        public static CustomHeaderOption Camouflager;
+        public static CustomNumberOption CamouflagerCount;
+        public static CustomNumberOption CamouflagerCooldown;
+        public static CustomNumberOption CamouflagerDuration;
+        public static CustomToggleOption CamoHideSpeed;
+        public static CustomToggleOption CamoHideSize;
+
+        public static CustomHeaderOption Undertaker;
+        public static CustomNumberOption UndertakerCount;
+        public static CustomNumberOption DragCooldown;
+        public static CustomStringOption UndertakerVentOptions;
+        public static CustomNumberOption DragModifier;
+
+        public static CustomHeaderOption IntruderDeceptionSettings;
+
+        public static CustomHeaderOption Morphling;
+        public static CustomNumberOption MorphlingCount;
+        public static CustomNumberOption MorphlingCooldown;
+        public static CustomNumberOption MorphlingDuration;
+        public static CustomToggleOption MorphlingVent;
+        
+        public static CustomHeaderOption Disguiser;
+        public static CustomNumberOption DisguiserCount;
+        public static CustomNumberOption DisguiseCooldown;
+        public static CustomNumberOption TimeToDisguise;
+        public static CustomNumberOption DisguiseDuration;
+        public static CustomStringOption DisguiseTarget;
+
+        public static CustomHeaderOption Wraith;
+        public static CustomNumberOption WraithCount;
+        public static CustomNumberOption InvisCooldown;
+        public static CustomNumberOption InvisDuration;
+        public static CustomToggleOption WraithVent;
+
+        public static CustomHeaderOption Poisoner;
+        public static CustomNumberOption PoisonerCount;
+        public static CustomNumberOption PoisonCooldown;
+        public static CustomNumberOption PoisonDuration;
+        public static CustomToggleOption PoisonerVent;
+
+        public static CustomHeaderOption IntruderSupportSettings;
+
+        public static CustomHeaderOption Teleporter;
+        public static CustomNumberOption TeleporterCount;
+        public static CustomNumberOption TeleportCd;
+        public static CustomToggleOption TeleVent;
+
+        public static CustomHeaderOption Consigliere;
+        public static CustomNumberOption ConsigCount;
+        public static CustomNumberOption RevealCooldown;
+        public static CustomStringOption ConsigInfo;
+
+        public static CustomHeaderOption TimeMaster;
+        public static CustomNumberOption TMCount;
+        public static CustomNumberOption FreezeDuration;
+        public static CustomNumberOption FreezeCooldown;
+
+        public static CustomHeaderOption Consort;
+        public static CustomNumberOption ConsorttCount;
+        public static CustomNumberOption ConsRoleblockCooldown;
+        public static CustomNumberOption ConsRoleblockDuration;
+
+        public static CustomHeaderOption Miner;
+        public static CustomNumberOption MinerCount;
+        public static CustomNumberOption MineCooldown;
+
+        public static CustomHeaderOption IntruderKillingSettings;
+
+        public static CustomHeaderOption IntruderUtilitySettings;
+
+        public static CustomHeaderOption Impostor;
+        public static CustomNumberOption ImpCount;
+
+        public static CustomHeaderOption SyndicateSettings;
+        public static CustomToggleOption CustomSynColors;
+        public static CustomNumberOption SyndicateVision;
+        public static CustomToggleOption SyndicateVent;
+        public static CustomNumberOption ChaosDriveMeetingCount;
+        public static CustomNumberOption ChaosDriveKillCooldown;
+        public static CustomNumberOption SyndicateCount;
+        public static CustomToggleOption AltImps;
+
+        public static CustomHeaderOption SyndicateUtilitySettings;
+        public static CustomHeaderOption SyndicateSupportSettings;
+        public static CustomHeaderOption SyndicateDisruptionSettings;
+        public static CustomHeaderOption SyndicatePowerSettings;
+        public static CustomHeaderOption SyndicateKillingSettings;
+        
+        public static CustomHeaderOption NeutralSettings;
+        public static CustomToggleOption CustomNeutColors;
+        public static CustomNumberOption NeutralVision;
+
+        public static CustomHeaderOption Amnesiac;
+        public static CustomNumberOption AmnesiacCount;
+        public static CustomToggleOption RememberArrows;
+        public static CustomNumberOption RememberArrowDelay;
+        public static CustomToggleOption AmneVent;
+        public static CustomToggleOption AmneSwitchVent;
+
+        public static CustomHeaderOption Survivor;
+        public static CustomNumberOption SurvivorCount;
+        public static CustomNumberOption VestCd;
+        public static CustomNumberOption VestDuration;
+        public static CustomNumberOption VestKCReset;
+        public static CustomToggleOption SurvVent;
+        public static CustomToggleOption SurvSwitchVent;
+        public static CustomNumberOption MaxVests;
+
+        public static CustomHeaderOption GuardianAngel;
+        public static CustomNumberOption GuardianAngelCount;
+        public static CustomNumberOption ProtectCd;
+        public static CustomNumberOption ProtectDuration;
+        public static CustomNumberOption ProtectKCReset;
+        public static CustomNumberOption MaxProtects;
+        public static CustomStringOption ShowProtect;
+        public static CustomStringOption GaOnTargetDeath;
+        public static CustomToggleOption GATargetKnows;
+        public static CustomToggleOption GAKnowsTargetRole;
+        public static CustomToggleOption GAVent;
+        public static CustomToggleOption GASwitchVent;
+
+        public static CustomHeaderOption NeutralEvilSettings;
 
         public static CustomHeaderOption Jester;
         public static CustomNumberOption JesterCount;
@@ -297,10 +583,39 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption JestEjectScreen;
         public static CustomToggleOption VigiKillsJester;
 
-        public static CustomHeaderOption Puppeteer;
-        public static CustomNumberOption PossessCooldown;
-        public static CustomNumberOption PossessDuration;
-        public static CustomNumberOption PuppeteerCount;
+        public static CustomHeaderOption Troll;
+        public static CustomNumberOption TrollCount;
+        public static CustomNumberOption InteractCooldown;
+        public static CustomToggleOption TrollVent;
+
+        public static CustomHeaderOption Cannibal;
+        public static CustomNumberOption CannibalCount;
+        public static CustomNumberOption CannibalCd;
+        public static CustomNumberOption CannibalBodyCount;
+        public static CustomToggleOption CannibalVent;
+        public static CustomToggleOption EatArrows;
+        public static CustomNumberOption EatArrowDelay;
+        public static CustomToggleOption VigiKillsCannibal;
+
+        public static CustomHeaderOption Executioner;
+        public static CustomNumberOption ExecutionerCount;
+        public static CustomStringOption OnTargetDead;
+        public static CustomToggleOption ExecutionerButton;
+        public static CustomToggleOption ExeVent;
+        public static CustomToggleOption ExeSwitchVent;
+        public static CustomToggleOption ExeTargetKnows;
+        public static CustomToggleOption ExeKnowsTargetRole;
+        public static CustomToggleOption ExeEjectScreen;
+        public static CustomToggleOption VigiKillsExecutioner;
+
+        public static CustomHeaderOption Pirate;
+        public static CustomNumberOption PirateCount;
+        public static CustomNumberOption PlunderCooldown;
+        public static CustomNumberOption PlunderDuration;
+        public static CustomToggleOption LoserDies;
+        public static CustomToggleOption PirateVent;
+
+        public static CustomHeaderOption NeutralKillingSettings;
 
         public static CustomHeaderOption Glitch;
         public static CustomNumberOption GlitchCount;
@@ -317,27 +632,69 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption JuggKillCooldownOption;
         public static CustomNumberOption JuggKillBonus;
 
+        public static CustomHeaderOption Cryomaniac;
+        public static CustomNumberOption CryomaniacCount;
+        public static CustomNumberOption CryoDouseCooldown;
+        public static CustomToggleOption CryoVent;
+        public static CustomToggleOption VigiKillsCryomaniac;
+
+        public static CustomHeaderOption Plaguebearer;
+        public static CustomNumberOption PlaguebearerCount;
+        public static CustomNumberOption InfectCooldown;
+        public static CustomToggleOption PBVent;
+
+        public static CustomHeaderOption Pestilence;
+        public static CustomToggleOption PestSpawn;
+        public static CustomToggleOption PlayersAlerted;
+        public static CustomNumberOption PestKillCooldown;
+        public static CustomToggleOption PestVent;
+
+        public static CustomHeaderOption Arsonist;
+        public static CustomNumberOption ArsonistCount;
+        public static CustomNumberOption DouseCooldown;
+        public static CustomNumberOption IgniteCooldown;
+        public static CustomToggleOption ArsoVent;
+
         public static CustomHeaderOption Murderer;
         public static CustomNumberOption MurdCount;
         public static CustomToggleOption MurdVent;
         public static CustomNumberOption MurdKillCooldownOption;
 
-        public static CustomHeaderOption Morphling;
-        public static CustomNumberOption MorphlingCount;
-        public static CustomNumberOption MorphlingCooldown;
-        public static CustomNumberOption MorphlingDuration;
-        public static CustomToggleOption MorphlingVent;
+        public static CustomHeaderOption SerialKiller;
+        public static CustomNumberOption SKCount;
+        public static CustomNumberOption BloodlustCooldown;
+        public static CustomNumberOption BloodlustDuration;
+        public static CustomNumberOption LustKillCooldown;
+        public static CustomStringOption SKVentOptions;
 
-        public static CustomHeaderOption Executioner;
-        public static CustomNumberOption ExecutionerCount;
-        public static CustomStringOption OnTargetDead;
-        public static CustomToggleOption ExecutionerButton;
-        public static CustomToggleOption ExeVent;
-        public static CustomToggleOption ExeSwitchVent;
-        public static CustomToggleOption ExeTargetKnows;
-        public static CustomToggleOption ExeKnowsTargetRole;
-        public static CustomToggleOption ExeEjectScreen;
-        public static CustomToggleOption VigiKillsExecutioner;
+        public static CustomHeaderOption Werewolf;
+        public static CustomNumberOption WerewolfCount;
+        public static CustomNumberOption MaulCooldown;
+        public static CustomNumberOption MaulRadius;
+        public static CustomToggleOption WerewolfVent;
+
+        public static CustomHeaderOption NeutralNeophyteSettings;
+
+        public static CustomHeaderOption Dracula;
+        public static CustomNumberOption DraculaCount;
+        public static CustomNumberOption BiteCooldown;
+        public static CustomToggleOption DraculaConvertNeuts;
+        public static CustomToggleOption DracVent;
+
+        public static CustomHeaderOption NeutralProselyteSettings;
+
+        public static CustomHeaderOption Vampire;
+        public static CustomNumberOption AliveVampCount;
+        public static CustomToggleOption VampVent;
+
+        public static CustomHeaderOption Dampyr;
+        public static CustomNumberOption DampBiteCooldown;
+        public static CustomToggleOption DampVent;
+
+        public static CustomHeaderOption Puppeteer;
+        public static CustomNumberOption PossessCooldown;
+        public static CustomNumberOption PossessDuration;
+        public static CustomNumberOption PuppeteerCount;
 
         public static CustomHeaderOption Phantom;
         public static CustomNumberOption PhantomTasksRemaining;
@@ -352,38 +709,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption SnitchSeesImpInMeeting;
         public static CustomToggleOption SnitchSeesTraitor;
         public static CustomToggleOption SnitchKnows;
-
-        public static CustomHeaderOption Altruist;
-        public static CustomNumberOption AltruistCount;
-        public static CustomNumberOption ReviveDuration;
-        public static CustomToggleOption AltruistTargetBody;
-
-        public static CustomHeaderOption Miner;
-        public static CustomNumberOption MinerCount;
-        public static CustomNumberOption MineCooldown;
-
-        public static CustomHeaderOption Shifter;
-        public static CustomNumberOption ShifterCount;
-        public static CustomNumberOption ShifterCd;
-        public static CustomStringOption ShiftedBecomes;
-
-        public static CustomHeaderOption Wraith;
-        public static CustomNumberOption WraithCount;
-        public static CustomNumberOption InvisCooldown;
-        public static CustomNumberOption InvisDuration;
-        public static CustomToggleOption WraithVent;
-
-        public static CustomHeaderOption Arsonist;
-        public static CustomNumberOption ArsonistCount;
-        public static CustomNumberOption DouseCooldown;
-        public static CustomNumberOption IgniteCooldown;
-        public static CustomToggleOption ArsoVent;
-
-        public static CustomHeaderOption Undertaker;
-        public static CustomNumberOption UndertakerCount;
-        public static CustomNumberOption DragCooldown;
-        public static CustomStringOption UndertakerVentOptions;
-        public static CustomNumberOption DragModifier;
 
         public static CustomHeaderOption Assassin;
         public static CustomNumberOption NumberOfImpostorAssassins;
@@ -408,13 +733,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption UnderdogKillBonus;
         public static CustomToggleOption UnderdogIncreasedKC;
 
-        public static CustomHeaderOption Camouflager;
-        public static CustomNumberOption CamouflagerCount;
-        public static CustomNumberOption CamouflagerCooldown;
-        public static CustomNumberOption CamouflagerDuration;
-        public static CustomToggleOption CamoHideSpeed;
-        public static CustomToggleOption CamoHideSize;
-
         public static CustomHeaderOption Concealer;
         public static CustomNumberOption ConcealerCount;
         public static CustomNumberOption ConcealCooldown;
@@ -429,167 +747,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption RevealerRevealsTraitor;
         public static CustomStringOption RevealerCanBeClickedBy;
 
-        public static CustomHeaderOption Grenadier;
-        public static CustomNumberOption GrenadierCount;
-        public static CustomNumberOption GrenadeCooldown;
-        public static CustomNumberOption GrenadeDuration;
-        public static CustomToggleOption GrenadierIndicators;
-        public static CustomToggleOption GrenadierVent;
-        public static CustomNumberOption FlashRadius;
-        
-        public static CustomHeaderOption Disguiser;
-        public static CustomNumberOption DisguiserCount;
-        public static CustomNumberOption DisguiseCooldown;
-        public static CustomNumberOption TimeToDisguise;
-        public static CustomNumberOption DisguiseDuration;
-        public static CustomStringOption DisguiseTarget;
-
-        public static CustomHeaderOption Veteran;
-        public static CustomNumberOption VeteranCount;
-        public static CustomNumberOption AlertCooldown;
-        public static CustomNumberOption AlertDuration;
-        public static CustomNumberOption MaxAlerts;
-
-        public static CustomHeaderOption Tracker;
-        public static CustomNumberOption TrackerCount;
-        public static CustomNumberOption UpdateInterval;
-        public static CustomNumberOption TrackCooldown;
-        public static CustomToggleOption ResetOnNewRound;
-        public static CustomNumberOption MaxTracks;
-
-        public static CustomHeaderOption Operative;
-        public static CustomNumberOption OperativeCount;
-        public static CustomNumberOption BugCooldown;
-        public static CustomToggleOption BugsRemoveOnNewRound;
-        public static CustomNumberOption MaxBugs;
-        public static CustomNumberOption MinAmountOfTimeInBug;
-        public static CustomNumberOption BugRange;
-        public static CustomNumberOption MinAmountOfPlayersInBug;
-
-        public static CustomHeaderOption Poisoner;
-        public static CustomNumberOption PoisonerCount;
-        public static CustomNumberOption PoisonCooldown;
-        public static CustomNumberOption PoisonDuration;
-        public static CustomToggleOption PoisonerVent;
+        public static CustomToggleOption CustomAbilityColors;
+        public static CustomToggleOption CustomModifierColors;
+        public static CustomToggleOption CustomObjectifierColors;
 
         public static CustomHeaderOption Traitor;
         public static CustomToggleOption TraitorKnows;
-
-        public static CustomHeaderOption Amnesiac;
-        public static CustomNumberOption AmnesiacCount;
-        public static CustomToggleOption RememberArrows;
-        public static CustomNumberOption RememberArrowDelay;
-        public static CustomToggleOption AmneVent;
-        public static CustomToggleOption AmneSwitchVent;
-
-        public static CustomHeaderOption Medium;
-        public static CustomNumberOption MediumCount;
-        public static CustomNumberOption MediateCooldown;
-        public static CustomToggleOption ShowMediatePlayer;
-        public static CustomToggleOption ShowMediumToDead;
-        public static CustomStringOption DeadRevealed;
-
-        public static CustomHeaderOption Survivor;
-        public static CustomNumberOption SurvivorCount;
-        public static CustomNumberOption VestCd;
-        public static CustomNumberOption VestDuration;
-        public static CustomNumberOption VestKCReset;
-        public static CustomToggleOption SurvVent;
-        public static CustomToggleOption SurvSwitchVent;
-        public static CustomNumberOption MaxVests;
-
-        public static CustomHeaderOption GuardianAngel;
-        public static CustomNumberOption GuardianAngelCount;
-        public static CustomNumberOption ProtectCd;
-        public static CustomNumberOption ProtectDuration;
-        public static CustomNumberOption ProtectKCReset;
-        public static CustomNumberOption MaxProtects;
-        public static CustomStringOption ShowProtect;
-        public static CustomStringOption GaOnTargetDeath;
-        public static CustomToggleOption GATargetKnows;
-        public static CustomToggleOption GAKnowsTargetRole;
-        public static CustomToggleOption GAVent;
-        public static CustomToggleOption GASwitchVent;
-
-        public static CustomHeaderOption Coroner;
-        public static CustomNumberOption CoronerCount;
-        public static CustomNumberOption CoronerArrowDuration;
-        public static CustomToggleOption CoronerReportName;
-        public static CustomToggleOption CoronerReportRole;
-
-        public static CustomHeaderOption Blackmailer;
-        public static CustomNumberOption BlackmailerCount;
-        public static CustomNumberOption BlackmailCooldown;
-
-        public static CustomHeaderOption Plaguebearer;
-        public static CustomNumberOption PlaguebearerCount;
-        public static CustomNumberOption InfectCooldown;
-        public static CustomToggleOption PBVent;
-
-        public static CustomHeaderOption Pestilence;
-        public static CustomToggleOption PestSpawn;
-        public static CustomToggleOption PlayersAlerted;
-        public static CustomNumberOption PestKillCooldown;
-        public static CustomToggleOption PestVent;
-
-        public static CustomHeaderOption SerialKiller;
-        public static CustomNumberOption SKCount;
-        public static CustomNumberOption BloodlustCooldown;
-        public static CustomNumberOption BloodlustDuration;
-        public static CustomNumberOption LustKillCooldown;
-        public static CustomStringOption SKVentOptions;
-
-        public static CustomHeaderOption Detective;
-        public static CustomNumberOption DetectiveCount;
-        public static CustomNumberOption InitialExamineCooldown;
-        public static CustomNumberOption ExamineCooldown;
-        public static CustomNumberOption RecentKill;
-        public static CustomToggleOption DetectiveReportOn;
-        public static CustomNumberOption DetectiveRoleDuration;
-        public static CustomNumberOption DetectiveFactionDuration;
-
-        public static CustomHeaderOption Janitor;
-        public static CustomNumberOption JanitorCount;
-        public static CustomNumberOption JanitorCleanCd;
-        public static CustomToggleOption SoloBoost;
-
-        public static CustomHeaderOption Cannibal;
-        public static CustomNumberOption CannibalCount;
-        public static CustomNumberOption CannibalCd;
-        public static CustomNumberOption CannibalBodyCount;
-        public static CustomToggleOption CannibalVent;
-        public static CustomToggleOption EatArrows;
-        public static CustomNumberOption EatArrowDelay;
-        public static CustomToggleOption VigiKillsCannibal;
-
-        public static CustomHeaderOption TimeMaster;
-        public static CustomNumberOption TMCount;
-        public static CustomNumberOption FreezeDuration;
-        public static CustomNumberOption FreezeCooldown;
 
         public static CustomHeaderOption Gorgon;
         public static CustomNumberOption GorgonCount;
         public static CustomNumberOption GazeTime;
         public static CustomNumberOption GazeCooldown;
-
-        public static CustomHeaderOption Consigliere;
-        public static CustomNumberOption ConsigCount;
-        public static CustomNumberOption RevealCooldown;
-        public static CustomStringOption ConsigInfo;
-
-        public static CustomHeaderOption Dracula;
-        public static CustomNumberOption DraculaCount;
-        public static CustomNumberOption BiteCooldown;
-        public static CustomToggleOption DraculaConvertNeuts;
-        public static CustomToggleOption DracVent;
-
-        public static CustomHeaderOption Vampire;
-        public static CustomNumberOption AliveVampCount;
-        public static CustomToggleOption VampVent;
-
-        public static CustomHeaderOption Dampyr;
-        public static CustomNumberOption DampBiteCooldown;
-        public static CustomToggleOption DampVent;
 
         public static CustomHeaderOption Taskmaster;
         public static CustomNumberOption TaskmasterCount;
@@ -597,45 +765,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption TaskmasterVent;
         public static CustomToggleOption VigiKillsTaskmaster;
 
-        public static CustomHeaderOption Teleporter;
-        public static CustomNumberOption TeleporterCount;
-        public static CustomNumberOption TeleportCd;
-        public static CustomToggleOption TeleVent;
-
-        public static CustomHeaderOption Impostor;
-        public static CustomNumberOption ImpCount;
-
-        public static CustomHeaderOption Inspector;
-        public static CustomNumberOption InspectorCount;
-        public static CustomNumberOption InspectCooldown;
-
-        public static CustomHeaderOption VampireHunter;
-        public static CustomNumberOption VampireHunterCount;
-        public static CustomNumberOption StakeCooldown;
-
         public static CustomHeaderOption Warper;
         public static CustomNumberOption WarperCount;
         public static CustomNumberOption WarpCooldown;
-
-        public static CustomHeaderOption Troll;
-        public static CustomNumberOption TrollCount;
-        public static CustomNumberOption InteractCooldown;
-        public static CustomToggleOption TrollVent;
-
-        public static CustomHeaderOption Cryomaniac;
-        public static CustomNumberOption CryomaniacCount;
-        public static CustomNumberOption CryoDouseCooldown;
-        public static CustomToggleOption CryoVent;
-        public static CustomToggleOption VigiKillsCryomaniac;
-
-        public static CustomHeaderOption Crewmate;
-        public static CustomNumberOption CrewCount;
-
-        public static CustomHeaderOption Werewolf;
-        public static CustomNumberOption WerewolfCount;
-        public static CustomNumberOption MaulCooldown;
-        public static CustomNumberOption MaulRadius;
-        public static CustomToggleOption WerewolfVent;
 
         public static CustomHeaderOption Anarchist;
         public static CustomNumberOption AnarchistCount;
@@ -643,8 +775,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption NeutralBenignSettings;
         public static CustomToggleOption VigiKillsNB;
 
-        public static CustomNumberOption SyndicateCount;
-        public static CustomToggleOption AltImps;
+
+        public static CustomHeaderOption ModifierSettings;
+        public static CustomHeaderOption AbilitySettings;
+        public static CustomHeaderOption ObjectifierSettings;
 
         public static CustomHeaderOption Giant;
         public static CustomNumberOption GiantSpeed;
@@ -734,15 +868,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             NeutralEvilRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>");
             CannibalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>", 0f, 0f, 100f, 10f, PercentFormat);
-            CryomaniacOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>", 0f, 0f, 100f, 10f, PercentFormat);
             ExecutionerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0f, 0f, 100f, 10f, PercentFormat);
             JesterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0f, 0f, 100f, 10f, PercentFormat);
             PirateOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EDC240FF>Pirate</color>", 0f, 0f, 100f, 10f, PercentFormat);
-            TaskmasterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#ABABFFFF>Taskmaster</color>", 0f, 0f, 100f, 10f, PercentFormat);
             TrollOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
             NeutralKillingRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
             ArsonistOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>", 0f, 0f, 100f, 10f, PercentFormat);
+            CryomaniacOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>", 0f, 0f, 100f, 10f, PercentFormat);
             GlitchOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color>", 0f, 0f, 100f, 10f, PercentFormat);
             JuggernautOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color>", 0f, 0f, 100f, 10f, PercentFormat);
             MurdererOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color>", 0f, 0f, 100f, 10f, PercentFormat);
@@ -779,8 +912,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             IntruderUtilityRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
             ImpostorOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
-            SyndicateChaosRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>");
+            SyndicateDisruptionRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>");
             PuppeteerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Puppeteer</color>", 0f, 0f, 100f, 10f, PercentFormat);
+            ShapeshifterOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
             SyndicateKillingRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
             GorgonOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>", 0f, 0f, 100f, 10f, PercentFormat);
@@ -823,6 +957,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             LoversOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>", 0f, 0f, 100f, 10f, PercentFormat);
             PhantomOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#662962FF>Phantom</color>", 0f, 0f, 100f, 10f, PercentFormat);
             RivalsOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>", 0f, 0f, 100f, 10f, PercentFormat);
+            TaskmasterOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>", 0f, 0f, 100f, 10f, PercentFormat);
             TraitorOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>", 0f, 0f, 100f, 10f, PercentFormat);
 
             GameModeSettings = new CustomHeaderOption(num++, MultiMenu.main, "Game Mode Settings");
@@ -840,6 +975,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             MaxNeutralKillingRoles = new CustomNumberOption(true, num++, MultiMenu.main, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color>", 1f, 0f, 13f, 1f);
 
             MapSettings = new CustomHeaderOption(num++, MultiMenu.main, "Map Settings");
+            Map = new CustomStringOption(true, num++, MultiMenu.main, "Map", maps);
             RandomMapEnabled = new CustomToggleOption(true, num++, MultiMenu.main, "Choose Random Map", false);
             RandomMapSkeld = new CustomNumberOption(true, num++, MultiMenu.main, "Skeld Chance", 0f, 0f, 100f, 10f, PercentFormat);
             RandomMapMira = new CustomNumberOption(true, num++, MultiMenu.main, "Mira Chance", 0f, 0f, 100f, 10f, PercentFormat);
@@ -865,15 +1001,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ColourblindComms = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Comms", true);
             MeetingColourblind = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Meetings", false);
             WhoCanVent = new CustomStringOption(true, num++, MultiMenu.main, "Serial Venters", new[] {"Default", "Everyone", "No One" });
+            ParallelMedScans = new CustomToggleOption(true, num++, MultiMenu.main, "Parallel Medbay Scans", false);
+            AnonymousVoting = new CustomToggleOption(true, num++, MultiMenu.main, "Anonymous Voting", false);
+            SkipButtonDisable = new CustomStringOption(true, num++, MultiMenu.main, "Disable Meeting Skip Button", new[] {"No", "Emergency", "Always"});
+            NoSolo = new CustomStringOption(true, num++, MultiMenu.main, "Neutrals ", new[] {"Never", "Same Roles", "All NKs", "All Neutrals"});
+            FactionSeeRoles = new CustomToggleOption(true, num++, MultiMenu.main, "Factioned Evils See The Roles Of Their Team", false);
 
             ModdedGameOptions = new CustomHeaderOption(num++, MultiMenu.main, "Custom Game Options");
             InitialCooldowns = new CustomNumberOption(true, num++, MultiMenu.main, "Game Start Cooldowns", 10f, 10f, 30f, 2.5f, CooldownFormat);
 
             QualityChanges = new CustomHeaderOption(num++, MultiMenu.main, "Quality Additions");
-            FactionSeeRoles = new CustomToggleOption(true, num++, MultiMenu.main, "Factioned Evils See The Roles Of Their Team", false);
-            DeadSeeRoles = new CustomToggleOption(true, num++, MultiMenu.main, "Dead Can See Everyone's Roles & Votes", false);
-            ParallelMedScans = new CustomToggleOption(true, num++, MultiMenu.main, "Parallel Medbay Scans", false);
-            SkipButtonDisable = new CustomStringOption(true, num++, MultiMenu.main, "Disable Meeting Skip Button", new[] {"No", "Emergency", "Always"});
+            DeadSeeEverything = new CustomToggleOption(true, num++, MultiMenu.main, "Dead Can See Everyone's Roles & Votes", false);
             LighterDarker = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Lighter Darker Colors", false);
             DisableLevels = new CustomToggleOption(true, num++, MultiMenu.main, "Disable Level Icons", false);
             WhiteNameplates = new CustomToggleOption(true, num++, MultiMenu.main, "Disable Player Nameplates", false);
@@ -1100,7 +1238,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             TrollVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Can Vent", false);
 
             NeutralKillingSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> Settings");
-            NoSolo = new CustomStringOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", new[] {"Never", "Same Roles", "All NKs"});
+            NoSolo = new CustomStringOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", new[] {"Never", "Same Roles", "All NKs", "All Neutrals"});
 
             Arsonist = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>");
             ArsonistCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Count", 1, 1, 14, 1);
@@ -1167,7 +1305,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#7B8968FF>Vampire</color> Can Vent", false);
 
             IntruderSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Settings");
-            CustomImpColors = new CustomToggleOption(true, num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
+            CustomIntColors = new CustomToggleOption(true, num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
 
             IntruderConcealingSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings");
 

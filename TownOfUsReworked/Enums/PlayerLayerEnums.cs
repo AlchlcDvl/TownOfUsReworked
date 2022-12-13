@@ -1,5 +1,34 @@
 namespace TownOfUsReworked.Enums
 {
+    public enum AbilityEnum
+    {
+        Assassin = 0,
+        ButtonBarry,
+        Lighter,
+        Multitasker,
+        Radar,
+        Revealer,
+        Snitch,
+        Tiebreaker,
+        Torch,
+        Tunneler,
+        Underdog,
+        
+        None
+    }
+
+    public enum ObjectifierEnum
+    {
+        Fanatic = 0,
+        Lovers,
+        Phantom,
+        Rivals,
+        Taskmaster,
+        Traitor,
+        
+        None
+    }
+
     public enum RoleEnum
     {
         Agent = 0,
@@ -81,6 +110,23 @@ namespace TownOfUsReworked.Enums
         GameMaster,
         Spectator,
 
+        None
+    }
+
+    public enum ModifierEnum
+    {
+        Bait = 0,
+        Coward,
+        Diseased,
+        Drunk,
+        Dwarf,
+        Flincher,
+        Giant,
+        Professional,
+        Shy,
+        VIP,
+        Volatile,
+        
         None
     }
 }
