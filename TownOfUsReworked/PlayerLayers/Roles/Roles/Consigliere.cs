@@ -49,6 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "Basic";
             DefenseString = "None";
             IntroSound = null;
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 

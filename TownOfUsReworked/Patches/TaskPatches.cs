@@ -18,11 +18,9 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object &&
-                        (GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks || !playerInfo.IsDead) &&
-                        !playerInfo._object.Is(Faction.Intruders) && !playerInfo._object.Is(Faction.Neutral) &&
-                        !playerInfo._object.Is(Faction.Syndicate) || playerInfo._object.Is(AbilityEnum.Revealer))
-
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object && (playerInfo._object.Is(Faction.Crew) &&
+                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) | (playerInfo._object.Is(AbilityEnum.Revealer) && playerInfo.IsDead))))
+                    {
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {
                             __instance.TotalTasks++;
@@ -30,6 +28,7 @@ namespace TownOfUsReworked.Patches
                             if (playerInfo.Tasks.ToArray()[j].Complete)
                                 __instance.CompletedTasks++;
                         }
+                    }
                 }
 
                 return false;
@@ -43,10 +42,9 @@ namespace TownOfUsReworked.Patches
             {
                 var playerControl = playerInfo.Object;
 
-                var flag = playerControl.Is(RoleEnum.Jester) || playerControl.Is(RoleEnum.Executioner) || playerControl.Is(RoleEnum.Survivor)
-                    || playerControl.Is(RoleEnum.GuardianAngel) || playerControl.Is(Faction.Syndicate) || playerControl.Is(RoleAlignment.NeutralKill);
+                var flag = !playerControl.Is(Faction.Crew);
 
-                // If the console is not a sabotage repair console
+                //If the console is not a sabotage repair console
                 if (flag && !__instance.AllowImpostor)
                 {
                     __result = float.MaxValue;

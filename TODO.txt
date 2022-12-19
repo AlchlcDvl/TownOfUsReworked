@@ -20,30 +20,32 @@ Better Buttons
 Neater Appearances
 Cosmetics
 
-Changelog (1.0.0-dev7 to 1.0.0-dev8)
+Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - New Faction: Syndicate
+- New Sub Factions: Undead, Cabal
 - New Role: Warper [Syndicate (Support)]
-- New Role: Rebel [Syndicate (Support)] |
+- New Role: Rebel [Syndicate (Support)]
 - New Role: Concealer [Syndicate (Support)] 
 - New Role: Shapeshifter [Syndicate (Support)] 
 - New Role: Puppeteer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
-- New Role: Sidekick [Syndicate (Utility)] |
+- New Role: Sidekick [Syndicate (Utility)]
 - New Role: Gorgon [Syndicate (Killing)]
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
-- New Role: Godfather [Intruder (Support)] |
-- New Role: Mafioso [Intruder (Utility)] |
+- New Role: Godfather [Intruder (Support)]
+- New Role: Mafioso [Intruder (Utility)]
 - New Role: Dracula [Neutral (Neophyte)]
+- New Role: Jackal [Neutral (Neophyte)]
 - New Role: Vampire [Neutral (Proselyte)]
+- New Role: Recruit [Neutral (Proselyte)] |
 - New Role: Dampyr [Neutral (Power)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
 - New Role: Cryomaniac [Neutral (Killing)] 
-- New Role: Troll [Neutral (Evil)] 
-- New Role: Pirate [Neutral (Evil)] |
+- New Role: Troll [Neutral (Evil)]
 - New Role: Thief [Neutral (Benign)]
-- New Role: Vampire Hunter [Crew (Checker)] 
+- New Role: Vampire Hunter [Crew (Auditor)] 
 - New Role: Escort [Crew (Support)]
 - New Role: Inspector [Crew (Investigative)]
 - New Modifier: Flincher
@@ -57,57 +59,47 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - New Ability: Radar
 - New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens
-- Addition: You can now customise the spawn chance of Crewmate and Impostor (they will still spawn by default if the number of Crew is more than the number of Crew roles that are active, same for the Impostors)
+- Addition: You can now customise the spawn chance of Crewmate, Anarchist and Impostor (they will still spawn by default if the number of the factioned players are more than the number of the faction's roles that are active)
 - Addition: New Syndicate, Objectifiers and Abilities settings tabs
-- Addition: All players are alerted when the Phantom has a certain number of tasks left
-- Addition: More Assassin settings
 - Addition: More better buttons
-- Addition: More settings
-- Addition: Added color coding to credits and updated them a bit
-- Addition: The end game summary now displays how many tasks did the player do and who is an Executioner/Guardian Angel target
+- Addition: The end game summary now displays a whole lot of new details
 - Addition: More credits
-- Addition: Added the option to change the max lobby size while in the lobby |
 - Addition: Added features from ToU-R v3.4.0 and v4.0.0
 - Addition: Added a whole lot of options and simplified some other options
 - Addition: Added role reveal screen sounds (for some roles)
 - Addition: Added chat commands
+- Addition: Made the mod more descriptive
+- Addition: More save slots for settings, let your creations go wild
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
 - Mega Rework: Split Objectifiers into Abilities (additional stuff) and Objectifiers (new win con)
-- Mega Rework: Lovers, Traitor and Phantom are now Objectifiers
-- Mega Rework: Button Barry, Snitch, Haunter, Underdog, Torch, Tiebreaker and Lighter are now Abilities
+- Mega Rework: Lovers, Traitor, Taskmaster and Phantom are now Objectifiers
+- Mega Rework: Button Barry, Snitch, Haunter (now Revealer), Underdog, Torch, Tiebreaker and Lighter are now Abilities
 - Rework: Improved win cons of all roles, now each faction/role can only win if a only specific enemy roles/factions are dead
-- Rework: Engineer can now cancel a Camouflager's Camouflage
+- Rework: Engineer can now cancel a Camouflager's camouflage
 - Rework: Plaguebearers and Pestilences can win with each other (in case of Amnesiac remembering Plaguebearer, becoming Pestilence and then winning)
 - Rework: Changed alignments of some roles
-- Rework: Any Crew role can be Traitor now (Lover Crew couldn't become Traitor along with Mayor)
-- Rework: Drunk can now reverse controls over time |
 - Rework: The Volatile interval of seeing/hearing things is now changable
-- Rework: Plaguebearer infect spread can be toggled |
-- Rework: Added option for Pestilence to directly spawn in
-- Rework: Added Arsonist passive dousing which can be toggled |
-- Rework: Taskmaster is now an Objectifier
 - Rework: Jester and Executioner no longer end the game when their objectives are complete
+- Rework: Vanilla settings are now integrated into the custom settings
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
 - Rename: Haunter has been renamed to Revealer
 - Rewrite: Glitch has been completely rewritten
-- Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their cooldown |
+- Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their cooldown
 - Nerf: Mystic (now Coroner) no longer gets info from every body, every meeting, basically now they have to report a body to get info specific to that body
 - Major Improvements: The code got rewritten, restructured, reorganised and reformatted for smoother (and hopefully less buggy) gameplay
-- Improvements: You are now told all of your player details in the tasks list and the role intro screen
-- Improvements: When the game starts, you can only see yourself on the role intro screen
+- Improvements: When the game starts, you can only see yourself (and your targets/teammates) on the role intro screen
 - Improvements: All settings are now indented to look a bit nicer and more consistent
 - Improvements: Shed some mod weight
 - Improvements: Medbay scan messages scale with the Dwarf/Giant settings
 - Improvements: Reworked the Color system for roles
 - Update: Updated mod to v2022.12.8
-- Visual Fix: Vanilla Settings now appear in the lobby again
 - Visual Fix: Fixed color mismatch for certain areas
 - Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
 - Visual Fix: Fixed Stalemate and Survivor end screens
 - Bug Fix: Squashed the countless role gen bugs (hopefully)
-- Role Fix: Fixed the issue with Executioners and Guardian Angels having no or incorrect targets
+- Role Fix: Fixed the issue with Executioners and Guardian Angels having no targets
 - Role Fix: Cannibal's button should light up when near bodies now
 - Role Fix: Fixed Vigilante unable to kill Arsonist
 - Role Fix: Taskmaster can do tasks again
@@ -115,11 +107,10 @@ Changelog (1.0.0-dev7 to 1.0.0-dev8)
 - Role Fix: Fixed Janitor clean cooldown not occuring correctly
 - Regular Fix: Optimized code for smoother functionality (hopefully x2)
 - Removed: All Any Random Impostor Option, for it to be truly All Any, the number of Impostors should always be random
-- Removed: Glitch Hack Distance since all interactions are now controlled by distance
+- Removed: Glitch Hack Distance setting since all interactions are now controlled by the default vanilla distance
 - Removed: Crew and Neutral (Postmortal) alignments
 - Removed: Max Doused option for Arsonist because it's unnecessary
 - Temporary Removal: Intruder (Killing) as there are currently no roles belonging to this alignment
 - Temporary Removal: CrowdedMod integration, it's currently broken
 
 Note to self: Lines ending in | mean that they are not fully implemented yet
-Note to self: PlayerControl.GameOptions was changed to GameOptionsManager.Instance.currentNormalGameOptions

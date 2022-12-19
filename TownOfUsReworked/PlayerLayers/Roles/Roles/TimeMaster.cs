@@ -27,6 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = CustomGameOptions.CustomImpColors ? Colors.TimeMaster : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastFrozen = DateTime.UtcNow;
+            Base = false;
+            IsRecruit = false;
             RoleType = RoleEnum.TimeMaster;
             Faction = Faction.Intruders;
             FactionName = "Intruder";

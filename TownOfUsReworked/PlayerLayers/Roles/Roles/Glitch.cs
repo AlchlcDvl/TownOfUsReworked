@@ -33,6 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Glitch(PlayerControl owner) : base(owner)
         {
             Name = "Glitch";
+            Base = false;
+            IsRecruit = false;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastHack = DateTime.UtcNow;

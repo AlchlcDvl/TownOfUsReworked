@@ -18,6 +18,7 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> Neutrals = new List<Role>();
 
         public static List<Role> Undead = new List<Role>();
+        public static List<Role> Cabal = new List<Role>();
 
         public static List<Role> IntruderKillers = new List<Role>();
         public static List<Role> IntruderSupporters = new List<Role>();
@@ -32,7 +33,7 @@ namespace TownOfUsReworked.Extensions
         public static List<Role> CrewSovereigners = new List<Role>();
         public static List<Role> CrewKillers = new List<Role>();
         public static List<Role> CrewProtectors = new List<Role>();
-        public static List<Role> CrewCheckers = new List<Role>();
+        public static List<Role> CrewAuditors = new List<Role>();
         public static List<Role> Crew = new List<Role>();
 
         public static List<Role> SyndicateUtility = new List<Role>();
@@ -57,8 +58,8 @@ namespace TownOfUsReworked.Extensions
                 {
                     if (role.RoleAlignment == RoleAlignment.CrewSupport)
                         CrewSupporters.Add(role);
-                    else if (role.RoleAlignment == RoleAlignment.CrewCheck)
-                        CrewCheckers.Add(role);
+                    else if (role.RoleAlignment == RoleAlignment.CrewAudit)
+                        CrewAuditors.Add(role);
                     else if (role.RoleAlignment == RoleAlignment.CrewUtil)
                         CrewUtility.Add(role);
                     else if (role.RoleAlignment == RoleAlignment.CrewInvest)
@@ -87,6 +88,8 @@ namespace TownOfUsReworked.Extensions
                     
                     if (role.SubFaction == SubFaction.Undead)
                         Undead.Add(role);
+                    else if (role.SubFaction == SubFaction.Cabal)
+                        Cabal.Add(role);
                     
                     Neutrals.Add(role);
                 }

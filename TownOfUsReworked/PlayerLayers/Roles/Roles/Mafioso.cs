@@ -10,14 +10,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Mafioso : Role
     {
-        public Role FormerRole;
+        public Role FormerRole = null;
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Godfather)).Count() == 0;
 
         public Mafioso(PlayerControl player) : base(player)
         {
             Name = "Mafioso";
             Faction = Faction.Intruders;
-            RoleType = RoleEnum.Godfather;
+            RoleType = RoleEnum.Mafioso;
+            Base = false;
+            IsRecruit = false;
             StartText = "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role.";
             AttributesText = "- None.";
@@ -93,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDictionary.Remove(Player.PlayerId);
             var role = new Godfather(Player);
             role.WasMafioso = true;
-            role.HasDeclared = true;
+            role.HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote;
             role.FormerRole = formerRole;
 
             foreach (var player in PlayerControl.AllPlayerControls)

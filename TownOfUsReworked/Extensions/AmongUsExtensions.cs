@@ -6,7 +6,6 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = System.Object;
 using System;
-using System.Linq;
 
 namespace TownOfUsReworked.Extensions
 {

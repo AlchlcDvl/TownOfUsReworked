@@ -27,6 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected internal string Name { get; set; }
         protected internal string ModifierDescription { get; set; }
         protected internal string TaskText { get; set; }
+        
+        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        protected internal int TotalTasks => Player.Data.Tasks.Count;
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }

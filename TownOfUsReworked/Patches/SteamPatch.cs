@@ -30,7 +30,8 @@ namespace TownOfUsReworked.Patches
                 if (!File.Exists(file))
                     File.WriteAllText(file, "945360");
 
-                return __result = false;
+                __result = false;
+                return __result;
             }
         }
     }

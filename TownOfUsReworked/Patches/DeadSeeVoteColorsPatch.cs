@@ -1,7 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {

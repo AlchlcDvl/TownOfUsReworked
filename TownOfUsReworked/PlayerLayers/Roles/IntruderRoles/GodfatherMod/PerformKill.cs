@@ -6,6 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using AmongUs.GameOptions;
 using Hazel;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -36,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             if (role.ClosestIntruder == null)
                 return false;
 
-            if (role.ClosestIntruder.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestIntruder.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestIntruder, role.Player);

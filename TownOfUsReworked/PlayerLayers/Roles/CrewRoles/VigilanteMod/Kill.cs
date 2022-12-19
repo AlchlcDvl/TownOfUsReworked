@@ -45,13 +45,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
             var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
 
-            if (!flag3) return false;
+            if (!flag3)
+                return false;
 
-            var flag4 = (role.ClosestPlayer.Data.IsImpostor() | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
+            var flag4 = (role.ClosestPlayer.Is(Faction.Intruders) | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
                 role.ClosestPlayer.Is(Faction.Syndicate) | (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) |
                 (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) | (role.ClosestPlayer.Is(RoleEnum.Cannibal)
-                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleEnum.Cryomaniac) && CustomGameOptions.VigiKillsTaskmaster) |
-                (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB));
+                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB));
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {

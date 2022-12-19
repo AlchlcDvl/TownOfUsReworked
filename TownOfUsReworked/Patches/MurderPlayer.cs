@@ -42,6 +42,7 @@ namespace TownOfUsReworked.Patches
                     
                     __instance.SetTarget(null);
                 }
+                
                 return false;
             }
         }

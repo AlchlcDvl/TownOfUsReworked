@@ -50,9 +50,7 @@ namespace TownOfUsReworked.Patches
                     
                     //Set button text
                     var text = touButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {
-                        text.SetText("");
-                    })));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {text.SetText("");})));
 
                     //Set popup stuff
                     TwitchManager man = DestroyableSingleton<TwitchManager>.Instance;
@@ -87,9 +85,7 @@ namespace TownOfUsReworked.Patches
                     
                     //Set button text
                     var text = submergedButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {
-                        text.SetText("");
-                    })));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {text.SetText("");})));
 
                     //Set popup stuff
                     TwitchManager man = DestroyableSingleton<TwitchManager>.Instance;
@@ -114,7 +110,9 @@ namespace TownOfUsReworked.Patches
 
         public static void LaunchUpdater()
         {
-            if (running) return;
+            if (running)
+                return;
+
             running = true;
 
             checkForUpdate("TOU").GetAwaiter().GetResult();
@@ -209,7 +207,6 @@ namespace TownOfUsReworked.Patches
 
                 string json = await response.Content.ReadAsStringAsync();
                 var data = JsonSerializer.Deserialize<GitHubApiObject>(json);
-
                 string tagname = data.tag_name;
 
                 if (tagname == null)
@@ -225,7 +222,7 @@ namespace TownOfUsReworked.Patches
 
                     if (diff < 0)
                     {
-                        // TOU update required
+                        //TOU update required
                         hasTOUUpdate = true;
                     }
                 }
@@ -310,17 +307,15 @@ namespace TownOfUsReworked.Patches
                 if (updateType == "Submerged")
                     fullname = fullname.Replace("TownOfUsReworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
 
-                if (File.Exists(fullname + ".old")) // Clear old file in case it wasnt;
+                if (File.Exists(fullname + ".old")) //Clear old file in case it wasnt;
                     File.Delete(fullname + ".old");
 
-                File.Move(fullname, fullname + ".old"); // rename current executable to old
+                File.Move(fullname, fullname + ".old"); //Rename current executable to old
 
                 using (var responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     using (var fileStream = File.Create(fullname))
-                    {
                         responseStream.CopyTo(fileStream);
-                    }
                 }
 
                 showPopup(info);

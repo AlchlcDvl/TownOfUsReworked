@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "converts, your kill cooldown resets.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dampyr : Colors.Neutral;
             SubFaction = SubFaction.Undead;
+            Base = false;
+            IsRecruit = false;
             LastKill = DateTime.UtcNow;
             RoleType = RoleEnum.Dampyr;
             Faction = Faction.Neutral;

@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 return true;
 
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
-            role.randomSheriffAccuracy = UnityEngine.Random.RandomRangeInt(0, 100);
 
             if (role.UsedThisRound)
                 return false;

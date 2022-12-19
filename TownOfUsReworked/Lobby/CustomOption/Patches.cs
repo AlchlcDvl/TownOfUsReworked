@@ -125,7 +125,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 return false;
             }
 
-            // Works but may need to change to gameObject.name check
+            //Works but may need to change to gameObject.name check
             var customOption = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == opt);
 
             if (customOption == null)
@@ -184,7 +184,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     ourSettingsButton.transform.localPosition = new Vector3(obj.localPosition.x + (0.8f * (index + 1)), obj.localPosition.y,
                         obj.localPosition.z);
                     ourSettingsButton.name = $"ToU-Rew{Menus[index]}tab";
-                    var hatButton = ourSettingsButton.transform.GetChild(0); //TODO:  change to FindChild I guess to be sure
+                    var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
                     var hatIcon = hatButton.GetChild(0);
                     var tabBackground = hatButton.GetChild(1);
 

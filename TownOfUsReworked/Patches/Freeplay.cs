@@ -13,7 +13,6 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPostfix]
-
         public static void postfix(DummyBehaviour __instance)
         {
             if (Input.GetKeyDown(KeyCode.F2))

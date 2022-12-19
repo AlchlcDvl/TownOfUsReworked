@@ -20,6 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Cryomaniac(PlayerControl player) : base(player)
         {
             Name = "Cryomaniac";
+            Base = false;
+            IsRecruit = false;
             StartText = "Who Likes Ice Cream?";
             AbilitiesText = "- You can douse players in coolant.";
             AttributesText = "- When everyone is doused, you can freeze them to win.";

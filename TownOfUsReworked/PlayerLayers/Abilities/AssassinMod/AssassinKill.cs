@@ -110,9 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 }
 
                 if (player.Is(AbilityEnum.Assassin))
-                {
                     ShowHideButtons.HideButtons(assassin);
-                }
             }
 
             player.Die(DeathReason.Kill, false);
@@ -170,7 +168,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper) && !player.AmOwner && !PlayerControl.LocalPlayer.Data.IsDead)
             {
-                
                 SwapVotes.Swap1 = voteArea == SwapVotes.Swap1 ? null : SwapVotes.Swap1;
                 SwapVotes.Swap2 = voteArea == SwapVotes.Swap2 ? null : SwapVotes.Swap2;
 
@@ -185,7 +182,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 }
 
                 var swapperrole = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
-
                 int index;
 
                 for (index = 0; index < MeetingHud.Instance.playerStates.Length; index++)

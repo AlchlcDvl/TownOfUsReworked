@@ -20,6 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Juggernaut";
             StartText = "Your Power Grows With Every Kill";
+            Base = false;
+            IsRecruit = false;
             AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
             SubFaction = SubFaction.None;

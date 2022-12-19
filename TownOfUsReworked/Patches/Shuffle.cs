@@ -26,12 +26,6 @@ namespace TownOfUsReworked.Patches
             return item;
         }
 
-        public static T Ability<T>(this List<T> list)
-        {
-            var item = list[0];
-            return item;
-        }
-
         public static T WinCon<T>(this List<T> list)
         {
             var item = list[0];

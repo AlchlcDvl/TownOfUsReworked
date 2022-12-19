@@ -28,6 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Disguiser(PlayerControl player) : base(player)
         {
             Name = "Disguiser";
+            Base = false;
+            IsRecruit = false;
             StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
             AbilitiesText = "- You can disguise a player to frame them.";
             AttributesText = "- None.";

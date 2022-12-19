@@ -23,6 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Survivor";
             StartText = "Do Whatever It Takes To Live";
             AbilitiesText = "Stay alive to win";
+            Base = false;
+            IsRecruit = false;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
             SubFaction = SubFaction.None;
             LastVested = DateTime.UtcNow;

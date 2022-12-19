@@ -38,7 +38,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             InternalOptions.Add(option);
         }
 
-        public void AddOptions(params CustomOption[] options)
+        public void AddOptions(CustomOption[] options)
         {
             foreach (var option in options)
                 AddOption(option);

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
     [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
     static class LobbyBehaviourPatch

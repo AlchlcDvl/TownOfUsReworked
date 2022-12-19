@@ -48,6 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = null;
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 

@@ -30,6 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Puppeteer";
             StartText = "Control Crew to Kill";
             AbilitiesText = "Control Crew to Kill";
+            Base = false;
+            IsRecruit = false;
             Color = CustomGameOptions.CustomSynColors ? Colors.Puppeteer : Colors.Syndicate;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Puppeteer;

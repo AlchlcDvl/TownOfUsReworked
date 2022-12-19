@@ -70,14 +70,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             __instance.Children = new[] {Loading.Setting};
 
-
             yield return new WaitForSeconds(0.5f);
 
             Loading.Setting.gameObject.Destroy();
 
             foreach (var option in OldButtons)
                 option.gameObject.SetActive(true);
-
 
             __instance.Children = OldButtons.ToArray();
 
@@ -93,6 +91,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 3", delegate { ImportSlot(3); }));
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 4", delegate { ImportSlot(4); }));
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 5", delegate { ImportSlot(5); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 6", delegate { ImportSlot(6); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 7", delegate { ImportSlot(7); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 8", delegate { ImportSlot(8); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 9", delegate { ImportSlot(9); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 10", delegate { ImportSlot(10); }));
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
@@ -139,10 +142,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 var name = splitText[0].Trim();
                 splitText.RemoveAt(0);
                 var option = AllOptions.FirstOrDefault(o => o.Name.Equals(name, StringComparison.Ordinal));
-                
+
                 if (option == null)
                 {
-                    splitText.RemoveAt(0);
+                    try
+                    {
+                        splitText.RemoveAt(0);
+                    } catch {}
+
                     continue;
                 }
 
@@ -164,7 +171,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             }
 
             Rpc.SendRpc();
-
             Cancel(FlashGreen);
         }
 

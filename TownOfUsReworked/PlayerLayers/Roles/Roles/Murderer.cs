@@ -18,6 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Murderer(PlayerControl player) : base(player)
         {
             Name = "Murderer";
+            Base = false;
+            IsRecruit = false;
             StartText = "Imagine Getting Boring Murderer";
             AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;

@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Enums
         CrewKill,
         CrewUtil,
         CrewSov,
-        CrewCheck,
+        CrewAudit,
 
         IntruderSupport,
         IntruderConceal,
@@ -46,6 +46,7 @@ namespace TownOfUsReworked.Enums
     public enum SubFaction
     {
         Undead = 0,
+        Cabal,
         
         None
     }

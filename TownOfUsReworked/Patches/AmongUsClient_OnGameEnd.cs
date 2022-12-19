@@ -130,7 +130,10 @@ namespace TownOfUsReworked.Patches
                         foreach (var role2 in Role.GetRoles(Faction.Crew))
                         {
                             if (!role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            {
+                                if (!role2.Player.IsRecruit())
+                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            }
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -180,7 +183,10 @@ namespace TownOfUsReworked.Patches
                         foreach (var role2 in Role.GetRoles(Faction.Intruders))
                         {
                             if (!role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            {
+                                if (!role2.Player.IsRecruit())
+                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            }
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -230,7 +236,10 @@ namespace TownOfUsReworked.Patches
                         foreach (var role2 in Role.GetRoles(Faction.Syndicate))
                         {
                             if (!role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            {
+                                if (!role2.Player.IsRecruit())
+                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            }
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -281,6 +290,71 @@ namespace TownOfUsReworked.Patches
                         {
                             if (!role2.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                        }
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+
+                        return;
+                    }
+                }
+                else if (subfaction == SubFaction.Cabal)
+                {
+                    if (Role.CabalWin)
+                    {
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        {
+                            var surv = (Survivor)role2;
+
+                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
+                            var ga = (GuardianAngel)role2;
+
+                            if (!ga.TargetPlayer.Data.IsDead && !ga.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        {
+                            var jest = (Jester)role2;
+
+                            if (jest.VotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        {
+                            var exe = (Executioner)role2;
+
+                            if (exe.TargetVotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
+                        {
+                            if (!role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            
+                            var jackal = (Jackal)role2;
+
+                            var goodRole = Role.GetRole(jackal.GoodRecruit);
+                            var evilRole = Role.GetRole(jackal.EvilRecruit);
+                            var backupRole = Role.GetRole(jackal.BackupRecruit);
+                            
+                            if (!jackal.GoodRecruit.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == goodRole.PlayerName).ToList()[0]);
+                            
+                            if (!jackal.EvilRecruit.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == evilRole.PlayerName).ToList()[0]);
+                            
+                            if (!jackal.BackupRecruit.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == backupRole.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();

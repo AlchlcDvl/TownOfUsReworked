@@ -79,6 +79,7 @@ namespace TownOfUsReworked.Enums
         Troll,
         Vampire,
         Werewolf,
+        Jackal,
 
         Blackmailer,
         Camouflager,

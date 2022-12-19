@@ -238,6 +238,33 @@ namespace TownOfUsReworked.Extensions
 
             return attack;
         }
+
+        public static bool IsRecruit(this PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+            return role.IsRecruit;
+        }
+
+        public static bool IsBase(this PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+            return role.Base;
+        }
+
+        public static Jackal GetJackal(this PlayerControl player)
+        {
+            return Role.GetRoles(RoleEnum.Jackal).FirstOrDefault(role =>
+            {
+                var goodRecruit = ((Jackal)role).GoodRecruit;
+                var evilRecruit = ((Jackal)role).EvilRecruit;
+                var backupRecruit = ((Jackal)role).BackupRecruit;
+
+                var goodFlag = goodRecruit != null && player == goodRecruit;
+                var evilFlag = evilRecruit != null && player == evilRecruit;
+                var backupFlag = backupRecruit != null && player == backupRecruit;
+                return goodFlag | evilFlag | backupFlag;
+            }) as Jackal;
+        }
         
         public static DefenseEnum GetDefense(PlayerControl player)
         {
@@ -325,17 +352,6 @@ namespace TownOfUsReworked.Extensions
             return null;
         }
 
-        public static byte IdByPlayer(PlayerControl player)
-        {
-            foreach (var player2 in PlayerControl.AllPlayerControls)
-            {
-                if (player2.PlayerId == player.PlayerId)
-                    return player2.PlayerId;
-            }
-
-            return 255;
-        }
-
         public static bool IsShielded(this PlayerControl player)
         {
             return Role.GetRoles(RoleEnum.Medic).Any(role =>
@@ -350,7 +366,8 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
             {
                 var shieldedPlayer = ((Medic)role).ShieldedPlayer;
-                return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId;
+                var shieldedFlag = shieldedPlayer != null && player == shieldedPlayer;
+                return shieldedFlag;
             }) as Medic;
         }
 
@@ -359,7 +376,7 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRoles(RoleEnum.Veteran).Any(role =>
             {
                 var veteran = (Veteran)role;
-                return veteran != null && veteran.OnAlert && player.PlayerId == veteran.Player.PlayerId;
+                return veteran != null && veteran.OnAlert && player == veteran.Player;
             });
         }
 
@@ -368,7 +385,7 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRoles(RoleEnum.Survivor).Any(role =>
             {
                 var surv = (Survivor)role;
-                return surv != null && surv.Vesting && player.PlayerId == surv.Player.PlayerId;
+                return surv != null && surv.Vesting && player == surv.Player;
             });
         }
 
@@ -378,7 +395,7 @@ namespace TownOfUsReworked.Extensions
             {
                 var gaTarget = ((GuardianAngel)role).TargetPlayer;
                 var ga = (GuardianAngel)role;
-                return gaTarget != null && ga.Protecting && player.PlayerId == gaTarget.PlayerId;
+                return gaTarget != null && ga.Protecting && player == gaTarget;
             });
         }
 
@@ -391,6 +408,73 @@ namespace TownOfUsReworked.Extensions
                 return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) | player.PlayerId ==
                     plaguebearer.Player.PlayerId);
             });
+        }
+
+        public static bool CrewWins()
+        {
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
+                0) | TasksDone();
+
+            return flag;
+        }
+
+        public static bool IntrudersWin()
+        {
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) |
+                Sabotaged();
+
+            return flag;
+        }
+
+        public static bool NKWins(RoleEnum nk)
+        {
+            var flag = false;
+
+            if (nk == RoleEnum.Plaguebearer | nk == RoleEnum.Pestilence)
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                    (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
+                    x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0;
+            }
+            else
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                    (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
+                    x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0;
+            }
+
+            return flag;
+        }
+
+        public static bool SyndicateWins()
+        {
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) ==
+                0) | (CustomGameOptions.AltImps && Sabotaged());
+
+            return flag;
+        }
+
+        public static bool SubfactionWins(SubFaction sf)
+        {
+            var flag = false;
+
+            if (sf == SubFaction.Undead)
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
+                    x.Is(Faction.Crew) | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
+            }
+            else if (sf == SubFaction.Cabal)
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
+                    x.Is(RoleAlignment.NeutralPros)) && !x.IsRecruit()) == 0;
+            }
+
+            return flag;
         }
 
         public static PlayerControl GetClosestPlayer(PlayerControl refPlayer, List<PlayerControl> AllPlayers)
@@ -576,10 +660,10 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus) *
+                    var lowerKC = (CustomGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
-                    var normalKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier;
-                    var upperKC = (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus) *
+                    var normalKC = CustomGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier;
+                    var upperKC = (CustomGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
                     killer.SetKillTimer(LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
@@ -587,7 +671,7 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.Is(ModifierEnum.Diseased) && killer.Data.IsImpostor())
                 {
-                    killer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier);
+                    killer.SetKillTimer(CustomGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
 
@@ -599,16 +683,16 @@ namespace TownOfUsReworked.Extensions
 
                 if (killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus;
-                    var normalKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
-                    var upperKC = GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus;
+                    var lowerKC = CustomGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus;
+                    var normalKC = CustomGameOptions.KillCooldown;
+                    var upperKC = CustomGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus;
                     killer.SetKillTimer(Utils.LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
                 }
 
                 if (killer.Data.IsImpostor())
                 {
-                    killer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                    killer.SetKillTimer(CustomGameOptions.KillCooldown);
                     return;
                 }
             }

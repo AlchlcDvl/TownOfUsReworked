@@ -18,6 +18,7 @@ namespace TownOfUsReworked.Patches
 
         //Subfaction Colors
         public readonly static Color32 Undead = new Color32(123, 137, 104, 255); //#7B8968FF
+        public readonly static Color32 Cabal = new Color32(87, 86, 87, 255); //#575657FF
 
         //Crew Colors
         public readonly static Color32 Mayor = new Color32(112, 79, 168, 255); //#704FA8FF
@@ -54,7 +55,6 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Pestilence = new Color32(66, 66, 66, 255); //#424242FF
         public readonly static Color32 Werewolf = new Color32(159, 112, 58, 255); //#9F703AFF
         public readonly static Color32 Cannibal = new Color32(140, 64, 5, 255); //#8C4005FF
-        public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
         public readonly static Color32 Juggernaut = new Color32(161, 43, 86, 255); //#A12B56FF
         public readonly static Color32 Dracula = new Color32(172, 138, 0, 255); //#AC8A00FF
         public readonly static Color32 Dampyr = new Color32(223, 122, 232, 255); //#DF7AE8FF
@@ -64,8 +64,9 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Thief = new Color32(128, 255, 0, 255); //#80FF00FF
         public readonly static Color32 Troll = new Color32(103, 141, 54, 255); //#678D36FF
         public readonly static Color32 Pirate = new Color32(237, 194, 64, 255); //#EDC240FF
-        public readonly static Color32 Bandit = new Color32(168, 67, 0, 0); //#A84300FF
         public readonly static Color32 Vampire = new Color32(43, 210, 156, 255); //#2BD29CFF
+        public readonly static Color32 Jackal = new Color32(69, 7, 106, 255); //#45076AFF
+		public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
 
         //Intruder Colors
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
@@ -126,6 +127,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Phantom = new Color32(102, 41, 98, 255); //#662962FF
         public readonly static Color32 Rivals = new Color32(61, 45, 44, 255); //#3D2D2CFF
         public readonly static Color32 Fanatic = new Color32(103, 141, 54, 255); //#678D36FF
+        public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
 
         //Other
         public readonly static Color32 Stalemate = new Color32(239, 230, 230, 255); //#E6E6E6FF
@@ -136,13 +138,14 @@ namespace TownOfUsReworked.Patches
         //Color Storage For Colors I Will Use Later
         public readonly static Color32 Coven = new Color32(191, 95, 255, 255); //#BF5FFFFF
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
+        public readonly static Color32 something = new Color32(168, 67, 0, 0); //#A84300FF
         public readonly static Color32 I = new Color32(128, 179, 255, 255); //#26FCFBFF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
-        //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d #F6AAB7
-        //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731 #aab43e
-        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #45076a #e7dae2 #8d0f8c
+        //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d
+        //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731
+        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7
         //#EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
-        //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2
+        //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2 #aab43e
     }
 }

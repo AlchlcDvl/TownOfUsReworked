@@ -1,14 +1,16 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDInteract
     {
+        public static Sprite Placeholder = TownOfUsReworked.Placeholder;
+        
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
@@ -34,6 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
                 interactButton.gameObject.SetActive(!MeetingHud.Instance);
 
             var renderer = interactButton.graphic;
+
+            renderer.sprite = Placeholder;
             
             if (!interactButton.isCoolingDown)
             {

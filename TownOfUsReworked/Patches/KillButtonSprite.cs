@@ -4,6 +4,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.IO;
+using Rewired.UI.ControlMapper;
 
 namespace TownOfUsReworked.Patches
 {
@@ -13,6 +15,22 @@ namespace TownOfUsReworked.Patches
         public static void Prefix(KillButton __instance)
         {
             __instance.transform.Find("Text_TMP").gameObject.SetActive(false);
+        }
+    }
+
+    [HarmonyPatch(typeof(ControlMapper), nameof(ControlMapper.OnKeyboardElementAssignmentPollingWindowUpdate))]
+    public class KillKeybind
+    {
+        [HarmonyPostfix]
+        public static void postfix(ControlMapper __instance)
+        {
+            if (__instance.pendingInputMapping.actionName == "Kill")
+            {
+                string newbind = __instance.pendingInputMapping.elementName;
+
+                if (newbind != "None")
+                    File.WriteAllTextAsync(Application.persistentDataPath + "\\ToUKeybind.txt", newbind.Replace(" ", string.Empty));
+            } 
         }
     }
     
@@ -229,6 +247,10 @@ namespace TownOfUsReworked.Patches
                 if (flag) 
                     __instance.KillButton.buttonLabelText.text = "Kill";
             }
+
+            /*string key = File.ReadAllText(Application.persistentDataPath + "\\ToUKeybind.txt");
+            KeyCode KeyCode = (KeyCode) System.Enum.Parse(typeof(KeyCode), key);
+            var keyInt = Input.GetKeyInt(KeyCode);*/
 
             var keyInt = Input.GetKeyInt(KeyCode.Q);
             var controller = ConsoleJoystick.player.GetButtonDown(8);

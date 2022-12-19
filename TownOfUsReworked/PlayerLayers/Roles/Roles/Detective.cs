@@ -46,6 +46,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " can deduce who is good and who is not.";
             RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers" +
                 " in the act!";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -84,9 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | Utils.TasksDone())
+            if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

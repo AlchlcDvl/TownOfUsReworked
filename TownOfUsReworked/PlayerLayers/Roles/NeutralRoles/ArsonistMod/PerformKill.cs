@@ -29,9 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (role.IgniteTimer() != 0)
-                return false;
-
             if (!__instance.isActiveAndEnabled | __instance.isCoolingDown)
                 return false;
 
@@ -48,40 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
                 if (!role.DousedPlayers.Contains(role.ClosestPlayerIgnite.PlayerId))
                     return false;
-
-                if (role.ClosestPlayerIgnite.IsInfected() | role.Player.IsInfected())
-                {
-                    foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                        ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayerIgnite, role.Player);
-                }
-                
-                if (role.ClosestPlayerIgnite.IsOnAlert() | role.ClosestPlayerIgnite.Is(RoleEnum.Pestilence))
-                {
-                    if (role.Player.IsShielded())
-                    {
-                        var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                            SendOption.Reliable, -1);
-                        writer3.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
-                        writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer3);
-
-                        System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-
-                        if (CustomGameOptions.ShieldBreaks)
-                            role.LastDoused = DateTime.UtcNow;
-
-                        StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-                        return false;
-                    }
-                    else if (!role.Player.IsProtected())
-                    {
-                        Utils.RpcMurderPlayer(role.ClosestPlayerIgnite, PlayerControl.LocalPlayer);
-                        return false;
-                    }
-                    
-                    role.LastIgnited = DateTime.UtcNow;
-                    return false;
-                }
 
                 role.LastIgnited = DateTime.UtcNow;
 

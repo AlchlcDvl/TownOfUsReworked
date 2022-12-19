@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
+using AmongUs.Data.Player;
+using AmongUs.Data.Legacy;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch(typeof(AmongUs.Data.Player.PlayerData), nameof(AmongUs.Data.Player.PlayerData.FileName), MethodType.Getter)]
+    [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
     public class SaveManagerPatch
     {
         public static void Postfix(ref string __result)
@@ -11,7 +13,7 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-    [HarmonyPatch(typeof(AmongUs.Data.Legacy.LegacySaveManager), nameof(AmongUs.Data.Legacy.LegacySaveManager.GetPrefsName))]
+    [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
     public class LegacySaveManagerPatch
     {
         public static void Postfix(ref string __result)

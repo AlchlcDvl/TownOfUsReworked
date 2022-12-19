@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using AmongUs.GameOptions;
 using System.Linq;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {
@@ -38,7 +39,7 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-    [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.NumImpostors))]
+    /*[HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.))]
     public class GetAdjustedImposters
     {
         public static bool Prefix(GameOptionsData __instance, ref int __result)
@@ -48,7 +49,7 @@ namespace TownOfUsReworked.Patches
                 var players = GameData.Instance.PlayerCount;
                 var impostors = 1;
                 var random = Random.RandomRangeInt(0, 100);
-                var nonCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Enums.Faction.Crew)).Count();
+                var nonCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction.Crew) | x.Is(Faction.Intruders))).Count();
                 
                 if (players <= 6 )
                 {
@@ -151,7 +152,8 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
             
+            __result = CustomGameOptions.IntruderCount;
             return true;
         }
-    }
+    }*/
 }

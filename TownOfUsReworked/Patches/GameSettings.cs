@@ -8,19 +8,14 @@ using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
+    [HarmonyPatch]
     public static class GameSettings
     {
         public static bool AllOptions;
 
-        [HarmonyPatch]
+        [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
         private static class GameOptionsDataPatch
         {
-            public static IEnumerable<MethodBase> TargetMethods()
-            {
-                return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
-            }
-
             private static void Postfix(ref string __result)
             {
                 var builder = new StringBuilder(AllOptions ? __result : "");
@@ -30,7 +25,7 @@ namespace TownOfUsReworked.Patches
                     if (option.Name == "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>")
                         builder.Append("(Scroll for all settings)");
 
-                    if (option.Type == CustomOptionType.Button | option.Type == CustomOptionType.Tab | option.ID == -1)
+                    if (option.Type == CustomOptionType.Button | option.ID == -1)
                         continue;
                     else if (option.Type == CustomOptionType.Header)
                         builder.AppendLine($"\n{option.Name}");
@@ -42,6 +37,11 @@ namespace TownOfUsReworked.Patches
 
                 __result = builder.ToString();
                 __result = $"<size=1.25>{__result}</size>";
+            }
+
+            public static IEnumerable<MethodBase> TargetMethods()
+            {
+                return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
             }
         }
 

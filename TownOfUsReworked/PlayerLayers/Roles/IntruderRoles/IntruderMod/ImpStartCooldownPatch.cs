@@ -4,7 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKillTimer))]
     public static class PatchKillTimer

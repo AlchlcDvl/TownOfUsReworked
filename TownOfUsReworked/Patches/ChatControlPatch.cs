@@ -4,10 +4,10 @@ using AmongUs.Data;
 
 namespace TownOfUsReworked.Patches
 {
+    //Thanks to Town Of Host for this code
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
     public class ChatControlPatch
     {
-        //Thanks to Town Of Host for this code
         public static void Prefix()
         {
             if (AmongUsClient.Instance.AmHost && DataManager.Settings.multiplayer.ChatMode == InnerNet.QuickChatModes.QuickChatOnly)

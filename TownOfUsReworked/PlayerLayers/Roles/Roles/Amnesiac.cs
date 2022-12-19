@@ -41,6 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             DefenseString = "None";
             FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
                 " a certain objective.";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
