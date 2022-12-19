@@ -10,7 +10,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void PostfixPhysics(PlayerPhysics __instance)
         {
-            if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove && !__instance.myPlayer.Data.IsDead)
+            if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                 __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor;
         }
 

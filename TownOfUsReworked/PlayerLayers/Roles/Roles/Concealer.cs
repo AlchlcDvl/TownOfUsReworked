@@ -47,9 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "everyway possible.";
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
                 " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
-                "give you the ability to kill, if you didn't already.";          
+                "give you the ability to kill, if you didn't already.";
             Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 

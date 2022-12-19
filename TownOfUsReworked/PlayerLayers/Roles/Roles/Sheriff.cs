@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public List<byte> Interrogated = new List<byte>();
         public bool UsedThisRound { get; set; } = false;
-        public int randomSheriffAccuracy = 100;
         public PlayerControl ClosestPlayer;
         public DateTime LastInterrogated { get; set; }
 
@@ -38,6 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -76,9 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | Utils.TasksDone())
+            if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

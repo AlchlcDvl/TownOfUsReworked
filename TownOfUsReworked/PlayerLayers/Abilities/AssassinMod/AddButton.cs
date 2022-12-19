@@ -52,7 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             return role != null;
         }
 
-
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
         {
             var targetId = voteArea.TargetPlayerId;
@@ -164,29 +163,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     return;
 
                 var playerRole = Role.GetRole(voteArea);
+                var playerAbility = Ability.GetAbility(voteArea);
                 var playerModifier = Modifier.GetModifier(voteArea);
                 var playerObjectifier = Objectifier.GetObjectifierVote(voteArea);
 
-                var toDie = playerRole.Name == currentGuess ? playerRole.Player : role.Player;
+                var flag = playerModifier.Name == currentGuess | (playerRole.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers) |
+                    (playerObjectifier.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers | (playerAbility.Name == currentGuess &&
+                    CustomGameOptions.AssassinGuessAbilities));
 
-                if (CustomGameOptions.AssassinGuessAbilities)
-                {
-                    if (playerModifier != null)
-                    {
-                        toDie = (playerRole.Name == currentGuess | playerRole.Name == "Snitch" && currentGuess == "Crewmate" |
-                            playerModifier.Name == currentGuess) ? playerRole.Player : role.Player;
-                    }
-                    else 
-                    {
-                        toDie = (playerRole.Name == currentGuess | playerRole.Name == "Snitch" && currentGuess == "Crewmate") ?
-                            playerRole.Player : role.Player;
-                    }
-                }
-                else
-                {
-                    if (playerModifier != null)
-                        toDie = (playerRole.Name == currentGuess | playerModifier.Name == currentGuess) ? playerRole.Player : role.Player;
-                }
+                var toDie = flag ? playerRole.Player : role.Player;
 
                 if (!toDie.Is(RoleEnum.Pestilence) | PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
                 {

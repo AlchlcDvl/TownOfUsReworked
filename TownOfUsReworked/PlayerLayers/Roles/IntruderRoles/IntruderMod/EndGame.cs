@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
@@ -11,10 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason == GameOverReason.ImpostorByKill || reason == GameOverReason.ImpostorBySabotage ||
-                reason == GameOverReason.ImpostorByVote)
-                return true;
-
             foreach (var role in Role.AllRoles)
             {
                 if (role.Faction == Faction.Intruders)

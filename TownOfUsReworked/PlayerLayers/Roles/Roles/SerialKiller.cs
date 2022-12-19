@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public SerialKiller(PlayerControl player) : base(player)
         {
             Name = "Serial Killer";
+            Base = false;
+            IsRecruit = false;
             StartText = "You Like To Play With Knives";
             AbilitiesText = "Engage in your bloodlust to kill everyone\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;

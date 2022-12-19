@@ -21,41 +21,28 @@ namespace TownOfUsReworked.Patches
 				var newWeight = 0f;
 				var weightString = "";
 				var heightString = "";
+				var scale = 1f;
 
 				//Update medical details for Giant and Dwarf modifiers based on game options
 				if (PlayerControl.LocalPlayer.Is(ModifierEnum.Giant))
-				{
-					var scale = CustomGameOptions.GiantScale;
-
-					newHeightFeet = oldHeightFeet * scale;
-					newHeightInch = oldHeightInch * scale;
-					newWeight = oldWeight * scale;
-
-					while (newHeightInch >= 12)
-					{
-						newHeightFeet += 1;
-						newHeightInch -= 12;
-					}
-				}
+					scale = CustomGameOptions.GiantScale;
 				else if (PlayerControl.LocalPlayer.Is(ModifierEnum.Dwarf))
+					scale = CustomGameOptions.DwarfScale;
+					
+				newHeightFeet = oldHeightFeet * scale;
+				newHeightInch = oldHeightInch * scale;
+				newWeight = oldWeight * scale;
+					
+				while (newHeightFeet <= 1 && newHeightFeet > 0)
 				{
-					var scale = CustomGameOptions.DwarfScale;
+					newHeightInch = newHeightInch + (12 * newHeightFeet);
+					newHeightFeet = 0;
+				}
 
-					newHeightFeet = oldHeightFeet * scale;
-					newHeightInch = oldHeightInch * scale;
-					newWeight = oldWeight * scale;
-
-					if (newHeightFeet <= 1 && newHeightFeet > 0)
-					{
-						newHeightInch = newHeightInch + (12 * newHeightFeet);
-						newHeightFeet = 0;
-
-						while (newHeightInch >= 12)
-						{
-							newHeightFeet += 1;
-							newHeightInch -= 12;
-						}
-					}
+				while (newHeightInch >= 12)
+				{
+					newHeightFeet += 1;
+					newHeightInch -= 12;
 				}
 
 				weightString = $"{newWeight}lb";

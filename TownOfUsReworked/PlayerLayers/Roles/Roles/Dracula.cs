@@ -20,6 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Dracula(PlayerControl player) : base(player)
         {
             Name = "Dracula";
+            Base = false;
+            IsRecruit = false;
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Dracula;
             StartText = "Lead The <color=#7B8968FF>Vampires</color> To Victory";

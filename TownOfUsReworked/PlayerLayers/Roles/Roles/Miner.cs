@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Miner";
             StartText = "From The Top, Make It Drop, Boom, That's A Vent";
             AbilitiesText = "Place vents around the map";
+            Base = false;
+            IsRecruit = false;
             Color = CustomGameOptions.CustomImpColors ? Colors.Miner : Colors.Intruder;
             SubFaction = SubFaction.None;
             LastMined = DateTime.UtcNow;

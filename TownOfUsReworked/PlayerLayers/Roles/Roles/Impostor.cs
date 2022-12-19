@@ -27,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.CrewImpAnMurd;
             IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;
+            IsRecruit = false;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
             AttackString = "Basic";

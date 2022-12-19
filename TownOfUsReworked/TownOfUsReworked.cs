@@ -35,9 +35,10 @@ namespace TownOfUsReworked
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
+    //[ReactorModFlags(ModFlags.RequireOnAllClients)]
     public class TownOfUsReworked : BasePlugin
     {
-        public const string Id = "com.slushiegoose.townofus";
+        public const string Id = "com.alchlcdvl.townofusreworked";
         public const string VersionString = "1.0.0.8";
         public static System.Version Version = System.Version.Parse(VersionString);
 
@@ -45,8 +46,12 @@ namespace TownOfUsReworked
         public const int MaxImpostors = 62;
 
         public static string dev = VersionString.Substring(6);
+        public static string version = VersionString.Remove(VersionString.Length - 2);
         public static bool isDev = dev != "0";
         public static bool isTest = true;
+        public static string devString = isDev ? $"dev{dev}" : "";
+        public static string test = isTest ? "_test" : "";
+        public static string versionFinal = version + devString + test;
         
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -382,6 +387,9 @@ namespace TownOfUsReworked
 
             _harmony.PatchAll();
             SubmergedCompatibility.Initialize();
+            
+            /*if (!System.IO.File.Exists(Application.persistentDataPath + "\\ToUKeybind.txt")) 
+                System.IO.File.WriteAllTextAsync(Application.persistentDataPath + "\\ToUKeybind.txt", "Q");*/
         }
 
         public static Sprite CreateSprite(string name)

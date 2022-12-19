@@ -24,6 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastKill = DateTime.UtcNow;
             RoleType = RoleEnum.Pestilence;
             Faction = Faction.Neutral;
+            Base = false;
+            IsRecruit = false;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;

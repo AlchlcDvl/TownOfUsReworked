@@ -24,6 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
+            Base = false;
+            IsRecruit = false;
             StartText = "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
             AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Morphling : Colors.Intruder;

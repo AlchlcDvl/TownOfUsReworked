@@ -20,6 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleType = RoleEnum.Jester;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
+            Base = false;
+            IsRecruit = false;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";

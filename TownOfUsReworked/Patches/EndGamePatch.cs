@@ -68,7 +68,8 @@ namespace TownOfUsReworked.Patches
                     }
                 }
 
-                summary = summary.Remove(summary.Length - 3);
+                if (summary.Length != 0)
+                    summary = summary.Remove(summary.Length - 3);
 
                 var modifier = Modifier.GetModifier(playerControl);
 

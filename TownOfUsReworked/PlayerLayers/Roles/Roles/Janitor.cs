@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AbilitiesText = "Clean bodies to prevent the <color=#8BFDFDFF>Crew</color> from discovering them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Janitor : Colors.Intruder;
             SubFaction = SubFaction.None;
+            Base = false;
+            IsRecruit = false;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Intruders;
             FactionName = "Intruder";

@@ -32,13 +32,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static bool NobodyWins;
         public static bool NeutralsWin;
+        
         public static bool VampWin;
+        public static bool CabalWin;
         
         public static bool CrewWin;
         public static bool IntruderWin;
         public static bool SyndicateWin;
-
-        public static bool Base = false;
 
         public virtual void Loses() {}
         public virtual void Wins() {}
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected internal Color32 Color { get; set; }
         protected internal Color32 FactionColor { get; set; }
-        protected internal Color32 SubFactionColor = Colors.Clear;
+        protected internal Color32 SubFactionColor { get; set; } = Colors.Clear;
         protected internal RoleEnum RoleType { get; set; }
         protected internal Faction Faction { get; set; }
         protected internal RoleAlignment RoleAlignment { get; set; }
@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string Name { get; set; }
         protected internal string AlignmentName { get; set; }
         protected internal string FactionName { get; set; }
-        protected internal string SubFactionName = "";
+        protected internal string SubFactionName { get; set; } = "";
         protected internal string AttackString { get; set; }
         protected internal string DefenseString { get; set; }
         protected internal string IntroText { get; set; }
@@ -73,6 +73,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string AlignmentDescription { get; set; }
         protected internal string Objectives { get; set; }
         protected internal int RoleID { get; set; }
+        protected internal bool Base { get; set; }
+        protected internal bool IsRecruit { get; set; }
 
         protected Role(PlayerControl player)
         {
@@ -507,7 +509,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerVoteArea area)
         {
-            var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
+            var player = Utils.PlayerById(area.TargetPlayerId);
             return player == null ? null : GetRole(player);
         }
 
@@ -594,7 +596,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        if (!Base)
+                        if (!role.Base)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
 
@@ -666,7 +668,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        if (!Base)
+                        if (!role.Base)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
 
@@ -727,7 +729,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        if (!Base)
+                        if (!role.Base)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
 

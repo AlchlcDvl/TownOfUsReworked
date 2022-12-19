@@ -35,6 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Maul those who oppose you";
             Results = InspResults.JestJuggWWInv;
             IntroSound = null;
+            Base = false;
+            IsRecruit = false;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
             AttackString = "Basic";

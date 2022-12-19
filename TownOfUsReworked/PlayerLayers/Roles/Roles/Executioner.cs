@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 : $"- Eject {TargetPlayer.name}!\nFake Tasks:";
             AbilitiesText = "- None.";
             AttributesText = "- None.";
+            Base = false;
+            IsRecruit = false;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             SubFaction = SubFaction.None;
             RoleType = RoleEnum.Executioner;

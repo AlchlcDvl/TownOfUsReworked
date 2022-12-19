@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using System.Collections.Generic;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -29,8 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
-            RoleAlignment = RoleAlignment.CrewCheck;
-            AlignmentName = "Crew (Checker)";
+            RoleAlignment = RoleAlignment.CrewAudit;
+            AlignmentName = "Crew (Auditor)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SurvVHVampVig;
             IntroSound = null;
@@ -38,6 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -88,9 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | Utils.TasksDone())
+            if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

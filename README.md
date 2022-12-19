@@ -60,6 +60,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Executioner](#executioner)
 - [Glitch](#glitch)
 - [Guardian Angel](#guardian-angel)
+- [Jackal](#jackal)
 - [Jester](#jester)
 - [Juggernaut](#juggernaut)
 - [Murderer](#murderer)

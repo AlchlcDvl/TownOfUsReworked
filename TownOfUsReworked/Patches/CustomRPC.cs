@@ -80,6 +80,9 @@ namespace TownOfUsReworked.Patches
         SetShapeshifter,
         SetMafioso,
         SetSidekick,
+        SetJackal,
+        SetGoodRecruit,
+        SetEvilRecruit,
 
         SetDiseased,
         SetGiant,
@@ -164,6 +167,8 @@ namespace TownOfUsReworked.Patches
         
         UndeadWin,
         UndeadLose,
+        CabalWin,
+        CabalLose,
 
         LoveWin,
         PhantomWin,
@@ -233,6 +238,7 @@ namespace TownOfUsReworked.Patches
         Gaze,
         Shapeshift,
         Declare,
+        Sidekick,
 
         BypassKill,
         Mimic,
@@ -251,6 +257,8 @@ namespace TownOfUsReworked.Patches
         RemoveAllBodies,
         CheckMurder,
 
-        SubmergedFixOxygen
+        SubmergedFixOxygen,
+        
+        Sendchat
     }
 }

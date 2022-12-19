@@ -48,6 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "None";
             DefenseString = "None";
             IntroSound = null;
+            Base = false;
+            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -94,9 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | Utils.TasksDone())
+            if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

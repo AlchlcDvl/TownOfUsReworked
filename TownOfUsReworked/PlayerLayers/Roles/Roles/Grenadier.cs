@@ -26,6 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Grenadier(PlayerControl player) : base(player)
         {
             Name = "Grenadier";
+            Base = false;
+            IsRecruit = false;
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
             AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.";
             AttributesText = "- Blinding players will fill their screen with white for a short while, making them unable to see anything.";

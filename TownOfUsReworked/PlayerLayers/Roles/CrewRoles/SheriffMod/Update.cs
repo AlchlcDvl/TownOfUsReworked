@@ -49,12 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                                 player.Is(RoleEnum.Glitch) | player.Is(RoleEnum.Juggernaut) | player.Is(RoleEnum.Plaguebearer) |
                                 player.Is(RoleEnum.Pestilence) | player.Is(RoleEnum.SerialKiller) | player.Is(RoleEnum.Murderer)) &&
                                 !CustomGameOptions.NeutKillingRed))
-                            {
-                                if (CustomGameOptions.SheriffAccuracy == 100 | sheriff.randomSheriffAccuracy <= CustomGameOptions.SheriffAccuracy)
-                                    state.NameText.color = Colors.Glitch;
-                                else
-                                    state.NameText.color = Colors.Intruder;
-                            }
+                                state.NameText.color = Colors.Intruder;
                             else if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
                             {
                                 foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
@@ -72,12 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                                 }
                             }
                             else
-                            {
-                                if (CustomGameOptions.SheriffAccuracy == 100 | sheriff.randomSheriffAccuracy <= CustomGameOptions.SheriffAccuracy)
-                                    state.NameText.color = Colors.Glitch;
-                                else
-                                    state.NameText.color = Colors.Intruder;
-                            }
+                                state.NameText.color = Colors.Intruder;
 
                             break;
                     }
@@ -120,12 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     player.Is(RoleEnum.Arsonist) | player.Is(RoleEnum.Glitch) | player.Is(RoleEnum.Juggernaut) |
                     player.Is(RoleEnum.Plaguebearer) | player.Is(RoleEnum.Pestilence) | player.Is(RoleEnum.SerialKiller)) &&
                     !CustomGameOptions.NeutKillingRed))
-                {
-                    if (CustomGameOptions.SheriffAccuracy == 100 | sheriff.randomSheriffAccuracy <= CustomGameOptions.SheriffAccuracy)
-                        player.nameText().color = Colors.Glitch;
-                    else
-                        player.nameText().color = Colors.Intruder;
-                }
+                    player.nameText().color = Colors.Intruder;
                         
                 if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
                 {
@@ -144,12 +129,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     }
                 }
                 else
-                {
-                    if (CustomGameOptions.SheriffAccuracy == 100 | sheriff.randomSheriffAccuracy <= CustomGameOptions.SheriffAccuracy)
-                        player.nameText().color = Colors.Glitch;
-                    else
-                        player.nameText().color = Colors.Intruder;
-                }
+                    player.nameText().color = Colors.Intruder;
             }
         }
     }

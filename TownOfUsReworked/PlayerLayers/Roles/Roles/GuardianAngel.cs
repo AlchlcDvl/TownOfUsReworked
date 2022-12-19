@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
+            Base = false;
+            IsRecruit = false;
             StartText = TargetPlayer == null 
                 ? "You don't have a target for some reason... weird..."
                 : $"Protect {TargetPlayer.name} With Your Life";

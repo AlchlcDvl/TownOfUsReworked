@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
 
             var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
-            if (player.IsImpostor() | player._object.Is(RoleAlignment.NeutralKill))
+            if (player._object.Is(Faction.Intruders) | player._object.Is(RoleAlignment.NeutralKill) | player._object.Is(Faction.Intruders))
             {
                 __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
                 return false;

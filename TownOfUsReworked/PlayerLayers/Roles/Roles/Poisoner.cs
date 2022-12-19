@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
+            Base = false;
+            IsRecruit = false;
             StartText = "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
             AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomImpColors? Colors.Poisoner : Colors.Intruder;

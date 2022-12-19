@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private KillButton _igniteButton;
         private KillButton _douseButton;
         public bool ArsonistWins;
+        public bool LastKiller;
         public PlayerControl ClosestPlayerDouse;
         public PlayerControl ClosestPlayerIgnite;
         public List<byte> DousedPlayers = new List<byte>();
@@ -44,6 +45,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = null;
             Attack = AttackEnum.Unstoppable;
             AttackString = "Unstoppable";
+            Base = false;
+            IsRecruit = false;
             DefenseString = "Basic";
             Defense = DefenseEnum.Basic;
             RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +

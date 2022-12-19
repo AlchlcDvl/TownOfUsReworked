@@ -179,7 +179,7 @@ namespace TownOfUsReworked.Patches
             Assembly = Plugin!.GetType().Assembly;
             Types = AccessTools.GetTypesFromAssembly(Assembly);
 
-            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "RegisterInIl2CppAttribute"), "RegisteredTypes")
                 .Invoke(null, Array.Empty<object>());
 
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");

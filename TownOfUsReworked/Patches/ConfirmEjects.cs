@@ -66,7 +66,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                 {
-                    if (player.Is(Faction.Intruders))
+                    if (!player.Is(SubFaction.Undead))
                         __instance.completeString = $"{player.name} was {a_or_an2} {role.FactionColorString} {role.FactionName}</color>.";
                     else
                         __instance.completeString = $"{player.name} was {a_or_an2} {role.SubFactionColorString} {role.SubFactionName}</color>.";

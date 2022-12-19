@@ -1,17 +1,14 @@
-using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
-using UnityEngine;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public static class HUDInfect
+    public static class Promote
     {
         public static void Postfix(HudManager __instance)
         {

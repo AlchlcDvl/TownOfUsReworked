@@ -7,7 +7,7 @@ using AmongUs.GameOptions;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
-    class RandomMap
+    public class RandomMap
     {
         public static byte previousMap;
         public static float vision;
@@ -23,9 +23,14 @@ namespace TownOfUsReworked.Patches
             {
                 previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
-                commonTasks = CustomGameOptions.CommonTasks;
-                shortTasks = CustomGameOptions.ShortTasks;
-                longTasks = CustomGameOptions.LongTasks;
+
+                if (!(commonTasks == 0 && shortTasks == 0 && longTasks == 0))
+                {
+                    commonTasks = CustomGameOptions.CommonTasks;
+                    shortTasks = CustomGameOptions.ShortTasks;
+                    longTasks = CustomGameOptions.LongTasks;
+                }
+
                 var map = (byte)CustomGameOptions.Map;
 
                 if (CustomGameOptions.RandomMapEnabled)

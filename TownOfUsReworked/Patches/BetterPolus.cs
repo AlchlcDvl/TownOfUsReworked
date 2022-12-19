@@ -73,9 +73,7 @@ namespace TownOfUsReworked.Patches
             public static void Prefix(ShipStatus __instance)
             {
                 if (!IsObjectsFetched | !IsAdjustmentsDone)
-                {
                     ApplyChanges(__instance);
-                }
             }
         }
 
@@ -191,7 +189,6 @@ namespace TownOfUsReworked.Patches
                 ElectricalVent.Center = ElectricBuildingVent;
                 ElectricBuildingVent.Center = LightCageVent;
                 LightCageVent.Center = ElectricBuildingVent;
-
                 ScienceBuildingVent.Left = StorageVent;
                 StorageVent.Center = ScienceBuildingVent;
             }
@@ -204,7 +201,6 @@ namespace TownOfUsReworked.Patches
                 Transform tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPos;
-
                 BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
                 collider.isTrigger = false;
                 collider.size += new Vector2(0f, -0.3f);
@@ -218,7 +214,6 @@ namespace TownOfUsReworked.Patches
                 Transform tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPosDV;
-
                 BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
                 collider.isTrigger = false;
                 collider.size += new Vector2(0f, -0.3f);
@@ -239,7 +234,6 @@ namespace TownOfUsReworked.Patches
                 Transform navTransform = NavConsole.transform;
                 navTransform.parent = Comms.transform;
                 navTransform.position = NavNewPos;
-
                 NavConsole.checkWalls = true;
             }
         }
@@ -257,11 +251,8 @@ namespace TownOfUsReworked.Patches
             {
                 Transform dvdScreenTransform = DvdScreenOffice.transform;
                 dvdScreenTransform.position = DvdScreenNewPos;
-
                 var localScale = dvdScreenTransform.localScale;
-                localScale =
-                    new Vector3(DvdScreenNewScale, localScale.y,
-                        localScale.z);
+                localScale = new Vector3(DvdScreenNewScale, localScale.y, localScale.z);
                 dvdScreenTransform.localScale = localScale;
             }
         }

@@ -36,6 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
         public bool LostByRPC { get; protected set; }
+        
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.Count;
 

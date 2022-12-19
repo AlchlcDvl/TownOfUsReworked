@@ -13,12 +13,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestIntruder;
         public bool HasDeclared = false;
         public bool WasMafioso = false;
-        public Role FormerRole;
+        public Role FormerRole = null;
         public KillButton _declareButton;
 
         public Godfather(PlayerControl player) : base(player)
         {
             Name = "Godfather";
+            Base = false;
+            IsRecruit = false;
             Faction = Faction.Intruders;
             RoleType = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";

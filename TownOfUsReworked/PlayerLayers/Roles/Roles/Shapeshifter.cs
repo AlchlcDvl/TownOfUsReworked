@@ -21,6 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Shapeshifter(PlayerControl player) : base(player)
         {
             Name = "Shapeshifter";
+            Base = false;
+            IsRecruit = false;
             StartText = "Change Everyone's Appearances";
             AbilitiesText = "No one will know who they were";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;

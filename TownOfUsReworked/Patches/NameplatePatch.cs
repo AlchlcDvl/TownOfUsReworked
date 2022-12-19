@@ -12,10 +12,7 @@ namespace TownOfUsReworked.Patches
             public static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
             {
                 if (CustomGameOptions.WhiteNameplates)
-                {
-                    __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.
-                        Image;
-                }
+                    __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.Image;
 
                 if (CustomGameOptions.DisableLevels)
                 {
@@ -31,10 +28,7 @@ namespace TownOfUsReworked.Patches
             public static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] string plateId)
             {
                 if (CustomGameOptions.WhiteNameplates)
-                {
-                    __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.
-                        Image;
-                }
+                    __instance.Background.sprite = DestroyableSingleton<HatManager>.Instance.GetNamePlateById("nameplate_NoPlate").viewData.viewData.Image;
 
                 if (CustomGameOptions.DisableLevels)
                 {

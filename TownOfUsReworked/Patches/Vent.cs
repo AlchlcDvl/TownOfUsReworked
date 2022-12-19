@@ -17,14 +17,14 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(HudManager __instance)
         {
-            if(__instance.ImpostorVentButton == null | __instance.ImpostorVentButton.gameObject == null |
+            if (__instance.ImpostorVentButton == null | __instance.ImpostorVentButton.gameObject == null |
                 __instance.ImpostorVentButton.IsNullOrDestroyed())
                 return;
 
             bool active = PlayerControl.LocalPlayer != null && VentPatches.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer._cachedData)
                 && !MeetingHud.Instance && !LobbyBehaviour.Instance;
 
-            if(active != __instance.ImpostorVentButton.gameObject.active)
+            if (active != __instance.ImpostorVentButton.gameObject.active)
                 __instance.ImpostorVentButton.gameObject.SetActive(active);
         }
     }
@@ -48,7 +48,13 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone)
                 return false;
-                
+            
+            if (player.Is(Faction.Intruders) && CustomGameOptions.IntrudersVent)
+                return true;
+            
+            if (player.Is(Faction.Syndicate) && CustomGameOptions.SyndicateVent)
+                return true;
+            
             if (player.Is(AbilityEnum.Tunneler) && tunneler.TasksDone)
                 return true;
 
@@ -89,8 +95,8 @@ namespace TownOfUsReworked.Patches
         {
             float num = float.MaxValue;
             PlayerControl playerControl = playerInfo.Object;
-            couldUse = CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) &&
-                (!playerInfo.IsDead | playerControl.inVent) && (playerControl.CanMove | playerControl.inVent);
+            couldUse = CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead |
+                playerControl.inVent) && (playerControl.CanMove | playerControl.inVent);
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
             if (ventitaltionSystem != null && ventitaltionSystem.PlayersCleaningVents != null)
@@ -115,7 +121,9 @@ namespace TownOfUsReworked.Patches
                 switch (__instance.Id)
                 {
                     case 9:  //Engine Room Exit Only Vent
-                        if (PlayerControl.LocalPlayer.inVent) break;
+                        if (PlayerControl.LocalPlayer.inVent)
+                            break;
+
                         __result = float.MaxValue;
                         return;
 
@@ -129,6 +137,7 @@ namespace TownOfUsReworked.Patches
                             __result = Vector2.Distance(center, position);
                             canUse &= __result <= __instance.UsableDistance;
                         }
+
                         return;
                 }
             }
@@ -157,6 +166,7 @@ namespace TownOfUsReworked.Patches
                 else
                     return false;
             }
+
             return true;
         }
     }
@@ -173,6 +183,7 @@ namespace TownOfUsReworked.Patches
                 else
                     return false;
             }
+
             return true;
         }
     }
@@ -189,6 +200,7 @@ namespace TownOfUsReworked.Patches
                 else
                     return false;
             }
+
             return true;
         }
     }
@@ -205,6 +217,7 @@ namespace TownOfUsReworked.Patches
                 else
                     return false;
             }
+
             return true;
         }
     }
@@ -221,6 +234,7 @@ namespace TownOfUsReworked.Patches
                 else
                     return false;
             }
+
             return true;
         }
     }
