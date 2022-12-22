@@ -41,11 +41,11 @@ namespace
       /// <summary>Branch: master</summary>
       public const string Branch = "master";
 
-      /// <summary>Commit: 5c15834</summary>
-      public const string Commit = "5c15834";
+      /// <summary>Commit: a2798b8</summary>
+      public const string Commit = "a2798b8";
 
-      /// <summary>Sha: 5c158341ea233f44d37055338b0524604c7adf53</summary>
-      public const string Sha = "5c158341ea233f44d37055338b0524604c7adf53";
+      /// <summary>Sha: a2798b8a289297b2e58222672f48e26f307456a5</summary>
+      public const string Sha = "a2798b8a289297b2e58222672f48e26f307456a5";
 
       /// <summary>Commits on top of base version: 45</summary>
       public const string Commits = "45";
