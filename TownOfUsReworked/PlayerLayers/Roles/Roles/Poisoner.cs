@@ -22,12 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
-            Base = false;
-            IsRecruit = false;
             StartText = "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
             AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomImpColors? Colors.Poisoner : Colors.Intruder;
-            SubFaction = SubFaction.None;
             LastPoisoned = DateTime.UtcNow;
             RoleType = RoleEnum.Poisoner;
             Faction = Faction.Intruders;
@@ -104,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

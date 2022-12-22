@@ -18,12 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Murderer(PlayerControl player) : base(player)
         {
             Name = "Murderer";
-            Base = false;
-            IsRecruit = false;
             StartText = "Imagine Getting Boring Murderer";
             AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
             RoleType = RoleEnum.Murderer;
             Faction = Faction.Neutral;
@@ -84,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var murdTeam = new List<PlayerControl>();
             murdTeam.Add(PlayerControl.LocalPlayer);

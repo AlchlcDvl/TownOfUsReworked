@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The wrenches indicate that this body is an Engineer!";
             CoronerKillerReport = "";
             Results = InspResults.EngiAmneThiefCann;
-            SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.EngineerIntro;
             FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
                 " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
@@ -44,12 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

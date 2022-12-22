@@ -22,7 +22,7 @@ using Object = UnityEngine.Object;
 using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.Extensions
 {
@@ -143,8 +143,8 @@ namespace TownOfUsReworked.Extensions
                         player.GetAppearance().SizeFactor.Set(1f, 1f, 1f);
 
                     if (CustomGameOptions.CamoHideSpeed)
-                        player.MyPhysics.body.velocity.Set(GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod,
-                            GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod);
+                        player.MyPhysics.body.velocity.Set(PlayerControl.GameOptions.PlayerSpeedMod,
+                            PlayerControl.GameOptions.PlayerSpeedMod);
                 }
             }
         }
@@ -241,7 +241,14 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsRecruit(this PlayerControl player)
         {
+            if (player == null)
+                return false;
+                
             var role = Role.GetRole(player);
+
+            if (role == null)
+                return false;
+
             return role.IsRecruit;
         }
 
@@ -405,25 +412,24 @@ namespace TownOfUsReworked.Extensions
             {
                 var plaguebearer = (Plaguebearer)role;
 
-                return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) | player.PlayerId ==
-                    plaguebearer.Player.PlayerId);
+                return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) | player == plaguebearer.Player);
             });
         }
 
         public static bool CrewWins()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | TasksDone();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
+                x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) |
+                x.Is(RoleAlignment.NeutralPros))) == 0) | TasksDone();
 
             return flag;
         }
 
         public static bool IntrudersWin()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) |
-                Sabotaged();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
+                x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) |
+                x.Is(RoleAlignment.NeutralPros))) == 0) | Sabotaged();
 
             return flag;
         }
@@ -434,15 +440,15 @@ namespace TownOfUsReworked.Extensions
 
             if (nk == RoleEnum.Plaguebearer | nk == RoleEnum.Pestilence)
             {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
-                    (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
+                    x.Is(Faction.Intruders) | (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
                     x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0;
             }
             else
             {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
-                    (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
-                    x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0;
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() | 
+                    x.Is(Faction.Intruders) | (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) |
+                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0;
             }
 
             return flag;
@@ -451,8 +457,8 @@ namespace TownOfUsReworked.Extensions
         public static bool SyndicateWins()
         {
             var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) ==
-                0) | (CustomGameOptions.AltImps && Sabotaged());
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.IsRecruit() |
+                x.Is(RoleAlignment.NeutralPros))) == 0) | (CustomGameOptions.AltImps && Sabotaged());
 
             return flag;
         }
@@ -465,13 +471,13 @@ namespace TownOfUsReworked.Extensions
             {
                 flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
                     x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
-                    x.Is(Faction.Crew) | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
+                    x.Is(Faction.Crew) | x.IsRecruit() | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
             }
             else if (sf == SubFaction.Cabal)
             {
                 flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
                     x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
-                    x.Is(RoleAlignment.NeutralPros)) && !x.IsRecruit()) == 0;
+                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
             }
 
             return flag;
@@ -503,6 +509,7 @@ namespace TownOfUsReworked.Extensions
                 num = distBetweenPlayers;
                 result = player;
             }
+
             return result;
         }
 
@@ -524,7 +531,7 @@ namespace TownOfUsReworked.Extensions
             List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance))
-                maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             var player = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance);
@@ -593,7 +600,7 @@ namespace TownOfUsReworked.Extensions
                     var importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                     importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                    if (!GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks)
+                    if (!PlayerControl.GameOptions.GhostsDoTasks)
                     {
                         for (var i = 0; i < target.myTasks.Count; i++)
                         {
@@ -798,11 +805,11 @@ namespace TownOfUsReworked.Extensions
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
             if (Sabotaged())
-                GameManager.Instance.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
+                ShipStatus.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
             else if (TasksDone())
-                GameManager.Instance.RpcEndGame(GameOverReason.HumansByTask, showAds);
+                ShipStatus.RpcEndGame(GameOverReason.HumansByTask, showAds);
             else
-                GameManager.Instance.RpcEndGame(reason, showAds);
+                ShipStatus.RpcEndGame(reason, showAds);
         }
 
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
@@ -833,7 +840,7 @@ namespace TownOfUsReworked.Extensions
         {
             static void Postfix(MeetingHud __instance)
             {
-                // Deactivate skip Button if skipping on emergency meetings is disabled 
+                //Deactivate skip Button if skipping on emergency meetings is disabled 
                 if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) |
                     (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always))
                     __instance.SkipVoteButton.gameObject.SetActive(false);
@@ -893,6 +900,12 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Shifter role in Role.GetRoles(RoleEnum.Shifter))
                 role.LastShifted = DateTime.UtcNow;
+
+            foreach (Inspector role in Role.GetRoles(RoleEnum.Inspector))
+                role.LastExamined = DateTime.UtcNow;
+
+            foreach (VampireHunter role in Role.GetRoles(RoleEnum.VampireHunter))
+                role.LastStaked = DateTime.UtcNow;
             #endregion
 
             #region Neutral Roles
@@ -944,6 +957,15 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Dracula role in Role.GetRoles(RoleEnum.Dracula))
                 role.LastBitten = DateTime.UtcNow;
+
+            foreach (Dampyr role in Role.GetRoles(RoleEnum.Dampyr))
+                role.LastKill = DateTime.UtcNow;
+
+            foreach (Thief role in Role.GetRoles(RoleEnum.Thief))
+                role.LastKilled = DateTime.UtcNow;
+
+            foreach (Troll role in Role.GetRoles(RoleEnum.Troll))
+                role.LastInteracted = DateTime.UtcNow;
             #endregion
 
             #region Intruder Roles
@@ -971,6 +993,9 @@ namespace TownOfUsReworked.Extensions
             foreach (Wraith role in Role.GetRoles(RoleEnum.Wraith))
                 role.LastInvis = DateTime.UtcNow;
 
+            foreach (Janitor role in Role.GetRoles(RoleEnum.Janitor))
+                role.LastCleaned = DateTime.UtcNow;
+
             foreach (Undertaker role in Role.GetRoles(RoleEnum.Undertaker))
                 role.LastDragged = DateTime.UtcNow;
 
@@ -982,9 +1007,32 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Consigliere role in Role.GetRoles(RoleEnum.Consigliere))
                 role.LastInvestigated = DateTime.UtcNow;
+
+            foreach (Camouflager role in Role.GetRoles(RoleEnum.Camouflager))
+                role.LastCamouflaged = DateTime.UtcNow;
+
+            foreach (Consort role in Role.GetRoles(RoleEnum.Consort))
+                role.LastBlock = DateTime.UtcNow;
             #endregion
 
             #region Syndicate Roles
+            foreach (Anarchist role in Role.GetRoles(RoleEnum.Anarchist))
+                role.LastKill = DateTime.UtcNow;
+
+            foreach (Concealer role in Role.GetRoles(RoleEnum.Concealer))
+                role.LastConcealed = DateTime.UtcNow;
+
+            foreach (Gorgon role in Role.GetRoles(RoleEnum.Gorgon))
+                role.LastGazed = DateTime.UtcNow;
+
+            foreach (Puppeteer role in Role.GetRoles(RoleEnum.Puppeteer))
+                role.lastPossess = DateTime.UtcNow;
+
+            foreach (Shapeshifter role in Role.GetRoles(RoleEnum.Shapeshifter))
+                role.LastShapeshifted = DateTime.UtcNow;
+
+            foreach (Warper role in Role.GetRoles(RoleEnum.Warper))
+                role.LastWarped = DateTime.UtcNow;
             #endregion
         }
         
@@ -1000,7 +1048,7 @@ namespace TownOfUsReworked.Extensions
             float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance)) 
-                maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
                 
             var player = GetClosestPlayer(fromPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
@@ -1212,7 +1260,7 @@ namespace TownOfUsReworked.Extensions
 
             var sabotaged = false;
 
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            switch (PlayerControl.GameOptions.MapId)
             {
                 case 0:
 

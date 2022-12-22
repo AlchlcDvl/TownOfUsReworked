@@ -18,7 +18,6 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
-using AmongUs.GameOptions;
 using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;

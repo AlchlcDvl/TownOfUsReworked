@@ -10,10 +10,10 @@ namespace TownOfUsReworked.Patches
         {
             if (__instance.Data.Role.CanUseKillButton)
             {
-                if (GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown <= 0f)
+                if (PlayerControl.GameOptions.KillCooldown <= 0f)
                     return false;
 
-                var maxvalue = time > GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown ? time + 1f : GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown;
+                var maxvalue = time > PlayerControl.GameOptions.KillCooldown ? time + 1f : PlayerControl.GameOptions.KillCooldown;
                 __instance.killTimer = Mathf.Clamp(time, 0, maxvalue);
                 DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, maxvalue);
             }

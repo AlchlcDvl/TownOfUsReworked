@@ -20,13 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Cryomaniac(PlayerControl player) : base(player)
         {
             Name = "Cryomaniac";
-            Base = false;
-            IsRecruit = false;
             StartText = "Who Likes Ice Cream?";
             AbilitiesText = "- You can douse players in coolant.";
             AttributesText = "- When everyone is doused, you can freeze them to win.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastDoused = DateTime.UtcNow;
             RoleType = RoleEnum.Cryomaniac;
             Faction = Faction.Neutral;
@@ -108,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var cryoTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             cryoTeam.Add(PlayerControl.LocalPlayer);

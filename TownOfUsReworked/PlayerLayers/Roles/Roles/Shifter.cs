@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Shift around different roles";
             AbilitiesText = "Steal other people's roles";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Shifter;
             LastShifted = DateTime.UtcNow;
             Faction = Faction.Crew;
@@ -34,8 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -52,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

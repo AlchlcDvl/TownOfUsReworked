@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                 SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
             } catch {}
 
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            switch (PlayerControl.GameOptions.MapId)
             {
                 case 0:
 

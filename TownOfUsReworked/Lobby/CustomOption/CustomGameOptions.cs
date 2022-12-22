@@ -182,6 +182,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool SwapperButton => Generate.SwapperButton.Get();
         public static bool AnonymousVoting => Generate.AnonymousVoting.Get();
         public static bool CustomEject => Generate.CustomEject.Get();
+        public static bool ProtectBeyondTheGrave => Generate.ProtectBeyondTheGrave.Get();
         public static bool EjectionRevealsRole => Generate.EjectionRevealsRole.Get();
         public static bool VisualTasks => Generate.VisualTasks.Get();
         public static bool NeutEvilRed => Generate.NeutEvilRed.Get();

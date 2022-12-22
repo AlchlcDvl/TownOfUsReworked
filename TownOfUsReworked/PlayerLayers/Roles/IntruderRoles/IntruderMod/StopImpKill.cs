@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                 if (CustomGameOptions.ShieldBreaks)
-                    PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                    PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
                 else
                     PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -111,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 return false;
             }
             
-            PlayerControl.LocalPlayer.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+            PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
             Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, target);
             return false;
         }

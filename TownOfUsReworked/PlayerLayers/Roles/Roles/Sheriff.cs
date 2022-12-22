@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Reveal The Alignment Of Other Players";
             AbilitiesText = "Reveal alignments of other players to find the <color=#FF0000FF>Intruders</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastInterrogated = DateTime.UtcNow;
             RoleType = RoleEnum.Sheriff;
             Faction = Faction.Crew;
@@ -37,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -55,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

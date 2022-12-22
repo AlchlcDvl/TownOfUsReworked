@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "rwmj3oGMiaNzU8AVQMj4Xjd42v6AfxPQp8gnVBrAYrhIiHrxYYOxDbCCm9AqsIIdGCD541o5bVP37JLxmUEulg==",
+  "dgSpecHash": "ZjOvIDh4N81uakZHlmRzfaTa2qwcneZh81jPFGpBfkKvmAlstGCuM/xaOTLxQ/bU6KkIt0gnEimlbsKnGpAcAQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+  "projectFilePath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Guest User\\.nuget\\packages\\amongus.gamelibs.steam\\2022.12.8\\amongus.gamelibs.steam.2022.12.8.nupkg.sha512",
+    "C:\\Users\\Guest User\\.nuget\\packages\\amongus.gamelibs.steam\\2022.10.25\\amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\assetripper.versionutilities\\1.2.1\\assetripper.versionutilities.1.2.1.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\bepinex.autoplugin\\1.1.0\\bepinex.autoplugin.1.1.0.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\bepinex.core\\6.0.0-be.664\\bepinex.core.6.0.0-be.664.nupkg.sha512",
@@ -26,7 +26,7 @@
     "C:\\Users\\Guest User\\.nuget\\packages\\mono.cecil\\0.11.4\\mono.cecil.0.11.4.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\monomod.runtimedetour\\22.5.1.1\\monomod.runtimedetour.22.5.1.1.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\monomod.utils\\22.5.1.1\\monomod.utils.22.5.1.1.nupkg.sha512",
-    "C:\\Users\\Guest User\\.nuget\\packages\\reactor\\2.0.0-ci.224\\reactor.2.0.0-ci.224.nupkg.sha512",
+    "C:\\Users\\Guest User\\.nuget\\packages\\reactor\\2.0.0\\reactor.2.0.0.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",

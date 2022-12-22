@@ -13,7 +13,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -262,8 +262,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 {
                     var mayor = (Mayor)role;
                     var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);
-                    var anonVotesOption = GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = true;
+                    var anonVotesOption = PlayerControl.GameOptions.AnonymousVotes;
+                    PlayerControl.GameOptions.AnonymousVotes = true;
 
                     foreach (var extraVote in mayor.ExtraVotes)
                     {
@@ -290,7 +290,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                         }
                     }
 
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = anonVotesOption;
+                    PlayerControl.GameOptions.AnonymousVotes = anonVotesOption;
                 }
                 return false;
             }

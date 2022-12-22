@@ -62,14 +62,14 @@ namespace TownOfUsReworked.Patches
                     else if (target != null && CustomGameOptions.ExeEjectScreen)
                         __instance.completeString = "You feel a sense of dread during the ejection. The <color=#CCCCCCFF>Executioner</color> has won!";
                     else
-                        __instance.completeString = $"{player.name} was {a_or_an} {role.ColorString} {role.Name}</color>.";
+                        __instance.completeString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
                 }
                 else
                 {
                     if (!player.Is(SubFaction.Undead))
-                        __instance.completeString = $"{player.name} was {a_or_an2} {role.FactionColorString} {role.FactionName}</color>.";
+                        __instance.completeString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
                     else
-                        __instance.completeString = $"{player.name} was {a_or_an2} {role.SubFactionColorString} {role.SubFactionName}</color>.";
+                        __instance.completeString = $"{player.name} was {a_or_an2} {role.SubFactionColorString + role.SubFactionName}</color>.";
                 }
             }
 

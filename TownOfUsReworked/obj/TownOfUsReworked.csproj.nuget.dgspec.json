@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {}
+    "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj": {
+    "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj": {
       "version": "1.0.0.8",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
         "projectName": "TownOfUsReworked",
-        "projectPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+        "projectPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
         "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+        "outputPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
+          "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\NuGet.Config",
           "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
@@ -47,7 +47,7 @@
             "AmongUs.GameLibs.Steam": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2022.12.8, )"
+              "version": "[2022.10.25, )"
             },
             "BepInEx.AutoPlugin": {
               "suppressParent": "All",
@@ -61,7 +61,6 @@
               "version": "[2.0.1, )"
             },
             "BepInEx.Unity.IL2CPP": {
-              "include": "Compile, Build, ContentFiles, Analyzers, BuildTransitive",
               "target": "Package",
               "version": "[6.0.0-be.664, )"
             },
@@ -73,7 +72,7 @@
             },
             "Reactor": {
               "target": "Package",
-              "version": "[2.0.0-ci.224, )"
+              "version": "[2.0.0, )"
             },
             "System.Text.Json": {
               "suppressParent": "All",

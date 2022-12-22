@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                 importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                if (!GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks)
+                if (!PlayerControl.GameOptions.GhostsDoTasks)
                 {
                     for (int i = 0; i < player.myTasks.Count; i++)
                     {
@@ -113,7 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     ShowHideButtons.HideButtons(assassin);
             }
 
-            player.Die(DeathReason.Kill, false);
+            player.Die(DeathReason.Kill);
 
             if (checkLover && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {

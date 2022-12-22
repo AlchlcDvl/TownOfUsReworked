@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Inspect Player For Their Roles";
             AbilitiesText = "See if people really are what they claim to be";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
-            SubFaction = SubFaction.None;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -42,12 +41,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " can deduce who is good and who is not.";
             RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
                 "list, they are not Crew.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

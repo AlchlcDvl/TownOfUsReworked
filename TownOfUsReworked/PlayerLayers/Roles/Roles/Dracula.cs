@@ -20,8 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Dracula(PlayerControl player) : base(player)
         {
             Name = "Dracula";
-            Base = false;
-            IsRecruit = false;
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Dracula;
             StartText = "Lead The <color=#7B8968FF>Vampires</color> To Victory";
@@ -76,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var vampTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             vampTeam.Add(PlayerControl.LocalPlayer);

@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
     public class EndGame
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             foreach (var role in Role.AllRoles)
             {
                 if (role.RoleType == RoleEnum.Cryomaniac)
-                    ((Cryomaniac) role).Loses();
+                    ((Cryomaniac)role).Loses();
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ArsonistLose,
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CryomaniacLose,
                 SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

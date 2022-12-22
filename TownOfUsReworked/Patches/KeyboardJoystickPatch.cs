@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Patches
             if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
             {
                 if (Input.GetKeyDown(KeyCode.F8))
-                    GameManager.Instance.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
+                    ShipStatus.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
                 
                 if (Input.GetKeyDown(KeyCode.RightShift))
                     Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using AmongUs.GameOptions;
+
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Reactor.Utilities.Extensions;
@@ -381,14 +381,14 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
             {
-                while (canHaveAbility5.Count > 0)
+                while (canHaveAbility5.Count > 0 && TunnelerAbilities.Count > 0)
                 {
                     var (type, rpc, _) = TunnelerAbilities.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility5.TakeFirst(), rpc);
                 }
             }
 
-            if (CustomGameOptions.GameMode == GameMode.Custom)
+            if (CustomGameOptions.GameMode == GameMode.Custom && AbilityGet.Count > 0)
             {
                 var impAssassins = CustomGameOptions.NumberOfImpostorAssassins;
                 var neutAssassins = CustomGameOptions.NumberOfNeutralAssassins;
@@ -400,28 +400,28 @@ namespace TownOfUsReworked.Patches
                 var crewAssassinGet = AbilityGet;
                 var synAssassinGet = AbilityGet;
 
-                while (canHaveAbility.Count > 0 && impAssassins > 0)
+                while (canHaveAbility.Count > 0 && impAssassins > 0 && impAssassinGet.Count > 0)
                 {
                     var (type, rpc, _) = impAssassinGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
                     impAssassins -= 1;
                 }
 
-                while (canHaveAbility2.Count > 0 && neutAssassins > 0)
+                while (canHaveAbility2.Count > 0 && neutAssassins > 0 && neutAssassinGet.Count > 0)
                 {
                     var (type, rpc, _) = neutAssassinGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility2.TakeFirst(), rpc);
                     neutAssassins -= 1;
                 }
 
-                while (canHaveAbility3.Count > 0 && crewAssassins > 0)
+                while (canHaveAbility3.Count > 0 && crewAssassins > 0 && crewAssassinGet.Count > 0)
                 {
                     var (type, rpc, _) = crewAssassinGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility3.TakeFirst(), rpc);
                     crewAssassins -= 1;
                 }
 
-                while (canHaveAbility4.Count > 0 && synAssassins > 0)
+                while (canHaveAbility4.Count > 0 && synAssassins > 0 && synAssassinGet.Count > 0)
                 {
                     var (type, rpc, _) = synAssassinGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility4.TakeFirst(), rpc);
@@ -446,8 +446,7 @@ namespace TownOfUsReworked.Patches
                 {
                     if (!(player.Is(RoleEnum.Jester) | player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Troll)))
                     {
-                        if (!player.Is(RoleEnum.GuardianAngel))
-                            gaTargets.Add(player);
+                        gaTargets.Add(player);
                         
                         if (!player.Is(RoleAlignment.NeutralKill))
                             goodRecruits.Add(player);
@@ -467,75 +466,87 @@ namespace TownOfUsReworked.Patches
             goodRecruits.Shuffle();
             evilRecruits.Shuffle();
 
-            foreach (var role in Role.GetRoles(RoleEnum.Executioner))
+            foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
             {
-                var exe = (Executioner)role;
-                var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
+                exe.TargetPlayer = null;
 
                 if (exeTargets.Count > 0)
                 {
-                    exe.TargetPlayer = exeTargets[exeNum];
+                    while (exe.TargetPlayer == null)
+                    {
+                        var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
+                        exe.TargetPlayer = exeTargets[exeNum];
+                    }
+
                     exeTargets.Remove(exe.TargetPlayer);
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget,
                         SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(exe.Player.PlayerId);
                     writer.Write(exe.TargetPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
 
-            foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
+            foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
             {
-                var ga = (GuardianAngel)role;
-                var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
+                ga.TargetPlayer = null;
                 
                 if (gaTargets.Count > 0)
                 {
-                    ga.TargetPlayer = gaTargets[gaNum];
+                    while (ga.TargetPlayer == null)
+                    {
+                        var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
+                        ga.TargetPlayer = gaTargets[gaNum];
+                    }
+
                     gaTargets.Remove(ga.TargetPlayer);
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget,
                         SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(ga.Player.PlayerId);
                     writer.Write(ga.TargetPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
 
-            foreach (var role in Role.GetRoles(RoleEnum.Jackal))
+            foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
             {
-                var jackal = (Jackal)role;
-                var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
+                jackal.GoodRecruit = null;
+                jackal.EvilRecruit = null;
                 
                 if (goodRecruits.Count > 0)
                 {
-                    jackal.GoodRecruit = goodRecruits[goodNum];
+                    while (jackal.GoodRecruit == null)
+                    {
+                        var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
+                        jackal.GoodRecruit = goodRecruits[goodNum];
+                    }
+
                     goodRecruits.Remove(jackal.GoodRecruit);
                     (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit,
                         SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(jackal.Player.PlayerId);
                     writer.Write(jackal.GoodRecruit.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-            }
-
-            foreach (var role in Role.GetRoles(RoleEnum.Jackal))
-            {
-                var jackal = (Jackal)role;
-                var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
                 
                 if (evilRecruits.Count > 0)
                 {
-                    jackal.EvilRecruit = evilRecruits[evilNum];
+                    while (jackal.EvilRecruit == null)
+                    {
+                        var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
+                        jackal.EvilRecruit = evilRecruits[evilNum];
+                    }
+
                     evilRecruits.Remove(jackal.EvilRecruit);
                     (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit,
                         SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(jackal.Player.PlayerId);
                     writer.Write(jackal.EvilRecruit.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -1697,7 +1708,7 @@ namespace TownOfUsReworked.Patches
                             MeetingRoomManager.Instance.target = null;
                             AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
 
-                            if (GameManager.Instance.CheckTaskCompletion())
+                            if (ShipStatus.Instance.CheckTaskCompletion())
                                 return;
 
                             DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(buttonBarry);
@@ -1874,23 +1885,23 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetSettings:
                         readByte = reader.ReadByte();
-                        GameOptionsManager.Instance.currentNormalGameOptions.MapId = readByte == byte.MaxValue ? (byte)0 : readByte;
-                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                        GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomGameOptions.CrewVision;
-                        GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                        GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
-                        GameOptionsManager.Instance.currentNormalGameOptions.VisualTasks = CustomGameOptions.VisualTasks;
-                        GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
-                        GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                        GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                        GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
-                        GameOptionsManager.Instance.currentNormalGameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-                        GameOptionsManager.Instance.currentNormalGameOptions.VotingTime = CustomGameOptions.VotingTime;
-                        GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-                        GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                        PlayerControl.GameOptions.MapId = readByte == byte.MaxValue ? (byte)0 : readByte;
+                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
+                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                        PlayerControl.GameOptions.CrewLightMod = CustomGameOptions.CrewVision;
+                        PlayerControl.GameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+                        PlayerControl.GameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                        PlayerControl.GameOptions.VisualTasks = CustomGameOptions.VisualTasks;
+                        PlayerControl.GameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+                        PlayerControl.GameOptions.NumImpostors = CustomGameOptions.IntruderCount;
+                        PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                        PlayerControl.GameOptions.TaskBarMode = (TaskBarMode)CustomGameOptions.TaskBarMode;
+                        PlayerControl.GameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
+                        PlayerControl.GameOptions.VotingTime = CustomGameOptions.VotingTime;
+                        PlayerControl.GameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
+                        PlayerControl.GameOptions.KillDistance = CustomGameOptions.InteractionDistance;
 
                         if (CustomGameOptions.AutoAdjustSettings)
                             RandomMap.AdjustSettings(readByte);

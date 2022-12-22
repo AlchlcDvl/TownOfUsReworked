@@ -23,10 +23,10 @@ using Hazel;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
+    [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__24), nameof(IntroCutscene._ShowRole_d__24.MoveNext))]
     public static class SubmergedStartPatch
     {
-        public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
+        public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
         {
             if (SubmergedCompatibility.isSubmerged())
                 Coroutines.Start(SubmergedCompatibility.waitStart(SubmergedCompatibility.resetTimers));

@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Drag Bodies And Hide Them";
             AbilitiesText = "Drag bodies around to hide them from being reported";
             Color = CustomGameOptions.CustomImpColors? Colors.Undertaker : Colors.Intruder;
-            SubFaction = SubFaction.None;
             LastDragged = DateTime.UtcNow;
             RoleType = RoleEnum.Undertaker;
             Faction = Faction.Intruders;
@@ -37,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -66,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

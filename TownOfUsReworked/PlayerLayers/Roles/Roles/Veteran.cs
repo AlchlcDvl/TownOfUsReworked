@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Alert To Kill Anyone Who Touches You";
             AbilitiesText = "Alert to kill whoever interacts with you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastAlerted = DateTime.UtcNow;
             RoleType = RoleEnum.Veteran;
             Faction = Faction.Crew;
@@ -42,8 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Powerful";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -72,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastAlerted = DateTime.UtcNow;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

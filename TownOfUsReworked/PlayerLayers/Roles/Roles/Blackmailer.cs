@@ -36,10 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "This body has a ledger containing everyone's secrets! They must be a Blackmailer!";
             CoronerKillerReport = "The crumpled letter on the body contains the body's secrets. They were killed by a Blackmailer!";
             Results = InspResults.SherConsigInspBm;
-            SubFaction = SubFaction.None;
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
                 " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
             Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
@@ -81,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

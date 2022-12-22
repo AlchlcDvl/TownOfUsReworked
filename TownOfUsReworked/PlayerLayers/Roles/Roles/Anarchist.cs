@@ -29,12 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Utility)";
             IntroText = "Cause chaos";
             Results = InspResults.CrewImpAnMurd;
-            SubFaction = SubFaction.None;
             CoronerDeadReport = "The body has marked down schematics of the place to plot something sinister. They are an Anarchist";
             CoronerKillerReport = "The body seems to have been killed in a very rough manner, like an inexperienced killer. They were killed by an Anarchist!";
             IntroSound = null;
             Base = true;
-            IsRecruit = false;
             Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
             RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
@@ -58,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var synTeam = new List<PlayerControl>();
 

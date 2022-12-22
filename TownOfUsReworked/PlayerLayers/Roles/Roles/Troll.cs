@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Troll Everyone With Your Death";
             AbilitiesText = "Die!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Troll;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -34,12 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var Team = new List<PlayerControl>();
             Team.Add(PlayerControl.LocalPlayer);

@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             else
             {
                 KillButton.gameObject.SetActive(!MeetingHud.Instance);
-                KillButton.SetCoolDown(role.KillTimer(), GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                KillButton.SetCoolDown(role.KillTimer(), PlayerControl.GameOptions.KillCooldown);
                 Utils.SetTarget(ref role.ClosestPlayer, KillButton);
             }
         }

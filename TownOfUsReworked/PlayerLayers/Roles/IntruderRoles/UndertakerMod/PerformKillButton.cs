@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-using AmongUs.GameOptions;
+
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     if (!__instance.enabled)
                         return false;
 
-                    var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+                    var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
                     if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                         return false;

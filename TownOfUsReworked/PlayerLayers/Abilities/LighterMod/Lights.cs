@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.LighterMod
 
             if (player._object.Is(AbilityEnum.Lighter))
             {
-                __result = __instance.MinLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
+                __result = __instance.MinLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
                 return false;
             }
 

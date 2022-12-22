@@ -24,8 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Gorgon(PlayerControl player) : base(player)
         {
             Name = "Gorgon";
-            Base = false;
-            IsRecruit = false;
             StartText = "Turn The <color=#8BFDFD>Crew</color> Into Sculptures";
             AbilitiesText = "- You can stone gaze players, that forces them to stand still till a meeting is called.";
             AttributesText = "- Stoned players cannot move and will die when a meeting is called.";
@@ -34,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Syndicate;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
-            SubFaction = SubFaction.None;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             CoronerDeadReport = "The body has strange snake hair! They must be a Gorgon!";

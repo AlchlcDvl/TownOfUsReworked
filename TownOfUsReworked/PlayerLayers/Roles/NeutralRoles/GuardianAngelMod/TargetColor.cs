@@ -1,11 +1,11 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
-using UnityEngine;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Patches;
+using TownOfUsReworked.Lobby.CustomOption;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
@@ -28,10 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             foreach (var player in __instance.playerStates)
             {
                 if (player.TargetPlayerId == role.TargetPlayer.PlayerId)
-                {
-                    player.NameText.color = role.Color;
-                    player.NameText.text += " ★";
-                }
+                    player.NameText.color = new Color(1f, 0.85f, 0f, 1f);
             }
         }
 
@@ -43,44 +40,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (PlayerControl.LocalPlayer == null)
                 return;
 
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
+            if (PlayerControl.LocalPlayer.Data == null) return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
-                return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel)) return;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
+            if (PlayerControl.LocalPlayer.Data.IsDead) return;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
-            if (role.TargetPlayer == null)
-                return;
+            if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
 
-            if (MeetingHud.Instance != null)
-                UpdateMeeting(MeetingHud.Instance, role);
+            if (!CustomGameOptions.GAKnowsTargetRole) role.TargetPlayer.nameText().color = new Color(1f, 0.85f, 0f, 1f);
 
-            if (!CustomGameOptions.GAKnowsTargetRole)
-            {
-                role.TargetPlayer.nameText().color = role.Color;
-                role.TargetPlayer.nameText().text += " ★";
-            }
+            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected) return;
 
-            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
-                return;
-
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.GAToSurv, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                (byte) CustomRPC.GAToSurv, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             Object.Destroy(role.UsesText);
             DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
 
             GAToSurv(PlayerControl.LocalPlayer);
+
+            
         }
 
         public static void GAToSurv(PlayerControl player)
@@ -93,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                 var jester = new Jester(player);
                 var task = new GameObject("JesterTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
-                task.Text = $"{jester.ColorString}Role: {jester.Name}\nYour target was killed. Now you have to get voted out!\nFake Tasks:";
+                task.Text = $"{jester.ColorString}Role: {jester.Name}\nYour target was killed. Now you get voted out!\nFake Tasks:";
                 player.myTasks.Insert(0, task);
             }
             else if (CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac)
@@ -115,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             else
             {
                 var crew = new Crewmate(player);
-                var task = new GameObject("CrewTask").AddComponent<ImportantTextTask>();
+                var task = new GameObject("CrewmateTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
                 task.Text = $"{crew.ColorString}Role: {crew.Name}\nYour target was killed. Now you side with the Crew!";
                 player.myTasks.Insert(0, task);

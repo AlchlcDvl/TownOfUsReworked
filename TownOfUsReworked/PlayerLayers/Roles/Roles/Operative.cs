@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Detect Which Roles Are Here";
             AbilitiesText = "Place bugs around the map to discover the <color=#FF0000FF>Intruders</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Operative;
             lastBugged = DateTime.UtcNow;
             buggedPlayers = new List<RoleEnum>();
@@ -48,8 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "None";
             DefenseString = "None";
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -74,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return AssetBundle.LoadFromMemory(assets);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Shield a <color=#8BFDFDFF>Crewmate</color> to protect them";
             AbilitiesText = "Protect a <color=#8BFDFDFF>Crewmate</color> using a shield";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Medic;
             Faction = Faction.Crew;
             ShieldedPlayer = null;
@@ -38,12 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

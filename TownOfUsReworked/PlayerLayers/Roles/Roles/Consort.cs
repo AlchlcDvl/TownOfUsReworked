@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Support)";
             IntroText = "Kill those who oppose you";
             Results = InspResults.EscConsGliPois;
-            SubFaction = SubFaction.None;
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
                 " to ensure your victory over others.";
             AlignmentDescription = "You are a Intruder (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
@@ -48,12 +47,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = null;
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

@@ -6,7 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using System;
-using AmongUs.GameOptions;
+
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             if (role == null)
                 return false;
@@ -129,7 +129,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 new Impostor(other);
                 thief.Data.Role.TeamType = RoleTeamTypes.Impostor;
                 RoleManager.Instance.SetRole(thief, RoleTypes.Impostor);
-                thief.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                thief.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {

@@ -20,11 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Juggernaut";
             StartText = "Your Power Grows With Every Kill";
-            Base = false;
-            IsRecruit = false;
             AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
             RoleType = RoleEnum.Juggernaut;
             Faction = Faction.Neutral;
@@ -85,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var juggTeam = new List<PlayerControl>();
             juggTeam.Add(PlayerControl.LocalPlayer);

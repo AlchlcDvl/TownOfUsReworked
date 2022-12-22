@@ -26,8 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Grenadier(PlayerControl player) : base(player)
         {
             Name = "Grenadier";
-            Base = false;
-            IsRecruit = false;
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
             AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.";
             AttributesText = "- Blinding players will fill their screen with white for a short while, making them unable to see anything.";
@@ -43,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "There are flashbangs under the body's belt. They must be a Grenadier!";
             CoronerKillerReport = "The body's eyes have been burned out. They were killed by a Grenadier!";
             Results = InspResults.WraithDetGrenVet;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
@@ -242,7 +239,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return playerControlList;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

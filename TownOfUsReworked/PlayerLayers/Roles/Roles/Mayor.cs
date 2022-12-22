@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Save Your Votes To Mayor Dump Someone";
             AbilitiesText = "Save your votes to vote multiple times";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
             Faction = Faction.Crew;
@@ -37,13 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

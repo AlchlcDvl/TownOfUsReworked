@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The scalpels and human matter on the body indicate that this body is another Coroner!";
             CoronerKillerReport = "";
             Results = InspResults.CoroJaniUTMed;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
@@ -47,8 +46,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " can deduce who is good and who is not.";
             RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies to the point you even know when someone dies!" +
                 " Your strong ability makes you a very tempting target for evils so be careful when revealing information.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -64,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             BodyArrows.Remove(arrow.Key);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

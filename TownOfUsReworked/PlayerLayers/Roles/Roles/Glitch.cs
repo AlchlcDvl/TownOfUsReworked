@@ -33,10 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Glitch(PlayerControl owner) : base(owner)
         {
             Name = "Glitch";
-            Base = false;
-            IsRecruit = false;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastHack = DateTime.UtcNow;
             LastMimic = DateTime.UtcNow;
             LastKill = DateTime.UtcNow;
@@ -104,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var glitchTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             glitchTeam.Add(PlayerControl.LocalPlayer);

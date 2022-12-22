@@ -19,8 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Godfather(PlayerControl player) : base(player)
         {
             Name = "Godfather";
-            Base = false;
-            IsRecruit = false;
             Faction = Faction.Intruders;
             RoleType = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
@@ -29,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "the <color=#6400FFFF>Mafioso</color> become the new <color=#404C08FF>Godfather</color>\nand inherits better abilities of their former" +
                 " role.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Godfather : Colors.Intruder;
-            SubFaction = SubFaction.None;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
@@ -83,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

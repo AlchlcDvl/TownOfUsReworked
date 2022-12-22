@@ -6,12 +6,12 @@ using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
 {
-    [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
+    [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__19), nameof(IntroCutscene._CoBegin_d__19.MoveNext))]
     public static class Start
     {
         public static Sprite Sprite => TownOfUsReworked.Arrow;
 
-        public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
+        public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
         {
             foreach (var ability in Ability.GetAbilities(AbilityEnum.Radar))
             {

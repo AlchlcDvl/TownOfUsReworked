@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Howl And Maul Everyone";
             AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastMauled = DateTime.UtcNow;
             RoleType = RoleEnum.Werewolf;
             Faction = Faction.Neutral;
@@ -35,8 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Maul those who oppose you";
             Results = InspResults.JestJuggWWInv;
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
             AttackString = "Basic";
@@ -87,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var murdTeam = new List<PlayerControl>();
             murdTeam.Add(PlayerControl.LocalPlayer);

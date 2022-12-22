@@ -23,10 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Survivor";
             StartText = "Do Whatever It Takes To Live";
             AbilitiesText = "Stay alive to win";
-            Base = false;
-            IsRecruit = false;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastVested = DateTime.UtcNow;
             RoleType = RoleEnum.Survivor;
             Faction = Faction.Neutral;
@@ -70,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastVested = DateTime.UtcNow;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var survTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             survTeam.Add(PlayerControl.LocalPlayer);

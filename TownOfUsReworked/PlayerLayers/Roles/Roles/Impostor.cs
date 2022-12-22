@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Impostor";
             Faction = Faction.Intruders;
             RoleType = RoleEnum.Impostor;
-            SubFaction = SubFaction.None;
             StartText = "Sabotage And Kill Everyone";
             AbilitiesText = "- None.";
             AttributesText = "- None.";
@@ -27,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.CrewImpAnMurd;
             IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;
-            IsRecruit = false;
             Attack = AttackEnum.Basic;
             Defense = DefenseEnum.None;
             AttackString = "Basic";
@@ -41,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

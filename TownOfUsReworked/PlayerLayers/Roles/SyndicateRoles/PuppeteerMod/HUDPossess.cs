@@ -47,12 +47,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
 
             if (role.PossessButton.graphic.sprite == Puppeteer.PossessSprite)
             {
-                if ((role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000.0f + GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown > 0)
+                if ((role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000.0f + PlayerControl.GameOptions.KillCooldown > 0)
                 {
                     role.PossessButton.SetCoolDown((float)(role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000 +
-                        GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown, GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);       
+                        PlayerControl.GameOptions.KillCooldown, PlayerControl.GameOptions.KillCooldown);       
                     role.Player.SetKillTimer((float)(role.lastPossess - DateTime.UtcNow).TotalMilliseconds / 1000 +
-                        GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                        PlayerControl.GameOptions.KillCooldown);
                     return;
                 }
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
                         role.PossessButton.SetCoolDown((float)(CustomGameOptions.PossessCooldown - (DateTime.UtcNow - role.PossStart).
                         TotalMilliseconds / 1000.0f), CustomGameOptions.PossessCooldown);
                     else
-                        role.PossessButton.SetCoolDown(role.PossessTimer(), GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                        role.PossessButton.SetCoolDown(role.PossessTimer(), PlayerControl.GameOptions.KillCooldown);
                 }
 
                 Utils.SetTarget(ref role.ClosestPlayer, role.PossessButton);

@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.EscConsGliPois;
-            SubFaction = SubFaction.None;
             AlignmentDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on it's own. Use your" +
                 " abilities to their fullest extent to bring about a Crew victory.";
             FactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
@@ -47,12 +46,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "None";
             DefenseString = "None";
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

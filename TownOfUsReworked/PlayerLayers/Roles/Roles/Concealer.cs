@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The ghillie suit on this body makes it look like they are nearly invisible! They must be a Concealer";
             CoronerKillerReport = "There seems to be a strange material on this body. It looks like it's used in ghilli suits. They were killed by a Concealer!";
             Results = InspResults.ConcealGorg;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
@@ -50,8 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "give you the ability to kill, if you didn't already.";
             Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -93,7 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var synTeam = new List<PlayerControl>();
 

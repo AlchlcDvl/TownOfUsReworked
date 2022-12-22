@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.Patches
 {
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Patches
         {
             if (AmongUsClient.Instance.AmHost)
             {
-                previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
+                previousMap = PlayerControl.GameOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
 
                 if (!(commonTasks == 0 && shortTasks == 0 && longTasks == 0))
@@ -36,25 +36,25 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.RandomMapEnabled)
                 {
                     map = GetRandomMap();
-                    GameOptionsManager.Instance.currentNormalGameOptions.MapId = map;
+                    PlayerControl.GameOptions.MapId = map;
                 }
 
-                GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-                GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomGameOptions.CrewVision;
-                GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
-                GameOptionsManager.Instance.currentNormalGameOptions.VisualTasks = CustomGameOptions.VisualTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
-                GameOptionsManager.Instance.currentNormalGameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-                GameOptionsManager.Instance.currentNormalGameOptions.VotingTime = CustomGameOptions.VotingTime;
-                GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-                GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+                PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+                PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
+                PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                PlayerControl.GameOptions.CrewLightMod = CustomGameOptions.CrewVision;
+                PlayerControl.GameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+                PlayerControl.GameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                PlayerControl.GameOptions.VisualTasks = CustomGameOptions.VisualTasks;
+                PlayerControl.GameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+                PlayerControl.GameOptions.NumImpostors = CustomGameOptions.IntruderCount;
+                PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                PlayerControl.GameOptions.TaskBarMode = (TaskBarMode)CustomGameOptions.TaskBarMode;
+                PlayerControl.GameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
+                PlayerControl.GameOptions.VotingTime = CustomGameOptions.VotingTime;
+                PlayerControl.GameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
+                PlayerControl.GameOptions.KillDistance = CustomGameOptions.InteractionDistance;
 
                 unchecked
                 {
@@ -79,21 +79,21 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.AutoAdjustSettings)
                 {
                     if (CustomGameOptions.SmallMapHalfVision)
-                        GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = vision;
+                        PlayerControl.GameOptions.CrewLightMod = vision;
 
-                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1)
+                    if (PlayerControl.GameOptions.MapId == 1)
                         AdjustCooldowns(CustomGameOptions.SmallMapDecreasedCooldown);
 
-                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId >= 4)
+                    if (PlayerControl.GameOptions.MapId >= 4)
                         AdjustCooldowns(-CustomGameOptions.LargeMapIncreasedCooldown);
                 }
 
                 if (CustomGameOptions.RandomMapEnabled)
-                    GameOptionsManager.Instance.currentNormalGameOptions.MapId = previousMap;
+                    PlayerControl.GameOptions.MapId = previousMap;
 
-                GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = commonTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = shortTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = longTasks;
+                PlayerControl.GameOptions.NumCommonTasks = commonTasks;
+                PlayerControl.GameOptions.NumShortTasks = shortTasks;
+                PlayerControl.GameOptions.NumLongTasks = longTasks;
             }
         }
 
@@ -145,10 +145,10 @@ namespace TownOfUsReworked.Patches
             if (map <= 1)
             {
                 if (CustomGameOptions.SmallMapHalfVision)
-                    GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod *= 0.5f;
+                    PlayerControl.GameOptions.CrewLightMod *= 0.5f;
 
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks += CustomGameOptions.SmallMapIncreasedShortTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks += CustomGameOptions.SmallMapIncreasedLongTasks;
+                PlayerControl.GameOptions.NumShortTasks += CustomGameOptions.SmallMapIncreasedShortTasks;
+                PlayerControl.GameOptions.NumLongTasks += CustomGameOptions.SmallMapIncreasedLongTasks;
             }
 
             if (map == 1)
@@ -156,8 +156,8 @@ namespace TownOfUsReworked.Patches
 
             if (map >= 4)
             {
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks -= CustomGameOptions.LargeMapDecreasedShortTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
+                PlayerControl.GameOptions.NumShortTasks -= CustomGameOptions.LargeMapDecreasedShortTasks;
+                PlayerControl.GameOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
                 AdjustCooldowns(CustomGameOptions.LargeMapIncreasedCooldown);
             }
             return;
@@ -195,7 +195,7 @@ namespace TownOfUsReworked.Patches
             Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change, false);
             Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change, false);
             
-            GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown += change;
+            PlayerControl.GameOptions.KillCooldown += change;
 
             if (change % 5 != 0)
             {
@@ -205,7 +205,7 @@ namespace TownOfUsReworked.Patches
                     change += 2.5f;
             }
 
-            GameOptionsManager.Instance.currentNormalGameOptions.EmergencyCooldown += (int)change;
+            PlayerControl.GameOptions.EmergencyCooldown += (int)change;
             return;
         }
     }

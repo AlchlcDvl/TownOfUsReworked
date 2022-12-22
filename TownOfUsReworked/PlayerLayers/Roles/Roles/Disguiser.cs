@@ -28,8 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Disguiser(PlayerControl player) : base(player)
         {
             Name = "Disguiser";
-            Base = false;
-            IsRecruit = false;
             StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
             AbilitiesText = "- You can disguise a player to frame them.";
             AttributesText = "- None.";
@@ -45,7 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The makeup on the body suggests they are a Disguiser!";
             CoronerKillerReport = "The fake eyelashes and makeup all over the body indicates that they were killed by a Disguiser!";
             Results = InspResults.DisgMorphCamoAgent;
-            SubFaction = SubFaction.None;
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
                 " to ensure your victory over others.";
             Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
@@ -145,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Undisguise();
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

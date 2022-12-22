@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             {
                 if (ShipStatus.Instance != null)
                 {
-                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+                    switch (PlayerControl.GameOptions.MapId)
                     {
                         case 0:
                             var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();

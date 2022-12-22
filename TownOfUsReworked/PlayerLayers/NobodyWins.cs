@@ -6,7 +6,7 @@ using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers
 {
-    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
     internal class Outro
     {
         public static void Postfix(EndGameManager __instance)

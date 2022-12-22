@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal Faction Faction { get; set; }
         protected internal RoleAlignment RoleAlignment { get; set; }
         protected internal InspResults Results { get; set; }
-        protected internal SubFaction SubFaction { get; set; }
+        protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
         protected internal AttackEnum Attack { get; set; }
         protected internal DefenseEnum Defense { get; set; }
         protected internal AudioClip IntroSound { get; set; }
@@ -72,9 +72,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string RoleDescription { get; set; }
         protected internal string AlignmentDescription { get; set; }
         protected internal string Objectives { get; set; }
-        protected internal int RoleID { get; set; }
-        protected internal bool Base { get; set; }
-        protected internal bool IsRecruit { get; set; }
+        protected internal bool Base { get; set; } = false;
+        protected internal bool IsRecruit { get; set; } = false;
 
         protected Role(PlayerControl player)
         {
@@ -99,7 +98,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        protected float Scale { get; set; } = 1f;
         public bool LostByRPC { get; protected set; }
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.Count;
@@ -143,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return HashCode.Combine(Player, (int)RoleType);
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
+        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance) {}
 
         public static void NobodyWinsFunc()
         {
@@ -298,10 +296,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player == null)
                 return "";
 
-            if (CamouflageUnCamouflage.IsCamoed | player == null)
+            if (CamouflageUnCamouflage.IsCamoed)
                 return "";
 
             string PlayerName = Player.GetDefaultOutfit().PlayerName;
+            
+            if (!TownOfUsReworked.isTest && Local)
+                return PlayerName;
+
             int ColorID = Player.CurrentOutfit.ColorId;
 
             var modifier = Modifier.GetModifier(Player);
@@ -312,77 +314,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (revealTasks)
                 PlayerName += $" ({TotalTasks - TasksLeft}/{TotalTasks})";
-
-            if (CustomGameOptions.LighterDarker)
-            {
-                LightDarkColors.Add(0, "darker"); //Red
-                LightDarkColors.Add(1, "darker"); //Blue
-                LightDarkColors.Add(2, "darker"); //Green
-                LightDarkColors.Add(3, "lighter"); //Pink
-                LightDarkColors.Add(4, "lighter"); //Orange
-                LightDarkColors.Add(5, "lighter"); //Yellow
-                LightDarkColors.Add(6, "darker"); //Black
-                LightDarkColors.Add(7, "lighter"); //White
-                LightDarkColors.Add(8, "darker"); //Purple
-                LightDarkColors.Add(9, "darker"); //Brown
-                LightDarkColors.Add(10, "lighter"); //Cyan
-                LightDarkColors.Add(11, "lighter"); //Lime
-                LightDarkColors.Add(12, "darker"); //Maroon
-                LightDarkColors.Add(13, "lighter"); //Rose
-                LightDarkColors.Add(14, "lighter"); //Banana
-                LightDarkColors.Add(15, "darker"); //Grey
-                LightDarkColors.Add(16, "darker"); //Tan
-                LightDarkColors.Add(17, "lighter"); //Coral
-                LightDarkColors.Add(18, "darker"); //Watermelon
-                LightDarkColors.Add(19, "darker"); //Chocolate
-                LightDarkColors.Add(20, "lighter"); //Sky Blue
-                LightDarkColors.Add(21, "darker"); //Biege
-                LightDarkColors.Add(22, "lighter"); //Hot Pink
-                LightDarkColors.Add(23, "lighter"); //Turquoise
-                LightDarkColors.Add(24, "lighter"); //Lilac
-                LightDarkColors.Add(25, "darker"); //Olive
-                LightDarkColors.Add(26, "lighter"); //Azure
-                LightDarkColors.Add(27, "lighter"); //Tomato
-                LightDarkColors.Add(28, "darker"); //backrooms
-                LightDarkColors.Add(29, "lighter"); //Gold
-                LightDarkColors.Add(30, "darker"); //Space
-                LightDarkColors.Add(31, "lighter"); //Ice
-                LightDarkColors.Add(32, "lighter"); //Mint
-                LightDarkColors.Add(33, "darker"); //BTS
-                LightDarkColors.Add(34, "darker"); //Forest Green
-                LightDarkColors.Add(35, "lighter"); //Donation
-                LightDarkColors.Add(36, "darker"); //Cherry
-                LightDarkColors.Add(37, "lighter"); //Toy
-                LightDarkColors.Add(38, "lighter"); //Pizzaria
-                LightDarkColors.Add(39, "lighter"); //Starlight
-                LightDarkColors.Add(40, "lighter"); //Softball
-                LightDarkColors.Add(41, "darker"); //Dark Jester
-                LightDarkColors.Add(42, "darker"); //FRESH
-                LightDarkColors.Add(43, "darker"); //Goner
-                LightDarkColors.Add(44, "lighter"); //Psychic Friend
-                LightDarkColors.Add(45, "lighter"); //Frost
-                LightDarkColors.Add(46, "darker"); //Abyss Green
-                LightDarkColors.Add(47, "darker"); //Midnight
-                LightDarkColors.Add(48, "darker"); //<3
-                LightDarkColors.Add(49, "lighter"); //Heat From Fire
-                LightDarkColors.Add(50, "lighter"); //Fire From Heat
-                LightDarkColors.Add(51, "lighter"); //Determination
-                LightDarkColors.Add(52, "lighter"); //Patience
-                LightDarkColors.Add(53, "darker"); //Bravery
-                LightDarkColors.Add(54, "darker"); //Integrity
-                LightDarkColors.Add(55, "darker"); //Perserverance
-                LightDarkColors.Add(56, "darker"); //Kindness
-                LightDarkColors.Add(57, "lighter"); //Bravery
-                LightDarkColors.Add(58, "darker"); //Purple Plumber
-                LightDarkColors.Add(59, "lighter"); //Rainbow
-
-                var color = LightDarkColors[ColorID];
-
-                if (color == "lighter")
-                    PlayerName += " [L]";
-                else if (color == "darker")
-                    PlayerName += " [D]";
-            }
             
             if (objectifier != null)
                 PlayerName += $" {objectifier.GetColoredSymbol()}";
@@ -390,6 +321,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var role in GetRoles(RoleEnum.GuardianAngel))
             {
                 var ga = (GuardianAngel)role;
+
+                if (ga.TargetPlayer == null)
+                    continue;
 
                 if (Player == ga.TargetPlayer && Player == PlayerControl.LocalPlayer && CustomGameOptions.GATargetKnows)
                     PlayerName += "<color=#FFFFFFFF> ★</color>";
@@ -399,8 +333,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var exe = (Executioner)role;
 
+                if (exe.TargetPlayer == null)
+                    continue;
+
                 if (Player == exe.TargetPlayer && Player == PlayerControl.LocalPlayer && CustomGameOptions.ExeTargetKnows)
                     PlayerName += "<color=#CCCCCCFF> §</color>";
+            }
+
+            foreach (var role in GetRoles(RoleEnum.Jackal))
+            {
+                var jackal = (Jackal)role;
+
+                if ((Player == jackal.GoodRecruit || Player == jackal.GoodRecruit) && Player == PlayerControl.LocalPlayer && CustomGameOptions.ExeTargetKnows)
+                    PlayerName += "<color=#575657FF> $</color>";
             }
 
             if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding | MeetingHud.Instance.state ==
@@ -569,10 +514,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
             
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__19), nameof(IntroCutscene._CoBegin_d__19.MoveNext))]
             public static class IntroCutscene_CoBegin_d__19
             {
-                public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
+                public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -587,6 +532,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
                         __instance.__4__this.ImpostorText.text = role.IntroText;
+                        __instance.__4__this.RoleBlurbText.text = role.StartText;
 
                         if (role.IntroSound != null)
                         {
@@ -633,10 +579,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__32), nameof(IntroCutscene._ShowTeam_d__32.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__21), nameof(IntroCutscene._ShowTeam_d__21.MoveNext))]
             public static class IntroCutscene_ShowTeam__d_21
             {
-                public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
+                public static void Prefix(IntroCutscene._ShowTeam_d__21 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -644,7 +590,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         role.IntroPrefix(__instance);
                 }
 
-                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
+                public static void Postfix(IntroCutscene._ShowTeam_d__21 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -653,23 +599,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.TeamTitle.text = role.FactionName;
                         __instance.__4__this.TeamTitle.color = role.FactionColor;
                         __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
-                        __instance.__4__this.RoleText.text = role.Name;
-                        __instance.__4__this.RoleText.color = role.Color;
-                        __instance.__4__this.YouAreText.color = role.Color;
-                        __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
                         __instance.__4__this.ImpostorText.text = role.IntroText;
-
-                        if (role.IntroSound != null)
-                        {
-                            try
-                            {
-                                SoundManager.Instance.PlaySound(role.IntroSound, false, 1f);
-                            } catch {}
-                        }
-
-                        if (!role.Base)
-                            __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
 
                     if (StatusText != null)
@@ -702,24 +633,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__24), nameof(IntroCutscene._ShowRole_d__24.MoveNext))]
             public static class IntroCutscene_ShowRole_d__24
             {
-                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
+                public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
                     if (role != null)
                     {
-                        __instance.__4__this.TeamTitle.text = role.FactionName;
-                        __instance.__4__this.TeamTitle.color = role.FactionColor;
-                        __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
                         __instance.__4__this.RoleText.text = role.Name;
                         __instance.__4__this.RoleText.color = role.Color;
                         __instance.__4__this.YouAreText.color = role.Color;
+                        __instance.__4__this.RoleBlurbText.text = role.StartText;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
-                        __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = role.IntroText;
 
                         if (role.IntroSound != null)
                         {
@@ -731,43 +658,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                         if (!role.Base)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
-                    }
-
-                    if (StatusText != null)
-                    {
-                        var player = PlayerControl.LocalPlayer;
-                        var modifier = Modifier.GetModifier(player);
-                        var objectifier = Objectifier.GetObjectifier(player);
-                        var ability = Ability.GetAbility(player);
-                        var statusString = "Status:";
-
-                        StatusText.color = Colors.Status;
-
-                        if (modifier != null)
-                            statusString += " <color=#" + modifier.Color.ToHtmlStringRGBA() + ">" + modifier.Name + "</color>,";
-
-                        if (objectifier != null)
-                            statusString += " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">" + objectifier.Name + "</color>,";
-
-                        if (ability != null)
-                            statusString += " <color=#" + ability.Color.ToHtmlStringRGBA() + ">" + ability.Name + "</color>";
-                        
-                        if (ability == null)
-                            statusString = statusString.Remove(statusString.Length - 1);
-
-                        StatusText.text = "<size=4>" + statusString + "</size>";
-
-                        StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
-                        StatusText.gameObject.SetActive(true);
                     }
                 }
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__110), nameof(PlayerControl._CoSetTasks_d__110.MoveNext))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__110 __instance)
             {
                 if (__instance == null)
                     return;
@@ -814,7 +713,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus))]
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
         public static class ShipStatus_KMPKPPGPNIH
         {
             public static bool Prefix(ShipStatus __instance)
@@ -932,34 +831,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Ability.AbilityHistory.Clear();
             }
         }
-
-        [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames),
-            typeof(Il2CppReferenceArray<Il2CppSystem.Object>))]
-        public static class TranslationController_GetString
-        {
-            public static void Postfix(ref string __result, [HarmonyArgument(0)] StringNames name)
-            {
-                if (ExileController.Instance == null || ExileController.Instance.exiled == null)
-                    return;
-
-                switch (name)
-                {
-                    case StringNames.ExileTextPN:
-                    case StringNames.ExileTextSN:
-                    case StringNames.ExileTextPP:
-                    case StringNames.ExileTextSP:
-                        {
-                            var info = ExileController.Instance.exiled;
-                            var role = GetRole(info.Object);
-                            if (role == null) return;
-                            var roleName = role.RoleType == RoleEnum.Glitch ? role.Name : $"The {role.Name}";
-                            __result = $"{info.PlayerName} was {roleName}.";
-                            return;
-                        }
-                }
-            }
-        }
-
+        
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class HudManager_Update
         {

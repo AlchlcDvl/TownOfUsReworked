@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                             !(player.MyPhysics.myPlayer.Data.IsDead | player.MyPhysics.myPlayer.Data.Disconnected))
                         {
                             if (player.MyPhysics.AmOwner)
-                                player.MyPhysics.body.velocity = new Vector2(GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod, 0f);
+                                player.MyPhysics.body.velocity = new Vector2(PlayerControl.GameOptions.PlayerSpeedMod, 0f);
                         }
                     }
                 }

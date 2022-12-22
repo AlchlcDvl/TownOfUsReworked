@@ -22,12 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public SerialKiller(PlayerControl player) : base(player)
         {
             Name = "Serial Killer";
-            Base = false;
-            IsRecruit = false;
             StartText = "You Like To Play With Knives";
             AbilitiesText = "Engage in your bloodlust to kill everyone\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastLusted = DateTime.UtcNow;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.SerialKiller;
@@ -89,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var skTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             skTeam.Add(PlayerControl.LocalPlayer);

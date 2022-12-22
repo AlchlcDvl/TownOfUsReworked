@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Lobby.CustomOption;
-using AmongUs.GameOptions;
+
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
     public class ExtraTasks
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(GameManager), nameof(GameManager.DidImpostorsWin))]
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.IsGameOverDueToDeath))]
         public static void Postfix(ShipStatus __instance, ref bool __result)
         {
             __result = false;
@@ -26,14 +26,14 @@ namespace TownOfUsReworked.Patches
             var normalTask = __instance.NormalTasks.Count;
             var longTask = __instance.LongTasks.Count;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks > commonTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = commonTask;
+            if (PlayerControl.GameOptions.NumCommonTasks > commonTask)
+                PlayerControl.GameOptions.NumCommonTasks = commonTask;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks > normalTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = normalTask;
+            if (PlayerControl.GameOptions.NumShortTasks > normalTask)
+                PlayerControl.GameOptions.NumShortTasks = normalTask;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks > longTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = longTask;
+            if (PlayerControl.GameOptions.NumLongTasks > longTask)
+                PlayerControl.GameOptions.NumLongTasks = longTask;
 
             return true;
         }

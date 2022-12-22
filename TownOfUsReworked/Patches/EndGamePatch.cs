@@ -102,22 +102,31 @@ namespace TownOfUsReworked.Patches
                 if (objectifier != null)
                     summary += objectifier.GetColoredSymbol();
 
-                foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
+                foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
                 {
-                    var ga = (GuardianAngel)role;
+                    if (ga.TargetPlayer == null)
+                        continue;
                         
                     if (playerControl.PlayerId == ga.TargetPlayer.PlayerId)
                         summary += " <color=#FFFFFFFF>★</color>";
                 }
 
-                foreach (var role in Role.GetRoles(RoleEnum.Executioner))
+                foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                 {
-                    var exe = (Executioner)role;
+                    if (exe.TargetPlayer == null)
+                        continue;
                         
                     if (playerControl.PlayerId == exe.TargetPlayer.PlayerId)
                         summary += " <color=#CCCCCCFF>§</color>";
                 }
 
+                foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
+                {
+                    if (jackal.GoodRecruit != null && playerControl.PlayerId == jackal.GoodRecruit.PlayerId)
+                        summary += " <color=#575657FF>$</color>";
+                    else if (jackal.EvilRecruit != null && playerControl.PlayerId == jackal.EvilRecruit.PlayerId)
+                        summary += " <color=#575657FF>$</color>";
+                }
                 
                 if ((playerControl.Is(Faction.Crew) && !playerControl.Is(ObjectifierEnum.Lovers)) | playerControl.Is(ObjectifierEnum.Taskmaster) |
                     (playerControl.Is(ObjectifierEnum.Phantom) && playerControl.Data.IsDead))
@@ -129,7 +138,7 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
-    public class EndGameManagerSetUpPatch
+    public class ShipStatusSetUpPatch
     {
         public static void Postfix(EndGameManager __instance)
         {

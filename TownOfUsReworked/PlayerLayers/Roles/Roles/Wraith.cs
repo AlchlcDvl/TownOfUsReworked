@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Sneaky Sneaky";
             AbilitiesText = "Turn invisible and kill undetected";
             Color = CustomGameOptions.CustomImpColors ? Colors.Wraith : Colors.Intruder;
-            SubFaction = SubFaction.None;
             LastInvis = DateTime.UtcNow;
             RoleType = RoleEnum.Wraith;
             Faction = Faction.Intruders;
@@ -39,8 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -107,7 +104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Player.myRend().color = new Color32(255, 255, 255, 255);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

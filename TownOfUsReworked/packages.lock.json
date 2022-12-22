@@ -4,9 +4,9 @@
     "net6.0": {
       "AmongUs.GameLibs.Steam": {
         "type": "Direct",
-        "requested": "[2022.12.8, )",
-        "resolved": "2022.12.8",
-        "contentHash": "IJsIi89xUYRvA54YtNVEJjf25hhF3LWzkNBslKCNDUpL1aQ/PhNyO4j18pO71DCgW/qr1P1j8+CwByuBLsInNA=="
+        "requested": "[2022.10.25, )",
+        "resolved": "2022.10.25",
+        "contentHash": "PWgkH/VvMlShVhZB8G432q0tnMaNVZrbIdbEMCZN/fETUlT/ch+qQj4PdTcZhPHREbnJHH3ijHxlca1d7QMBcQ=="
       },
       "BepInEx.AutoPlugin": {
         "type": "Direct",
@@ -45,11 +45,11 @@
       },
       "Reactor": {
         "type": "Direct",
-        "requested": "[2.0.0-ci.224, )",
-        "resolved": "2.0.0-ci.224",
-        "contentHash": "3Xpyw6VBc7HX0jbS017U6bqvrqKQvuzyoch2qHHaQqrzwz3J6p+BR9w3yNySMv3AAqOfvl2/B2+3CWGC7OkBRw==",
+        "requested": "[2.0.0, )",
+        "resolved": "2.0.0",
+        "contentHash": "7Bq0QksAUVqhZ++2jdMvjbbZSBjb4eYN5BAp2Q/b8h2PiFfuvVd/oVooBMjwm6Mooa0URFcISA1tBXNIJEcoTw==",
         "dependencies": {
-          "BepInEx.Unity.IL2CPP": "6.0.0-be.663"
+          "BepInEx.Unity.IL2CPP": "6.0.0-be.662"
         }
       },
       "System.Text.Json": {

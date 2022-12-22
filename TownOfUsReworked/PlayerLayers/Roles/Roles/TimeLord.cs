@@ -24,12 +24,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Rewind Time";
             AbilitiesText = "Rewind Time!";
             Color = CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew;
-            SubFaction = SubFaction.None;
             StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
             FinishRewind = DateTime.UtcNow;
             RoleType = RoleEnum.TimeLord;
             Faction = Faction.Crew;
-            Scale = 1.4f;
             UsesLeft = CustomGameOptions.RewindMaxUses;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
@@ -42,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -77,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.RewindCooldown;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

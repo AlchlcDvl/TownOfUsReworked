@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             Faded = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * PlayerControl.GameOptions.CrewLightMod;
 
             if (PlayerControl.LocalPlayer == null)
                 return;

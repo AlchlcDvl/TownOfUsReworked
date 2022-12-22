@@ -18,13 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Sidekick";
             Faction = Faction.Syndicate;
             RoleType = RoleEnum.Sidekick;
-            Base = false;
-            IsRecruit = false;
             StartText = "Succeed The <color=#FFFCCEFF>Rebel</color>";
             AbilitiesText = "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former role.";
             AttributesText = "- None.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
-            SubFaction = SubFaction.None;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
@@ -77,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

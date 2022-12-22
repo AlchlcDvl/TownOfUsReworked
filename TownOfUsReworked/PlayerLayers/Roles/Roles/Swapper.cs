@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Swap The Votes Of Two People";
             AbilitiesText = "Swap two people's votes to save the <color=#8BFDFDFF>Crew</color>!";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Swapper : Colors.Crew;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Swapper;
             Faction = Faction.Crew;
             FactionName = "Crew";
@@ -34,12 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
-    public class CustomNumberOption : CustomOption
+    public class CustomSpawnOption : CustomOption
     {
-        protected internal CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment,
-            Func<object, string> format = null) : base(id, menu, name, CustomOptionType.Number, defaultValue, format)
+        protected internal CustomSpawnOption(int id, MultiMenu menu, string name, float count, float countmin, float countmax, float increment,
+            Func<object, string> format = null) : base(id, menu, name, CustomOptionType.Spawn, count, format)
         {
-            Min = min;
-            Max = max;
+            Min = countmin;
+            Max = countmax;
             Increment = increment;
         }
 
-        protected internal CustomNumberOption(bool indent, int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment,
-            Func<object, string> format = null) : this(id, menu, name, defaultValue, min, max, increment, format)
+        protected internal CustomSpawnOption(bool indent, int id, MultiMenu menu, string name, float value, float min, float max, float increment,
+            Func<object, string> format = null) : this(id, menu, name, value, min, max, increment, format)
         {
             Indent = indent;
         }

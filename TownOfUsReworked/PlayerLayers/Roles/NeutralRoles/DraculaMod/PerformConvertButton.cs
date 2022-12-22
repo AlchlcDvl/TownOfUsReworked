@@ -5,12 +5,13 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
@@ -150,15 +151,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
         public static void Convert(Dracula dracRole, PlayerControl other)
         {
-            var role = Utils.GetRole(other);
-            var roleVal = Role.GetRoleValue(role);
+            var role = Role.GetRole(other);
             var drac = dracRole.Player;
-            var ability = Utils.GetAbility(other);
+            var ability = Ability.GetAbility(other);
 
             var convert = false;
             var convertNeut = false;
 
-            switch (role)
+            switch (role.RoleType)
             {
                 case RoleEnum.Sheriff:
                 case RoleEnum.Engineer:
@@ -179,6 +179,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Operative:
                 case RoleEnum.Detective:
                 case RoleEnum.Shifter:
+                case RoleEnum.Inspector:
+                case RoleEnum.Escort:
 
                     convert = true;
 
@@ -190,8 +192,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Cannibal:
                 case RoleEnum.Cryomaniac:
                 case RoleEnum.Thief:
-                case RoleEnum.Inspector:
-                case RoleEnum.Escort:
                 case RoleEnum.Troll:
                 case RoleEnum.Executioner:
                 case RoleEnum.Spy:
@@ -200,6 +200,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Werewolf:
                 case RoleEnum.Murderer:
                 case RoleEnum.SerialKiller:
+                case RoleEnum.Jackal:
+                case RoleEnum.Recruit:
                 case RoleEnum.Arsonist:
 
                     convertNeut = true;
@@ -209,16 +211,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (convertNeut == true && CustomGameOptions.DraculaConvertNeuts)
             {
-                if (roleVal.RoleAlignment != RoleAlignment.NeutralKill)
+                if (role.RoleAlignment != RoleAlignment.NeutralKill)
                 {
-                    if (role == RoleEnum.Amnesiac)
+                    if (role.RoleType == RoleEnum.Amnesiac)
                     {
                         var amne = Role.GetRole<Amnesiac>(other);
                         amne.BodyArrows.Values.DestroyAll();
                         amne.BodyArrows.Clear();
                         amne.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
                     }
-                    else if (role == RoleEnum.Cannibal)
+                    else if (role.RoleType == RoleEnum.Cannibal)
                     {
                         var can = Role.GetRole<Cannibal>(other);
                         can.BodyArrows.Values.DestroyAll();
@@ -235,32 +237,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     new Dampyr(other);
                 }
             }
-            else if (convert == true && ability != AbilityEnum.Snitch)
+            else if (convert == true && ability.AbilityType != AbilityEnum.Snitch)
             {
-                if (roleVal.RoleAlignment != RoleAlignment.CrewKill)
+                if (role.RoleAlignment != RoleAlignment.CrewKill)
                 {
-                    if (role == RoleEnum.Investigator)
+                    if (role.RoleType == RoleEnum.Investigator)
                     {
-                        var invRole = Role.GetRole<Investigator>(drac);
+                        var invRole = Role.GetRole<Investigator>(other);
                         Footprint.DestroyAll(invRole);
                     }
-                    else if (role == RoleEnum.Tracker)
+                    else if (role.RoleType == RoleEnum.Tracker)
                     {
-                        var trackerRole = Role.GetRole<Tracker>(drac);
+                        var trackerRole = Role.GetRole<Tracker>(other);
                         trackerRole.TrackerArrows.Values.DestroyAll();
                         trackerRole.TrackerArrows.Clear();
                         trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
                     }
-                    else if (role == RoleEnum.Coroner)
+                    else if (role.RoleType == RoleEnum.Coroner)
                     {
-                        var coronerRole = Role.GetRole<Coroner>(drac);
+                        var coronerRole = Role.GetRole<Coroner>(other);
                         coronerRole.BodyArrows.Values.DestroyAll();
                         coronerRole.BodyArrows.Clear();
                         DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                     }
-                    else if (role == RoleEnum.Operative)
+                    else if (role.RoleType == RoleEnum.Operative)
                     {
-                        var opRole = Role.GetRole<Operative>(drac);
+                        var opRole = Role.GetRole<Operative>(other);
                         opRole.UsesLeft = CustomGameOptions.MaxBugs;
                         opRole.buggedPlayers.Clear();
                         opRole.bugs.ClearBugs();

@@ -14,8 +14,8 @@
 	<PropertyGroup>
 		<GameProvider>Static</GameProvider>
 		<GamePlatform Condition="'$(GamePlatform)' == ''">Steam</GamePlatform>
-		<GameVersion Condition="'$(GamePlatform)' == 'Steam'">2022.12.8</GameVersion>
-		<GameVersion Condition="'$(GamePlatform)' == 'Itch'">2022.12.8</GameVersion>
+		<GameVersion Condition="'$(GamePlatform)' == 'Steam'">2022.10.25</GameVersion>
+		<GameVersion Condition="'$(GamePlatform)' == 'Itch'">2022.10.25</GameVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -33,8 +33,8 @@
   	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Reactor" Version="2.0.0-ci.224" />
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.664" Private="false" ExcludeAssets="runtime;native" />
+		<PackageReference Include="Reactor" Version="2.0.0" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.664" />
 		<PackageReference Include="AmongUs.GameLibs.$(GamePlatform)" Version="$(GameVersion)" PrivateAssets="all" />
         <PackageReference Include="BepInEx.AutoPlugin" Version="1.1.0" PrivateAssets="all" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.0.1" PrivateAssets="all" ExcludeAssets="runtime" />

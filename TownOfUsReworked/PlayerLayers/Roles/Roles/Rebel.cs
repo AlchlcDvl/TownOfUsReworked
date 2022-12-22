@@ -27,9 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better abilities of their former" +
                 " role.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
-            SubFaction = SubFaction.None;
-            Base = false;
-            IsRecruit = false;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
@@ -83,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

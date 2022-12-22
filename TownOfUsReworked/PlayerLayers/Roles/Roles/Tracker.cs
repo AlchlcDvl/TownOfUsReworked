@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Stalk Everyone To Monitor Their Movements";
             AbilitiesText = "Track suspicious players";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastTracked = DateTime.UtcNow;
             RoleType = RoleEnum.Tracker;
             Faction = Faction.Crew;
@@ -42,8 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -77,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             TrackerArrows.Remove(arrow.Key);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

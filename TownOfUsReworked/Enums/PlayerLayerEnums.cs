@@ -80,6 +80,7 @@ namespace TownOfUsReworked.Enums
         Vampire,
         Werewolf,
         Jackal,
+        Recruit,
 
         Blackmailer,
         Camouflager,

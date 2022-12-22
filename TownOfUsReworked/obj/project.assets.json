@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "AmongUs.GameLibs.Steam/2022.12.8": {
+      "AmongUs.GameLibs.Steam/2022.10.25": {
         "type": "package",
         "build": {
           "build/AmongUs.GameLibs.Steam.props": {}
@@ -14,7 +14,7 @@
           "lib/net6.0/AssetRipper.VersionUtilities.dll": {}
         },
         "runtime": {
-          "lib/net6.0/_._": {}
+          "lib/net6.0/AssetRipper.VersionUtilities.dll": {}
         }
       },
       "BepInEx.AutoPlugin/1.1.0": {
@@ -33,7 +33,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/BepInEx.Core.dll": {
             "related": ".xml"
           }
         }
@@ -62,7 +62,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/BepInEx.Unity.Common.dll": {
             "related": ".xml"
           }
         }
@@ -86,7 +86,7 @@
           }
         },
         "runtime": {
-          "lib/net6.0/_._": {
+          "lib/net6.0/BepInEx.Unity.IL2CPP.dll": {
             "related": ".xml"
           }
         }
@@ -112,7 +112,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/0Harmony.dll": {
             "related": ".xml"
           }
         }
@@ -125,7 +125,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.1/_._": {
+          "lib/netstandard2.1/Iced.dll": {
             "related": ".xml"
           }
         }
@@ -143,7 +143,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/Il2CppInterop.Common.dll": {
             "related": ".xml"
           }
         }
@@ -160,7 +160,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.1/_._": {
+          "lib/netstandard2.1/Il2CppInterop.Generator.dll": {
             "related": ".xml"
           }
         }
@@ -177,7 +177,7 @@
           }
         },
         "runtime": {
-          "lib/net6.0/_._": {
+          "lib/net6.0/Il2CppInterop.HarmonySupport.dll": {
             "related": ".xml"
           }
         }
@@ -194,7 +194,7 @@
           }
         },
         "runtime": {
-          "lib/net6.0/_._": {
+          "lib/net6.0/Il2CppInterop.Runtime.dll": {
             "related": ".xml"
           }
         }
@@ -205,7 +205,7 @@
           "lib/netstandard2.1/IndexRange.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.1/_._": {}
+          "lib/netstandard2.1/IndexRange.dll": {}
         }
       },
       "js6pak.Gee.External.Capstone/2.1.0": {
@@ -216,14 +216,42 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/Gee.External.Capstone.dll": {
             "related": ".xml"
           }
         },
         "runtimeTargets": {
-          "runtimes/osx-x64/native/_._": {
+          "runtimes/linux-arm/native/libcapstone.so": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/libcapstone.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-x64/native/libcapstone.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x86/native/libcapstone.so": {
+            "assetType": "native",
+            "rid": "linux-x86"
+          },
+          "runtimes/osx-arm64/native/libcapstone.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/libcapstone.dylib": {
             "assetType": "native",
             "rid": "osx-x64"
+          },
+          "runtimes/win-x64/native/capstone.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/capstone.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
           }
         }
       },
@@ -235,7 +263,7 @@
           }
         },
         "runtime": {
-          "lib/net6.0/_._": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "related": ".xml"
           }
         },
@@ -278,7 +306,16 @@
           }
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {
+          "lib/netstandard2.0/Mono.Cecil.Mdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Pdb.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.Rocks.dll": {
+            "related": ".pdb"
+          },
+          "lib/netstandard2.0/Mono.Cecil.dll": {
             "related": ".Mdb.pdb;.pdb;.Pdb.pdb;.Rocks.pdb"
           }
         }
@@ -301,7 +338,7 @@
           }
         },
         "runtime": {
-          "lib/net5.0/_._": {
+          "lib/net5.0/MonoMod.RuntimeDetour.dll": {
             "related": ".xml"
           }
         }
@@ -323,15 +360,15 @@
           }
         },
         "runtime": {
-          "lib/net5.0/_._": {
+          "lib/net5.0/MonoMod.Utils.dll": {
             "related": ".xml"
           }
         }
       },
-      "Reactor/2.0.0-ci.224": {
+      "Reactor/2.0.0": {
         "type": "package",
         "dependencies": {
-          "BepInEx.Unity.IL2CPP": "6.0.0-be.663"
+          "BepInEx.Unity.IL2CPP": "6.0.0-be.662"
         },
         "compile": {
           "lib/net6.0/Reactor.dll": {
@@ -347,7 +384,7 @@
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/debian.8-x64/native/_._": {
+          "runtimes/debian.8-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "debian.8-x64"
           }
@@ -356,7 +393,7 @@
       "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/fedora.23-x64/native/_._": {
+          "runtimes/fedora.23-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "fedora.23-x64"
           }
@@ -365,7 +402,7 @@
       "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/fedora.24-x64/native/_._": {
+          "runtimes/fedora.24-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "fedora.24-x64"
           }
@@ -433,7 +470,7 @@
       "runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/opensuse.13.2-x64/native/_._": {
+          "runtimes/opensuse.13.2-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "opensuse.13.2-x64"
           }
@@ -442,7 +479,7 @@
       "runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/opensuse.42.1-x64/native/_._": {
+          "runtimes/opensuse.42.1-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "opensuse.42.1-x64"
           }
@@ -451,7 +488,7 @@
       "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple/4.3.0": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/osx.10.10-x64/native/_._": {
+          "runtimes/osx.10.10-x64/native/System.Security.Cryptography.Native.Apple.dylib": {
             "assetType": "native",
             "rid": "osx.10.10-x64"
           }
@@ -460,7 +497,7 @@
       "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/osx.10.10-x64/native/_._": {
+          "runtimes/osx.10.10-x64/native/System.Security.Cryptography.Native.OpenSsl.dylib": {
             "assetType": "native",
             "rid": "osx.10.10-x64"
           }
@@ -469,7 +506,7 @@
       "runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/rhel.7-x64/native/_._": {
+          "runtimes/rhel.7-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "rhel.7-x64"
           }
@@ -478,7 +515,7 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/ubuntu.14.04-x64/native/_._": {
+          "runtimes/ubuntu.14.04-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.14.04-x64"
           }
@@ -487,7 +524,7 @@
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/ubuntu.16.04-x64/native/_._": {
+          "runtimes/ubuntu.16.04-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.16.04-x64"
           }
@@ -496,7 +533,7 @@
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
         "type": "package",
         "runtimeTargets": {
-          "runtimes/ubuntu.16.10-x64/native/_._": {
+          "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.16.10-x64"
           }
@@ -518,7 +555,7 @@
           "lib/netstandard2.0/Cpp2IL.Core.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {}
+          "lib/netstandard2.0/Cpp2IL.Core.dll": {}
         }
       },
       "Samboy063.LibCpp2IL/2022.0.7.2": {
@@ -531,7 +568,7 @@
           "lib/netstandard2.0/LibCpp2IL.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {}
+          "lib/netstandard2.0/LibCpp2IL.dll": {}
         }
       },
       "Samboy063.WasmDisassembler/2022.0.2": {
@@ -540,7 +577,7 @@
           "lib/netstandard2.0/WasmDisassembler.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {}
+          "lib/netstandard2.0/WasmDisassembler.dll": {}
         }
       },
       "SemanticVersioning/2.0.2": {
@@ -549,7 +586,7 @@
           "lib/netstandard2.0/SemanticVersioning.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {}
+          "lib/netstandard2.0/SemanticVersioning.dll": {}
         }
       },
       "System.Collections/4.3.0": {
@@ -585,7 +622,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Collections.Concurrent.dll": {}
         }
       },
       "System.Collections.NonGeneric/4.3.0": {
@@ -604,7 +641,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Collections.NonGeneric.dll": {}
         }
       },
       "System.Collections.Specialized/4.3.0": {
@@ -624,7 +661,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Collections.Specialized.dll": {}
         }
       },
       "System.ComponentModel/4.3.0": {
@@ -638,7 +675,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.ComponentModel.dll": {}
         }
       },
       "System.ComponentModel.Primitives/4.3.0": {
@@ -654,7 +691,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.0/_._": {}
+          "lib/netstandard1.0/System.ComponentModel.Primitives.dll": {}
         }
       },
       "System.ComponentModel.TypeConverter/4.3.0": {
@@ -682,7 +719,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.5/_._": {}
+          "lib/netstandard1.5/System.ComponentModel.TypeConverter.dll": {}
         }
       },
       "System.Diagnostics.Debug/4.3.0": {
@@ -713,7 +750,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {
+          "lib/netstandard1.3/System.Diagnostics.DiagnosticSource.dll": {
             "related": ".xml"
           }
         }
@@ -774,7 +811,11 @@
           }
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.3/_._": {
+          "runtimes/unix/lib/netstandard1.3/System.Globalization.Extensions.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Globalization.Extensions.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -824,7 +865,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.IO.FileSystem.Primitives.dll": {}
         }
       },
       "System.Linq/4.3.0": {
@@ -842,7 +883,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.6/_._": {}
+          "lib/netstandard1.6/System.Linq.dll": {}
         }
       },
       "System.Net.Http/4.3.4": {
@@ -879,7 +920,11 @@
           "ref/netstandard1.3/System.Net.Http.dll": {}
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.3/_._": {
+          "runtimes/unix/lib/netstandard1.6/System.Net.Http.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Net.Http.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -1074,7 +1119,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Runtime.Numerics.dll": {}
         }
       },
       "System.Security.Cryptography.Algorithms/4.3.0": {
@@ -1099,9 +1144,17 @@
           "ref/netstandard1.6/System.Security.Cryptography.Algorithms.dll": {}
         },
         "runtimeTargets": {
-          "runtimes/osx/lib/netstandard1.6/_._": {
+          "runtimes/osx/lib/netstandard1.6/System.Security.Cryptography.Algorithms.dll": {
             "assetType": "runtime",
             "rid": "osx"
+          },
+          "runtimes/unix/lib/netstandard1.6/System.Security.Cryptography.Algorithms.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.6/System.Security.Cryptography.Algorithms.dll": {
+            "assetType": "runtime",
+            "rid": "win"
           }
         }
       },
@@ -1124,7 +1177,11 @@
           "ref/netstandard1.6/_._": {}
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.6/_._": {
+          "runtimes/unix/lib/netstandard1.6/System.Security.Cryptography.Cng.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.6/System.Security.Cryptography.Cng.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -1151,7 +1208,11 @@
           "ref/netstandard1.3/_._": {}
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.3/_._": {
+          "runtimes/unix/lib/netstandard1.3/System.Security.Cryptography.Csp.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Security.Cryptography.Csp.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -1179,7 +1240,11 @@
           }
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.3/_._": {
+          "runtimes/unix/lib/netstandard1.3/System.Security.Cryptography.Encoding.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Security.Cryptography.Encoding.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -1206,10 +1271,10 @@
           "ref/netstandard1.6/_._": {}
         },
         "runtime": {
-          "lib/netstandard1.6/_._": {}
+          "lib/netstandard1.6/System.Security.Cryptography.OpenSsl.dll": {}
         },
         "runtimeTargets": {
-          "runtimes/unix/lib/netstandard1.6/_._": {
+          "runtimes/unix/lib/netstandard1.6/System.Security.Cryptography.OpenSsl.dll": {
             "assetType": "runtime",
             "rid": "unix"
           }
@@ -1230,7 +1295,7 @@
           "ref/netstandard1.3/System.Security.Cryptography.Primitives.dll": {}
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Security.Cryptography.Primitives.dll": {}
         }
       },
       "System.Security.Cryptography.X509Certificates/4.3.0": {
@@ -1268,7 +1333,11 @@
           }
         },
         "runtimeTargets": {
-          "runtimes/win/lib/netstandard1.6/_._": {
+          "runtimes/unix/lib/netstandard1.6/System.Security.Cryptography.X509Certificates.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.6/System.Security.Cryptography.X509Certificates.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -1345,7 +1414,7 @@
           }
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Threading.dll": {}
         }
       },
       "System.Threading.Tasks/4.3.0": {
@@ -1373,13 +1442,13 @@
     }
   },
   "libraries": {
-    "AmongUs.GameLibs.Steam/2022.12.8": {
-      "sha512": "IJsIi89xUYRvA54YtNVEJjf25hhF3LWzkNBslKCNDUpL1aQ/PhNyO4j18pO71DCgW/qr1P1j8+CwByuBLsInNA==",
+    "AmongUs.GameLibs.Steam/2022.10.25": {
+      "sha512": "PWgkH/VvMlShVhZB8G432q0tnMaNVZrbIdbEMCZN/fETUlT/ch+qQj4PdTcZhPHREbnJHH3ijHxlca1d7QMBcQ==",
       "type": "package",
-      "path": "amongus.gamelibs.steam/2022.12.8",
+      "path": "amongus.gamelibs.steam/2022.10.25",
       "files": [
         ".nupkg.metadata",
-        "amongus.gamelibs.steam.2022.12.8.nupkg.sha512",
+        "amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
         "amongus.gamelibs.steam.nuspec",
         "build/AddressablesPlayAssetDelivery.dll",
         "build/AmongUs.GameLibs.Steam.props",
@@ -1417,16 +1486,6 @@
         "build/Unity.Addressables.dll",
         "build/Unity.Analytics.DataPrivacy.dll",
         "build/Unity.ResourceManager.dll",
-        "build/Unity.Services.Analytics.dll",
-        "build/Unity.Services.Core.Configuration.dll",
-        "build/Unity.Services.Core.Device.dll",
-        "build/Unity.Services.Core.Environments.Internal.dll",
-        "build/Unity.Services.Core.Internal.dll",
-        "build/Unity.Services.Core.Registration.dll",
-        "build/Unity.Services.Core.Scheduler.dll",
-        "build/Unity.Services.Core.Telemetry.dll",
-        "build/Unity.Services.Core.Threading.dll",
-        "build/Unity.Services.Core.dll",
         "build/Unity.TextMeshPro.dll",
         "build/UnityEngine.AIModule.dll",
         "build/UnityEngine.AndroidJNIModule.dll",
@@ -1866,16 +1925,17 @@
         "monomod.utils.nuspec"
       ]
     },
-    "Reactor/2.0.0-ci.224": {
-      "sha512": "3Xpyw6VBc7HX0jbS017U6bqvrqKQvuzyoch2qHHaQqrzwz3J6p+BR9w3yNySMv3AAqOfvl2/B2+3CWGC7OkBRw==",
+    "Reactor/2.0.0": {
+      "sha512": "7Bq0QksAUVqhZ++2jdMvjbbZSBjb4eYN5BAp2Q/b8h2PiFfuvVd/oVooBMjwm6Mooa0URFcISA1tBXNIJEcoTw==",
       "type": "package",
-      "path": "reactor/2.0.0-ci.224",
+      "path": "reactor/2.0.0",
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "icon.png",
         "lib/net6.0/Reactor.dll",
         "lib/net6.0/Reactor.xml",
-        "reactor.2.0.0-ci.224.nupkg.sha512",
+        "reactor.2.0.0.nupkg.sha512",
         "reactor.nuspec"
       ]
     },
@@ -4641,12 +4701,12 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "AmongUs.GameLibs.Steam >= 2022.12.8",
+      "AmongUs.GameLibs.Steam >= 2022.10.25",
       "BepInEx.AutoPlugin >= 1.1.0",
       "BepInEx.IL2CPP.MSBuild >= 2.0.1",
       "BepInEx.Unity.IL2CPP >= 6.0.0-be.664",
       "GitInfo >= 2.0.20",
-      "Reactor >= 2.0.0-ci.224",
+      "Reactor >= 2.0.0",
       "System.Text.Json >= 6.0.3"
     ]
   },
@@ -4656,14 +4716,14 @@
   "project": {
     "version": "1.0.0.8",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectUniqueName": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
-      "projectPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+      "outputPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
+        "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\NuGet.Config",
         "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
@@ -4696,7 +4756,7 @@
           "AmongUs.GameLibs.Steam": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2022.12.8, )"
+            "version": "[2022.10.25, )"
           },
           "BepInEx.AutoPlugin": {
             "suppressParent": "All",
@@ -4710,7 +4770,6 @@
             "version": "[2.0.1, )"
           },
           "BepInEx.Unity.IL2CPP": {
-            "include": "Compile, Build, ContentFiles, Analyzers, BuildTransitive",
             "target": "Package",
             "version": "[6.0.0-be.664, )"
           },
@@ -4722,7 +4781,7 @@
           },
           "Reactor": {
             "target": "Package",
-            "version": "[2.0.0-ci.224, )"
+            "version": "[2.0.0, )"
           },
           "System.Text.Json": {
             "suppressParent": "All",

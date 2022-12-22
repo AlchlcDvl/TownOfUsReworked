@@ -8,7 +8,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             if (!flag3)
                 return false;

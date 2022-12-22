@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Sanitise The Ship, By Any Means Neccessary";
             AbilitiesText = "Clean bodies to prevent the <color=#8BFDFDFF>Crew</color> from discovering them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Janitor : Colors.Intruder;
-            SubFaction = SubFaction.None;
-            Base = false;
-            IsRecruit = false;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Intruders;
             FactionName = "Intruder";
@@ -67,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

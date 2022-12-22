@@ -18,13 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Mafioso";
             Faction = Faction.Intruders;
             RoleType = RoleEnum.Mafioso;
-            Base = false;
-            IsRecruit = false;
             StartText = "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role.";
             AttributesText = "- None.";
             Color = CustomGameOptions.CustomImpColors ? Colors.Mafioso : Colors.Intruder;
-            SubFaction = SubFaction.None;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
@@ -77,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

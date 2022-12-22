@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "There are documents pertaining to everyone's activity on the body. They must be a Detective!";
             CoronerKillerReport = "";
             Results = InspResults.WraithDetGrenVet;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
@@ -46,8 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " can deduce who is good and who is not.";
             RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers" +
                 " in the act!";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -64,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

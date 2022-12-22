@@ -20,12 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "The Horseman Of The Apocalypse Has Arrived!";
             AbilitiesText = "Kill everyone with your unstoppable abilities!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
-            SubFaction = SubFaction.None;
             LastKill = DateTime.UtcNow;
             RoleType = RoleEnum.Pestilence;
             Faction = Faction.Neutral;
-            Base = false;
-            IsRecruit = false;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;

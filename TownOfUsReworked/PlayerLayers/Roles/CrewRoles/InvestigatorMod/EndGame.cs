@@ -21,10 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             }
         }
 
-        [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-        public static class EndGameManagerPatch
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
+        public static class ShipStatusPatch
         {
-            public static bool Prefix(EndGameManager __instance)
+            public static bool Prefix(ShipStatus __instance)
             {
                 Reset();
                 return true;

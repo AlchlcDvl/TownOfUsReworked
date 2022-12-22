@@ -6,7 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using AmongUs.GameOptions;
+
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(role.Player, target);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             if (!flag3)
                 return false;

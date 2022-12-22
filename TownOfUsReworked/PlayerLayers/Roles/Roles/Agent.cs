@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The technology this one is carrying indicates that this body is an Agent!";
             CoronerKillerReport = "";
             Results = InspResults.DisgMorphCamoAgent;
-            SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.AgentIntro;
             Attack = AttackEnum.None;
             AttackString = "None";
@@ -45,12 +44,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = "- Finish your tasks along with other Crew.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, <color=#008000FF>Syndicate</color>" + 
                 " and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
                 "<color=#1D7CF2FF>Neophytes</color>.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

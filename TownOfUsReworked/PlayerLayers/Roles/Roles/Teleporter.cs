@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Get Away From Kills With Ease";
             AbilitiesText = "Teleport to get away from bodies";
             Color = CustomGameOptions.CustomImpColors ? Colors.Teleporter : Colors.Intruder;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Teleporter;
             Faction = Faction.Intruders;
             Results = InspResults.TransWarpTeleTask;
@@ -32,8 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -90,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             teleporter.NetTransform.enabled = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

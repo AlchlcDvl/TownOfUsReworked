@@ -30,10 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Puppeteer";
             StartText = "Control Crew to Kill";
             AbilitiesText = "Control Crew to Kill";
-            Base = false;
-            IsRecruit = false;
             Color = CustomGameOptions.CustomSynColors ? Colors.Puppeteer : Colors.Syndicate;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Puppeteer;
             Faction = Faction.Syndicate;
             FactionName = "Syndicate";
@@ -65,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 
@@ -91,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void KillUnPossess()
         {
             if (PlayerControl.LocalPlayer == Player)
-                Player.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown);
+                Player.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
 
             UnPossess();
         }

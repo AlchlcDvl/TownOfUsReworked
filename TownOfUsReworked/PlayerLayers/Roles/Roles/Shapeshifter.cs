@@ -21,8 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Shapeshifter(PlayerControl player) : base(player)
         {
             Name = "Shapeshifter";
-            Base = false;
-            IsRecruit = false;
             StartText = "Change Everyone's Appearances";
             AbilitiesText = "No one will know who they were";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
@@ -36,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The camouflage suit indicate that this body is a Camouflager!";
             CoronerKillerReport = "There are marks of grey paint on the body. They were killed by a Camouflager!";
             Results = InspResults.DisgMorphCamoAgent;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
@@ -83,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

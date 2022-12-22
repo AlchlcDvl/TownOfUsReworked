@@ -147,5 +147,6 @@ namespace TownOfUsReworked.Patches
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7
         //#EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
         //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2 #aab43e
+        //#5C4F75
     }
 }

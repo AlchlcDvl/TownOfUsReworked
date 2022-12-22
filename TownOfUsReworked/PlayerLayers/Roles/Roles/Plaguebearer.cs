@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Spread Disease To Become Pestilence";
             AbilitiesText = "Infect everyone to become Pestilence\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Plaguebearer;
             Faction = Faction.Neutral;
             InfectedPlayers.Add(player.PlayerId);
@@ -41,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "None";
             DefenseString = "None";
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -77,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var plaguebearerTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             plaguebearerTeam.Add(PlayerControl.LocalPlayer);

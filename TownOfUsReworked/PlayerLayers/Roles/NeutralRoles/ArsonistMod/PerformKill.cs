@@ -7,7 +7,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     return false;
 
                 var distBetweenPlayers2 = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayerIgnite);
-                var flag3 = distBetweenPlayers2 < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+                var flag3 = distBetweenPlayers2 < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
                 if (!flag3)
                     return false;
@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayerDouse);
-            var flag2 = distBetweenPlayers < GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var flag2 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
 
             if (!flag2)
                 return false;

@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Warp The Crew Away From Each Other";
             AbilitiesText = "Separate the Crew";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
-            SubFaction = SubFaction.None;
             RoleType = RoleEnum.Warper;
             Faction = Faction.Syndicate;
             FactionColor = Colors.Syndicate;
@@ -37,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -113,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return destination;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
 

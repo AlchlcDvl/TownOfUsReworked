@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Shoot The <color=#FF0000FF>Intruders</color>";
             AbilitiesText = "Kill the <color=#FF0000FF>Intruders</color> but not the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Vigilante;
             Faction = Faction.Crew;
@@ -36,8 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -54,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

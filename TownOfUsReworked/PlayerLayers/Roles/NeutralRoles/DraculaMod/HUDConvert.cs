@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
-            var maxDistance = GameOptionsData.KillDistances[GameOptionsManager.Instance.currentNormalGameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
             var biteButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);

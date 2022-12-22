@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static Export ExportButton;
         public static Import ImportButton;
         public static List<OptionBehaviour> DefaultOptions;
-        public static float LobbyTextRowHeight { get; set; } = 0.081F;
+        public static float LobbyTextRowHeight { get; set; } = 0.081f;
 
         private static List<OptionBehaviour> CreateOptions(GameOptionsMenu __instance, MultiMenu type)
         {
@@ -151,6 +151,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix(GameSettingMenu __instance)
             {
+                __instance.RolesSettings.gameObject.SetActive(false);
+                __instance.RegularGameSettings.gameObject.SetActive(false);
+
                 var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
                 var diff = 0.7f * Menus.Length - 2;
                 obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y,
@@ -216,8 +219,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             {
                 switch (index)
                 {
-                    default:
-                        return TownOfUsReworked.SettingsButtonSprite;
                     case 0:
                         return TownOfUsReworked.SettingsButtonSprite;
                     case 1:
@@ -234,6 +235,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         return TownOfUsReworked.ObjectifierSettingsButtonSprite;
                     case 7:
                         return TownOfUsReworked.AbilitySettingsButtonSprite;
+                    default:
+                        return TownOfUsReworked.SettingsButtonSprite;
                 }
             }
         }
@@ -372,7 +375,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             public static bool Prefix(ToggleOption __instance)
             {
                 var option = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == __instance);
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
 
                 if (option is CustomToggleOption toggle)
                 {
@@ -434,7 +437,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             public static bool Prefix(NumberOption __instance)
             {
                 var option = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == __instance);
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
 
                 if (option is CustomNumberOption number)
                 {
@@ -452,7 +455,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             public static bool Prefix(NumberOption __instance)
             {
                 var option = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == __instance);
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
 
                 if (option is CustomNumberOption number)
                 {
@@ -488,7 +491,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             public static bool Prefix(StringOption __instance)
             {
                 var option = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == __instance);
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
                 
                 if (option is CustomStringOption str)
                 {
@@ -516,7 +519,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         private class HudManagerUpdate
         {
             private const float MinX = -5.233334F /*-5.3F*/, OriginalY = 2.9F, MinY = 3F;
-            // Differs to cause excess options to appear cut off to encourage scrolling
+            //Differs to cause excess options to appear cut off to encourage scrolling
 
             private static Scroller Scroller;
             private static Vector3 LastPosition = new Vector3(MinX, MinY);
@@ -526,10 +529,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 if (__instance.GameSettings?.transform == null)
                     return;
 
-                // Scroller disabled
+                //Scroller disabled
                 if (!CustomOption.LobbyTextScroller)
                 {
-                    // Remove scroller if disabled late
+                    //Remove scroller if disabled late
                     if (Scroller != null)
                     {
                         __instance.GameSettings.transform.SetParent(Scroller.transform.parent);

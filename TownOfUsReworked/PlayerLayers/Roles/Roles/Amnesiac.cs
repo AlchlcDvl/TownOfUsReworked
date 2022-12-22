@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerKillerReport = "";
             Results = InspResults.EngiAmneThiefCann;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            SubFaction = SubFaction.None;
             IntroSound = TownOfUsReworked.AmnesiacIntro;
             RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
                 " instead need to win as the role you become after finding a dead body.";
@@ -41,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             DefenseString = "None";
             FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
                 " a certain objective.";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -51,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var amnesiacTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             amnesiacTeam.Add(PlayerControl.LocalPlayer);

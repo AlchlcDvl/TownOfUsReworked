@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Syndicate && Role.CrewWin);
+            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Syndicate && Role.SyndicateWin);
 
             if (role == null)
                 return;
@@ -44,7 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            SoundManager.Instance.PlaySound(TownOfUsReworked.CrewWin, false, 0.3f);
         }
     }
 }

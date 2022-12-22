@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerDeadReport = "The gun, magnifying glass and documents on the body indicate that they are a Consigliere!";
             CoronerKillerReport = "The gunshot mark seems to have been caused by a gun commonly used by Sheriffs. They were killed by a Consiliere!";
             Results = InspResults.SherConsigInspBm;
-            SubFaction = SubFaction.None;
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
                 " to ensure your victory over others.";
             RoleDescription = "You are a Consigliere! You are a corrupt Inspector who is so capable of finding someone's identity. Help your mate assassinate others" +
@@ -49,8 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "Basic";
             DefenseString = "None";
             IntroSound = null;
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -78,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
 

@@ -41,12 +41,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerKillerReport = "The body has been completely charred. They were torched by an Arsonist!";
             Results = InspResults.ArsoCryoPBOpTroll;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
-            SubFaction = SubFaction.None;
             IntroSound = null;
             Attack = AttackEnum.Unstoppable;
             AttackString = "Unstoppable";
-            Base = false;
-            IsRecruit = false;
             DefenseString = "Basic";
             Defense = DefenseEnum.Basic;
             RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +
@@ -112,7 +109,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var arsonistTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             arsonistTeam.Add(PlayerControl.LocalPlayer);

@@ -41,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             CoronerKillerReport = "";
             Results = InspResults.EngiAmneThiefCann;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            SubFaction = SubFaction.None;
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for dead bodies. You need to eat {EatNeed} {body} to win!";
             AlignmentDescription = "You are a Neutral (Evil) role! You have a confliction win condition over others and upon achieving it will end the game. " +
                 "Finish your objective before they finish you!";
@@ -51,8 +50,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = null;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
-            Base = false;
-            IsRecruit = false;
             AttackString = "None";
             DefenseString = "None";
             AddToRoleHistory(RoleType);
@@ -84,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var cannibalTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             cannibalTeam.Add(PlayerControl.LocalPlayer);

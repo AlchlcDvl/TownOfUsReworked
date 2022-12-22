@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Stake The <color=#7B8968FF>Vampires</color>";
             AbilitiesText = "Stake the <color=#7B8968FF>Vampires</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastStaked = DateTime.UtcNow;
             RoleType = RoleEnum.VampireHunter;
             Faction = Faction.Crew;
@@ -37,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "Basic";
             DefenseString = "None";
-            Base = false;
-            IsRecruit = false;
             AddToRoleHistory(RoleType);
         }
 
@@ -55,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

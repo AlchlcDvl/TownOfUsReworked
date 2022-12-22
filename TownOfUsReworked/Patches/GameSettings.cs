@@ -4,7 +4,7 @@ using System.Text;
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using AmongUs.GameOptions;
+
 
 namespace TownOfUsReworked.Patches
 {
@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool AllOptions;
 
-        [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
+        [HarmonyPatch]
         private static class GameOptionsDataPatch
         {
             private static void Postfix(ref string __result)
@@ -22,9 +22,6 @@ namespace TownOfUsReworked.Patches
 
                 foreach (var option in CustomOption.AllOptions)
                 {
-                    if (option.Name == "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>")
-                        builder.Append("(Scroll for all settings)");
-
                     if (option.Type == CustomOptionType.Button | option.ID == -1)
                         continue;
                     else if (option.Type == CustomOptionType.Header)

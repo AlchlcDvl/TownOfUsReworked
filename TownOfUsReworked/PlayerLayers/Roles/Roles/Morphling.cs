@@ -24,12 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
-            Base = false;
-            IsRecruit = false;
             StartText = "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
             AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
             Color = CustomGameOptions.CustomImpColors ? Colors.Morphling : Colors.Intruder;
-            SubFaction = SubFaction.None;
             LastMorphed = DateTime.UtcNow;
             RoleType = RoleEnum.Morphling;
             Faction = Faction.Intruders;
@@ -105,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

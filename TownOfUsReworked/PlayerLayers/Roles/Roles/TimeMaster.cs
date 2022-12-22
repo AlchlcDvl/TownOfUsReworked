@@ -25,10 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Freeze Time To Stop The <color=#8BFDFDFF>Crew</color>";
             AbilitiesText = "Freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving";
             Color = CustomGameOptions.CustomImpColors ? Colors.TimeMaster : Colors.Intruder;
-            SubFaction = SubFaction.None;
             LastFrozen = DateTime.UtcNow;
-            Base = false;
-            IsRecruit = false;
             RoleType = RoleEnum.TimeMaster;
             Faction = Faction.Intruders;
             FactionName = "Intruder";
@@ -83,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Freeze.PlayerPhysics_FixedUpdate.UnfreezeAll();
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var intTeam = new List<PlayerControl>();
 

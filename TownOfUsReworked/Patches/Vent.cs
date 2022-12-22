@@ -87,7 +87,7 @@ namespace TownOfUsReworked.Patches
                     return true;
             }
 
-            return playerInfo.IsImpostor();
+            return false;
         }
 
         public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,

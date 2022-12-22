@@ -36,11 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Choose Two Players To Swap Locations";
             AbilitiesText = "Choose two players to swap locations";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
-            SubFaction = SubFaction.None;
             LastTransported = DateTime.UtcNow;
             RoleType = RoleEnum.Transporter;
-            Base = false;
-            IsRecruit = false;
             Faction = Faction.Crew;
             PressedButton = false;
             MenuClick = false;
@@ -495,7 +492,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Undertaker.CurrentlyDragging = null;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);

@@ -14,6 +14,6 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)bepinex.il2cpp.msbuild\2.0.1\build\BepInEx.IL2CPP.MSBuild.props" Condition="Exists('$(NuGetPackageRoot)bepinex.il2cpp.msbuild\2.0.1\build\BepInEx.IL2CPP.MSBuild.props')" />
-    <Import Project="$(NuGetPackageRoot)amongus.gamelibs.steam\2022.12.8\build\AmongUs.GameLibs.Steam.props" Condition="Exists('$(NuGetPackageRoot)amongus.gamelibs.steam\2022.12.8\build\AmongUs.GameLibs.Steam.props')" />
+    <Import Project="$(NuGetPackageRoot)amongus.gamelibs.steam\2022.10.25\build\AmongUs.GameLibs.Steam.props" Condition="Exists('$(NuGetPackageRoot)amongus.gamelibs.steam\2022.10.25\build\AmongUs.GameLibs.Steam.props')" />
   </ImportGroup>
 </Project>

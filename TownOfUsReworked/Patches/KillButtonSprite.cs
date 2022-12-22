@@ -169,10 +169,8 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
             {
-                if (sk.Lusted)
-                    __instance.KillButton.graphic.sprite = Placeholder;
-                else
-                    __instance.KillButton.graphic.sprite = Clear;
+                __instance.KillButton.gameObject.SetActive(sk.Lusted);
+                __instance.KillButton.graphic.sprite = Placeholder;
 
                 flag = true;
             }
