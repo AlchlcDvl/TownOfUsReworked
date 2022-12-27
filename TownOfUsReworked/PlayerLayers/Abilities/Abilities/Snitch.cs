@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Dictionary<byte, ArrowBehaviour> SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
         public bool SnitchWin;
         public bool Revealed => TasksLeft <= CustomGameOptions.SnitchTasksRemaining;
-        public bool TasksDone => TasksLeft <= 0;
 
         public Snitch(PlayerControl player) : base(player)
         {

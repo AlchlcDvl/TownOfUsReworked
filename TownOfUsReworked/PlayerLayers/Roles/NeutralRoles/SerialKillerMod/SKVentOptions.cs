@@ -4,6 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
     {
         Always,
         Bloodlust,
+        NoLust,
         Never
     }
 }

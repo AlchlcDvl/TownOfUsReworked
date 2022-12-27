@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notDoused);
 
-            if (!role.FreezeButton.isCoolingDown & role.FreezeButton.isActiveAndEnabled & !role.FreezeUsed & role.CheckEveryoneDoused())
+            if (!role.FreezeButton.isCoolingDown & role.FreezeButton.isActiveAndEnabled & !role.FreezeUsed)
             {
                 role.FreezeButton.graphic.color = Palette.EnabledColor;
                 role.FreezeButton.graphic.material.SetFloat("_Desat", 0f);

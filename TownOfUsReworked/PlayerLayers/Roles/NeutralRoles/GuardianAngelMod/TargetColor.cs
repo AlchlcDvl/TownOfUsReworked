@@ -28,7 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             foreach (var player in __instance.playerStates)
             {
                 if (player.TargetPlayerId == role.TargetPlayer.PlayerId)
-                    player.NameText.color = new Color(1f, 0.85f, 0f, 1f);
+                {
+                    player.NameText.color = new Color32(255, 217, 0, 255);
+                    player.NameText.text += "<color=#FFFFFFFF> ★</color>";
+                }
             }
         }
 
@@ -40,22 +43,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (PlayerControl.LocalPlayer == null)
                 return;
 
-            if (PlayerControl.LocalPlayer.Data == null) return;
+            if (PlayerControl.LocalPlayer.Data == null)
+                return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel)) return;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
+                return;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+                return;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
-            if (MeetingHud.Instance != null) UpdateMeeting(MeetingHud.Instance, role);
+            if (MeetingHud.Instance != null)
+                UpdateMeeting(MeetingHud.Instance, role);
 
-            if (!CustomGameOptions.GAKnowsTargetRole) role.TargetPlayer.nameText().color = new Color(1f, 0.85f, 0f, 1f);
+            if (!CustomGameOptions.GAKnowsTargetRole)
+            {
+                role.TargetPlayer.nameText().color =  new Color32(255, 217, 0, 255);
+                role.TargetPlayer.nameText().text += "<color=#FFFFFFFF> ★</color>";
+            }
 
-            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected) return;
+            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
+                return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.GAToSurv, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GAToSurv,
+                SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -63,8 +75,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
 
             GAToSurv(PlayerControl.LocalPlayer);
-
-            
         }
 
         public static void GAToSurv(PlayerControl player)

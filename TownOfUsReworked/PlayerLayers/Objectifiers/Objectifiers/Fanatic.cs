@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         public Fanatic(PlayerControl player) : base(player)
         {
             Name = "Fanatic";
-            SymbolName = "«";
+            SymbolName = "♠";
             TaskText = "You are <color=#8BFDFDFF>Crew</color>, for now that is....";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;

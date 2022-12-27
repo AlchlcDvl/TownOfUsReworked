@@ -5,7 +5,6 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]

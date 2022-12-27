@@ -16,7 +16,6 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using UnityEngine;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
     public enum BecomeEnum
@@ -54,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
@@ -140,7 +139,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     break;
             }
 
-            if (shift == true)
+            if (shift == false)
+            {
+                Utils.RpcMurderPlayer(shifter, shifter);
+                return;
+            }
+
+            if (shift)
             {
                 newRole = Role.GetRole(other);
                 newRole.Player = shifter;
@@ -293,13 +298,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     Role.RoleDictionary.Add(other.PlayerId, shifterRole);
                 }
                 else
-                    new Crewmate(other);
+                {
+                    var crewRole = new Crewmate(other);
+                    Role.RoleDictionary.Add(other.PlayerId, crewRole);
+                }
 
                 Role.RoleDictionary.Add(shifter.PlayerId, newRole);
-                shifterRole.AddToRoleHistory(shifterRole.RoleType);
             }
-            else
-                shifter.MurderPlayer(shifter);
             
             if (swapTasks) //&& CustomGameOptions.ShiftSwapsTasks
             {

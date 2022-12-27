@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Patches
                 __instance.ImpostorVentButton.IsNullOrDestroyed())
                 return;
 
-            bool active = PlayerControl.LocalPlayer != null && VentPatches.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer._cachedData)
+            bool active = PlayerControl.LocalPlayer != null && VentPatches.CanVent(PlayerControl.LocalPlayer)
                 && !MeetingHud.Instance && !LobbyBehaviour.Instance;
 
             if (active != __instance.ImpostorVentButton.gameObject.active)
@@ -32,62 +32,83 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentPatches
     {
-        public static bool CanVent(PlayerControl player, GameData.PlayerInfo playerInfo)
+        public static bool CanVent(PlayerControl player)
         {
-            var undertaker = Role.GetRole<Undertaker>(player);
-            var tunneler = Ability.GetAbility<Tunneler>(player);
-            
-            if (player.inVent)
-                return true;
+            bool mainflag = false;
 
-            if (playerInfo.IsDead)
-                return false;
-            
-            if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
-                return true;
-
-            if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone)
-                return false;
-            
-            if (player.Is(Faction.Intruders) && CustomGameOptions.IntrudersVent)
-                return true;
-            
-            if (player.Is(Faction.Syndicate) && CustomGameOptions.SyndicateVent)
-                return true;
-            
-            if (player.Is(AbilityEnum.Tunneler) && tunneler.TasksDone)
-                return true;
-
-            if ((player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) | (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) |
-                (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) | (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent) |
-                (player.Is(RoleEnum.Poisoner) && !CustomGameOptions.PoisonerVent) | ((player.Is(RoleEnum.Undertaker) &&
-                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Never) | (player.Is(RoleEnum.Undertaker) &&
-                undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions != UndertakerOptions.Body)))
-                return false;
-
-            if (player.Is(RoleEnum.Engineer) | (player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) | (player.Is(RoleEnum.Glitch) &&
-                CustomGameOptions.GlitchVent) | (player.Is(RoleEnum.Juggernaut) && CustomGameOptions.JuggVent) | (player.Is(RoleEnum.Pestilence) &&
-                CustomGameOptions.PestVent) | (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) | (player.Is(RoleEnum.Plaguebearer) &&
-                CustomGameOptions.PBVent) | (player.Is(RoleEnum.Arsonist) && CustomGameOptions.ArsoVent) | (player.Is(RoleEnum.Executioner) &&
-                CustomGameOptions.ExeVent) | (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) |
-                (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) | (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) |
-                (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Always) | (player.Is(RoleEnum.Survivor) &&
-                CustomGameOptions.SurvVent) | (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) | (player.Is(RoleEnum.Amnesiac) &&
-                CustomGameOptions.AmneVent) | (player.Is(RoleEnum.Undertaker) && CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always) |
-                (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging != null && CustomGameOptions.UndertakerVentOptions ==
-                UndertakerOptions.Body) | (player.Is(RoleEnum.Undertaker) && undertaker.CurrentlyDragging == null &&
-                CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless) | (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent))
-                return true;
-
-            if (player.Is(RoleEnum.SerialKiller) && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust)
+            if (player.Data.IsDead || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone || player == null || player.Data == null || player.Data.Disconnected ||
+                LobbyBehaviour.Instance || MeetingHud.Instance)
+                mainflag = false;
+            else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
+                mainflag = true;
+            else if (((player.IsRecruit() || (player.Is(RoleEnum.Recruit)) && CustomGameOptions.RecruitVent)) || (player.Is(RoleEnum.Jackal) && CustomGameOptions.JackalVent))
+                mainflag = true;
+            else if (player.Is(Faction.Syndicate))
+                mainflag = CustomGameOptions.SyndicateVent;
+            else if (player.Is(Faction.Intruder))
             {
-                var role2 = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
+                if (CustomGameOptions.IntrudersVent)
+                {
+                    var flag = (player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) ||
+                        (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent) ||
+                        (player.Is(RoleEnum.Poisoner) && !CustomGameOptions.PoisonerVent);
 
-                if (role2.Lusted)
-                    return true;
+                    if (flag)
+                        mainflag = !flag;
+                    else if (player.Is(RoleEnum.Undertaker))
+                    {
+                        var undertaker = Role.GetRole<Undertaker>(player);
+                
+                        mainflag = CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always || undertaker.CurrentlyDragging != null &&
+                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body || undertaker.CurrentlyDragging == null &&
+                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless;
+                    }
+                }
+                else
+                    mainflag = false;
             }
+            else if (player.Is(Faction.Crew))
+            {            
+                if (player.Is(AbilityEnum.Tunneler) && !player.Is(RoleEnum.Engineer))
+                {
+                    var tunneler = Ability.GetAbility<Tunneler>(player);
+                    mainflag = tunneler.TasksDone;
+                }
+                else if (player.Is(RoleEnum.Engineer))
+                    mainflag = true;
+                else
+                    mainflag = false;
+            }
+            else if (player.Is(Faction.Neutral))
+            {
+                var flag = (player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) || (player.Is(RoleEnum.Glitch) && CustomGameOptions.GlitchVent) ||
+                    (player.Is(RoleEnum.Juggernaut) && CustomGameOptions.JuggVent) || (player.Is(RoleEnum.Pestilence) && CustomGameOptions.PestVent) ||
+                    (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) || (player.Is(RoleEnum.Plaguebearer) && CustomGameOptions.PBVent) ||
+                    (player.Is(RoleEnum.Arsonist) && CustomGameOptions.ArsoVent) || (player.Is(RoleEnum.Executioner) &&  CustomGameOptions.ExeVent) ||
+                    (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) || (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) ||
+                    (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) || (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) ||
+                    (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) || (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) ||
+                    (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) || (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent);
 
-            return false;
+                if (flag)
+                    mainflag = flag;
+                else if (player.Is(RoleEnum.SerialKiller))
+                {
+                    var role2 = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
+
+                    if (CustomGameOptions.SKVentOptions == SKVentOptions.Always || (role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust) ||
+                        (!role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.NoLust))
+                        mainflag = true;
+                    else
+                        mainflag = false;
+                }
+                else
+                    mainflag = false;
+            }
+            else
+                mainflag = false;
+
+            return mainflag;
         }
 
         public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,
@@ -95,7 +116,7 @@ namespace TownOfUsReworked.Patches
         {
             float num = float.MaxValue;
             PlayerControl playerControl = playerInfo.Object;
-            couldUse = CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead |
+            couldUse = CanVent(playerControl) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead |
                 playerControl.inVent) && (playerControl.CanMove | playerControl.inVent);
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
@@ -106,7 +127,6 @@ namespace TownOfUsReworked.Patches
                     if (item == __instance.Id)
                         couldUse = false;
                 }
-
             }
             canUse = couldUse;
 
@@ -155,79 +175,41 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-    public static class JesterEnterVent
+    public static class EnterVentPatch
     {
         public static bool Prefix(Vent __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent)
+            var player = PlayerControl.LocalPlayer;
+
+            if (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent)
             {
                 if (CustomGameOptions.JestVentSwitch)
                     return true;
                 else
                     return false;
             }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-    public static class ExeEnterVent
-    {
-        public static bool Prefix(Vent __instance)
-        {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.ExeVent)
+            else if (player.Is(RoleEnum.Executioner) && CustomGameOptions.ExeVent)
             {
                 if (CustomGameOptions.ExeVentSwitch)
                     return true;
                 else
                     return false;
             }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-    public static class SurvEnterVent
-    {
-        public static bool Prefix(Vent __instance)
-        {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent)
+            else if (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent)
             {
                 if (CustomGameOptions.SurvVentSwitch)
                     return true;
                 else
                     return false;
             }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-    public static class AmneEnterVent
-    {
-        public static bool Prefix(Vent __instance)
-        {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent)
+            else if (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent)
             {
                 if (CustomGameOptions.AmneVentSwitch)
                     return true;
                 else
                     return false;
             }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
-    public static class GAEnterVent
-    {
-        public static bool Prefix(Vent __instance)
-        {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent)
+            else if (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent)
             {
                 if (CustomGameOptions.GAVentSwitch)
                     return true;

@@ -86,13 +86,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         option.Setting = toggle2;
                         options.Add(toggle2);
                         break;
-                    case CustomOptionType.Tab:
+                    /*case CustomOptionType.Tab:
                         var tab = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
                         tab.transform.GetChild(2).gameObject.SetActive(false);
                         tab.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
                         option.Setting = tab;
                         options.Add(tab);
-                        break;
+                        break;*/
                     case CustomOptionType.Number:
                         var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent);
                         option.Setting = number;

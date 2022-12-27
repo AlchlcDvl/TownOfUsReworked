@@ -10,11 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateProtectButton(__instance);
-        }
-
-        public static void UpdateProtectButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

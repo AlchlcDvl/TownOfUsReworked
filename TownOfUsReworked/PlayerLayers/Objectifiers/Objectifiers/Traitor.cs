@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     {
         public RoleEnum formerRole;
         public Role former;
-        public bool Turned => TasksLeft == 0;
+        public bool Turned;
         public Faction Side;
 
         public Traitor(PlayerControl player) : base(player)

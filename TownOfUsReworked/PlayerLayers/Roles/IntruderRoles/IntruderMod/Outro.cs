@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Intruders && Role.IntruderWin);
+            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Intruder && Role.IntruderWin);
 
             if (role == null)
                 return;

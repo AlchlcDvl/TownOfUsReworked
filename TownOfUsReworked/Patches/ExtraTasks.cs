@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Lobby.CustomOption;
-
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
@@ -39,7 +38,7 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-    /*[HarmonyPatch(typeof(GameOptionsManager), nameof(GameOptionsManager.))]
+    [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.GetAdjustedNumImpostors))]
     public class GetAdjustedImposters
     {
         public static bool Prefix(GameOptionsData __instance, ref int __result)
@@ -49,7 +48,8 @@ namespace TownOfUsReworked.Patches
                 var players = GameData.Instance.PlayerCount;
                 var impostors = 1;
                 var random = Random.RandomRangeInt(0, 100);
-                var nonCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction.Crew) | x.Is(Faction.Intruders))).Count();
+                var nonCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction.Crew) | x.Is(Faction.Intruder) | 
+                    (x.Is(Faction.Syndicate) && CustomGameOptions.AltImps))).Count();
                 
                 if (players <= 6 )
                 {
@@ -155,5 +155,5 @@ namespace TownOfUsReworked.Patches
             __result = CustomGameOptions.IntruderCount;
             return true;
         }
-    }*/
+    }
 }

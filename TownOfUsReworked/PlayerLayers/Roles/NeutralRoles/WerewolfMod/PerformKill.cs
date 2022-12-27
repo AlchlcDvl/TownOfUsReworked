@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (!flag3)
                 return false;
@@ -143,7 +143,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            role.Maul();
+            role.Maul(role.Player);
             return false;
         }
     }

@@ -7,7 +7,6 @@ using System.Linq;
 using Reactor.Utilities;
 using UnityEngine;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
@@ -43,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                             Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruders) | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill))
+                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill))
                         {
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                             var gameObj = new GameObject();

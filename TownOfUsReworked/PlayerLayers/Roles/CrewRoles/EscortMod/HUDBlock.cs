@@ -11,11 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateExamineButton(__instance);
-        }
-
-        public static void UpdateExamineButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 
@@ -31,11 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
             var roleblockButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
-
-            if (isDead)
-                roleblockButton.gameObject.SetActive(false);
             
-            roleblockButton.gameObject.SetActive(!MeetingHud.Instance);
+            roleblockButton.gameObject.SetActive(!MeetingHud.Instance && !isDead);
             roleblockButton.SetCoolDown(role.RoleblockTimer(), CustomGameOptions.ExamineCd);
             Utils.SetTarget(ref role.ClosestPlayer, roleblockButton, float.NaN);
 

@@ -9,14 +9,6 @@ using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
-    public enum OnTargetDead
-    {
-        Crew,
-        Amnesiac,
-        Survivor,
-        Jester
-    }
-
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class TargetColor
     {

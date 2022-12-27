@@ -11,11 +11,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
     {
         public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Survivor))
+            foreach (var role in Role.GetRoles(RoleEnum.Troll))
             {
                 var troll = (Troll)role;
                 troll.LastInteracted = DateTime.UtcNow;
-                troll.LastInteracted = troll.LastInteracted.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VestCd);
+                troll.LastInteracted = troll.LastInteracted.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InteractCooldown);
             }
         }
     }

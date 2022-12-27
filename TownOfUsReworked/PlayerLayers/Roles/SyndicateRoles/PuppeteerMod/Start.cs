@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
     {
         public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Poisoner))
+            foreach (var role in Role.GetRoles(RoleEnum.Puppeteer))
             {
                 var puppeteer = (Puppeteer) role;
                 puppeteer.lastPossess = DateTime.UtcNow;

@@ -15,8 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             {
                 var transporter = (Transporter) role;
                 transporter.LastTransported = DateTime.UtcNow;
-                transporter.LastTransported = transporter.LastTransported.AddSeconds(CustomGameOptions.InitialCooldowns -
-                    CustomGameOptions.TransportCooldown);
+                transporter.LastTransported = transporter.LastTransported.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
             }
         }
     }

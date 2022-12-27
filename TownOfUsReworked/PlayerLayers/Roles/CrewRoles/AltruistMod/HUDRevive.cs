@@ -3,7 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -28,10 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
             var flag = (PlayerControl.GameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver)
                 && PlayerControl.LocalPlayer.CanMove;
-            var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] { "Players", "Ghost" }));
+            var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
             var killButton = __instance.KillButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;

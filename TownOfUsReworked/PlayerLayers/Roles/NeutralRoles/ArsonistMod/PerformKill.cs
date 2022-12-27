@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     return false;
 
                 var distBetweenPlayers2 = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayerIgnite);
-                var flag3 = distBetweenPlayers2 < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                var flag3 = distBetweenPlayers2 < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
                 if (!flag3)
                     return false;
@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayerDouse);
-            var flag2 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var flag2 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (!flag2)
                 return false;

@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class GuardianAngel : Role
     {
         public bool Enabled;
-        public bool TargetAlive;
         public DateTime LastProtected;
         public float TimeRemaining;
         public int UsesLeft;
@@ -18,6 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer;
         public bool GAWins { get; set; }
+        public bool TargetAlive => (!TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && TargetPlayer != null && !Player.Data.Disconnected) ||
+            TargetPlayer == null || TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
 
         public GuardianAngel(PlayerControl player) : base(player)
@@ -87,10 +88,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            if (TargetPlayer.Data.IsDead | TargetPlayer.Data.Disconnected | TargetPlayer == null | Player.Data.Disconnected)
-                return;
-                
-            TargetAlive = true;
+            if (TargetAlive)
+                GAWins = true;
         }
 
         public override void Loses()

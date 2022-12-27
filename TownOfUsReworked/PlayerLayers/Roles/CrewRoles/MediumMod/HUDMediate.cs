@@ -14,11 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateButton(__instance);
-        }
-
-        public static void UpdateButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            IntruderWin = true;
+            SyndicateWin = true;
         }
 
         public override void Loses()
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return true;
 
             if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);

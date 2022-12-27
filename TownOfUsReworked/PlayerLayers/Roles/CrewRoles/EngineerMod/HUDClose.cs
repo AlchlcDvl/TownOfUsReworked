@@ -6,12 +6,6 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
-    public enum EngineerFixPer
-    {
-        Round,
-        Game
-    }
-
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
     {

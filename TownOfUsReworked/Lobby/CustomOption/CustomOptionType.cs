@@ -7,9 +7,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         Number,
         String,
         Button,
-        Menu,
-        Tab,
-        Spawn
+        Menu
     }
     
     public enum MultiMenu
@@ -71,4 +69,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
         MeetingOnly = 1,
         Invisible = 2
     }
+
+    public enum WhoCanSeeFirstKillShield
+	{
+		Everyone,
+		PlayerOnly,
+		NoOne
+	}
 }

@@ -12,11 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateBugButton(__instance);
-        }
-
-        public static void UpdateBugButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

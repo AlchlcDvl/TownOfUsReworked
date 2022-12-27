@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
-                        player.Is(Faction.Intruders)))
+                        player.Is(Faction.Intruder)))
                         frozen.Add(player);
                 }
 
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
-                        player.Is(Faction.Intruders)))
+                        player.Is(Faction.Intruder)))
                         frozen.Add(player);
                 }
 

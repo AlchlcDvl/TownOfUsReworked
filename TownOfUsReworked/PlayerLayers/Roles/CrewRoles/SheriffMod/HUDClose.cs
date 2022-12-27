@@ -6,13 +6,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
-{
-    public enum InterrogatePer
-    {
-        Round,
-        Game
-    }
-    
+{    
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
     {

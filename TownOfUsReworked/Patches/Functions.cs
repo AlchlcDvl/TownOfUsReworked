@@ -17,7 +17,7 @@ namespace TownOfUsReworked.Patches
         {
             var player = PlayerControl.LocalPlayer;
             bool isActive = player != null  && !MeetingHud.Instance && (player.Is(RoleAlignment.NeutralKill) | player.Is(RoleEnum.Thief) |
-                player.Is(Faction.Intruders) | player.Is(RoleEnum.Sheriff) | player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Amnesiac) |
+                player.Is(Faction.Intruder) | player.Is(RoleEnum.Sheriff) | player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Amnesiac) |
                 player.Is(RoleEnum.Cannibal) | player.Is(RoleEnum.Detective) | player.Is(RoleEnum.Dracula) | player.Is(RoleEnum.Dampyr) |
                 player.Is(RoleEnum.VampireHunter) | player.Is(RoleEnum.Medic) | player.Is(RoleEnum.Shifter) | player.Is(RoleEnum.Tracker) |
                 player.Is(RoleEnum.Vigilante) | player.Is(Faction.Syndicate) | player.Is(RoleEnum.Inspector) | player.Is(RoleEnum.Escort) |

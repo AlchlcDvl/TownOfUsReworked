@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool HasMaj;
         private KillButton _biteButton;
         public PlayerControl ClosestPlayer;
-        public List<PlayerControl> AllVamps = new List<PlayerControl>();
+        public List<PlayerControl> Converted = new List<PlayerControl>();
 
         public Dracula(PlayerControl player) : base(player)
         {
@@ -55,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastBitten;
-            var num = CustomGameOptions.AlertCd * 1000f;
+            var num = CustomGameOptions.BiteCd * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -66,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            VampWin = true;
+            UndeadWin = true;
         }
 
         public override void Loses()
@@ -86,9 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
-                (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0)
+            if (Utils.SubfactionWins(SubFaction))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.UndeadWin,
                     SendOption.Reliable,-1);
@@ -114,6 +111,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public List<PlayerControl> Vamps()
         {
+            var AllVamps = new List<PlayerControl>();
+
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Is(SubFaction.Undead))

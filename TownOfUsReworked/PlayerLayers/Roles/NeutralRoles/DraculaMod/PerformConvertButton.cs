@@ -10,8 +10,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
-using UnityEngine;
-
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -44,21 +43,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
+            var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
+            var flag3 = distBetweenPlayers < maxDistance;
 
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (!flag3)
                 return false;
 
             if (role.ClosestPlayer == null)
                 return false;
 
             var playerId = role.ClosestPlayer.PlayerId;
-            var player = PlayerControl.LocalPlayer;
 
             if (role.ClosestPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
+                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
             if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence) | role.ClosestPlayer.Is(RoleEnum.VampireHunter))
@@ -129,6 +129,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 return false;
             }
 
+            var vampCount = role.AliveVamps().Count();
+
+            if (vampCount + 1 > CustomGameOptions.AliveVampCount)
+            {
+                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                return false;
+            }
+
+            if (role.ClosestPlayer.Is(SubFaction.Undead))
+                return false;
+
             unchecked
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Convert,
@@ -141,11 +152,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             Convert(role, role.ClosestPlayer);
             role.LastBitten = DateTime.UtcNow;
 
-            foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
-            {
-                var dampyr = (Dampyr)role2;
-                dampyr.LastKill = DateTime.UtcNow;
-            }
             return false;
         }
 
@@ -157,9 +163,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var convert = false;
             var convertNeut = false;
+            var convertNK = false;
+            var convertCK = false;
+            var alreadyVamp = false;
 
             switch (role.RoleType)
             {
+                case RoleEnum.Vampire:
+                case RoleEnum.Dampyr:
+                case RoleEnum.Dracula:
+
+                    alreadyVamp = true;
+
+                    break;
+
                 case RoleEnum.Sheriff:
                 case RoleEnum.Engineer:
                 case RoleEnum.Mayor:
@@ -169,8 +186,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Medic:
                 case RoleEnum.Agent:
                 case RoleEnum.Altruist:
-                case RoleEnum.Vigilante:
-                case RoleEnum.Veteran:
                 case RoleEnum.Crewmate:
                 case RoleEnum.Tracker:
                 case RoleEnum.Transporter:
@@ -186,32 +201,51 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                     break;
 
+                case RoleEnum.Vigilante:
+                case RoleEnum.Veteran:
+
+                    convertCK = true;
+                    convert = true;
+
+                    break;
+
                 case RoleEnum.Amnesiac:
                 case RoleEnum.Survivor:
                 case RoleEnum.Jester:
                 case RoleEnum.Cannibal:
+                case RoleEnum.Executioner:
+                case RoleEnum.Jackal:
+                case RoleEnum.Recruit:
+
+                    convertNeut = true;
+
+                    break;
+
                 case RoleEnum.Cryomaniac:
                 case RoleEnum.Thief:
-                case RoleEnum.Troll:
-                case RoleEnum.Executioner:
-                case RoleEnum.Spy:
                 case RoleEnum.Glitch:
                 case RoleEnum.Plaguebearer:
                 case RoleEnum.Werewolf:
                 case RoleEnum.Murderer:
                 case RoleEnum.SerialKiller:
-                case RoleEnum.Jackal:
-                case RoleEnum.Recruit:
                 case RoleEnum.Arsonist:
 
+                    convertNK = true;
                     convertNeut = true;
 
                     break;
             }
 
+            dracRole.Converted.Add(other);
+
+            if (alreadyVamp)
+                return;
+                            
+            Role.RoleDictionary.Remove(other.PlayerId);
+
             if (convertNeut == true && CustomGameOptions.DraculaConvertNeuts)
             {
-                if (role.RoleAlignment != RoleAlignment.NeutralKill)
+                if (!convertNK)
                 {
                     if (role.RoleType == RoleEnum.Amnesiac)
                     {
@@ -228,18 +262,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         can.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
                     }
 
-                    Role.RoleDictionary.Remove(other.PlayerId);
-                    new Vampire(other);
+                    var newRole = new Vampire(other);
+                    newRole.Player = other;
                 }
                 else
                 {
-                    Role.RoleDictionary.Remove(other.PlayerId);
-                    new Dampyr(other);
+                    var newRole = new Dampyr(other);
+                    newRole.Player = other;
                 }
             }
-            else if (convert == true && ability.AbilityType != AbilityEnum.Snitch)
+            else if (convert == true)
             {
-                if (role.RoleAlignment != RoleAlignment.CrewKill)
+                if (!convertCK)
                 {
                     if (role.RoleType == RoleEnum.Investigator)
                     {
@@ -267,22 +301,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         opRole.buggedPlayers.Clear();
                         opRole.bugs.ClearBugs();
                     }
+                    else if (role.RoleType == RoleEnum.Medic)
+                    {
+                        var medicRole = Role.GetRole<Medic>(other);
+                        medicRole.ShieldedPlayer = null;
+                    }
 
-                    Role.RoleDictionary.Remove(other.PlayerId);
-                    new Vampire(other);
+                    var newRole = new Vampire(other);
+                    newRole.Player = other;
                 }
                 else
                 {
-                    Role.RoleDictionary.Remove(other.PlayerId);
-                    new Dampyr(other);
+                    var newRole = new Dampyr(other);
+                    newRole.Player = other;
                 }
             }
-            else if (other.Is(RoleEnum.VampireHunter))
-                Utils.RpcMurderPlayer(other, drac);
-            else
+            else if (!other.Is(SubFaction.Undead))
                 Utils.RpcMurderPlayer(drac, other);
-            
-            return;
+
+            foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
+            {
+                var dampyr = (Dampyr)role2;
+                dampyr.LastKill = DateTime.UtcNow;
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player == PlayerControl.LocalPlayer)
+                        dampyr.RegenTask();
+                }
+            }
+
+            foreach (var role2 in Role.GetRoles(RoleEnum.Vampire))
+            {
+                var vampire = (Vampire)role2;
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player == PlayerControl.LocalPlayer)
+                        vampire.RegenTask();
+                }
+            }
         }
     }
 }

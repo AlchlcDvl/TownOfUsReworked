@@ -18,7 +18,7 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
-using AmongUs.Data;
+/*using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;
 using TMPro;
@@ -26,7 +26,7 @@ using Il2CppInterop.Runtime.Attributes;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
+using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;*/
 
 namespace TownOfUsReworked
 {
@@ -37,7 +37,7 @@ namespace TownOfUsReworked
     //[ReactorModFlags(ModFlags.RequireOnAllClients)]
     public class TownOfUsReworked : BasePlugin
     {
-        public const string Id = "com.alchlcdvl.townofusreworked";
+        public const string Id = "TownOfUsReworked";
         public const string VersionString = "1.0.0.8";
         public static System.Version Version = System.Version.Parse(VersionString);
 
@@ -113,6 +113,8 @@ namespace TownOfUsReworked
         public static Sprite TeleportSprite;
         public static Sprite MarkSprite;
         public static Sprite Placeholder;
+        public static Sprite VoteCount;
+        public static Sprite VoteCountDisabled;
         public static Sprite Clear;
 
         public static Sprite SettingsButtonSprite;
@@ -283,6 +285,8 @@ namespace TownOfUsReworked
             MarkSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mark.png");
             WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Warp.png");
             Placeholder = CreateSprite("TownOfUsReworked.Resources.Buttons.Placeholder.png");
+            VoteCount = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCount.png");
+            VoteCountDisabled = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCountDisabled.png");
             Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");
 
             //Settings buttons

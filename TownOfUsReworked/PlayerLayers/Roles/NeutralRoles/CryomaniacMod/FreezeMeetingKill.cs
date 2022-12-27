@@ -13,20 +13,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
         {
             if (__instance == null)
                 return;
-                
-            var cryos = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(RoleEnum.Cryomaniac)).ToList();
 
-            foreach (var cryo in cryos)
+            foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
             {
-                var role = Role.GetRole<Cryomaniac>(cryo);
+                var role = (Cryomaniac)cryo;
 
                 if (role.FreezeUsed)
                 {
                     foreach (var player in role.DousedPlayers)
                     {
                         var player2 = Utils.PlayerById(player);
-                        Utils.MurderPlayer(cryo, player2);
+                        Utils.RpcMurderPlayer(role.Player, player2);
                     }
+
+                    role.FreezeUsed = false;
                 }
                 
                 return;

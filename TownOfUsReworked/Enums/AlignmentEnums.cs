@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Enums
     public enum Faction
     {
         Crew = 0,
-        Intruders,
+        Intruder,
         Neutral,
         Syndicate,
         

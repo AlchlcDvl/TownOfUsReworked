@@ -104,19 +104,13 @@ namespace TownOfUsReworked.Patches
 
                 foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
                 {
-                    if (ga.TargetPlayer == null)
-                        continue;
-                        
-                    if (playerControl.PlayerId == ga.TargetPlayer.PlayerId)
+                    if (ga.TargetPlayer != null && playerControl.PlayerId == ga.TargetPlayer.PlayerId)
                         summary += " <color=#FFFFFFFF>★</color>";
                 }
 
                 foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                 {
-                    if (exe.TargetPlayer == null)
-                        continue;
-                        
-                    if (playerControl.PlayerId == exe.TargetPlayer.PlayerId)
+                    if (exe.TargetPlayer != null && playerControl.PlayerId == exe.TargetPlayer.PlayerId)
                         summary += " <color=#CCCCCCFF>§</color>";
                 }
 

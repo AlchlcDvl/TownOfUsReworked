@@ -13,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Cannibal))
             {
-                var role2 = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
-                role2.LastEaten = DateTime.UtcNow;
-                role2.LastEaten = role2.LastEaten.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CannibalCd);
+                var cann = (Cannibal)role;
+                cann.LastEaten = DateTime.UtcNow;
+                cann.LastEaten = cann.LastEaten.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CannibalCd);
             }
         }
     }

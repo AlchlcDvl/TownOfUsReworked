@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestSyndicate.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

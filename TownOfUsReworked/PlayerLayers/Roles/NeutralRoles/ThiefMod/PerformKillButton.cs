@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (role == null)
                 return false;

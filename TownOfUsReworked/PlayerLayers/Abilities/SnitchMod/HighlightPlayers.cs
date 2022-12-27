@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 
                     if (CustomGameOptions.SnitchSeesRoles)
                     {
-                        if (role.Faction == Faction.Intruders | role.Faction == Faction.Syndicate)
+                        if (role.Faction == Faction.Intruder | role.Faction == Faction.Syndicate)
                             state.NameText.color = role.Color;
                         else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                             state.NameText.color = role.Color;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     }
                     else
                     {
-                        if (player.Is(Faction.Intruders) | role.Faction == Faction.Syndicate)
+                        if (player.Is(Faction.Intruder) | role.Faction == Faction.Syndicate)
                             state.NameText.color = role.FactionColor;
                         else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                             state.NameText.color = role.FactionColor;
@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             {
                 if (CustomGameOptions.SnitchSeesRoles)
                 {
-                    if (role.Faction == Faction.Intruders | role.Faction == Faction.Syndicate)
+                    if (role.Faction == Faction.Intruder | role.Faction == Faction.Syndicate)
                         player.nameText().color = role.Color;
                     else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                         player.nameText().color = role.Color;
@@ -71,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                 }
                 else
                 {
-                    if (player.Is(Faction.Intruders) | role.Faction == Faction.Syndicate)
+                    if (player.Is(Faction.Intruder) | role.Faction == Faction.Syndicate)
                         player.nameText().color = role.FactionColor;
                     else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                         player.nameText().color = role.FactionColor;

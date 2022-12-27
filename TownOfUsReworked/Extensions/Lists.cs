@@ -108,7 +108,7 @@ namespace TownOfUsReworked.Extensions
                     
                     Syndicate.Add(role);
                 }
-                else if (role.Faction == Faction.Intruders)
+                else if (role.Faction == Faction.Intruder)
                 {
                     if (role.RoleAlignment == RoleAlignment.IntruderConceal)
                         IntruderConcealers.Add(role);

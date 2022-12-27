@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
                 (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
                 x.Is(Faction.Crew))) == 0)
             {

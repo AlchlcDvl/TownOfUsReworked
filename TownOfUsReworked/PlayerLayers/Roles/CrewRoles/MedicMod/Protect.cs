@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
-using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod

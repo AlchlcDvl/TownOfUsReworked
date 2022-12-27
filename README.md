@@ -1739,22 +1739,23 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
 [BepInEx](https://github.com/BepInEx) - For hooking game functions\
 [Among-Us-Sheriff-Mod](https://github.com/Woodi-dev/Among-Us-Sheriff-Mod) - For the Sheriff role\
-[Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers role\
+[Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers objectifier\
 [ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - For the Engineer & Medic roles\
 [TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
-[TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch modifier\
+[TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod\
-[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role, as well as the Bait modifier\
+[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, the Trapper role\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles and partially for Tracker role, bug fixes, integration of CrowdedMod and addition of sound effects\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility and the Trapper role\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles, partially for Tracker role, bug fixes, integration of CrowdedMod and addition of sound effects\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
 [Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth, and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
-[Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects
+[Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects\
+[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code I'm using in the mod plus some chat commands
 
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options\
 v1.0.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/Patches/CustomOption)

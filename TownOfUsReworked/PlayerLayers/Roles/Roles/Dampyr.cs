@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            VampWin = true;
+            UndeadWin = true;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
@@ -57,9 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Data.IsImpostor() |
-                x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
-                (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0)
+            if (Utils.SubfactionWins(SubFaction))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndeadWin,
                     SendOption.Reliable, -1);

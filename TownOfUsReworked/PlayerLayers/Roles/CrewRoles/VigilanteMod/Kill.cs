@@ -9,7 +9,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -43,15 +42,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (!flag3)
                 return false;
 
-            var flag4 = (role.ClosestPlayer.Is(Faction.Intruders) | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
+            var flag4 = role.ClosestPlayer.Is(Faction.Intruder) | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
                 role.ClosestPlayer.Is(Faction.Syndicate) | (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) |
                 (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) | (role.ClosestPlayer.Is(RoleEnum.Cannibal)
-                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB));
+                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) |
+                role.ClosestPlayer.Is(SubFaction.Undead) | role.ClosestPlayer.Is(SubFaction.Cabal);
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {

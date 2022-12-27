@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Random = UnityEngine.Random;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -41,8 +40,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                     coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is from the Crew!\n";
                 else if (br.Killer.Is(Faction.Neutral))
                     coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is a Neutral!\n";
-                else if (br.Killer.Is(Faction.Intruders))
+                else if (br.Killer.Is(Faction.Intruder))
                     coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is an Intruder!\n";
+                else if (br.Killer.Is(Faction.Syndicate))
+                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is from the Syndicate!\n";
                 else
                     coronerReport += $"{br.Body.Data.PlayerName}'s Report: This is a bit odd.\n";
             }

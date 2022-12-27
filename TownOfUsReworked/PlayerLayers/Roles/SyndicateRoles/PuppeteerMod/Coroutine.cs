@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
             while (true)
             {
                 var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, target);
-                var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
                 if (!flag3)
                 {

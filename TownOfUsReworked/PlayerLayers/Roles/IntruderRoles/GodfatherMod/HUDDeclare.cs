@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             role.DeclareButton.graphic.sprite = Promote;
             role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance);
 
-            if (role.ClosestIntruder.Is(Faction.Intruders))
+            if (role.ClosestIntruder.Is(Faction.Intruder))
                 Utils.SetTarget(ref role.ClosestIntruder, role.DeclareButton);
         }
     }

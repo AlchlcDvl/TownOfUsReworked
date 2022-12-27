@@ -4,7 +4,6 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using UnityEngine;
 using HarmonyLib;
 
@@ -29,9 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         protected internal string CommandInfo { get; set; }
         protected internal Color Color { get; set; }
         protected internal AbilityEnum AbilityType { get; set; }
+        protected internal bool Hidden { get; set; } = false;
 
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.Count;
+        protected internal bool TasksDone => TasksLeft <= 0;
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -49,7 +50,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         }
         
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
-        public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 
         private bool Equals(Ability other)
         {

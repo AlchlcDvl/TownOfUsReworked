@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (CheckEveryoneDoused())
+            if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CryomaniacWin,
                     SendOption.Reliable, -1);
@@ -89,22 +89,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        public bool CheckEveryoneDoused()
-        {
-            var cryoId = Player.PlayerId;
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == cryoId | player.Data.IsDead | player.Data.Disconnected)
-                    continue;
-
-                if (!DousedPlayers.Contains(player.PlayerId))
-                    return false;
-            }
-
-            return true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var cryoTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
@@ -117,6 +101,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDoused;
             var num = CustomGameOptions.DouseCd * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public float FreezeTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastDoused;
+            var num = CustomGameOptions.IgniteCd * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

@@ -6,7 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

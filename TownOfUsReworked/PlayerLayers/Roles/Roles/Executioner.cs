@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected | TargetPlayer == null)
+            if ((Player.Data.IsDead && !CustomGameOptions.ExeCanWinBeyondDeath) | Player.Data.Disconnected | TargetPlayer == null)
                 return;
                 
             TargetVotedOut = true;

@@ -133,12 +133,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 builder.AppendLine(option.Value.ToString());
             }
 
-            var text = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-temp");
+            var text = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew-temp");
 
             try
             {
                 File.WriteAllText(text, builder.ToString());
-                var text2 = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}");
+                var text2 = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew");
                 File.Delete(text2);
                 File.Move(text, text2);
                 Cancel(FlashGreen);

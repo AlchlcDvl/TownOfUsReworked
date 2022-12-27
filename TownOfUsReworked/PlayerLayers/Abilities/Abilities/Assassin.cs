@@ -99,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     ColorMapping.Add(("Vampire Hunter"), Colors.VampireHunter);
             }
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Intruders))
+            if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 

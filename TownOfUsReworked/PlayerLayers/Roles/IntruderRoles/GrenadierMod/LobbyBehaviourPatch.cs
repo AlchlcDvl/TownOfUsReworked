@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
@@ -9,8 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
         [HarmonyPostfix]
         public static void Postfix()
         {
-            //Fix Grenadier blind in lobby
+            //Fix Grenadier and screwed blind in lobby
             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = false;
+            Utils.DefaultOutfitAll();
         }
     }
 }

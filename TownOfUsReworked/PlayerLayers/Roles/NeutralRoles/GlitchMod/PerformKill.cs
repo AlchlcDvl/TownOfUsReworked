@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(role.Player, target);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (!flag3)
                 return false;

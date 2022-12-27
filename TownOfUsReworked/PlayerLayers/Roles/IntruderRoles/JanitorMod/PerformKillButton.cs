@@ -6,7 +6,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 if (!__instance.enabled)
                     return false;
 
-                var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
                 if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                     return false;

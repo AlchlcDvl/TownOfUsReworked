@@ -14,7 +14,6 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
     [HarmonyPatch(typeof(MeetingHud))]

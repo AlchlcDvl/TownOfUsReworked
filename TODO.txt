@@ -37,9 +37,9 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - New Role: Mafioso [Intruder (Utility)]
 - New Role: Dracula [Neutral (Neophyte)]
 - New Role: Jackal [Neutral (Neophyte)]
-- New Role: Vampire [Neutral (Proselyte)]
 - New Role: Recruit [Neutral (Proselyte)] |
-- New Role: Dampyr [Neutral (Power)]
+- New Role: Vampire [Neutral (Proselyte)]
+- New Role: Dampyr [Neutral (Proselyte)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
 - New Role: Cryomaniac [Neutral (Killing)] 
@@ -56,6 +56,7 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - New Objectifier: Fanatic |
 - New Ability: Tunneler |
 - New Ability: Multitasker
+- New Ability: Insider |
 - New Ability: Radar
 - New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
 - Mega Addition: Better Crew and Intruder victory screens
@@ -70,6 +71,7 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Addition: Added chat commands
 - Addition: Made the mod more descriptive
 - Addition: More save slots for settings, let your creations go wild
+- Addition: Chat scrolling
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
 - Mega Rework: Split Objectifiers into Abilities (additional stuff) and Objectifiers (new win con)
@@ -82,6 +84,7 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Rework: The Volatile interval of seeing/hearing things is now changable
 - Rework: Jester and Executioner no longer end the game when their objectives are complete
 - Rework: Vanilla settings are now integrated into the custom settings
+- Rework: Traitor now applies to any Crew and to switch sides, one needs to finsh their tasks to side with either the Intruders or Syndicate
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
 - Rename: Haunter has been renamed to Revealer
@@ -95,10 +98,12 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Improvements: Shed some mod weight
 - Improvements: Medbay scan messages scale with the Dwarf/Giant settings
 - Improvements: Reworked the Color system for roles
-- Update: Updated mod to v2022.12.8
+- Improvements: Separate data files for the mod now form to prevent overriding existing vanilla ToU-R data files
+- Update: Updated mod to v2022.12.14 |
 - Visual Fix: Fixed color mismatch for certain areas
 - Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
 - Visual Fix: Fixed Stalemate and Survivor end screens
+- Visual Fix: Changed the Disguiser color because it was too similar to another color
 - Bug Fix: Squashed the countless role gen bugs (hopefully)
 - Role Fix: Fixed the issue with Executioners and Guardian Angels having no targets
 - Role Fix: Cannibal's button should light up when near bodies now
@@ -106,12 +111,39 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Role Fix: Taskmaster can do tasks again
 - Role Fix: Fixed Traitor incompatibility in Submerged
 - Role Fix: Fixed Janitor clean cooldown not occuring correctly
+- Role Fix: Spy (now Agent) can see the time for death for players again
 - Regular Fix: Optimized code for smoother functionality (hopefully x2)
 - Removed: All Any Random Impostor Option, for it to be truly All Any, the number of Impostors should always be random
 - Removed: Glitch Hack Distance setting since all interactions are now controlled by the default vanilla distance
 - Removed: Crew and Neutral (Postmortal) alignments
 - Removed: Max Doused option for Arsonist because it's unnecessary
 - Temporary Removal: Intruder (Killing) as there are currently no roles belonging to this alignment
-- Temporary Removal: CrowdedMod integration, it's currently broken
+
+AS's Bugs Corner
+- Exe, Reb and Consig end the game immediately for some reason
+- Role spawns out of index
+- Role conversions not working
+- Assassin buttons not showing up
+- Missing sounds??
+- Glitch is glitched
+- Missing Cann button
+- Exe, Jack and GA appear to have no targets/recruits but actually they do
+- Conversions do not appear in the end game summary
+- Glitch cannot vent
+- Bugged conceal
+- Funny Puppeteer button placement
+- Disg and Consig killing players for using their abilities
+- Syndicate and Intruders can kill members of the same faction
+- Broken Taskmaster
+- Incorrect status text in the intro screen
+- Shifting not working
+- Missing Dracula convert buttons
+- Roleblocks not working
+- Random roles spawning in
+- Fucked camouflage code
+- Cryo doesn't kill their doused targets at all and instead murders them on the spot
+- Broken lovers
+- Weird Submerged compat
+- PB and Pest can't win
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

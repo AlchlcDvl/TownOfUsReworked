@@ -11,11 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateRewindButton(__instance);
-        }
-
-        public static void UpdateRewindButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

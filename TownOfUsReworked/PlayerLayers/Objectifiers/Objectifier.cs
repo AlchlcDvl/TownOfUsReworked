@@ -27,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal string SymbolName { get; set; }
         protected internal string ObjectifierDescription { get; set; }
         protected internal string TaskText { get; set; }
+        protected internal bool Hidden { get; set; } = false;
 
         protected internal string GetColoredSymbol()
         {

@@ -1,12 +1,11 @@
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TownOfUsReworked.PlayerLayers.CrewMod.AgentMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
 	[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
 	public class AddNumbers

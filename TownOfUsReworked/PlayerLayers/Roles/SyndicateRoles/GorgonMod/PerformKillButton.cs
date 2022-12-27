@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             if (role.ClosestPlayer == null)
                 return false;
             
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

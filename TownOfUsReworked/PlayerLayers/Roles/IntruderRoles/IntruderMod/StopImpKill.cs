@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Intruders))
+            if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
                 return true;
 
             var target = __instance.currentTarget;

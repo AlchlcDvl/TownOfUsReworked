@@ -75,7 +75,6 @@ namespace TownOfUsReworked.Patches
                 Kill = __instance.KillButton.graphic.sprite;
 
             var flag = false;
-            var sk = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord))
             {
@@ -169,6 +168,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
             {
+                var sk = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
                 __instance.KillButton.gameObject.SetActive(sk.Lusted);
                 __instance.KillButton.graphic.sprite = Placeholder;
 
@@ -239,7 +239,7 @@ namespace TownOfUsReworked.Patches
                 __instance.KillButton.graphic.sprite = Kill;
                 __instance.KillButton.buttonLabelText.gameObject.SetActive(true);
 
-                flag = (PlayerControl.LocalPlayer.Is(Faction.Intruders) && !PlayerControl.LocalPlayer.Is(RoleEnum.Poisoner)) |
+                flag = (PlayerControl.LocalPlayer.Is(Faction.Intruder) && !PlayerControl.LocalPlayer.Is(RoleEnum.Poisoner)) |
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate);
 
                 if (flag) 

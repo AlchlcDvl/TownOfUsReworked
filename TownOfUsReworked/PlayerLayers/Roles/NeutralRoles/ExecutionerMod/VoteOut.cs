@@ -19,8 +19,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
             foreach (var role in Role.GetRoles(RoleEnum.Executioner))
             {
-                if (player.PlayerId == ((Executioner)role).TargetPlayer.PlayerId)
-                    ((Executioner)role).Wins();
+                var exe = (Executioner)role;
+
+                if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Player.Data.IsDead))
+                    continue;
+
+                if (player.PlayerId == exe.TargetPlayer.PlayerId)
+                    exe.Wins();
             }        
         }
     }

@@ -8,12 +8,15 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
+using InnerNet;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class ChatCommands
     {
+        public static System.Collections.Generic.List<string> ChatHistory = new();
+
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch
         {
@@ -83,6 +86,7 @@ namespace TownOfUsReworked.Patches
                 coloursDict.Add(59, "Rainbow");
 
                 string text = __instance.TextArea.text;
+                string otherText = text;
                 text = text.ToLower();
                 string inputText = "";
                 string chatText = "";
@@ -94,7 +98,10 @@ namespace TownOfUsReworked.Patches
 
                 var player = PlayerControl.LocalPlayer;
 
-                if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started)
+                if (ChatHistory.Count == 0 || ChatHistory[^1] != text)
+                    ChatHistory.Add(text);
+
+                if (AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
                 {
                     //Help command - lists commands available
                     if (text == "/help")
@@ -102,13 +109,13 @@ namespace TownOfUsReworked.Patches
                         chatHandled = true;
                         var message = AmongUsClient.Instance.CanBan()
                         ? $"Commands available:\n/modinfo, /setname,{setColor} /kick, /ban, /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, " +
-                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits"
+                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls"
                         : $"Commands available:\n/modinfo, /setname,{setColor} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo," +
-                            " /alignmentinfo, /quote, /abbreviations, /lookup, /credits";
+                            " /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls";
                         __instance.AddChat(player, message);
                     }
                     //Display a message (Information about the mod)
-                    else if (text.StartsWith("/modinfo"))
+                    else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
                     {
                         chatHandled = true;
                         __instance.AddChat(player, "Welcome to Town Of Us Reworked v" + TownOfUsReworked.versionFinal + "!");
@@ -120,7 +127,7 @@ namespace TownOfUsReworked.Patches
                             "\nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
                     }
                     //Abbreviations help                    
-                    else if (text == "/abbreviations" || text == "/abbreviations ")
+                    else if (text == "/abbreviations" || text == "/abbreviations " || text == "/ab" || text == "/ab ")
                     {
                         chatHandled = true;
                         __instance.AddChat(player, "Usage: /abbreviations <name>");
@@ -268,6 +275,8 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "pois";
                         else if (requiredText == "puppeteer")
                             abbreviation = "pup";
+                        else if (requiredText == "jackal")
+                            abbreviation = "jack";
                         else if (requiredText == "serialkiller")
                             abbreviation = "sk";
                         else if (requiredText == "shapeshifter")
@@ -396,6 +405,8 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "vip";
                         else if (requiredText == "volatile")
                             abbreviation = "vol";
+                        else if (requiredText == "controls")
+                            abbreviation = "cont";
                         else
                             abbreviation = "Invalid input.";
                         
@@ -427,7 +438,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/setname "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(9);
+                        inputText = otherText.Substring(9);
 
                         if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[a-zA-Z0-9]+$"))
                             __instance.AddChat(player, "Name contains disallowed characters.");
@@ -1198,11 +1209,11 @@ namespace TownOfUsReworked.Patches
                 else if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
                 {
                     //Help command - lists commands available
-                    if (text == "/help" || text == "/help ")
+                    if (text.StartsWith("/help"))
                     {
                         chatHandled = true;
                         var message = "Commands available:\n/mystate, /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /lookup, " +
-                            "/abbreviations, /quote, /credits";
+                            "/abbreviations, /quote, /credits, controls";
                         __instance.AddChat(player, message);
                     }
                     //This command gives the current status and description of the player
@@ -2192,6 +2203,8 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "vip";
                         else if (requiredText == "volatile")
                             abbreviation = "vol";
+                        else if (requiredText == "controls")
+                            abbreviation = "cont";
                         else
                             abbreviation = "Invalid input.";
                         

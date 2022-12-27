@@ -6,7 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (role.EatTimer() != 0)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

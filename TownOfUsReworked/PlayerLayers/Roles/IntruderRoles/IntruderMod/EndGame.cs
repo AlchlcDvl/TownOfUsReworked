@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 
             foreach (var role in Role.AllRoles)
             {
-                if (role.Faction == Faction.Intruders)
+                if (role.Faction == Faction.Intruder)
                     role.Loses();
             }
 

@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
                     if (CustomGameOptions.RevealerRevealsRoles)
                     {
-                        if (player.Is(Faction.Intruders))
+                        if (player.Is(Faction.Intruder))
                         {
                             if (!player.Is(ObjectifierEnum.Traitor))
                                 state.NameText.color = role.Color;
@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                     }
                     else
                     {
-                        if (player.Is(Faction.Intruders)) 
+                        if (player.Is(Faction.Intruder)) 
                         {
                             if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor)
                                 state.NameText.color = role.FactionColor;

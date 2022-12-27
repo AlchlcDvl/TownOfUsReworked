@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         public Rivals(PlayerControl player) : base(player)
         {
             Name = "Rival";
-            SymbolName = "❧";
+            SymbolName = "✦";
             TaskText = "Your Rival is " + OtherRival.Player.name;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
@@ -101,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover2 = OtherRival.Player;
             
             return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && alives.Count() == 4 &&
-                (lover1.Is(Faction.Intruders) | lover2.Is(Faction.Intruders));
+                (lover1.Is(Faction.Intruder) | lover2.Is(Faction.Intruder));
         }
 
         private bool CheckLoversWin()

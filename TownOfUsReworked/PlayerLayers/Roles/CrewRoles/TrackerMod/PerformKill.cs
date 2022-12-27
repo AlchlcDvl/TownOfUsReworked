@@ -11,7 +11,6 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -39,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

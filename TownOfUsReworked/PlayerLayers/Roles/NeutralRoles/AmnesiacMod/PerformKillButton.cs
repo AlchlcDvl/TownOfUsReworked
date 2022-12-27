@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (role == null)
                 return false;
@@ -97,10 +97,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             List<PlayerTask> tasks1, tasks2;
             List<GameData.TaskInfo> taskinfos1, taskinfos2;
 
-            var rememberImp = true;
-            var rememberNeut = true;
-            var rememberSyn = true;
-            var rememberCrew = true;
+            var rememberImp = false;
+            var rememberNeut = false;
+            var rememberSyn = false;
+            var rememberCrew = false;
 
             Role newRole;
 
@@ -137,9 +137,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Escort:
                 case RoleEnum.VampireHunter:
 
-                    rememberImp = false;
-                    rememberNeut = false;
-                    rememberSyn = false;
+                    rememberCrew = true;
 
                     break;
 
@@ -150,10 +148,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Rebel:
                 case RoleEnum.Sidekick:
                 case RoleEnum.Puppeteer:
+                case RoleEnum.Shapeshifter:
 
-                    rememberImp = false;
-                    rememberNeut = false;
-                    rememberCrew = false;
+                    rememberSyn = true;
 
                     break;
 
@@ -178,9 +175,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Dampyr:
                 case RoleEnum.Cryomaniac:
 
-                    rememberImp = false;
-                    rememberSyn = false;
-                    rememberCrew = false;
+                    rememberNeut = true;
+
+                    break;
+
+                case RoleEnum.Impostor:
+                case RoleEnum.Blackmailer:
+                case RoleEnum.Camouflager:
+                case RoleEnum.Consigliere:
+                case RoleEnum.Consort:
+                case RoleEnum.Disguiser:
+                case RoleEnum.Godfather:
+                case RoleEnum.Grenadier:
+                case RoleEnum.Janitor:
+                case RoleEnum.Mafioso:
+                case RoleEnum.Miner:
+                case RoleEnum.Morphling:
+                case RoleEnum.Poisoner:
+                case RoleEnum.Teleporter:
+                case RoleEnum.TimeMaster:
+                case RoleEnum.Undertaker:
+                case RoleEnum.Wraith:
+
+                    rememberImp = true;
 
                     break;
             }
@@ -518,12 +535,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 var consigRole = Role.GetRole<Consigliere>(amnesiac);
                 consigRole.LastInvestigated = DateTime.UtcNow;
             }
-            else if (!(amnesiac.Is(RoleEnum.Altruist) | amnesiac.Is(RoleEnum.Amnesiac) | amnesiac.Is(Faction.Intruders)))
-            {
+            else if (!(amnesiac.Is(RoleEnum.Altruist) | amnesiac.Is(RoleEnum.Amnesiac) | amnesiac.Is(Faction.Intruder)))
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-            }
 
-            if (amnesiac.Is(Faction.Intruders) && (!amnesiac.Is(ObjectifierEnum.Traitor) | CustomGameOptions.SnitchSeesTraitor))
+            if (amnesiac.Is(Faction.Intruder) && (!amnesiac.Is(ObjectifierEnum.Traitor) | CustomGameOptions.SnitchSeesTraitor))
             {
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {

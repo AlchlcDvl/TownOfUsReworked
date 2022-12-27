@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Arsonist : Role
     {
         private KillButton _igniteButton;
-        private KillButton _douseButton;
         public bool ArsonistWins;
         public bool LastKiller;
         public PlayerControl ClosestPlayerDouse;
@@ -69,24 +68,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        public KillButton DouseButton
-        {
-            get => _douseButton;
-            set
-            {
-                _douseButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
-            }
-        }
-
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
             if (Player.Data.IsDead | Player.Data.Disconnected) return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
-                (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Arsonist)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
-                x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0)
+            if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ArsonistWin,
                     SendOption.Reliable, -1);

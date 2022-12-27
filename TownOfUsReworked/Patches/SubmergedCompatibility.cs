@@ -13,7 +13,6 @@ using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
@@ -179,7 +178,7 @@ namespace TownOfUsReworked.Patches
             Assembly = Plugin!.GetType().Assembly;
             Types = AccessTools.GetTypesFromAssembly(Assembly);
 
-            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "RegisterInIl2CppAttribute"), "RegisteredTypes")
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
                 .Invoke(null, Array.Empty<object>());
 
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");
@@ -285,7 +284,6 @@ namespace TownOfUsReworked.Patches
         public static void ExileRoleChangePostfix()
         {
             SetPhantom.ExileControllerPostfix(ExileController.Instance);
-            SetTraitor.ExileControllerPostfix(ExileController.Instance);
             SetRevealer.ExileControllerPostfix(ExileController.Instance);
 
             Coroutines.Start(waitMeeting(resetTimers));

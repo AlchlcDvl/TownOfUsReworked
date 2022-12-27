@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.Blackmailed?.PlayerId != player.PlayerId).ToList();
 
-            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance],
+            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance],
                 notBlackmailed);
 
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);

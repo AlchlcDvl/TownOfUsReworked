@@ -10,17 +10,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     public enum ProtectOptions
     {
-        Self = 0,
-        GA = 1,
-        SelfAndGA = 2,
-        Everyone = 3
+        Self,
+        GA,
+        SelfAndGA,
+        Everyone
     }
 
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class ShowProtect
     {
-        public static Color ProtectedColor = new Color(1f, 0.85f, 0f, 1f);
-        public static Color ShieldedColor = Color.cyan;
+        public static Color32 ProtectedColor = new Color32(255, 217, 0, 255);
+        public static Color32 ShieldedColor = new Color32(0, 255, 255, 255);
 
         public static void Postfix(HudManager __instance)
         {

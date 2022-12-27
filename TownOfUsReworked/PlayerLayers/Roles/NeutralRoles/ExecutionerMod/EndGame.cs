@@ -17,7 +17,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             foreach (var role in Role.AllRoles)
             {
                 if (role.RoleType == RoleEnum.Executioner)
-                    ((Executioner) role).Loses();
+                {
+                    var exe = (Executioner)role;
+
+                    if (!exe.TargetVotedOut)
+                        ((Executioner)role).Loses();
+                }
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ExecutionerLose,

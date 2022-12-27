@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.UndeadMod
             if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
                 return;
 
-            var role = Role.AllRoles.FirstOrDefault(x => x.SubFaction == SubFaction.Undead && Role.VampWin);
+            var role = Role.AllRoles.FirstOrDefault(x => x.SubFaction == SubFaction.Undead && Role.UndeadWin);
 
             if (role == null)
                 return;
@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.UndeadMod
             __instance.BackgroundBar.material.color = Colors.Undead;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "The Undead Win!";
-            text.color = Colors.Vampire;
+            text.color = Colors.Undead;
             var pos = __instance.WinText.transform.localPosition;
             pos.y = 1.5f;
             text.transform.position = pos;

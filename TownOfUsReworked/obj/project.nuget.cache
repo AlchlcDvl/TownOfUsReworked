@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZjOvIDh4N81uakZHlmRzfaTa2qwcneZh81jPFGpBfkKvmAlstGCuM/xaOTLxQ/bU6KkIt0gnEimlbsKnGpAcAQ==",
+  "dgSpecHash": "qP2QC7S1P4FXjpFy/SWc6h5ptKPw6/1DPjz2xx72G/cPZijpTRIBUh6ELXgHQqbwNPjT38OIGlMAcNWo962rFA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworkedv10.25\\TownOfUsReworked\\TownOfUsReworked.csproj",
+  "projectFilePath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Guest User\\.nuget\\packages\\amongus.gamelibs.steam\\2022.10.25\\amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\assetripper.versionutilities\\1.2.1\\assetripper.versionutilities.1.2.1.nupkg.sha512",

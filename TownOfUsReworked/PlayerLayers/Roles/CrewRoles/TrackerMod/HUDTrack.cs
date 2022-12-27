@@ -13,11 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateTrackButton(__instance);
-        }
-
-        public static void UpdateTrackButton(PlayerControl __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

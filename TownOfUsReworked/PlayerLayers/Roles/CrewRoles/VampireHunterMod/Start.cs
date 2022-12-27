@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
     {
         public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Vigilante))
+            foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
             {
                 var vampireHunter = (VampireHunter) role;
                 vampireHunter.LastStaked = DateTime.UtcNow;

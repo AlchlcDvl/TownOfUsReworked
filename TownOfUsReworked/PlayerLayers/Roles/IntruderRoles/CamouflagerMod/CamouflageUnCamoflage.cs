@@ -40,13 +40,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                     switch (PlayerControl.GameOptions.MapId)
                     {
                         case 0:
-                            var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
-                            if (comms1.IsActive)
+                        case 2:
+
+                        case 3:
+
+                        case 4:
+
+                        case 5:
+                            var comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+
+                            if (comms5 != null && comms5.IsActive)
                             {
                                 CommsEnabled = true;
                                 Utils.Camouflage();
-                                return;
                             }
 
                             break;
@@ -54,11 +61,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                         case 1:
                             var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
                             
-                            if (comms2.IsActive)
+                            if (comms2 != null && comms2.IsActive)
                             {
                                 CommsEnabled = true;
                                 Utils.Camouflage();
-                                return;
                             }
 
                             break;

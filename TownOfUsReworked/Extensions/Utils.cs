@@ -23,7 +23,6 @@ using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
 
-
 namespace TownOfUsReworked.Extensions
 {
     [HarmonyPatch]
@@ -35,7 +34,30 @@ namespace TownOfUsReworked.Extensions
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
         public static Dictionary<byte, DateTime> tickDictionary = new Dictionary<byte, DateTime>();
         public static Sprite LockSprite = TownOfUsReworked.LockSprite;
-        public static MeetingHud __instance;
+
+        public static void Invis(PlayerControl player)
+        {
+            var color = new Color32(0, 0, 0, 0);
+
+            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Data.IsDead)
+                color.a = 26;
+
+            if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
+            {
+                player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
+                {
+                    ColorId = player.CurrentOutfit.ColorId,
+                    HatId = "",
+                    SkinId = "",
+                    VisorId = "",
+                    PlayerName = " "
+                });
+
+                player.myRend().color = color;
+                player.nameText().color = new Color32(0, 0, 0, 0);
+                player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
+            }
+        }
 
         public static void Conceal()
         {
@@ -46,7 +68,7 @@ namespace TownOfUsReworked.Extensions
                     var color = new Color32 (0, 0, 0, 0);
                     var playerName = " ";
 
-                    if (player.Is(Faction.Syndicate) | player.Data.IsDead)
+                    if (player.Is(Faction.Syndicate) || player.Data.IsDead)
                     {
                         color.a = 26;
                         playerName = player.name;
@@ -216,6 +238,19 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRole(player)?.Defense == defense;
         }
 
+        public static Faction GetFaction(this PlayerControl player)
+        {
+            if (player == null)
+                return Faction.None;
+
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return player.Data.IsImpostor() ? Faction.Intruder : Faction.Crew;
+
+            return role.Faction;
+        }
+
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors)
         {
             return PlayerControl.AllPlayerControls.ToArray().Where(player => !impostors.Any(imp => imp.PlayerId == player.PlayerId)).ToList();
@@ -319,6 +354,9 @@ namespace TownOfUsReworked.Extensions
 
             var ability = Ability.GetAbility(player);
 
+            if (ability == null)
+                return AbilityEnum.None;
+
             return ability.AbilityType;
         }
 
@@ -332,6 +370,9 @@ namespace TownOfUsReworked.Extensions
 
             var objectifier = Objectifier.GetObjectifier(player);
 
+            if (objectifier == null)
+                return ObjectifierEnum.None;
+
             return objectifier.ObjectifierType;
         }
 
@@ -344,6 +385,9 @@ namespace TownOfUsReworked.Extensions
                 return ModifierEnum.None;
 
             var modifier = Modifier.GetModifier(player);
+
+            if (modifier == null)
+                return ModifierEnum.None;
 
             return modifier.ModifierType;
         }
@@ -419,7 +463,7 @@ namespace TownOfUsReworked.Extensions
         public static bool CrewWins()
         {
             var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
-                x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) |
+                x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) |
                 x.Is(RoleAlignment.NeutralPros))) == 0) | TasksDone();
 
             return flag;
@@ -441,13 +485,13 @@ namespace TownOfUsReworked.Extensions
             if (nk == RoleEnum.Plaguebearer | nk == RoleEnum.Pestilence)
             {
                 flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
-                    x.Is(Faction.Intruders) | (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
+                    x.Is(Faction.Intruder) | (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
                     x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0;
             }
             else
             {
                 flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() | 
-                    x.Is(Faction.Intruders) | (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) |
+                    x.Is(Faction.Intruder) | (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) |
                     x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0;
             }
 
@@ -457,7 +501,7 @@ namespace TownOfUsReworked.Extensions
         public static bool SyndicateWins()
         {
             var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruders) | x.Is(RoleAlignment.NeutralNeo) | x.IsRecruit() |
+                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.IsRecruit() |
                 x.Is(RoleAlignment.NeutralPros))) == 0) | (CustomGameOptions.AltImps && Sabotaged());
 
             return flag;
@@ -469,13 +513,33 @@ namespace TownOfUsReworked.Extensions
 
             if (sf == SubFaction.Undead)
             {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
                     x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
                     x.Is(Faction.Crew) | x.IsRecruit() | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
             }
             else if (sf == SubFaction.Cabal)
             {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruders) |
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
+                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
+                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
+            }
+
+            return flag;
+        }
+
+        public static bool ObjectifierWins(SubFaction sf)
+        {
+            var flag = false;
+
+            if (sf == SubFaction.Undead)
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
+                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
+                    x.Is(Faction.Crew) | x.IsRecruit() | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
+            }
+            else if (sf == SubFaction.Cabal)
+            {
+                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
                     x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
                     x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
             }
@@ -531,7 +595,7 @@ namespace TownOfUsReworked.Extensions
             List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance))
-                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             var player = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance);
@@ -540,6 +604,9 @@ namespace TownOfUsReworked.Extensions
 
         public static double GetDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
+            if (player == null || refplayer == null)
+                return 100000000000000;
+
             var truePosition = refplayer.GetTruePosition();
             var truePosition2 = player.GetTruePosition();
             return Vector2.Distance(truePosition, truePosition2);
@@ -615,7 +682,7 @@ namespace TownOfUsReworked.Extensions
                     }
                     else
                     {
-                        importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString( StringNames.GhostDoTasks,
+                        importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks,
                             new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                     }
 
@@ -804,12 +871,7 @@ namespace TownOfUsReworked.Extensions
 
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
-            if (Sabotaged())
-                ShipStatus.RpcEndGame(GameOverReason.ImpostorBySabotage, showAds);
-            else if (TasksDone())
-                ShipStatus.RpcEndGame(GameOverReason.HumansByTask, showAds);
-            else
-                ShipStatus.RpcEndGame(reason, showAds);
+            ShipStatus.RpcEndGame(reason, showAds);
         }
 
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
@@ -1048,7 +1110,7 @@ namespace TownOfUsReworked.Extensions
             float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance)) 
-                maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+                maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
                 
             var player = GetClosestPlayer(fromPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
             var closeEnough = player == null | (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
@@ -1057,7 +1119,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool LastImp()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruders) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
         }
 
         public static bool LastCrew()

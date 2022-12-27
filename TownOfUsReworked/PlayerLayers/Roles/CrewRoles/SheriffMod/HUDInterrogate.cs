@@ -8,14 +8,9 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class HUDInvestigate
+    public class HUDInterrogate
     {
         public static void Postfix(PlayerControl __instance)
-        {
-            UpdateInvButton(__instance);
-        }
-
-        public static void UpdateInvButton(PlayerControl __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;

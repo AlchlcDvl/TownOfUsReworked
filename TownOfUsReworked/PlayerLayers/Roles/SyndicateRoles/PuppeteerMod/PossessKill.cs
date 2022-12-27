@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PuppeteerMod
                 var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x.PlayerId != role.PossessPlayer.
                     PlayerId).ToList();
 
-                if (Utils.SetClosestPlayer(ref closestPlayer, GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance] * 0.75f, targets))
+                if (Utils.SetClosestPlayer(ref closestPlayer, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance] * 0.75f, targets))
                 {
                     unchecked
                     {

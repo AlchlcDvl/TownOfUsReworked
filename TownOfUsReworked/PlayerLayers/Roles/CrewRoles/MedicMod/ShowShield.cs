@@ -7,22 +7,6 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
-    public enum ShieldOptions
-    {
-        Self,
-        Medic,
-        SelfAndMedic,
-        Everyone
-    }
-
-    public enum NotificationOptions
-    {
-        Medic,
-        Shielded,
-        Everyone,
-        Nobody
-    }
-
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class ShowShield
     {

@@ -8,7 +8,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Vigilante);
+            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.VampireHunter);
 
             if (!flag)
                 return true;
@@ -42,12 +41,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var flag3 = distBetweenPlayers < GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (!flag3)
                 return false;
-
-            var flag4 = (role.ClosestPlayer.Is(SubFaction.Undead));
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
@@ -126,6 +123,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
                 return false;
             }
+            
+            var flag4 = role.ClosestPlayer.Is(SubFaction.Undead);
 
             if (flag4)
             {

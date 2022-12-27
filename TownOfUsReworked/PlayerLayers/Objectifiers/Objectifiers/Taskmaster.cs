@@ -1,6 +1,5 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
@@ -23,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Taskmaster";
             TaskText = "Do something that no one has ever done before! Finish your tasks";
-            SymbolName = "";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Taskmaster : Colors.Neutral;
+            SymbolName = "µ";
+            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
             AddToObjectifierHistory(ObjectifierType);
         }

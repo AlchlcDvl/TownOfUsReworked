@@ -126,7 +126,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             try
             {
-                var path = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}");
+                var path = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew");
                 text = File.ReadAllText(path);
             }
             catch

@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Godfather(PlayerControl player) : base(player)
         {
             Name = "Godfather";
-            Faction = Faction.Intruders;
+            Faction = Faction.Intruder;
             RoleType = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
             AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor.";
@@ -64,9 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) |
-                Utils.Sabotaged())
+            if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);
@@ -86,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.Is(Faction.Intruders))
+                if (player.Is(Faction.Intruder))
                     intTeam.Add(player);
             }
             __instance.teamToShow = intTeam;

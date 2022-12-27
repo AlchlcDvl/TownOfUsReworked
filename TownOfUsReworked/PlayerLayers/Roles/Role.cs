@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TMPro;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -33,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static bool NobodyWins;
         public static bool NeutralsWin;
         
-        public static bool VampWin;
+        public static bool UndeadWin;
         public static bool CabalWin;
         
         public static bool CrewWin;
@@ -101,6 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool LostByRPC { get; protected set; }
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.Count;
+        protected internal bool TasksDone => TasksLeft <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 
@@ -110,7 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
         public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
-        public string ColorEnd => "</color>";
 
         private bool Equals(Role other)
         {
@@ -226,11 +225,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return true;
         }
 
-        internal virtual bool ColorCriteria()
-        {
-            return SelfCriteria() || DeadCriteria() || FactionCriteria() || TargetCriteria();
-        }
-
         internal virtual bool DeadCriteria()
         {
             if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)
@@ -243,9 +237,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var p = PlayerControl.LocalPlayer;
 
-            if (CustomGameOptions.SeeTasks && ((p.Is(Faction.Crew) && !p.Is(ObjectifierEnum.Lovers)) | p.Is(ObjectifierEnum.Taskmaster) |
-                (p.Is(ObjectifierEnum.Phantom) && p.Data.IsDead)))
-                return Utils.ShowDeadBodies;
+            if (CustomGameOptions.SeeTasks && p.Is(Faction.Crew))
+                return true;
 
             return false;
         }
@@ -255,7 +248,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Faction == Faction.Syndicate && PlayerControl.LocalPlayer.Is(Faction.Syndicate) && CustomGameOptions.FactionSeeRoles)
                 return true;
 
-            if (Faction == Faction.Intruders && PlayerControl.LocalPlayer.Is(Faction.Intruders) && CustomGameOptions.FactionSeeRoles)
+            if (Faction == Faction.Intruder && PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.FactionSeeRoles)
                 return true;
 
             return false;
@@ -286,9 +279,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         
         internal virtual bool TargetCriteria()
         {
-            return (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAKnowsTargetRole &&
-                Player == GetRole<GuardianAngel>(PlayerControl.LocalPlayer).TargetPlayer) | PlayerControl.LocalPlayer.Is(RoleEnum.Executioner) &&
-                CustomGameOptions.ExeKnowsTargetRole && Player == GetRole<Executioner>(PlayerControl.LocalPlayer).TargetPlayer;;
+            bool flag = false;
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
+            {
+                var role = GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
+                var target = role.TargetPlayer == null ? null : role.TargetPlayer;
+                flag = target != null && CustomGameOptions.GAKnowsTargetRole && Player == target;
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Executioner))
+            {
+                var role = GetRole<Executioner>(PlayerControl.LocalPlayer);
+                var target = role.TargetPlayer == null ? null : role.TargetPlayer;
+                flag = target != null && CustomGameOptions.ExeKnowsTargetRole && Player == target;
+            }
+
+            return flag;
         }
 
         protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
@@ -306,7 +312,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             int ColorID = Player.CurrentOutfit.ColorId;
 
-            var modifier = Modifier.GetModifier(Player);
             var objectifier = Objectifier.GetObjectifier(Player);
             var role2 = GetRole(Player);
 
@@ -344,12 +349,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var jackal = (Jackal)role;
 
-                if ((Player == jackal.GoodRecruit || Player == jackal.GoodRecruit) && Player == PlayerControl.LocalPlayer && CustomGameOptions.ExeTargetKnows)
+                if (jackal.GoodRecruit == null && jackal.GoodRecruit == null)
+                    continue;
+
+                if ((Player == jackal.GoodRecruit || Player == jackal.GoodRecruit) && Player == PlayerControl.LocalPlayer)
                     PlayerName += "<color=#575657FF> $</color>";
             }
 
             if (player != null && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding | MeetingHud.Instance.state ==
                 MeetingHud.VoteStates.Results))
+                return PlayerName;
+
+            if (!revealRole)
                 return PlayerName;
 
             Player.nameText().transform.localPosition = new Vector3(0f, Player.CurrentOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
@@ -487,7 +498,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var modifier = Modifier.GetModifier(player);
                     var objectifier = Objectifier.GetObjectifier(player);
                     var ability = Ability.GetAbility(player);
-                    var flag = modifier != null && ability != null && objectifier != null;
+                    var flag = !(modifier == null && ability == null && objectifier == null);
 
                     if (flag)
                         StatusText = Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false);
@@ -505,7 +516,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var modifier = Modifier.GetModifier(player);
                     var objectifier = Objectifier.GetObjectifier(player);
                     var ability = Ability.GetAbility(player);
-                    var flag = modifier != null | ability != null | objectifier != null;
+                    var flag = !(modifier == null && ability == null && objectifier == null);
 
                     if (flag)
                         StatusText = Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false);
@@ -542,7 +553,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        if (!role.Base)
+                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) | 
+                            (CustomGameOptions.CustomImpColors && PlayerControl.LocalPlayer.Is(Faction.Intruder)) |
+                            (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) |
+                            (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
+
+                        if (flag)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
 
@@ -552,26 +568,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var modifier = Modifier.GetModifier(player);
                         var objectifier = Objectifier.GetObjectifier(player);
                         var ability = Ability.GetAbility(player);
-                        var statusString = "Status:";
 
-                        StatusText.color = Colors.Status;
+                        var statusString = "<color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status:</color>";
 
                         if (modifier != null)
                             statusString += " <color=#" + modifier.Color.ToHtmlStringRGBA() + ">" + modifier.Name + "</color>,";
 
                         if (objectifier != null)
-                        {
-                            if (objectifier.ObjectifierType == ObjectifierEnum.Fanatic && CustomGameOptions.FanaticKnows)
-                                statusString += " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">" + objectifier.Name + "</color>,";
-                        }
+                            statusString += " <color=#" + objectifier.Color.ToHtmlStringRGBA() + ">" + objectifier.Name + "</color>,";
 
                         if (ability != null)
                             statusString += " <color=#" + ability.Color.ToHtmlStringRGBA() + ">" + ability.Name + "</color>";
                         
                         if (ability == null)
                             statusString = statusString.Remove(statusString.Length - 1);
+                        
+                        statusString = "<size=4>" + statusString + "</size>";
 
-                        StatusText.text = "<size=4>" + statusString + "</size>";
+                        StatusText.text = statusString;
+                        StatusText.outlineColor = Colors.Status;
 
                         StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
                         StatusText.gameObject.SetActive(true);
@@ -609,9 +624,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var modifier = Modifier.GetModifier(player);
                         var objectifier = Objectifier.GetObjectifier(player);
                         var ability = Ability.GetAbility(player);
-                        var statusString = "Status:";
 
-                        StatusText.color = Colors.Status;
+                        var statusString = "<color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status:</color>";
 
                         if (modifier != null)
                             statusString += " <color=#" + modifier.Color.ToHtmlStringRGBA() + ">" + modifier.Name + "</color>,";
@@ -624,8 +638,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         
                         if (ability == null)
                             statusString = statusString.Remove(statusString.Length - 1);
+                        
+                        statusString = "<size=4>" + statusString + "</size>";
 
-                        StatusText.text = "<size=4>" + statusString + "</size>";
+                        StatusText.text = statusString;
+                        StatusText.outlineColor = Colors.Status;
 
                         StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
                         StatusText.gameObject.SetActive(true);
@@ -648,6 +665,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.RoleBlurbText.text = role.StartText;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
 
+                        SoundManager.Instance.StopAllSound();
+
                         if (role.IntroSound != null)
                         {
                             try
@@ -656,7 +675,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        if (!role.Base)
+                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) | 
+                            (CustomGameOptions.CustomImpColors && PlayerControl.LocalPlayer.Is(Faction.Intruder)) |
+                            (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) |
+                            (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
+
+                        if (flag)
                             __instance.__4__this.RoleText.outlineColor = role.FactionColor;
                     }
                 }
@@ -681,7 +705,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var modTask = new GameObject(ability.Name + "Task").AddComponent<ImportantTextTask>();
                     modTask.transform.SetParent(player.transform, false);
-                    modTask.Text = $"{ability.ColorString}Modifier: {ability.Name}\n{ability.TaskText}</color>";
+                    modTask.Text = $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
                     player.myTasks.Insert(0, modTask);
                 }
 
@@ -697,7 +721,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var modTask = new GameObject(objectifier.Name + "Task").AddComponent<ImportantTextTask>();
                     modTask.transform.SetParent(player.transform, false);
-                    modTask.Text = $"{objectifier.ColorString}Modifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
+                    modTask.Text = $"{objectifier.ColorString}Objectifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
                     player.myTasks.Insert(0, modTask);
                 }
 
@@ -706,7 +730,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective: {role.IntroText}\nAttack/Defense:" +
                     $" {role.AttackString}/{role.DefenseString}\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
 
-                if (role.Faction != Faction.Crew)
+                if (role.Faction != Faction.Crew && role.Faction != Faction.Intruder)
                     task.Text += "\nFake Tasks:";
                     
                 player.myTasks.Insert(0, task);
@@ -835,9 +859,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class HudManager_Update
         {
-            private static Vector3 oldScale = Vector3.zero;
-            private static Vector3 oldPosition = Vector3.zero;
-
             private static void UpdateMeeting(MeetingHud __instance)
             {
                 foreach (var player in __instance.playerStates)

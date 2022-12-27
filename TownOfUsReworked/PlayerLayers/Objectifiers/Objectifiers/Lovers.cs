@@ -21,28 +21,19 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = "You are in Love with " + OtherLover.Player.name;
+            TaskText = OtherLover.Player == null
+                ? "You only love yourself"
+                : "You are in Love with " + OtherLover.Player.name;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
             AddToObjectifierHistory(ObjectifierType);
-        }
-
-        public List<PlayerControl> GetTeammates()
-        {
-            var loverTeam = new List<PlayerControl>
-            {
-                PlayerControl.LocalPlayer,
-                OtherLover.Player
-            };
-            
-            return loverTeam;
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
         {
             List<PlayerControl> all = new List<PlayerControl>();
 
-            foreach(var player in canHaveObjectifiers)
+            foreach (var player in canHaveObjectifiers)
                 all.Add(player);
 
             if (all.Count < 3)
@@ -50,14 +41,19 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
             all.Shuffle();
 
-            PlayerControl firstLover;
-            var num = Random.RandomRangeInt(0, all.Count);
-            firstLover = all[num];
-            canHaveObjectifiers.Remove(firstLover);
+            PlayerControl firstLover = null;
+            PlayerControl secondLover = null;
+            
+            while (firstLover == null | secondLover == null | firstLover == secondLover | (firstLover.GetFaction() == secondLover.GetFaction()))
+            {
+                var num = Random.RandomRangeInt(0, all.Count);
+                firstLover = all[num];
 
-            PlayerControl secondLover;
-            var num2 = Random.RandomRangeInt(0, all.Count);
-            secondLover = all[num2];
+                var num2 = Random.RandomRangeInt(0, all.Count);
+                secondLover = all[num2];
+            }
+
+            canHaveObjectifiers.Remove(firstLover);
             canHaveObjectifiers.Remove(secondLover);
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetCouple,
@@ -99,8 +95,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover1 = Player;
             var lover2 = OtherLover.Player;
             
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && alives.Count() == 4 &&
-                (lover1.Is(Faction.Intruders) | lover2.Is(Faction.Intruders));
+            return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
+                !lover2.Data.Disconnected && alives.Count() == 4 && (lover1.Is(Faction.Intruder) | lover2.Is(Faction.Intruder));
         }
 
         private bool CheckLoversWin()
@@ -111,8 +107,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover1 = Player;
             var lover2 = OtherLover.Player;
 
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && ((alives.Count == 3) |
-                (alives.Count == 2));
+            return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
+                !lover2.Data.Disconnected && ((alives.Count == 3) | (alives.Count == 2));
         }
 
         public void Win()

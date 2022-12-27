@@ -3,7 +3,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;

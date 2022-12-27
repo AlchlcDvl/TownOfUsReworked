@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 return false;
             }
 
-            return true;
+            return false;
         }
     }
 }

@@ -222,7 +222,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void Postfix(MeetingHud __instance)
         {
-
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
@@ -231,7 +230,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             foreach (var ability in Ability.GetAbilities(AbilityEnum.Assassin))
             {
-                var assassin = (Assassin) ability;
+                var assassin = (Assassin)ability;
                 assassin.Guesses.Clear();
                 assassin.Buttons.Clear();
                 assassin.GuessedThisMeeting = false;

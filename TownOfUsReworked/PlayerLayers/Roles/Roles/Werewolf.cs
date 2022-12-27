@@ -1,6 +1,5 @@
 using Hazel;
 using System;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
@@ -15,12 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastMauled { get; set; }
         public bool WWWins { get; set; }
-        public List<PlayerControl> mauledPlayers = new List<PlayerControl>();
-        public List<PlayerControl> closestPlayers = null;
 
         public Werewolf(PlayerControl player) : base(player)
         {
-            Name = "Werwolf";
+            Name = "Werewolf";
             StartText = "Howl And Maul Everyone";
             AbilitiesText = "Kill everyone!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
@@ -46,8 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected &&
-                (x.Data.IsImpostor() | (x.Is(RoleAlignment.NeutralKill) | !x.Is(RoleEnum.Werewolf)) | x.Is(Faction.Crew))) == 0)
+            if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WerewolfWin,
                     SendOption.Reliable, -1);
@@ -118,15 +114,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return playerControlList;
         }
 
-        public void Maul()
+        public void Maul(PlayerControl player2)
         {
-            closestPlayers = FindClosestPlayers(Player);
-            mauledPlayers = closestPlayers;
+            var closestPlayers = FindClosestPlayers(Player);
 
             foreach (var player in closestPlayers)
             {
-                if (player.PlayerId != ClosestPlayer.PlayerId)
-                    Utils.RpcMurderPlayer(Player, player);
+                if (player.Is(RoleEnum.Pestilence) || player.IsVesting() || player.IsProtected())
+                    continue;
+                    
+                if (player.PlayerId != ClosestPlayer.PlayerId && !player.Is(RoleType))
+                    Utils.RpcMurderPlayer(player2, player);
+                
+                if (player.IsOnAlert())
+                    Utils.RpcMurderPlayer(player, player2);
             }
         }
     }

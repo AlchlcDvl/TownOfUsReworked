@@ -18,6 +18,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
     {
         //Global Options
         public static bool ConfirmEjects => Generate.ConfirmEjects.Get();
+        public static bool ExeCanHaveNeutralTargets => (bool)Generate.ExeCanHaveNeutralTargets.Get();
+        public static bool ExeCanHaveIntruderTargets => (bool)Generate.ExeCanHaveIntruderTargets.Get();
+        public static bool ExeCanHaveSyndicateTargets => (bool)Generate.ExeCanHaveSyndicateTargets.Get();
+        public static bool ExeCanWinBeyondDeath => (bool)Generate.ExeCanWinBeyondDeath.Get();
 
         //Crew Options
         public static float CrewVision => (float)Generate.CrewVision.Get();
@@ -36,6 +40,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Neutral Options
         public static float NeutralVision => (float)Generate.NeutralVision.Get();
+        public static bool LightsAffectNeutrals => Generate.LightsAffectNeutrals.Get();
 
         //Enum Options
         public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.Get();
@@ -156,6 +161,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int VolatileOn => (int)Generate.VolatileOn.Get();
         public static int VIPOn => (int)Generate.VIPOn.Get();
         public static int ShyOn => (int)Generate.ShyOn.Get();
+        public static int InsiderOn => (int)Generate.InsiderOn.Get();
 
         //Bool Options
         public static bool BothLoversDie => Generate.BothLoversDie.Get();
@@ -268,6 +274,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool TLImmunity => Generate.TLImmunity.Get();
         public static bool DracVent => Generate.DracVent.Get();
         public static bool VampVent => Generate.VampVent.Get();
+        public static bool JackalVent => Generate.JackalVent.Get();
+        public static bool RecruitVent => Generate.RecruitVent.Get();
         public static bool DraculaConvertNeuts => Generate.DraculaConvertNeuts.Get();
         public static bool MurdVent => Generate.MurdVent.Get();
         public static bool DrunkControlsSwap => Generate.DrunkControlsSwap.Get();
@@ -402,7 +410,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float RandomMapMira => Generate.RandomMapMira.Get();
         public static float RandomMapPolus => Generate.RandomMapPolus.Get();
         public static float RandomMapAirship => Generate.RandomMapAirship.Get();
-        public static float RandomMapSubmerged => Generate.loaded ? Generate.RandomMapSubmerged.Get() : 0f;
+        public static float RandomMapSubmerged => SubmergedCompatibility.Loaded ? Generate.RandomMapSubmerged.Get() : 0f;
         public static float SmallMapDecreasedCooldown => Generate.SmallMapDecreasedCooldown.Get();
         public static float LargeMapIncreasedCooldown => Generate.LargeMapIncreasedCooldown.Get();
         public static int SmallMapIncreasedShortTasks => (int)Generate.SmallMapIncreasedShortTasks.Get();
@@ -430,6 +438,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int VeteranCount => (int)Generate.VeteranCount.Get();
         public static int VigilanteCount => (int)Generate.VigilanteCount.Get();
         public static int MedicCount => (int)Generate.MedicCount.Get();
+        public static int EscortCount => (int)Generate.EscortCount.Get();
+        public static int ConsortCount => (int)Generate.ConsortCount.Get();
         public static int AltruistCount => (int)Generate.AltruistCount.Get();
         public static int EngineerCount => (int)Generate.EngineerCount.Get();
         public static int ShifterCount => (int)Generate.ShifterCount.Get();
@@ -458,6 +468,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int TeleporterCount => (int)Generate.TeleporterCount.Get();
         public static int UndertakerCount => (int)Generate.UndertakerCount.Get();
         public static int MorphlingCount => (int)Generate.MorphlingCount.Get();
+        public static int ThiefCount => (int)Generate.ThiefCount.Get();
         public static int PoisonerCount => (int)Generate.PoisonerCount.Get();
         public static int WraithCount => (int)Generate.WraithCount.Get();
         public static int UnderdogCount => (int)Generate.UnderdogCount.Get();
@@ -497,5 +508,30 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float WarpCooldown => (float)Generate.WarpCooldown.Get();
         public static float GazeCooldown => (float)Generate.GazeCooldown.Get();
         public static float GazeTime => (float)Generate.GazeTime.Get();
+        public static int TorchCount => (int)Generate.TorchCount.Get();
+        public static int TiebreakerCount => (int)Generate.TiebreakerCount.Get();
+        public static int TunnelerCount => (int)Generate.TunnelerCount.Get();
+        public static int FanaticCount => (int)Generate.FanaticCount.Get();
+        public static int BaitCount => (int)Generate.BaitCount.Get();
+        public static int BBCount => (int)Generate.BBCount.Get();
+        public static int CowardCount => (int)Generate.CowardCount.Get();
+        public static int DrunkCount => (int)Generate.DrunkCount.Get();
+        public static int DwarfCount => (int)Generate.DwarfCount.Get();
+        public static int FlincherCount => (int)Generate.FlincherCount.Get();
+        public static int GiantCount => (int)Generate.GiantCount.Get();
+        public static int ProfessionalCount => (int)Generate.ProfessionalCount.Get();
+        public static int ShyCount => (int)Generate.ShyCount.Get();
+        public static int VIPCount => (int)Generate.VIPCount.Get();
+        public static int VolatileCount => (int)Generate.VolatileCount.Get();
+        public static int InsiderCount => (int)Generate.InsiderCount.Get();
+        public static int LighterCount => (int)Generate.LighterCount.Get();
+        public static int MultitaskerCount => (int)Generate.MultitaskerCount.Get();
+        public static int RadarCount => (int)Generate.RadarCount.Get();
+        public static int RevealerCount => (int)Generate.RevealerCount.Get();
+        public static int LoversCount => (int)Generate.LoversCount.Get();
+        public static int PhantomCount => (int)Generate.PhantomCount.Get();
+        public static int RivalsCount => (int)Generate.RivalsCount.Get();
+        public static int TraitorCount => (int)Generate.TraitorCount.Get();
+        public static int DiseasedCount => (int)Generate.DiseasedCount.Get();
     }
 }

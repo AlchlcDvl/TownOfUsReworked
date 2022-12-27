@@ -106,6 +106,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Flincher = new Color32(128, 179, 255, 255); //#80B3FFFF
         public readonly static Color32 VIP = new Color32(220, 238, 133, 255); //#DCEE85FF
         public readonly static Color32 Shy = new Color32(16, 2, 197, 255); //#1002C5FF
+        public readonly static Color32 Professional = new Color32(134, 11, 122, 255); //#860B7AFF
 
         //Ability Colors
         public readonly static Color32 Assassin = new Color32(7, 55, 99, 255); //#073763FF
@@ -116,10 +117,10 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Tiebreaker = new Color32(153, 230, 153, 255); //#99E699FF
         public readonly static Color32 Snitch = new Color32(212, 174, 55, 255); //#D4AF37FF
         public readonly static Color32 Underdog = new Color32(132, 26, 127, 255); //#841A7FFF
+        public readonly static Color32 Insider = new Color32(38, 252, 251, 255); //#26FCFBFF
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
         public readonly static Color32 Radar = new Color32(255, 0, 128, 255); //#FF0080FF
         public readonly static Color32 Multitasker = new Color32(255, 128, 77, 255); //#FF804DFF
-        public readonly static Color32 Professional = new Color32(134, 11, 122, 255); //#860B7AFF
 
         //Objectifier Colors
         public readonly static Color32 Lovers = new Color32(255, 102, 204, 255); //#FF66CCFF
@@ -139,7 +140,6 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Coven = new Color32(191, 95, 255, 255); //#BF5FFFFF
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 something = new Color32(168, 67, 0, 0); //#A84300FF
-        public readonly static Color32 I = new Color32(128, 179, 255, 255); //#26FCFBFF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d
@@ -147,6 +147,9 @@ namespace TownOfUsReworked.Patches
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7
         //#EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
         //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2 #aab43e
-        //#5C4F75
+        //#5C4F75 #3769FE #1E300B
+
+        //Symbol Storage For Objectifiers I Will Make Later
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ ∎ α β γ δ ε ζ η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ π ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 
     }
 }

@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 {
                     foreach (var player in alives)
                     {
-                        if (player.Is(Faction.Intruders) | player.Is(Faction.Crew) | player.Is(RoleAlignment.NeutralKill) | player.Is(Faction.Syndicate))
+                        if (player.Is(Faction.Intruder) | player.Is(Faction.Crew) | player.Is(RoleAlignment.NeutralKill) | player.Is(Faction.Syndicate))
                             transform = true;
                     }
                 }

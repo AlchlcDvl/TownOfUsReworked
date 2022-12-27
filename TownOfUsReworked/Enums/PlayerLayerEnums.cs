@@ -4,6 +4,7 @@ namespace TownOfUsReworked.Enums
     {
         Assassin = 0,
         ButtonBarry,
+        Insider,
         Lighter,
         Multitasker,
         Radar,

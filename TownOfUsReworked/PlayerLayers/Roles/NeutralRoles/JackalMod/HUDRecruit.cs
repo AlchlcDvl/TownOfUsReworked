@@ -30,10 +30,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
             var button = role.RecruitButton;
 
-            if (isDead)
-                button.gameObject.SetActive(false);
-            else
-                button.gameObject.SetActive(!MeetingHud.Instance);
+            if (button == null)
+            {
+                button = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                button.graphic.enabled = true;
+            }
+
+            button.GetComponent<AspectPosition>().Update();
+            button.graphic.sprite = Placeholder;
+
+            button.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
 
             var renderer = button.graphic;
 

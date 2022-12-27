@@ -9,7 +9,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;

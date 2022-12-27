@@ -6,7 +6,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = CustomGameOptions.CustomImpColors ? Colors.Wraith : Colors.Intruder;
             LastInvis = DateTime.UtcNow;
             RoleType = RoleEnum.Wraith;
-            Faction = Faction.Intruders;
+            Faction = Faction.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -93,7 +92,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Player.nameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
             }
-
         }
 
         public void Uninvis()
@@ -110,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.Is(Faction.Intruders))
+                if (player.Is(Faction.Intruder))
                     intTeam.Add(player);
             }
             __instance.teamToShow = intTeam;
@@ -131,9 +129,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player.Data.IsDead | Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0) |
-                Utils.Sabotaged())
+            if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);

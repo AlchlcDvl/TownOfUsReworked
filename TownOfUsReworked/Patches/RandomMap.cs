@@ -3,7 +3,6 @@ using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
 
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]

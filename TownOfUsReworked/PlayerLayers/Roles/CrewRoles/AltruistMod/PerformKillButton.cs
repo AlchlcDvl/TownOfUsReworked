@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[PlayerControl.GameOptions.KillDistance];
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (role == null)
                 return false;

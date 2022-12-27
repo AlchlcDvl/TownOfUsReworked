@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod
 {
@@ -9,10 +10,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod
     {
         public static void Postfix()
         {
-            var ability = Ability.GetAbility(PlayerControl.LocalPlayer);
-            
-            if (ability.AbilityType == AbilityEnum.Underdog)
-                ((Underdog)ability).SetKillTimer();
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Underdog))
+                return;
+
+            var underdog = Ability.GetAbility<Underdog>(PlayerControl.LocalPlayer);
+            underdog.SetKillTimer();
         }
     }
 }

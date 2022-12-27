@@ -144,7 +144,7 @@ namespace TownOfUsReworked.Patches
                         return;
                     }
                 }
-                else if (faction == Faction.Intruders)
+                else if (faction == Faction.Intruder)
                 {
                     if (Role.IntruderWin)
                     {
@@ -180,7 +180,7 @@ namespace TownOfUsReworked.Patches
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
-                        foreach (var role2 in Role.GetRoles(Faction.Intruders))
+                        foreach (var role2 in Role.GetRoles(Faction.Intruder))
                         {
                             if (!role2.Player.Data.Disconnected)
                             {
@@ -252,7 +252,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (subfaction == SubFaction.Undead)
                 {
-                    if (Role.VampWin)
+                    if (Role.UndeadWin)
                     {
                         foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
                         {
@@ -338,22 +338,22 @@ namespace TownOfUsReworked.Patches
                             
                         foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
                         {
-                            if (!role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            
                             var jackal = (Jackal)role2;
+
+                            if (!jackal.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jackal.PlayerName).ToList()[0]);
 
                             var goodRole = Role.GetRole(jackal.GoodRecruit);
                             var evilRole = Role.GetRole(jackal.EvilRecruit);
                             var backupRole = Role.GetRole(jackal.BackupRecruit);
                             
-                            if (!jackal.GoodRecruit.Data.Disconnected)
+                            if (!jackal.GoodRecruit.Data.Disconnected && jackal.GoodRecruit != null)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == goodRole.PlayerName).ToList()[0]);
                             
-                            if (!jackal.EvilRecruit.Data.Disconnected)
+                            if (!jackal.EvilRecruit.Data.Disconnected && jackal.EvilRecruit != null)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == evilRole.PlayerName).ToList()[0]);
                             
-                            if (!jackal.BackupRecruit.Data.Disconnected)
+                            if (!jackal.BackupRecruit.Data.Disconnected && jackal.BackupRecruit != null)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == backupRole.PlayerName).ToList()[0]);
                         }
 
