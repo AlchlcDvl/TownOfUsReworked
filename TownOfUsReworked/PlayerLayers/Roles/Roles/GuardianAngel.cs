@@ -4,6 +4,7 @@ using TMPro;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -15,8 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int UsesLeft;
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
-        public PlayerControl TargetPlayer;
-        public bool GAWins { get; set; }
+        public PlayerControl TargetPlayer = null;
         public bool TargetAlive => (!TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && TargetPlayer != null && !Player.Data.Disconnected) ||
             TargetPlayer == null || TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
@@ -24,12 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            StartText = TargetPlayer == null 
-                ? "You don't have a target for some reason... weird..."
-                : $"Protect {TargetPlayer.name} With Your Life";
-            Objectives = TargetPlayer == null
-                ? "You don't have a target for some reason... weird..."
-                : $"- Have {TargetPlayer.name} live to the end.";
+            StartText = "Protect Your Target With Your Life";
+            Objectives = "- Have your target live to the end of the game.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             LastProtected = DateTime.UtcNow;
             RoleType = RoleEnum.GuardianAngel;
@@ -38,26 +34,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxProtects;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = "Neutral (Benign)";
-            IntroText = TargetPlayer == null 
-                ? "You don't have a target for some reason... weird..."
-                : $"Protect {TargetPlayer.name} With Your Life";
-            CoronerDeadReport = "The body's anatomy is out of this world. They must be a Guardian Angel!";
-            CoronerKillerReport = "";
+            AlignmentName = "Protect Your Target With Your Life";
             Results = InspResults.GAExeMedicPup;
-            AbilitiesText = "";
-            AttributesText = "";
-            RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
-                " instead need to win as the role you become after finding a dead body.";
-            AlignmentDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
-            IntroSound = null;
-            AlignmentDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
+            AbilitiesText = "- You can protect your target from death for a short while.";
+            RoleDescription = "You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep your target alive at all costs" +
+                " even if they lose!";
+            AlignmentDescription = NBDescription;
+            FactionDescription = NeutralFactionDescription;
             AddToRoleHistory(RoleType);
         }
 
@@ -86,12 +69,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastProtected = DateTime.UtcNow;
         }
 
-        public override void Wins()
-        {
-            if (TargetAlive)
-                GAWins = true;
-        }
-
         public override void Loses()
         {
             LostByRPC = true;
@@ -99,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var gaTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+            var gaTeam = new List<PlayerControl>();
             gaTeam.Add(PlayerControl.LocalPlayer);
             gaTeam.Add(TargetPlayer);
             __instance.teamToShow = gaTeam;

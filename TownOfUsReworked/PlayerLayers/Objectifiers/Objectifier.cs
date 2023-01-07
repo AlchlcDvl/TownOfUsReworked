@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected Objectifier(PlayerControl player)
         {
             Player = player;
+            ObjectifierDictionary.Remove(player.PlayerId);
             ObjectifierDictionary.Add(player.PlayerId, this);
         }
 
@@ -121,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (a is null && b is null)
                 return true;
 
-            if (a is null | b is null)
+            if (a is null || b is null)
                 return false;
 
             return a.ObjectifierType == b.ObjectifierType && a.Player.PlayerId == b.Player.PlayerId;

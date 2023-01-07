@@ -14,11 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 
         public static void Postfix(HudManager __instance)
         {
-            UpdateButtonButton(__instance);
-        }
-
-        private static void UpdateButtonButton(HudManager __instance)
-        {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 

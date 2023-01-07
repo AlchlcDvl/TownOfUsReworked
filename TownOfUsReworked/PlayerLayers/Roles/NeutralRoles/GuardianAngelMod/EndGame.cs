@@ -9,19 +9,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            foreach (var role in Role.AllRoles)
+            foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
             {
-                if (role.RoleType == RoleEnum.GuardianAngel)
-                {
-                    var ga = (GuardianAngel)role;
-                    
-                    if (ga.TargetAlive)
-                        ga.Wins();
-                    else
-                        ga.Loses();
+                var ga = (GuardianAngel)role;
 
-                    return true;
-                }
+                if (ga.TargetPlayer == null)
+                    continue;
+                    
+                if (ga.TargetAlive)
+                    ga.Wins();
+                else
+                    ga.Loses();
+
+                return true;
             }
 
             return true;

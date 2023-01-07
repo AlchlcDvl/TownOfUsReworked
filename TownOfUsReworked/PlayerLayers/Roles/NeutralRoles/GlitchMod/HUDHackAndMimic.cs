@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             
             if (role.GlitchButton.graphic.sprite == HackSprite)
             {
-                role.GlitchButton.SetCoolDown(role.HackTimer(), CustomGameOptions.HackCooldown);
+                role.GlitchButton.SetCoolDown(role.HackTimer(), CustomGameOptions.GlitchCooldown);
                 Utils.SetTarget(ref role.ClosestPlayer, role.GlitchButton);
             }
             else
@@ -63,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     return;
                 }
 
-                role.GlitchButton.SetCoolDown(role.MimicTimer(), CustomGameOptions.MimicCooldown);
+                role.GlitchButton.SetCoolDown(role.MimicTimer(), CustomGameOptions.GlitchCooldown);
                 role.GlitchButton.graphic.color = Palette.EnabledColor;
                 role.GlitchButton.graphic.material.SetFloat("_Desat", 0f);
             }

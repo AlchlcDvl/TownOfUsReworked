@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 
             foreach (var role in Role.AllRoles)
             {
-                if (role.Faction == Faction.Syndicate)
+                if (role.Faction == Faction.Syndicate && !role.IsRecruit)
                     role.Loses();
             }
 

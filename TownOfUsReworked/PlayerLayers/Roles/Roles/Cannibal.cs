@@ -30,34 +30,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ?
                 PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
             body = EatNeed == 1 ? "body" : "bodies";
-            AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
-            AttributesText = "- None.";
+            AbilitiesText = "- You can consume a body, making it disappear from the game.";
+            AttributesText = "- You know when someone dies, so you can find their body.";
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            IntroText = "Eat the bodies of the dead";
-            CoronerDeadReport = "The sharp canines and traces of blood in the mouth indicate that this body is a Cannibal!";
-            CoronerKillerReport = "";
+            IntroText = "Consume The Dead";
             Results = InspResults.EngiAmneThiefCann;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
+            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral);
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for dead bodies. You need to eat {EatNeed} {body} to win!";
-            AlignmentDescription = "You are a Neutral (Evil) role! You have a confliction win condition over others and upon achieving it will end the game. " +
-                "Finish your objective before they finish you!";
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
+            AlignmentDescription = NEDescription;
+            FactionDescription = NeutralFactionDescription;
             Objectives = $"- Eat {EatNeed} {body}.";
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
         
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (EatNeed == 0)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
+
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (EatNeed == 0)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CannibalWin,
                     SendOption.Reliable, -1);
@@ -73,7 +80,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            CannibalWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                CannibalWin = true;
         }
 
         public override void Loses()
@@ -83,9 +93,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var cannibalTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            cannibalTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = cannibalTeam;
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.EvilRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public float EatTimer()

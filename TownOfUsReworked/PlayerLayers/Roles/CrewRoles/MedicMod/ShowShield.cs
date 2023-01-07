@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
@@ -33,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 if (player == null)
                     continue;
 
-                if (player.Data.IsDead | medic.Player.Data.IsDead | medic.Player.Data.Disconnected)
+                if (player.Data.IsDead || medic.Player.Data.IsDead || medic.Player.Data.Disconnected)
                 {
                     StopKill.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
                     continue;
@@ -41,26 +42,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
                 var showShielded = CustomGameOptions.ShowShielded;
 
-                if (showShielded == ShieldOptions.Everyone)
+                if (showShielded == ShieldOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self ||
+                    showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic ||
+                    showShielded == ShieldOptions.SelfAndMedic)))
                 {
                     player.myRend().material.SetColor("_VisorColor", ProtectedColor);
                     player.myRend().material.SetFloat("_Outline", 1f);
                     player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
-                }
-                else if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self |
-                    showShielded == ShieldOptions.SelfAndMedic))
-                {
-                    //System.Console.WriteLine("Setting " + PlayerControl.LocalPlayer.name + "'s shield");
-                    player.myRend().material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend().material.SetFloat("_Outline", 1f);
-                    player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic |
-                    showShielded == ShieldOptions.SelfAndMedic))
-                {
-                    player.myRend().material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend().material.SetFloat("_Outline", 1f);
-                    player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
+
+                    if (!MeetingHud.Instance)
+                        continue;
+
+                    SpriteRenderer icon = MeetingHud.Instance.playerStates.FirstOrDefault(v => v.TargetPlayerId == player.PlayerId).GAIcon;
+                    icon.gameObject.SetActive(true);
+                    icon.enabled = true;
+                    icon.sprite = TownOfUsReworked.MedicSprite;
+                    icon.transform.localScale = Vector2.one / 4;
                 }
             }
         }

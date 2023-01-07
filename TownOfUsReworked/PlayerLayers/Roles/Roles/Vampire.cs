@@ -1,4 +1,4 @@
-using System.Linq;
+using Il2CppSystem.Collections.Generic;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -24,11 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Proselyte)";
             IntroText = "Gain a majority";
             Results = InspResults.SurvVHVampVig;
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -44,10 +39,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.SubfactionWins(SubFaction))
+            if (Utils.UndeadWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndeadWin,
                     SendOption.Reliable, -1);

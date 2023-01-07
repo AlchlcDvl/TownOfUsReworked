@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
-using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -28,11 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Utility)";
             IntroText = "Cause chaos and kill your opposition";
             Results = InspResults.MineMafiSideDamp;
-            IntroSound = null;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
                 " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
                 "give you the ability to kill, if you didn't already.";
@@ -46,7 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            SyndicateWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                SyndicateWin = true;
         }
 
         public override void Loses()
@@ -56,11 +55,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.SyndicateWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);
@@ -72,18 +83,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             
             return false;
-        }
-
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
-        {
-            var intTeam = new List<PlayerControl>();
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction.Syndicate))
-                    intTeam.Add(player);
-            }
-            __instance.teamToShow = intTeam;
         }
 
         public void TurnRebel()

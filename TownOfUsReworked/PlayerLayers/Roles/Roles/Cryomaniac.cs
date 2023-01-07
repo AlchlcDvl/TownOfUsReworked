@@ -21,31 +21,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Cryomaniac";
             StartText = "Who Likes Ice Cream?";
-            AbilitiesText = "- You can douse players in coolant.";
-            AttributesText = "- When everyone is doused, you can freeze them to win.";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
-            LastDoused = DateTime.UtcNow;
+            AbilitiesText = "- You can douse players in coolant.\n- You can choose to freeze all currently doused players which kills them at the start of the next meeting.";
+            AttributesText = "- People who interact with you will also get doused.";
+            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral);
             RoleType = RoleEnum.Cryomaniac;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Ignite those who oppose you";
-            CoronerDeadReport = "There are burn marks and a smell of gasoline. They must be an Arsonist!";
-            CoronerKillerReport = "The bodies have been completely charred. They were torched by an Arsonist!";
+            IntroText = "Freeze Those Who Oppose You";
             Results = InspResults.ArsoCryoPBOpTroll;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
-            IntroSound = null;
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
-            AlignmentDescription = "You are a Neutral (Evil) role! You have a confliction win condition over others and upon achieving it will end the game. " +
-                "Finish your objective before they finish you!";
-            RoleDescription = "You are a Cryomaniac! You must douse everyone in coolant and freeze them if you want to win!";
-            Objectives = "- Douse everyone in coolant and then freeze them.";
+            Attack = AttackEnum.Powerful;
+            Defense = DefenseEnum.Basic;
+            AttackString = "Powerful";
+            DefenseString = "Basic";
+            FactionDescription = NeutralFactionDescription;
+            AlignmentDescription = NKDescription;
+            RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
+            Objectives = IsRecruit ? JackalWinCon : NKWinCon;
             AddToRoleHistory(RoleType);
         }
 
@@ -62,10 +56,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.NKWins(RoleType))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CryomaniacWin,
                     SendOption.Reliable, -1);
@@ -81,7 +88,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            CryoWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                CryoWins = true;
         }
 
         public override void Loses()
@@ -91,9 +101,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var cryoTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            cryoTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = cryoTeam;
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public float DouseTimer()

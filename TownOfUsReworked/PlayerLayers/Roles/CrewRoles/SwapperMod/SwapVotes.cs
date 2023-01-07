@@ -47,14 +47,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if ((player.Data.IsDead | player.Data.Disconnected) && player.Is(RoleEnum.Swapper))
+                    if ((player.Data.IsDead || player.Data.Disconnected) && player.Is(RoleEnum.Swapper))
                         return;
                 }
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                 {
                     var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
-                    foreach (var button in swapper.Buttons.Where(button => button != null)) button.SetActive(false);
+
+                    foreach (var button in swapper.MoarButtons.Where(button => button != null))
+                        button.SetActive(false);
                 }
 
                 var pool1 = Swap1.PlayerIcon.transform;

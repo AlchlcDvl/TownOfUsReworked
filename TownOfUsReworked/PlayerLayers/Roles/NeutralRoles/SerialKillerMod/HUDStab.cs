@@ -32,18 +32,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
             __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.LustKillCd);
 
-            if (isDead)
-            {
-                role.BloodlustButton.gameObject.SetActive(false);
-                return;
-            }
-
             if (role.BloodlustButton == null)
             {
                 role.BloodlustButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.BloodlustButton.graphic.enabled = true;
                 role.BloodlustButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.BloodlustButton.gameObject.SetActive(false);
+            }
+
+            if (isDead)
+            {
+                role.BloodlustButton.gameObject.SetActive(false);
+                return;
             }
 
             role.BloodlustButton.GetComponent<AspectPosition>().Update();

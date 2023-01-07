@@ -44,13 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
             if (!flag3)
                 return false;
             
-            if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {
@@ -116,9 +116,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
                 return false;
             }
 
+            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
             role.LastKill = DateTime.UtcNow;
 
-            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+            foreach (var drac in Role.GetRoles(RoleEnum.Dracula))
+            {
+                var dracula = (Dracula)drac;
+                dracula.LastBitten = DateTime.UtcNow;
+            }
+            
             return false;
         }
     }

@@ -4,18 +4,14 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class HUDInvestigate
     {
-        public static void Postfix(PlayerControl __instance)
-        {
-            UpdateInvButton(__instance);
-        }
-
-        public static void UpdateInvButton(PlayerControl __instance)
+        public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
@@ -33,13 +29,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             var isDead = data.IsDead;
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                return;
-            
-            role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance);
-            role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
+            if (role.InvestigateButton == null)
+            {
+                role.InvestigateButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.InvestigateButton.graphic.enabled = true;
+                role.InvestigateButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.InvestigateButton.gameObject.SetActive(false);
+            }
+
+            role.InvestigateButton.graphic.sprite = TownOfUsReworked.Placeholder;
+            role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance && !isDead);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton, float.NaN, notInvestigated);
+            role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
         }
     }
 }

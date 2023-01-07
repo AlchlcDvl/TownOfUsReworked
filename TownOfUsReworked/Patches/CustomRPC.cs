@@ -80,8 +80,12 @@ namespace TownOfUsReworked.Patches
         SetMafioso,
         SetSidekick,
         SetJackal,
+        SetPestilence,
         SetGoodRecruit,
         SetEvilRecruit,
+        SetBackupRecruit,
+        SetBomber,
+        SetFramer,
 
         SetDiseased,
         SetGiant,
@@ -182,7 +186,6 @@ namespace TownOfUsReworked.Patches
         Shift,
         Protect,
         AttemptSound,
-        Investigate,
         Rewind,
         RewindRevive,
         Morph,
@@ -256,6 +259,11 @@ namespace TownOfUsReworked.Patches
 
         SubmergedFixOxygen,
         
-        Sendchat
+        SendChat,
+
+        SetSpawn,
+        SetSpawnAirship,
+        DoorSyncToilet,
+        SyncPlateform
     }
 }

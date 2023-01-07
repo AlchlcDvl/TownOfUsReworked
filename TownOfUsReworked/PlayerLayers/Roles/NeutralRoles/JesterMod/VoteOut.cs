@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
@@ -22,7 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
                 return;
 
             if (role.RoleType == RoleEnum.Jester)
-                ((Jester)role).Wins();
+            {
+                var jest = (Jester)role;
+                jest.Wins();
+                jest.Haunt(MeetingHud.Instance);
+            }
         }
     }
 }

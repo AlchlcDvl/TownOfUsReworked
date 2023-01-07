@@ -95,6 +95,8 @@ namespace TownOfUsReworked.Patches
                     PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount;
                 string getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
                 string setColor = TownOfUsReworked.isDev ? " /setcolour or /setcolor," : "";
+                string whisper = CustomGameOptions.Whispers ? " /whisper," : "";
+                TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
 
                 var player = PlayerControl.LocalPlayer;
 
@@ -104,7 +106,7 @@ namespace TownOfUsReworked.Patches
                 if (AmongUsClient.Instance.GameState != InnerNetClient.GameStates.Started)
                 {
                     //Help command - lists commands available
-                    if (text == "/help")
+                    if (text == "/help" || text.StartsWith("/h"))
                     {
                         chatHandled = true;
                         var message = AmongUsClient.Instance.CanBan()
@@ -175,6 +177,8 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "cr";
                         else if (requiredText == "modinfo")
                             abbreviation = "mi";
+                        else if (requiredText == "help")
+                            abbreviation = "h";
                         else if (requiredText == "roleinfo")
                             abbreviation = "ri";
                         else if (requiredText == "modifierinfo")
@@ -1212,8 +1216,8 @@ namespace TownOfUsReworked.Patches
                     if (text.StartsWith("/help"))
                     {
                         chatHandled = true;
-                        var message = "Commands available:\n/mystate, /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /lookup, " +
-                            "/abbreviations, /quote, /credits, controls";
+                        var message = $"Commands available:\n/mystate,{whisper} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /lookup, " +
+                            "/abbreviations, /quote, /credits, /controls";
                         __instance.AddChat(player, message);
                     }
                     //This command gives the current status and description of the player
@@ -1820,7 +1824,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "cryomaniac" || inputText == "cryo")
                             chatText = "Turn the AC up!";
                         else if (inputText == "dampyr" || inputText == "damp")
-                            chatText = "I'm way too thirsty nowadays. And Sir Dracula just keeps biting people and not giving me a chance quench my thirst.";
+                            chatText = "I'm way too thirsty nowadays. And Sir Dracula just keeps biting people and not giving me a chance quench it.";
                         else if (inputText == "detective" || inputText == "det")
                             chatText = "I am skilled in identifying blood. *Looks at a body* Yup, that's definitely blood.";
                         else if (inputText == "disguiser" || inputText == "disg")
@@ -1858,7 +1862,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "juggernaut" || inputText == "jugg")
                             chatText = "Strength is the pinnacle of mankind. Gotta get those proteins in.";
                         else if (inputText == "mayor")
-                            chatText = "Um, those votes are legitimate. No, I'm not rigging the votes.";
+                            chatText = "Yes, those votes are legitimate. No, I'm not rigging the votes.";
                         else if (inputText == "medic")
                             chatText = "Where does it hurt?";
                         else if (inputText == "medium" || inputText == "med")
@@ -1888,7 +1892,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "shifter" || inputText == "shift")
                             chatText = "GET BACK HERE I WANT YOUR ROLE.";
                         else if (inputText == "survivor" || inputText == "surv")
-                            chatText = "Hey listen man, I mind my own business and you do you. Everyone wins!";
+                            chatText = "Hey listen man, I mind my own business and you mind yours. Everyone wins!";
                         else if (inputText == "swapper" || inputText == "swap")
                             chatText = "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it.";
                         else if (inputText == "teleporter" || inputText == "tele")
@@ -2137,6 +2141,8 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "cp";
                         else if (requiredText == "syndicateutility")
                             abbreviation = "su";
+                        else if (requiredText == "help")
+                            abbreviation = "h";
                         else if (requiredText == "neutralkilling")
                             abbreviation = "nk";
                         else if (requiredText == "neutralevil")
@@ -2228,7 +2234,8 @@ namespace TownOfUsReworked.Patches
                     __instance.TextArea.Clear();
                     __instance.quickChatMenu.ResetGlyphs();
                 }
-                
+
+                __instance.TimeSinceLastMessage = CustomGameOptions.ChatCooldown;
                 return !chatHandled;
             }
         }

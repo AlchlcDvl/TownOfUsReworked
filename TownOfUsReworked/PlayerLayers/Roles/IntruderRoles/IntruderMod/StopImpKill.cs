@@ -26,16 +26,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (target == null)
                 return true;
 
-            if (!__instance.isActiveAndEnabled | __instance.isCoolingDown)
+            if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
                 return true;
 
-            if (target.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+            if (target.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(target, PlayerControl.LocalPlayer);
             }
 
-            if (target.IsOnAlert() | target.Is(RoleEnum.Pestilence))
+            if (target.IsOnAlert() || target.Is(RoleEnum.Pestilence))
             {
                 if (target.IsShielded())
                 {
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.IntKillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                        PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.IntKillCooldown);
                     else
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                 if (CustomGameOptions.ShieldBreaks)
-                    PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                    PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.IntKillCooldown);
                 else
                     PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
@@ -111,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 return false;
             }
             
-            PlayerControl.LocalPlayer.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+            PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.IntKillCooldown);
             Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, target);
             return false;
         }

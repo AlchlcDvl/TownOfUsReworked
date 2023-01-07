@@ -1,7 +1,6 @@
 using System;
 using TownOfUsReworked.Extensions;
 using Hazel;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Morphling";
             StartText = "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
             AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
-            Color = CustomGameOptions.CustomImpColors ? Colors.Morphling : Colors.Intruder;
+            Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             LastMorphed = DateTime.UtcNow;
             RoleType = RoleEnum.Morphling;
             Faction = Faction.Intruder;
@@ -34,14 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderDecep;
             FactionColor = Colors.Intruder;
             AlignmentName = "Intruder (Deception)";
-            IntroText = "Kill those who oppose you";
+            IntroText = "Kill anyone who opposes you";
             Results = InspResults.DisgMorphCamoAgent;
             IntroSound = TownOfUsReworked.MorphlingIntro;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
-            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -68,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void Unmorph()
         {
             MorphedPlayer = null;
-            Utils.DefaultOutfitAll();
+            Utils.DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
         }
 
@@ -104,19 +100,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var intTeam = new List<PlayerControl>();
+            var team = new List<PlayerControl>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (!IsRecruit)
             {
-                if (player.Is(Faction.Intruder))
-                    intTeam.Add(player);
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                        team.Add(player);
+                }
             }
-            __instance.teamToShow = intTeam;
+            else
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public override void Wins()
         {
-            IntruderWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                IntruderWin = true;
         }
 
         public override void Loses()
@@ -126,10 +138,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.IntrudersWin())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);

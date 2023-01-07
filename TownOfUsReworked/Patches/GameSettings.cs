@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Patches
 
                 foreach (var option in CustomOption.AllOptions)
                 {
-                    if (option.Type == CustomOptionType.Button | option.ID == -1)
+                    if (option.Type == CustomOptionType.Button || option.ID == -1)
                         continue;
                     else if (option.Type == CustomOptionType.Header)
                         builder.AppendLine($"\n{option.Name}");

@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
             AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.";
             AttributesText = "- Blinding players will fill their screen with white for a short while, making them unable to see anything.";
-            Color = CustomGameOptions.CustomImpColors ? Colors.Grenadier : Colors.Intruder;
+            Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
             RoleType = RoleEnum.Grenadier;
             Faction = Faction.Intruder;
@@ -37,21 +37,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName ="Intruder (Concealing)";
-            IntroText = "Kill those who oppose you";
-            CoronerDeadReport = "There are flashbangs under the body's belt. They must be a Grenadier!";
-            CoronerKillerReport = "The body's eyes have been burned out. They were killed by a Grenadier!";
+            IntroText = IntruderIntro;
             Results = InspResults.WraithDetGrenVet;
-            IntroSound = null;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
-            AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
-                " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
-            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
-                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
-            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
-                " to ensure your victory over others.";
+            AlignmentDescription = ICDescription;
+            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again.";
             AddToRoleHistory(RoleType);
         }
@@ -84,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (Enabled != true)
             {
-                closestPlayers = FindClosestPlayers(Player);
+                closestPlayers = Utils.FindClosestPlayers(Player, CustomGameOptions.FlashRadius);
                 flashedPlayers = closestPlayers;
             }
 
@@ -101,9 +93,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 {
-                    if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f && (!sabActive | dummyActive))
+                    if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f && (!sabActive || dummyActive))
                     {
                         float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * -2.0f;
+
                         if (ShouldPlayerBeBlinded(player))
                         {
                             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
@@ -126,7 +119,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
                         }
                     }
-                    else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f && (!sabActive | dummyActive))
+                    else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f && (!sabActive || dummyActive))
                     {
                         if (ShouldPlayerBeBlinded(player))
                         {
@@ -150,7 +143,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
                         }
                     }
-                    else if (TimeRemaining < 0.5f && (!sabActive | dummyActive))
+                    else if (TimeRemaining < 0.5f && (!sabActive || dummyActive))
                     {
                         float fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
@@ -195,7 +188,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         private static bool ShouldPlayerBeDimmed(PlayerControl player)
         {
-            return (player.Data.IsImpostor() | player.Data.IsDead) && !MeetingHud.Instance;
+            return (player.Data.IsImpostor() || player.Data.IsDead) && !MeetingHud.Instance;
         }
 
         private static bool ShouldPlayerBeBlinded(PlayerControl player)
@@ -212,48 +205,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             flashedPlayers.Clear();
         }
 
-        public static List<PlayerControl> FindClosestPlayers(PlayerControl player)
-        {
-            List<PlayerControl> playerControlList = new List<PlayerControl>();
-            float flashRadius = CustomGameOptions.FlashRadius * 5;
-            Vector2 truePosition = player.GetTruePosition();
-            List<GameData.PlayerInfo> allPlayers = GameData.Instance.AllPlayers;
-
-            for (int index = 0; index < allPlayers.Count; ++index)
-            {
-                GameData.PlayerInfo playerInfo = allPlayers[index];
-
-                if (!playerInfo.Disconnected)
-                {
-                    Vector2 vector2 = new Vector2(playerInfo.Object.GetTruePosition().x - truePosition.x, playerInfo.Object.GetTruePosition().y - truePosition.y);
-                    float magnitude = ((Vector2) vector2).magnitude;
-
-                    if (magnitude <= flashRadius)
-                    {
-                        PlayerControl playerControl = playerInfo.Object;
-                        playerControlList.Add(playerControl);
-                    }
-                }
-            }
-
-            return playerControlList;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var intTeam = new List<PlayerControl>();
+            var team = new List<PlayerControl>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (!IsRecruit)
             {
-                if (player.Is(Faction.Intruder))
-                    intTeam.Add(player);
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                        team.Add(player);
+                }
             }
-            __instance.teamToShow = intTeam;
+            else
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public override void Wins()
         {
-            IntruderWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                IntruderWin = true;
         }
 
         public override void Loses()
@@ -263,10 +245,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.IntrudersWin())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);

@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 var player = Utils.PlayerById(playerId);
                 var data = player?.Data;
 
-                if (data == null | data.Disconnected | data.IsDead | PlayerControl.LocalPlayer.Data.IsDead | playerId ==
+                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead || playerId ==
                     PlayerControl.LocalPlayer.PlayerId)
                     continue;
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 {
                     foreach (var player in alives)
                     {
-                        if (player.Is(Faction.Intruder) | player.Is(Faction.Crew) | player.Is(RoleAlignment.NeutralKill) | player.Is(Faction.Syndicate))
+                        if (player.Is(Faction.Intruder) || player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralKill) || player.Is(Faction.Syndicate))
                             transform = true;
                     }
                 }

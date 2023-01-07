@@ -5,6 +5,8 @@ using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles;
+using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {
@@ -25,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                     
                     if (_time >= CustomGameOptions.VolatileInterval)
                     {
-                        randomNumber = Random.RandomRangeInt(0, 3);
+                        randomNumber = Random.RandomRangeInt(0, 4);
                         _time -= CustomGameOptions.VolatileInterval;
 
                         if (randomNumber == 0)
@@ -37,10 +39,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         else if (randomNumber == 1)
                         {
                             //Flashes
-                            otherNumber = Random.RandomRangeInt(0, Lists.AllRoles.Count);
-                            var role = Lists.AllRoles[otherNumber];
+                            var allRoles = new List<Role>();
 
-                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                            foreach (var role in Role.AllRoles)
+                                allRoles.Add(role);
+
+                            otherNumber = Random.RandomRangeInt(0, allRoles.Count);
+                            var role2 = allRoles[otherNumber];
+
+                            Coroutines.Start(Utils.FlashCoroutine(role2.Color));
                         }
                         else if (randomNumber == 2)
                         {

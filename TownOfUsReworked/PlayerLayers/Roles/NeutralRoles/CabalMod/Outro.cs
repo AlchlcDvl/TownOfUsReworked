@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
             foreach (var player in array)
                 player.NameText().text = role.ColorString + player.NameText().text + "</color>";
 
-            __instance.BackgroundBar.material.color = role.Color;
+            __instance.BackgroundBar.material.color = Colors.Cabal;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "The Cabal Wins!";
             text.color = Colors.Cabal;

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
         {
             public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
             {
-                Utils.MurderPlayer(__instance, target);
+                Utils.RpcMurderPlayer(__instance, target);
                 return false;
             }
         }

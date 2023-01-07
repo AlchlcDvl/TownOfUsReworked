@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Survivor | x.RoleType == RoleEnum.Executioner |
-                x.RoleType == RoleEnum.GuardianAngel | x.RoleType == RoleEnum.Jester) && Role.NeutralsWin);
+            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Survivor || x.RoleType == RoleEnum.Executioner ||
+                x.RoleType == RoleEnum.GuardianAngel || x.RoleType == RoleEnum.Jester) && Role.NeutralsWin);
 
             if (role == null)
                 return;

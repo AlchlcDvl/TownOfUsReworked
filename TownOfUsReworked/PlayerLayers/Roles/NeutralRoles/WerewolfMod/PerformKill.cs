@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
             }
             
-            if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);

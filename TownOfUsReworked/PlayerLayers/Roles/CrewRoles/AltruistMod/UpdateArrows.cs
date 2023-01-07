@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
         {
             if (Coroutine.Arrow != null)
             {
-                if (LobbyBehaviour.Instance | MeetingHud.Instance | PlayerControl.LocalPlayer.Data.IsDead | Coroutine.Target.Data.IsDead)
+                if (LobbyBehaviour.Instance || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead || Coroutine.Target.Data.IsDead)
                 {
                     Coroutine.Arrow.gameObject.Destroy();
                     Coroutine.Target = null;

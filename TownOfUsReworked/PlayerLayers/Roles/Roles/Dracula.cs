@@ -21,32 +21,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Dracula";
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Dracula;
-            StartText = "Lead The <color=#7B8968FF>Vampires</color> To Victory";
+            StartText = "Lead The <color=#7B8968FF>Undead</color> To Victory";
             AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction.";
-            AttributesText = "- If the target is a killing role, they are converted to <color=#DF7AE8FF>Dampyr</color>.\n- Else they convert into a " +
-                "<color=#7B8968FF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead.\n- There is a chance that there" +
-                " is a <color=#C0C0C0FF>Vampire Hunter</color> on the loose. Attempting to convert them will make them kill you.";
+            AttributesText = "- If the target is a killing role, they are converted to <color=#DF7AE8FF>Dampyr</color> otherwise they convert into a " +
+                "<color=#2BD29CFF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead.\n- There is a chance that there" +
+                " is a <color=#C0C0C0FF>Vampire Hunter</color>\non the loose. Attempting to convert them will make them kill you.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
             SubFaction = SubFaction.Undead;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            IntroText = "Convert the <color=#8BFDFDFF>Crew</color> to gain a majority";
-            CoronerDeadReport = "There are sharp fangs and pale skin on the body. They must be a Dracula!";
-            CoronerKillerReport = "The body seems to have been drained of blood. They were drained by a Dracula!";
+            IntroText = "Convert The <color=#8BFDFDFF>Crew</color> To Gain A Majority";
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
-            IntroSound = null;
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
-            AlignmentDescription = "You are a Neutral (Neophyte) role! You are the leader of your little faction and your main purpose is to convert others" +
-                " to your cause. Gain a mojority and overrun the crew!";
+            FactionDescription = NeutralFactionDescription;
+            AlignmentDescription = NNDescription;
             RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
                 "gain a quick majority.";
             Results = InspResults.ShiftSwapSKDrac;
+            Objectives = UndeadWinCon;
+            SubFactionColor = Colors.Undead;
             AddToRoleHistory(RoleType);
         }
 
@@ -75,17 +70,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var vampTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            vampTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = vampTeam;
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Is(SubFaction) && player != PlayerControl.LocalPlayer)
+                    team.Add(player);
+            }
+
+            __instance.teamToShow = team;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.SubfactionWins(SubFaction))
+            if (Utils.UndeadWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.UndeadWin,
                     SendOption.Reliable,-1);
@@ -95,6 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Utils.EndGame();
                 return false;
             }
+            
             return false;
         }
 
@@ -128,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             foreach (var player in vamp)
             {
-                if (player.Data.IsDead | player.Data.Disconnected)
+                if (player.Data.IsDead || player.Data.Disconnected)
                     vamp.Remove(player);
             }
 

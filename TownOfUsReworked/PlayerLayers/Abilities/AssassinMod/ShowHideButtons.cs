@@ -3,6 +3,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine.UI;
+using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
@@ -14,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         {
             foreach (var (_, (cycleBack, cycleForward, guess, guessText)) in role.Buttons)
             {
-                if (cycleBack == null | cycleForward == null)
+                if (cycleBack == null || cycleForward == null)
                     continue;
 
                 cycleBack.SetActive(false);
@@ -31,15 +32,18 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void HideSingle(Assassin role, byte targetId, bool killedSelf, bool doubleshot)
         {
-            if ((killedSelf | role.RemainingKills == 0 | !CustomGameOptions.AssassinMultiKill) && doubleshot == false)
+            if ((killedSelf || role.RemainingKills == 0 || !CustomGameOptions.AssassinMultiKill) && doubleshot == false)
             {
                 HideButtons(role);
+                var role2 = Role.GetRole(role.Player);
+                role2.DeathReason = DeathReasonEnum.Guessed;
+                role2.KilledBy = " Via Misfire";
                 return;
             }
 
             var (cycleBack, cycleForward, guess, guessText) = role.Buttons[targetId];
 
-            if (cycleBack == null | cycleForward == null)
+            if (cycleBack == null || cycleForward == null)
                 return;
 
             cycleBack.SetActive(false);

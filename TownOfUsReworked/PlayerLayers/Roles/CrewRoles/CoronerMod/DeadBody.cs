@@ -3,14 +3,30 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
-    public class DeadPlayer
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
+    public class MeetingBodyReport
     {
-        public byte KillerId { get; set; }
-        public byte PlayerId { get; set; }
-        public DateTime KillTime { get; set; }
+        private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
+        {
+            if (PlayerControl.AllPlayerControls.Count <= 1)
+                return;
+
+            if (PlayerControl.LocalPlayer == null)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data == null)
+                return;
+
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Coroner))
+                return;
+
+            Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Add(info.PlayerId);
+        }
     }
 
     public class BodyReport
@@ -22,31 +38,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
         public static string ParseBodyReport(BodyReport br)
         {
-            var coronerReport = "";
+            var coronerReport = $"{br.Body.Data.PlayerName}'s Report:\n";
             var killerRole = Role.GetRole(br.Killer);
             var bodyRole = Role.GetRole(br.Body);
 
             if (br.Body == br.Killer)
-                coronerReport += $"{br.Body.Data.PlayerName}'s Report: There are evident marks of self-harm!\n";
+                coronerReport += "There are evident marks of self-harm!\n";
             
-            coronerReport += $"{br.Body.Data.PlayerName}'s Report: {bodyRole.CoronerDeadReport}\n";
-            coronerReport += $"{br.Body.Data.PlayerName}'s Report: They were killed {Math.Round(br.KillAge / 1000)}s ago!\n";
+            coronerReport += $"There were a {bodyRole.Name}!\n";
 
             if (CustomGameOptions.CoronerReportRole)
-                coronerReport += $"{br.Body.Data.PlayerName}'s Report: {killerRole.CoronerKillerReport}\n";
+                coronerReport += $"They were killed by a {killerRole.Name}!\n";
             else
             {
                 if (br.Killer.Is(Faction.Crew))
-                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is from the Crew!\n";
+                    coronerReport += "The killer is from the Crew!\n";
                 else if (br.Killer.Is(Faction.Neutral))
-                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is a Neutral!\n";
+                    coronerReport += "The killer is a Neutral!\n";
                 else if (br.Killer.Is(Faction.Intruder))
-                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is an Intruder!\n";
+                    coronerReport += "The killer is an Intruder!\n";
                 else if (br.Killer.Is(Faction.Syndicate))
-                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is from the Syndicate!\n";
-                else
-                    coronerReport += $"{br.Body.Data.PlayerName}'s Report: This is a bit odd.\n";
+                    coronerReport += "The killer is from the Syndicate!\n";
             }
+
+            coronerReport += $"They died approximately {Math.Round(br.KillAge / 1000)}s ago!\n";
             
             var colors = new Dictionary<int, string>
                 {
@@ -77,7 +92,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                     {24, "lighter"},// lilac
                     {25, "darker"},// olive
                     {26, "lighter"},// azure
-                    {27, "lighter"},// rainbow
                     {27, "lighter"}, //Tomato
                     {28, "darker"}, //backrooms
                     {29, "darker"}, //Gold
@@ -113,10 +127,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                     {59, "lighter"}, //Rainbow
                 };
 
-            coronerReport += $"{br.Body.Data.PlayerName}'s Report: The killer is a {colors[br.Killer.CurrentOutfit.ColorId]} color!\n";
+            coronerReport += $"The killer is a {colors[br.Killer.CurrentOutfit.ColorId]} color!\n";
             
-            if (CustomGameOptions.CoronerReportName /*&& CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000)*/) 
-                coronerReport += $"{br.Body.Data.PlayerName}'s Report: They were killed by {br.Killer.Data.PlayerName}!";
+            if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000)) 
+                coronerReport += $"They were killed by {br.Killer.Data.PlayerName}!";
                 
             return coronerReport;
         }

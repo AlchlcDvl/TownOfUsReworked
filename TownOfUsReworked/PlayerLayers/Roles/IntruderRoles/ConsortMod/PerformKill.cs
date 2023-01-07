@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove | role.ClosestPlayer == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             var flag2 = role.RoleblockTimer() == 0f;
@@ -44,13 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             if (role.ClosestPlayer == null)
                 return false;
 
-            if (role.ClosestPlayer.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.Player.IsShielded())
                 {

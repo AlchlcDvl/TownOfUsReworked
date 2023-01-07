@@ -1,6 +1,5 @@
 ﻿using Hazel;
 using System;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
@@ -32,18 +31,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Assault those who oppose you";
             Results = InspResults.JestJuggWWInv;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
-            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected) return true;
+            if (Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
 
-            if (Utils.NKWins(RoleType))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.JuggernautWin,
                     SendOption.Reliable,-1);
@@ -59,7 +69,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            JuggernautWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                JuggernautWins = true;
         }
 
         public override void Loses()
@@ -82,9 +95,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var juggTeam = new List<PlayerControl>();
-            juggTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = juggTeam;
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
     }
 }

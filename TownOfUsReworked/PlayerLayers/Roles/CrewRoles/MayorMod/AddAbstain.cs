@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -110,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 switch (__instance.state)
                 {
                     case MeetingHud.VoteStates.Discussion:
-                        if (__instance.discussionTimer < PlayerControl.GameOptions.DiscussionTime)
+                        if (__instance.discussionTimer < CustomGameOptions.DiscussionTime)
                         {
                             mayorRole.Abstain.SetDisabled();
                             break;

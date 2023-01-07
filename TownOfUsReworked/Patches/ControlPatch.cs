@@ -54,10 +54,6 @@ namespace TownOfUsReworked.Patches
                 bot.RpcSetPet(PlayerControl.LocalPlayer.CurrentOutfit.PetId);
                 bot.RpcSetSkin(PlayerControl.LocalPlayer.CurrentOutfit.SkinId);
                 bot.RpcSetNamePlate(PlayerControl.LocalPlayer.CurrentOutfit.NamePlateId);
-
-                // new LateTask(() => bot.NetTransform.RpcSnapTo(new Vector2(0, 15)), 0.2f, "Bot TP Task");
-                // new LateTask(() => { foreach (var pc in PlayerControl.AllPlayerControls) pc.RpcMurderPlayer(bot); }, 0.4f, "Bot Kill Task");
-                // new LateTask(() => bot.Despawn(), 0.6f, "Bot Despawn Task");
             }
                 
             if (Input.GetKeyDown(KeyCode.X))
@@ -69,11 +65,11 @@ namespace TownOfUsReworked.Patches
                     PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
             }
             
-            if (Input.GetKeyDown(KeyCode.G))
+            /*if (Input.GetKeyDown(KeyCode.G))
             {
                 HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
                 HudManager.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
-            }
+            }*/
             
             if (Input.GetKeyDown(KeyCode.P))
             {

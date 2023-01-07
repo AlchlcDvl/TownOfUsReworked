@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             if (role.UsedThisRound)
                 return false;
 
-            if (!PlayerControl.LocalPlayer.CanMove | role.ClosestPlayer == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             var flag2 = role.InterrogateTimer() == 0f;
@@ -50,13 +50,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             var playerId = role.ClosestPlayer.PlayerId;
             role.UsedThisRound = true;
 
-            if (role.ClosestPlayer.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (!role.Player.IsProtected())
                 {

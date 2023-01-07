@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove | role.ClosestSyndicate == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestSyndicate == null)
                 return false;
 
             if (!__instance.enabled)

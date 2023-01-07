@@ -32,57 +32,9 @@ namespace TownOfUsReworked.Patches
 
             for (int i = 0; i < toRemoveWinners.Count(); i++)
                 TempData.winners.Remove(toRemoveWinners[i]);
-
-            if (Role.NobodyWins)
-            {
-                TempData.winners = new List<WinningPlayerData>();
-                TempData.winners.Clear();
-                return;
-            }
-
-            if (Role.NeutralsWin)
-            {
-                var winners = new List<WinningPlayerData>();
-
-                foreach (var role in Role.GetRoles(RoleEnum.Survivor))
-                {
-                    var surv = (Survivor)role;
-
-                    if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
-                }
-
-                foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
-                {
-                    var ga = (GuardianAngel)role;
-
-                    if (ga.TargetAlive)
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
-                }
-
-                foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
-                {
-                    var jest = (Jester)role2;
-
-                    if (jest.VotedOut)
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
-                }
-
-                foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
-                {
-                    var exe = (Executioner)role2;
-
-                    if (exe.TargetVotedOut)
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
-                }
-
-                TempData.winners = new List<WinningPlayerData>();
-
-                foreach (var win in winners)
-                    TempData.winners.Add(win);
-
-                return;
-            }
+            
+            TempData.winners = new List<WinningPlayerData>();
+            TempData.winners.Clear();
 
             foreach (var role in Role.AllRoles)
             {
@@ -90,50 +42,78 @@ namespace TownOfUsReworked.Patches
                 var faction = role.Faction;
                 var subfaction = role.SubFaction;
                 var winners = new List<WinningPlayerData>();
+                
+                if (Role.NobodyWins)
+                {
+                    TempData.winners = new List<WinningPlayerData>();
+                    TempData.winners.Clear();
+                    return;
+                }
+                else if (Role.NeutralsWin)
+                {
+                    foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
+                    {
+                        if (surv.Alive)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                    }
 
-                if (faction == Faction.Crew)
+                    foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                    {
+                        if (ga.TargetAlive)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
+                    {
+                        if (jest.VotedOut)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+                    {
+                        if (exe.TargetVotedOut)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                    }
+
+                    TempData.winners = new List<WinningPlayerData>();
+
+                    foreach (var win in winners)
+                        TempData.winners.Add(win);
+
+                    return;
+                }
+                else if (faction == Faction.Crew)
                 {
                     if (Role.CrewWin)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var surv = (Survivor)role2;
-
-                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                            if (surv.Alive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
                         foreach (var role2 in Role.GetRoles(Faction.Crew))
                         {
-                            if (!role2.Player.Data.Disconnected)
-                            {
-                                if (!role2.Player.IsRecruit())
-                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            }
+                            if (!role2.Player.Data.Disconnected && !role2.IsRecruit)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -148,45 +128,34 @@ namespace TownOfUsReworked.Patches
                 {
                     if (Role.IntruderWin)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var surv = (Survivor)role2;
-
-                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                            if (surv.Alive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
                         foreach (var role2 in Role.GetRoles(Faction.Intruder))
                         {
-                            if (!role2.Player.Data.Disconnected)
-                            {
-                                if (!role2.Player.IsRecruit())
-                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            }
+                            if (!role2.Player.Data.Disconnected && !role2.IsRecruit)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -201,45 +170,34 @@ namespace TownOfUsReworked.Patches
                 {
                     if (Role.SyndicateWin)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var surv = (Survivor)role2;
-
-                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                            if (surv.Alive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
                         foreach (var role2 in Role.GetRoles(Faction.Syndicate))
                         {
-                            if (!role2.Player.Data.Disconnected)
-                            {
-                                if (!role2.Player.IsRecruit())
-                                    winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            }
+                            if (!role2.Player.Data.Disconnected && !role2.IsRecruit)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -254,34 +212,26 @@ namespace TownOfUsReworked.Patches
                 {
                     if (Role.UndeadWin)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var surv = (Survivor)role2;
-
-                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                            if (surv.Alive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
@@ -304,57 +254,34 @@ namespace TownOfUsReworked.Patches
                 {
                     if (Role.CabalWin)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var surv = (Survivor)role2;
-
-                            if (!surv.Player.Data.IsDead && !surv.Player.Data.Disconnected)
+                            if (surv.Alive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
                         foreach (var role2 in Role.GetRoles(SubFaction.Cabal))
                         {
-                            var jackal = (Jackal)role2;
-
-                            if (!jackal.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jackal.PlayerName).ToList()[0]);
-
-                            var goodRole = Role.GetRole(jackal.GoodRecruit);
-                            var evilRole = Role.GetRole(jackal.EvilRecruit);
-                            var backupRole = Role.GetRole(jackal.BackupRecruit);
-                            
-                            if (!jackal.GoodRecruit.Data.Disconnected && jackal.GoodRecruit != null)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == goodRole.PlayerName).ToList()[0]);
-                            
-                            if (!jackal.EvilRecruit.Data.Disconnected && jackal.EvilRecruit != null)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == evilRole.PlayerName).ToList()[0]);
-                            
-                            if (!jackal.BackupRecruit.Data.Disconnected && jackal.BackupRecruit != null)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == backupRole.PlayerName).ToList()[0]);
+                            if (!role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -371,37 +298,34 @@ namespace TownOfUsReworked.Patches
 
                     if (glitch.GlitchWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Glitch))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Glitch))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -418,35 +342,32 @@ namespace TownOfUsReworked.Patches
 
                     if (juggernaut.JuggernautWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Juggernaut))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
+                        
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            var ga = (GuardianAngel)role2;
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Juggernaut))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
@@ -465,37 +386,34 @@ namespace TownOfUsReworked.Patches
 
                     if (arsonist.ArsonistWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Arsonist))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Arsonist))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -512,40 +430,40 @@ namespace TownOfUsReworked.Patches
 
                     if (plaguebearer.PlaguebearerWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Plaguebearer))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Pestilence))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Plaguebearer))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Pestilence))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -562,40 +480,40 @@ namespace TownOfUsReworked.Patches
 
                     if (pestilence.PestilenceWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Plaguebearer))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Pestilence))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Plaguebearer))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                        }
+                            
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Pestilence))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -612,37 +530,34 @@ namespace TownOfUsReworked.Patches
 
                     if (serialkiller.SerialKillerWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                                
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.SerialKiller))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.SerialKiller))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -659,37 +574,34 @@ namespace TownOfUsReworked.Patches
 
                     if (murderer.MurdWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Murderer))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Murderer))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -706,37 +618,34 @@ namespace TownOfUsReworked.Patches
 
                     if (ww.WWWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Werewolf))
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Werewolf))
+                        {
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
 
                         TempData.winners = new List<WinningPlayerData>();
@@ -753,32 +662,26 @@ namespace TownOfUsReworked.Patches
 
                     if (cannibal.EatNeed == 0)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
@@ -799,83 +702,35 @@ namespace TownOfUsReworked.Patches
 
                     if (cryo.CryoWins)
                     {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
 
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
                             if (ga.TargetAlive)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            var jest = (Jester)role2;
-
                             if (jest.VotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            var exe = (Executioner)role2;
-
                             if (exe.TargetVotedOut)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
 
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == cryo.PlayerName).ToList()[0]);
-
-                        TempData.winners = new List<WinningPlayerData>();
-
-                        foreach (var win in winners)
-                            TempData.winners.Add(win);
-                            
-                        return;
-                    }
-                }
-                else if (type == RoleEnum.Cryomaniac)
-                {
-                    var troll = (Troll)role;
-
-                    if (troll.Killed)
-                    {
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                        foreach (var role2 in Role.GetRoles(RoleEnum.Cryomaniac))
                         {
-                            if (!role2.Player.Data.IsDead && !role2.Player.Data.Disconnected)
+                            if (!role2.IsRecruit && !role2.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                         }
-                            
-                        foreach (var role2 in Role.GetRoles(RoleEnum.GuardianAngel))
-                        {
-                            var ga = (GuardianAngel)role2;
-
-                            if (ga.TargetAlive)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Jester))
-                        {
-                            var jest = (Jester)role2;
-
-                            if (jest.VotedOut)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
-                        {
-                            var exe = (Executioner)role2;
-
-                            if (exe.TargetVotedOut)
-                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
-                        }
-
-                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == troll.PlayerName).ToList()[0]);
 
                         TempData.winners = new List<WinningPlayerData>();
 
@@ -945,6 +800,8 @@ namespace TownOfUsReworked.Patches
                         return;
                     }
                 }
+
+                winners.Clear();
             }
         }
     }

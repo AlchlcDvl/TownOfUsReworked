@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove | role.ClosestPlayer == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             var flag2 = role.TrackerTimer() == 0f;
@@ -51,13 +51,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             if (!role.ButtonUsable)
                 return false;
 
-            if (role.ClosestPlayer.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.Player.IsShielded())
                 {

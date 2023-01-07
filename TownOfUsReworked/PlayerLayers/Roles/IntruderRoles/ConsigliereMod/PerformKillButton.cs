@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var target = role.ClosestPlayer;
             var flag2 = role.ConsigliereTimer() > 0f;
 
             if (!flag2)
@@ -40,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Utils.GetDistBetweenPlayers(role.Player, role.ClosestPlayer) > maxDistance)
                 return false;
 
             if (role.ClosestPlayer == null)
@@ -50,16 +49,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             if (__instance == role.InvestigateButton)
             {
-                if (!__instance.isActiveAndEnabled | role.ClosestPlayer == null)
+                if (!__instance.isActiveAndEnabled || role.ClosestPlayer == null)
                     return false;
 
-                if (role.ClosestPlayer.IsInfected() | role.Player.IsInfected())
+                if (role.ClosestPlayer.IsInfected())
                 {
                     foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
                 {
                     if (!role.Player.IsProtected())
                     {
@@ -77,20 +76,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.ConsigliereTimer() != 0)
-                    return false;
-
-                role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Investigate,
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
+                role.LastInvestigated = DateTime.UtcNow;
+                role.Investigated.Add(role.ClosestPlayer.PlayerId);
                 return false;
             }
 

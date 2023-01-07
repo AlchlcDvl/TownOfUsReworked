@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             Faded = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * PlayerControl.GameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * CustomGameOptions.CrewVision;
 
             if (PlayerControl.LocalPlayer == null)
                 return;

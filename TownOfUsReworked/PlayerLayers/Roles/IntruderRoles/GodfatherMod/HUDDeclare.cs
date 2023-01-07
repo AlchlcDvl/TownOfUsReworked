@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (role.HasDeclared | role.WasMafioso)
+            if (role.HasDeclared || role.WasMafioso)
                 return;
 
             if (role.DeclareButton == null)

@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
         public static void MeetingDeathHappen(PlayerControl __instance)
         {
             __instance.Data.IsDead = true;
-            var flag10 = __instance.Is(RoleEnum.Vigilante) && CustomGameOptions.VigiOptions == VigiOptions.Meeting;
+            var flag10 = __instance.Is(RoleEnum.Vigilante) && CustomGameOptions.VigiOptions == VigiOptions.PreMeeting;
             
             if (!flag10)
                 return;

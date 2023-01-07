@@ -1,10 +1,10 @@
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using System;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -22,21 +22,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Jackal";
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Jackal;
-            StartText = " ";
-            AbilitiesText = " ";
+            StartText = "Gain A Majority";
+            AbilitiesText = "- You can recruit one player into joining your organisation.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
             SubFaction = SubFaction.Cabal;
+            SubFactionColor = Colors.Cabal;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            IntroText = "Gain a majority";
+            IntroText = "Gain A Majority";
             Results = InspResults.SurvVHVampVig;
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -52,10 +48,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.SubfactionWins(SubFaction))
+            if (Utils.CabalWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.UndeadWin,
                     SendOption.Reliable, -1);
@@ -78,6 +74,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        {
+            var jackTeam = new List<PlayerControl>();
+            jackTeam.Add(PlayerControl.LocalPlayer);
+            jackTeam.Add(GoodRecruit);
+            jackTeam.Add(EvilRecruit);
+            __instance.teamToShow = jackTeam;
         }
     }
 }

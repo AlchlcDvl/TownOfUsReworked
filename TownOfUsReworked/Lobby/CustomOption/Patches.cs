@@ -86,13 +86,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         option.Setting = toggle2;
                         options.Add(toggle2);
                         break;
-                    /*case CustomOptionType.Tab:
-                        var tab = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                        tab.transform.GetChild(2).gameObject.SetActive(false);
-                        tab.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                        option.Setting = tab;
-                        options.Add(tab);
-                        break;*/
                     case CustomOptionType.Number:
                         var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent);
                         option.Setting = number;
@@ -142,7 +135,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             }
 
             customOption.OptionCreated();
-
             return false;
         }
 
@@ -151,9 +143,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix(GameSettingMenu __instance)
             {
-                __instance.RolesSettings.gameObject.SetActive(false);
-                __instance.RegularGameSettings.gameObject.SetActive(false);
-
                 var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
                 var diff = 0.7f * Menus.Length - 2;
                 obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y,
@@ -186,7 +175,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     var ourSettingsButton = Object.Instantiate(obj.gameObject, obj.transform.parent);
                     ourSettingsButton.transform.localPosition = new Vector3(obj.localPosition.x + (0.8f * (index + 1)), obj.localPosition.y,
                         obj.localPosition.z);
-                    ourSettingsButton.name = $"ToU-Rew{Menus[index]}tab";
+                    ourSettingsButton.name = $"ToU-Rew{Menus[index]}Tab";
                     var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
                     var hatIcon = hatButton.GetChild(0);
                     var tabBackground = hatButton.GetChild(1);
@@ -201,7 +190,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     passiveButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
                     passiveButton.OnClick.AddListener(ToggleButton(__instance, menug, menugs, index + 2));
 
-                    //Fix for scrollbar bug in Among Us
+                    //Fix for scrollbar (bug in among us)
                     touSettings.GetComponentInChildren<Scrollbar>().parent = touSettings.GetComponentInChildren<Scroller>();
                 }
                 
@@ -258,6 +247,22 @@ namespace TownOfUsReworked.Lobby.CustomOption
             });
         }
 
+        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
+        class GameSettingMenuUpdatePatch
+        {
+            public static void Postfix(GameSettingMenu __instance)
+            {
+                int value = CustomGameOptions.LobbySize;
+
+                if (PlayerControl.GameOptions.MaxPlayers != value)
+                {
+                    PlayerControl.GameOptions.MaxPlayers = value;
+                    GameStartManager.Instance.LastPlayerCount = value;
+                    PlayerControl.LocalPlayer.RpcSyncSettings(PlayerControl.GameOptions);
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
         private class GameOptionsMenu_Start
         {
@@ -289,7 +294,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
                             option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
 
                         __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(customOptions.ToArray());
-
                         return false;
                     }
                 }
@@ -303,7 +307,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix(GameOptionsMenu __instance)
             {
-                if (__instance.Children == null | __instance.Children.Length == 0)
+                if (__instance.Children == null || __instance.Children.Length == 0)
                     return;
 
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
@@ -324,21 +328,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 
                 foreach (var option in __instance.Children)
                     option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
-
-                var commonTasks = __instance.Children.FirstOrDefault(x => x.name == "NumCommonTasks").TryCast<NumberOption>();
-
-                if (commonTasks != null)
-                    commonTasks.ValidRange = new FloatRange(0f, 4f);
-
-                var shortTasks = __instance.Children.FirstOrDefault(x => x.name == "NumShortTasks").TryCast<NumberOption>();
-
-                if (shortTasks != null)
-                    shortTasks.ValidRange = new FloatRange(0f, 26f);
-
-                var longTasks = __instance.Children.FirstOrDefault(x => x.name == "NumLongTasks").TryCast<NumberOption>();
-
-                if (longTasks != null)
-                    longTasks.ValidRange = new FloatRange(0f, 15f);
             }
         }
 
@@ -400,7 +389,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     ImportButton.Do();
                     return false;
                 }
-
 
                 if (option is CustomHeaderOption)
                     return false;
@@ -508,7 +496,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix()
             {
-                if (PlayerControl.AllPlayerControls.Count < 2 | !AmongUsClient.Instance | !PlayerControl.LocalPlayer | !AmongUsClient.Instance.AmHost)
+                if (PlayerControl.AllPlayerControls.Count < 2 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
                     return;
 
                 Rpc.SendRpc();
@@ -560,12 +548,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 if (PlayerControl.LocalPlayer?.CanMove != true)
                 {
                     __instance.GameSettings.transform.localPosition = LastPosition;
-
                     return;
                 }
 
-                if (__instance.GameSettings.transform.localPosition.x != MinX |
-                    __instance.GameSettings.transform.localPosition.y < MinY) return;
+                if (__instance.GameSettings.transform.localPosition.x != MinX || __instance.GameSettings.transform.localPosition.y < MinY)
+                    return;
 
                 LastPosition = __instance.GameSettings.transform.localPosition;
             }

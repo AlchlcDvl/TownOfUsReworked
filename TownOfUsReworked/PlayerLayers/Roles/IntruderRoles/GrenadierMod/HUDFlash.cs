@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                         var tempColour = player.nameText().color;
                         var data = player?.Data;
 
-                        if (data == null | data.Disconnected | data.IsDead | PlayerControl.LocalPlayer.Data.IsDead)
+                        if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
                             continue;
 
                         if (role.flashedPlayers.Contains(player))

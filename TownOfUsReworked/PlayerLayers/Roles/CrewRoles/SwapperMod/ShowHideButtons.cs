@@ -11,6 +11,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         {
             var self = RegisterExtraVotes.CalculateAllVotes(__instance);
 
-            if (SwapVotes.Swap1 == null | SwapVotes.Swap2 == null)
+            if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 return self;
 
             PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap1 playerid = {SwapVotes.Swap1.TargetPlayerId}");
@@ -49,12 +50,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         {
             public static bool Prefix(MeetingHud __instance)
             {
-                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
+                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper) || CustomGameOptions.SwapAfterVoting)
                     return true;
 
                 var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
 
-                foreach (var button in swapper.Buttons.Where(button => button != null))
+                foreach (var button in swapper.MoarButtons.Where(button => button != null))
                 {
                     if (button.GetComponent<SpriteRenderer>().sprite == AddButton.DisabledSprite)
                         button.SetActive(false);
@@ -80,8 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     }
                 }
 
-
-                if (SwapVotes.Swap1 == null | SwapVotes.Swap2 == null)
+                if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                     return true;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         {
             private static bool CheckVoted(PlayerVoteArea playerVoteArea)
             {
-                if (playerVoteArea.AmDead | playerVoteArea.DidVote)
+                if (playerVoteArea.AmDead || playerVoteArea.DidVote)
                     return true;
                     
                 var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
@@ -120,7 +120,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             
             public static bool Prefix(MeetingHud __instance)
             {
-                if (__instance.playerStates.All(ps => ps.AmDead | ps.DidVote && CheckVoted(ps)))
+                if (__instance.playerStates.All(ps => ps.AmDead || ps.DidVote && CheckVoted(ps)))
                 {
                     var self = CalculateVotes(__instance);
                     var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
@@ -131,6 +131,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     for (var i = 0; i < __instance.playerStates.Length; i++)
                     {
                         var playerVoteArea = __instance.playerStates[i];
+
                         array[i] = new MeetingHud.VoterState
                         {
                             VoterId = playerVoteArea.TargetPlayerId,
@@ -142,8 +143,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     
                     foreach (var role in Role.GetRoles(RoleEnum.Mayor))
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte) CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
                         writer.Write(role.Player.PlayerId);
                         writer.WriteBytesAndSize(((Mayor) role).ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);

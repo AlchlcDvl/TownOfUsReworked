@@ -2,10 +2,14 @@ using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using Object = System.Object;
 using System;
+using InnerNet;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -96,6 +100,9 @@ namespace TownOfUsReworked.Extensions
 
         public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType CustomOutfitType)
         {
+            if (playerControl == null)
+                return;
+
             var outfitType = (PlayerOutfitType)CustomOutfitType;
             
             if (!playerControl.Data.Outfits.ContainsKey(outfitType))
@@ -111,8 +118,17 @@ namespace TownOfUsReworked.Extensions
             playerControl.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
             playerControl.cosmetics.colorBlindText.color = Color.white;
 
-            if (PlayerControl.LocalPlayer.Data.IsImpostor() && playerControl.Data.IsImpostor())
-                playerControl.nameText().color = Colors.Intruder;
+            if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
+            {
+                if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && playerControl.Is(Faction.Intruder))
+                    playerControl.nameText().color = Colors.Intruder;
+
+                if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && playerControl.Is(Faction.Syndicate))
+                    playerControl.nameText().color = Colors.Syndicate;
+            }
+            else
+                playerControl.nameText().color = Color.white;
+
         }
 
         public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl)

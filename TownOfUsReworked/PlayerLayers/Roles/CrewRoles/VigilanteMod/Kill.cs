@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             if (!flag2)
                 return false;
 
-            if (!__instance.enabled | role.ClosestPlayer == null)
+            if (!__instance.enabled || role.ClosestPlayer == null)
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -47,11 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             if (!flag3)
                 return false;
 
-            var flag4 = role.ClosestPlayer.Is(Faction.Intruder) | role.ClosestPlayer.Is(RoleAlignment.NeutralKill) |
-                role.ClosestPlayer.Is(Faction.Syndicate) | (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) |
-                (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) | (role.ClosestPlayer.Is(RoleEnum.Cannibal)
-                && CustomGameOptions.VigiKillsCannibal) | (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) |
-                role.ClosestPlayer.Is(SubFaction.Undead) | role.ClosestPlayer.Is(SubFaction.Cabal);
+            var flag4 = role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
+                role.ClosestPlayer.Is(Faction.Syndicate) || (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) ||
+                (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (role.ClosestPlayer.Is(RoleEnum.Cannibal)
+                && CustomGameOptions.VigiKillsCannibal) || (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) ||
+                role.ClosestPlayer.Is(SubFaction.Undead) || role.ClosestPlayer.Is(SubFaction.Cabal);
 
             if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 return false;
             }
             
-            if (role.ClosestPlayer.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
@@ -138,7 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
                     Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
 
-                else if (CustomGameOptions.VigiOptions == VigiOptions.Meeting)
+                else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
                 {
                     if (CustomGameOptions.VigiKnowsInno)
                     {

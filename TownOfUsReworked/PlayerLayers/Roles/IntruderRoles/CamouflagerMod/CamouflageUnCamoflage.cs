@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         public static bool CommsEnabled;
         public static bool CamouflagerEnabled;
-        public static bool IsCamoed => CommsEnabled | CamouflagerEnabled;
+        public static bool IsCamoed => CommsEnabled || CamouflagerEnabled;
 
         public static void Postfix(HudManager __instance)
         {

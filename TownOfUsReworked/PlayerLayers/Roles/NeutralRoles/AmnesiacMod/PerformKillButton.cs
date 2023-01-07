@@ -7,7 +7,6 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Enums;
-
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using UnityEngine;
@@ -62,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var playerId = role.CurrentTarget.ParentId;
             var player = Utils.PlayerById(playerId);
 
-            if ((player.IsInfected() | role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
+            if ((player.IsInfected() || role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
@@ -147,8 +146,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Concealer:
                 case RoleEnum.Rebel:
                 case RoleEnum.Sidekick:
-                case RoleEnum.Puppeteer:
                 case RoleEnum.Shapeshifter:
+                case RoleEnum.Bomber:
+                case RoleEnum.Framer:
 
                     rememberSyn = true;
 
@@ -209,6 +209,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             newRole.Player = amnesiac;
 
             Role.RoleDictionary.Remove(amnesiac.PlayerId);
+            Role.RoleDictionary.Remove(other.PlayerId);
 
             if (rememberCrew)
             {
@@ -249,7 +250,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             }
             else if (rememberNeut)
             {
-                if (Lists.NeutralKillers.Contains(role))
+                if (role.RoleAlignment == RoleAlignment.NeutralKill)
                 {
                     if (CustomGameOptions.AmneTurnAssassin)
                     {
@@ -267,7 +268,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 new Impostor(other);
                 amnesiac.Data.Role.TeamType = RoleTeamTypes.Impostor;
                 RoleManager.Instance.SetRole(amnesiac, RoleTypes.Impostor);
-                amnesiac.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                amnesiac.SetKillTimer(CustomGameOptions.IntKillCooldown);
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
@@ -535,10 +536,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 var consigRole = Role.GetRole<Consigliere>(amnesiac);
                 consigRole.LastInvestigated = DateTime.UtcNow;
             }
-            else if (!(amnesiac.Is(RoleEnum.Altruist) | amnesiac.Is(RoleEnum.Amnesiac) | amnesiac.Is(Faction.Intruder)))
+            else if (!(amnesiac.Is(RoleEnum.Altruist) || amnesiac.Is(RoleEnum.Amnesiac) || amnesiac.Is(Faction.Intruder)))
                 DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
 
-            if (amnesiac.Is(Faction.Intruder) && (!amnesiac.Is(ObjectifierEnum.Traitor) | CustomGameOptions.SnitchSeesTraitor))
+            if (amnesiac.Is(Faction.Intruder) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
             {
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {

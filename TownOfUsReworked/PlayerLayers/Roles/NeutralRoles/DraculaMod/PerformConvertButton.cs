@@ -22,17 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Dracula);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
                 return true;
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             var flag2 = role.ConvertTimer() == 0f;
@@ -50,9 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             if (!flag3)
                 return false;
 
-            if (role.ClosestPlayer == null)
-                return false;
-
             var playerId = role.ClosestPlayer.PlayerId;
 
             if (role.ClosestPlayer.IsInfected())
@@ -61,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence) | role.ClosestPlayer.Is(RoleEnum.VampireHunter))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence) || role.ClosestPlayer.Is(RoleEnum.VampireHunter))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {
@@ -134,11 +126,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             if (vampCount + 1 > CustomGameOptions.AliveVampCount)
             {
                 Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                role.LastBitten = DateTime.UtcNow;
                 return false;
             }
-
-            if (role.ClosestPlayer.Is(SubFaction.Undead))
-                return false;
 
             unchecked
             {
@@ -214,8 +204,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Jester:
                 case RoleEnum.Cannibal:
                 case RoleEnum.Executioner:
-                case RoleEnum.Jackal:
-                case RoleEnum.Recruit:
 
                     convertNeut = true;
 
@@ -238,12 +226,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             dracRole.Converted.Add(other);
 
+            if (role == dracRole)
+            {
+                var drac2 = (Dracula)role;
+                dracRole.Converted.AddRange(drac2.Converted);
+            }
+
             if (alreadyVamp)
                 return;
-                            
-            Role.RoleDictionary.Remove(other.PlayerId);
 
-            if (convertNeut == true && CustomGameOptions.DraculaConvertNeuts)
+            if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
             {
                 if (!convertNK)
                 {
@@ -262,16 +254,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         can.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
                     }
 
+                    Role.RoleDictionary.Remove(other.PlayerId);
                     var newRole = new Vampire(other);
                     newRole.Player = other;
                 }
                 else
                 {
+                    Role.RoleDictionary.Remove(other.PlayerId);
                     var newRole = new Dampyr(other);
                     newRole.Player = other;
                 }
             }
-            else if (convert == true)
+            else if (convert)
             {
                 if (!convertCK)
                 {
@@ -285,19 +279,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         var trackerRole = Role.GetRole<Tracker>(other);
                         trackerRole.TrackerArrows.Values.DestroyAll();
                         trackerRole.TrackerArrows.Clear();
-                        trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
                     }
                     else if (role.RoleType == RoleEnum.Coroner)
                     {
                         var coronerRole = Role.GetRole<Coroner>(other);
                         coronerRole.BodyArrows.Values.DestroyAll();
                         coronerRole.BodyArrows.Clear();
-                        DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
                     }
                     else if (role.RoleType == RoleEnum.Operative)
                     {
                         var opRole = Role.GetRole<Operative>(other);
-                        opRole.UsesLeft = CustomGameOptions.MaxBugs;
                         opRole.buggedPlayers.Clear();
                         opRole.bugs.ClearBugs();
                     }
@@ -307,11 +298,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         medicRole.ShieldedPlayer = null;
                     }
 
+                    Role.RoleDictionary.Remove(other.PlayerId);
                     var newRole = new Vampire(other);
                     newRole.Player = other;
                 }
                 else
                 {
+                    Role.RoleDictionary.Remove(other.PlayerId);
                     var newRole = new Dampyr(other);
                     newRole.Player = other;
                 }

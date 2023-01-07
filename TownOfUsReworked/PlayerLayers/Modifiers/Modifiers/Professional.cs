@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
 {
     public class Professional : Modifier
     {
-        public bool LifeUsed;
+        public bool LifeUsed = false;
 
         public Professional(PlayerControl player) : base(player)
         {
@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "You have an extra life when assassinating";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Professional : Colors.Modifier;
             ModifierType = ModifierEnum.Professional;
-            LifeUsed = false;
             AddToModifierHistory(ModifierType);
         }
     }

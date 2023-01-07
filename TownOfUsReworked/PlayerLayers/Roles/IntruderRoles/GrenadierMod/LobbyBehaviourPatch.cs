@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
@@ -12,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
         {
             //Fix Grenadier and screwed blind in lobby
             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = false;
-            Utils.DefaultOutfitAll();
         }
     }
 }

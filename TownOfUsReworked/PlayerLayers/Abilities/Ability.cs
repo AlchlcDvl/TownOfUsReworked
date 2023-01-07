@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         protected Ability(PlayerControl player)
         {
             Player = player;
+            AbilityDictionary.Remove(player.PlayerId);
             AbilityDictionary.Add(player.PlayerId, this);
         }
 

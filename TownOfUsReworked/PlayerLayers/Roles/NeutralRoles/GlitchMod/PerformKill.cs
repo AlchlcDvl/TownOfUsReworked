@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             if (!flag)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.CanMove | PlayerControl.LocalPlayer.Data.IsDead)
+            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(target);
 
                     if (role.HackTimer() < 5f)
-                        role.LastMimic = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MimicCooldown);
+                        role.LastMimic = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.GlitchCooldown);
 
                     try
                     {
@@ -84,13 +84,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     } catch {}
                 }
                 
-                if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+                if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
                 {
                     foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
                 {
                     if (role.ClosestPlayer.IsShielded())
                     {
@@ -136,13 +136,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
                 
-                if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+                if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
                 {
                     foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
                 {
                     if (role.ClosestPlayer.IsShielded())
                     {

@@ -9,6 +9,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Modifier = new Color32(128, 128, 128, 255); //#7F7F7FFF
         public readonly static Color32 Ability = new Color32(255, 153, 0, 255); //#FF9900FF
         public readonly static Color32 Objectifier = new Color32(221, 88, 91, 255); //#DD585BFF
+        public readonly static Color32 Faction = new Color32(0, 230, 109, 255); //# #00E66DFF
 
         //Faction Colors
         public readonly static Color32 Crew = new Color32(139, 253, 253, 255); //#8BFDFDFF
@@ -72,7 +73,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
         public readonly static Color32 Grenadier = new Color32(133, 170, 91, 255); //#85AA5BFF
         public readonly static Color32 Morphling = new Color32(187, 69, 176, 255); //#BB45B0FF
-        public readonly static Color32 Wraith = new Color32(255, 184, 117, 255); //#FFB875FF
+        public readonly static Color32 Wraith = new Color32(92, 79, 117, 255); //##5C4F75FF
         public readonly static Color32 Poisoner = new Color32(181, 0, 76, 255); //#B5004CFF
         public readonly static Color32 Undertaker = new Color32(0, 86, 67, 255); //#005643FF
         public readonly static Color32 Camouflager = new Color32(55, 138, 192, 255); //#378AC0FF
@@ -88,12 +89,13 @@ namespace TownOfUsReworked.Patches
 
         //Syndicate Colors
         public readonly static Color32 Warper = new Color32 (140, 113, 64, 255); //#8C7140FF
-        public readonly static Color32 Puppeteer = new Color32(0, 255, 255, 255); //#00FFFFFF
+        public readonly static Color32 Framer = new Color32(0, 255, 255, 255); //#00FFFFFF
         public readonly static Color32 Rebel = new Color32(255, 252, 206, 255); //#FFFCCEFF
         public readonly static Color32 Sidekick = new Color32(151, 156, 159, 255); //#979C9FFF
         public readonly static Color32 Concealer = new Color32(192, 37, 37, 255); //#C02525FF
         public readonly static Color32 Gorgon = new Color32(126, 77, 0, 255); //#7E4D00FF
         public readonly static Color32 Shapeshifter = new Color32(49, 28, 69, 255); //#311C45FF
+        public readonly static Color32 Bomber = new Color32(201, 204, 63, 255); //#C9CC3FFF
 
         //Modifier Colors
         public readonly static Color32 Bait = new Color32(0, 179, 179, 255); //#00B3B3FF
@@ -129,6 +131,8 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Rivals = new Color32(61, 45, 44, 255); //#3D2D2CFF
         public readonly static Color32 Fanatic = new Color32(103, 141, 54, 255); //#678D36FF
         public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
+        public readonly static Color32 Overlord = new Color32(0, 128, 128, 255); //#008080FF 
+        public readonly static Color32 Corrupted = new Color32(69, 69, 255, 255); //#4545FFFF
 
         //Other
         public readonly static Color32 Stalemate = new Color32(239, 230, 230, 255); //#E6E6E6FF
@@ -141,13 +145,13 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 something = new Color32(168, 67, 0, 0); //#A84300FF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #008080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
+        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead #4d4d4d
         //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #8ff731
-        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #00e66d #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7
-        //#EC1C45 #EC62A5 #916640 #00EEFF #4545FF #4545A9 #C9CC3F #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
+        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7
+        //#EC1C45 #EC62A5 #916640 #00EEFF #4545A9 #204D42 #78c689 #e1c849 #a7c596 #b51e39 #5411f8 #fccc52 #6b2d2a
         //#0028F5 #FF1919 #FC0303 #FCBA03 #ff351f #F8CD46 #EEE5BE #2DE5BE #2D6AA5 #708EEF #FF4D00 #7EFBC2 #8637C2 #00ACC2 #aab43e
-        //#5C4F75 #3769FE #1E300B
+        //#3769FE #1E300B
 
         //Symbol Storage For Objectifiers I Will Make Later
         //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ ∎ α β γ δ ε ζ η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ π ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 

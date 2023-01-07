@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 
             var renderer = alertButton.graphic;
             
-            if (role.OnAlert | (!alertButton.isCoolingDown && role.ButtonUsable))
+            if (role.OnAlert || (!alertButton.isCoolingDown && role.ButtonUsable))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

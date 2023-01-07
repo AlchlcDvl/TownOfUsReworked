@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool PlaguebearerWins { get; set; }
         public List<byte> InfectedPlayers = new List<byte>();
         public int InfectedAlive => InfectedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead);
-        public bool CanTransform => (PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= InfectedAlive) | CustomGameOptions.PestSpawn;
+        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= InfectedAlive;
 
         public Plaguebearer(PlayerControl player) : base(player)
         {
@@ -35,20 +35,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Killing)";
             IntroText = "Infect everyone";
             Results = InspResults.ArsoCryoPBOpTroll;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
-            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.NKWins(RoleType))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType) && !CanTransform)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PlaguebearerWin,
                     SendOption.Reliable, -1);
@@ -64,7 +72,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            PlaguebearerWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                PlaguebearerWins = true;
         }
 
         public override void Loses()
@@ -74,9 +85,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var plaguebearerTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            plaguebearerTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = plaguebearerTeam;
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public float InfectTimer()

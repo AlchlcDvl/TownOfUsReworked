@@ -10,12 +10,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
+            if (reason == GameOverReason.HumansByVote || reason == GameOverReason.HumansByTask)
                 return true;
 
             foreach (var role in Role.AllRoles)
             {
-                if (role.Faction == Faction.Crew)
+                if (role.Faction == Faction.Crew && !role.IsRecruit)
                     role.Loses();
             }
 

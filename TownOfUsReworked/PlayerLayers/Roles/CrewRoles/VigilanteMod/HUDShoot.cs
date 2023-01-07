@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -41,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             else
             {
                 KillButton.gameObject.SetActive(!MeetingHud.Instance);
-                KillButton.SetCoolDown(role.KillTimer(), PlayerControl.GameOptions.KillCooldown);
+                KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
                 Utils.SetTarget(ref role.ClosestPlayer, KillButton);
             }
         }

@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 if (__instance.AmDead)
                     return false;
 
-                if (!role.CanVote | !__instance.Parent.Select(__instance.TargetPlayerId))
+                if (!role.CanVote || !__instance.Parent.Select(__instance.TargetPlayerId))
                     return false;
 
                 __instance.Buttons.SetActive(true);
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
 
-                if (__instance.Parent.state == MeetingHud.VoteStates.Proceeding | __instance.Parent.state == MeetingHud.VoteStates.Results)
+                if (__instance.Parent.state == MeetingHud.VoteStates.Proceeding || __instance.Parent.state == MeetingHud.VoteStates.Results)
                     return false;
 
                 if (!role.CanVote)

@@ -5,6 +5,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -12,16 +13,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked { get; set; }
-        public int VampsAlive => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && x.Data != null && !x.Data.IsDead &&
-            x.Is(SubFaction.Undead));
-        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= VampsAlive;
+        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && x.Is(SubFaction.Undead)) == 0;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
             Name = "Vampire Hunter";
             StartText = "Stake The <color=#7B8968FF>Vampires</color>";
             AbilitiesText = "Stake the <color=#7B8968FF>Vampires</color>";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
+            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew)));
             LastStaked = DateTime.UtcNow;
             RoleType = RoleEnum.VampireHunter;
             Faction = Faction.Crew;
@@ -31,11 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Auditor)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SurvVHVampVig;
-            IntroSound = null;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -43,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastStaked;
-            var num = CustomGameOptions.VigiKillCd * 1000f;
+            var num = CustomGameOptions.StakeCooldown * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -54,8 +50,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+            var team = new List<PlayerControl>();
+
             team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.EvilRecruit);
+            }
+
             __instance.teamToShow = team;
         }
 
@@ -73,7 +79,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            CrewWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntTraitor)
+                IntruderWin = true;
+            else if (IsSynTraitor)
+                SyndicateWin = true;
+            else
+                CrewWin = true;
         }
 
         public override void Loses()
@@ -83,10 +96,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.CrewWins())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsIntTraitor)
+            {
+                if (Utils.IntrudersWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsSynTraitor)
+            {
+                if (Utils.SyndicateWins())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

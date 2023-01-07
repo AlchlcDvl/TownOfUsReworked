@@ -68,6 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             var player = Utils.PlayerById(parentId);
 
+            var targetRole = Role.GetRole(player);
+            targetRole.DeathReason = DeathReasonEnum.Revived;
+            targetRole.KilledBy = " By " + role.PlayerName;
+
             foreach (var poisoner in Role.GetRoles(RoleEnum.Poisoner))
             {
                 var poisonerRole = (Poisoner)poisoner;
@@ -116,8 +120,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Minigame.Instance.Close();
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsImpostor() | !(PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) |
-                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil)))
+            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
+                !(PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil)))
             {
                 var gameObj = new GameObject();
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();

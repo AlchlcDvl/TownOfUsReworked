@@ -36,6 +36,34 @@ namespace TownOfUsReworked.Lobby.CustomOption
         Emergency,
         Always
     }
+    
+    public enum RoleFactionReports
+    {
+        Role,
+        Faction,
+        Neither
+    }
+    
+    public enum AirshipSpawnType
+    {
+        Normal,
+        Fixed,
+        RandomSynchronized
+    }
+    
+    public enum MoveAdmin
+    {
+        DontMove,
+        Cockpit,
+        MainHall
+    }
+    
+    public enum MoveElectrical
+    {
+        DontMove,
+        Vault,
+        Electrical
+    }
 
     public enum GameMode
     {
@@ -43,31 +71,22 @@ namespace TownOfUsReworked.Lobby.CustomOption
         AllAny,
         KillingOnly,
         Custom
-        //Mafia
-    }
-
-    public enum NoSolo
-    {
-        Never,
-        SameRoles,
-        AllNKs,
-        AllNeutrals
     }
 
     public enum Map
     {
-        Skeld = 0,
-        MiraHQ = 1,
-        Polus = 2,
+        Skeld,
+        MiraHQ,
+        Polus,
         Airship = 4,
         Submerged = 5
     }
 
     public enum TaskBarMode
     {
-        Normal = 0,
-        MeetingOnly = 1,
-        Invisible = 2
+        Normal,
+        MeetingOnly,
+        Invisible
     }
 
     public enum WhoCanSeeFirstKillShield
@@ -75,5 +94,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
 		Everyone,
 		PlayerOnly,
 		NoOne
+	}
+
+    public enum NKsKnow
+	{
+		Never,
+		SameRole,
+		AllNKs
 	}
 }

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
         public class Recordlocation
         {
             [HarmonyPostfix]
-            public static void postfix(RoomTracker __instance)
+            public static void Postfix(RoomTracker __instance)
             {
                 if (__instance.text.transform.localPosition.y != -3.25f)
                     location = __instance.text.text;
@@ -28,14 +28,14 @@ namespace TownOfUsReworked.Patches
         public class Sendchat
         {
             [HarmonyPostfix]
-            public static void postfix([HarmonyArgument(0)] GameData.PlayerInfo target)
+            public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target)
             {
                 string report = $"The body was found in {location}.";
 
                 if (target != null && CustomGameOptions.LocationReports)
                 {
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Sendchat,
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat,
                         SendOption.Reliable, -1);
                     writer.Write(report);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

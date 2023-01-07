@@ -17,7 +17,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(HudManager __instance)
         {
-            if (__instance.ImpostorVentButton == null | __instance.ImpostorVentButton.gameObject == null |
+            if (__instance.ImpostorVentButton == null || __instance.ImpostorVentButton.gameObject == null ||
                 __instance.ImpostorVentButton.IsNullOrDestroyed())
                 return;
 
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.Patches
                 mainflag = false;
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
                 mainflag = true;
-            else if (((player.IsRecruit() || (player.Is(RoleEnum.Recruit)) && CustomGameOptions.RecruitVent)) || (player.Is(RoleEnum.Jackal) && CustomGameOptions.JackalVent))
-                mainflag = true;
+            else if (player.IsRecruit())
+                mainflag = CustomGameOptions.RecruitVent;
             else if (player.Is(Faction.Syndicate))
                 mainflag = CustomGameOptions.SyndicateVent;
             else if (player.Is(Faction.Intruder))
@@ -76,6 +76,8 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (player.Is(RoleEnum.Engineer))
                     mainflag = true;
+                else if (CustomGameOptions.CrewVent)
+                    mainflag = true;
                 else
                     mainflag = false;
             }
@@ -88,7 +90,8 @@ namespace TownOfUsReworked.Patches
                     (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) || (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) ||
                     (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) || (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) ||
                     (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) || (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) ||
-                    (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) || (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent);
+                    (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) || (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent) ||
+                    (player.Is(RoleEnum.Jackal) && CustomGameOptions.JackalVent);
 
                 if (flag)
                     mainflag = flag;
@@ -116,8 +119,8 @@ namespace TownOfUsReworked.Patches
         {
             float num = float.MaxValue;
             PlayerControl playerControl = playerInfo.Object;
-            couldUse = CanVent(playerControl) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead |
-                playerControl.inVent) && (playerControl.CanMove | playerControl.inVent);
+            couldUse = CanVent(playerControl) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead ||
+                playerControl.inVent) && (playerControl.CanMove || playerControl.inVent);
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
             if (ventitaltionSystem != null && ventitaltionSystem.PlayersCleaningVents != null)

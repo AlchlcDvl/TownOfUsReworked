@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
             {
                 if (player.PlayerId == info.Object.PlayerId)
                 {
-                    if (PlayerControl.LocalPlayer.IsInfected() | player.IsInfected())
+                    if (PlayerControl.LocalPlayer.IsInfected() || player.IsInfected())
                     {
                         foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                             ((Plaguebearer)pb).RpcSpreadInfection(PlayerControl.LocalPlayer, player);

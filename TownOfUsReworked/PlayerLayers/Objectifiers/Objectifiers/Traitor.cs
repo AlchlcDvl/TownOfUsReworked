@@ -7,16 +7,17 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Traitor : Objectifier
     {
-        public RoleEnum formerRole;
         public Role former;
         public bool Turned;
-        public Faction Side;
+        public string Side;
 
         public Traitor(PlayerControl player) : base(player)
         {
             Name = "Traitor";
             SymbolName = "♣";
-            TaskText = "You are <color=#8BFDFDFF>Crew</color>, for now, that is....";
+            TaskText = Turned
+                ? "You now side with the <color=#" + Role.GetRole(Player).ColorString + $"{Side}</color>!"
+                : "You are <color=#8BFDFDFF>Crew</color>, for now, that is....";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Traitor;
             AddToObjectifierHistory(ObjectifierType);

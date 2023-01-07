@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             var playerId = role.ClosestPlayer.PlayerId;
             var player = Utils.PlayerById(playerId);
 
-            if ((player.IsInfected() | role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
+            if ((player.IsInfected() || role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
@@ -66,6 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
 
             Steal(role, player);
+            Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, player);
             return false;
         }
 
@@ -118,6 +119,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             newRole.Player = thief;
 
             Role.RoleDictionary.Remove(thief.PlayerId);
+            Role.RoleDictionary.Remove(other.PlayerId);
 
             if (becomeImp == false)
             {
@@ -129,7 +131,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 new Impostor(other);
                 thief.Data.Role.TeamType = RoleTeamTypes.Impostor;
                 RoleManager.Instance.SetRole(thief, RoleTypes.Impostor);
-                thief.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+                thief.SetKillTimer(CustomGameOptions.IntKillCooldown);
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {

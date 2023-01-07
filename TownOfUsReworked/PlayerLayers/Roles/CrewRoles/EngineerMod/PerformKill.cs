@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var dummyActive = system.dummy.IsActive;
             var sabActive = specials.Any(s => s.IsActive);
 
-            if (!sabActive | dummyActive)
+            if (!sabActive || dummyActive)
                 return false;
 
             role.UsedThisRound = true;

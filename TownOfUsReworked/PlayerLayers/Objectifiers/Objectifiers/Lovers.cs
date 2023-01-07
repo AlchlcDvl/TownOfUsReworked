@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     {
         public Lovers OtherLover { get; set; }
         public bool LoveCoupleWins { get; set; }
-        public int Num { get; set; }
 
         public Lovers(PlayerControl player) : base(player)
         {
@@ -44,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             PlayerControl firstLover = null;
             PlayerControl secondLover = null;
             
-            while (firstLover == null | secondLover == null | firstLover == secondLover | (firstLover.GetFaction() == secondLover.GetFaction()))
+            while (firstLover == null || secondLover == null || firstLover == secondLover || firstLover.GetFaction() == secondLover.GetFaction())
             {
                 var num = Random.RandomRangeInt(0, all.Count);
                 firstLover = all[num];
@@ -60,6 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
                 SendOption.Reliable, -1);
             writer.Write(firstLover.PlayerId);
             writer.Write(secondLover.PlayerId);
+
             var lover1 = new Lovers(firstLover);
             var lover2 = new Lovers(secondLover);
 
@@ -93,10 +93,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var players = PlayerControl.AllPlayerControls.ToArray();
             var alives = players.Where(x => !x.Data.IsDead).ToList();
             var lover1 = Player;
-            var lover2 = OtherLover.Player;
+            var lover2 = OtherLover.Player != null ? OtherLover.Player : null;
             
             return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
-                !lover2.Data.Disconnected && alives.Count() == 4 && (lover1.Is(Faction.Intruder) | lover2.Is(Faction.Intruder));
+                !lover2.Data.Disconnected && alives.Count() == 4 && (lover1.Is(Faction.Intruder) || lover2.Is(Faction.Intruder));
         }
 
         private bool CheckLoversWin()
@@ -108,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover2 = OtherLover.Player;
 
             return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
-                !lover2.Data.Disconnected && ((alives.Count == 3) | (alives.Count == 2));
+                !lover2.Data.Disconnected && ((alives.Count == 3) || (alives.Count == 2));
         }
 
         public void Win()

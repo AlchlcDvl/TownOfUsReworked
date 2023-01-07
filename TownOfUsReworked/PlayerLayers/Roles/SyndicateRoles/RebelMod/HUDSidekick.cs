@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
 
-            if (role.HasDeclared | role.WasSidekick)
+            if (role.HasDeclared || role.WasSidekick)
                 return;
 
             if (role.DeclareButton == null)

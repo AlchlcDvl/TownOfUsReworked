@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                 if (localPlayer == null)
                     return true;
 
-                return MeetingHud.Instance != null | LobbyBehaviour.Instance != null | localPlayer.Data.IsDead | localPlayer.Is(ObjectifierEnum.Lovers) |
+                return MeetingHud.Instance != null || LobbyBehaviour.Instance != null || localPlayer.Data.IsDead || localPlayer.Is(ObjectifierEnum.Lovers) ||
                     sourcePlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId;
             }
         }

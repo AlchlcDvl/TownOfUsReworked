@@ -6,7 +6,6 @@
         Shapeshifted,
         Morph,
         Camouflage,
-        Frozen,
         Invis,
         PlayerNameOnly
     }

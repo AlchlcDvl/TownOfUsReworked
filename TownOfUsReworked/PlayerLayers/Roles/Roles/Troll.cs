@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using System;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -17,7 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Troll";
             StartText = "Troll Everyone With Your Death";
-            AbilitiesText = "Die!\nFake Tasks:";
+            AbilitiesText = "- You can interact with players.";
+            AttributesText = "- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
             RoleType = RoleEnum.Troll;
             Faction = Faction.Neutral;
@@ -27,28 +29,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Evil)";
             IntroText = "Die";
             Results = InspResults.ArsoCryoPBOpTroll;
-            LastInteracted = DateTime.UtcNow;
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var Team = new List<PlayerControl>();
-            Team.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = Team;
+            var team = new List<PlayerControl>();
+            team.Add(PlayerControl.LocalPlayer);
+            __instance.teamToShow = team;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (!Killed | (!Player.Data.IsDead && !Player.Data.Disconnected))
+            if (!Killed || !Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
-                
-            Utils.EndGame();
+
+            if (Killed)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrollWin, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }   
+            
             return false;
         }
 
@@ -62,16 +67,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        public bool KilledFunc()
-        {
-            return true;
-        }
-
         public float InteractTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInteracted;
-            var num = CustomGameOptions.InfectCd * 1000f;
+            var num = CustomGameOptions.InteractCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

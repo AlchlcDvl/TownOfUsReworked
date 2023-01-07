@@ -3,7 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
     public enum VigiOptions
     {
         Immediate,
-        Meeting
+        PreMeeting,
+        PostMeeting
     }
 
     public enum VigiNotif

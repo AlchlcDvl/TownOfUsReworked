@@ -20,20 +20,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
+                    if (!(player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) ||
                         player.Is(Faction.Intruder)))
                         frozen.Add(player);
                 }
 
-                foreach (var player in frozen)
+                if (tm.Frozen)
                 {
-                    if (tm.Frozen)
+                    foreach (var player in frozen)
                     {
-                        if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !(player.Data.IsDead | player.Data.Disconnected))
-                        {
-                            if (player.MyPhysics.AmOwner)
-                                player.MyPhysics.body.velocity *= 0;
-                        }
+                        if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
+                            player.MyPhysics.body.velocity *= 0;
                     }
                 }
             }
@@ -45,21 +42,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data.IsDead | player.Data.Disconnected | (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) |
+                    if (!(player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) ||
                         player.Is(Faction.Intruder)))
                         frozen.Add(player);
                 }
 
-                foreach (var player in frozen)
+                if (tm.Frozen)
                 {
-                    if (tm.Frozen)
+                    foreach (var player in frozen)
                     {
                         if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && player == player.MyPhysics.myPlayer &&
-                            !(player.MyPhysics.myPlayer.Data.IsDead | player.MyPhysics.myPlayer.Data.Disconnected))
-                        {
-                            if (player.MyPhysics.AmOwner)
-                                player.MyPhysics.body.velocity = new Vector2(PlayerControl.GameOptions.PlayerSpeedMod, 0f);
-                        }
+                            !player.MyPhysics.myPlayer.Data.Disconnected)
+                            player.MyPhysics.body.velocity = new Vector2(CustomGameOptions.PlayerSpeed, 0f);
                     }
                 }
             }

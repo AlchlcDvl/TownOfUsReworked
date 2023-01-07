@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var playerId = role.CurrentTarget.ParentId;
             var player = Utils.PlayerById(playerId);
 
-            if (player.IsInfected() | role.Player.IsInfected())
+            if (player.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);

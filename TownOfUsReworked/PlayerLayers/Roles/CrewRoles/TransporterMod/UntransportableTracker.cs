@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                 foreach (var entry in role.UntransportablePlayers)
                 {
                     var player = Utils.PlayerById(entry.Key);
-                    if (player == null | player.Data == null | player.Data.IsDead | player.Data.Disconnected)
+                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
                         continue;
 
                     if (role.UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable == true &&

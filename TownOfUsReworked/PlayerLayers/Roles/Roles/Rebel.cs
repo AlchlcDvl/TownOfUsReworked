@@ -1,4 +1,3 @@
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -32,11 +31,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = "Syndicate (Support)";
             Results = InspResults.GFMayorRebelPest;
-            IntroSound = null;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             IntroText = "Cause chaos and kill your opposition";
             AlignmentDescription = "You are a Syndicate (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
                 "everyway possible.";
@@ -52,7 +48,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            SyndicateWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                SyndicateWin = true;
         }
 
         public override void Loses()
@@ -62,11 +61,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.SyndicateWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);
@@ -82,14 +93,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var intTeam = new List<PlayerControl>();
+            var team = new List<PlayerControl>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (!IsRecruit)
             {
-                if (player.Is(Faction.Syndicate))
-                    intTeam.Add(player);
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                        team.Add(player);
+                }
             }
-            __instance.teamToShow = intTeam;
+            else
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public KillButton DeclareButton

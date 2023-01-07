@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Phantom";
             SymbolName = "Ω";
-            TaskText = "You can revenge from beyond the grave!";
+            TaskText = "You can get revenge from beyond the grave!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Phantom : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Phantom;
             AddToObjectifierHistory(ObjectifierType);
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             Faded = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * PlayerControl.GameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * CustomGameOptions.CrewVision;
 
             if (PlayerControl.LocalPlayer == null)
                 return;

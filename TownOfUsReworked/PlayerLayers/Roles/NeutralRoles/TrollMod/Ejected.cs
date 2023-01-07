@@ -5,7 +5,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-    internal class Killed
+    internal class Ejected
     {
         private static void Postfix(ExileController __instance)
         {
@@ -22,8 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 
             if (role.RoleType == RoleEnum.Troll)
                 ((Troll)role).Loses();
-            
-            return;
         }
     }
 }

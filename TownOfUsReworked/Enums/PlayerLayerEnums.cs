@@ -9,6 +9,7 @@ namespace TownOfUsReworked.Enums
         Multitasker,
         Radar,
         Revealer,
+        Ruthless,
         Snitch,
         Tiebreaker,
         Torch,
@@ -20,8 +21,10 @@ namespace TownOfUsReworked.Enums
 
     public enum ObjectifierEnum
     {
-        Fanatic = 0,
+        Corrupted = 0,
+        Fanatic,
         Lovers,
+        Overlord,
         Phantom,
         Rivals,
         Taskmaster,
@@ -68,6 +71,7 @@ namespace TownOfUsReworked.Enums
         Executioner,
         Glitch,
         GuardianAngel,
+        Jackal,
         Jester,
         Juggernaut,
         Murderer,
@@ -80,8 +84,6 @@ namespace TownOfUsReworked.Enums
         Troll,
         Vampire,
         Werewolf,
-        Jackal,
-        Recruit,
 
         Blackmailer,
         Camouflager,
@@ -102,16 +104,14 @@ namespace TownOfUsReworked.Enums
         Wraith,
 
         Anarchist,
+        Bomber,
         Concealer,
+        Framer,
         Gorgon,
-        Puppeteer,
         Rebel,
         Shapeshifter,
         Sidekick,
         Warper,
-
-        GameMaster,
-        Spectator,
 
         None
     }

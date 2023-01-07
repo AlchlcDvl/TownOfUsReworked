@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (__instance.Player.Data.IsDead)
                     totalMimickTime = CustomGameOptions.MimicDuration;
 
-                if (totalMimickTime > CustomGameOptions.MimicDuration | PlayerControl.LocalPlayer.Data.IsDead | AmongUsClient.Instance.GameState ==
+                if (totalMimickTime > CustomGameOptions.MimicDuration || PlayerControl.LocalPlayer.Data.IsDead || AmongUsClient.Instance.GameState ==
                     InnerNetClient.GameStates.Ended)
                 {
                     __instance.LastMimic = DateTime.UtcNow;

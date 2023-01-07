@@ -44,13 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
             if (!flag3)
                 return false;
             
-            if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() | role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
             {
                 var haunter = (Revealer)role;
 
-                if (PlayerControl.LocalPlayer.Data.IsDead | haunter.Caught)
+                if (PlayerControl.LocalPlayer.Data.IsDead || haunter.Caught)
                 {
                     haunter.RevealerArrows.DestroyAll();
                     haunter.RevealerArrows.Clear();

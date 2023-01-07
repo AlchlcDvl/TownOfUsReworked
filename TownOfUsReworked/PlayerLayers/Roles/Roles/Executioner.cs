@@ -2,63 +2,57 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Executioner : Role
     {
-        public PlayerControl TargetPlayer;
+        public PlayerControl TargetPlayer = null;
         public bool TargetVotedOut;
 
         public Executioner(PlayerControl player) : base(player)
         {
             Name = "Executioner";
-            StartText = TargetPlayer == null
-                ? "You don't have a target for some reason... weird..."
-                : $"Eject {TargetPlayer.name}";
-            Objectives = TargetPlayer == null
-                ? "- You don't have a target for some reason... weird..."
-                : $"- Eject {TargetPlayer.name}!\nFake Tasks:";
-            AbilitiesText = "- None.";
-            AttributesText = "- None.";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
+            StartText = "Eject Your Target";
+            Objectives = "- Eject your target.";
+            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral);
             RoleType = RoleEnum.Executioner;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            IntroText = TargetPlayer == null
-                ? "You don't have a target for some reason... weird..."
-                : $"Eject {TargetPlayer.name}";
-            CoronerDeadReport = "This body has tons of incriminating pictures of someone. They must be an Executioner!";
-            CoronerKillerReport = "";
+            IntroText = "Eject Your Target";
             Results = InspResults.GAExeMedicPup;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
-            IntroSound = null;
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
-            AlignmentDescription = "You are a Neutral (Evil) role! You have a confliction win condition over others and upon achieving it will end the game. " +
-                "Finish your objective before they finish you!";
-            RoleDescription = $"You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject {TargetPlayer.name} " +
-                "at all costs!";
+            FactionDescription = NeutralFactionDescription;
+            AlignmentDescription = NEDescription;
+            RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
             AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var exeTeam = new List<PlayerControl>();
-            exeTeam.Add(PlayerControl.LocalPlayer);
-            exeTeam.Add(TargetPlayer);
-            __instance.teamToShow = exeTeam;
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.EvilRecruit);
+            }
+            
+            team.Add(TargetPlayer);
+
+            __instance.teamToShow = team;
         }
 
         public override void Wins()
         {
-            if ((Player.Data.IsDead && !CustomGameOptions.ExeCanWinBeyondDeath) | Player.Data.Disconnected | TargetPlayer == null)
+            if ((Player.Data.IsDead && !CustomGameOptions.ExeCanWinBeyondDeath) || Player.Data.Disconnected || TargetPlayer == null)
                 return;
                 
             TargetVotedOut = true;

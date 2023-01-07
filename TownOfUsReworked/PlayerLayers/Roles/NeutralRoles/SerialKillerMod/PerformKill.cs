@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 if (role.LustTimer() != 0) 
                     return false;
 
-                if (!__instance.isActiveAndEnabled | __instance.isCoolingDown)
+                if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.BloodlustDuration;
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            if (!__instance.isActiveAndEnabled | __instance.isCoolingDown)
+            if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
                 return false;
 
             if (role.ClosestPlayer == null)
@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 return false;
             }
 
-            if (role.ClosestPlayer.IsInfected() | PlayerControl.LocalPlayer.IsInfected())
+            if (role.ClosestPlayer.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);

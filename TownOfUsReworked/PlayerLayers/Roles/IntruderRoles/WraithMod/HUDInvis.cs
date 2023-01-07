@@ -45,8 +45,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 role.InvisButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.InvisDuration);
                 return;
             }
-
-            role.InvisButton.SetCoolDown(role.InvisTimer(), CustomGameOptions.InvisCd);
+            else
+                role.InvisButton.SetCoolDown(role.InvisTimer(), CustomGameOptions.InvisCd);
 
             role.InvisButton.graphic.color = Palette.EnabledColor;
             role.InvisButton.graphic.material.SetFloat("_Desat", 0f);

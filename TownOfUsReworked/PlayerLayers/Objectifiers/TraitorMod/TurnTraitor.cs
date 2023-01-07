@@ -3,8 +3,6 @@ using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
@@ -39,48 +37,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             if (tasksLeft == 0)
                 traitor.Turned = true;
 
-            if (__instance.Is(ObjectifierEnum.Traitor) && traitor.Turned)
+            if (traitor.Turned)
             {
-                if (__instance.Is(RoleEnum.Investigator))
-                    Footprint.DestroyAll(Role.GetRole<Investigator>(__instance));
-                else if (__instance.Is(RoleEnum.TimeLord))
-                {
-                    var timeLordRole = Role.GetRole<TimeLord>(__instance);
-                    Object.Destroy(timeLordRole.UsesText);
-                }
-                else if (__instance.Is(RoleEnum.Tracker))
-                {
-                    var trackerRole = Role.GetRole<Tracker>(__instance);
-                    trackerRole.TrackerArrows.Values.DestroyAll();
-                    trackerRole.TrackerArrows.Clear();
-                    Object.Destroy(trackerRole.UsesText);
-                }
-                else if (__instance.Is(RoleEnum.Transporter))
-                {
-                    var transporterRole = Role.GetRole<Transporter>(__instance);
-                    Object.Destroy(transporterRole.UsesText);
-                }
-                else if (__instance.Is(RoleEnum.Veteran))
-                {
-                    var veteranRole = Role.GetRole<Veteran>(__instance);
-                    Object.Destroy(veteranRole.UsesText);
-                }
-                else if (__instance.Is(RoleEnum.Medium))
-                {
-                    var medRole = Role.GetRole<Medium>(__instance);
-                    medRole.MediatedPlayers.Values.DestroyAll();
-                    medRole.MediatedPlayers.Clear();
-                }
-                else if (__instance.Is(RoleEnum.Operative))
-                {
-                    var opRole = Role.GetRole<Operative>(__instance);
-                    Object.Destroy(opRole.UsesText);
-                }
-
                 TurnTraitor(__instance);
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)CustomRPC.TurnTraitor,
                     SendOption.Reliable, -1);
+                writer.Write(__instance.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
@@ -88,38 +51,100 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
         public static void TurnTraitor(PlayerControl traitor)
         {
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
-            var random = Random.RandomRangeInt(0, 100);
+            var traitorRole = Role.GetRole(traitor);
 
-            if (random <= 50)
-                traitorObj.Side = Faction.Intruder;
-            else if (random >= 51)
-                 traitorObj.Side = Faction.Syndicate;
+            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected).Count();
+            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected).Count();
 
-            var side = traitorObj.Side;
-
-            foreach (var player2 in PlayerControl.AllPlayerControls)
+            if (IntrudersAlive > 0 && SyndicateAlive > 0)
             {
-                var playerRole = Role.GetRole(player2);
+                var random = Random.RandomRangeInt(0, 100);
 
-                if (player2.Is(side) && traitor != player2)
+                if (IntrudersAlive == SyndicateAlive)
                 {
-                    if (CustomGameOptions.FactionSeeRoles)
-                        player2.nameText().color = playerRole.Color;
-                    else
-                        player2.nameText().color = playerRole.FactionColor;
+                    if (random <= 50)
+                    {
+                        traitorRole.Faction = Faction.Intruder;
+                        traitorRole.Color = Colors.Intruder;
+                        traitorRole.IsIntTraitor = true;
+                        traitorObj.Side = "Intruders";
+                    }
+                    else if (random >= 51)
+                    {
+                        traitorRole.Faction = Faction.Syndicate;
+                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Side = "Syndicate";
+                        traitorRole.IsSynTraitor = true;
+                    }
                 }
+                else if (IntrudersAlive > SyndicateAlive)
+                {
+                    if (random <= 25)
+                    {
+                        traitorRole.Faction = Faction.Intruder;
+                        traitorRole.Color = Colors.Intruder;
+                        traitorRole.IsIntTraitor = true;
+                        traitorObj.Side = "Intruders";
+                    }
+                    else if (random >= 26)
+                    {
+                        traitorRole.Faction = Faction.Syndicate;
+                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Side = "Syndicate";
+                        traitorRole.IsSynTraitor = true;
+                    }
+                }
+                else if (IntrudersAlive < SyndicateAlive)
+                {
+                    if (random <= 75)
+                    {
+                        traitorRole.Faction = Faction.Intruder;
+                        traitorRole.Color = Colors.Intruder;
+                        traitorRole.IsIntTraitor = true;
+                        traitorObj.Side = "Intruders";
+                    }
+                    else if (random >= 76)
+                    {
+                        traitorRole.Faction = Faction.Syndicate;
+                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Side = "Syndicate";
+                        traitorRole.IsSynTraitor = true;
+                    }
+                }
+
+                traitorObj.former = traitorRole;
             }
+            else if (IntrudersAlive > 0 && SyndicateAlive == 0)
+            {
+                traitorRole.Faction = Faction.Intruder;
+                traitorRole.Color = Colors.Intruder;
+                traitorObj.Side = "Intruders";
+                traitorRole.IsIntTraitor = true;
+                traitorObj.former = traitorRole;
+            }
+            else if (SyndicateAlive > 0 && IntrudersAlive == 0)
+            {
+                traitorRole.Faction = Faction.Syndicate;
+                traitorRole.Color = Colors.Syndicate;
+                traitorRole.IsSynTraitor = true;
+                traitorObj.Side = "Syndicate";
+                traitorObj.former = traitorRole;
+            }
+            else
+                return;
+            
+            if (traitorObj.Turned)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
 
             if (CustomGameOptions.TraitorCanAssassin)
             {
+                Ability.AbilityDictionary.Remove(traitor.PlayerId);
+                new Assassin(traitor);
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(traitor.NetId, (byte)CustomRPC.SetAssassin,
                     SendOption.Reliable, -1);
                 writer2.Write(traitor.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
-            
-            if (traitorObj.Turned)
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
 
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
             {

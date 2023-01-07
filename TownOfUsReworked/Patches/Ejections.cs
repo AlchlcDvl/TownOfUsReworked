@@ -21,9 +21,9 @@ namespace TownOfUsReworked.Patches
             var player = exiled.Object;
             var role = Role.GetRole(player);
 
-            var flag = player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Agent) | player.Is(RoleEnum.Arsonist) | player.Is(RoleEnum.Amnesiac) |
-                player.Is(RoleEnum.Engineer) | player.Is(RoleEnum.Escort) | player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Impostor) |
-                player.Is(RoleEnum.Inspector) | player.Is(RoleEnum.Investigator) | player.Is(RoleEnum.Operative) | player.Is(RoleEnum.Undertaker);
+            var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Agent) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) ||
+                player.Is(RoleEnum.Engineer) || player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) ||
+                player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Investigator) || player.Is(RoleEnum.Operative) || player.Is(RoleEnum.Undertaker);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 
@@ -31,13 +31,18 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) &&
-                !x.Is(RoleAlignment.NeutralEvil) && !x.IsRecruit()).Count();
+            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Where(x => (!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) &&
+                !x.Is(RoleAlignment.NeutralEvil)) || x.IsRecruit()).Count();
             var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
-            var totalEvils = $"There are {totalEvilsRemaining} <color=#FF0000FF>evils</color> remaining.";
+            var evils = totalEvilsCount > 1 ? "evils" : "evil";
+            var IsAre = totalEvilsCount > 1 ? "are" : "is";
+            var totalEvils = $"There {IsAre} {totalEvilsRemaining} <color=#FF0000FF>{evils}</color> remaining.";
 
             var ejectString = "";
             PlayerControl target = null;
+
+            role.DeathReason = DeathReasonEnum.Ejected;
+            role.KilledBy = " ";
             
             foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
             {
@@ -83,7 +88,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                 {
-                    if (player.Is(Faction.Crew) | player.Is(Faction.Intruder) | player.Is(Faction.Syndicate))
+                    if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                         ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
                     else
                     {

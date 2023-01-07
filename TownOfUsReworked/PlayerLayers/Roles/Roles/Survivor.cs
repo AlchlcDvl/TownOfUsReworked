@@ -4,6 +4,7 @@ using TMPro;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -15,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int UsesLeft;
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
-        public bool SurvWins { get; set; }
         public bool Vesting => TimeRemaining > 0f;
+        public bool Alive => !Player.Data.Disconnected && !Player.Data.IsDead;
 
         public Survivor(PlayerControl player) : base(player)
         {
@@ -69,15 +70,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var survTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            survTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = survTeam;
-        }
-
-        public override void Wins()
-        {
-            if (!Player.Data.IsDead && !Player.Data.Disconnected)
-                SurvWins = true;
+            var team = new List<PlayerControl>();
+            team.Add(PlayerControl.LocalPlayer);
+            __instance.teamToShow = team;
         }
 
         public override void Loses()

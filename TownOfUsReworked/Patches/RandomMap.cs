@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
                     longTasks = CustomGameOptions.LongTasks;
                 }
 
-                var map = (byte)CustomGameOptions.Map;
+                byte map = PlayerControl.GameOptions.MapId;
 
                 if (CustomGameOptions.RandomMapEnabled)
                 {
@@ -54,6 +54,11 @@ namespace TownOfUsReworked.Patches
                 PlayerControl.GameOptions.VotingTime = CustomGameOptions.VotingTime;
                 PlayerControl.GameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
                 PlayerControl.GameOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                PlayerControl.GameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
+                PlayerControl.GameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+                PlayerControl.GameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
+                PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                //PlayerControl.GameOptions.MaxPlayers = CustomGameOptions.LobbySize;
 
                 unchecked
                 {
@@ -109,7 +114,7 @@ namespace TownOfUsReworked.Patches
                 totalWeight += CustomGameOptions.RandomMapSubmerged;
 
             if (totalWeight == 0)
-                return (byte)CustomGameOptions.Map;
+                return (byte)PlayerControl.GameOptions.MapId;
 
             float randomNumber = _rnd.Next(0, (int)totalWeight);
 
@@ -136,7 +141,7 @@ namespace TownOfUsReworked.Patches
             if (SubmergedCompatibility.Loaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
                 return 5;
 
-            return (byte)CustomGameOptions.Map;
+            return PlayerControl.GameOptions.MapId;
         }
 
         public static void AdjustSettings(byte map)
@@ -159,12 +164,12 @@ namespace TownOfUsReworked.Patches
                 PlayerControl.GameOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
                 AdjustCooldowns(CustomGameOptions.LargeMapIncreasedCooldown);
             }
+
             return;
         }
 
         public static void AdjustCooldowns(float change)
         {
-            Generate.InitialExamineCooldown.Set((float)Generate.InitialExamineCooldown.Value + change, false);
             Generate.InterrogateCooldown.Set((float)Generate.InterrogateCooldown.Value + change, false);
             Generate.TrackCooldown.Set((float)Generate.TrackCooldown.Value + change, false);
             Generate.BugCooldown.Set((float)Generate.BugCooldown.Value + change, false);
@@ -177,10 +182,9 @@ namespace TownOfUsReworked.Patches
             Generate.DouseCooldown.Set((float)Generate.DouseCooldown.Value + change, false);
             Generate.InfectCooldown.Set((float)Generate.InfectCooldown.Value + change, false);
             Generate.PestKillCooldown.Set((float)Generate.PestKillCooldown.Value + change, false);
-            Generate.MimicCooldownOption.Set((float)Generate.MimicCooldownOption.Value + change, false);
-            Generate.HackCooldownOption.Set((float)Generate.HackCooldownOption.Value + change, false);
-            Generate.GlitchKillCooldownOption.Set((float)Generate.GlitchKillCooldownOption.Value + change, false);
-            Generate.JuggKillCooldownOption.Set((float)Generate.JuggKillCooldownOption.Value + change, false);
+            Generate.GlitchCooldown.Set((float)Generate.GlitchCooldown.Value + change, false);
+            Generate.GlitchKillCooldown.Set((float)Generate.GlitchKillCooldown.Value + change, false);
+            Generate.JuggKillCooldown.Set((float)Generate.JuggKillCooldown.Value + change, false);
             Generate.BloodlustCooldown.Set((float)Generate.BloodlustCooldown.Value + change, false);
             Generate.GrenadeCooldown.Set((float)Generate.GrenadeCooldown.Value + change, false);
             Generate.MorphlingCooldown.Set((float)Generate.MorphlingCooldown.Value + change, false);
@@ -193,8 +197,7 @@ namespace TownOfUsReworked.Patches
             Generate.GazeCooldown.Set((float)Generate.GazeCooldown.Value + change, false);
             Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change, false);
             Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change, false);
-            
-            PlayerControl.GameOptions.KillCooldown += change;
+            Generate.IntruderKillCooldown.Set((float)Generate.IntruderKillCooldown.Value + change, false);
 
             if (change % 5 != 0)
             {
@@ -204,7 +207,7 @@ namespace TownOfUsReworked.Patches
                     change += 2.5f;
             }
 
-            PlayerControl.GameOptions.EmergencyCooldown += (int)change;
+            Generate.EmergencyButtonCooldown.Set((float)Generate.EmergencyButtonCooldown.Value + change, false);
             return;
         }
     }

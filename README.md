@@ -6,7 +6,7 @@
 
 An Among Us mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
-Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or want to find people to play with!
+Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
 -----------------------
 
@@ -93,9 +93,10 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 
 [**Syndicate Roles**](#syndicate-roles)
 - [Anarchist](#anarchist)
+- [Bomber](#bomber)
 - [Concealer](#concealer)
+- [Framer](#framer)
 - [Gorgon](#gorgon)
-- [Puppeteer](#puppeteer)
 - [Rebel](#rebel)
 - [Shapeshifter](#shapeshifter)
 - [Sidekick](#sidekick)
@@ -117,6 +118,7 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 [**Abilities**](#abilities)
 - [Assassin](#assassin)
 - [Button Barry](#button-barry)
+- [Insider](#insider)
 - [Lighter](#lighter)
 - [Multitasker](#multitasker)
 - [Radar](#radar)
@@ -128,8 +130,10 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Underdog](#underdog)
 
 [**Objectifiers**](#objectifiers)
+- [Corrupted](#corrupted)
 - [Fanatic](#fanatic)
 - [Lovers](#lovers)
+- [Overlord](#overlord)
 - [Phantom](#phantom)
 - [Rivals](#rivals)
 - [Taskmaster](#taskmaster)
@@ -139,14 +143,12 @@ Join our [Discord](https://discord.gg/KA3e8b2kPT) if you have any problems or wa
 - [Game Mode Settings](#game-mode-settings)
 - [All Any Mode Settings](#all-any-mode-settings)
 - [Killing Only Mode Settings](#killing-only-mode-settings)
-- [Classic And Custom Mode Settings](#classic-and-custom-mode-settings)
 - [Custom Mode Settings](#custom-mode-settings)
 - [Map Settings](#map-settings)
 - [Better Polus Settings](#better-polus-settings)
 - [Game Modifiers](#game-modifiers)
-- [Custom Game Options](#custom-game-options)
+- [QoL Options](#qol-options)
 - [Quality Changes](#quality-changes)
-- [Task Tracking Settings](#task-tracking-settings)
 
 [**Game Info**](#game-info)
 - [Colors](#colors)

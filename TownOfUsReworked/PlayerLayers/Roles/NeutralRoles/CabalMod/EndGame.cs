@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
 {
@@ -16,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
 
             foreach (var role in Role.AllRoles)
             {
-                if (role.RoleType == RoleEnum.Jackal)
-                    ((Jackal)role).Loses();
+                if (role.RoleType == RoleEnum.Jackal || role.IsRecruit)
+                    role.Loses();
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CabalLose,

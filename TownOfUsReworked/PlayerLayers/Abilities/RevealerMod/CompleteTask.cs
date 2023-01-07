@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
             {
                 if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                else if (PlayerControl.LocalPlayer.Data.IsImpostor() | (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
+                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                 {
                     role.Revealed = true;
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
                 if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                else if (PlayerControl.LocalPlayer.Data.IsImpostor() | (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
+                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                     Coroutines.Start(Utils.FlashCoroutine(Color.white));
             }

@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -21,34 +20,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Camouflager(PlayerControl player) : base(player)
         {
             Name = "Camouflager";
-            StartText = "Disrupt Everyone's Vision To Hinder The <color=#8BFDFDFF>Crew</color>";
+            StartText = "Hinder The <color=#8BFDFDFF>Crew</color>'s Recognition";
             AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.";
             AttributesText = "- When camouflaged, everyone will appear grey with no name or cosmetics.\n- If the Colorblind Meeting options is on, this effect " +
-                "carries over into the meeting if a meeting is called during a camouflage.";
-            Color = CustomGameOptions.CustomImpColors ? Colors.Camouflager : Colors.Intruder;
+                "\ncarries over into the meeting if a meeting is called during a camouflage.";
+            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder);
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Concealing)";
-            IntroText = "Kill those who opposes you";
-            CoronerDeadReport = "There is a strange device on the body that seems to be making the body appear grey. They must be a Camouflager!";
-            CoronerKillerReport = "The body's appearance cannot be distinguised properly. They were killed by a Camouflager!";
+            IntroText = IntruderIntro;
             Results = InspResults.DisgMorphCamoAgent;
-            Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
-                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
-            IntroSound = null;
-            AlignmentDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
-                " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
-            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
-                " to ensure your victory over others.";
+            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            AlignmentDescription = ICDescription;
+            FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Camouflager! You can choose to disrupt everyone's vision, causing them to be unable to recognise others. Use this to your " +
                 "advantage and kill while unsuspected in front of everyone!";
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -92,19 +83,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var intTeam = new List<PlayerControl>();
+            var team = new List<PlayerControl>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (!IsRecruit)
             {
-                if (player.Is(Faction.Intruder))
-                    intTeam.Add(player);
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                        team.Add(player);
+                }
             }
-            __instance.teamToShow = intTeam;
+            else
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public override void Wins()
         {
-            IntruderWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                IntruderWin = true;
         }
 
         public override void Loses()
@@ -114,10 +121,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.IntrudersWin())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);

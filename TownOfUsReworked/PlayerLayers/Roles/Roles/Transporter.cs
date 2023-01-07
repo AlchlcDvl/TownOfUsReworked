@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Transporter";
             StartText = "Choose Two Players To Swap Locations";
             AbilitiesText = "Choose two players to swap locations";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
+            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew)));
             LastTransported = DateTime.UtcNow;
             RoleType = RoleEnum.Transporter;
             Faction = Faction.Crew;
@@ -52,11 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Support)";
             IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.TransWarpTeleTask;
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
             AddToRoleHistory(RoleType);
         }
 
@@ -106,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                 foreach (var rend in TransportList.Content.GetComponentsInChildren<SpriteRenderer>())
                 {
-                    if (rend.name == "SendButton" | rend.name == "QuickChatButton")
+                    if (rend.name == "SendButton" || rend.name == "QuickChatButton")
                     {
                         rend.enabled = false;
                         rend.gameObject.SetActive(false);
@@ -128,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     {
                         foreach (var player in PlayerControl.AllPlayerControls)
                         {
-                            if (player != null && player.Data != null && ((!player.Data.Disconnected && !player.Data.IsDead) |
+                            if (player != null && player.Data != null && ((!player.Data.Disconnected && !player.Data.IsDead) ||
                                 Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == player.PlayerId)))
                             {
                                 TransportList.AddChat(TempPlayer, "Click here");
@@ -151,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (!TransportList.IsOpen | MeetingHud.Instance | Input.GetKeyInt(KeyCode.Escape) | PlayerControl.LocalPlayer.Data.IsDead)
+                if (!TransportList.IsOpen || MeetingHud.Instance || Input.GetKeyInt(KeyCode.Escape) || PlayerControl.LocalPlayer.Data.IsDead)
                 {
                     TransportList.Toggle();
                     TransportList.SetVisible(false);
@@ -199,13 +194,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                                                     if (!UntransportablePlayers.ContainsKey(TransportPlayer1.PlayerId) && !UntransportablePlayers.ContainsKey(TransportPlayer2.PlayerId))
                                                     {
-                                                        if (Player.IsInfected() | TransportPlayer1.IsInfected())
+                                                        if (Player.IsInfected() || TransportPlayer1.IsInfected())
                                                         {
                                                             foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                                                                 ((Plaguebearer)pb).RpcSpreadInfection(Player, TransportPlayer1);
                                                         }
 
-                                                        if (Player.IsInfected() | TransportPlayer2.IsInfected())
+                                                        if (Player.IsInfected() || TransportPlayer2.IsInfected())
                                                         {
                                                             foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                                                                 ((Plaguebearer)pb).RpcSpreadInfection(Player, TransportPlayer2);
@@ -214,7 +209,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                         var role = GetRole(Player);
                                                         var transRole = (Transporter)role;
 
-                                                        if (TransportPlayer1.Is(RoleEnum.Pestilence) | TransportPlayer1.IsOnAlert())
+                                                        if (TransportPlayer1.Is(RoleEnum.Pestilence) || TransportPlayer1.IsOnAlert())
                                                         {
                                                             if (Player.IsShielded())
                                                             {
@@ -252,7 +247,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                             transRole.LastTransported = DateTime.UtcNow;
                                                             return;
                                                         }
-                                                        else if (TransportPlayer2.Is(RoleEnum.Pestilence) | TransportPlayer2.IsOnAlert())
+                                                        else if (TransportPlayer2.Is(RoleEnum.Pestilence) || TransportPlayer2.IsOnAlert())
                                                         {
                                                             if (Player.IsShielded())
                                                             {
@@ -340,7 +335,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public static IEnumerator TransportPlayers(byte player1, byte player2, bool die)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter) | PlayerControl.LocalPlayer == Utils.PlayerById(player1) | PlayerControl.LocalPlayer
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter) || PlayerControl.LocalPlayer == Utils.PlayerById(player1) || PlayerControl.LocalPlayer
                 == Utils.PlayerById(player2))
             {
                 try
@@ -376,9 +371,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (TP1.inVent && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
             {
                 while (SubmergedCompatibility.getInTransition())
-                {
                     yield return null;
-                }
 
                 TP1.MyPhysics.ExitAllVents();
             }
@@ -386,9 +379,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (TP2.inVent && PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
             {
                 while (SubmergedCompatibility.getInTransition())
-                {
                     yield return null;
-                }
 
                 TP2.MyPhysics.ExitAllVents();
             }
@@ -468,7 +459,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Player2Body.transform.position = TempPosition;
             }
 
-            if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId | PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
+            if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId || PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
             {
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Transporter));
 
@@ -495,13 +486,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
             team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.EvilRecruit);
+            }
+
             __instance.teamToShow = team;
         }
 
         public override void Wins()
         {
-            CrewWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntTraitor)
+                IntruderWin = true;
+            else if (IsSynTraitor)
+                SyndicateWin = true;
+            else
+                CrewWin = true;
         }
 
         public override void Loses()
@@ -511,10 +519,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.CrewWins())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsIntTraitor)
+            {
+                if (Utils.IntrudersWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsSynTraitor)
+            {
+                if (Utils.SyndicateWins())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.CrewWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
                     SendOption.Reliable, -1);

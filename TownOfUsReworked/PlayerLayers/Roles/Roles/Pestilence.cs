@@ -1,10 +1,10 @@
 using Hazel;
 using System;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -30,19 +30,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Obliterate those who oppose you";
             Results = InspResults.GFMayorRebelPest;
             Attack = AttackEnum.Powerful;
-            Defense = DefenseEnum.None;
             AttackString = "Powerful";
-            DefenseString = "None";
-            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.NKWins(RoleType))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PestilenceWin,
                     SendOption.Reliable, -1);
@@ -58,7 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            PestilenceWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                PestilenceWins = true;
         }
 
         public override void Loses()
@@ -77,6 +90,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        {
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
     }
 }

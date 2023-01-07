@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using Il2CppSystem.Collections.Generic;
 using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Serial Killer";
             StartText = "You Like To Play With Knives";
-            AbilitiesText = "Engage in your bloodlust to kill everyone\nFake Tasks:";
+            AbilitiesText = "Engage in your bloodlust to kill everyone";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
             LastLusted = DateTime.UtcNow;
             LastKilled = DateTime.UtcNow;
@@ -36,10 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroText = "Stab those who oppose you";
             Results = InspResults.ShiftSwapSKDrac;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
-            IntroSound = null;
             AddToRoleHistory(RoleType);
         }
 
@@ -56,10 +53,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.NKWins(RoleType))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SerialKillerWin,
                     SendOption.Reliable, -1);
@@ -73,10 +83,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-
         public override void Wins()
         {
-            SerialKillerWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                SerialKillerWins = true;
         }
 
         public override void Loses()
@@ -86,9 +98,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var skTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            skTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = skTeam;
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.EvilRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public bool Lusted => TimeRemaining > 0f;

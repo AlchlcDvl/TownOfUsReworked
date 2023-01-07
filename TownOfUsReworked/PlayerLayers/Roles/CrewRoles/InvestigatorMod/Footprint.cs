@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
         public static float Duration => CustomGameOptions.FootprintDuration;
 
-        public static bool Grey => CustomGameOptions.AnonymousFootPrint | CamouflageUnCamouflage.IsCamoed;
+        public static bool Grey => CustomGameOptions.AnonymousFootPrint || CamouflageUnCamouflage.IsCamoed;
 
         public static void DestroyAll(Investigator role)
         {
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             var currentTime = Time.time;
             var alpha = Mathf.Max(1f - (currentTime - _time) / Duration, 0f);
 
-            if (alpha < 0 | alpha > 1)
+            if (alpha < 0 || alpha > 1)
                 alpha = 0;
             
             if (RainbowUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) & !Grey)

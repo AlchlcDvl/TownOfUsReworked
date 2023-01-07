@@ -15,9 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             Name = "Insider";
             TaskText = TasksDone
                     ? "Learn votes of others!"
-                    : "";
+                    : "Do your tasks to be able to see the votes of others!";
             Color = Colors.Insider;
             AbilityType = AbilityEnum.Insider;
+            AddToAbilityHistory(AbilityType);
         }
     }
 }

@@ -29,14 +29,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
                     if (CustomGameOptions.RevealerRevealsRoles)
                     {
-                        if (player.Is(Faction.Intruder))
+                        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                         {
                             if (!player.Is(ObjectifierEnum.Traitor))
-                                state.NameText.color = role.Color;
+                                state.NameText.color = role.FactionColor;
                             else if (player.Is(ObjectifierEnum.Traitor))
                             {
                                 if (CustomGameOptions.RevealerRevealsTraitor)
-                                    state.NameText.color = role.Color;
+                                    state.NameText.color = role.FactionColor;
                                 else
                                 {
                                     foreach (var role2 in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
@@ -60,9 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                     {
                         if (player.Is(Faction.Intruder)) 
                         {
-                            if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor)
-                                state.NameText.color = role.FactionColor;
-                            else if (!player.Is(ObjectifierEnum.Traitor))
+                            if ((player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) || !player.Is(ObjectifierEnum.Traitor))
                                 state.NameText.color = role.FactionColor;
                         }
                         else if (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals)
@@ -81,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
             var ability = Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer);
 
-            if (!ability.CompletedTasks | ability.Caught)
+            if (!ability.CompletedTasks || ability.Caught)
                 return;
 
             if (MeetingHud.Instance)

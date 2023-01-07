@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
 
         private static MurderEnum GetKiller(GameData.PlayerInfo killer, GameData.PlayerInfo victim)
         {
-            if (victim.Object.Is(RoleEnum.Shifter) | (killer.Object.Is(RoleEnum.Shifter)))
+            if (victim.Object.Is(RoleEnum.Shifter) || (killer.Object.Is(RoleEnum.Shifter)))
                 return MurderEnum.Shifter;
 
             if (killer.Object.Is(RoleEnum.Vigilante))

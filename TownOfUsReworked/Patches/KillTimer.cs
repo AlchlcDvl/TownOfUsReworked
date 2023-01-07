@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,10 +11,10 @@ namespace TownOfUsReworked.Patches
         {
             if (__instance.Data.Role.CanUseKillButton)
             {
-                if (PlayerControl.GameOptions.KillCooldown <= 0f)
+                if (CustomGameOptions.IntKillCooldown <= 0f)
                     return false;
 
-                var maxvalue = time > PlayerControl.GameOptions.KillCooldown ? time + 1f : PlayerControl.GameOptions.KillCooldown;
+                var maxvalue = time > CustomGameOptions.IntKillCooldown ? time + 1f : CustomGameOptions.IntKillCooldown;
                 __instance.killTimer = Mathf.Clamp(time, 0, maxvalue);
                 DestroyableSingleton<HudManager>.Instance.KillButton.SetCoolDown(__instance.killTimer, maxvalue);
             }

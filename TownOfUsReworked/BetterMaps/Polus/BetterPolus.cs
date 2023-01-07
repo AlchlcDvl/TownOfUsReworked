@@ -3,19 +3,18 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.BetterMaps.Polus
 {
     [HarmonyPatch(typeof(ShipStatus))]
-    public static class ShipStatusPatch
+    public static class PolusShipStatusPatch
     {
         public static readonly Vector3 DvdScreenNewPos = new Vector3(26.635f, -15.92f, 1f);
         public static readonly Vector3 VitalsNewPos = new Vector3(31.275f, -6.45f, 1f);
-
         public static readonly Vector3 WifiNewPos = new Vector3(15.975f, 0.084f, 1f);
         public static readonly Vector3 NavNewPos = new Vector3(11.07f, -15.298f, -0.015f);
-
         public static readonly Vector3 TempColdNewPos = new Vector3(25.4f, -6.4f, 1f);
         public static readonly Vector3 TempColdNewPosDV = new Vector3(7.772f, -17.103f, -0.017f);
+        public static readonly Vector3 SpeciVentPos = new Vector3(36.5f, -22f, 0f);
 
         public const float DvdScreenNewScale = 0.75f;
 
@@ -35,6 +34,9 @@ namespace TownOfUsReworked.Patches
         public static Vent ScienceBuildingVent;
         public static Vent StorageVent;
         public static Vent LightCageVent;
+        public static Vent AdminVent;
+        public static Vent SpeciVent;
+        public static Vent BathroomVent;
 
         public static Console TempCold;
 
@@ -72,7 +74,7 @@ namespace TownOfUsReworked.Patches
             [HarmonyPatch]
             public static void Prefix(ShipStatus __instance)
             {
-                if (!IsObjectsFetched | !IsAdjustmentsDone)
+                if (!IsObjectsFetched || !IsAdjustmentsDone)
                     ApplyChanges(__instance);
             }
         }
@@ -110,8 +112,11 @@ namespace TownOfUsReworked.Patches
                     SwitchNavWifi();
             }
 
-            if (CustomGameOptions.VentImprovements)
+            if (IsVentsFetched && CustomGameOptions.PolusVentImprovements)
+            {
+                AddSpeciVent();
                 AdjustVents();
+            }
 
             IsAdjustmentsDone = true;
         }
@@ -134,6 +139,15 @@ namespace TownOfUsReworked.Patches
 
             if (LightCageVent == null)
                 LightCageVent = ventsList.Find(vent => vent.gameObject.name == "ElecFenceVent");
+
+            if (AdminVent == null)
+                AdminVent = ventsList.Find(vent => vent.gameObject.name == "AdminVent");
+
+            if (BathroomVent == null)
+                BathroomVent = ventsList.Find(vent => vent.gameObject.name == "BathroomVent");
+            
+            if (SpeciVent == null)
+                SpeciVent = Object.Instantiate(AdminVent, AdminVent.transform);
 
             IsVentsFetched = ElectricBuildingVent != null && ElectricalVent != null && ScienceBuildingVent != null && StorageVent != null &&
                 LightCageVent != null;
@@ -191,7 +205,16 @@ namespace TownOfUsReworked.Patches
                 LightCageVent.Center = ElectricBuildingVent;
                 ScienceBuildingVent.Left = StorageVent;
                 StorageVent.Center = ScienceBuildingVent;
+                AdminVent.Right = SpeciVent;
+                SpeciVent.Left = AdminVent;
+                SpeciVent.Center = BathroomVent;
             }
+        }
+
+        public static void AddSpeciVent()
+        {
+            if (SpeciVent.transform.position != SpeciVentPos)
+                SpeciVent.transform.position = SpeciVentPos;
         }
 
         public static void MoveTempCold()

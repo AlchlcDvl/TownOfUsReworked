@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
@@ -51,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             if (PlayerControl.LocalPlayer.Data.IsDead && !isDead)
             {
                 isDead = true;
-                deadTime = TempData.LastDeathReason == DeathReason.Exile | PlayerControl.LocalPlayer.Is(RoleEnum.Altruist) ? 0 : Time.time;
+                deadTime = TempData.LastDeathReason == DeathReason.Exile || PlayerControl.LocalPlayer.Is(RoleEnum.Altruist) ? 0 : Time.time;
             }
             else if (!PlayerControl.LocalPlayer.Data.IsDead && isDead)
             {

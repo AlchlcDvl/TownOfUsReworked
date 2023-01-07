@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             foreach (var imp in imps)
             {
-                if ((imp.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage | imp.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) &&
+                if ((imp.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage || imp.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) &&
                     imp.nameText().color == role.Color)
                     imp.nameText().color = Color.clear;
                 else if (imp.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && imp.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && 

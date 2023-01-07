@@ -49,8 +49,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             button.graphic.sprite = ConvertSprite;
 
             button.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
+            button.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
+            Utils.SetTarget(ref role.ClosestPlayer, button, float.NaN, notVamp);
             
-            if (!button.isCoolingDown)
+            if (role.ClosestPlayer != null)
             {
                 button.graphic.color = Palette.EnabledColor;
                 button.graphic.material.SetFloat("_Desat", 0f);
@@ -60,9 +62,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 button.graphic.color = Palette.DisabledClear;
                 button.graphic.material.SetFloat("_Desat", 1f);
             }
-
-            button.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
-            Utils.SetTarget(ref role.ClosestPlayer, button, float.NaN, notVamp);
         }
     }
 }

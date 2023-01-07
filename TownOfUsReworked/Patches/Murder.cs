@@ -2,8 +2,15 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
+namespace TownOfUsReworked.Patches
 {
+    public class DeadPlayer
+    {
+        public byte KillerId { get; set; }
+        public byte PlayerId { get; set; }
+        public DateTime KillTime { get; set; }
+    }
+    
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
     public class Murder
     {

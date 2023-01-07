@@ -59,13 +59,33 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
+        public static void SendMessage(string text, byte sendTo = byte.MaxValue)
+        {
+            if (!AmongUsClient.Instance.AmHost)
+                return;
+
+            TownOfUsReworked.MessagesToSend.Add((text, sendTo));
+        }
+
+        public static InnerNet.ClientData GetClient(this PlayerControl player)
+        {
+            var client = AmongUsClient.Instance.allClients.ToArray().Where(cd => cd.Character.PlayerId == player.PlayerId).FirstOrDefault();
+            return client;
+        }
+        
+        public static int GetClientId(this PlayerControl player)
+        {
+            var client = player.GetClient();
+            return client == null ? -1 : client.Id;
+        }
+
         public static void Conceal()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player != PlayerControl.LocalPlayer)
                 {
-                    var color = new Color32 (0, 0, 0, 0);
+                    var color = Colors.Clear;
                     var playerName = " ";
 
                     if (player.Is(Faction.Syndicate) || player.Data.IsDead)
@@ -165,8 +185,7 @@ namespace TownOfUsReworked.Extensions
                         player.GetAppearance().SizeFactor.Set(1f, 1f, 1f);
 
                     if (CustomGameOptions.CamoHideSpeed)
-                        player.MyPhysics.body.velocity.Set(PlayerControl.GameOptions.PlayerSpeedMod,
-                            PlayerControl.GameOptions.PlayerSpeedMod);
+                        player.MyPhysics.body.velocity.Set(CustomGameOptions.PlayerSpeed, CustomGameOptions.PlayerSpeed);
                 }
             }
         }
@@ -174,7 +193,10 @@ namespace TownOfUsReworked.Extensions
         public static void DefaultOutfitAll()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
-                DefaultOutfit(player);
+            {
+                if (player != null)
+                    DefaultOutfit(player);
+            }
         }
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
@@ -265,14 +287,6 @@ namespace TownOfUsReworked.Extensions
 
             return impostors;
         }
-        
-        public static AttackEnum GetAttack(PlayerControl player)
-        {
-            var role = Role.GetRole(player);
-            var attack = role.Attack;
-
-            return attack;
-        }
 
         public static bool IsRecruit(this PlayerControl player)
         {
@@ -289,31 +303,129 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsBase(this PlayerControl player)
         {
+            if (player == null)
+                return false;
+                
             var role = Role.GetRole(player);
+
+            if (role == null)
+                return true;
+
             return role.Base;
+        }
+
+        public static bool IsGATarget(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+            
+            bool flag = false;
+                
+            foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+            {
+                if (ga.TargetPlayer == null)
+                    continue;
+
+                if (player.PlayerId == ga.TargetPlayer.PlayerId)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+        public static bool IsExeTarget(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+            
+            bool flag = false;
+                
+            foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+            {
+                if (exe.TargetPlayer == null)
+                    continue;
+
+                if (player.PlayerId == exe.TargetPlayer.PlayerId)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
+        public static bool CanDoTasks(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+            
+            var crewflag = player.Is(Faction.Crew);
+            var neutralflag = player.Is(Faction.Neutral);
+
+            var loverflag = player.Is(ObjectifierEnum.Lovers);
+            var rivalflag = player.Is(ObjectifierEnum.Rivals);
+            var phantomflag = player.Is(ObjectifierEnum.Phantom);
+            var taskmasterflag = player.Is(ObjectifierEnum.Taskmaster);
+            var recruitflag = player.IsRecruit();
+
+            var isdead = player.Data.IsDead;
+
+            var flag1 = crewflag && !(loverflag || rivalflag);
+            var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
+            var flag = flag1 || flag2 || !recruitflag;
+
+            if (flag)
+                return true;
+            else
+                return false;
         }
 
         public static Jackal GetJackal(this PlayerControl player)
         {
+            if (player == null)
+                return null;
+                
             return Role.GetRoles(RoleEnum.Jackal).FirstOrDefault(role =>
             {
                 var goodRecruit = ((Jackal)role).GoodRecruit;
                 var evilRecruit = ((Jackal)role).EvilRecruit;
                 var backupRecruit = ((Jackal)role).BackupRecruit;
 
-                var goodFlag = goodRecruit != null && player == goodRecruit;
-                var evilFlag = evilRecruit != null && player == evilRecruit;
-                var backupFlag = backupRecruit != null && player == backupRecruit;
-                return goodFlag | evilFlag | backupFlag;
+                var goodFlag = goodRecruit != null && player.PlayerId == goodRecruit.PlayerId;
+                var evilFlag = evilRecruit != null && player.PlayerId == evilRecruit.PlayerId;
+                var backupFlag = backupRecruit != null && player.PlayerId == backupRecruit.PlayerId;
+                return goodFlag || evilFlag || backupFlag;
             }) as Jackal;
         }
         
         public static DefenseEnum GetDefense(PlayerControl player)
         {
+            if (player == null)
+                return DefenseEnum.None;
+            
             var role = Role.GetRole(player);
-            var defense = role.Defense;
 
-            return defense;
+            if (role == null)
+                return DefenseEnum.None;
+
+            return role.Defense;
+        }
+        
+        public static AttackEnum GetAttack(PlayerControl player)
+        {
+            if (player == null)
+                return AttackEnum.None;
+                
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return AttackEnum.None;
+
+            return role.Attack;
         }
 
         public static bool IsStronger(PlayerControl attacker, PlayerControl target)
@@ -330,10 +442,7 @@ namespace TownOfUsReworked.Extensions
 
         public static RoleEnum GetRole(PlayerControl player)
         {
-            if (player == null)
-                return RoleEnum.None;
-
-            if (player.Data == null)
+            if (player == null || player.Data == null)
                 return RoleEnum.None;
 
             var role = Role.GetRole(player);
@@ -346,10 +455,7 @@ namespace TownOfUsReworked.Extensions
 
         public static AbilityEnum GetAbility(PlayerControl player)
         {
-            if (player == null)
-                return AbilityEnum.None;
-
-            if (player.Data == null)
+            if (player == null || player.Data == null)
                 return AbilityEnum.None;
 
             var ability = Ability.GetAbility(player);
@@ -362,10 +468,7 @@ namespace TownOfUsReworked.Extensions
 
         public static ObjectifierEnum GetObjectifier(PlayerControl player)
         {
-            if (player == null)
-                return ObjectifierEnum.None;
-
-            if (player.Data == null)
+            if (player == null || player.Data == null)
                 return ObjectifierEnum.None;
 
             var objectifier = Objectifier.GetObjectifier(player);
@@ -378,10 +481,7 @@ namespace TownOfUsReworked.Extensions
 
         public static ModifierEnum GetModifier(PlayerControl player)
         {
-            if (player == null)
-                return ModifierEnum.None;
-
-            if (player.Data == null)
+            if (player == null || player.Data == null)
                 return ModifierEnum.None;
 
             var modifier = Modifier.GetModifier(player);
@@ -456,95 +556,147 @@ namespace TownOfUsReworked.Extensions
             {
                 var plaguebearer = (Plaguebearer)role;
 
-                return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) | player == plaguebearer.Player);
+                return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) || player == plaguebearer.Player);
             });
+        }
+
+        public static bool IsTurnedTraitor(this PlayerControl player)
+        {
+            return player.IsIntTraitor() || player.IsSynTraitor();
+        }
+
+        public static bool IsIntTraitor(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+
+            if (!player.Is(ObjectifierEnum.Traitor))
+                return false;
+            
+            var traitor = Role.GetRole(player);
+
+            return traitor.IsIntTraitor;
+        }
+
+        public static bool IsSynTraitor(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+
+            if (!player.Is(ObjectifierEnum.Traitor))
+                return false;
+            
+            var traitor = Role.GetRole(player);
+
+            return traitor.IsSynTraitor;
         }
 
         public static bool CrewWins()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
-                x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralKill) | x.Is(RoleAlignment.NeutralNeo) | x.Is(Faction.Syndicate) |
-                x.Is(RoleAlignment.NeutralPros))) == 0) | TasksDone();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() ||
+                x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
+                x.Is(RoleAlignment.NeutralPros) || x.IsTurnedTraitor())) == 0) || TasksDone();
 
             return flag;
         }
 
         public static bool IntrudersWin()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
-                x.Is(Faction.Crew) | x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Syndicate) | x.Is(RoleAlignment.NeutralNeo) |
-                x.Is(RoleAlignment.NeutralPros))) == 0) | Sabotaged();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() ||
+                x.Is(Faction.Crew) || x.Is(RoleAlignment.NeutralKill) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralNeo) ||
+                x.Is(RoleAlignment.NeutralPros))) == 0) || Sabotaged();
 
             return flag;
         }
 
         public static bool NKWins(RoleEnum nk)
         {
-            var flag = false;
-
-            if (nk == RoleEnum.Plaguebearer | nk == RoleEnum.Pestilence)
-            {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() |
-                    x.Is(Faction.Intruder) | (x.Is(RoleAlignment.NeutralKill) && (!x.Is(RoleEnum.Pestilence) | !x.Is(RoleEnum.Plaguebearer))) |
-                    x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew))) == 0;
-            }
-            else
-            {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() | 
-                    x.Is(Faction.Intruder) | (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) | x.Is(RoleAlignment.NeutralNeo) |
-                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew) | x.Is(Faction.Syndicate))) == 0;
-            }
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
+                (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
+                x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew))) == 0;
 
             return flag;
         }
 
         public static bool SyndicateWins()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.IsRecruit() |
-                x.Is(RoleAlignment.NeutralPros))) == 0) | (CustomGameOptions.AltImps && Sabotaged());
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || 
+                x.Is(RoleAlignment.NeutralKill) || x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Crew) ||
+                x.Is(RoleAlignment.NeutralPros))) == 0) || (CustomGameOptions.AltImps && Sabotaged());
 
             return flag;
         }
 
-        public static bool SubfactionWins(SubFaction sf)
+        public static bool UndeadWin()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
+                x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) || x.Is(Faction.Syndicate) ||
+                x.Is(Faction.Crew) || x.IsRecruit() || (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) || x.Is(RoleEnum.Vampire))))) == 0;
+
+            return flag;
+        }
+
+        public static bool CabalWin()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
+                x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) || x.Is(Faction.Syndicate) ||
+                x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
+
+            return flag;
+        }
+
+        public static bool IsWinner(this string playerName)
         {
             var flag = false;
+            var winners = TempData.winners;
 
-            if (sf == SubFaction.Undead)
+            foreach (var win in winners)
             {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
-                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
-                    x.Is(Faction.Crew) | x.IsRecruit() | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
-            }
-            else if (sf == SubFaction.Cabal)
-            {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
-                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
-                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
+                if (win.PlayerName == playerName)
+                {
+                    flag = true;
+                    break;
+                }
             }
 
             return flag;
         }
 
-        public static bool ObjectifierWins(SubFaction sf)
+        public static string DeathReason(this PlayerControl player)
         {
-            var flag = false;
+            if (player == null)
+                return "";
+            
+            var role = Role.GetRole(player);
 
-            if (sf == SubFaction.Undead)
-            {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
-                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) | x.Is(Faction.Syndicate) |
-                    x.Is(Faction.Crew) | x.IsRecruit() | (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) | x.Is(RoleEnum.Vampire))))) == 0;
-            }
-            else if (sf == SubFaction.Cabal)
-            {
-                flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
-                    x.Is(RoleAlignment.NeutralKill) | (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) | x.Is(Faction.Syndicate) |
-                    x.Is(RoleAlignment.NeutralPros) | x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
-            }
+            if (role == null)
+                return " ERROR";
 
-            return flag;
+            var die = "";
+            var killedBy = "";
+            var result = "";
+
+            if (role.DeathReason == DeathReasonEnum.Killed)
+                die = "Killed";
+            else if (role.DeathReason == DeathReasonEnum.Ejected)
+                die = "Ejected";
+            else if (role.DeathReason == DeathReasonEnum.Disconnected)
+                die = "Disconnected";
+            else if (role.DeathReason == DeathReasonEnum.Guessed)
+                die = "Guessed";
+            else if (role.DeathReason == DeathReasonEnum.Alive)
+                die = "Alive";
+            else if (role.DeathReason == DeathReasonEnum.Revived)
+                die = "Revived";
+            else if (role.DeathReason == DeathReasonEnum.Suicide)
+                die = "Suicide";
+            
+            if (role.DeathReason != DeathReasonEnum.Alive && role.DeathReason != DeathReasonEnum.Ejected && role.DeathReason != DeathReasonEnum.Suicide)
+                killedBy = role.KilledBy;
+            
+            result = die + killedBy;
+
+            return result;
         }
 
         public static PlayerControl GetClosestPlayer(PlayerControl refPlayer, List<PlayerControl> AllPlayers)
@@ -555,7 +707,7 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var player in AllPlayers)
             {
-                if (player.Data.IsDead | player.PlayerId == refPlayer.PlayerId | !player.Collider.enabled)
+                if (player.Data.IsDead || player.PlayerId == refPlayer.PlayerId || !player.Collider.enabled)
                     continue;
 
                 var playerPosition = player.GetTruePosition();
@@ -591,14 +743,13 @@ namespace TownOfUsReworked.Extensions
             button.SetTarget(SetClosestPlayer(ref closestPlayer, maxDistance, targets));
         }
 
-        public static PlayerControl SetClosestPlayer(ref PlayerControl closestPlayer, float maxDistance = float.NaN,
-            List<PlayerControl> targets = null)
+        public static PlayerControl SetClosestPlayer(ref PlayerControl closestPlayer, float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance))
                 maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             var player = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
-            var closeEnough = player == null | (GetDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance);
+            var closeEnough = player == null || (GetDistBetweenPlayers(PlayerControl.LocalPlayer, player) < maxDistance);
             return closestPlayer = closeEnough ? player : null;
         }
 
@@ -667,7 +818,7 @@ namespace TownOfUsReworked.Extensions
                     var importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                     importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                    if (!PlayerControl.GameOptions.GhostsDoTasks)
+                    if (!CustomGameOptions.GhostTasksCountToWin)
                     {
                         for (var i = 0; i < target.myTasks.Count; i++)
                         {
@@ -687,6 +838,24 @@ namespace TownOfUsReworked.Extensions
                     }
 
                     target.myTasks.Insert(0, importantTextTask);
+                }
+
+                var targetRole = Role.GetRole(target);
+                var killerRole = Role.GetRole(killer);
+
+                if (killer != target)
+                {
+                    targetRole.KilledBy = " By " + killerRole.PlayerName;
+                    targetRole.DeathReason = DeathReasonEnum.Killed;
+                }
+                else
+                    targetRole.DeathReason = DeathReasonEnum.Suicide;
+
+                if (target.Is(RoleEnum.Troll))
+                {
+                    var troll = (Troll)targetRole;
+                    troll.Wins();
+                    return;
                 }
 
                 if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Gorgon))
@@ -713,16 +882,14 @@ namespace TownOfUsReworked.Extensions
                     sk.Player.SetKillTimer(CustomGameOptions.LustKillCd * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
-
-                if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
                     var glitch = Role.GetRole<Glitch>(killer);
                     glitch.LastKill = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
-
-                if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Juggernaut))
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Juggernaut))
                 {
                     var juggernaut = Role.GetRole<Juggernaut>(killer);
                     juggernaut.LastKill = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * (CustomGameOptions.JuggKillCooldown +
@@ -731,25 +898,22 @@ namespace TownOfUsReworked.Extensions
                         CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
-
-                if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = (CustomGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus) *
+                    var lowerKC = (CustomGameOptions.IntKillCooldown - CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
-                    var normalKC = CustomGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier;
-                    var upperKC = (CustomGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus) *
+                    var normalKC = CustomGameOptions.IntKillCooldown * CustomGameOptions.DiseasedMultiplier;
+                    var upperKC = (CustomGameOptions.IntKillCooldown + CustomGameOptions.UnderdogKillBonus) *
                         CustomGameOptions.DiseasedMultiplier;
                     killer.SetKillTimer(LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
                 }
-
-                if (target.Is(ModifierEnum.Diseased) && killer.Data.IsImpostor())
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(Faction.Intruder))
                 {
-                    killer.SetKillTimer(CustomGameOptions.KillCooldown * CustomGameOptions.DiseasedMultiplier);
+                    killer.SetKillTimer(CustomGameOptions.IntKillCooldown * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
-
-                if (target.Is(ModifierEnum.Bait))
+                else if (target.Is(ModifierEnum.Bait))
                 {
                     BaitReport(killer, target);
                     return;
@@ -757,16 +921,16 @@ namespace TownOfUsReworked.Extensions
 
                 if (killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = CustomGameOptions.KillCooldown - CustomGameOptions.UnderdogKillBonus;
-                    var normalKC = CustomGameOptions.KillCooldown;
-                    var upperKC = CustomGameOptions.KillCooldown + CustomGameOptions.UnderdogKillBonus;
-                    killer.SetKillTimer(Utils.LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
+                    var lowerKC = CustomGameOptions.IntKillCooldown - CustomGameOptions.UnderdogKillBonus;
+                    var normalKC = CustomGameOptions.IntKillCooldown;
+                    var upperKC = CustomGameOptions.IntKillCooldown + CustomGameOptions.UnderdogKillBonus;
+                    killer.SetKillTimer(LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
                     return;
                 }
 
-                if (killer.Data.IsImpostor())
+                if (killer.Is(Faction.Intruder))
                 {
-                    killer.SetKillTimer(CustomGameOptions.KillCooldown);
+                    killer.SetKillTimer(CustomGameOptions.IntKillCooldown);
                     return;
                 }
             }
@@ -903,7 +1067,7 @@ namespace TownOfUsReworked.Extensions
             static void Postfix(MeetingHud __instance)
             {
                 //Deactivate skip Button if skipping on emergency meetings is disabled 
-                if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) |
+                if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
                     (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always))
                     __instance.SkipVoteButton.gameObject.SetActive(false);
             }
@@ -1087,9 +1251,6 @@ namespace TownOfUsReworked.Extensions
             foreach (Gorgon role in Role.GetRoles(RoleEnum.Gorgon))
                 role.LastGazed = DateTime.UtcNow;
 
-            foreach (Puppeteer role in Role.GetRoles(RoleEnum.Puppeteer))
-                role.lastPossess = DateTime.UtcNow;
-
             foreach (Shapeshifter role in Role.GetRoles(RoleEnum.Shapeshifter))
                 role.LastShapeshifted = DateTime.UtcNow;
 
@@ -1113,28 +1274,28 @@ namespace TownOfUsReworked.Extensions
                 maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
                 
             var player = GetClosestPlayer(fromPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
-            var closeEnough = player == null | (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
+            var closeEnough = player == null || (GetDistBetweenPlayers(fromPlayer, player) < maxDistance);
             return closestPlayer = closeEnough ? player : null;
         }
 
         public static bool LastImp()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
         public static bool LastCrew()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
         public static bool LastNeut()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Neutral) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Neutral) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
         public static bool LastSyn()
         {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead | x.Data.Disconnected)) == 1;
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
         public static bool LastNonCrew()
@@ -1146,10 +1307,10 @@ namespace TownOfUsReworked.Extensions
         {
             GameObject[] lockImg = {null, null, null, null};
 
-            if (!(blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort)))
+            if (!(blocker.Is(RoleEnum.Glitch) || blocker.Is(RoleEnum.Escort) || blocker.Is(RoleEnum.Consort)))
                 yield break;
 
-            if (blocker.Is(RoleEnum.Glitch) | blocker.Is(RoleEnum.Escort) | blocker.Is(RoleEnum.Consort))
+            if (blocker.Is(RoleEnum.Glitch) || blocker.Is(RoleEnum.Escort) || blocker.Is(RoleEnum.Consort))
                 yield break;
             
             if (target.Is(RoleEnum.SerialKiller))
@@ -1257,7 +1418,7 @@ namespace TownOfUsReworked.Extensions
 
                 var totalBlocktime = (DateTime.UtcNow - tickDictionary[target.PlayerId]).TotalMilliseconds / 1000;
 
-                if (MeetingHud.Instance | totalBlocktime > CustomGameOptions.HackDuration | target == null | target.Data.IsDead)
+                if (MeetingHud.Instance || totalBlocktime > CustomGameOptions.HackDuration || target == null || target.Data.IsDead)
                 {
                     foreach (var obj in lockImg)
                     {
@@ -1300,7 +1461,7 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (!player.Is(Faction.Crew) | player.Is(ObjectifierEnum.Lovers))
+                if (!player.Is(Faction.Crew) || player.Is(ObjectifierEnum.Lovers))
                     continue;
                 else
                     allCrew.Add(player);
@@ -1314,11 +1475,38 @@ namespace TownOfUsReworked.Extensions
             return allCrew.Count == crewWithNoTasks.Count;
         }
 
+        public static Il2CppSystem.Collections.Generic.List<PlayerControl> FindClosestPlayers(PlayerControl player, float radius)
+        {
+            radius *= 2;
+            Il2CppSystem.Collections.Generic.List<PlayerControl> playerControlList = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+            Vector2 truePosition = player.GetTruePosition();
+            Il2CppSystem.Collections.Generic.List<GameData.PlayerInfo> allPlayers = GameData.Instance.AllPlayers;
+
+            for (int index = 0; index < allPlayers.Count; ++index)
+            {
+                GameData.PlayerInfo playerInfo = allPlayers[index];
+
+                if (!playerInfo.Disconnected)
+                {
+                    Vector2 vector2 = new Vector2(playerInfo.Object.GetTruePosition().x - truePosition.x, playerInfo.Object.GetTruePosition().y -
+                        truePosition.y);
+                    float magnitude = ((Vector2)vector2).magnitude;
+
+                    if (magnitude <= radius)
+                    {
+                        PlayerControl playerControl = playerInfo.Object;
+                        playerControlList.Add(playerControl);
+                    }
+                }
+            }
+
+            return playerControlList;
+        }
+
         public static bool Sabotaged()
         {
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var specials = system.specials.ToArray();
-            var sabActive = specials.Any(s => s.IsActive);
 
             var sabotaged = false;
 
@@ -1330,7 +1518,7 @@ namespace TownOfUsReworked.Extensions
                     var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
-                    if ((reactor2.IsActive && reactor2.Countdown == 0f) | (oxygen2.IsActive && oxygen2.Countdown == 0f))
+                    if ((reactor2.IsActive && reactor2.Countdown <= 0f) || (oxygen2.IsActive && oxygen2.Countdown <= 0f))
                         sabotaged = true;
 
                     break;
@@ -1338,8 +1526,8 @@ namespace TownOfUsReworked.Extensions
                 case 2:
                     var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
-                    if (seismic.IsActive && seismic.Countdown == 0f)
-                            sabotaged = true;
+                    if (seismic.IsActive && seismic.Countdown <= 0f)
+                        sabotaged = true;
 
                     break;
 
@@ -1347,7 +1535,7 @@ namespace TownOfUsReworked.Extensions
                     var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
-                    if ((reactor1.IsActive) | (oxygen1.IsActive))
+                    if ((reactor1.IsActive && reactor1.Countdown <= 0f) || (oxygen1.IsActive && oxygen1.Countdown <= 0f))
                         sabotaged = true;
 
                     break;
@@ -1355,7 +1543,7 @@ namespace TownOfUsReworked.Extensions
                 case 4:
                     var crash = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
 
-                    if (crash.IsActive && crash.Countdown == 0f)
+                    if (crash.IsActive && crash.Countdown <= 0f)
                         sabotaged = true;
 
                     break;
@@ -1363,7 +1551,7 @@ namespace TownOfUsReworked.Extensions
                 case 5:
                     var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
-                    if (reactor5.IsActive && reactor5.Countdown == 0f)
+                    if (reactor5.IsActive && reactor5.Countdown <= 0f)
                         sabotaged = true;
 
                     break;

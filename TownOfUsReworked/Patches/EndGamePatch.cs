@@ -4,10 +4,8 @@ using UnityEngine;
 using System.Text;
 using System.Linq;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -56,16 +54,18 @@ namespace TownOfUsReworked.Patches
                 foreach (var role in Role.RoleHistory.Where(x => x.Key == playerControl.PlayerId))
                 {
                     var role2 = Role.GetRoleValue(role.Value);
+                    totalString = "";
 
                     if (role2 != null)
                     {
                         colorString = "<color=#" + role2.Color.ToHtmlStringRGBA() + ">";
                         roleName = role2.Name;
-                        endString = "</color> > ";
+                        endString = "</color> → ";
 
                         totalString = colorString + roleName + endString;
-                        summary += totalString;
                     }
+
+                    summary += totalString;
                 }
 
                 if (summary.Length != 0)
@@ -100,31 +100,21 @@ namespace TownOfUsReworked.Patches
                 var objectifier = Objectifier.GetObjectifier(playerControl);
 
                 if (objectifier != null)
-                    summary += objectifier.GetColoredSymbol();
+                    summary += $" {objectifier.GetColoredSymbol()}";
 
-                foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
-                {
-                    if (ga.TargetPlayer != null && playerControl.PlayerId == ga.TargetPlayer.PlayerId)
-                        summary += " <color=#FFFFFFFF>★</color>";
-                }
+                if (playerControl.IsGATarget())
+                    summary += " <color=#FFFFFFFF>★</color>";
 
-                foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
-                {
-                    if (exe.TargetPlayer != null && playerControl.PlayerId == exe.TargetPlayer.PlayerId)
-                        summary += " <color=#CCCCCCFF>§</color>";
-                }
+                if (playerControl.IsExeTarget())
+                    summary += " <color=#CCCCCCFF>§</color>";
 
-                foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
-                {
-                    if (jackal.GoodRecruit != null && playerControl.PlayerId == jackal.GoodRecruit.PlayerId)
-                        summary += " <color=#575657FF>$</color>";
-                    else if (jackal.EvilRecruit != null && playerControl.PlayerId == jackal.EvilRecruit.PlayerId)
-                        summary += " <color=#575657FF>$</color>";
-                }
+                if (playerControl.IsRecruit())
+                    summary += " <color=#575657FF>$</color>";
                 
-                if ((playerControl.Is(Faction.Crew) && !playerControl.Is(ObjectifierEnum.Lovers)) | playerControl.Is(ObjectifierEnum.Taskmaster) |
-                    (playerControl.Is(ObjectifierEnum.Phantom) && playerControl.Data.IsDead))
-                    summary += " | " + playerTasksDone + "/" + TotalTasks;
+                if (playerControl.CanDoTasks())
+                    summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
+                
+                summary += " | " + playerControl.DeathReason();
 
                 AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName = playerControl.Data.PlayerName, Role = summary});
             }
@@ -149,13 +139,27 @@ namespace TownOfUsReworked.Patches
             roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
 
             var roleSummaryText = new StringBuilder();
-            roleSummaryText.AppendLine("End game summary:");
+            var winnersText = new StringBuilder();
+            var losersText = new StringBuilder();
+            var winners = TempData.winners;
+
+            roleSummaryText.AppendLine("<size=120%><u><b>End Game Summary</b></u>:</size>");
+            roleSummaryText.AppendLine(" ");
+            winnersText.AppendLine("<size=105%><b>Winners</b></size> -");
+            losersText.AppendLine("<size=105%><b>Losers</b></size> -");
 
             foreach (var data in AdditionalTempData.playerRoles)
             {
                 var role = string.Join(" ", data.Role);
-                roleSummaryText.AppendLine($"{data.PlayerName} - {role}");
+                var dataString = $"<size=95%>{data.PlayerName} - {role}</size>";
+
+                if (data.PlayerName.IsWinner())
+                    winnersText.AppendLine(dataString);
+                else
+                    losersText.AppendLine(dataString);
             }
+
+            winnersText.AppendLine(" ");
             
             TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();
             roleSummaryTextMesh.alignment = TMPro.TextAlignmentOptions.TopLeft;
@@ -166,7 +170,7 @@ namespace TownOfUsReworked.Patches
              
             var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
             roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
-            roleSummaryTextMesh.text = roleSummaryText.ToString();
+            roleSummaryTextMesh.text = roleSummaryText.ToString() + winnersText.ToString() + losersText.ToString();
             AdditionalTempData.clear();
         }
     }

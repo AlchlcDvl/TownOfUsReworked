@@ -18,8 +18,8 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object && (playerInfo._object.Is(Faction.Crew) &&
-                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) | (playerInfo._object.Is(AbilityEnum.Revealer) && playerInfo.IsDead))))
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && (playerInfo._object.Is(Faction.Crew) &&
+                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) || (playerInfo._object.Is(AbilityEnum.Revealer) && playerInfo.IsDead))))
                     {
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.Patches
             {
                 var playerControl = playerInfo.Object;
 
-                var flag = !playerControl.Is(Faction.Crew);
+                var flag = !playerControl.CanDoTasks();
 
                 //If the console is not a sabotage repair console
                 if (flag && !__instance.AllowImpostor)

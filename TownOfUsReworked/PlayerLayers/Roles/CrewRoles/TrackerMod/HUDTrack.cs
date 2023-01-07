@@ -45,19 +45,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            if (isDead)
-                trackButton.gameObject.SetActive(false);
-            else
-            {
-                trackButton.gameObject.SetActive(!MeetingHud.Instance);
-                trackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
+            trackButton.gameObject.SetActive(!MeetingHud.Instance && !isDead);
+            trackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
 
-                if (role.UsesLeft == 0)
-                    return;
+            if (role.UsesLeft == 0)
+                return;
 
-                var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, trackButton, float.NaN, notTracked);
-            }
+            var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, trackButton, float.NaN, notTracked);
 
             var renderer = trackButton.graphic;
             

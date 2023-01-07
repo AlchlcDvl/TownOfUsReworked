@@ -38,7 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
             if (!__instance.enabled)
                 return false;
 
-            System.Console.WriteLine("Reached here!");
             role.ButtonUsed = true;
 
             unchecked

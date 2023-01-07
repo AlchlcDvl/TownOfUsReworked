@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             {
                 var snitch = (Snitch)role;
 
-                if (PlayerControl.LocalPlayer.Data.IsDead | snitch.Player.Data.IsDead)
+                if (PlayerControl.LocalPlayer.Data.IsDead || snitch.Player.Data.IsDead)
                 {
                     snitch.SnitchArrows.Values.DestroyAll();
                     snitch.SnitchArrows.Clear();
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                 {
                     var player = Utils.PlayerById(arrow.Key);
 
-                    if (player == null | player.Data == null | player.Data.IsDead | player.Data.Disconnected)
+                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
                     {
                         snitch.DestroyArrow(arrow.Key);
                         continue;

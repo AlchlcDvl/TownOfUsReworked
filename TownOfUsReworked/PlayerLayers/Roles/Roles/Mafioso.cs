@@ -21,18 +21,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role.";
             AttributesText = "- None.";
-            Color = CustomGameOptions.CustomImpColors ? Colors.Mafioso : Colors.Intruder;
+            Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            IntroText = "Kill those who oppose you";
+            IntroText = "Kill anyone who opposes you";
             Results = InspResults.MineMafiSideDamp;
-            IntroSound = null;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
                 " to ensure your victory over others.";
             Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
@@ -45,7 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            IntruderWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                IntruderWin = true;
         }
 
         public override void Loses()
@@ -55,10 +55,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.IntrudersWin())
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.IntrudersWin())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
                     SendOption.Reliable, -1);
@@ -72,22 +85,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
-        {
-            var intTeam = new List<PlayerControl>();
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction.Intruder))
-                    intTeam.Add(player);
-            }
-            __instance.teamToShow = intTeam;
-        }
-
         public void TurnGodfather()
         {
             var formerRole = Role.GetRole<Mafioso>(Player).FormerRole;
-            RoleDictionary.Remove(Player.PlayerId);
             var role = new Godfather(Player);
             role.WasMafioso = true;
             role.HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote;

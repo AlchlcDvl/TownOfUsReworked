@@ -10,6 +10,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -34,9 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Glitch";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
-            LastHack = DateTime.UtcNow;
-            LastMimic = DateTime.UtcNow;
-            LastKill = DateTime.UtcNow;
             HackTarget = null;
             MimicList = null;
             PressedButton = false;
@@ -50,21 +48,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "DDoS those who oppose you";
-            CoronerDeadReport = "The abnormal condition of the body indicates they are not from this reality. They must be a Glitch!";
-            CoronerKillerReport = "The body has been left in a very abnormal state. They were killed by a Glitch!";
+            IntroText = "DDoS Those Who Oppose You";
             Results = InspResults.EscConsGliPois;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
             IntroSound = TownOfUsReworked.GlitchIntro;
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
-            AlignmentDescription = "You are a Neutral (Killing) role! You side with no one and can only win by yourself. You have a special way to kill " +
-                "and gain a large body count. Make sure no one survives.";
-            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color>, <color=#008000FF>Syndicate</color> and other " +
-                "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>";
+            FactionDescription = NeutralFactionDescription;
+            AlignmentDescription = NKDescription;
+            Objectives = IsRecruit ? JackalWinCon : NKWinCon;
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
             AddToRoleHistory(RoleType);
@@ -72,12 +63,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) |
-                (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Glitch)) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros) |
-                x.Is(Faction.Crew))) == 0)
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.NKWins(RoleType))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GlitchWin,
                     SendOption.Reliable, -1);
@@ -93,7 +95,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            GlitchWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                GlitchWins = true;
         }
 
         public override void Loses()
@@ -103,9 +108,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
-            var glitchTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            glitchTeam.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = glitchTeam;
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
 
         public void FixedUpdate(HudManager __instance)
@@ -124,7 +139,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (!MimicList.IsOpen | MeetingHud.Instance)
+                if (!MimicList.IsOpen || MeetingHud.Instance)
                 {
                     MimicList.Toggle();
                     MimicList.SetVisible(false);
@@ -228,7 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                         return;
                     }
 
-                    if (__gInstance.ClosestPlayer.IsInfected() | __gInstance.Player.IsInfected())
+                    if (__gInstance.ClosestPlayer.IsInfected() || __gInstance.Player.IsInfected())
                     {
                         foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                             ((Plaguebearer)pb).RpcSpreadInfection(__gInstance.ClosestPlayer, __gInstance.Player);
@@ -329,7 +344,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 }
 
                 if (!__gInstance.IsUsingMimic)
-                    __gInstance.GlitchButton.SetCoolDown(__gInstance.MimicTimer(), CustomGameOptions.MimicCooldown);
+                    __gInstance.GlitchButton.SetCoolDown(__gInstance.MimicTimer(), CustomGameOptions.GlitchCooldown);
             }
 
             public static void MimicButtonPress(Glitch __gInstance, KillButton __instance)
@@ -365,7 +380,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                     foreach (var rend in __gInstance.MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
                     {
-                        if (rend.name == "SendButton" | rend.name == "QuickChatButton")
+                        if (rend.name == "SendButton" || rend.name == "QuickChatButton")
                         {
                             rend.enabled = false;
                             rend.gameObject.SetActive(false);
@@ -414,7 +429,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastHack;
-            var num = CustomGameOptions.HackCooldown * 1000f;
+            var num = CustomGameOptions.GlitchCooldown * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -427,7 +442,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMimic;
-            var num = CustomGameOptions.MimicCooldown * 1000f;
+            var num = CustomGameOptions.GlitchCooldown * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

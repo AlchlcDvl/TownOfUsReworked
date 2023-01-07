@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             {
                 var player = Utils.PlayerById(arrow.Key);
 
-                if (player == null | player.Data == null | player.Data.IsDead | player.Data.Disconnected)
+                if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
                 {
                     role.DestroyArrow(arrow.Key);
                     continue;

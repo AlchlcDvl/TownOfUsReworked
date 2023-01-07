@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Hazel;
-using System.Linq;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
@@ -31,25 +30,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleType = RoleEnum.Gorgon;
             Faction = Faction.Syndicate;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
-            CoronerDeadReport = "The body has strange snake hair! They must be a Gorgon!";
-            CoronerKillerReport = "The sculpture is eerily similar to a real person. They were killed by a Gorgon!";
             Results = InspResults.ConcealGorg;
             AttackString = "Basic";
-            DefenseString = "None";
-            IntroSound = null;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
-            FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
-                " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
-                "give you the ability to kill, if you didn't already.";         
-            Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
-                " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
-            IntroText = "Cause chaos and kill your opposition";
+            FactionDescription = SyndicateFactionDescription;         
+            Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
+            IntroText = SyndicateIntro;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
-            AlignmentDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
+            AlignmentDescription = SyKDescription;
             AddToRoleHistory(RoleType);
         }
         
@@ -64,11 +55,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
         
-        public float FreezeTimer()
+        public float GazeTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastGazed;
-            var num = CustomGameOptions.PoisonCd * 1000f;
+            var num = CustomGameOptions.GazeCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -86,10 +77,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 TimeRemaining = 0;
                 
             if (TimeRemaining <= 0)
-                FreezeKill();
+                GazeKill();
         }
 
-        public void FreezeKill()
+        public void GazeKill()
         {
             if (!StonedPlayer.Is(RoleEnum.Pestilence))
             {
@@ -111,7 +102,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            SyndicateWin = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else
+                SyndicateWin = true;
         }
 
         public override void Loses()
@@ -121,11 +115,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (Player.Data.IsDead | Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if ((PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) |
-                x.Is(RoleAlignment.NeutralKill) | x.Is(Faction.Intruder) | x.Is(RoleAlignment.NeutralNeo) | x.Is(RoleAlignment.NeutralPros))) == 0))
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
+                        SendOption.Reliable, -1);
+                    writer.Write(Player.PlayerId);
+                    Wins();
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Utils.SyndicateWins())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
                     SendOption.Reliable, -1);
@@ -137,6 +143,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
 
             return false;
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
+        {
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (!IsRecruit)
+            {
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                        team.Add(player);
+                }
+            }
+            else
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
         }
     }
 }

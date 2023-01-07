@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
-            var active = specials.Any(s => s.IsActive) | camo.Camouflaged | conc.Concealed | ss.Shapeshifted;
+            var active = specials.Any(s => s.IsActive) || camo.Camouflaged || conc.Concealed || ss.Shapeshifted;
             var renderer = __instance.KillButton.graphic;
             
             if (active & !dummyActive & !role.UsedThisRound & __instance.KillButton.enabled)

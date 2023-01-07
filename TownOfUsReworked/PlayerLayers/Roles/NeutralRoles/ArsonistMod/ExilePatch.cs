@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             foreach (var player in alives)
             {
-                if (player.Is(Faction.Intruder) | (player.Is(RoleAlignment.NeutralKill) && !player.Is(RoleEnum.Arsonist)) |
+                if (player.Is(Faction.Intruder) || (player.Is(RoleAlignment.NeutralKill) && !player.Is(RoleEnum.Arsonist)) ||
                     player.Is(Faction.Syndicate))
                     return;
             }

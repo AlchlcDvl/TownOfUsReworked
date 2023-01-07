@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             secondLover = all[num2];
             canHaveObjectifiers.Remove(secondLover);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetCouple,
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetDuo,
                 SendOption.Reliable, -1);
             writer.Write(firstLover.PlayerId);
             writer.Write(secondLover.PlayerId);
@@ -101,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover2 = OtherRival.Player;
             
             return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && alives.Count() == 4 &&
-                (lover1.Is(Faction.Intruder) | lover2.Is(Faction.Intruder));
+                (lover1.Is(Faction.Intruder) || lover2.Is(Faction.Intruder));
         }
 
         private bool CheckLoversWin()
@@ -112,7 +112,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover1 = Player;
             var lover2 = OtherRival.Player;
 
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && (alives.Count == 3) |
+            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && (alives.Count == 3) ||
                 (alives.Count == 2);
         }
 

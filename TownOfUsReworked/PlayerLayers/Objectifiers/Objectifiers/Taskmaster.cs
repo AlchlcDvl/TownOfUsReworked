@@ -2,8 +2,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
-using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
@@ -40,23 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (!WinTasksDone | !Player.Data.IsDead && !Player.Data.Disconnected)
+            if (!WinTasksDone || !Player.Data.IsDead && !Player.Data.Disconnected)
                 return true;
 
             Utils.EndGame();
             return false;
-        }
-
-        public void DestroyArrow(byte targetPlayerId)
-        {
-            var arrow = TMArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-            if (arrow.Value != null)
-                Object.Destroy(arrow.Value);
-            if (arrow.Value.gameObject != null)
-                Object.Destroy(arrow.Value.gameObject);
-
-            TMArrows.Remove(arrow.Key);
         }
     }
 }

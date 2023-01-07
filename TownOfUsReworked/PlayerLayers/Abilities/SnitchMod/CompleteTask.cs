@@ -35,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 
                         if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) | (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
-                            CustomGameOptions.SnitchSeesNeutrals) | PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
+                            CustomGameOptions.SnitchSeesNeutrals) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         {
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                             var gameObj = new GameObject();
@@ -71,8 +71,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                             role.SnitchArrows.Add(imp.PlayerId, arrow);
                         }
                     }
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) | (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
-                            CustomGameOptions.SnitchSeesNeutrals) | PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
+                            CustomGameOptions.SnitchSeesNeutrals) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
 
                     break;

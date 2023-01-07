@@ -4,6 +4,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using Hazel;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
@@ -47,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             }
 
             role.Warp();
-
+            role.LastWarped = DateTime.UtcNow;
             return false;
         }
     }

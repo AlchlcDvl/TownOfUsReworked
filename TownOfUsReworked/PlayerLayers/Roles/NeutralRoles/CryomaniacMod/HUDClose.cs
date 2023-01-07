@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
                 return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Arsonist))
+            foreach (var role in Role.GetRoles(RoleEnum.Cryomaniac))
             {
                 var cryo = (Cryomaniac) role;
                 cryo.LastDoused = DateTime.UtcNow;

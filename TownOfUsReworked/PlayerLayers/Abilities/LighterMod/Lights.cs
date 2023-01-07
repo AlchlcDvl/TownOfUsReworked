@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.LighterMod
 {
@@ -13,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.LighterMod
 
             if (player._object.Is(AbilityEnum.Lighter))
             {
-                __result = __instance.MinLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
+                __result = __instance.MinLightRadius * CustomGameOptions.IntruderVision;
                 return false;
             }
 

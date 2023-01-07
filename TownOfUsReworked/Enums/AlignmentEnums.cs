@@ -34,7 +34,7 @@ namespace TownOfUsReworked.Enums
 
         SyndicateKill,
         SyndicateSupport,
-        SyndicateChaos,
+        SyndicateDisruption,
         SyndicatePower,
         SyndicateUtil,
         

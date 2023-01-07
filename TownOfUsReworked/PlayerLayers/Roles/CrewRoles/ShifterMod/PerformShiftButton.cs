@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Utils.GetDistBetweenPlayers(role.Player, role.ClosestPlayer) > maxDistance)
                 return false;
 
             if (role.ClosestPlayer == null)
@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             var playerId = role.ClosestPlayer.PlayerId;
             var player = PlayerControl.LocalPlayer;
 
-            if ((player.IsInfected() | role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
+            if ((player.IsInfected() || role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
@@ -294,14 +294,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 if (CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter)
                 {
                     resetShifter = true;
-                    shifterRole.Player = other;
-                    Role.RoleDictionary.Add(other.PlayerId, shifterRole);
+                    new Shifter(other);
                 }
                 else
-                {
-                    var crewRole = new Crewmate(other);
-                    Role.RoleDictionary.Add(other.PlayerId, crewRole);
-                }
+                    new Crewmate(other);
 
                 Role.RoleDictionary.Add(shifter.PlayerId, newRole);
             }

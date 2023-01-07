@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected Modifier(PlayerControl player)
         {
             Player = player;
+            ModifierDictionary.Remove(player.PlayerId);
             ModifierDictionary.Add(player.PlayerId, this);
         }
 
@@ -89,7 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             if (a is null && b is null)
                 return true;
 
-            if (a is null | b is null)
+            if (a is null || b is null)
                 return false;
 
             return a.ModifierType == b.ModifierType && a.Player.PlayerId == b.Player.PlayerId;

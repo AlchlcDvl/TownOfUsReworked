@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove | role.ClosestIntruder == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestIntruder == null)
                 return false;
 
             if (!__instance.enabled)

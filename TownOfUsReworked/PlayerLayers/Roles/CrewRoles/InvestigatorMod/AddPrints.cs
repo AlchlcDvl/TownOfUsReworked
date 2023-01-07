@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (!GameStarted | !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator))
+            if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator))
                 return;
             
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player == null | player.Data.IsDead | player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                    if (player == null || player.Data.IsDead || player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                         continue;
 
                     var canPlace = !investigator.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f &&

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod
     {
         public static void Postfix()
         {
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Underdog))
+            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Underdog))
                 return;
 
             var underdog = Ability.GetAbility<Underdog>(PlayerControl.LocalPlayer);

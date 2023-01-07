@@ -153,9 +153,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 
-                if (CustomGameOptions.PuppeteerOn > 0)
-                    ColorMapping.Add("Puppeteer", Colors.Puppeteer);
-
                 if (CustomGameOptions.WarperOn > 0)
                     ColorMapping.Add("Warper", Colors.Warper);
 
@@ -181,9 +178,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             if (CustomGameOptions.GlitchOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
                 ColorMapping.Add("Glitch", Colors.Glitch);
 
-            if (CustomGameOptions.PlaguebearerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
-                ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
-
             if (CustomGameOptions.SerialKillerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
                 ColorMapping.Add("Serial Killer", Colors.SerialKiller);
 
@@ -199,8 +193,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             if (CustomGameOptions.WerewolfOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
                 ColorMapping.Add("Werewolf", Colors.Werewolf);
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest && CustomGameOptions.PlaguebearerOn > 0)
-                ColorMapping.Add("Pestilence", Colors.Pestilence);
+            if (CustomGameOptions.PlaguebearerOn > 0)
+            {
+                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
+                    ColorMapping.Add("Pestilence", Colors.Pestilence);
+                else if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
+                    ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
+            }
             
             if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
             {
@@ -212,17 +211,17 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
             {
                 ColorMapping.Add("Jackal", Colors.Jackal);
-                ColorMapping.Add("Recruit", Colors.Recruit);
+                ColorMapping.Add("Recruit", Colors.Cabal);
             }
 
             //Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
             {
-                if (CustomGameOptions.AmnesiacOn > 0 | (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac) |
+                if (CustomGameOptions.AmnesiacOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac) ||
                     (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac))
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
-                if (CustomGameOptions.SurvivorOn > 0 | (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Survivor) |
+                if (CustomGameOptions.SurvivorOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Survivor) ||
                     (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Survivor))
                         ColorMapping.Add("Survivor", Colors.Survivor);
 
@@ -241,13 +240,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ExecutionerOn > 0)
                     ColorMapping.Add("Executioner", Colors.Executioner);
 
-                /*if (CustomGameOptions.PirateOn > 0)
-                    ColorMapping.Add("Pirate", Colors.Pirate);*/
-
                 if (CustomGameOptions.TrollOn > 0)
                     ColorMapping.Add("Troll", Colors.Troll);
 
-                if (CustomGameOptions.JesterOn > 0 | (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester) |
+                if (CustomGameOptions.JesterOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester) ||
                     (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester))
                     ColorMapping.Add("Jester", Colors.Jester);
             }
@@ -294,6 +290,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
                 if (CustomGameOptions.PhantomOn > 0)
                     ColorMapping.Add("Phantom", Colors.Phantom);
+
+                /*if (CustomGameOptions.OverlordOn > 0)
+                    ColorMapping.Add("Overlord", Colors.Overlord);*/
             }
 
             //Add Abilities if enabled

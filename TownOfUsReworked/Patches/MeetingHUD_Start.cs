@@ -42,7 +42,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(ExileController __instance, [HarmonyArgument(0)] GameData.PlayerInfo exiled, [HarmonyArgument(1)] bool tie)
         {
-            Utils.ShowDeadBodies = PlayerControl.LocalPlayer.Data.IsDead | exiled?.PlayerId == PlayerControl.LocalPlayer.PlayerId;
+            Utils.ShowDeadBodies = PlayerControl.LocalPlayer.Data.IsDead || exiled?.PlayerId == PlayerControl.LocalPlayer.PlayerId;
         }
     }
 }

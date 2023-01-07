@@ -36,13 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                 case 1:
                     if (tasksLeft == CustomGameOptions.TMTasksRemaining)
                     {
-                        role.RegenTask();
-
                         if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                             Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) | PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill))
+                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill))
                         {
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                             var gameObj = new GameObject();
@@ -58,7 +56,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 
                     break;
                 case 0:
-                    role.RegenTask();
                     if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         

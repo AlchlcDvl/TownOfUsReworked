@@ -36,20 +36,40 @@ using PerformKillButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.Amnes
 using PerformDeclareButton = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformKill;
 using PerformSidekickButton = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformKill;
 using PerformShiftButton = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShiftButton;
-using Reveal = TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using PerformConvertButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvertButton;
+using Turn = TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
+using Reveal = TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using Reactor.Networking.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
     public static class RPCHandling
     {
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewAuditorRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewInvestigativeRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewKillingRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewProtectiveRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewSovereignRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> CrewSupportRoles = new List<(Type, CustomRPC, int, bool)>();
         private static readonly List<(Type, CustomRPC, int, bool)> CrewRoles = new List<(Type, CustomRPC, int, bool)>();
-        private static readonly List<(Type, CustomRPC, int, bool)> NeutralNonKillingRoles = new List<(Type, CustomRPC, int, bool)>();
+        
+        private static readonly List<(Type, CustomRPC, int, bool)> NeutralEvilRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> NeutralBenignRoles = new List<(Type, CustomRPC, int, bool)>();
         private static readonly List<(Type, CustomRPC, int, bool)> NeutralKillingRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> NeutralNeophyteRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> NeutralRoles = new List<(Type, CustomRPC, int, bool)>();
+
+        private static readonly List<(Type, CustomRPC, int, bool)> IntruderDeceptionRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> IntruderConcealingRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> IntruderKillingRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> IntruderSupportRoles = new List<(Type, CustomRPC, int, bool)>();
         private static readonly List<(Type, CustomRPC, int, bool)> IntruderRoles = new List<(Type, CustomRPC, int, bool)>();
+
+        private static readonly List<(Type, CustomRPC, int, bool)> SyndicateDisruptionRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> SyndicateKillingRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> SyndicatePowerRoles = new List<(Type, CustomRPC, int, bool)>();
+        private static readonly List<(Type, CustomRPC, int, bool)> SyndicateSupportRoles = new List<(Type, CustomRPC, int, bool)>();
         private static readonly List<(Type, CustomRPC, int, bool)> SyndicateRoles = new List<(Type, CustomRPC, int, bool)>();
-        private static readonly List<(Type, CustomRPC, int, bool)> NeutralChaosRoles = new List<(Type, CustomRPC, int, bool)>();
 
         private static readonly List<(Type, CustomRPC, int)> GlobalModifiers = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> ProfessionalModifiers = new List<(Type, CustomRPC, int)>();
@@ -59,85 +79,153 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, CustomRPC, int)> GlobalAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> IntruderAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> CrewAbilityGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> TunnelerAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> NonEvilAbilityGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> TaskedAbilityGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> SnitchRevealerAbilityGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> NonVentingAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> EvilAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> SyndicateAbilityGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> NeutralAbilityGet = new List<(Type, CustomRPC, int)>();
 
         private static readonly List<(Type, CustomRPC, int)> CrewObjectifierGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> CorruptedObjectifierGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> NeutralObjectifierGet = new List<(Type, CustomRPC, int)>();
+        private static readonly List<(Type, CustomRPC, int)> OverlordObjectifierGet = new List<(Type, CustomRPC, int)>();
         private static readonly List<(Type, CustomRPC, int)> GlobalObjectifierGet = new List<(Type, CustomRPC, int)>();
 
-        private static void SortRoles(List<(Type, CustomRPC, int, bool)> roles, int max, int min)
-        {
-            roles.Shuffle();
+        private static readonly bool IsAA = CustomGameOptions.GameMode == GameMode.AllAny;
+        private static readonly bool IsCustom = CustomGameOptions.GameMode == GameMode.Custom;
+        private static readonly bool IsClassic = CustomGameOptions.GameMode == GameMode.Classic;
+        private static readonly bool IsKilling = CustomGameOptions.GameMode == GameMode.KillingOnly;
 
-            if (roles.Count < max)
-                max = roles.Count;
+        private static void SortThings(List<(Type, CustomRPC, int, bool)> items, int max, int min)
+        {
+            items.Shuffle();
+
+            if (items.Count < max)
+                max = items.Count;
 
             if (min > max)
                 min = max;
 
             var amount = Random.RandomRangeInt(min, max + 1);
-            roles.Sort((a, b) =>
+
+            if (amount < 0)
+                amount = 0;
+
+            items.Sort((a, b) =>
             {
                 var a_ = a.Item3 == 100 ? 0 : 100;
                 var b_ = b.Item3 == 100 ? 0 : 100;
                 return a_.CompareTo(b_);
             });
 
-            var certainRoles = 0;
+            var certainItems = 0;
             var odds = 0;
 
-            foreach (var role in roles)
+            foreach (var role in items)
             {
-                if (role.Item3 == 100) certainRoles += 1;
-                else odds += role.Item3;
+                if (role.Item3 == 100)
+                    certainItems += 1;
+                else
+                    odds += role.Item3;
             }
 
-            while (certainRoles < amount)
+            while (certainItems < amount)
             {
-                var num = certainRoles;
+                var num = certainItems;
                 var random = Random.RandomRangeInt(0, odds);
                 var rolePicked = false;
 
-                while (num < roles.Count && rolePicked == false)
+                while (num < items.Count && rolePicked == false)
                 {
-                    random -= roles[num].Item3;
+                    random -= items[num].Item3;
 
                     if (random < 0)
                     {
-                        odds -= roles[num].Item3;
-                        var role = roles[num];
-                        roles.Remove(role);
-                        roles.Insert(0, role);
-                        certainRoles += 1;
+                        odds -= items[num].Item3;
+                        var role = items[num];
+                        items.Remove(role);
+                        items.Insert(0, role);
+                        certainItems += 1;
                         rolePicked = true;
                     }
+
                     num += 1;
                 }
             }
 
-            while (roles.Count > amount)
-                roles.RemoveAt(roles.Count - 1);
+            while (items.Count > amount)
+                items.RemoveAt(items.Count - 1);
+
+            items.Shuffle();
         }
 
-        private static void SortOthers(List<(Type, CustomRPC, int)> roles, int max)
+        private static void SortThings(List<(Type, CustomRPC, int)> items, int max, int min)
         {
-            roles.Shuffle();
+            items.Shuffle();
 
-            roles.Sort((a, b) =>
+            if (items.Count < max)
+                max = items.Count;
+
+            if (min > max)
+                min = max;
+
+            var amount = Random.RandomRangeInt(min, max + 1);
+
+            if (amount < 0)
+                amount = 0;
+
+            items.Sort((a, b) =>
             {
                 var a_ = a.Item3 == 100 ? 0 : 100;
                 var b_ = b.Item3 == 100 ? 0 : 100;
                 return a_.CompareTo(b_);
             });
-            
-            while (roles.Count > max)
-                roles.RemoveAt(roles.Count - 1);
+
+            var certainItems = 0;
+            var odds = 0;
+
+            foreach (var role in items)
+            {
+                if (role.Item3 == 100)
+                    certainItems += 1;
+                else
+                    odds += role.Item3;
+            }
+
+            while (certainItems < amount)
+            {
+                var num = certainItems;
+                var random = Random.RandomRangeInt(0, odds);
+                var rolePicked = false;
+
+                while (num < items.Count && rolePicked == false)
+                {
+                    random -= items[num].Item3;
+
+                    if (random < 0)
+                    {
+                        odds -= items[num].Item3;
+                        var role = items[num];
+                        items.Remove(role);
+                        items.Insert(0, role);
+                        certainItems += 1;
+                        rolePicked = true;
+                    }
+
+                    num += 1;
+                }
+            }
+
+            while (items.Count > amount)
+                items.RemoveAt(items.Count - 1);
+
+            items.Shuffle();
         }
 
-        private static void GenEachRole(List<GameData.PlayerInfo> infected)
+        private static void RoleGen(List<GameData.PlayerInfo> infected)
         {
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
@@ -145,283 +233,603 @@ namespace TownOfUsReworked.Patches
             crewmates.Shuffle();
             impostors.Shuffle();
 
-            if (CustomGameOptions.GameMode == GameMode.Classic | CustomGameOptions.GameMode == GameMode.Custom)
+            if (!IsKilling)
             {
-                if (crewmates.Count > CustomGameOptions.MaxNeutralNonKillingRoles)
-                    SortRoles(NeutralNonKillingRoles, CustomGameOptions.MaxNeutralNonKillingRoles, CustomGameOptions.MinNeutralNonKillingRoles);
-                else
-                    SortRoles(NeutralNonKillingRoles, crewmates.Count - 1, CustomGameOptions.MinNeutralNonKillingRoles);
+                if (IsClassic || IsCustom)
+                {
+                    var minNE = CustomGameOptions.NEMin;
+                    var maxNE = CustomGameOptions.NEMax;
+                    var minNB = CustomGameOptions.NBMin;
+                    var maxNB = CustomGameOptions.NBMax;
+                    var minNK = CustomGameOptions.NKMin;
+                    var maxNK = CustomGameOptions.NKMax;
+                    var minNN = CustomGameOptions.NNMin;
+                    var maxNN = CustomGameOptions.NNMax;
+                    var minNeut = CustomGameOptions.NeutralMin;
+                    var maxNeut = CustomGameOptions.NeutralMax;
+                    var maxNeutSum = maxNE + maxNB + maxNK + maxNN;
 
-                if (crewmates.Count - NeutralNonKillingRoles.Count > CustomGameOptions.MaxNeutralKillingRoles)
-                    SortRoles(NeutralKillingRoles, CustomGameOptions.MaxNeutralKillingRoles, CustomGameOptions.MinNeutralKillingRoles);
-                else
-                    SortRoles(NeutralKillingRoles, crewmates.Count - NeutralNonKillingRoles.Count - 1, CustomGameOptions.MinNeutralKillingRoles);
+                    while (maxNeutSum > maxNeut)
+                    {
+                        var random = Random.RandomRangeInt(0, 4);
 
-                SortRoles(CrewRoles, crewmates.Count - NeutralNonKillingRoles.Count - NeutralKillingRoles.Count, crewmates.Count -
-                    NeutralNonKillingRoles.Count - NeutralKillingRoles.Count);
-                SortRoles(IntruderRoles, impostors.Count, impostors.Count);
+                        switch (random)
+                        {
+                            case 0:
+                                if (maxNE != 0) maxNE--;
+                                break;
+
+                            case 1:
+                                if (maxNB != 0) maxNB--;
+                                break;
+
+                            case 2:
+                                if (maxNK != 0) maxNK--;
+                                break;
+
+                            case 3:
+                                if (maxNN != 0) maxNN--;
+                                break;
+                            
+                            default:
+                                break;
+                        }
+
+                        maxNeutSum = maxNE + maxNB + maxNK + maxNN;
+                    }
+
+                    SortThings(NeutralBenignRoles, maxNB, minNB);
+                    SortThings(NeutralEvilRoles, maxNE, minNE);
+                    SortThings(NeutralKillingRoles, maxNK, minNK);
+                    SortThings(NeutralNeophyteRoles, maxNN, minNN);
+
+                    NeutralRoles.AddRange(NeutralBenignRoles);
+                    NeutralRoles.AddRange(NeutralEvilRoles);
+                    NeutralRoles.AddRange(NeutralKillingRoles);
+                    NeutralRoles.AddRange(NeutralNeophyteRoles);
+
+                    var spareCrew = 1 + CustomGameOptions.CorruptedCount + CustomGameOptions.TraitorCount + CustomGameOptions.FanaticCount;
+
+                    if (crewmates.Count <= maxNeut)
+                    {
+                        if (minNeut >= crewmates.Count - spareCrew)
+                            SortThings(NeutralRoles, minNeut, crewmates.Count - spareCrew);
+                        else
+                            SortThings(NeutralRoles, crewmates.Count - spareCrew, minNeut);
+                    }
+                    else
+                        SortThings(NeutralRoles, maxNeut, minNeut);
+
+                    if (!CustomGameOptions.AltImps)
+                    {
+                        var minIC = CustomGameOptions.ICMin;
+                        var maxIC = CustomGameOptions.ICMax;
+                        var minID = CustomGameOptions.IDMin;
+                        var maxID = CustomGameOptions.IDMax;
+                        var minIK = CustomGameOptions.IKMin;
+                        var maxIK = CustomGameOptions.IKMax;
+                        var minIS = CustomGameOptions.ISMin;
+                        var maxIS = CustomGameOptions.ISMax;
+                        var minInt = CustomGameOptions.IntruderMin;
+                        var maxInt = CustomGameOptions.IntruderMax;
+                        var maxIntSum = maxIC + maxID + maxIK + maxIS;
+
+                        while (maxIntSum > maxInt)
+                        {
+                            var random = Random.RandomRangeInt(0, 4);
+
+                            switch (random)
+                            {
+                                case 0:
+                                    if (maxIC != 0) maxIC--;
+                                    break;
+
+                                case 1:
+                                    if (maxID != 0) maxID--;
+                                    break;
+
+                                case 2:
+                                    if (maxIK != 0) maxIK--;
+                                    break;
+
+                                case 3:
+                                    if (maxIS != 0) maxIS--;
+                                    break;
+                                
+                                default:
+                                    break;
+                            }
+
+                            maxIntSum = maxIC + maxID + maxIK + maxIS;
+                        }
+
+                        SortThings(IntruderConcealingRoles, maxIC, minIC);
+                        SortThings(IntruderDeceptionRoles, maxID, minID);
+                        SortThings(IntruderKillingRoles, maxIK, minIK);
+                        SortThings(IntruderSupportRoles, maxIS, minIS);
+
+                        IntruderRoles.AddRange(IntruderConcealingRoles);
+                        IntruderRoles.AddRange(IntruderDeceptionRoles);
+                        IntruderRoles.AddRange(IntruderKillingRoles);
+                        IntruderRoles.AddRange(IntruderSupportRoles);
+
+                        SortThings(IntruderRoles, maxInt, minInt);
+
+                        while (IntruderRoles.Count < CustomGameOptions.IntruderCount)
+                            IntruderRoles.Add((typeof(Impostor), CustomRPC.SetImpostor, 100, false));
+                        
+                        IntruderRoles.Shuffle();
+                    }
+
+                    var minSSu = CustomGameOptions.SSuMin;
+                    var maxSSu = CustomGameOptions.SSuMax;
+                    var minSD = CustomGameOptions.SDMin;
+                    var maxSD = CustomGameOptions.SDMax;
+                    var minSyK = CustomGameOptions.SyKMin;
+                    var maxSyK = CustomGameOptions.SyKMax;
+                    var minSP = CustomGameOptions.SPMin;
+                    var maxSP = CustomGameOptions.SPMax;
+                    var minSyn = CustomGameOptions.SyndicateMin;
+                    var maxSyn = CustomGameOptions.SyndicateMax;
+                    var maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
+
+                    while (maxSynSum > maxSyn)
+                    {
+                        var random = Random.RandomRangeInt(0, 4);
+
+                        switch (random)
+                        {
+                            case 0:
+                                if (maxSSu != 0) maxSSu--;
+                                break;
+
+                            case 1:
+                                if (maxSD != 0) maxSD--;
+                                break;
+
+                            case 2:
+                                if (maxSyK != 0) maxSyK--;
+                                break;
+
+                            case 3:
+                                if (maxSP != 0) maxSP--;
+                                break;
+                            
+                            default:
+                                break;
+                        }
+
+                        maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
+                    }
+
+                    SortThings(SyndicateSupportRoles, maxSSu, minSSu);
+                    SortThings(SyndicateDisruptionRoles, maxSD, minSD);
+                    SortThings(SyndicateKillingRoles, maxSyK, minSyK);
+                    SortThings(SyndicatePowerRoles, maxSP, minSP);
+
+                    SyndicateRoles.AddRange(SyndicateSupportRoles);
+                    SyndicateRoles.AddRange(SyndicateDisruptionRoles);
+                    SyndicateRoles.AddRange(SyndicateKillingRoles);
+                    SyndicateRoles.AddRange(SyndicatePowerRoles);
+
+                    while (maxSyn > CustomGameOptions.SyndicateCount)
+                        maxSyn--;
+
+                    if (minSyn > maxSyn)
+                        SortThings(SyndicateRoles, minSyn, maxSyn);
+                    else
+                        SortThings(SyndicateRoles, maxSyn, minSyn);
+
+                    while (SyndicateRoles.Count < CustomGameOptions.SyndicateCount)
+                        SyndicateRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, 100, false));
+                    
+                    SyndicateRoles.Shuffle();
+                    
+                    var minCI = CustomGameOptions.CIMin;
+                    var maxCI = CustomGameOptions.CIMax;
+                    var minCS = CustomGameOptions.CSMin;
+                    var maxCS = CustomGameOptions.CSMax;
+                    var minCA = CustomGameOptions.CAMin;
+                    var maxCA = CustomGameOptions.CAMax;
+                    var minCK = CustomGameOptions.CKMin;
+                    var maxCK = CustomGameOptions.CKMax;
+                    var minCP = CustomGameOptions.CPMin;
+                    var maxCP = CustomGameOptions.CPMax;
+                    var minCSv = CustomGameOptions.CSvMin;
+                    var maxCSv = CustomGameOptions.CSvMax;
+                    var minCrew = CustomGameOptions.CrewMin;
+                    var maxCrew = CustomGameOptions.CrewMax;
+                    var maxCrewSum = maxCA + maxCI + maxCK + maxCP + maxCS + maxCSv;
+
+                    while (maxCrewSum > maxCrew && maxCrew >= crewmates.Count)
+                    {
+                        var random = Random.RandomRangeInt(0, 6);
+
+                        switch (random)
+                        {
+                            case 0:
+                                if (maxCA != 0) maxCA--;
+                                break;
+
+                            case 1:
+                                if (maxCI != 0) maxCI--;
+                                break;
+
+                            case 2:
+                                if (maxCK != 0) maxCK--;
+                                break;
+
+                            case 3:
+                                if (maxCS != 0) maxCS--;
+                                break;
+
+                            case 4:
+                                if (maxCSv != 0) maxCSv--;
+                                break;
+
+                            case 5:
+                                if (maxCP != 0) maxCP--;
+                                break;
+                            
+                            default:
+                                break;
+                        }
+
+                        maxCrewSum = maxCA + maxCI + maxCK + maxCP + maxCS + maxCSv;
+                    }
+
+                    SortThings(CrewAuditorRoles, maxCA, minCA);
+                    SortThings(CrewInvestigativeRoles, maxCI, minCI);
+                    SortThings(CrewKillingRoles, maxCK, minCK);
+                    SortThings(CrewProtectiveRoles, maxCP, minCP);
+                    SortThings(CrewSupportRoles, maxCS, minCS);
+                    SortThings(CrewSovereignRoles, maxCSv, minCSv);
+
+                    CrewRoles.AddRange(CrewAuditorRoles);
+                    CrewRoles.AddRange(CrewInvestigativeRoles);
+                    CrewRoles.AddRange(CrewKillingRoles);
+                    CrewRoles.AddRange(CrewSupportRoles);
+                    CrewRoles.AddRange(CrewProtectiveRoles);
+                    CrewRoles.AddRange(CrewSovereignRoles);
+
+                    while (maxCrew > crewmates.Count - CustomGameOptions.SyndicateCount - NeutralRoles.Count)
+                        maxCrew--;
+
+                    if (minCrew > maxCrew)
+                        SortThings(CrewRoles, minCrew, maxCrew);
+                    else
+                        SortThings(CrewRoles, maxCrew, minCrew);
+
+                    while (CrewRoles.Count < crewmates.Count - CustomGameOptions.SyndicateCount - NeutralRoles.Count)
+                        CrewRoles.Add((typeof(Crewmate), CustomRPC.SetCrewmate, 100, false));
+                    
+                    CrewRoles.Shuffle();
+                }
+                else if (IsAA)
+                {
+                    CrewRoles.AddRange(CrewAuditorRoles);
+                    CrewRoles.AddRange(CrewInvestigativeRoles);
+                    CrewRoles.AddRange(CrewKillingRoles);
+                    CrewRoles.AddRange(CrewSupportRoles);
+                    CrewRoles.AddRange(CrewProtectiveRoles);
+                    CrewRoles.AddRange(CrewSovereignRoles);
+
+                    SyndicateRoles.AddRange(SyndicateSupportRoles);
+                    SyndicateRoles.AddRange(SyndicateDisruptionRoles);
+                    SyndicateRoles.AddRange(SyndicateKillingRoles);
+                    SyndicateRoles.AddRange(SyndicatePowerRoles);
+
+                    NeutralRoles.AddRange(NeutralBenignRoles);
+                    NeutralRoles.AddRange(NeutralEvilRoles);
+                    NeutralRoles.AddRange(NeutralKillingRoles);
+                    NeutralRoles.AddRange(NeutralNeophyteRoles);
+
+                    if (!CustomGameOptions.AltImps)
+                    {
+                        IntruderRoles.AddRange(IntruderConcealingRoles);
+                        IntruderRoles.AddRange(IntruderDeceptionRoles);
+                        IntruderRoles.AddRange(IntruderKillingRoles);
+                        IntruderRoles.AddRange(IntruderSupportRoles);
+                    }
+                    else
+                    {
+                        IntruderRoles.Clear();
+                        IntruderRoles.AddRange(SyndicateRoles);
+                    }
+
+                    CrewRoles.Shuffle();
+                    SyndicateRoles.Shuffle();
+                    IntruderRoles.Shuffle();
+                    NeutralRoles.Shuffle();
+                }
+
+                var NonIntruderRoles = new List<(Type, CustomRPC, int, bool)>();
+
+                NonIntruderRoles.AddRange(CrewRoles);
+                NonIntruderRoles.AddRange(NeutralRoles);
 
                 if (!CustomGameOptions.AltImps)
-                    SortRoles(SyndicateRoles, CustomGameOptions.SyndicateCount, CustomGameOptions.SyndicateCount);
-            }
-
-            var NonIntruderRoles = new List<(Type, CustomRPC, int, bool)>();
-            var neutrals = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral)).ToList();
-            var syndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate)).ToList();
-
-            if (CustomGameOptions.GameMode == GameMode.Classic | CustomGameOptions.GameMode == GameMode.Custom)
-                NonIntruderRoles.AddRange(CrewRoles);
-
-            NonIntruderRoles.AddRange(NeutralNonKillingRoles);
-            NonIntruderRoles.AddRange(NeutralKillingRoles);
-
-            if (!CustomGameOptions.AltImps)
-                NonIntruderRoles.AddRange(SyndicateRoles);
-
-            var crewRoles = new List<(Type, CustomRPC, int, bool)>();
-            var impRoles = new List<(Type, CustomRPC, int, bool)>();
-
-            if (CustomGameOptions.GameMode == GameMode.AllAny)
-            {
-                NonIntruderRoles.Shuffle();
-
-                if (NonIntruderRoles.Count > 0)
-                {
-                    crewRoles.Add(NonIntruderRoles[0]);
-
-                    if (NonIntruderRoles[0].Item4 == true)
-                        NonIntruderRoles.Remove(NonIntruderRoles[0]);
-                }
-
-                if (CrewRoles.Count > 0)
-                {
-                    CrewRoles.Shuffle();
-                    crewRoles.Add(CrewRoles[0]);
-
-                    if (CrewRoles[0].Item4 == true)
-                        CrewRoles.Remove(CrewRoles[0]);
-                }
+                    NonIntruderRoles.AddRange(SyndicateRoles);
                 else
-                    crewRoles.Add((typeof(Crewmate), CustomRPC.SetCrewmate, 100, false));
-
-                NonIntruderRoles.AddRange(CrewRoles);
-
-                while (crewRoles.Count < crewmates.Count && NonIntruderRoles.Count > 0)
                 {
-                    NonIntruderRoles.Shuffle();
-                    crewRoles.Add(NonIntruderRoles[0]);
+                    IntruderRoles.Clear();
+                    IntruderRoles.AddRange(SyndicateRoles);
+                }
 
-                    if (NonIntruderRoles[0].Item4 == true)
+                var crewRoles = new List<(Type, CustomRPC, int, bool)>();
+                var impRoles = new List<(Type, CustomRPC, int, bool)>();
+
+                if (IsAA)
+                {
+                    while (crewRoles.Count < crewmates.Count && NonIntruderRoles.Count > 0)
                     {
-                        if (CrewRoles.Contains(NonIntruderRoles[0]))
-                            CrewRoles.Remove(NonIntruderRoles[0]);
+                        NonIntruderRoles.Shuffle();
+                        crewRoles.Add(NonIntruderRoles[0]);
 
-                        NonIntruderRoles.Remove(NonIntruderRoles[0]);
+                        if (NonIntruderRoles[0].Item4 == true)
+                            NonIntruderRoles.Remove(NonIntruderRoles[0]);
+                    }
+
+                    while (impRoles.Count < impostors.Count && IntruderRoles.Count > 0)
+                    {
+                        IntruderRoles.Shuffle();
+                        impRoles.Add(IntruderRoles[0]);
+
+                        if (IntruderRoles[0].Item4 == true)
+                            IntruderRoles.Remove(IntruderRoles[0]);
                     }
                 }
 
-                while (impRoles.Count < impostors.Count && IntruderRoles.Count > 0)
+                crewRoles.Shuffle();
+                impRoles.Shuffle();
+
+                if (IsAA)
                 {
-                    IntruderRoles.Shuffle();
-                    impRoles.Add(IntruderRoles[0]);
-
-                    if (IntruderRoles[0].Item4 == true)
-                        IntruderRoles.Remove(IntruderRoles[0]);
+                    foreach (var (type, rpc, _, unique) in crewRoles)
+                        Role.Gen<Role>(type, crewmates, rpc);
+                        
+                    foreach (var (type, rpc, _, unique) in impRoles)
+                        Role.Gen<Role>(type, impostors, rpc);
                 }
-            }
-
-            crewRoles.Shuffle();
-            impRoles.Shuffle();
-
-            var crewCount = PlayerControl.AllPlayerControls.Count - CustomGameOptions.SyndicateCount - CustomGameOptions.IntruderCount - neutrals.Count;
-
-            SortOthers(GlobalModifiers, crewmates.Count + impostors.Count);
-            SortOthers(ProfessionalModifiers, crewmates.Count + impostors.Count);
-            SortOthers(DiseasedModifiers, crewmates.Count + impostors.Count);
-            SortOthers(BaitModifiers, crewmates.Count + impostors.Count);
-
-            SortOthers(IntruderAbilityGet, CustomGameOptions.IntruderCount);
-            SortOthers(CrewAbilityGet, crewCount);
-            SortOthers(NeutralAbilityGet, neutrals.Count);
-            SortOthers(SyndicateAbilityGet, CustomGameOptions.SyndicateCount);
-
-            if (CustomGameOptions.GameMode == GameMode.AllAny)
-            {
-                foreach (var (type, rpc, _, unique) in crewRoles)
-                    Role.Gen<Role>(type, crewmates, rpc);
-                    
-                foreach (var (type, rpc, _, unique) in impRoles)
-                    Role.Gen<Role>(type, impostors, rpc);
-            }
-            else
-            {
-                foreach (var (type, rpc, _, unique) in NonIntruderRoles)
-                    Role.Gen<Role>(type, crewmates, rpc);
-                    
-                foreach (var (type, rpc, _, unique) in IntruderRoles)
-                    Role.Gen<Role>(type, impostors, rpc);
-            }
-
-            foreach (var crewmate in crewmates)
-                Role.Gen<Role>(typeof(Crewmate), crewmate, CustomRPC.SetCrewmate);
-
-            foreach (var impostor in impostors)
-            {
-                if (CustomGameOptions.AltImps)
-                    Role.Gen<Role>(typeof(Anarchist), impostor, CustomRPC.SetAnarchist);
                 else
-                    Role.Gen<Role>(typeof(Impostor), impostor, CustomRPC.SetImpostor);
-            }
-
-            var canHaveAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveAbility2 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveAbility3 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveAbility4 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveAbility5 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveAbility6 = PlayerControl.AllPlayerControls.ToArray().ToList();
-
-            canHaveAbility.RemoveAll(player => !player.Is(Faction.Intruder) | (player.Is(RoleEnum.Consigliere) && CustomGameOptions.ConsigInfo == ConsigInfo.Role));
-            canHaveAbility.Shuffle();
-
-            canHaveAbility2.RemoveAll(player => !(player.Is(RoleAlignment.NeutralPros) | player.Is(RoleAlignment.NeutralNeo) | player.Is(RoleAlignment.NeutralKill)));
-            canHaveAbility2.Shuffle();
-
-            canHaveAbility3.RemoveAll(player => !player.Is(Faction.Crew));
-            canHaveAbility3.Shuffle();
-
-            canHaveAbility4.RemoveAll(player => !player.Is(Faction.Syndicate));
-            canHaveAbility4.Shuffle();
-
-            canHaveAbility5.RemoveAll(player => !player.Is(Faction.Crew) | player.Is(RoleEnum.Engineer));
-            canHaveAbility5.Shuffle();
-
-            canHaveAbility6.RemoveAll(player => !player.Is(Faction.Neutral));
-            canHaveAbility6.Shuffle();
-
-            if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
-            {
-                while (canHaveAbility5.Count > 0 && CrewAbilityGet.Count > 0)
                 {
-                    var (type, rpc, _) = CrewAbilityGet.TakeFirst();
-                    Role.Gen<Ability>(type, canHaveAbility5.TakeFirst(), rpc);
-                }
-            }
-
-            if (CustomGameOptions.GameMode == GameMode.Custom && (IntruderAbilityGet.Count + CrewAbilityGet.Count + SyndicateAbilityGet.Count + NeutralAbilityGet.Count) > 0)
-            {
-                var impAssassins = CustomGameOptions.NumberOfImpostorAssassins;
-                var neutAssassins = CustomGameOptions.NumberOfNeutralAssassins;
-                var crewAssassins = CustomGameOptions.NumberOfCrewAssassins;
-                var synAssassins = CustomGameOptions.NumberOfSyndicateAssassins;
-
-                while (canHaveAbility.Count > 0 && impAssassins > 0 && IntruderAbilityGet.Count > 0)
-                {
-                    var (type, rpc, _) = IntruderAbilityGet.TakeFirst();
-                    Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
-                    impAssassins -= 1;
+                    foreach (var (type, rpc, _, unique) in NonIntruderRoles)
+                        Role.Gen<Role>(type, crewmates, rpc);
+                        
+                    foreach (var (type, rpc, _, unique) in IntruderRoles)
+                        Role.Gen<Role>(type, impostors, rpc);
                 }
 
-                while (canHaveAbility2.Count > 0 && neutAssassins > 0 && NeutralAbilityGet.Count > 0)
+                var crewCount = CrewRoles.Count;
+                var neutralCount = NeutralRoles.Count;
+                var intruderCount = CustomGameOptions.AltImps ? 0 : IntruderRoles.Count;
+                var syndicateCount = SyndicateRoles.Count;
+                var allCount = crewmates.Count + impostors.Count;
+
+                SortThings(GlobalModifiers, allCount, allCount);
+                SortThings(ProfessionalModifiers, allCount, allCount);
+                SortThings(DiseasedModifiers, allCount, allCount);
+                SortThings(BaitModifiers, allCount, allCount);
+
+                SortThings(IntruderAbilityGet, intruderCount, intruderCount);
+                SortThings(CrewAbilityGet, crewCount, crewCount);
+                SortThings(SnitchRevealerAbilityGet, crewCount, crewCount);
+                SortThings(TunnelerAbilityGet, crewCount, crewCount);
+                SortThings(TaskedAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+                SortThings(NeutralAbilityGet, neutralCount, neutralCount);
+                SortThings(SyndicateAbilityGet, syndicateCount, syndicateCount);
+                
+                SortThings(CrewObjectifierGet, crewCount, crewCount);
+                SortThings(CorruptedObjectifierGet, crewCount, crewCount);
+                SortThings(NeutralObjectifierGet, neutralCount, neutralCount);
+                SortThings(OverlordObjectifierGet, neutralCount, neutralCount);
+                SortThings(GlobalObjectifierGet, allCount, allCount);
+                SortThings(EvilAbilityGet, intruderCount + syndicateCount, intruderCount + syndicateCount);
+                SortThings(NonEvilAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+
+                var canHaveLoverorRival = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveObjectifier2 = PlayerControl.AllPlayerControls.ToArray().ToList();
+
+                canHaveLoverorRival.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Shifter));
+                canHaveLoverorRival.Shuffle();
+
+                canHaveObjectifier.RemoveAll(player => !player.Is(Faction.Neutral));
+                canHaveObjectifier.Shuffle();
+
+                canHaveObjectifier2.RemoveAll(player => !player.Is(Faction.Crew));
+                canHaveObjectifier2.Shuffle();
+
+                foreach (var (type, rpc, _) in GlobalObjectifierGet)
                 {
-                    var (type, rpc, _) = NeutralAbilityGet.TakeFirst();
-                    Role.Gen<Ability>(type, canHaveAbility2.TakeFirst(), rpc);
-                    neutAssassins -= 1;
+                    if (canHaveLoverorRival.Count == 0 || canHaveLoverorRival.Count == 1)
+                        break;
+
+                    Lovers.Gen(canHaveLoverorRival);
+                    Role.Gen<Objectifier>(type, canHaveLoverorRival.TakeFirst(), rpc);
                 }
 
-                while (canHaveAbility3.Count > 0 && crewAssassins > 0 && CrewAbilityGet.Count > 0)
+                foreach (var (type, rpc, _) in GlobalObjectifierGet)
+                {
+                    if (canHaveLoverorRival.Count == 0 || canHaveLoverorRival.Count == 1)
+                        break;
+
+                    Rivals.Gen(canHaveLoverorRival);
+                    Role.Gen<Objectifier>(type, canHaveLoverorRival.TakeFirst(), rpc);
+                }
+
+                while (canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0)
+                {
+                    var (type, rpc, _) = NeutralObjectifierGet.TakeFirst();
+                    Role.Gen<Objectifier>(type, canHaveObjectifier.TakeFirst(), rpc);
+                }
+
+                while (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0)
+                {
+                    var (type, rpc, _) = CrewObjectifierGet.TakeFirst();
+                    Role.Gen<Objectifier>(type, canHaveObjectifier2.TakeFirst(), rpc);
+                }
+
+                var canHaveAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility2 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility3 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility4 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility5 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility6 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility7 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility8 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility9 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAbility10 = PlayerControl.AllPlayerControls.ToArray().ToList();
+
+                canHaveAbility.RemoveAll(player => !player.Is(Faction.Intruder) || (player.Is(RoleEnum.Consigliere) && CustomGameOptions.ConsigInfo == ConsigInfo.Role));
+                canHaveAbility.Shuffle();
+
+                canHaveAbility2.RemoveAll(player => !(player.Is(RoleAlignment.NeutralNeo) || player.Is(RoleAlignment.NeutralKill)));
+                canHaveAbility2.Shuffle();
+
+                canHaveAbility3.RemoveAll(player => !player.Is(Faction.Crew));
+                canHaveAbility3.Shuffle();
+
+                canHaveAbility4.RemoveAll(player => !player.Is(Faction.Syndicate));
+                canHaveAbility4.Shuffle();
+
+                canHaveAbility5.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(RoleEnum.Engineer));
+                canHaveAbility5.Shuffle();
+
+                canHaveAbility6.RemoveAll(player => !player.Is(Faction.Neutral));
+                canHaveAbility6.Shuffle();
+
+                canHaveAbility7.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(ObjectifierEnum.Traitor));
+                canHaveAbility7.Shuffle();
+
+                canHaveAbility8.RemoveAll(player => !player.CanDoTasks());
+                canHaveAbility8.Shuffle();
+
+                canHaveAbility9.RemoveAll(player => !(player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralBen) || player.Is(RoleAlignment.NeutralEvil)));
+                canHaveAbility9.Shuffle();
+
+                canHaveAbility10.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
+                canHaveAbility10.Shuffle();
+
+                if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
+                {
+                    while (canHaveAbility5.Count > 0 && TunnelerAbilityGet.Count > 0)
+                    {
+                        var (type, rpc, _) = TunnelerAbilityGet.TakeFirst();
+                        Role.Gen<Ability>(type, canHaveAbility5.TakeFirst(), rpc);
+                    }
+                }
+
+                while (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = NonEvilAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility9.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = EvilAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility10.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility7.Count > 0 && SnitchRevealerAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = SnitchRevealerAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility7.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = TaskedAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility8.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0)
                 {
                     var (type, rpc, _) = CrewAbilityGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility3.TakeFirst(), rpc);
-                    crewAssassins -= 1;
                 }
 
-                while (canHaveAbility4.Count > 0 && synAssassins > 0 && SyndicateAbilityGet.Count > 0)
+                while (canHaveAbility.Count > 0 && IntruderAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = IntruderAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0)
+                {
+                    var (type, rpc, _) = NeutralAbilityGet.TakeFirst();
+                    Role.Gen<Ability>(type, canHaveAbility2.TakeFirst(), rpc);
+                }
+
+                while (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0)
                 {
                     var (type, rpc, _) = SyndicateAbilityGet.TakeFirst();
                     Role.Gen<Ability>(type, canHaveAbility4.TakeFirst(), rpc);
-                    synAssassins -= 1;
                 }
-            }
 
-            var canHaveLover = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveModifier1 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveModifier2 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveModifier3 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveModifier4 = PlayerControl.AllPlayerControls.ToArray().ToList();
 
-            canHaveLover.RemoveAll(player => player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Troll) | player.Is(RoleEnum.Jester) | player.Is(RoleEnum.Shifter));
-            canHaveLover.Shuffle();
+                canHaveModifier1.RemoveAll(player => player.Is(RoleEnum.Vigilante) || player.Is(RoleEnum.Shifter) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
+                canHaveModifier1.Shuffle();
 
-            foreach (var (type, rpc, _) in GlobalObjectifierGet)
-            {
-                if (canHaveLover.Count == 0 || canHaveLover.Count == 1)
-                    break;
+                canHaveModifier2.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
+                canHaveModifier2.Shuffle();
 
-                Lovers.Gen(canHaveLover);
-                Role.Gen<Objectifier>(type, canHaveLover.TakeFirst(), rpc);
-            }
+                canHaveModifier3.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
+                canHaveModifier3.Shuffle();
 
-            var canHaveModifier1 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveModifier2 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveModifier3 = PlayerControl.AllPlayerControls.ToArray().ToList();
-            var canHaveModifier4 = PlayerControl.AllPlayerControls.ToArray().ToList();
-
-            canHaveModifier1.RemoveAll(player => player.Is(RoleEnum.Vigilante) | player.Is(RoleEnum.Shifter) | player.Is(RoleEnum.Altruist) |
-                player.Is(RoleEnum.Troll));
-            canHaveModifier1.Shuffle();
-
-            canHaveModifier2.RemoveAll(player => player.Is(RoleEnum.Altruist) | player.Is(RoleEnum.Troll));
-            canHaveModifier2.Shuffle();
-
-            canHaveModifier3.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
-            canHaveModifier3.Shuffle();
-
-            while (canHaveModifier2.Count > 0 && BaitModifiers.Count > 0)
-            {
-                var (type, rpc, _) = BaitModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, canHaveModifier2.TakeFirst(), rpc);
-            }
-
-            while (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0)
-            {
-                var (type, rpc, _) = DiseasedModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, canHaveModifier2.TakeFirst(), rpc);
-            }
-
-            while (canHaveModifier3.Count > 0 && ProfessionalModifiers.Count > 0)
-            {
-                var (type, rpc, _) = ProfessionalModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, canHaveModifier3.TakeFirst(), rpc);
-            }
-
-            while (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0)
-            {
-                var (type, rpc, _) = GlobalModifiers.TakeFirst();
-                Role.Gen<Modifier>(type, canHaveModifier4.TakeFirst(), rpc);
-            }
-
-            var exeTargets = new List<PlayerControl>();
-            var gaTargets = new List<PlayerControl>();
-            var goodRecruits = new List<PlayerControl>();
-            var evilRecruits = new List<PlayerControl>();
-            
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction.Crew))
+                while (canHaveModifier1.Count > 0 && BaitModifiers.Count > 0)
                 {
-                    if (!player.Is(RoleEnum.Altruist))
+                    var (type, rpc, _) = BaitModifiers.TakeFirst();
+                    Role.Gen<Modifier>(type, canHaveModifier1.TakeFirst(), rpc);
+                }
+
+                while (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0)
+                {
+                    var (type, rpc, _) = DiseasedModifiers.TakeFirst();
+                    Role.Gen<Modifier>(type, canHaveModifier2.TakeFirst(), rpc);
+                }
+
+                while (canHaveModifier3.Count > 0 && ProfessionalModifiers.Count > 0)
+                {
+                    var (type, rpc, _) = ProfessionalModifiers.TakeFirst();
+                    Role.Gen<Modifier>(type, canHaveModifier3.TakeFirst(), rpc);
+                }
+
+                while (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0)
+                {
+                    var (type, rpc, _) = GlobalModifiers.TakeFirst();
+                    Role.Gen<Modifier>(type, canHaveModifier4.TakeFirst(), rpc);
+                }
+
+                var exeTargets = new List<PlayerControl>();
+                var gaTargets = new List<PlayerControl>();
+                var goodRecruits = new List<PlayerControl>();
+                var evilRecruits = new List<PlayerControl>();
+                
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction.Crew))
                     {
-                        gaTargets.Add(player);
-                        goodRecruits.Add(player);
-                    }
+                        if (!player.Is(RoleEnum.Altruist))
+                            gaTargets.Add(player);
                         
-                    if (!(player.Is(RoleAlignment.CrewSov) | player.Is(ObjectifierEnum.Traitor)))
-                        exeTargets.Add(player);
-                }
-                else if (player.Is(Faction.Neutral))
-                {
-                    if (!(player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Troll) | player.Is(RoleEnum.GuardianAngel)))
+                        if (!player.Is(ObjectifierEnum.Traitor))
+                            goodRecruits.Add(player);
+                            
+                        if (!player.Is(RoleAlignment.CrewSov) && !player.Is(ObjectifierEnum.Traitor))
+                            exeTargets.Add(player);
+                    }
+                    else if (player.Is(Faction.Neutral))
                     {
-                        if (!player.Is(RoleEnum.Jester))
+                        if (!player.Is(RoleEnum.Executioner) && !player.Is(RoleEnum.Troll) && !player.Is(RoleEnum.GuardianAngel) && !player.Is(RoleEnum.Jester))
                         {
                             gaTargets.Add(player);
-                            
+                                
                             if (player.Is(RoleAlignment.NeutralKill))
                                 evilRecruits.Add(player);
                             else if (player.Is(RoleAlignment.NeutralEvil))
@@ -431,226 +839,271 @@ namespace TownOfUsReworked.Patches
                         if (CustomGameOptions.ExeCanHaveNeutralTargets)
                             exeTargets.Add(player);
                     }
-                }
-                else if (player.Is(Faction.Intruder) | player.Is(Faction.Syndicate))
-                {
-                    gaTargets.Add(player);
-                    evilRecruits.Add(player);
-
-                    if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
-                        exeTargets.Add(player);
-                }
-            }
-
-            if (CustomGameOptions.ExecutionerOn > 0)
-            {
-                foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
-                {
-                    exe.TargetPlayer = null;
-
-                    if (exeTargets.Count > 0)
+                    else if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                     {
-                        while (exe.TargetPlayer == null | exe.TargetPlayer == exe.Player)
-                        {
-                            exeTargets.Shuffle();
-                            var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
-                            exe.TargetPlayer = exeTargets[exeNum];
-                        }
+                        gaTargets.Add(player);
+                        evilRecruits.Add(player);
 
-                        exeTargets.Remove(exe.TargetPlayer);
-
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget,
-                            SendOption.Reliable, -1);
-                        writer.Write(exe.Player.PlayerId);
-                        writer.Write(exe.TargetPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
+                            exeTargets.Add(player);
                     }
                 }
-            }
-            
-            if (CustomGameOptions.GuardianAngelOn > 0)
-            {
-                foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+
+                if (CustomGameOptions.ExecutionerOn > 0)
                 {
-                    ga.TargetPlayer = null;
-                    
-                    if (gaTargets.Count > 0)
+                    foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                     {
-                        while (ga.TargetPlayer == null | ga.TargetPlayer == ga.Player)
+                        exe.TargetPlayer = null;
+
+                        if (exeTargets.Count > 0)
                         {
-                            gaTargets.Shuffle();
-                            var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
-                            ga.TargetPlayer = gaTargets[gaNum];
+                            while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player)
+                            {
+                                exeTargets.Shuffle();
+                                var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
+                                exe.TargetPlayer = exeTargets[exeNum];
+                            }
+
+                            exeTargets.Remove(exe.TargetPlayer);
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget,
+                                SendOption.Reliable, -1);
+                            writer.Write(exe.Player.PlayerId);
+                            writer.Write(exe.TargetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
                         }
-
-                        gaTargets.Remove(ga.TargetPlayer);
-
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget,
-                            SendOption.Reliable, -1);
-                        writer.Write(ga.Player.PlayerId);
-                        writer.Write(ga.TargetPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
-            }
-
-            if (CustomGameOptions.JackalOn > 0)
-            {
-                foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
-                {
-                    jackal.GoodRecruit = null;
-                    jackal.EvilRecruit = null;
-                    
-                    if (goodRecruits.Count > 0)
-                    {
-                        while (jackal.GoodRecruit == null)
-                        {
-                            goodRecruits.Shuffle();
-                            var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
-                            jackal.GoodRecruit = goodRecruits[goodNum];
-                        }
-
-                        goodRecruits.Remove(jackal.GoodRecruit);
-                        (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
-
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit,
-                            SendOption.Reliable, -1);
-                        writer.Write(jackal.Player.PlayerId);
-                        writer.Write(jackal.GoodRecruit.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-                    
-                    if (evilRecruits.Count > 0)
-                    {
-                        while (jackal.EvilRecruit == null)
-                        {
-                            evilRecruits.Shuffle();
-                            var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
-                            jackal.EvilRecruit = evilRecruits[evilNum];
-                        }
-
-                        evilRecruits.Remove(jackal.EvilRecruit);
-                        (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
-
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit,
-                            SendOption.Reliable, -1);
-                        writer.Write(jackal.Player.PlayerId);
-                        writer.Write(jackal.EvilRecruit.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-                }
-            }
-        }
-
-        private static void GenEachRoleKilling(List<GameData.PlayerInfo> players)
-        {
-            var impostors = Utils.GetImpostors(players);
-            var crewmates = Utils.GetCrewmates(impostors);
-
-            crewmates.Shuffle();
-            impostors.Shuffle();
-
-            if (!CustomGameOptions.AltImps)
-            {   
-                IntruderRoles.Add((typeof(Undertaker), CustomRPC.SetUndertaker, CustomGameOptions.UndertakerOn, true));
-                IntruderRoles.Add((typeof(Morphling), CustomRPC.SetMorphling, CustomGameOptions.MorphlingOn, false));
-                IntruderRoles.Add((typeof(Blackmailer), CustomRPC.SetBlackmailer, CustomGameOptions.BlackmailerOn, true));
-                IntruderRoles.Add((typeof(Miner), CustomRPC.SetMiner, CustomGameOptions.MinerOn, true));
-                IntruderRoles.Add((typeof(Wraith), CustomRPC.SetWraith, CustomGameOptions.WraithOn, false));
-                IntruderRoles.Add((typeof(Grenadier), CustomRPC.SetGrenadier, CustomGameOptions.GrenadierOn, true));
-                IntruderRoles.Add((typeof(TimeMaster), CustomRPC.SetTimeMaster, CustomGameOptions.TimeMasterOn, true));
-                IntruderRoles.Add((typeof(Disguiser), CustomRPC.SetDisguiser, CustomGameOptions.DisguiserOn, true));
-                IntruderRoles.Add((typeof(Consigliere), CustomRPC.SetConsigliere, CustomGameOptions.ConsigliereOn, true));
-                IntruderRoles.Add((typeof(Teleporter), CustomRPC.SetTeleporter, CustomGameOptions.TeleporterOn, false));
-                IntruderRoles.Add((typeof(Impostor), CustomRPC.SetImpostor, 5, true));
-                IntruderRoles.Add((typeof(Godfather), CustomRPC.SetGodfather, CustomGameOptions.GodfatherOn, true));
-
-                SyndicateRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, 5, true));
-                SyndicateRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-                SyndicateRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, false));
-                SyndicateRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-                SyndicateRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-                SyndicateRoles.Add((typeof(Gorgon), CustomRPC.SetGorgon, CustomGameOptions.GorgonOn, false));
-                SyndicateRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-            }
-            else
-            {
-                IntruderRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-                IntruderRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, false));
-                IntruderRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-                IntruderRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-                IntruderRoles.Add((typeof(Gorgon), CustomRPC.SetGorgon, CustomGameOptions.GorgonOn, false));
-                IntruderRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, CustomGameOptions.AnarchistOn, true));
-                IntruderRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-            }
-
-            SortRoles(IntruderRoles, impostors.Count, impostors.Count);
-
-            if (!CustomGameOptions.AltImps)
-                SortRoles(SyndicateRoles, CustomGameOptions.SyndicateCount, CustomGameOptions.SyndicateCount);
-
-            NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, CustomGameOptions.GlitchOn, true));
-            NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, CustomGameOptions.WerewolfOn, true));
-            NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, CustomGameOptions.SerialKillerOn, true));
-            NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, CustomGameOptions.JuggernautOn, true));
-            NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, CustomGameOptions.MurdererOn, true));
-
-            if (CustomGameOptions.AddArsonist)
-                NeutralKillingRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist, CustomGameOptions.ArsonistOn, true));
-
-            if (CustomGameOptions.AddCryomaniac)
-                NeutralKillingRoles.Add((typeof(Cryomaniac), CustomRPC.SetCryomaniac, CustomGameOptions.CryomaniacOn, true));
-
-            if (CustomGameOptions.AddPlaguebearer)
-                NeutralKillingRoles.Add((typeof(Plaguebearer), CustomRPC.SetPlaguebearer, CustomGameOptions.PlaguebearerOn, true));
-
-            NeutralKillingRoles.Shuffle();
-
-            var neutrals = 0;
-
-            if (NeutralKillingRoles.Count < CustomGameOptions.NeutralRoles)
-                neutrals = NeutralKillingRoles.Count;
-            else
-                neutrals = CustomGameOptions.NeutralRoles;
-
-            var spareCrew = crewmates.Count - neutrals;
-
-            if (spareCrew > 2)
-                SortRoles(NeutralKillingRoles, neutrals, neutrals);
-            else
-                SortRoles(NeutralKillingRoles, crewmates.Count - 3, crewmates.Count - 3);
-
-            if (CrewRoles.Count + NeutralKillingRoles.Count > crewmates.Count)
-                SortRoles(CrewRoles, crewmates.Count - NeutralKillingRoles.Count, crewmates.Count - NeutralKillingRoles.Count);
-            else if (CrewRoles.Count + NeutralKillingRoles.Count < crewmates.Count)
-            {
-                int vigis = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
-                int vets = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
-
-                while (vigis > 0)
-                {
-                    CrewRoles.Add((typeof(Vigilante), CustomRPC.SetVigilante, 100, false));
-                    vigis -= 1;
-                    CrewRoles.Add((typeof(Veteran), CustomRPC.SetVeteran, 100, false));
-                    vets -= 1;
-                }
-            }
-
-            var crewAndNeutralRoles = new List<(Type, CustomRPC, int, bool)>();
-            crewAndNeutralRoles.AddRange(CrewRoles);
-            crewAndNeutralRoles.AddRange(NeutralKillingRoles);
-
-            if (!CustomGameOptions.AltImps)
-                crewAndNeutralRoles.AddRange(SyndicateRoles);
                 
-            crewAndNeutralRoles.Shuffle();
-            IntruderRoles.Shuffle();
+                if (CustomGameOptions.GuardianAngelOn > 0)
+                {
+                    foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                    {
+                        ga.TargetPlayer = null;
+                        
+                        if (gaTargets.Count > 0)
+                        {
+                            while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
+                            {
+                                gaTargets.Shuffle();
+                                var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
+                                ga.TargetPlayer = gaTargets[gaNum];
+                            }
 
-            foreach (var (type, rpc, _, unique) in IntruderRoles)
-                Role.Gen<Role>(type, impostors, rpc);
+                            gaTargets.Remove(ga.TargetPlayer);
 
-            foreach (var (type, rpc, _, unique) in crewAndNeutralRoles)
-                Role.Gen<Role>(type, crewmates, rpc);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget,
+                                SendOption.Reliable, -1);
+                            writer.Write(ga.Player.PlayerId);
+                            writer.Write(ga.TargetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"GA Target = {ga.TargetPlayer.name}");
+                        }
+                    }
+                }
+
+                if (CustomGameOptions.JackalOn > 0)
+                {
+                    foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
+                    {
+                        jackal.GoodRecruit = null;
+                        jackal.EvilRecruit = null;
+                        jackal.BackupRecruit = null;
+                        
+                        if (goodRecruits.Count > 0)
+                        {
+                            while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player)
+                            {
+                                goodRecruits.Shuffle();
+                                var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
+                                jackal.GoodRecruit = goodRecruits[goodNum];
+                            }
+
+                            goodRecruits.Remove(jackal.GoodRecruit);
+                            (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
+                            (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
+                            (Role.GetRole(jackal.GoodRecruit)).Color = Colors.Cabal;
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit,
+                                SendOption.Reliable, -1);
+                            writer.Write(jackal.Player.PlayerId);
+                            writer.Write(jackal.GoodRecruit.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Good Recruit = {jackal.GoodRecruit.name}");
+                        }
+                        
+                        if (evilRecruits.Count > 0)
+                        {
+                            while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player)
+                            {
+                                evilRecruits.Shuffle();
+                                var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
+                                jackal.EvilRecruit = evilRecruits[evilNum];
+                            }
+
+                            evilRecruits.Remove(jackal.EvilRecruit);
+                            (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
+                            (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
+                            (Role.GetRole(jackal.EvilRecruit)).Color = Colors.Cabal;
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit,
+                                SendOption.Reliable, -1);
+                            writer.Write(jackal.Player.PlayerId);
+                            writer.Write(jackal.EvilRecruit.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Evil Recruit = {jackal.EvilRecruit.name}");
+                        }
+                    }
+                }
+
+                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
+                {
+                    var VampsExist = false;
+
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                    {
+                        if (player.Is(SubFaction.Undead))
+                        {
+                            VampsExist = true;
+                            break;
+                        }
+                    }
+
+                    if (!VampsExist)
+                    {
+                        foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
+                        {
+                            vh.TurnVigilante();
+
+                            unchecked
+                            {
+                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante,    
+                                    SendOption.Reliable, -1);
+                                writer.Write(vh.Player.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                CrewRoles.Clear();
+                IntruderRoles.Clear();
+                SyndicateRoles.Clear();
+                NeutralKillingRoles.Clear();
+
+                if (!CustomGameOptions.AltImps)
+                {   
+                    IntruderRoles.Clear();
+                    IntruderRoles.Add((typeof(Undertaker), CustomRPC.SetUndertaker, CustomGameOptions.UndertakerOn, CustomGameOptions.UniqueUndertaker));
+                    IntruderRoles.Add((typeof(Morphling), CustomRPC.SetMorphling, CustomGameOptions.MorphlingOn, CustomGameOptions.UniqueMorphling));
+                    IntruderRoles.Add((typeof(Blackmailer), CustomRPC.SetBlackmailer, CustomGameOptions.BlackmailerOn, CustomGameOptions.UniqueBlackmailer));
+                    IntruderRoles.Add((typeof(Miner), CustomRPC.SetMiner, CustomGameOptions.MinerOn, CustomGameOptions.UniqueMiner));
+                    IntruderRoles.Add((typeof(Wraith), CustomRPC.SetWraith, CustomGameOptions.WraithOn, CustomGameOptions.UniqueWraith));
+                    IntruderRoles.Add((typeof(Grenadier), CustomRPC.SetGrenadier, CustomGameOptions.GrenadierOn, CustomGameOptions.UniqueGrenadier));
+                    IntruderRoles.Add((typeof(TimeMaster), CustomRPC.SetTimeMaster, CustomGameOptions.TimeMasterOn, CustomGameOptions.UniqueTimeMaster));
+                    IntruderRoles.Add((typeof(Disguiser), CustomRPC.SetDisguiser, CustomGameOptions.DisguiserOn, CustomGameOptions.UniqueDisguiser));
+                    IntruderRoles.Add((typeof(Consigliere), CustomRPC.SetConsigliere, CustomGameOptions.ConsigliereOn, CustomGameOptions.UniqueConsigliere));
+                    IntruderRoles.Add((typeof(Teleporter), CustomRPC.SetTeleporter, CustomGameOptions.TeleporterOn, CustomGameOptions.UniqueTeleporter));
+                    IntruderRoles.Add((typeof(Impostor), CustomRPC.SetImpostor, 5, false));
+
+                    if (CustomGameOptions.IntruderCount >= 3)
+                        IntruderRoles.Add((typeof(Godfather), CustomRPC.SetGodfather, CustomGameOptions.GodfatherOn, CustomGameOptions.UniqueGodfather));
+                }
+
+                SyndicateRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, 5, false));
+                SyndicateRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, CustomGameOptions.UniqueConcealer));
+                SyndicateRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, CustomGameOptions.UniqueShapeshifter));
+                SyndicateRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, CustomGameOptions.UniqueWarper));
+                SyndicateRoles.Add((typeof(Gorgon), CustomRPC.SetGorgon, CustomGameOptions.GorgonOn, CustomGameOptions.UniqueGorgon));
+                //SyndicateRoles.Add((typeof(Bomber), CustomRPC.SetBomber, CustomGameOptions.BomberOn, CustomGameOptions.UniqueBomber));
+                //SyndicateRoles.Add((typeof(Framer), CustomRPC.SetFramer, CustomGameOptions.FramerOn, CustomGameOptions.UniqueFramer));
+
+                if (CustomGameOptions.SyndicateCount >= 3)
+                    SyndicateRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, CustomGameOptions.UniqueRebel));
+
+                SortThings(IntruderRoles, CustomGameOptions.IntruderCount, CustomGameOptions.IntruderCount);
+
+                if (!CustomGameOptions.AltImps && CustomGameOptions.SyndicateCount > 0)
+                    SortThings(SyndicateRoles, CustomGameOptions.SyndicateCount, CustomGameOptions.SyndicateCount);
+                
+                if (CustomGameOptions.AltImps)
+                {
+                    IntruderRoles.Clear();
+                    IntruderRoles.AddRange(SyndicateRoles);
+                }
+
+                NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, CustomGameOptions.GlitchOn, CustomGameOptions.UniqueGlitch));
+                NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, CustomGameOptions.WerewolfOn, CustomGameOptions.UniqueWerewolf));
+                NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, CustomGameOptions.SerialKillerOn, CustomGameOptions.UniqueSerialKiller));
+                NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, CustomGameOptions.JuggernautOn, CustomGameOptions.UniqueJuggernaut));
+                NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, CustomGameOptions.MurdererOn, CustomGameOptions.UniqueMurderer));
+
+                if (CustomGameOptions.AddArsonist)
+                    NeutralKillingRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist, CustomGameOptions.ArsonistOn, CustomGameOptions.UniqueArsonist));
+
+                if (CustomGameOptions.AddCryomaniac)
+                    NeutralKillingRoles.Add((typeof(Cryomaniac), CustomRPC.SetCryomaniac, CustomGameOptions.CryomaniacOn, CustomGameOptions.UniqueCryomaniac));
+
+                if (CustomGameOptions.AddPlaguebearer)
+                {
+                    if (CustomGameOptions.PestSpawn)
+                        NeutralKillingRoles.Add((typeof(Pestilence), CustomRPC.SetPestilence, CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer));
+                    else
+                        NeutralKillingRoles.Add((typeof(Plaguebearer), CustomRPC.SetPlaguebearer, CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer));
+                }
+
+                NeutralKillingRoles.Shuffle();
+
+                var neutrals = 0;
+
+                if (NeutralKillingRoles.Count < CustomGameOptions.NeutralRoles)
+                    neutrals = NeutralKillingRoles.Count;
+                else
+                    neutrals = CustomGameOptions.NeutralRoles;
+
+                var spareCrew = crewmates.Count - neutrals;
+
+                if (spareCrew > 2)
+                    SortThings(NeutralKillingRoles, neutrals, neutrals);
+                else
+                    SortThings(NeutralKillingRoles, crewmates.Count - 3, crewmates.Count - 3);
+
+                if (CrewRoles.Count + NeutralKillingRoles.Count > crewmates.Count)
+                    SortThings(CrewRoles, crewmates.Count - NeutralKillingRoles.Count, crewmates.Count - NeutralKillingRoles.Count);
+                else if (CrewRoles.Count + NeutralKillingRoles.Count < crewmates.Count)
+                {
+                    int vigis = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
+                    int vets = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
+
+                    while (vigis > 0)
+                    {
+                        CrewRoles.Add((typeof(Vigilante), CustomRPC.SetVigilante, 100, false));
+                        vigis -= 1;
+                        CrewRoles.Add((typeof(Veteran), CustomRPC.SetVeteran, 100, false));
+                        vets -= 1;
+                    }
+                }
+
+                var nonIntruderRoles = new List<(Type, CustomRPC, int, bool)>();
+
+                nonIntruderRoles.AddRange(CrewRoles);
+                nonIntruderRoles.AddRange(NeutralKillingRoles);
+
+                if (!CustomGameOptions.AltImps)
+                    nonIntruderRoles.AddRange(SyndicateRoles);
+                    
+                nonIntruderRoles.Shuffle();
+                IntruderRoles.Shuffle();
+
+                foreach (var (type, rpc, _, unique) in IntruderRoles)
+                    Role.Gen<Role>(type, impostors, rpc);
+
+                foreach (var (type, rpc, _, unique) in nonIntruderRoles)
+                    Role.Gen<Role>(type, crewmates, rpc);
+            }
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -779,10 +1232,6 @@ namespace TownOfUsReworked.Patches
                         new Cryomaniac(Utils.PlayerById(reader.ReadByte()));
                         break;
 
-                    case CustomRPC.SetPuppeteer:
-                        new Puppeteer(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.SetThief:
                         new Thief(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -802,15 +1251,15 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.CryomaniacWin:
-                        var theCryomaniacTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Cryomaniac);
+                        var theCryomaniacTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Cryomaniac && !x.IsRecruit);
                         ((Cryomaniac) theCryomaniacTheRole).Wins();
                         break;
 
                     case CustomRPC.CryomaniacLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Cryomaniac)
-                                ((Cryomaniac) role).Loses();
+                            if (role.RoleType == RoleEnum.Cryomaniac && !role.IsRecruit)
+                                ((Cryomaniac)role).Loses();
                         }
 
                         break;
@@ -818,22 +1267,22 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.ThiefLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Thief)
+                            if (role.RoleType == RoleEnum.Thief && !role.IsRecruit)
                                 ((Thief)role).Loses();
                         }
 
                         break;
 
                     case CustomRPC.TrollWin:
-                        var theTrollTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Troll);
+                        var theTrollTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Troll && !x.IsRecruit);
                         ((Troll) theTrollTheRole).Wins();
                         break;
 
                     case CustomRPC.TrollLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Troll)
-                                ((Troll) role).Loses();
+                            if (role.RoleType == RoleEnum.Troll && !role.IsRecruit)
+                                ((Troll)role).Loses();
                         }
 
                         break;
@@ -846,7 +1295,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.JesterLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Jester)
+                            if (role.RoleType == RoleEnum.Jester && !role.IsRecruit)
                                 ((Jester)role).Loses();
                         }
 
@@ -864,7 +1313,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.GlitchLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Glitch)
+                            if (role.RoleType == RoleEnum.Glitch && !role.IsRecruit)
                                 ((Glitch)role).Loses();
                         }
 
@@ -873,7 +1322,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.JuggernautLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Juggernaut)
+                            if (role.RoleType == RoleEnum.Juggernaut && !role.IsRecruit)
                                 ((Juggernaut)role).Loses();
                         }
 
@@ -882,7 +1331,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.MurdererLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Murderer)
+                            if (role.RoleType == RoleEnum.Murderer && !role.IsRecruit)
                                 ((Murderer)role).Loses();
                         }
                         
@@ -891,7 +1340,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.AmnesiacLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Amnesiac)
+                            if (role.RoleType == RoleEnum.Amnesiac && !role.IsRecruit)
                                 ((Amnesiac)role).Loses();
                         }
 
@@ -900,7 +1349,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.ExecutionerLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Executioner)
+                            if (role.RoleType == RoleEnum.Executioner && !role.IsRecruit)
                                 ((Executioner)role).Loses();
                         }
 
@@ -915,10 +1364,8 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.SetCouple:
-                        var id = reader.ReadByte();
-                        var id2 = reader.ReadByte();
-                        var lover1 = Utils.PlayerById(id);
-                        var lover2 = Utils.PlayerById(id2);
+                        var lover1 = Utils.PlayerById(reader.ReadByte());
+                        var lover2 = Utils.PlayerById(reader.ReadByte());
                         var objectifierLover1 = new Lovers(lover1);
                         var objectifierLover2 = new Lovers(lover2);
                         objectifierLover1.OtherLover = objectifierLover2;
@@ -934,37 +1381,84 @@ namespace TownOfUsReworked.Patches
                         Role.CrewWin = false;
                         Role.SyndicateWin = false;
                         Role.IntruderWin = false;
-                        
+                        Role.AllNeutralsWin = false;
+                                
                         Role.UndeadWin = false;
                         Role.CabalWin = false;
 
+                        Role.NKWins = false;
+
+                        Role.SyndicateHasChaosDrive = false;
+                        Role.ChaosDriveMeetingTimerCount = 0;
+
+                        CrewAuditorRoles.Clear();
+                        CrewInvestigativeRoles.Clear();
+                        CrewKillingRoles.Clear();
+                        CrewProtectiveRoles.Clear();
+                        CrewSovereignRoles.Clear();
+                        CrewSupportRoles.Clear();
                         CrewRoles.Clear();
-                        NeutralNonKillingRoles.Clear();
+
+                        NeutralEvilRoles.Clear();
+                        NeutralBenignRoles.Clear();
                         NeutralKillingRoles.Clear();
+                        NeutralNeophyteRoles.Clear();
+                        NeutralRoles.Clear();
+
+                        IntruderDeceptionRoles.Clear();
+                        IntruderConcealingRoles.Clear();
+                        IntruderKillingRoles.Clear();
+                        IntruderSupportRoles.Clear();
                         IntruderRoles.Clear();
+
+                        SyndicateDisruptionRoles.Clear();
+                        SyndicateKillingRoles.Clear();
+                        SyndicateSupportRoles.Clear();
+                        SyndicatePowerRoles.Clear();
                         SyndicateRoles.Clear();
-                        NeutralChaosRoles.Clear();
 
                         GlobalModifiers.Clear();
                         BaitModifiers.Clear();
                         DiseasedModifiers.Clear();
                         ProfessionalModifiers.Clear();
 
-                        CrewAbilityGet.Clear();
                         GlobalAbilityGet.Clear();
                         IntruderAbilityGet.Clear();
                         CrewAbilityGet.Clear();
+                        TunnelerAbilityGet.Clear();
+                        NonEvilAbilityGet.Clear();
+                        TaskedAbilityGet.Clear();
+                        SnitchRevealerAbilityGet.Clear();
+                        NonVentingAbilityGet.Clear();
+                        EvilAbilityGet.Clear();
                         SyndicateAbilityGet.Clear();
                         NeutralAbilityGet.Clear();
-                        EvilAbilityGet.Clear();
-                        NonEvilAbilityGet.Clear();
 
                         CrewObjectifierGet.Clear();
                         NeutralObjectifierGet.Clear();
+                        CorruptedObjectifierGet.Clear();
+                        OverlordObjectifierGet.Clear();
                         GlobalObjectifierGet.Clear();
-                        
+
                         RecordRewind.points.Clear();
                         Murder.KilledPlayers.Clear();
+                        
+                        Role.RoleDictionary.Clear();
+                        Role.RoleHistory.Clear();
+
+                        Modifier.ModifierDictionary.Clear();
+                        Modifier.ModifierHistory.Clear();
+
+                        Objectifier.ObjectifierDictionary.Clear();
+                        Objectifier.ObjectifierHistory.Clear();
+
+                        Ability.AbilityDictionary.Clear();
+                        Ability.AbilityHistory.Clear();
+
+                        Role.Buttons.Clear();
+                        Role.SetColors();
+
+                        Lists.DefinedLists();
 
                         PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
                         break;
@@ -1045,10 +1539,8 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.Convert:
-                        readByte1 = reader.ReadByte();
-                        readByte2 = reader.ReadByte();
-                        var drac = Utils.PlayerById(readByte1);
-                        var other3 = Utils.PlayerById(readByte2);
+                        var drac = Utils.PlayerById(reader.ReadByte());
+                        var other3 = Utils.PlayerById(reader.ReadByte());
                         PerformConvertButton.Convert(Role.GetRole<Dracula>(drac), other3);
                         break;
                     
@@ -1111,8 +1603,9 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.AssassinKill:
                         var toDie = Utils.PlayerById(reader.ReadByte());
+                        var guess = reader.ReadString();
                         var assassin = Ability.GetAbilityValue<Assassin>(AbilityEnum.Assassin);
-                        AssassinKill.MurderPlayer(assassin, toDie);
+                        AssassinKill.MurderPlayer(assassin, toDie, guess);
                         break;
 
                     case CustomRPC.Mimic:
@@ -1124,24 +1617,24 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.GlitchWin:
-                        var theGlitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
+                        var theGlitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && !x.IsRecruit);
                         ((Glitch)theGlitch).Wins();
                         break;
 
                     case CustomRPC.JuggernautWin:
-                        var juggernaut = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Juggernaut);
+                        var juggernaut = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Juggernaut && !x.IsRecruit);
                         ((Juggernaut)juggernaut).Wins();
                         break;
 
                     case CustomRPC.MurdererWin:
-                        var murd = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Murderer);
+                        var murd = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Murderer && !x.IsRecruit);
                         ((Murderer)murd).Wins();
                         break;
 
                     case CustomRPC.CrewWin:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Crew)
+                            if (role.Faction == Faction.Crew && !role.IsRecruit && !role.IsIntTraitor && !role.IsSynTraitor)
                                 role.Wins();
                         }
                             
@@ -1150,7 +1643,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.CrewLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Crew)
+                            if (role.Faction == Faction.Crew && !role.IsRecruit && !role.IsIntTraitor && !role.IsSynTraitor)
                                 role.Loses();
                         }
 
@@ -1159,7 +1652,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.UndeadWin:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.SubFaction == SubFaction.Undead)
+                            if (role.SubFaction == SubFaction.Undead && !role.IsRecruit && !role.IsIntTraitor && !role.IsSynTraitor)
                                 role.Wins();
                         }
                             
@@ -1168,7 +1661,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.UndeadLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.SubFaction == SubFaction.Undead)
+                            if (role.SubFaction == SubFaction.Undead && !role.IsRecruit && !role.IsIntTraitor && !role.IsSynTraitor)
                                 role.Loses();
                         }
 
@@ -1177,7 +1670,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.IntruderWin:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Intruder)
+                            if (role.Faction == Faction.Intruder && !role.IsRecruit && !role.IsSynTraitor)
                                 role.Wins();
                         }
                             
@@ -1186,7 +1679,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.IntruderLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Intruder)
+                            if (role.Faction == Faction.Intruder && !role.IsRecruit && !role.IsSynTraitor)
                                 role.Loses();
                         }
 
@@ -1195,8 +1688,26 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.SyndicateWin:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Syndicate)
+                            if (role.Faction == Faction.Syndicate && !role.IsRecruit && !role.IsIntTraitor)
                                 role.Wins();
+                        }
+                            
+                        break;
+
+                    case CustomRPC.CabalWin:
+                        foreach (var role in Role.AllRoles)
+                        {
+                            if (role.RoleType == RoleEnum.Jackal || role.IsRecruit)
+                                role.Wins();
+                        }
+                            
+                        break;
+
+                    case CustomRPC.CabalLose:
+                        foreach (var role in Role.AllRoles)
+                        {
+                            if (role.RoleType == RoleEnum.Jackal || role.IsRecruit)
+                                role.Loses();
                         }
                             
                         break;
@@ -1204,7 +1715,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.SyndicateLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.Faction == Faction.Syndicate)
+                            if (role.Faction == Faction.Syndicate && !role.IsRecruit && !role.IsIntTraitor)
                                 role.Loses();
                         }
 
@@ -1239,13 +1750,6 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetSheriff:
                         new Sheriff(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.Investigate:
-                        var consig = Utils.PlayerById(reader.ReadByte());
-                        var other22 = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Consigliere>(consig).Investigated.Add(other22.PlayerId);
-                        Role.GetRole<Consigliere>(consig).LastInvestigated = DateTime.UtcNow;
                         break;
 
                     case CustomRPC.Morph:
@@ -1292,6 +1796,15 @@ namespace TownOfUsReworked.Patches
                         new GuardianAngel(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.TurnTraitor:
+                        var traitor = Utils.PlayerById(reader.ReadByte());
+                        var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
+
+                        if (traitorObj.Turned)
+                            Turn.SetTraitor.TurnTraitor(traitor);
+
+                        break;
+
                     case CustomRPC.SetGodfather:
                         new Godfather(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1316,6 +1829,8 @@ namespace TownOfUsReworked.Patches
                         var jackalRole = Role.GetRole<Jackal>(jackal);
                         jackalRole.GoodRecruit = goodRecruit;
                         (Role.GetRole(goodRecruit)).SubFaction = SubFaction.Cabal;
+                        (Role.GetRole(goodRecruit)).IsRecruit = true;
+                        (Role.GetRole(goodRecruit)).Color = Colors.Cabal;
                         break;
 
                     case CustomRPC.SetEvilRecruit:
@@ -1324,6 +1839,8 @@ namespace TownOfUsReworked.Patches
                         var jackalRole2 = Role.GetRole<Jackal>(jackal2);
                         jackalRole2.GoodRecruit = evilRecruit;
                         (Role.GetRole(evilRecruit)).SubFaction = SubFaction.Cabal;
+                        (Role.GetRole(evilRecruit)).IsRecruit = true;
+                        (Role.GetRole(evilRecruit)).Color = Colors.Cabal;
                         break;
 
                     case CustomRPC.SetBlackmailer:
@@ -1487,6 +2004,10 @@ namespace TownOfUsReworked.Patches
                         new Arsonist(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.SetPestilence:
+                        new Pestilence(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
                     case CustomRPC.SetSerialKiller:
                         new SerialKiller(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1508,28 +2029,33 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.ArsonistWin:
-                        var theArsonistTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist);
+                        var theArsonistTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && !x.IsRecruit);
                         ((Arsonist)theArsonistTheRole).Wins();
                         break;
 
                     case CustomRPC.ArsonistLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Arsonist)
+                            if (role.RoleType == RoleEnum.Arsonist && !role.IsRecruit)
                                 ((Arsonist)role).Loses();
                         }
 
                         break;
 
                     case CustomRPC.SerialKillerWin:
-                        var theSerialTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.SerialKiller);
+                        var theSerialTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.SerialKiller && !x.IsRecruit);
                         ((SerialKiller)theSerialTheRole).Wins();
+                        break;
+
+                    case CustomRPC.TaskmasterWin:
+                        var theTMTheObj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Taskmaster);
+                        ((Taskmaster)theTMTheObj).Wins();
                         break;
 
                     case CustomRPC.SerialKillerLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.SerialKiller)
+                            if (role.RoleType == RoleEnum.SerialKiller && !role.IsRecruit)
                                 ((SerialKiller)role).Loses();
                         }
 
@@ -1538,7 +2064,7 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.SurvivorLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Survivor && role.Player.Data.IsDead | role.Player.Data.Disconnected)
+                            if (role.RoleType == RoleEnum.Survivor && role.Player.Data.IsDead || role.Player.Data.Disconnected)
                                 ((Survivor)role).Loses();
                         }
 
@@ -1554,14 +2080,14 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.PlaguebearerWin:
-                        var thePlaguebearerTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Plaguebearer);
+                        var thePlaguebearerTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Plaguebearer && !x.IsRecruit);
                         ((Plaguebearer)thePlaguebearerTheRole).Wins();
                         break;
 
                     case CustomRPC.PlaguebearerLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Plaguebearer)
+                            if (role.RoleType == RoleEnum.Plaguebearer && !role.IsRecruit)
                                 ((Plaguebearer)role).Loses();
                         }
 
@@ -1584,14 +2110,14 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.CannibalWin:
-                        var theCannibalRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Cannibal);
+                        var theCannibalRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Cannibal && !x.IsRecruit);
                         ((Cannibal)theCannibalRole).Wins();
                         break;
 
                     case CustomRPC.CannibalLose:
                         foreach (var role in Role.AllRoles)
                         {
-                            if (role.RoleType == RoleEnum.Cannibal)
+                            if (role.RoleType == RoleEnum.Cannibal && !role.IsRecruit)
                                 ((Cannibal)role).Loses();
                         }
 
@@ -1618,7 +2144,7 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.PestilenceWin:
-                        var thePestilenceTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Pestilence);
+                        var thePestilenceTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Pestilence && !x.IsRecruit);
                         ((Pestilence)thePestilenceTheRole).Wins();
                         break;
 
@@ -1797,11 +2323,6 @@ namespace TownOfUsReworked.Patches
                         new Underdog(Utils.PlayerById(reader.ReadByte()));
                         break;
 
-                    case CustomRPC.SetPhantom:
-                        readByte = reader.ReadByte();
-                        SetPhantom.WillBePhantom = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
-                        break;
-
                     case CustomRPC.PhantomDied:
                         var phantom = Utils.PlayerById(reader.ReadByte());
                         Role.RoleDictionary.Remove(phantom.PlayerId);
@@ -1824,11 +2345,6 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.PhantomWin:
                         Objectifier.GetObjectifier<Phantom>(Utils.PlayerById(reader.ReadByte())).CompletedTasks = true;
-                        break;
-
-                    case CustomRPC.SetRevealer:
-                        readByte = reader.ReadByte();
-                        SetRevealer.WillBeRevealer = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
                         break;
 
                     case CustomRPC.RevealerDied:
@@ -1875,6 +2391,14 @@ namespace TownOfUsReworked.Patches
                         new Operative(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.SetRevealer:
+                        new Revealer(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetPhantom:
+                        new Phantom(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
                     case CustomRPC.AddMayorVoteBank:
                         Role.GetRole<Mayor>(Utils.PlayerById(reader.ReadByte())).VoteBank += reader.ReadInt32();
                         break;
@@ -1915,6 +2439,11 @@ namespace TownOfUsReworked.Patches
                         PlayerControl.GameOptions.VotingTime = CustomGameOptions.VotingTime;
                         PlayerControl.GameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
                         PlayerControl.GameOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                        PlayerControl.GameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
+                        PlayerControl.GameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+                        PlayerControl.GameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
+                        PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                        //PlayerControl.GameOptions.MaxPlayers = CustomGameOptions.LobbySize;
 
                         if (CustomGameOptions.AutoAdjustSettings)
                             RandomMap.AdjustSettings(readByte);
@@ -1940,21 +2469,6 @@ namespace TownOfUsReworked.Patches
                         var ssRole = Role.GetRole<Concealer>(ss);
                         ssRole.TimeRemaining = CustomGameOptions.ConcealDuration;
                         Utils.Shapeshift();
-                        break;
-
-                    case CustomRPC.Possess:
-                        var puppeteer = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Puppeteer>(puppeteer).PossessPlayer = Utils.PlayerById(reader.ReadByte());
-                        break;
-
-                    case CustomRPC.UnPossess:
-                        var puppeteer3 = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Puppeteer>(puppeteer3).UnPossess();
-                        break;
-
-                    case CustomRPC.PossessKill:
-                        var puppeteer2 = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Puppeteer>(puppeteer2).KillUnPossess();
                         break;
 
                     case CustomRPC.Gaze:
@@ -1999,7 +2513,7 @@ namespace TownOfUsReworked.Patches
                         new Gorgon(Utils.PlayerById(reader.ReadByte()));
                         break;
                     
-                    case CustomRPC.Sendchat:
+                    case CustomRPC.SendChat:
                         string report = reader.ReadString();
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
                         break;
@@ -2023,37 +2537,84 @@ namespace TownOfUsReworked.Patches
                 Role.CrewWin = false;
                 Role.SyndicateWin = false;
                 Role.IntruderWin = false;
-                
+                Role.AllNeutralsWin = false;
+                        
                 Role.UndeadWin = false;
                 Role.CabalWin = false;
 
+                Role.NKWins = false;
+
+                Role.SyndicateHasChaosDrive = false;
+                Role.ChaosDriveMeetingTimerCount = 0;
+
+                CrewAuditorRoles.Clear();
+                CrewInvestigativeRoles.Clear();
+                CrewKillingRoles.Clear();
+                CrewProtectiveRoles.Clear();
+                CrewSovereignRoles.Clear();
+                CrewSupportRoles.Clear();
                 CrewRoles.Clear();
-                NeutralNonKillingRoles.Clear();
+
+                NeutralEvilRoles.Clear();
+                NeutralBenignRoles.Clear();
                 NeutralKillingRoles.Clear();
+                NeutralNeophyteRoles.Clear();
+                NeutralRoles.Clear();
+
+                IntruderDeceptionRoles.Clear();
+                IntruderConcealingRoles.Clear();
+                IntruderKillingRoles.Clear();
+                IntruderSupportRoles.Clear();
                 IntruderRoles.Clear();
+
+                SyndicateDisruptionRoles.Clear();
+                SyndicateKillingRoles.Clear();
+                SyndicateSupportRoles.Clear();
+                SyndicatePowerRoles.Clear();
                 SyndicateRoles.Clear();
-                NeutralChaosRoles.Clear();
 
                 GlobalModifiers.Clear();
                 BaitModifiers.Clear();
                 DiseasedModifiers.Clear();
                 ProfessionalModifiers.Clear();
 
-                CrewAbilityGet.Clear();
                 GlobalAbilityGet.Clear();
                 IntruderAbilityGet.Clear();
                 CrewAbilityGet.Clear();
+                TunnelerAbilityGet.Clear();
+                NonEvilAbilityGet.Clear();
+                TaskedAbilityGet.Clear();
+                SnitchRevealerAbilityGet.Clear();
+                NonVentingAbilityGet.Clear();
+                EvilAbilityGet.Clear();
                 SyndicateAbilityGet.Clear();
                 NeutralAbilityGet.Clear();
-                EvilAbilityGet.Clear();
-                NonEvilAbilityGet.Clear();
 
                 CrewObjectifierGet.Clear();
                 NeutralObjectifierGet.Clear();
+                CorruptedObjectifierGet.Clear();
+                OverlordObjectifierGet.Clear();
                 GlobalObjectifierGet.Clear();
 
                 RecordRewind.points.Clear();
                 Murder.KilledPlayers.Clear();
+                
+                Role.RoleDictionary.Clear();
+                Role.RoleHistory.Clear();
+
+                Modifier.ModifierDictionary.Clear();
+                Modifier.ModifierHistory.Clear();
+
+                Objectifier.ObjectifierDictionary.Clear();
+                Objectifier.ObjectifierHistory.Clear();
+
+                Ability.AbilityDictionary.Clear();
+                Ability.AbilityHistory.Clear();
+
+                Role.Buttons.Clear();
+                Role.SetColors();
+
+                Lists.DefinedLists();
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cleared Lists");
 
@@ -2063,27 +2624,25 @@ namespace TownOfUsReworked.Patches
 
                 unchecked
                 {
-                    var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start,
-                        SendOption.Reliable, -1);
+                    var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable, -1);
                     AmongUsClient.Instance.FinishRpcImmediately(startWriter);
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Unchecked Write Line");
+                
+                int num = 0;
 
-                var customgflag = CustomGameOptions.GameMode == GameMode.Custom;
-                int num2 = 0;
-
-                if (CustomGameOptions.GameMode != GameMode.KillingOnly)
+                if (!IsKilling)
                 {
                     #region Crew Roles
                     if (CustomGameOptions.MayorOn > 0)
                     {
-                        var number = customgflag ? CustomGameOptions.MayorCount : 1;
+                        num = IsCustom ? CustomGameOptions.MayorCount : 1;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
-                            CrewRoles.Add((typeof(Mayor), CustomRPC.SetMayor, CustomGameOptions.MayorOn, true));
-                            number--;
+                            CrewSovereignRoles.Add((typeof(Mayor), CustomRPC.SetMayor, CustomGameOptions.MayorOn, CustomGameOptions.UniqueMayor));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Mayor Done");
@@ -2091,12 +2650,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.SheriffOn > 0)
                     {
-                        var number = customgflag ? CustomGameOptions.SheriffCount : 1;
+                        num = IsCustom ? CustomGameOptions.SheriffCount : 1;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
-                            CrewRoles.Add((typeof(Sheriff), CustomRPC.SetSheriff, CustomGameOptions.SheriffOn, true));
-                            number--;
+                            CrewInvestigativeRoles.Add((typeof(Sheriff), CustomRPC.SetSheriff, CustomGameOptions.SheriffOn, CustomGameOptions.UniqueSheriff));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Sheriff Done");
@@ -2104,12 +2663,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.InspectorOn > 0)
                     {
-                        var number = customgflag ? CustomGameOptions.InspectorOn : 1;
+                        num = IsCustom ? CustomGameOptions.InspectorCount : 1;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
-                            CrewRoles.Add((typeof(Inspector), CustomRPC.SetInsepctor, CustomGameOptions.InspectorOn, true));
-                            number--;
+                            CrewInvestigativeRoles.Add((typeof(Inspector), CustomRPC.SetInsepctor, CustomGameOptions.InspectorOn, CustomGameOptions.UniqueInspector));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Inspector Done");
@@ -2117,12 +2676,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.VigilanteOn > 0)
                     {
-                        var number = CustomGameOptions.VigilanteCount;
+                        num = IsCustom ? CustomGameOptions.VigilanteCount : 1;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
-                            CrewRoles.Add((typeof(Vigilante), CustomRPC.SetVigilante, CustomGameOptions.VigilanteOn, true));
-                            number--;
+                            CrewKillingRoles.Add((typeof(Vigilante), CustomRPC.SetVigilante, CustomGameOptions.VigilanteOn, CustomGameOptions.UniqueVigilante));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Vigilante Done");
@@ -2130,321 +2689,237 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.EngineerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.EngineerCount;
+                        num = IsCustom ? CustomGameOptions.EngineerCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Engineer), CustomRPC.SetEngineer, CustomGameOptions.EngineerOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Engineer), CustomRPC.SetEngineer, CustomGameOptions.EngineerOn, CustomGameOptions.UniqueEngineer));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Engineer), CustomRPC.SetEngineer, CustomGameOptions.EngineerOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Engineer Done");
                     }
 
                     if (CustomGameOptions.SwapperOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.SwapperCount;
+                        num = IsCustom ? CustomGameOptions.SwapperCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Swapper), CustomRPC.SetSwapper, CustomGameOptions.SwapperOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewSovereignRoles.Add((typeof(Swapper), CustomRPC.SetSwapper, CustomGameOptions.SwapperOn, CustomGameOptions.UniqueSwapper));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Swapper), CustomRPC.SetSwapper, CustomGameOptions.SwapperOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Swapper Done");
                     }
 
                     if (CustomGameOptions.InvestigatorOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.InvestigatorCount;
+                        num = IsCustom ? CustomGameOptions.InvestigatorCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Investigator), CustomRPC.SetInvestigator, CustomGameOptions.InvestigatorOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Investigator), CustomRPC.SetInvestigator, CustomGameOptions.InvestigatorOn, CustomGameOptions.UniqueInvestigator));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Investigator), CustomRPC.SetInvestigator, CustomGameOptions.InvestigatorOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Investigator Done");
                     }
 
                     if (CustomGameOptions.TimeLordOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.TimeLordCount;
+                        num = IsCustom ? CustomGameOptions.TimeLordCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(TimeLord), CustomRPC.SetTimeLord, CustomGameOptions.TimeLordOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewProtectiveRoles.Add((typeof(TimeLord), CustomRPC.SetTimeLord, CustomGameOptions.TimeLordOn, CustomGameOptions.UniqueTimeLord));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(TimeLord), CustomRPC.SetTimeLord, CustomGameOptions.TimeLordOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Time Lord Done");
                     }
 
                     if (CustomGameOptions.MedicOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.MedicCount;
+                        num = IsCustom ? CustomGameOptions.MedicCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Medic), CustomRPC.SetMedic, CustomGameOptions.MedicOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewProtectiveRoles.Add((typeof(Medic), CustomRPC.SetMedic, CustomGameOptions.MedicOn, CustomGameOptions.UniqueMedic));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Medic), CustomRPC.SetMedic, CustomGameOptions.MedicOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Medic Done");
                     }
 
                     if (CustomGameOptions.AgentOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.AgentCount;
+                        num = IsCustom ? CustomGameOptions.AgentCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Agent), CustomRPC.SetAgent, CustomGameOptions.AgentOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Agent), CustomRPC.SetAgent, CustomGameOptions.AgentOn, CustomGameOptions.UniqueAgent));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Agent), CustomRPC.SetAgent, CustomGameOptions.AgentOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Agent Done");
                     }
 
                     if (CustomGameOptions.AltruistOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.AltruistCount;
+                        num = IsCustom ? CustomGameOptions.AltruistCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Altruist), CustomRPC.SetAltruist, CustomGameOptions.AltruistOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewProtectiveRoles.Add((typeof(Altruist), CustomRPC.SetAltruist, CustomGameOptions.AltruistOn, CustomGameOptions.UniqueAltruist));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Altruist), CustomRPC.SetAltruist, CustomGameOptions.AltruistOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Altruist Done");
                     }
 
                     if (CustomGameOptions.VeteranOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.VeteranCount;
+                        num = IsCustom ? CustomGameOptions.VeteranCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Veteran), CustomRPC.SetVeteran, CustomGameOptions.VeteranOn, true));
-                                number--;
-                            } while (number > 0);
-                        }
-                        else
-                            CrewRoles.Add((typeof(Veteran), CustomRPC.SetVeteran, CustomGameOptions.VeteranOn, true));
+                        while (num > 0)
+                        {
+                            CrewKillingRoles.Add((typeof(Veteran), CustomRPC.SetVeteran, CustomGameOptions.VeteranOn, CustomGameOptions.UniqueVeteran));
+                            num--;
+                        } 
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Veteran Done");
                     }
 
                     if (CustomGameOptions.TrackerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.TrackerCount;
+                        num = IsCustom ? CustomGameOptions.TrackerCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Tracker), CustomRPC.SetTracker, CustomGameOptions.TrackerOn, true));
-                                number--;
-                            } while (number > 0);
-                        }
-                        else
-                            CrewRoles.Add((typeof(Tracker), CustomRPC.SetTracker, CustomGameOptions.TrackerOn, true));
+                        while (num > 0) 
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Tracker), CustomRPC.SetTracker, CustomGameOptions.TrackerOn, CustomGameOptions.UniqueTracker));
+                            num--;
+                        } 
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tracker Done");
                     }
 
                     if (CustomGameOptions.TransporterOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.TransporterCount;
+                        num = IsCustom ? CustomGameOptions.TransporterCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Transporter), CustomRPC.SetTransporter, CustomGameOptions.TransporterOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Transporter), CustomRPC.SetTransporter, CustomGameOptions.TransporterOn, CustomGameOptions.UniqueTransporter));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Transporter), CustomRPC.SetTransporter, CustomGameOptions.TransporterOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Transporter Done");
                     }
 
                     if (CustomGameOptions.MediumOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.MediumCount;
+                        num = IsCustom ? CustomGameOptions.MediumCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Medium), CustomRPC.SetMedium, CustomGameOptions.MediumOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Medium), CustomRPC.SetMedium, CustomGameOptions.MediumOn, CustomGameOptions.UniqueMedium));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Medium), CustomRPC.SetMedium, CustomGameOptions.MediumOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Medium Done");
                     }
 
                     if (CustomGameOptions.CoronerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.CoronerCount;
+                        num = IsCustom ? CustomGameOptions.CoronerCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Coroner), CustomRPC.SetCoroner, CustomGameOptions.CoronerOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Coroner), CustomRPC.SetCoroner, CustomGameOptions.CoronerOn, CustomGameOptions.UniqueCoroner));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Coroner), CustomRPC.SetCoroner, CustomGameOptions.CoronerOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Coroner Done");
                     }
 
                     if (CustomGameOptions.OperativeOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.OperativeCount;
+                        num = IsCustom ? CustomGameOptions.OperativeCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Operative), CustomRPC.SetOperative, CustomGameOptions.OperativeOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Operative), CustomRPC.SetOperative, CustomGameOptions.OperativeOn, CustomGameOptions.UniqueOperative));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Operative), CustomRPC.SetOperative, CustomGameOptions.OperativeOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Operative Done");
                     }
 
                     if (CustomGameOptions.DetectiveOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.DetectiveCount;
+                        num = IsCustom ? CustomGameOptions.DetectiveCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Detective), CustomRPC.SetDetective, CustomGameOptions.DetectiveOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewInvestigativeRoles.Add((typeof(Detective), CustomRPC.SetDetective, CustomGameOptions.DetectiveOn, CustomGameOptions.UniqueDetective));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Detective), CustomRPC.SetDetective, CustomGameOptions.DetectiveOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Detective Done");
                     }
 
                     if (CustomGameOptions.EscortOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.EscortCount;
+                        num = IsCustom ? CustomGameOptions.EscortCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Escort), CustomRPC.SetEscort, CustomGameOptions.EscortOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Escort), CustomRPC.SetEscort, CustomGameOptions.EscortOn, CustomGameOptions.UniqueEscort));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Escort), CustomRPC.SetEscort, CustomGameOptions.EscortOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Escort Done");
                     }
 
                     if (CustomGameOptions.ShifterOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.ShifterCount;
+                        num = IsCustom ? CustomGameOptions.ShifterCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(Shifter), CustomRPC.SetShifter, CustomGameOptions.ShifterOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Shifter), CustomRPC.SetShifter, CustomGameOptions.ShifterOn, CustomGameOptions.UniqueShifter));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(Shifter), CustomRPC.SetShifter, CustomGameOptions.ShifterOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shifter Done");
                     }
 
-                    if (CustomGameOptions.CrewmateOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
+                    if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
                     {
-                        var number = CustomGameOptions.CrewCount;
+                        num = CustomGameOptions.CrewCount;
 
-                        do
+                        while (num > 0)
                         {
-                            IntruderRoles.Add((typeof(Crewmate), CustomRPC.SetCrewmate, CustomGameOptions.CrewmateOn, true));
-                            number--;
-                        } while (number > 0);
+                            CrewRoles.Add((typeof(Crewmate), CustomRPC.SetCrewmate, CustomGameOptions.CrewmateOn, false));
+                            num--;
+                        }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Crewmate Done");
                     }
 
                     //It is crucial VH comes with Dracula does, since I want VH to only spawn if there's a Dracula in the role spawning set
                     //Future AD here, I realised that when the game begins, the VH will automatically turn into Vig so I don't need to take any extra steps
+                    //Future future AD here, VH does in fact spawn with no Dracula and refuses to convert to Vig on game start for no good reason, I'll fix it once I've gotten plenty mad over it
                     if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.VampireHunterCount;
+                        num = IsCustom ? CustomGameOptions.VampireHunterCount : 1;
 
-                            do
-                            {
-                                CrewRoles.Add((typeof(VampireHunter), CustomRPC.SetVampireHunter, CustomGameOptions.VampireHunterOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            CrewAuditorRoles.Add((typeof(VampireHunter), CustomRPC.SetVampireHunter, CustomGameOptions.VampireHunterOn, CustomGameOptions.UniqueVampireHunter));
+                            num--;
                         }
-                        else
-                            CrewRoles.Add((typeof(VampireHunter), CustomRPC.SetVampireHunter, CustomGameOptions.VampireHunterOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Vampire Hunter Done");
                     }
@@ -2453,318 +2928,240 @@ namespace TownOfUsReworked.Patches
                     #region Neutral Roles
                     if (CustomGameOptions.JesterOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.JesterCount;
+                        num = IsCustom ? CustomGameOptions.JesterCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Jester), CustomRPC.SetJester, CustomGameOptions.JesterOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralEvilRoles.Add((typeof(Jester), CustomRPC.SetJester, CustomGameOptions.JesterOn, CustomGameOptions.UniqueJester));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Jester), CustomRPC.SetJester, CustomGameOptions.JesterOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jester Done");
                     }
 
                     if (CustomGameOptions.AmnesiacOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.AmnesiacCount;
+                        num = IsCustom ? CustomGameOptions.AmnesiacCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Amnesiac), CustomRPC.SetAmnesiac, CustomGameOptions.AmnesiacOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralBenignRoles.Add((typeof(Amnesiac), CustomRPC.SetAmnesiac, CustomGameOptions.AmnesiacOn, CustomGameOptions.UniqueAmnesiac));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Amnesiac), CustomRPC.SetAmnesiac, CustomGameOptions.AmnesiacOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Amnesiac Done");
                     }
 
                     if (CustomGameOptions.ExecutionerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.ExecutionerCount;
+                        num = IsCustom ? CustomGameOptions.ExecutionerCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Executioner), CustomRPC.SetExecutioner, CustomGameOptions.ExecutionerOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralEvilRoles.Add((typeof(Executioner), CustomRPC.SetExecutioner, CustomGameOptions.ExecutionerOn, CustomGameOptions.UniqueExecutioner));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Executioner), CustomRPC.SetExecutioner, CustomGameOptions.ExecutionerOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Executioner Done");
                     }
 
                     if (CustomGameOptions.SurvivorOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.SurvivorCount;
+                        num = IsCustom ? CustomGameOptions.SurvivorCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Survivor), CustomRPC.SetSurvivor, CustomGameOptions.SurvivorOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralBenignRoles.Add((typeof(Survivor), CustomRPC.SetSurvivor, CustomGameOptions.SurvivorOn, CustomGameOptions.UniqueSurvivor));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Survivor), CustomRPC.SetSurvivor, CustomGameOptions.SurvivorOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Survivor Done");
                     }
 
                     if (CustomGameOptions.GuardianAngelOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.GuardianAngelCount;
+                        num = IsCustom ? CustomGameOptions.GuardianAngelCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(GuardianAngel), CustomRPC.SetGuardianAngel, CustomGameOptions.GuardianAngelOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralBenignRoles.Add((typeof(GuardianAngel), CustomRPC.SetGuardianAngel, CustomGameOptions.GuardianAngelOn, CustomGameOptions.UniqueGuardianAngel));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(GuardianAngel), CustomRPC.SetGuardianAngel, CustomGameOptions.GuardianAngelOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guardian Angel Done");
                     }
 
                     if (CustomGameOptions.GlitchOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.GlitchCount;
+                        num = IsCustom ? CustomGameOptions.GlitchCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, CustomGameOptions.GlitchOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, CustomGameOptions.GlitchOn, CustomGameOptions.UniqueGlitch));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Glitch), CustomRPC.SetGlitch, CustomGameOptions.GlitchOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Glitch Done");
                     }
 
                     if (CustomGameOptions.MurdererOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.MurdCount;
+                        num = IsCustom ? CustomGameOptions.MurdCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, CustomGameOptions.MurdererOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, CustomGameOptions.MurdererOn, CustomGameOptions.UniqueMurderer));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Murderer), CustomRPC.SetMurderer, CustomGameOptions.MurdererOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Murderer Done");
                     }
 
                     if (CustomGameOptions.CryomaniacOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.CryomaniacCount;
+                        num = IsCustom ? CustomGameOptions.CryomaniacCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Cryomaniac), CustomRPC.SetCryomaniac, CustomGameOptions.CryomaniacOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Cryomaniac), CustomRPC.SetCryomaniac, CustomGameOptions.CryomaniacOn, CustomGameOptions.UniqueCryomaniac));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Cryomaniac), CustomRPC.SetCryomaniac, CustomGameOptions.CryomaniacOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cryomaniac Done");
                     }
 
                     if (CustomGameOptions.WerewolfOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.WerewolfCount;
+                        num = IsCustom ? CustomGameOptions.WerewolfCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, CustomGameOptions.WerewolfOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, CustomGameOptions.WerewolfOn, CustomGameOptions.UniqueWerewolf));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Werewolf), CustomRPC.SetWerewolf, CustomGameOptions.WerewolfOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Werewolf Done");
                     }
 
                     if (CustomGameOptions.ArsonistOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.ArsonistCount;
+                        num = IsCustom ? CustomGameOptions.ArsonistCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist, CustomGameOptions.ArsonistOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist, CustomGameOptions.ArsonistOn, CustomGameOptions.UniqueArsonist));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Arsonist), CustomRPC.SetArsonist, CustomGameOptions.ArsonistOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Arsonist Done");
                     }
 
                     if (CustomGameOptions.JackalOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.JackalCount;
+                        num = IsCustom ? CustomGameOptions.JackalCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Jackal), CustomRPC.SetJackal, CustomGameOptions.JackalOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralNeophyteRoles.Add((typeof(Jackal), CustomRPC.SetJackal, CustomGameOptions.JackalOn, CustomGameOptions.UniqueJackal));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Jackal), CustomRPC.SetJackal, CustomGameOptions.JackalOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jackal Done");
                     }
 
                     if (CustomGameOptions.PlaguebearerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
+                        num = IsCustom ? CustomGameOptions.PlaguebearerCount : 1;
+
+                        while (num > 0)
                         {
-                            var number = CustomGameOptions.PlaguebearerCount;
+                            if (CustomGameOptions.PestSpawn)
+                                NeutralKillingRoles.Add((typeof(Pestilence), CustomRPC.SetPestilence, CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer));
+                            else
+                                NeutralKillingRoles.Add((typeof(Plaguebearer), CustomRPC.SetPlaguebearer, CustomGameOptions.PlaguebearerOn, CustomGameOptions.UniquePlaguebearer));
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Plaguebearer), CustomRPC.SetPlaguebearer, CustomGameOptions.PlaguebearerOn, true));
-                                number--;
-                            } while (number > 0);
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Plaguebearer), CustomRPC.SetPlaguebearer, CustomGameOptions.PlaguebearerOn, true));
 
-                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Plaguebearer Done");
+                        var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"{PBorPest} Done");
                     }
 
                     if (CustomGameOptions.SerialKillerOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.SKCount;
+                        num = IsCustom ? CustomGameOptions.SKCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, CustomGameOptions.SerialKillerOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, CustomGameOptions.SerialKillerOn, CustomGameOptions.UniqueSerialKiller));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(SerialKiller), CustomRPC.SetSerialKiller, CustomGameOptions.SerialKillerOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Serial Killer Done");
                     }
 
                     if (CustomGameOptions.JuggernautOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.JuggernautCount;
+                        num = IsCustom ? CustomGameOptions.JuggernautCount : 1;
 
-                            do
-                            {
-                                NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, CustomGameOptions.JuggernautOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, CustomGameOptions.JuggernautOn, CustomGameOptions.UniqueJuggernaut));
+                            num--;
                         }
-                        else
-                            NeutralKillingRoles.Add((typeof(Juggernaut), CustomRPC.SetJuggernaut, CustomGameOptions.JuggernautOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Juggeraut Done");
                     }
 
                     if (CustomGameOptions.CannibalOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.CannibalCount;
+                        num = IsCustom ? CustomGameOptions.CannibalCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Cannibal), CustomRPC.SetCannibal, CustomGameOptions.CannibalOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralEvilRoles.Add((typeof(Cannibal), CustomRPC.SetCannibal, CustomGameOptions.CannibalOn, CustomGameOptions.UniqueCannibal));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Cannibal), CustomRPC.SetCannibal, CustomGameOptions.CannibalOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cannibal Done");
                     }
 
                     if (CustomGameOptions.ThiefOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.ThiefCount;
+                        num = IsCustom ? CustomGameOptions.ThiefCount : 1;
 
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Thief), CustomRPC.SetThief, CustomGameOptions.ThiefOn, true));
-                                number--;
-                            } while (number > 0);
+                        while (num > 0)
+                        {
+                            NeutralBenignRoles.Add((typeof(Thief), CustomRPC.SetThief, CustomGameOptions.ThiefOn, CustomGameOptions.UniqueThief));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Thief), CustomRPC.SetThief, CustomGameOptions.ThiefOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Thief Done");
                     }
 
                     if (CustomGameOptions.DraculaOn > 0)
                     {
-                        if (CustomGameOptions.GameMode == GameMode.Custom)
+                        num = IsCustom ? CustomGameOptions.DraculaCount : 1;
+
+                        while (num > 0)
                         {
-                            var number = CustomGameOptions.DraculaCount;
-                            do
-                            {
-                                NeutralNonKillingRoles.Add((typeof(Dracula), CustomRPC.SetDracula, CustomGameOptions.DraculaOn, true));
-                                number--;
-                            } while (number > 0);
+                            NeutralNeophyteRoles.Add((typeof(Dracula), CustomRPC.SetDracula, CustomGameOptions.DraculaOn, CustomGameOptions.UniqueDracula));
+                            num--;
                         }
-                        else
-                            NeutralNonKillingRoles.Add((typeof(Dracula), CustomRPC.SetDracula, CustomGameOptions.DraculaOn, true));
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dracula Done");
                     }
 
-                    if (CustomGameOptions.TrollOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
+                    if (CustomGameOptions.TrollOn > 0 && CustomGameOptions.GameMode != GameMode.Classic)
                     {
-                        var number = CustomGameOptions.TrollCount;
+                        num = IsCustom ? CustomGameOptions.TrollCount : 1;
 
-                        do
+                        while (num > 0)
                         {
-                            NeutralNonKillingRoles.Add((typeof(Troll), CustomRPC.SetTroll, CustomGameOptions.TrollOn, true));
-                            number--;
-                        } while (number > 0);
+                            NeutralEvilRoles.Add((typeof(Troll), CustomRPC.SetTroll, CustomGameOptions.TrollOn, CustomGameOptions.UniqueTroll));
+                            num--;
+                        }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Troll Done");
                     }
@@ -2775,514 +3172,303 @@ namespace TownOfUsReworked.Patches
                     {
                         if (CustomGameOptions.UndertakerOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.UndertakerCount;
+                            num = IsCustom ? CustomGameOptions.UndertakerCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Undertaker), CustomRPC.SetUndertaker, CustomGameOptions.UndertakerOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderConcealingRoles.Add((typeof(Undertaker), CustomRPC.SetUndertaker, CustomGameOptions.UndertakerOn, CustomGameOptions.UniqueUndertaker));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Undertaker), CustomRPC.SetUndertaker, CustomGameOptions.UndertakerOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Undertaker Done");
                         }
 
                         if (CustomGameOptions.MorphlingOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.MorphlingCount;
+                            num = IsCustom ? CustomGameOptions.MorphlingCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Morphling), CustomRPC.SetMorphling, CustomGameOptions.MorphlingOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderDeceptionRoles.Add((typeof(Morphling), CustomRPC.SetMorphling, CustomGameOptions.MorphlingOn, CustomGameOptions.UniqueMorphling));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Morphling), CustomRPC.SetMorphling, CustomGameOptions.MorphlingOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Morphling Done");
                         }
 
                         if (CustomGameOptions.BlackmailerOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.BlackmailerCount;
+                            num = IsCustom ? CustomGameOptions.BlackmailerCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Blackmailer), CustomRPC.SetBlackmailer, CustomGameOptions.BlackmailerOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderConcealingRoles.Add((typeof(Blackmailer), CustomRPC.SetBlackmailer, CustomGameOptions.BlackmailerOn, CustomGameOptions.UniqueBlackmailer));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Blackmailer), CustomRPC.SetBlackmailer, CustomGameOptions.BlackmailerOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Blackmailer Done");
                         }
 
                         if (CustomGameOptions.MinerOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.MinerCount;
+                            num = IsCustom ? CustomGameOptions.MinerCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Miner), CustomRPC.SetMiner, CustomGameOptions.MinerOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(Miner), CustomRPC.SetMiner, CustomGameOptions.MinerOn, CustomGameOptions.UniqueMiner));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Miner), CustomRPC.SetMiner, CustomGameOptions.MinerOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Miner Done");
                         }
 
                         if (CustomGameOptions.TeleporterOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.TeleporterCount;
+                            num = IsCustom ? CustomGameOptions.TeleporterCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Teleporter), CustomRPC.SetTeleporter, CustomGameOptions.TeleporterOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(Teleporter), CustomRPC.SetTeleporter, CustomGameOptions.TeleporterOn, CustomGameOptions.UniqueTeleporter));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Teleporter), CustomRPC.SetTeleporter, CustomGameOptions.TeleporterOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Teleporter Done");
                         }
 
                         if (CustomGameOptions.WraithOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.WraithCount;
+                            num = IsCustom ? CustomGameOptions.WraithCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Wraith), CustomRPC.SetWraith, CustomGameOptions.WraithOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderDeceptionRoles.Add((typeof(Wraith), CustomRPC.SetWraith, CustomGameOptions.WraithOn, CustomGameOptions.UniqueWraith));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Wraith), CustomRPC.SetWraith, CustomGameOptions.WraithOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Wraith Done");
                         }
 
                         if (CustomGameOptions.ConsortOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ConsortCount;
+                            num = IsCustom ? CustomGameOptions.ConsortCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Consort), CustomRPC.SetConsort, CustomGameOptions.ConsortOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(Consort), CustomRPC.SetConsort, CustomGameOptions.ConsortOn, CustomGameOptions.UniqueConsort));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Consort), CustomRPC.SetConsort, CustomGameOptions.ConsortOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Consort Done");
                         }
 
                         if (CustomGameOptions.JanitorOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.JanitorCount;
+                            num = IsCustom ? CustomGameOptions.JanitorCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Janitor), CustomRPC.SetJanitor, CustomGameOptions.JanitorOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderConcealingRoles.Add((typeof(Janitor), CustomRPC.SetJanitor, CustomGameOptions.JanitorOn, CustomGameOptions.UniqueJanitor));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Janitor), CustomRPC.SetJanitor, CustomGameOptions.JanitorOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Janitor Done");
                         }
 
                         if (CustomGameOptions.CamouflagerOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.CamouflagerCount;
+                            num = IsCustom ? CustomGameOptions.CamouflagerCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Camouflager), CustomRPC.SetCamouflager, CustomGameOptions.CamouflagerOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderConcealingRoles.Add((typeof(Camouflager), CustomRPC.SetCamouflager, CustomGameOptions.CamouflagerOn, CustomGameOptions.UniqueCamouflager));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Camouflager), CustomRPC.SetCamouflager, CustomGameOptions.CamouflagerOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Camouflager Done");
                         }
 
                         if (CustomGameOptions.GrenadierOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.GrenadierCount;
+                            num = IsCustom ? CustomGameOptions.GrenadierCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Grenadier), CustomRPC.SetGrenadier, CustomGameOptions.GrenadierOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderConcealingRoles.Add((typeof(Grenadier), CustomRPC.SetGrenadier, CustomGameOptions.GrenadierOn, CustomGameOptions.UniqueGrenadier));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Grenadier), CustomRPC.SetGrenadier, CustomGameOptions.GrenadierOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Grenadier Done");
                         }
 
                         if (CustomGameOptions.PoisonerOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.PoisonerCount;
+                            num = IsCustom ? CustomGameOptions.PoisonerCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Poisoner), CustomRPC.SetPoisoner, CustomGameOptions.PoisonerOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderDeceptionRoles.Add((typeof(Poisoner), CustomRPC.SetPoisoner, CustomGameOptions.PoisonerOn, CustomGameOptions.UniquePoisoner));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Poisoner), CustomRPC.SetPoisoner, CustomGameOptions.PoisonerOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Poisoner Done");
                         }
 
-                        if (CustomGameOptions.ImpostorOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
+                        if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
                         {
-                            var number = CustomGameOptions.ImpCount;
+                            num = CustomGameOptions.ImpCount;
 
-                            do
+                            while (num > 0)
                             {
-                                IntruderRoles.Add((typeof(Impostor), CustomRPC.SetImpostor, CustomGameOptions.ImpostorOn, true));
-                                number--;
-                            } while (number > 0);
+                                IntruderRoles.Add((typeof(Impostor), CustomRPC.SetImpostor, CustomGameOptions.ImpostorOn, false));
+                                num--;
+                            }
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Impostor Done");
                         }
 
                         if (CustomGameOptions.ConsigliereOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ConsigliereCount;
+                            num = IsCustom ? CustomGameOptions.ConsigliereCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Consigliere), CustomRPC.SetConsigliere, CustomGameOptions.ConsigliereOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(Consigliere), CustomRPC.SetConsigliere, CustomGameOptions.ConsigliereOn, CustomGameOptions.UniqueConsigliere));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Consigliere), CustomRPC.SetConsigliere, CustomGameOptions.ConsigliereOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Consigliere Done");
                         }
 
                         if (CustomGameOptions.DisguiserOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.DisguiserCount;
+                            num = IsCustom ? CustomGameOptions.DisguiserCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Disguiser), CustomRPC.SetDisguiser, CustomGameOptions.DisguiserOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderDeceptionRoles.Add((typeof(Disguiser), CustomRPC.SetDisguiser, CustomGameOptions.DisguiserOn, CustomGameOptions.UniqueDisguiser));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Disguiser), CustomRPC.SetDisguiser, CustomGameOptions.DisguiserOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Disguiser Done");
                         }
 
                         if (CustomGameOptions.TimeMasterOn > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.TimeMasterCount;
+                            num = IsCustom ? CustomGameOptions.TimeMasterCount : 1;
 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(TimeMaster), CustomRPC.SetTimeMaster, CustomGameOptions.TimeMasterOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(TimeMaster), CustomRPC.SetTimeMaster, CustomGameOptions.TimeMasterOn, CustomGameOptions.UniqueTimeMaster));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(TimeMaster), CustomRPC.SetTimeMaster, CustomGameOptions.TimeMasterOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Time Master Done");
                         }
 
                         if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.GodfatherCount;
+                            num = IsCustom ? CustomGameOptions.GodfatherCount : 1;
                                 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Godfather), CustomRPC.SetGodfather, CustomGameOptions.GodfatherOn, true));
-                                    number--;
-                                } while (number > 0);
+                            while (num > 0)
+                            {
+                                IntruderSupportRoles.Add((typeof(Godfather), CustomRPC.SetGodfather, CustomGameOptions.GodfatherOn, CustomGameOptions.UniqueGodfather));
+                                num--;
                             }
-                            else
-                                IntruderRoles.Add((typeof(Godfather), CustomRPC.SetGodfather, CustomGameOptions.GodfatherOn, true));
 
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Godfather Done");
-                        }
-                    }
-                    else
-                    {
-                        if (CustomGameOptions.PuppeteerOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.PuppeteerCount;
-
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Puppeteer Done");
-                        }
-
-                        if (CustomGameOptions.AnarchistOn > 0 && CustomGameOptions.GameMode == GameMode.Custom)
-                        {
-                            var number = CustomGameOptions.AnarchistCount;
-
-                            do
-                            {
-                                IntruderRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, CustomGameOptions.AnarchistOn, true));
-                                number--;
-                            } while (number > 0);
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Anarchist Done");
-                        }
-
-                        if (CustomGameOptions.ShapeshifterOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ShapeshifterCount;
-
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shapeshifter Done");
-                        }
-
-                        if (CustomGameOptions.ConcealerOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ConcealerCount;
-
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Concealer Done");
-                        }
-
-                        if (CustomGameOptions.WarperOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.WarperCount;
-
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Warper Done");
-                        }
-
-                        if (CustomGameOptions.RebelOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.RebelCount;
-                                
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
                         }
                     }
                     #endregion
 
                     #region Syndicate Roles
-                    if (!CustomGameOptions.AltImps)
+                    if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
                     {
-                        if (CustomGameOptions.PuppeteerOn > 0)
+                        num = CustomGameOptions.AnarchistCount;
+
+                        while (num > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.PuppeteerCount;
-
-                                do
-                                {
-                                    SyndicateRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                SyndicateRoles.Add((typeof(Puppeteer), CustomRPC.SetPuppeteer, CustomGameOptions.PuppeteerOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Puppeteer Done");
+                            SyndicateRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, CustomGameOptions.AnarchistOn, false));
+                            num--;
                         }
 
-                        if (CustomGameOptions.AnarchistOn > 0)
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Anarchist Done");
+                    }
+
+                    if (CustomGameOptions.ShapeshifterOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.ShapeshifterCount : 1;
+
+                        while (num > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.AnarchistCount;
-
-                                do
-                                {
-                                    SyndicateRoles.Add((typeof(Anarchist), CustomRPC.SetAnarchist, CustomGameOptions.AnarchistOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Anarchist Done");
+                            SyndicateDisruptionRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, CustomGameOptions.UniqueShapeshifter));
+                            num--;
                         }
 
-                        if (CustomGameOptions.ShapeshifterOn > 0)
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shapeshifter Done");
+                    }
+
+                    if (CustomGameOptions.GorgonOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.GorgonCount : 1;
+
+                        while (num > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ShapeshifterCount;
-
-                                do
-                                {
-                                    SyndicateRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                SyndicateRoles.Add((typeof(Shapeshifter), CustomRPC.SetShapeshifter, CustomGameOptions.ShapeshifterOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shapeshifter Done");
+                            SyndicateKillingRoles.Add((typeof(Gorgon), CustomRPC.SetGorgon, CustomGameOptions.GorgonOn, CustomGameOptions.UniqueGorgon));
+                            num--;
                         }
 
-                        if (CustomGameOptions.RebelOn > 0)
-                        {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.RebelCount;
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Gorgon Done");
+                    }
+
+                    if (CustomGameOptions.RebelOn > 0 && CustomGameOptions.SyndicateCount >= 3)
+                    {
+                        num = IsCustom ? CustomGameOptions.RebelCount : 1;
                                 
-                                do
-                                {
-                                    IntruderRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                IntruderRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
-                        }
-
-                        if (CustomGameOptions.ConcealerOn > 0)
+                        while (num > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.ConcealerCount;
-
-                                do
-                                {
-                                    SyndicateRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                SyndicateRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Concealer Done");
+                            SyndicateSupportRoles.Add((typeof(Rebel), CustomRPC.SetRebel, CustomGameOptions.RebelOn, CustomGameOptions.UniqueRebel));
+                            num--;
                         }
 
-                        if (CustomGameOptions.WarperOn > 0)
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
+                    }
+
+                    if (CustomGameOptions.ConcealerOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.ConcealerCount : 1;
+
+                        while (num > 0)
                         {
-                            if (CustomGameOptions.GameMode == GameMode.Custom)
-                            {
-                                var number = CustomGameOptions.WarperCount;
-
-                                do
-                                {
-                                    SyndicateRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-                                    number--;
-                                } while (number > 0);
-                            }
-                            else
-                                SyndicateRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, true));
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Warper Done");
+                            SyndicateSupportRoles.Add((typeof(Concealer), CustomRPC.SetConcealer, CustomGameOptions.ConcealerOn, CustomGameOptions.UniqueConcealer));
+                            num--;
                         }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Concealer Done");
+                    }
+
+                    if (CustomGameOptions.WarperOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.WarperCount : 1;
+
+                        while (num > 0)
+                        {
+                            SyndicateSupportRoles.Add((typeof(Warper), CustomRPC.SetWarper, CustomGameOptions.WarperOn, CustomGameOptions.UniqueWarper));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Warper Done");
                     }
                     #endregion
 
                     #region Modifiers
                     if (CustomGameOptions.DiseasedOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.DiseasedCount : 1;
+                        num = IsCustom ? CustomGameOptions.DiseasedCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             DiseasedModifiers.Add((typeof(Diseased), CustomRPC.SetDiseased, CustomGameOptions.DiseasedOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Diseased Done");
@@ -3290,12 +3476,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.BaitOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.BaitCount : 1;
+                        num = IsCustom ? CustomGameOptions.BaitCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             BaitModifiers.Add((typeof(Bait), CustomRPC.SetBait, CustomGameOptions.BaitOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bait Done");
@@ -3303,12 +3489,12 @@ namespace TownOfUsReworked.Patches
                     
                     if (CustomGameOptions.DwarfOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.DwarfCount : 1;
+                        num = IsCustom ? CustomGameOptions.DwarfCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Dwarf), CustomRPC.SetDwarf, CustomGameOptions.DwarfOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dwarf Done");
@@ -3316,12 +3502,12 @@ namespace TownOfUsReworked.Patches
                     
                     if (CustomGameOptions.VIPOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.VIPCount : 1;
+                        num = IsCustom ? CustomGameOptions.VIPCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(VIP), CustomRPC.SetVIP, CustomGameOptions.VIPOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("VIP Done");
@@ -3329,12 +3515,12 @@ namespace TownOfUsReworked.Patches
                     
                     if (CustomGameOptions.ShyOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.ShyCount : 1;
+                        num = IsCustom ? CustomGameOptions.ShyCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Shy), CustomRPC.SetShy, CustomGameOptions.ShyOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shy Done");
@@ -3342,12 +3528,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.GiantOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.GiantCount : 1;
+                        num = IsCustom ? CustomGameOptions.GiantCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Giant), CustomRPC.SetGiant, CustomGameOptions.GiantOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Giant Done");
@@ -3355,12 +3541,12 @@ namespace TownOfUsReworked.Patches
                     
                     if (CustomGameOptions.DrunkOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.DrunkCount : 1;
+                        num = IsCustom ? CustomGameOptions.DrunkCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Drunk), CustomRPC.SetDrunk, CustomGameOptions.DrunkOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Drunk Done");
@@ -3368,12 +3554,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.FlincherOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.FlincherCount : 1;
+                        num = IsCustom ? CustomGameOptions.FlincherCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Flincher), CustomRPC.SetFlincher, CustomGameOptions.FlincherOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Flincher Done");
@@ -3381,12 +3567,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.CowardOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.CowardCount : 1;
+                        num = IsCustom ? CustomGameOptions.CowardCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Coward), CustomRPC.SetCoward, CustomGameOptions.CowardOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Coward Done");
@@ -3394,12 +3580,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.VolatileOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.VolatileCount : 1;
+                        num = IsCustom ? CustomGameOptions.VolatileCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalModifiers.Add((typeof(Volatile), CustomRPC.SetVolatile, CustomGameOptions.VolatileOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Volatile Done");
@@ -3407,12 +3593,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.ProfessionalOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.ProfessionalCount : 1;
+                        num = IsCustom ? CustomGameOptions.ProfessionalCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             ProfessionalModifiers.Add((typeof(Professional), CustomRPC.SetProfessional, CustomGameOptions.ProfessionalOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Professional Done");
@@ -3420,38 +3606,38 @@ namespace TownOfUsReworked.Patches
                     #endregion
 
                     #region Abilities
-                    if (CustomGameOptions.GameMode != GameMode.Classic && CustomGameOptions.AssassinOn > 0)
+                    if (CustomGameOptions.AssassinOn > 0)
                     {
-                        var number = CustomGameOptions.NumberOfSyndicateAssassins;
+                       num = CustomGameOptions.NumberOfSyndicateAssassins;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
                             SyndicateAbilityGet.Add((typeof(Assassin), CustomRPC.SetAssassin, CustomGameOptions.AssassinOn));
-                            number--;
+                            num--;
                         }
 
-                        number = CustomGameOptions.NumberOfNeutralAssassins;
+                        num = CustomGameOptions.NumberOfNeutralAssassins;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
                             NeutralAbilityGet.Add((typeof(Assassin), CustomRPC.SetAssassin, CustomGameOptions.AssassinOn));
-                            number--;
+                            num--;
                         }
 
-                        number = CustomGameOptions.NumberOfCrewAssassins;
+                        num = CustomGameOptions.NumberOfCrewAssassins;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
                             CrewAbilityGet.Add((typeof(Assassin), CustomRPC.SetAssassin, CustomGameOptions.AssassinOn));
-                            number--;
+                            num--;
                         }
 
-                        number = CustomGameOptions.NumberOfImpostorAssassins;
+                        num = CustomGameOptions.NumberOfImpostorAssassins;
 
-                        while (number > 0)
+                        while (num > 0)
                         {
                             IntruderAbilityGet.Add((typeof(Assassin), CustomRPC.SetAssassin, CustomGameOptions.AssassinOn));
-                            number--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Assassin Done");
@@ -3459,12 +3645,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.RevealerOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.RevealerCount : 1;
+                        num = IsCustom ? CustomGameOptions.RevealerCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
-                            CrewAbilityGet.Add((typeof(Revealer), CustomRPC.SetRevealer, CustomGameOptions.RevealerOn));
-                            num2--;
+                            SnitchRevealerAbilityGet.Add((typeof(Revealer), CustomRPC.SetRevealer, CustomGameOptions.RevealerOn));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Revealer Done");
@@ -3472,12 +3658,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.SnitchOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.SnitchCount : 1;
+                        num = IsCustom ? CustomGameOptions.SnitchCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
-                            CrewAbilityGet.Add((typeof(Snitch), CustomRPC.SetSnitch, CustomGameOptions.SnitchOn));
-                            num2--;
+                            SnitchRevealerAbilityGet.Add((typeof(Snitch), CustomRPC.SetSnitch, CustomGameOptions.SnitchOn));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Snitch Done");
@@ -3485,12 +3671,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.InsiderOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.InsiderCount : 1;
+                        num = IsCustom ? CustomGameOptions.InsiderCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
-                            GlobalAbilityGet.Add((typeof(Insider), CustomRPC.SetInsider, CustomGameOptions.InsiderOn));
-                            num2--;
+                            CrewAbilityGet.Add((typeof(Insider), CustomRPC.SetInsider, CustomGameOptions.InsiderOn));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Insider Done");
@@ -3498,12 +3684,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.LighterOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.LighterCount : 1;
+                        num = IsCustom ? CustomGameOptions.LighterCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             CrewAbilityGet.Add((typeof(Lighter), CustomRPC.SetLighter, CustomGameOptions.LighterOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Lighter Done");
@@ -3511,12 +3697,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.MultitaskerOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.MultitaskerCount : 1;
+                        num = IsCustom ? CustomGameOptions.MultitaskerCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
-                            NonEvilAbilityGet.Add((typeof(Multitasker), CustomRPC.SetMultitasker, CustomGameOptions.MultitaskerOn));
-                            num2--;
+                            TaskedAbilityGet.Add((typeof(Multitasker), CustomRPC.SetMultitasker, CustomGameOptions.MultitaskerOn));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Multitasker Done");
@@ -3524,12 +3710,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.RadarOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.RadarCount : 1;
+                        num = IsCustom ? CustomGameOptions.RadarCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalAbilityGet.Add((typeof(Radar), CustomRPC.SetRadar, CustomGameOptions.RadarOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Radar Done");
@@ -3537,12 +3723,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.TiebreakerOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.TiebreakerCount : 1;
+                        num = IsCustom ? CustomGameOptions.TiebreakerCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalAbilityGet.Add((typeof(Tiebreaker), CustomRPC.SetTiebreaker, CustomGameOptions.TiebreakerOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tiebreaker Done");
@@ -3550,12 +3736,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.TorchOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.TorchCount : 1;
+                        num = IsCustom ? CustomGameOptions.TorchCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             NonEvilAbilityGet.Add((typeof(Torch), CustomRPC.SetTorch, CustomGameOptions.TorchOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Torch Done");
@@ -3563,12 +3749,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.UnderdogOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.UnderdogCount : 1;
+                        num = IsCustom ? CustomGameOptions.UnderdogCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             EvilAbilityGet.Add((typeof(Underdog), CustomRPC.SetUnderdog, CustomGameOptions.UnderdogOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Underdog Done");
@@ -3576,12 +3762,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.TunnelerOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.TunnelerCount : 1;
+                        num = IsCustom ? CustomGameOptions.TunnelerCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
-                            CrewAbilityGet.Add((typeof(Tunneler), CustomRPC.SetTunneler, CustomGameOptions.TunnelerOn));
-                            num2--;
+                            TunnelerAbilityGet.Add((typeof(Tunneler), CustomRPC.SetTunneler, CustomGameOptions.TunnelerOn));
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tunneler Done");
@@ -3591,38 +3777,38 @@ namespace TownOfUsReworked.Patches
                     #region Objectifiers
                     if (CustomGameOptions.LoversOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.LoversCount : 1;
+                        num = IsCustom ? CustomGameOptions.LoversCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalObjectifierGet.Add((typeof(Lovers), CustomRPC.SetCouple, CustomGameOptions.LoversOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Lovers Done");
                     }
 
-                    /*if (CustomGameOptions.RivalsOn > 0)
+                    if (CustomGameOptions.RivalsOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.RivalsCount : 1;
+                        num = IsCustom ? CustomGameOptions.RivalsCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             GlobalObjectifierGet.Add((typeof(Rivals), CustomRPC.SetDuo, CustomGameOptions.RivalsOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rivals Done");
-                    }*/
+                    }
 
                     if (CustomGameOptions.FanaticOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.FanaticCount : 1;
+                        num = IsCustom ? CustomGameOptions.FanaticCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             CrewObjectifierGet.Add((typeof(Fanatic), CustomRPC.SetFanatic, CustomGameOptions.FanaticOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Fanatic Done");
@@ -3630,12 +3816,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.TraitorOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.TraitorCount : 1;
+                        num = IsCustom ? CustomGameOptions.TraitorCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             CrewObjectifierGet.Add((typeof(Traitor), CustomRPC.SetTraitor, CustomGameOptions.TraitorOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Traitor Done");
@@ -3643,12 +3829,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.TaskmasterOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.TaskmasterCount : 1;
+                        num = IsCustom ? CustomGameOptions.TaskmasterCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             NeutralObjectifierGet.Add((typeof(Taskmaster), CustomRPC.SetTaskmaster, CustomGameOptions.TaskmasterOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Taskmaster Done");
@@ -3656,12 +3842,12 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.PhantomOn > 0)
                     {
-                        num2 = customgflag ? CustomGameOptions.PhantomCount : 1;
+                        num = IsCustom ? CustomGameOptions.PhantomCount : 1;
                         
-                        while (num2 > 0)
+                        while (num > 0)
                         {
                             NeutralObjectifierGet.Add((typeof(Phantom), CustomRPC.SetPhantom, CustomGameOptions.PhantomOn));
-                            num2--;
+                            num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Phantom Done");
@@ -3669,10 +3855,7 @@ namespace TownOfUsReworked.Patches
                     #endregion
                 }
 
-                if (CustomGameOptions.GameMode == GameMode.KillingOnly)
-                    GenEachRoleKilling(infected.ToList());
-                else
-                    GenEachRole(infected.ToList());
+                RoleGen(infected.ToList());
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Gen Done");
             }

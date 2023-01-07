@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 
             var renderer = vestButton.graphic;
             
-            if (role.Vesting | (!vestButton.isCoolingDown && role.ButtonUsable))
+            if (role.Vesting || (!vestButton.isCoolingDown && role.ButtonUsable))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

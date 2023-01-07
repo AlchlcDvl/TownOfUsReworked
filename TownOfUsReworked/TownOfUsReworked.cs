@@ -18,6 +18,7 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
+using System.Collections.Generic;
 /*using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;
@@ -204,10 +205,26 @@ namespace TownOfUsReworked
         public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
+        public static List<(string, byte)> MessagesToSend;
+        public static ConfigEntry<int> MessageWait { get; private set; }
+
         public static Vector3 BelowVentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
-        public static Vector3 AboveKillPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
+        /*public static Vector3 AboveKillPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
         public static Vector3 SabotagePosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
-        public static Vector3 VentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
+        public static Vector3 VentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);*/
+
+		private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
+
+        public static Sprite VaultSprite;
+        public static Sprite CokpitSprite;
+        public static Sprite TaskSprite;
+        public static Sprite MedicalSprite;
+
+        public static AnimationClip VaultAnim;
+        public static AnimationClip CokpitAnim;
+        public static AnimationClip MedicalAnim;
+
+        public static GameObject CallPlateform;
 
         private static DLoadImage _iCallLoadImage;
 
@@ -220,7 +237,7 @@ namespace TownOfUsReworked
 
         public override void Load()
         {
-            _harmony = new Harmony("com.alchlcdvl.townofusreworked");
+            _harmony = new Harmony("TownOfUsReworked");
             Generate.GenerateAll();
 
             GameOptionsData.RecommendedImpostors = GameOptionsData.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
@@ -364,6 +381,22 @@ namespace TownOfUsReworked
             WarperIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             VoteLockSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.VoteLock.raw");
             KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
+            
+            MessagesToSend = new List<(string, byte)>();
+
+            //Better Aiship Resources
+            var resourceSteam = myAssembly.GetManifestResourceStream("TownOfUsReworked.Resources.Misc.Airship");
+            var assetBundle = AssetBundle.LoadFromMemory(resourceSteam.ReadFully());
+            
+            VaultSprite = assetBundle.LoadAsset<Sprite>("Vault").DontDestroy();
+            CokpitSprite = assetBundle.LoadAsset<Sprite>("Cokpit").DontDestroy();
+            MedicalSprite = assetBundle.LoadAsset<Sprite>("Medical").DontDestroy();
+            TaskSprite = assetBundle.LoadAsset<Sprite>("task-shields").DontDestroy();
+
+            VaultAnim = assetBundle.LoadAsset<AnimationClip>("Vault.anim").DontDestroy();
+            CokpitAnim = assetBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
+            MedicalAnim = assetBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
+            CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
@@ -373,6 +406,8 @@ namespace TownOfUsReworked
             Port = Config.Bind("Custom", "Port", (ushort) 22023);
             var defaultRegions = ServerManager.DefaultRegions.ToList();
             var ip = Ip.Value;
+            
+            MessageWait = Config.Bind("Other", "MessageWait", 1);
 
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
             {

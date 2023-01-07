@@ -44,10 +44,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     switch (roleType)
                     {
                         default:
-                            if (((player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Jester) | player.Is(RoleEnum.Cryomaniac) |
-                                player.Is(RoleEnum.Cannibal)) && !CustomGameOptions.NeutEvilRed) | ((player.Is(RoleEnum.Arsonist) |
-                                player.Is(RoleEnum.Glitch) | player.Is(RoleEnum.Juggernaut) | player.Is(RoleEnum.Plaguebearer) |
-                                player.Is(RoleEnum.Pestilence) | player.Is(RoleEnum.SerialKiller) | player.Is(RoleEnum.Murderer)) &&
+                            if (((player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Cryomaniac) ||
+                                player.Is(RoleEnum.Cannibal)) && !CustomGameOptions.NeutEvilRed) || ((player.Is(RoleEnum.Arsonist) ||
+                                player.Is(RoleEnum.Glitch) || player.Is(RoleEnum.Juggernaut) || player.Is(RoleEnum.Plaguebearer) ||
+                                player.Is(RoleEnum.Pestilence) || player.Is(RoleEnum.SerialKiller) || player.Is(RoleEnum.Murderer)) &&
                                 !CustomGameOptions.NeutKillingRed))
                                 state.NameText.color = Colors.Intruder;
                             else if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
@@ -105,10 +105,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
                 player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
 
-                if (((player.Is(RoleEnum.Executioner) | player.Is(RoleEnum.Jester) | player.Is(RoleEnum.Cannibal) |
-                    player.Is(RoleEnum.Cryomaniac)) && !CustomGameOptions.NeutEvilRed) | ((player.Is(RoleEnum.Murderer) |
-                    player.Is(RoleEnum.Arsonist) | player.Is(RoleEnum.Glitch) | player.Is(RoleEnum.Juggernaut) |
-                    player.Is(RoleEnum.Plaguebearer) | player.Is(RoleEnum.Pestilence) | player.Is(RoleEnum.SerialKiller)) &&
+                if (((player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Cannibal) ||
+                    player.Is(RoleEnum.Cryomaniac)) && !CustomGameOptions.NeutEvilRed) || ((player.Is(RoleEnum.Murderer) ||
+                    player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Glitch) || player.Is(RoleEnum.Juggernaut) ||
+                    player.Is(RoleEnum.Plaguebearer) || player.Is(RoleEnum.Pestilence) || player.Is(RoleEnum.SerialKiller)) &&
                     !CustomGameOptions.NeutKillingRed))
                     player.nameText().color = Colors.Intruder;
                         

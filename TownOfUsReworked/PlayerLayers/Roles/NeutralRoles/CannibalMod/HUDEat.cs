@@ -5,9 +5,8 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
-
+using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
                 return;
 
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
@@ -41,12 +40,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             role.EatButton.GetComponent<AspectPosition>().Update();
             role.EatButton.graphic.sprite = TownOfUsReworked.CannibalEat;
+            role.EatButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var flag = (PlayerControl.GameOptions.GhostsDoTasks | !data.IsDead) && (!AmongUsClient.Instance | !AmongUsClient.Instance.IsGameOver) &&
+            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
                 PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
             var killButton = role.EatButton;
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             foreach (var collider2D in allocs)
             {
-                if (!flag | isDead | collider2D.tag != "DeadBody")
+                if (!flag || isDead || collider2D.tag != "DeadBody")
                     continue;
 
                 var component = collider2D.GetComponent<DeadBody>();

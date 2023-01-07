@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
 
-            if (exiled == PlayerControl.LocalPlayer && (PlayerControl.LocalPlayer.Is(RoleEnum.Jester) | PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)))
+            if (exiled == PlayerControl.LocalPlayer && (PlayerControl.LocalPlayer.Is(RoleEnum.Jester) || PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)))
                 return;
 
             if (PlayerControl.LocalPlayer != WillBeRevealer)
@@ -137,7 +137,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.ImpsOnly && !PlayerControl.LocalPlayer.Data.IsImpostor())
                     return;
 
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Data.IsImpostor() |
+                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Data.IsImpostor() ||
                 PlayerControl.LocalPlayer.Is(Faction.Neutral)))
                     return;
 

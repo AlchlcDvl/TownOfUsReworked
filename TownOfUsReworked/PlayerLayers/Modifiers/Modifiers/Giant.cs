@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         {
             appearance = Player.GetDefaultAppearance();
             appearance.SpeedFactor = CustomGameOptions.GiantSpeed;
-            appearance.SizeFactor = new Vector3(CustomGameOptions.GiantScale, CustomGameOptions.GiantScale, CustomGameOptions.GiantScale);
+            appearance.SizeFactor = new Vector3(CustomGameOptions.GiantScale, CustomGameOptions.GiantScale, 1f);
             return true;
         }
     }

@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Amnesiac(PlayerControl player) : base(player)
         {
             Name = "Amnesiac";
-            StartText = "You forgor :skull:";
-            AbilitiesText = "- You can get a player's role should you find their body.";
+            StartText = "You Forgor :Skull:";
+            AbilitiesText = "- You can copy over a player's role should you find their body.";
             AttributesText = "- You do not win as a regular Amnesiac without remebering.";
             RoleType = RoleEnum.Amnesiac;
             Faction = Faction.Neutral;
@@ -24,22 +24,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            IntroText = "Remember a dead person";
-            CoronerDeadReport = "There are signs of blunt force trauma to the head. They must be an Amnesiac!";
-            CoronerKillerReport = "";
+            IntroText = "Remember Who You Were";
             Results = InspResults.EngiAmneThiefCann;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
+            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral);
             IntroSound = TownOfUsReworked.AmnesiacIntro;
             RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
                 " instead need to win as the role you become after finding a dead body.";
-            AlignmentDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
+            AlignmentDescription = NBDescription;
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
-            FactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
-                " a certain objective.";
+            FactionDescription = NeutralFactionDescription;
             AddToRoleHistory(RoleType);
         }
 

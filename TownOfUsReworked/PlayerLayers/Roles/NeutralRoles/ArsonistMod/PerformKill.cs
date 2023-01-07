@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (!__instance.isActiveAndEnabled | __instance.isCoolingDown)
+            if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
                 return false;
 
             if (__instance == role.IgniteButton && role.DousedAlive > 0)
@@ -83,13 +83,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             if (role.DousedPlayers.Contains(role.ClosestPlayerDouse.PlayerId))
                 return false;
 
-            if (role.ClosestPlayerDouse.IsInfected() | role.Player.IsInfected())
+            if (role.ClosestPlayerDouse.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayerDouse, role.Player);
             }
 
-            if (role.ClosestPlayerDouse.IsOnAlert() | role.ClosestPlayerDouse.Is(RoleEnum.Pestilence))
+            if (role.ClosestPlayerDouse.IsOnAlert() || role.ClosestPlayerDouse.Is(RoleEnum.Pestilence))
             {
                 if (role.Player.IsShielded())
                 {

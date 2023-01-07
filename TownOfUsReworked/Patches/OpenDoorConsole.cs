@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
@@ -110,7 +110,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
@@ -150,7 +150,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
@@ -175,7 +175,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
@@ -200,7 +200,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) |
+            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
                 (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
