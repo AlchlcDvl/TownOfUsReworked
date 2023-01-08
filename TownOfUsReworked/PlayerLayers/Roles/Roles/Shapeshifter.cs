@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
-            IntroText = "Kill those who opposes you";
             Results = InspResults.DisgMorphCamoAgent;
             AddToRoleHistory(RoleType);
         }

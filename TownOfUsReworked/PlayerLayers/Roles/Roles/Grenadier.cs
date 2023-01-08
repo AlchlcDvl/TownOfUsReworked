@@ -37,7 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName ="Intruder (Concealing)";
-            IntroText = IntruderIntro;
             Results = InspResults.WraithDetGrenVet;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

@@ -8,9 +8,11 @@ using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDInvestigate
     {
+        public static Sprite RevealSprite => TownOfUsReworked.Placeholder;
+
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
@@ -25,8 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                 return;
 
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
             if (role.InvestigateButton == null)
@@ -37,10 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 role.InvestigateButton.gameObject.SetActive(false);
             }
 
-            role.InvestigateButton.graphic.sprite = TownOfUsReworked.Placeholder;
-            role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance && !isDead);
+            role.InvestigateButton.GetComponent<AspectPosition>().Update();
+            role.InvestigateButton.graphic.sprite = RevealSprite;
+            role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton, float.NaN, notInvestigated);
+            Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notInvestigated);
             role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
         }
     }

@@ -205,9 +205,6 @@ namespace TownOfUsReworked
         public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
-        public static List<(string, byte)> MessagesToSend;
-        public static ConfigEntry<int> MessageWait { get; private set; }
-
         public static Vector3 BelowVentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
         /*public static Vector3 AboveKillPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
         public static Vector3 SabotagePosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
@@ -382,7 +379,7 @@ namespace TownOfUsReworked
             VoteLockSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.VoteLock.raw");
             KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
             
-            MessagesToSend = new List<(string, byte)>();
+            //MessagesToSend = new List<(string, byte)>();
 
             //Better Aiship Resources
             var resourceSteam = myAssembly.GetManifestResourceStream("TownOfUsReworked.Resources.Misc.Airship");
@@ -407,7 +404,7 @@ namespace TownOfUsReworked
             var defaultRegions = ServerManager.DefaultRegions.ToList();
             var ip = Ip.Value;
             
-            MessageWait = Config.Bind("Other", "MessageWait", 1);
+            //MessageWait = Config.Bind("Other", "MessageWait", 1);
 
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
             {

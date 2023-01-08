@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = "Crew (Auditor)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SurvVHVampVig;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

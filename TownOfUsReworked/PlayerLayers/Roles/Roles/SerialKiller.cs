@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Stab those who oppose you";
             Results = InspResults.ShiftSwapSKDrac;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            IntroText = "Cause chaos and kill your opposition";
             Results = InspResults.MineMafiSideDamp;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

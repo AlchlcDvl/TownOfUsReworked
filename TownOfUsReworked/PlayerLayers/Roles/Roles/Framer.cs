@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
-            IntroText = SyndicateIntro;
             Results = InspResults.ArsoCryoPBOpTroll;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             RoleDescription = "You are a Framer! This means that you are unrivalled in the art of gaslighting. Framed players always appear to be evil, regardless of their role!";

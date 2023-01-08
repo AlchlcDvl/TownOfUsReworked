@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Proselyte)";
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NPDescription;
-            IntroText = "Kill Off The <color=#8BFDFDFF>Crew</color> And Help The <color=#AC8A00FF>Dracula</color>";
             Results = InspResults.MineMafiSideDamp;
             Objectives = UndeadWinCon;
             RoleDescription = "You have become a Dampyr! Your new goal is the help the Dracula convert everyone. Kill anyone who does not submit to the Dracula" +

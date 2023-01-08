@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 {
@@ -25,21 +26,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Troll))
                 return;
 
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var interactButton = __instance.KillButton;
             var role = Role.GetRole<Troll>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                interactButton.gameObject.SetActive(false);
-            else
-                interactButton.gameObject.SetActive(!MeetingHud.Instance);
+            if (role.InteractButton == null)
+            {
+                role.InteractButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.InteractButton.graphic.enabled = true;
+                role.InteractButton.gameObject.SetActive(false);
+            }
 
-            var renderer = interactButton.graphic;
+            role.InteractButton.GetComponent<AspectPosition>().Update();
+            role.InteractButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
+            Utils.SetTarget(ref role.ClosestPlayer, role.InteractButton);
+            role.InteractButton.SetCoolDown(role.InteractTimer(), CustomGameOptions.InteractCooldown);
+            var renderer = role.InteractButton.graphic;
 
             renderer.sprite = Placeholder;
             
-            if (!interactButton.isCoolingDown)
+            if (role.ClosestPlayer != null)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

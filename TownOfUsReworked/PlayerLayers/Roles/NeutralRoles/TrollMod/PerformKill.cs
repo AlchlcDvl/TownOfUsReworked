@@ -88,34 +88,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
                     
                 return false;
             }
-            else if (role.ClosestPlayer.IsShielded())
-            {
-                var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                    SendOption.Reliable, -1);
-                writer.Write(medic);
-                writer.Write(role.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                if (CustomGameOptions.ShieldBreaks)
-                    role.LastInteracted = DateTime.UtcNow;
-
-                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
-                return false;
-            }
-            else if (role.ClosestPlayer.IsVesting())
-            {
-                role.LastInteracted.AddSeconds(CustomGameOptions.VestKCReset);
-
-                return false;
-            }
-            else if (role.ClosestPlayer.IsProtected())
-            {
-                role.LastInteracted.AddSeconds(CustomGameOptions.ProtectKCReset);
-
-                return false;
-            }
 
             role.LastInteracted = DateTime.UtcNow;
             return false;

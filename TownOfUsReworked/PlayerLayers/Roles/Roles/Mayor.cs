@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = "Crew (Sovereign)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.GFMayorRebelPest;
             AddToRoleHistory(RoleType);
         }

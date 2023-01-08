@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            IntroText = "Get ejected";
             Results = InspResults.JestJuggWWInv;
             AddToRoleHistory(RoleType);
         }

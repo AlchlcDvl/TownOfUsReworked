@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Ignite those who oppose you";
             Results = InspResults.ArsoCryoPBOpTroll;
             Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral);
             Attack = AttackEnum.Unstoppable;

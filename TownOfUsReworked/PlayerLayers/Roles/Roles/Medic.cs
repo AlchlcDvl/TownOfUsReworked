@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.GAExeMedicPup;
             IntroSound = TownOfUsReworked.MedicIntro;
             AddToRoleHistory(RoleType);

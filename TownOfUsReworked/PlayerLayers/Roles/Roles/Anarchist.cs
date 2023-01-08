@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            IntroText = SyndicateIntro;
             Results = InspResults.CrewImpAnMurd;
             Base = true;
             Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;

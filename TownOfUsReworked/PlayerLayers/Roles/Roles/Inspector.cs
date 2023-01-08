@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            IntroText = CrewIntro;
             Results = InspResults.SherConsigInspBm;
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CIDescription;

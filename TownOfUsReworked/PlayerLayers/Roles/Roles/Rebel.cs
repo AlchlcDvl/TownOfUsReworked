@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.GFMayorRebelPest;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            IntroText = "Cause chaos and kill your opposition";
             AlignmentDescription = "You are a Syndicate (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
                 "everyway possible.";
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +

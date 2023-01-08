@@ -17,7 +17,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption ConfirmEjects;
         public static CustomToggleOption EjectionRevealsRole;
         public static CustomStringOption TaskBarMode;
-        public static CustomNumberOption LobbySize;
         public static CustomNumberOption ChatCooldown;
 
         //All Any Options

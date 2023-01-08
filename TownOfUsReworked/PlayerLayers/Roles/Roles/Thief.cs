@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            IntroText = "Steal From The Killers";
             Results = InspResults.EngiAmneThiefCann;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

@@ -642,10 +642,10 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 | Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
 
 ## Cryomaniac
-### **Alignment: Neutral (Evil)**
+### **Alignment: Neutral (Killing)**
 ### Win Condition: Douse everyone and freeze them all.
 
-The Cryomaniac is essentially the old Arsonist. They can douse players and once everyone is doused, they can freeze everyone which kills all of them.
+The Cryomaniac can douse players in coolant like the Arsonist. However, the Cryomaniac can only use their freeze once. Freezing players doesn not immediately kill them, instead when the next meeting is called, all currently doused players will die.
 
 ### Game Options
 
@@ -811,22 +811,6 @@ Pestilence is always on permanent alert, where anyone who tries to interact with
 | Pestilence Kill Cooldown | The cooldown on Pestilence's kill cooldown | Timer | 25s |
 | Pestilence Can Vent | Whether Pestilence Can Vent | Toggle | False |
 
-## Pirate
-### **Alignment: Neutral (Evil)**
-### Win Condition: Win a certain number of duels.
-
-The Pirate can duel players. Upon dueling them, the players will be rendered immovable and unable to use their abilities. During the duel period, the Pirate picks 1 of 3 attacking options and the duelled player(s) pick 1 of 3 defending options. If the Pirate is unable to get past the defence, the duel is over and both parties are released. However, if the Pirate overcomes the defence, the duelled player will be killed by the Pirate.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Pirate | The percentage probability of the Pirate appearing | Percentage | 0% |
-| Pirate Count | How many Pirates should spawn in Custom Mode | Number | 1 |
-| Duel Cooldown | The cooldown of the Pirate's duel button | Time | 25s |
-| Duel Duration | The duration of the duel | Time | 25s |
-| Pirate Can Vent | Decides whether the Pirate can vent | Toggle | False |
-
 ## Plaguebearer
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off all Non-Neutral Benign roles.
@@ -896,7 +880,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 ### **Alignment: Neutral (Evil)**
 ### Win Condition: Get killed.
 
-The Troll just wants to be killed, but not ejected. Only spawns in Custom Mode. The Troll can fake interact with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence.
+The Troll just wants to be killed, but not ejected. The Troll can fake interact with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Only spawns in Custom Mode.
 
 ### Game Options
 
@@ -1224,20 +1208,6 @@ The Gorgon can stone gaze people to freeze them in place. Upon getting stoned, i
 | Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
 | Gaze Timer | The duration on the Gorgon's gaze button | Time | 25s |
 
-## Puppeteer
-### **Alignment: Syndicate (Disruption)**
-
-The Puppeteer can control a player and force them to kill someone.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Puppeteer | The percentage probability of the Puppeteer appearing | Percentage | 0% |
-| Puppeteer Count | How many Puppeteers should spawn in Custom Mode | Number | 1 |
-| Possess Cooldown | The cooldown on the Puppeteer's possess button | Time | 25s |
-| Possess Duration | The duration of the Puppeteer's possess | Time | 10s |
-
 ## Rebel
 ### **Alignment: Syndicate (Support)**
 
@@ -1296,7 +1266,7 @@ Objectifiers are basically a second objective for the player. They can either ch
 
 ## Lovers
 ### Applied To: Everyone
-### Win Condition: Be 2 of the 3 final crew.
+### Win Condition: Be 2 of the 3 final players.
 
 The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover. Intruders cannot be Lovers with other Intruders.
 

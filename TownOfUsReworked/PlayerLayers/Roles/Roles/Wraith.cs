@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
-            IntroText = "Kill anyone who opposes you";
             Results = InspResults.WraithDetGrenVet;
             IntroSound = null;
             Attack = AttackEnum.Basic;

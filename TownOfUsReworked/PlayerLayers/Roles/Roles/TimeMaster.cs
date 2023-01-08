@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            IntroText = "Kill anyone who opposes you";
             Results = InspResults.TrackAltTLTM;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

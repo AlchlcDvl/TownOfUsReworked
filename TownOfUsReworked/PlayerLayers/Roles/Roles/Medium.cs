@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.CoroJaniUTMed;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;

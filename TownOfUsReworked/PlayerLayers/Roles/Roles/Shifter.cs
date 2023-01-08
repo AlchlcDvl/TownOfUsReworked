@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.ShiftSwapSKDrac;
             IntroSound = TownOfUsReworked.ShifterIntro;
             Attack = AttackEnum.None;

@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Infect everyone";
             Results = InspResults.ArsoCryoPBOpTroll;
             AddToRoleHistory(RoleType);
         }

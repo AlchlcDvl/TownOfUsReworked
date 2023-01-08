@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Concealing)";
-            IntroText = IntruderIntro;
             Results = InspResults.DisgMorphCamoAgent;
             Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
             AlignmentDescription = ICDescription;

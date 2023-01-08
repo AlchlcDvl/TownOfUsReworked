@@ -740,6 +740,46 @@ namespace TownOfUsReworked.Patches
                         return;
                     }
                 }
+                else if (type == RoleEnum.Troll)
+                {
+                    var troll = (Troll)role;
+
+                    if (troll.Killed)
+                    {
+                        foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
+                        {
+                            if (surv.Alive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                        {
+                            if (ga.TargetAlive)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
+                        {
+                            if (jest.VotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                        }
+
+                        foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+                        {
+                            if (exe.TargetVotedOut)
+                                winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                        }
+
+                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == troll.PlayerName).ToList()[0]);
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+                            
+                        return;
+                    }
+                }
 
                 winners.Clear();
             }

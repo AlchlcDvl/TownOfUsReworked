@@ -6,7 +6,6 @@ using UnityEngine;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -41,12 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             role.BlackmailButton.GetComponent<AspectPosition>().Update();
             role.BlackmailButton.graphic.sprite = Blackmail;
             role.BlackmailButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-
             var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.Blackmailed?.PlayerId != player.PlayerId).ToList();
-
-            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance],
-                notBlackmailed);
-
+            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notBlackmailed);
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);
 
             if (role.Blackmailed != null && !role.Blackmailed.Data.IsDead && !role.Blackmailed.Data.Disconnected)
@@ -65,11 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             foreach (var imp in imps)
             {
-                if ((imp.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage || imp.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) &&
-                    imp.nameText().color == role.Color)
+                if ((imp.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage || imp.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) && imp.nameText().color == role.Color)
                     imp.nameText().color = Color.clear;
-                else if (imp.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && imp.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && 
-                    imp.nameText().color == Color.clear)
+                else if (imp.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && imp.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && imp.nameText().color == Color.clear)
                     imp.nameText().color = role.Color;
             }
         }

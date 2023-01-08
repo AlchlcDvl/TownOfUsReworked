@@ -54,33 +54,4 @@ namespace TownOfUsReworked.Patches
             }
         }
     }
-    
-    [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
-    class ChatUpdatePatch
-    {
-        public static void Postfix(ChatController __instance)
-        {
-            if (!AmongUsClient.Instance.AmHost || TownOfUsReworked.MessagesToSend.Count < 1 || (TownOfUsReworked.MessagesToSend[0].Item2 ==
-                byte.MaxValue && TownOfUsReworked.MessageWait.Value > __instance.TimeSinceLastMessage))
-                return;
-
-            var player = PlayerControl.AllPlayerControls.ToArray().OrderBy(x => x.PlayerId).Where(x => !x.Data.IsDead).FirstOrDefault();
-
-            if (player == null)
-                return;
-                
-            (string msg, byte sendTo) = TownOfUsReworked.MessagesToSend[0];
-            TownOfUsReworked.MessagesToSend.RemoveAt(0);
-            int clientId = sendTo == byte.MaxValue ? -1 : Utils.PlayerById(sendTo).GetClientId();
-
-            if (clientId == -1)
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, msg);
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)RpcCalls.SendChat, SendOption.None, clientId);
-            writer.Write(msg);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-            __instance.TimeSinceLastMessage = 0f;
-        }
-    }
 }

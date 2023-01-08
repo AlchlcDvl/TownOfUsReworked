@@ -30,7 +30,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int DiscussionTime => (int)Generate.DiscussionTime.Get();
         public static int VotingTime => (int)Generate.VotingTime.Get();
         public static TaskBarMode TaskBarMode => (TaskBarMode)Generate.TaskBarMode.Get();
-        public static int LobbySize => (int)Generate.LobbySize.Get();
         public static bool EjectionRevealsRole => Generate.EjectionRevealsRole.Get();
 
         //Game Modifiers
@@ -72,7 +71,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool EnableUniques => Generate.EnableUniques.Get();
 
         //Map Settings
-        public static Map Map => (Map)Generate.Map.Get();
+        //public static Map Map => (Map)Generate.Map.Get();
         public static bool RandomMapEnabled => Generate.RandomMapEnabled.Get();
         public static float RandomMapSkeld => Generate.RandomMapSkeld.Get();
         public static float RandomMapMira => Generate.RandomMapMira.Get();

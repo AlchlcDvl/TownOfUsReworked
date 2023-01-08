@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            IntroText = "Live to the end";
             Results = InspResults.SurvVHVampVig;
             IntroSound = null;
             Attack = AttackEnum.None;

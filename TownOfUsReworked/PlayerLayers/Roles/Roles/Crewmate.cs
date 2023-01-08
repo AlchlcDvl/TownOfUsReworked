@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = "Crew (Utility)";
-            IntroText = CrewIntro;
             Results = InspResults.CrewImpAnMurd;
             IntroSound = TownOfUsReworked.CrewmateIntro;
             Base = true;

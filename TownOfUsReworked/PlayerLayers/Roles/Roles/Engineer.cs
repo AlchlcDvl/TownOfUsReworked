@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            IntroText = CrewIntro;
             Results = InspResults.EngiAmneThiefCann;
             IntroSound = TownOfUsReworked.EngineerIntro;
             FactionDescription = CrewFactionDescription;

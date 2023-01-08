@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 return false;
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
-            var target = DestroyableSingleton<HudManager>.Instance.KillButton.currentTarget;
 
             if (__instance == role.CamouflageButton)
             {
@@ -38,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
                 unchecked
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Camouflage, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Camouflage, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

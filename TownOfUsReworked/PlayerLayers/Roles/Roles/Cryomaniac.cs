@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Freeze Those Who Oppose You";
             Results = InspResults.ArsoCryoPBOpTroll;
             Attack = AttackEnum.Powerful;
             Defense = DefenseEnum.Basic;

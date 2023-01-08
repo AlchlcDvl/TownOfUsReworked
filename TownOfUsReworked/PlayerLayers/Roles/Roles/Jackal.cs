@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            IntroText = "Gain A Majority";
             Results = InspResults.SurvVHVampVig;
             AddToRoleHistory(RoleType);
         }

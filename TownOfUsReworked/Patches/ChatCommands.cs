@@ -96,7 +96,7 @@ namespace TownOfUsReworked.Patches
                 string getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
                 string setColor = TownOfUsReworked.isDev ? " /setcolour or /setcolor," : "";
                 string whisper = CustomGameOptions.Whispers ? " /whisper," : "";
-                TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
+                //TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
 
                 var player = PlayerControl.LocalPlayer;
 

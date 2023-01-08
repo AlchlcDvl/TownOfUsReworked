@@ -247,22 +247,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             });
         }
 
-        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
-        class GameSettingMenuUpdatePatch
-        {
-            public static void Postfix(GameSettingMenu __instance)
-            {
-                int value = CustomGameOptions.LobbySize;
-
-                if (PlayerControl.GameOptions.MaxPlayers != value)
-                {
-                    PlayerControl.GameOptions.MaxPlayers = value;
-                    GameStartManager.Instance.LastPlayerCount = value;
-                    PlayerControl.LocalPlayer.RpcSyncSettings(PlayerControl.GameOptions);
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
         private class GameOptionsMenu_Start
         {

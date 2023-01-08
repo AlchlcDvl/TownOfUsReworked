@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            IntroText = IntruderIntro;
             Results = InspResults.EscConsGliPois;
             FactionDescription = IntruderFactionDescription;
             AlignmentDescription = ISDescription;

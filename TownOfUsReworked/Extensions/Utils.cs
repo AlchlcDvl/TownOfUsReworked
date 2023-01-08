@@ -59,13 +59,13 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
-        public static void SendMessage(string text, byte sendTo = byte.MaxValue)
+        /*public static void SendMessage(string text, byte sendTo = byte.MaxValue)
         {
             if (!AmongUsClient.Instance.AmHost)
                 return;
 
             TownOfUsReworked.MessagesToSend.Add((text, sendTo));
-        }
+        }*/
 
         public static InnerNet.ClientData GetClient(this PlayerControl player)
         {
@@ -376,7 +376,7 @@ namespace TownOfUsReworked.Extensions
 
             var flag1 = crewflag && !(loverflag || rivalflag);
             var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
-            var flag = flag1 || flag2 || !recruitflag;
+            var flag = (flag1 || flag2) && !recruitflag;
 
             if (flag)
                 return true;
@@ -387,6 +387,9 @@ namespace TownOfUsReworked.Extensions
         public static Jackal GetJackal(this PlayerControl player)
         {
             if (player == null)
+                return null;
+            
+            if (!player.IsRecruit())
                 return null;
                 
             return Role.GetRoles(RoleEnum.Jackal).FirstOrDefault(role =>
@@ -843,6 +846,11 @@ namespace TownOfUsReworked.Extensions
                 var targetRole = Role.GetRole(target);
                 var killerRole = Role.GetRole(killer);
 
+                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Gorgon))
+                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
+                else
+                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));
+
                 if (killer != target)
                 {
                     targetRole.KilledBy = " By " + killerRole.PlayerName;
@@ -857,11 +865,6 @@ namespace TownOfUsReworked.Extensions
                     troll.Wins();
                     return;
                 }
-
-                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Gorgon))
-                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
-                else
-                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));
 
                 var deadBody = new DeadPlayer
                 {

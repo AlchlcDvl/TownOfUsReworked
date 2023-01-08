@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            IntroText = "Kill anyone who opposes you";
             Results = InspResults.MineMafiSideDamp;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

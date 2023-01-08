@@ -116,13 +116,10 @@ AS's Bugs Corner
 - Syndicate and Intruders can kill members of the same faction
 - Shifting not working properly
 - Roleblocks not working
-- Cryo doesn't kill their doused targets at all and instead murders them on the spot
+- Cryo doesn't kill their doused targets at the start of the meeting and instead murders them on the spot
 - Broken lovers
-- Trolls don't win yet
 - Camouflage code = bad
 - Phantom can't do tasks when dead
 - Dracula cannot convert anymore
-- Consig makes a fatal crash upon loading
-- Jackal/GA/Exe don't have their respective PlayerControls spawning
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

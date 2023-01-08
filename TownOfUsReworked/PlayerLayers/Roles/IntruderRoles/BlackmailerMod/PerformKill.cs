@@ -27,9 +27,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
 
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
+
+            if (Utils.GetDistBetweenPlayers(role.Player, role.ClosestPlayer) > maxDistance)
+                return false;
+
             if (__instance == role.BlackmailButton)
             {
-                if (!__instance.isActiveAndEnabled || role.ClosestPlayer == null)
+                if (!__instance.isActiveAndEnabled || role.ClosestPlayer == null || __instance.isCoolingDown || !__instance.isActiveAndEnabled || role.BlackmailTimer() != 0)
                     return false;
 
                 if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
@@ -42,8 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 {
                     if (role.Player.IsShielded())
                     {
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                         writer2.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
                         writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -51,27 +55,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                         System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
                         StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
-                    else
+                    else if (!role.Player.IsProtected())
                         Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
 
                     return false;
                 }
 
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
-                if (role.BlackmailTimer() != 0)
-                    return false;
-
                 role.Blackmailed?.myRend().material.SetFloat("_Outline", 0f);
 
                 if (role.Blackmailed != null && role.Blackmailed.Data.IsImpostor())
                 {
-                    if (role.Blackmailed.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && role.Blackmailed.GetCustomOutfitType() !=
-                        CustomPlayerOutfitType.Invis)
+                    if (role.Blackmailed.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && role.Blackmailed.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
                         role.Blackmailed.nameText().color = Colors.Blackmailer;
                     else
                         role.Blackmailed.nameText().color = Color.clear;
@@ -82,8 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                 unchecked
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte) CustomRPC.Blackmail, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Blackmail, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

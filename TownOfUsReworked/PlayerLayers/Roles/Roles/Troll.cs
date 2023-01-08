@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public bool Killed;
         public DateTime LastInteracted { get; set; }
+        public KillButton _interactbutton;
         public PlayerControl ClosestPlayer;
 
         public Troll(PlayerControl player) : base(player)
@@ -27,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            IntroText = "Die";
             Results = InspResults.ArsoCryoPBOpTroll;
             AddToRoleHistory(RoleType);
         }
@@ -78,6 +78,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public KillButton InteractButton
+        {
+            get => _interactbutton;
+            set
+            {
+                _interactbutton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
     }
 }

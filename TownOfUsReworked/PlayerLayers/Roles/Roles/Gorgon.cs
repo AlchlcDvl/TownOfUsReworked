@@ -38,7 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Killing)";
             FactionDescription = SyndicateFactionDescription;         
             Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
-            IntroText = SyndicateIntro;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
             AlignmentDescription = SyKDescription;
             AddToRoleHistory(RoleType);

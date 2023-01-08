@@ -15,19 +15,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
         [HarmonyPriority(Priority.First)]
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
             if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
-                return true;
+                return false;
 
             var target = __instance.currentTarget;
 
             if (target == null)
-                return true;
+                return false;
 
             if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
-                return true;
+                return false;
+            
+            //Last ditch effort to stop Consigliere and Disguiser from killing
+            var role = Role.GetRole(PlayerControl.LocalPlayer);
+
+            if (role.RoleType == RoleEnum.Consigliere)
+            {
+                var consig = (Consigliere)role;
+
+                if (__instance == consig.InvestigateButton)
+                    return false;
+            }
+            else if (role.RoleType == RoleEnum.Blackmailer)
+            {
+                var bmer = (Blackmailer)role;
+
+                if (__instance == bmer.BlackmailButton)
+                    return false;
+            }
+            else if (role.RoleType == RoleEnum.Morphling)
+            {
+                var morphling = (Morphling)role;
+
+                if (__instance == morphling.MorphButton)
+                    return false;
+            }
+            else if (role.RoleType == RoleEnum.Disguiser)
+            {
+                var disg = (Disguiser)role;
+
+                if (__instance == disg.DisguiseButton)
+                    return false;
+            }
+            //Progress report: does not fucking work
 
             if (target.IsInfected() || PlayerControl.LocalPlayer.IsInfected())
             {
@@ -40,8 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 if (target.IsShielded())
                 {
                     var medic = target.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -59,8 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 else if (PlayerControl.LocalPlayer.IsShielded())
                 {
                     var medic = PlayerControl.LocalPlayer.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -84,8 +112,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             }
             else if (target.IsShielded())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer.Write(target.GetMedic().Player.PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

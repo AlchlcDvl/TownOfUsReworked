@@ -19,6 +19,7 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -28,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly List<KeyValuePair<byte, RoleEnum>> RoleHistory = new List<KeyValuePair<byte, RoleEnum>>();
         public static readonly List<string> Vowels = new List<string>();
         public List<KillButton> ExtraButtons = new List<KillButton>();
+        public List<AbilityButton> OtherButtons = new List<AbilityButton>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
@@ -71,7 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string SubFactionName { get; set; } = "";
         protected internal string AttackString { get; set; } = "None";
         protected internal string DefenseString { get; set; } = "None";
-        protected internal string IntroText { get; set; } = "";
         protected internal string FactionDescription { get; set; } = "";
         protected internal string RoleDescription { get; set; } = "";
         protected internal string AlignmentDescription { get; set; } = "";
@@ -83,7 +84,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsSynTraitor { get; set; } = false;
         protected internal bool IsCorrupted { get; set; } = false;
 
-        public static string IntruderIntro = "Kill Anyone Who Opposes You";
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill: <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
             "<color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
@@ -97,7 +97,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             "misinformation circulating, for it can be advantageous to completely fool even one player.";
         public static string IUDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
 
-        public static string SyndicateIntro = "Cause Chaos";
         public static string SyndicateWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#575657FF>Recruited</color> <color=#008000FF>Syndicate</color>, " +
             "<color=#8BFDFDFF>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
@@ -111,7 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             " Create extreme levels of chaos by just the click of a button!";
         public static string SyKDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
 
-        public static string CrewIntro = "Eject all <color=#FF0000FF>evildoers</color>";
         public static string CrewFactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
             " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
         public static string CPDescription = "You are a Crew (Protective) role! You have the capability to stop someone from losing their life, and quite possibly" +
@@ -398,7 +396,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         internal virtual bool RoleCriteria()
         {
             var coronerFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Contains(Player.PlayerId);
-            var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId);;
+            var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId) && CustomGameOptions.ConsigInfo == ConsigInfo.Role;
             return coronerFlag || consigFlag;
         }
 
@@ -441,9 +439,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
                 return "";
-            
-            if (CustomGameOptions.PlayerNumbers && !CustomGameOptions.NoNames)
-                Player.GetDefaultOutfit().PlayerName += $" [{Player.PlayerId}]";
 
             string PlayerName = Player.GetDefaultOutfit().PlayerName;
             
@@ -634,7 +629,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.YouAreText.color = role.Color;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = role.IntroText;
+                        __instance.__4__this.ImpostorText.text = " ";
                         __instance.__4__this.RoleBlurbText.text = role.StartText;
 
                         if (role.IntroSound != null)
@@ -730,7 +725,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.TeamTitle.color = role.FactionColor;
                         __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
                         __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = role.IntroText;
+                        __instance.__4__this.ImpostorText.text = " ";
                     }
 
                     if (StatusText != null)
@@ -1039,8 +1034,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool targetFlag = role.TargetCriteria();
                         bool roleFlag = role.RoleCriteria();
                         bool localFlag = role.Local;
-                        player.NameText.text = role.NameText(selfFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag,
-                            selfFlag || deadFlag, player);
+                        player.NameText.text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag, selfFlag ||
+                            deadFlag, player);
 
                         if (role.ColorCriteria())
                             player.NameText.color = role.Color;
@@ -1090,8 +1085,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool targetFlag = role.TargetCriteria();
                         bool roleFlag = role.RoleCriteria();
                         bool localFlag = role.Local;
-                        player.nameText().text = role.NameText(selfFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag,
-                            selfFlag || deadFlag);
+                        player.nameText().text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag, selfFlag ||
+                            deadFlag);
 
                         if (role.ColorCriteria())
                             player.nameText().color = role.Color;

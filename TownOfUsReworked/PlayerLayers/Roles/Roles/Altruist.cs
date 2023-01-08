@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-            IntroText = CrewIntro;
             Results = InspResults.TrackAltTLTM;
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CPDescription;

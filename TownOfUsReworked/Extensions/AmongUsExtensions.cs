@@ -4,12 +4,11 @@ using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using Object = System.Object;
 using System;
 using InnerNet;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -125,10 +124,12 @@ namespace TownOfUsReworked.Extensions
 
                 if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && playerControl.Is(Faction.Syndicate))
                     playerControl.nameText().color = Colors.Syndicate;
+                
+                if (CustomGameOptions.PlayerNumbers)
+                    playerControl.nameText().text += $" {playerControl.PlayerId}";
             }
             else
                 playerControl.nameText().color = Color.white;
-
         }
 
         public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl)

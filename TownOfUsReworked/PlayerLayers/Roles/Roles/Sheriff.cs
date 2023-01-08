@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Investigative)";
-            IntroText = "Eject all <color=#FF0000FF>evildoers</color>";
             Results = InspResults.SherConsigInspBm;
             AddToRoleHistory(RoleType);
         }

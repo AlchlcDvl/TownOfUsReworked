@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            IntroText = "Convert The <color=#8BFDFDFF>Crew</color> To Gain A Majority";
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             FactionDescription = NeutralFactionDescription;

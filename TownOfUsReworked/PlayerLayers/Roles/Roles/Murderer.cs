@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Murder those who oppose you";
             Results = InspResults.CrewImpAnMurd;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

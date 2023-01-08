@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = "Intruder (Deception)";
-            IntroText = "Kill anyone who opposes you";
             Results = InspResults.EscConsGliPois;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = "Intruder (Deception)";
-            IntroText = IntruderIntro;
             Results = InspResults.DisgMorphCamoAgent;
             FactionDescription = IntruderFactionDescription;
             Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;

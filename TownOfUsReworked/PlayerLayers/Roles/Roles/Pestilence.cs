@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Obliterate those who oppose you";
             Results = InspResults.GFMayorRebelPest;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";

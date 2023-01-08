@@ -24,27 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             return player.name + str;
         }
 
-        private static void UpdateMeeting(MeetingHud __instance, Consigliere consig)
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (!consig.Investigated.Contains(player.PlayerId))
-                    continue;
-
-                foreach (var state in __instance.playerStates)
-                {
-                    if (player.PlayerId != state.TargetPlayerId)
-                        continue;
-
-                    var roleType = Utils.GetRole(player);
-                    var role = Role.GetRole(player);
-
-                    state.NameText.color = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? role.Color : role.FactionColor;
-                    state.NameText.text = NameText(player, CustomGameOptions.ConsigInfo == ConsigInfo.Role ? $"\n ({role.Name})" : $"\n ({role.FactionName})", true);
-                }
-            }
-        }
-
         [HarmonyPriority(Priority.Last)]
         private static void Postfix(HudManager __instance)
         {
@@ -61,9 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 return;
-
-            if (MeetingHud.Instance != null)
-                UpdateMeeting(MeetingHud.Instance, consig);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {

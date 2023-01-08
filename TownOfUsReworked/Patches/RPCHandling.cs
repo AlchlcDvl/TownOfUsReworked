@@ -20,7 +20,6 @@ using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
 using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
@@ -492,7 +491,7 @@ namespace TownOfUsReworked.Patches
                     CrewRoles.AddRange(CrewProtectiveRoles);
                     CrewRoles.AddRange(CrewSovereignRoles);
 
-                    while (maxCrew > crewmates.Count - CustomGameOptions.SyndicateCount - NeutralRoles.Count)
+                    while (maxCrew > crewmates.Count - spareCrew)
                         maxCrew--;
 
                     if (minCrew > maxCrew)
@@ -923,7 +922,6 @@ namespace TownOfUsReworked.Patches
                             goodRecruits.Remove(jackal.GoodRecruit);
                             (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
                             (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
-                            (Role.GetRole(jackal.GoodRecruit)).Color = Colors.Cabal;
 
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit,
                                 SendOption.Reliable, -1);
@@ -945,7 +943,6 @@ namespace TownOfUsReworked.Patches
                             evilRecruits.Remove(jackal.EvilRecruit);
                             (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
                             (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
-                            (Role.GetRole(jackal.EvilRecruit)).Color = Colors.Cabal;
 
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit,
                                 SendOption.Reliable, -1);
@@ -1247,12 +1244,12 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.AllFreeze:
                         var theCryomaniac = Utils.PlayerById(reader.ReadByte());
                         var theCryomaniacRole = Role.GetRole<Cryomaniac>(theCryomaniac);
-                        global::TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod.PerformKill.Freeze(theCryomaniacRole);
+                        theCryomaniacRole.FreezeUsed = true;
                         break;
 
                     case CustomRPC.CryomaniacWin:
                         var theCryomaniacTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Cryomaniac && !x.IsRecruit);
-                        ((Cryomaniac) theCryomaniacTheRole).Wins();
+                        ((Cryomaniac)theCryomaniacTheRole).Wins();
                         break;
 
                     case CustomRPC.CryomaniacLose:
@@ -1274,8 +1271,8 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.TrollWin:
-                        var theTrollTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Troll && !x.IsRecruit);
-                        ((Troll) theTrollTheRole).Wins();
+                        var theTrollTheRole = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Troll && ((Troll)x).Killed && !x.IsRecruit);
+                        ((Troll)theTrollTheRole).Wins();
                         break;
 
                     case CustomRPC.TrollLose:
@@ -1830,7 +1827,6 @@ namespace TownOfUsReworked.Patches
                         jackalRole.GoodRecruit = goodRecruit;
                         (Role.GetRole(goodRecruit)).SubFaction = SubFaction.Cabal;
                         (Role.GetRole(goodRecruit)).IsRecruit = true;
-                        (Role.GetRole(goodRecruit)).Color = Colors.Cabal;
                         break;
 
                     case CustomRPC.SetEvilRecruit:
@@ -1840,7 +1836,6 @@ namespace TownOfUsReworked.Patches
                         jackalRole2.GoodRecruit = evilRecruit;
                         (Role.GetRole(evilRecruit)).SubFaction = SubFaction.Cabal;
                         (Role.GetRole(evilRecruit)).IsRecruit = true;
-                        (Role.GetRole(evilRecruit)).Color = Colors.Cabal;
                         break;
 
                     case CustomRPC.SetBlackmailer:

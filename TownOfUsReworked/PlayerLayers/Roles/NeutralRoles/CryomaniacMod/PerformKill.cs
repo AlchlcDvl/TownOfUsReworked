@@ -36,6 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             {
                 if (!__instance.isActiveAndEnabled)
                     return false;
+                
+                role.FreezeUsed = true;
 
                 unchecked
                 {
@@ -44,9 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-
-                Freeze(role);
-
+                
                 return false;
             }
 
@@ -113,21 +113,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 
             __instance.SetTarget(null);
             return false;
-        }
-
-        public static void Freeze(Cryomaniac role)
-        {
-            foreach (var playerId in role.DousedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-
-                if (player == null || player.Data.Disconnected || player.Data.IsDead)
-                    continue;
-
-                Utils.MurderPlayer(player, player);
-            }
-
-            role.FreezeUsed = true;
         }
     }
 }

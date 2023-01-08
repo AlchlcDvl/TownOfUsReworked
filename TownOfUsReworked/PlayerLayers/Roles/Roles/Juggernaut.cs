@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Assault those who oppose you";
             Results = InspResults.JestJuggWWInv;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

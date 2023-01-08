@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
-            IntroText = SyndicateIntro;
             Results = InspResults.ArsoCryoPBOpTroll;
             Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
             Attack = AttackEnum.Basic;

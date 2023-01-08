@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            IntroText = IntruderIntro;
             Results = InspResults.CrewImpAnMurd;
             IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;

@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            IntroText = "Remember Who You Were";
             Results = InspResults.EngiAmneThiefCann;
             Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral);
             IntroSound = TownOfUsReworked.AmnesiacIntro;

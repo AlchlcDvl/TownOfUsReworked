@@ -13,12 +13,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastMauled { get; set; }
         public bool WWWins { get; set; }
+        public bool CanMaul;
 
         public Werewolf(PlayerControl player) : base(player)
         {
             Name = "Werewolf";
             StartText = "Howl And Maul Everyone";
-            AbilitiesText = "Kill everyone!\nFake Tasks:";
+            AbilitiesText = "Kill everyone!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
             LastMauled = DateTime.UtcNow;
             RoleType = RoleEnum.Werewolf;
@@ -27,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            IntroText = "Maul those who oppose you";
             Results = InspResults.JestJuggWWInv;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

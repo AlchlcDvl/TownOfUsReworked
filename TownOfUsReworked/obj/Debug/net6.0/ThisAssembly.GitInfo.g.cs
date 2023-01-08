@@ -41,14 +41,14 @@ namespace
       /// <summary>Branch: master</summary>
       public const string Branch = "master";
 
-      /// <summary>Commit: 7397b0e</summary>
-      public const string Commit = "7397b0e";
+      /// <summary>Commit: a30b920</summary>
+      public const string Commit = "a30b920";
 
-      /// <summary>Sha: 7397b0e58675197caf115894a54c537d2bd6710d</summary>
-      public const string Sha = "7397b0e58675197caf115894a54c537d2bd6710d";
+      /// <summary>Sha: a30b920b7dee0c1a2f9ad3e51a7083673f939e3b</summary>
+      public const string Sha = "a30b920b7dee0c1a2f9ad3e51a7083673f939e3b";
 
-      /// <summary>Commits on top of base version: 51</summary>
-      public const string Commits = "51";
+      /// <summary>Commits on top of base version: 52</summary>
+      public const string Commits = "52";
 
       /// <summary>Tag: </summary>
       public const string Tag = "";
@@ -78,8 +78,8 @@ namespace
         /// <summary>Minor: 0</summary>
         public const string Minor = "0";
 
-        /// <summary>Patch: 51</summary>
-        public const string Patch = "51";
+        /// <summary>Patch: 52</summary>
+        public const string Patch = "52";
 
         /// <summary>Label: </summary>
         public const string Label = "";

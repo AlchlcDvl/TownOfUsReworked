@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = "Syndicate (Support)";
-            IntroText = SyndicateIntro;
             Results = InspResults.ConcealGorg;
             RoleDescription = "You are a Concealer! You can turn everyone invisible to everyone else but themselves by making them unable to see things properly. " +
                 "Use this to get away from crime scenes as fast as possible!";

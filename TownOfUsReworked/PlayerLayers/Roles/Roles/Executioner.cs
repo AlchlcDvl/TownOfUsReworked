@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            IntroText = "Eject Your Target";
             Results = InspResults.GAExeMedicPup;
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NEDescription;

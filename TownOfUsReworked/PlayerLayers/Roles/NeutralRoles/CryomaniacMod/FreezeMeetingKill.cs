@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
@@ -26,6 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                         Utils.RpcMurderPlayer(role.Player, player2);
                     }
 
+                    role.DousedPlayers.Clear();
                     role.FreezeUsed = false;
                 }
                 
