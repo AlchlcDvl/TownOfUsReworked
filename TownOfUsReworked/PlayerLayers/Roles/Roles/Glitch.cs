@@ -1,7 +1,6 @@
 ﻿using Hazel;
 using System;
 using System.Linq;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -16,28 +15,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Glitch : Role, IVisualAlteration
     {
-        public bool lastMouse;
         public PlayerControl ClosestPlayer;
         public DateTime LastMimic { get; set; }
         public DateTime LastHack { get; set; }
         public DateTime LastKill { get; set; }
-        private KillButton _glitchButton { get; set; }
+        private KillButton _hackButton { get; set; }
+        private KillButton _mimicButton { get; set; }
         private KillButton _killButton { get; set; }
         public PlayerControl HackTarget { get; set; }
         public ChatController MimicList { get; set; }
         public float TimeRemaining;
         public bool IsUsingMimic => TimeRemaining > 0f;
         public PlayerControl MimicTarget { get; set; }
-        public bool PressedButton;
         public bool GlitchWins { get; set; }
+        public bool LastMouse;
+        public bool MenuClick;
+        public float TimeRemaining2;
+        public bool IsUsingHack => TimeRemaining2 > 0f;
 
         public Glitch(PlayerControl owner) : base(owner)
         {
             Name = "Glitch";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
-            HackTarget = null;
             MimicList = null;
-            PressedButton = false;
             RoleType = RoleEnum.Glitch;
             StartText = "foreach PlayerControl Glitch.MurderPlayer";
             AbilitiesText = "- You can mimic players' appearances whenever you want to.\n- You can hack players to stop them from using their abilities.";
@@ -55,9 +55,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
             Objectives = IsRecruit ? JackalWinCon : NKWinCon;
+            MenuClick = false;
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
-            AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
@@ -105,6 +105,119 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
+        public void MimicButtonPress()
+        {
+            if (MimicList == null)
+            {
+                MimicTarget = null;
+                DestroyableSingleton<HudManager>.Instance.Chat.SetVisible(false);
+                MimicList = Object.Instantiate(HudManager.Instance.Chat);
+                MimicList.transform.SetParent(Camera.main.transform);
+                MimicList.SetVisible(true);
+                MimicList.Toggle();
+                MimicList.TextBubble.enabled = false;
+                MimicList.TextBubble.gameObject.SetActive(false);
+                MimicList.TextArea.enabled = false;
+                MimicList.TextArea.gameObject.SetActive(false);
+                MimicList.BanButton.enabled = false;
+                MimicList.BanButton.gameObject.SetActive(false);
+                MimicList.CharCount.enabled = false;
+                MimicList.CharCount.gameObject.SetActive(false);
+                MimicList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                MimicList.OpenKeyboardButton.Destroy();
+                MimicList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                MimicList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                MimicList.BackgroundImage.enabled = false;
+
+                foreach (var rend in MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    if (rend.name == "SendButton" || rend.name == "QuickChatButton")
+                    {
+                        rend.enabled = false;
+                        rend.gameObject.SetActive(false);
+                    }
+                }
+
+                foreach (var bubble in MimicList.chatBubPool.activeChildren)
+                {
+                    bubble.enabled = false;
+                    bubble.gameObject.SetActive(false);
+                }
+
+                MimicList.chatBubPool.activeChildren.Clear();
+
+                foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x != null && x.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
+                {
+                    if (!player.Data.IsDead)
+                        MimicList.AddChat(player, "Click here");
+                    else
+                    {
+                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
+
+                        foreach (var body in deadBodies)
+                        {
+                            if (body.ParentId == player.PlayerId)
+                            {
+                                player.Data.IsDead = false;
+                                MimicList.AddChat(player, "Click here");
+                                player.Data.IsDead = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MimicList.Toggle();
+                MimicList.SetVisible(false);
+                MimicList = null;
+            }
+        }
+
+        public float HackTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastHack;
+            var num = CustomGameOptions.HackCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public float MimicTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastMimic;
+            var num = CustomGameOptions.MimicCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKill;
+            var num = CustomGameOptions.GlitchKillCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Update(HudManager __instance)
+        {
+            FixedUpdate(__instance);
+        }
+
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
@@ -124,15 +237,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void FixedUpdate(HudManager __instance)
         {
-            if (__instance.KillButton != null && Player.Data.IsDead)
-                __instance.KillButton.SetTarget(null);
-
-            if (GlitchButton != null && Player.Data.IsDead)
-                GlitchButton.SetTarget(null);
-
-            if (GlitchButton != null && Player.Data.IsDead)
-                GlitchButton.SetTarget(null);
-
             if (MimicList != null)
             {
                 if (Minigame.Instance)
@@ -157,16 +261,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             {
                                 if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
                                 {
-                                    if (!Input.GetMouseButtonDown(0) && lastMouse)
+                                    if (!Input.GetMouseButtonDown(0) && LastMouse)
                                     {
-                                        lastMouse = false;
+                                        LastMouse = false;
                                         MimicList.Toggle();
                                         MimicList.SetVisible(false);
                                         MimicList = null;
+                                        MimicTarget = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text).FirstOrDefault();
+                                        Mimic();
                                         break;
                                     }
 
-                                    lastMouse = Input.GetMouseButtonDown(0);
+                                    LastMouse = Input.GetMouseButtonDown(0);
                                 }
                             }
                         }
@@ -175,300 +281,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        public void RpcSetHacked(PlayerControl hacked)
+        public KillButton MimicButton
         {
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Hack,
-                    SendOption.Reliable, -1);
-                writer.Write(hacked.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-        }
-
-        public static class KillButtonHandler
-        {
-            public static void KillButtonUpdate(Glitch __gInstance, HudManager __instance)
-            {
-                if (!__gInstance.Player.Data.IsImpostor() && Input.GetKeyDown(KeyCode.Q))
-                    __instance.KillButton.DoClick();
-
-                __instance.KillButton.gameObject.SetActive(__instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance &&
-                    !__gInstance.Player.Data.IsDead);
-                __instance.KillButton.SetCoolDown(__gInstance.KillTimer(), CustomGameOptions.GlitchKillCooldown);
-
-                __instance.KillButton.SetTarget(null);
-                __gInstance.ClosestPlayer = null;
-
-                if (__instance.KillButton.isActiveAndEnabled)
-                    __instance.KillButton.SetTarget(__gInstance.ClosestPlayer);
-
-                if (__gInstance.ClosestPlayer != null)
-                    __gInstance.ClosestPlayer.myRend().material.SetColor("_OutlineColor", __gInstance.Color);
-            }
-
-            public static void KillButtonPress(Glitch __gInstance, KillButton __instance)
-            {
-                if (__gInstance.ClosestPlayer != null)
-                {
-                    if (__gInstance.Player.inVent)
-                        return;
-
-                    if (__gInstance.ClosestPlayer.Is(RoleEnum.Pestilence))
-                    {
-                        if (__gInstance.Player.IsShielded())
-                        {
-                            var medic = __gInstance.Player.GetMedic().Player.PlayerId;
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                            writer.Write(medic);
-                            writer.Write(__gInstance.Player.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                            if (CustomGameOptions.ShieldBreaks)
-                                __gInstance.LastKill = DateTime.UtcNow;
-
-                            StopKill.BreakShield(medic, __gInstance.Player.PlayerId,
-                                CustomGameOptions.ShieldBreaks);
-                        }
-
-                        if (__gInstance.Player.IsProtected())
-                        {
-                            __gInstance.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
-                            return;
-                        }
-
-                        Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-                        return;
-                    }
-
-                    if (__gInstance.ClosestPlayer.IsInfected() || __gInstance.Player.IsInfected())
-                    {
-                        foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                            ((Plaguebearer)pb).RpcSpreadInfection(__gInstance.ClosestPlayer, __gInstance.Player);
-                    }
-
-                    if (__gInstance.ClosestPlayer.IsOnAlert())
-                    {
-                        if (__gInstance.ClosestPlayer.IsShielded())
-                        {
-                            var medic = __gInstance.ClosestPlayer.GetMedic().Player.PlayerId;
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                            writer.Write(medic);
-                            writer.Write(__gInstance.ClosestPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                            if (CustomGameOptions.ShieldBreaks)
-                                __gInstance.LastKill = DateTime.UtcNow;
-
-                            StopKill.BreakShield(medic, __gInstance.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
-                            if (!__gInstance.Player.IsProtected())
-                                Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-                        }
-                        else if (__gInstance.Player.IsShielded())
-                        {
-                            var medic = __gInstance.Player.GetMedic().Player.PlayerId;
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                            writer.Write(medic);
-                            writer.Write(__gInstance.Player.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                            if (CustomGameOptions.ShieldBreaks)
-                                __gInstance.LastKill = DateTime.UtcNow;
-
-                            StopKill.BreakShield(medic, __gInstance.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                        }
-                        else if (__gInstance.ClosestPlayer.IsProtected())
-                            Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-                        else
-                            Utils.RpcMurderPlayer(__gInstance.ClosestPlayer, __gInstance.Player);
-
-                        return;
-                    }
-                    else if (__gInstance.ClosestPlayer.IsShielded())
-                    {
-                        var medic = __gInstance.ClosestPlayer.GetMedic().Player.PlayerId;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                            (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                        writer.Write(medic);
-                        writer.Write(__gInstance.ClosestPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                        if (CustomGameOptions.ShieldBreaks)
-                            __gInstance.LastKill = DateTime.UtcNow;
-
-                        StopKill.BreakShield(medic, __gInstance.ClosestPlayer.PlayerId,
-                            CustomGameOptions.ShieldBreaks);
-
-                        return;
-                    }
-                    else if (__gInstance.ClosestPlayer.IsVesting())
-                    {
-                        __gInstance.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
-
-                        return;
-                    }
-                    else if (__gInstance.ClosestPlayer.IsProtected())
-                    {
-                        __gInstance.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
-
-                        return;
-                    }
-
-                    __gInstance.LastKill = DateTime.UtcNow;
-                    __gInstance.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown);
-                    Utils.RpcMurderPlayer(__gInstance.Player, __gInstance.ClosestPlayer);
-                }
-            }
-        }
-
-        public static class MimicButtonHandler
-        {
-            public static void MimicButtonUpdate(Glitch __gInstance, HudManager __instance)
-            {
-                if (!__gInstance.GlitchButton.isCoolingDown && !__gInstance.IsUsingMimic)
-                {
-                    __gInstance.GlitchButton.isCoolingDown = false;
-                    __gInstance.GlitchButton.graphic.material.SetFloat("_Desat", 0f);
-                    __gInstance.GlitchButton.graphic.color = Palette.EnabledColor;
-                }
-                else
-                {
-                    __gInstance.GlitchButton.isCoolingDown = true;
-                    __gInstance.GlitchButton.graphic.material.SetFloat("_Desat", 1f);
-                    __gInstance.GlitchButton.graphic.color = Palette.DisabledClear;
-                }
-
-                if (!__gInstance.IsUsingMimic)
-                    __gInstance.GlitchButton.SetCoolDown(__gInstance.MimicTimer(), CustomGameOptions.GlitchCooldown);
-            }
-
-            public static void MimicButtonPress(Glitch __gInstance, KillButton __instance)
-            {
-                if (__gInstance.MimicList == null)
-                {
-                    HudManager.Instance.Chat.SetVisible(false);
-                    __gInstance.MimicList = Object.Instantiate(HudManager.Instance.Chat);
-
-                    __gInstance.MimicList.transform.SetParent(Camera.main.transform);
-                    __gInstance.MimicList.SetVisible(true);
-                    __gInstance.MimicList.Toggle();
-
-                    __gInstance.MimicList.TextBubble.enabled = false;
-                    __gInstance.MimicList.TextBubble.gameObject.SetActive(false);
-
-                    __gInstance.MimicList.TextArea.enabled = false;
-                    __gInstance.MimicList.TextArea.gameObject.SetActive(false);
-
-                    __gInstance.MimicList.BanButton.enabled = false;
-                    __gInstance.MimicList.BanButton.gameObject.SetActive(false);
-
-                    __gInstance.MimicList.CharCount.enabled = false;
-                    __gInstance.MimicList.CharCount.gameObject.SetActive(false);
-
-                    __gInstance.MimicList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                    __gInstance.MimicList.OpenKeyboardButton.Destroy();
-
-                    __gInstance.MimicList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                    __gInstance.MimicList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-
-                    __gInstance.MimicList.BackgroundImage.enabled = false;
-
-                    foreach (var rend in __gInstance.MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
-                    {
-                        if (rend.name == "SendButton" || rend.name == "QuickChatButton")
-                        {
-                            rend.enabled = false;
-                            rend.gameObject.SetActive(false);
-                        }
-                    }
-
-                    foreach (var bubble in __gInstance.MimicList.chatBubPool.activeChildren)
-                    {
-                        bubble.enabled = false;
-                        bubble.gameObject.SetActive(false);
-                    }
-
-                    __gInstance.MimicList.chatBubPool.activeChildren.Clear();
-
-                    foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x != null && x.Data != null &&
-                        x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
-                    {
-                        if (!player.Data.IsDead)
-                            __gInstance.MimicList.AddChat(player, "Click here");
-                        else
-                        {
-                            var deadBodies = Object.FindObjectsOfType<DeadBody>();
-
-                            foreach (var body in deadBodies)
-                            {
-                                if (body.ParentId == player.PlayerId)
-                                {
-                                    player.Data.IsDead = false;
-                                    __gInstance.MimicList.AddChat(player, "Click here");
-                                    player.Data.IsDead = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    __gInstance.MimicList.Toggle();
-                    __gInstance.MimicList.SetVisible(false);
-                    __gInstance.MimicList = null;
-                }
-            }
-        }
-
-        public float HackTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastHack;
-            var num = CustomGameOptions.GlitchCooldown * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public float MimicTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMimic;
-            var num = CustomGameOptions.GlitchCooldown * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public float KillTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
-            var num = CustomGameOptions.GlitchKillCooldown * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public KillButton GlitchButton
-        {
-            get => _glitchButton;
+            get => _mimicButton;
             set
             {
-                _glitchButton = value;
+                _mimicButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public KillButton HackButton
+        {
+            get => _hackButton;
+            set
+            {
+                _hackButton = value;
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
@@ -483,6 +312,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
+        }
+
+        public void Mimic()
+        {
+            TimeRemaining -= Time.deltaTime;
+            Utils.Morph(Player, MimicTarget);
+
+            if (Player.Data.IsDead)
+                TimeRemaining = 0f;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
@@ -502,13 +340,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Mimic()
+        public void Hack()
         {
-            TimeRemaining -= Time.deltaTime;
-            Utils.Morph(Player, MimicTarget);
+            TimeRemaining2 -= Time.deltaTime;
+            var targetRole = GetRole(HackTarget);
+            targetRole.IsBlocked = true;
 
             if (Player.Data.IsDead)
-                TimeRemaining = 0f;
+            {
+                TimeRemaining2 = 0f;
+                targetRole.IsBlocked = false;
+            }
+        }
+
+        public void Unack()
+        {
+            var targetRole = GetRole(HackTarget);
+            targetRole.IsBlocked = false;
+            HackTarget = null;
+            LastHack = DateTime.UtcNow;
         }
 
         public void Unmimic()

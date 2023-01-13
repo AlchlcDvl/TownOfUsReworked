@@ -84,6 +84,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 
                     if (!PlayerControl.LocalPlayer.IsProtected())
                         Utils.RpcMurderPlayer(target, PlayerControl.LocalPlayer);
+                    
+                    return false;
                 }
                 else if (PlayerControl.LocalPlayer.IsShielded())
                 {
@@ -99,16 +101,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                         PlayerControl.LocalPlayer.SetKillTimer(0.01f);
 
                     StopKill.BreakShield(medic, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+                    return false;
                 }
-                else
+                else if (!role.Player.IsProtected())
                 {
-                    if (!PlayerControl.LocalPlayer.IsProtected())
-                        Utils.RpcMurderPlayer(target, PlayerControl.LocalPlayer);
-                    else
-                        PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.ProtectKCReset + 0.01f);
+                    Utils.RpcMurderPlayer(target, PlayerControl.LocalPlayer);
+                    return false;
                 }
-
-                return false;
             }
             else if (target.IsShielded())
             {
@@ -135,6 +134,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             else if (target.IsProtected())
             {
                 PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.ProtectKCReset + 0.01f);
+                return false;
+            }
+            else if (PlayerControl.LocalPlayer.IsOtherRival(target))
+            {
+                PlayerControl.LocalPlayer.SetKillTimer(CustomGameOptions.IntKillCooldown);
                 return false;
             }
             

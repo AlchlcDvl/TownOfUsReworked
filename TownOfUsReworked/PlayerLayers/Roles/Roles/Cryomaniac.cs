@@ -39,7 +39,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NKDescription;
             RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
             Objectives = IsRecruit ? JackalWinCon : NKWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton FreezeButton

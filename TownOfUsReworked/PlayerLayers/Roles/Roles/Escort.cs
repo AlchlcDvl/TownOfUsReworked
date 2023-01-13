@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = CrewFactionDescription;
             Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -45,8 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Declare,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Declare, SendOption.Reliable, -1);
                 writer.Write(role.Player.PlayerId);
                 writer.Write(role.ClosestIntruder.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -62,9 +61,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             var formerRole = Role.GetRole(target);
             var mafioso = new Mafioso(target);
             mafioso.FormerRole = formerRole;
-            
-            Role.RoleDictionary.Remove(target.PlayerId);
-            Role.RoleDictionary.Add(target.PlayerId, mafioso);
+            mafioso.RoleHistory.Add(formerRole);
+            mafioso.RoleHistory.AddRange(formerRole.RoleHistory);
         }
     }
 }

@@ -14,6 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled { get; set; }
         public TextMeshPro UsesText;
+        public bool KilledInno = false;
+        public bool PreMeetingDie = false;
+        public bool PostMeetingDie = false;
+        public bool InnoMessage = false;
 
         public Vigilante(PlayerControl player) : base(player)
         {
@@ -31,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.SurvVHVampVig;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public float KillTimer()

@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
             AlignmentDescription = CIDescription;
             RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers in the act!";
-            AddToRoleHistory(RoleType);
         }
 
         public float ExamineTimer()

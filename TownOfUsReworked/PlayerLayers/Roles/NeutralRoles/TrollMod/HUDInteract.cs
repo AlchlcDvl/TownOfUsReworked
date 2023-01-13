@@ -35,8 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
                 role.InteractButton.gameObject.SetActive(false);
             }
 
-            role.InteractButton.GetComponent<AspectPosition>().Update();
-            role.InteractButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
+            role.InteractButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
             Utils.SetTarget(ref role.ClosestPlayer, role.InteractButton);
             role.InteractButton.SetCoolDown(role.InteractTimer(), CustomGameOptions.InteractCooldown);
             var renderer = role.InteractButton.graphic;

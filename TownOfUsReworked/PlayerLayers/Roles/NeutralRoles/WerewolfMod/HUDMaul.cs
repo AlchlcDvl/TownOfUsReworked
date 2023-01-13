@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 return;
 
             var role = Role.GetRole<Werewolf>(PlayerControl.LocalPlayer);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             __instance.KillButton.SetCoolDown(role.MaulTimer(), CustomGameOptions.MaulCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }

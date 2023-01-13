@@ -26,15 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 
             if (__instance.Data.IsDead)
                 return;
-            
-            var taskinfos = __instance.Data.Tasks.ToArray();
-            var tasksLeft = taskinfos.Count(x => !x.Complete);
             var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
 
-            if (traitor == null)
-                return;
-            
-            if (tasksLeft == 0)
+            if (traitor == null || !traitor.TasksDone)
                 traitor.Turned = true;
 
             if (traitor.Turned)
@@ -65,16 +59,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     if (random <= 50)
                     {
                         traitorRole.Faction = Faction.Intruder;
-                        traitorRole.Color = Colors.Intruder;
+                        traitorObj.Color = Colors.Intruder;
                         traitorRole.IsIntTraitor = true;
                         traitorObj.Side = "Intruders";
+                        traitorRole.FactionColor = Colors.Intruder;
                     }
                     else if (random >= 51)
                     {
                         traitorRole.Faction = Faction.Syndicate;
-                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Color = Colors.Syndicate;
                         traitorObj.Side = "Syndicate";
                         traitorRole.IsSynTraitor = true;
+                        traitorRole.FactionColor = Colors.Syndicate;
                     }
                 }
                 else if (IntrudersAlive > SyndicateAlive)
@@ -82,16 +78,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     if (random <= 25)
                     {
                         traitorRole.Faction = Faction.Intruder;
-                        traitorRole.Color = Colors.Intruder;
+                        traitorObj.Color = Colors.Intruder;
                         traitorRole.IsIntTraitor = true;
                         traitorObj.Side = "Intruders";
+                        traitorRole.FactionColor = Colors.Intruder;
                     }
                     else if (random >= 26)
                     {
                         traitorRole.Faction = Faction.Syndicate;
-                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Color = Colors.Syndicate;
                         traitorObj.Side = "Syndicate";
                         traitorRole.IsSynTraitor = true;
+                        traitorRole.FactionColor = Colors.Syndicate;
                     }
                 }
                 else if (IntrudersAlive < SyndicateAlive)
@@ -99,16 +97,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     if (random <= 75)
                     {
                         traitorRole.Faction = Faction.Intruder;
-                        traitorRole.Color = Colors.Intruder;
+                        traitorObj.Color = Colors.Intruder;
                         traitorRole.IsIntTraitor = true;
                         traitorObj.Side = "Intruders";
+                        traitorRole.FactionColor = Colors.Intruder;
                     }
                     else if (random >= 76)
                     {
                         traitorRole.Faction = Faction.Syndicate;
-                        traitorRole.Color = Colors.Syndicate;
+                        traitorObj.Color = Colors.Syndicate;
                         traitorObj.Side = "Syndicate";
                         traitorRole.IsSynTraitor = true;
+                        traitorRole.FactionColor = Colors.Syndicate;
                     }
                 }
 
@@ -117,18 +117,20 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             else if (IntrudersAlive > 0 && SyndicateAlive == 0)
             {
                 traitorRole.Faction = Faction.Intruder;
-                traitorRole.Color = Colors.Intruder;
+                traitorObj.Color = Colors.Intruder;
                 traitorObj.Side = "Intruders";
                 traitorRole.IsIntTraitor = true;
                 traitorObj.former = traitorRole;
+                traitorRole.FactionColor = Colors.Intruder;
             }
             else if (SyndicateAlive > 0 && IntrudersAlive == 0)
             {
                 traitorRole.Faction = Faction.Syndicate;
-                traitorRole.Color = Colors.Syndicate;
                 traitorRole.IsSynTraitor = true;
                 traitorObj.Side = "Syndicate";
                 traitorObj.former = traitorRole;
+                traitorObj.Color = Colors.Syndicate;
+                traitorRole.FactionColor = Colors.Syndicate;
             }
             else
                 return;
@@ -140,8 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 Ability.AbilityDictionary.Remove(traitor.PlayerId);
                 new Assassin(traitor);
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(traitor.NetId, (byte)CustomRPC.SetAssassin,
-                    SendOption.Reliable, -1);
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(traitor.NetId, (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
                 writer2.Write(traitor.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }

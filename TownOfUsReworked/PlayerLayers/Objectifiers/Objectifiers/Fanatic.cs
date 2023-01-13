@@ -20,7 +20,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
                 : "You are <color=#8BFDFDFF>Crew</color>, for now, that is....";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
-            AddToObjectifierHistory(ObjectifierType);
+            Hidden = !CustomGameOptions.FanaticKnows;
+        }
+
+        public void TurnFanatic(PlayerControl fanatic, PlayerControl attacker)
+        {
+            var fanaticRole = Role.GetRole(fanatic);
+            var attackerRole = Role.GetRole(attacker);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                             Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill))
+                        else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         {
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                             var gameObj = new GameObject();
@@ -58,22 +58,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                 case 0:
                     if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                    
+                    role.WinTasksDone = true;
                         
                     break;
-            }
-
-            if (tasksLeft == 0)
-            {
-                role.WinTasksDone = true;
-
-                if (AmongUsClient.Instance.AmHost)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TaskmasterWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                }
             }
         }
     }

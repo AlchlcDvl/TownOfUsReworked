@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             var data = PlayerControl.LocalPlayer.Data;
             var transportButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
-            transportButton.gameObject.SetActive(!MeetingHud.Instance && !data.IsDead);
+            transportButton.gameObject.SetActive(!MeetingHud.Instance && !data.IsDead && !LobbyBehaviour.Instance && role.ButtonUsable);
 
             if (data.IsDead)
                 return;

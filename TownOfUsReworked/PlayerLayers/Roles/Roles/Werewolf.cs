@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.JestJuggWWInv;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
@@ -115,14 +114,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             foreach (var player in closestPlayers)
             {
-                if (player.Is(RoleEnum.Pestilence) || player.IsVesting() || player.IsProtected())
+                if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player))
                     continue;
                     
-                if (Player.PlayerId != ClosestPlayer.PlayerId && !player.Is(RoleType))
+                if (Player.PlayerId != player.PlayerId && !player.Is(RoleType) && !player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player2, player);
                 
-                if (player.IsOnAlert())
+                if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player, player2);
+                
+                if (player.IsInfected() || Player.IsInfected())
+                {
+                    foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
+                        ((Plaguebearer)pb).RpcSpreadInfection(player, Player);
+                }
             }
         }
     }

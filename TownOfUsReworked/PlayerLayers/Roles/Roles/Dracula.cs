@@ -41,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ShiftSwapSKDrac;
             Objectives = UndeadWinCon;
             SubFactionColor = Colors.Undead;
-            AddToRoleHistory(RoleType);
         }
 
         public float ConvertTimer()
@@ -110,32 +109,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
-        }
-
-        public List<PlayerControl> Vamps()
-        {
-            var AllVamps = new List<PlayerControl>();
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(SubFaction.Undead))
-                    AllVamps.Add(player);
-            }
-
-            return AllVamps;
-        }
-
-        public List<PlayerControl> AliveVamps()
-        {
-            var vamp = Vamps();
-
-            foreach (var player in vamp)
-            {
-                if (player.Data.IsDead || player.Data.Disconnected)
-                    vamp.Remove(player);
-            }
-
-            return vamp;
         }
     }
 }

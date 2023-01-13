@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             SymbolName = "♣";
             TaskText = Turned
                 ? "You now side with the <color=#" + Role.GetRole(Player).ColorString + $"{Side}</color>!"
-                : "You are <color=#8BFDFDFF>Crew</color>, for now, that is....";
+                : "You are <color=#8BFDFDFF>Crew</color>, for now that is....";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Traitor;
-            AddToObjectifierHistory(ObjectifierType);
+            Hidden = !CustomGameOptions.TraitorKnows;
         }
     }
 }

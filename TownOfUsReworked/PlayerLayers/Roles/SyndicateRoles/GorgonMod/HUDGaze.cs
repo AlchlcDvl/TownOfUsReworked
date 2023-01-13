@@ -36,12 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                 role.GazeButton.graphic.sprite = Gaze;
             }
 
-            role.GazeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            role.GazeButton.transform.localPosition = __instance.KillButton.transform.localPosition;
-
-            __instance.KillButton.graphic.color = new Color(0, 0, 0, 0);
-            __instance.KillButton.gameObject.SetActive(false);
-
+            role.GazeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             var notImpostor = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.GazeButton, float.NaN, notImpostor);
             

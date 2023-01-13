@@ -4,6 +4,7 @@ using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
@@ -24,14 +25,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             if (killer == null)
                 return;
 
-            var isCorAlive = __instance.Is(RoleEnum.Coroner);
-
-            if (!isCorAlive)
-                return;
-
             var isUserCor = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner);
 
             if (!isUserCor)
+                return;
+
+            var isCorAlive = !Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Player.Data.IsDead;
+
+            if (!isCorAlive)
                 return;
                 
             var br = new BodyReport

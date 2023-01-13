@@ -6,10 +6,10 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDBlock
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
@@ -24,12 +24,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                 return;
 
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-            var roleblockButton = DestroyableSingleton<HudManager>.Instance.KillButton;
+            var roleblockButton = __instance.KillButton;
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
             
-            roleblockButton.gameObject.SetActive(!MeetingHud.Instance && !isDead);
+            roleblockButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance);
             roleblockButton.SetCoolDown(role.RoleblockTimer(), CustomGameOptions.ExamineCd);
-            Utils.SetTarget(ref role.ClosestPlayer, roleblockButton, float.NaN);
+            Utils.SetTarget(ref role.ClosestPlayer, roleblockButton);
 
             var renderer = roleblockButton.graphic;
             

@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
@@ -10,7 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     {
         public bool Caught;
         public bool CompletedTasks;
+        public bool HasDied;
         public bool Faded;
+        public bool PhantomWins { get; set; }
 
         public Phantom(PlayerControl player) : base(player)
         {
@@ -19,12 +22,30 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             TaskText = "You can get revenge from beyond the grave!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Phantom : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Phantom;
-            AddToObjectifierHistory(ObjectifierType);
+            Hidden = !CustomGameOptions.PhantomKnows;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
+        }
+
+        internal override bool EABBNOODFGL(ShipStatus __instance)
+        {
+            if (!Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
+                
+            if (CompletedTasks)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PhantomWin, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return true;
         }
 
         public void Fade()

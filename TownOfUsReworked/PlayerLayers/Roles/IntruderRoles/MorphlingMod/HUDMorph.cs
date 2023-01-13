@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                 role.MorphButton.graphic.sprite = SampleSprite;
                 role.MorphButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.MorphButton.gameObject.SetActive(false);
-
             }
 
             role.MorphButton.GetComponent<AspectPosition>().Update();
@@ -44,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             if (role.MorphButton.graphic.sprite != SampleSprite && role.MorphButton.graphic.sprite != MorphSprite)
                 role.MorphButton.graphic.sprite = SampleSprite;
 
-            role.MorphButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.MorphButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             
             if (role.MorphButton.graphic.sprite == SampleSprite)
             {
@@ -58,8 +57,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                     role.MorphButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.MorphlingDuration);
                     return;
                 }
+                else 
+                    role.MorphButton.SetCoolDown(role.MorphTimer(), CustomGameOptions.MorphlingCd);
 
-                role.MorphButton.SetCoolDown(role.MorphTimer(), CustomGameOptions.MorphlingCd);
                 role.MorphButton.graphic.color = Palette.EnabledColor;
                 role.MorphButton.graphic.material.SetFloat("_Desat", 0f);
             }

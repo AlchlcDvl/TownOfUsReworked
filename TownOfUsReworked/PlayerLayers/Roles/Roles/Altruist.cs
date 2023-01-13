@@ -9,9 +9,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Altruist : Role
     {
-        public bool CurrentlyReviving;
-        public DeadBody CurrentTarget;
-        public bool ReviveUsed;
+        public bool CurrentlyReviving = false;
+        public DeadBody CurrentTarget = null;
+        public bool ReviveUsed = false;
         
         public Altruist(PlayerControl player) : base(player)
         {
@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
             Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

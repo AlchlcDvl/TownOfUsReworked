@@ -20,8 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     ((Glitch) role).Loses();
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.GlitchLose,
-                SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.GlitchLose, SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;

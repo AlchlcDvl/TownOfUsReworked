@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
         {
             public static void Postfix(HudManager __instance)
             {
-                if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) & !__instance.Chat.isActiveAndEnabled & CustomGameOptions.LoversChat)
+                if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) && !__instance.Chat.isActiveAndEnabled && CustomGameOptions.LoversChat)
                     __instance.Chat.SetVisible(true);
             }
         }

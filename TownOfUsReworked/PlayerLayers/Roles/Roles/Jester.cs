@@ -3,14 +3,18 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
-using Random = UnityEngine.Random;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Jester : Role
     {
         public bool VotedOut;
+        public List<byte> ToHaunt = new List<byte>();
+        public bool HasHaunted = false;
+        public KillButton _hauntButton;
+        public PlayerControl ClosestPlayer;
+        public DateTime LastHaunted;
 
         public Jester(PlayerControl player) : base(player)
         {
@@ -25,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
             Results = InspResults.JestJuggWWInv;
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -45,28 +48,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LostByRPC = true;
         }
 
-        public void Haunt(MeetingHud __instance)
+        public void SetHaunted(MeetingHud __instance)
         {
+            ToHaunt.Clear();
+
             if (!VotedOut)
                 return;
-            
-            var ToBeHaunted = new List<byte>();
 
             foreach (var state in __instance.playerStates)
             {
                 if (state.AmDead || Utils.PlayerById(state.TargetPlayerId).Data.Disconnected || state.VotedFor != Player.PlayerId || state.TargetPlayerId == Player.PlayerId)
                     continue;
                 
-                ToBeHaunted.Add(state.TargetPlayerId);
+                ToHaunt.Add(state.TargetPlayerId);
             }
+        }
 
-            var random = Random.RandomRangeInt(0, ToBeHaunted.Count);
-            var ToBeHauntedPlayer = Utils.PlayerById(ToBeHaunted[random]);
-            KillButtonTarget.DontRevive = ToBeHauntedPlayer.PlayerId;
-            ToBeHauntedPlayer.Exiled();
-            var role = GetRole(ToBeHauntedPlayer);
-            role.DeathReason = DeathReasonEnum.Killed;
-            role.KilledBy = " By " + Player.name;
+        public KillButton HauntButton
+        {
+            get => _hauntButton;
+            set
+            {
+                _hauntButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public float HauntTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastHaunted;
+            var num = CustomGameOptions.DampBiteCd * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

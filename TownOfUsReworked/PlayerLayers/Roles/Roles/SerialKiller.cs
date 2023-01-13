@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ShiftSwapSKDrac;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton BloodlustButton

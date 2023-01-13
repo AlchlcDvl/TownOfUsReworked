@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.TrackAltTLTM;
-            AddToRoleHistory(RoleType);
         }
 
         public float TrackerTimer()

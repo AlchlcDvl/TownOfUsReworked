@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             if (role.DisguiseButton.graphic.sprite != MeasureSprite && role.DisguiseButton.graphic.sprite != DisguiseSprite)
                 role.DisguiseButton.graphic.sprite = MeasureSprite;
 
-            role.DisguiseButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.DisguiseButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (role.DisguiseButton.graphic.sprite == MeasureSprite)
             {
@@ -59,8 +59,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     role.DisguiseButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.DisguiseDuration);
                     return;
                 }
-
-                role.DisguiseButton.SetCoolDown(role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown);
+                else
+                    role.DisguiseButton.SetCoolDown(role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown);
 
                 Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance]);
                 role.DisguiseButton.graphic.color = Palette.EnabledColor;

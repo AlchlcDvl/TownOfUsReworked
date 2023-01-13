@@ -117,6 +117,8 @@ namespace TownOfUsReworked.Patches
         SetFanatic,
         SetTraitor,
         SetTaskmaster,
+        SetCorrupted,
+        SetOverlord,
 
         PhantomDied,
         CatchPhantom,
@@ -173,10 +175,11 @@ namespace TownOfUsReworked.Patches
 
         LoveWin,
         PhantomWin,
-        PhantomLose,
-        TaskmasterLose,
         TaskmasterWin,
         RivalWin,
+        CorruptedLose,
+        CorruptedWin,
+        OverlordWin,
 
         JanitorClean,
         FixLights,

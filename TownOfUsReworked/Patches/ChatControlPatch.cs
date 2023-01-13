@@ -1,10 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
 using AmongUs.Data;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Patches
 {

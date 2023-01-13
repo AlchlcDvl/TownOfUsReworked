@@ -29,15 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             var investigateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                investigateButton.gameObject.SetActive(false);
-            else
-            {
-                investigateButton.gameObject.SetActive(!MeetingHud.Instance);
-                investigateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
-                var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, investigateButton, float.NaN, notInvestigated);
-            }
+            investigateButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            investigateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
+            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, investigateButton, float.NaN, notInvestigated);
         }
     }
 }

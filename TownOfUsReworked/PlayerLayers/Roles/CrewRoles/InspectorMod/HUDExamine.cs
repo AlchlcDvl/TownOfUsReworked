@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
@@ -10,11 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     public class HUDExamine
     {
         public static void Postfix(PlayerControl __instance)
-        {
-            UpdateExamineButton(__instance);
-        }
-
-        public static void UpdateExamineButton(PlayerControl __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
@@ -30,17 +26,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
-            var examineButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
-
-            if (isDead)
-                examineButton.gameObject.SetActive(false);
-            else
-            {
-                examineButton.gameObject.SetActive(!MeetingHud.Instance);
-                examineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.InspectCooldown);
-                Utils.SetTarget(ref role.ClosestPlayer, examineButton, float.NaN);
-            }
+            var examineButton = DestroyableSingleton<HudManager>.Instance.KillButton;
+            examineButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            examineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.InspectCooldown);
+            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Examined.Contains(x)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, examineButton, float.NaN, notinspected);
 
             var renderer = examineButton.graphic;
             

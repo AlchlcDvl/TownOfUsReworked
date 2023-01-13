@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "You are too afraid to report bodies";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Coward : Colors.Modifier;
             ModifierType = ModifierEnum.Coward;
-            AddToModifierHistory(ModifierType);
         }
     }
 }

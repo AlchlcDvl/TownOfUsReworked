@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             
             role.InvisButton.GetComponent<AspectPosition>().Update();
             role.InvisButton.graphic.sprite = InvisSprite;
-            role.InvisButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.InvisButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (role.IsInvis)
             {

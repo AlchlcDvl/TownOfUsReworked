@@ -1,31 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Lovers : Objectifier
     {
-        public Lovers OtherLover { get; set; }
-        public bool LoveCoupleWins { get; set; }
+        public PlayerControl OtherLover { get; set; }
+        public bool LoveWins { get; set; }
 
         public Lovers(PlayerControl player) : base(player)
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = OtherLover.Player == null
-                ? "You only love yourself"
-                : "You are in Love with " + OtherLover.Player.name;
+            TaskText = "You are in Love";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
-            AddToObjectifierHistory(ObjectifierType);
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -38,13 +32,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (all.Count < 3)
                 return;
 
-            all.Shuffle();
-
             PlayerControl firstLover = null;
             PlayerControl secondLover = null;
             
-            while (firstLover == null || secondLover == null || firstLover == secondLover || firstLover.GetFaction() == secondLover.GetFaction())
+            while (firstLover == null || secondLover == null || firstLover == secondLover || (firstLover.GetFaction() == secondLover.GetFaction() && !CustomGameOptions.LoversFaction))
             {
+                all.Shuffle();
+
                 var num = Random.RandomRangeInt(0, all.Count);
                 firstLover = all[num];
 
@@ -55,78 +49,47 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             canHaveObjectifiers.Remove(firstLover);
             canHaveObjectifiers.Remove(secondLover);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetCouple,
-                SendOption.Reliable, -1);
-            writer.Write(firstLover.PlayerId);
-            writer.Write(secondLover.PlayerId);
-
             var lover1 = new Lovers(firstLover);
             var lover2 = new Lovers(secondLover);
 
-            lover1.OtherLover = lover2;
-            lover2.OtherLover = lover1;
+            lover1.OtherLover = lover2.Player;
+            lover2.OtherLover = lover1.Player;
 
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCouple, SendOption.Reliable, -1);
+            writer.Write(firstLover.PlayerId);
+            writer.Write(secondLover.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (FourPeopleLeft())
-                return false;
+            if (LoverDead())
+                return true;
 
-            if (CheckLoversWin())
+            if (Utils.LoversWin(ObjectifierType))
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.LoveWin,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.LoveWin, SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Win();
+                Wins();
                 Utils.EndGame();
                 return false;
             }
 
-            return true;
+            return false;
         }
 
-        private bool FourPeopleLeft()
+        public bool LoverDead()
         {
-            var players = PlayerControl.AllPlayerControls.ToArray();
-            var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherLover.Player != null ? OtherLover.Player : null;
+            PlayerControl lover1 = Player;
+            PlayerControl lover2 = OtherLover;
             
-            return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
-                !lover2.Data.Disconnected && alives.Count() == 4 && (lover1.Is(Faction.Intruder) || lover2.Is(Faction.Intruder));
+            return lover1 != null && lover2 != null && ((lover1.Data.IsDead && lover1.Data.Disconnected) || (lover2.Data.Disconnected || lover2.Data.IsDead));
         }
 
-        private bool CheckLoversWin()
+        public override void Wins()
         {
-            //System.Console.WriteLine("CHECKWIN");
-            var players = PlayerControl.AllPlayerControls.ToArray();
-            var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherLover.Player;
-
-            return lover1 != null && lover2 != null && !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead &&
-                !lover2.Data.Disconnected && ((alives.Count == 3) || (alives.Count == 2));
-        }
-
-        public void Win()
-        {
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Rivals).Any(x => ((Rivals)x).RivalWins))
-                return;
-
-            LoveCoupleWins = true;
-            OtherLover.LoveCoupleWins = true;
+            LoveWins = true;
         }
     }
 }

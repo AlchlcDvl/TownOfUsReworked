@@ -27,18 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                protectButton.gameObject.SetActive(false);
-            else
-            {
-                protectButton.gameObject.SetActive(!MeetingHud.Instance);
-                protectButton.SetCoolDown(0f, 1f);
-
-                if (role.UsedAbility)
-                    return;
-
-                Utils.SetTarget(ref role.ClosestPlayer, protectButton);
-            }
+            protectButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && !role.UsedAbility);
+            protectButton.SetCoolDown(0f, 1f);
+            Utils.SetTarget(ref role.ClosestPlayer, protectButton);
         }
     }
 }

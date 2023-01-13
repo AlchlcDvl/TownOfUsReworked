@@ -16,10 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
         [HarmonyPriority(Priority.First)]
         private static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.VampireHunter);
+             var flag = PlayerControl.LocalPlayer.Is(RoleEnum.VampireHunter);
 
             if (!flag)
                 return true;
@@ -45,12 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
             if (!flag3)
                 return false;
-
-            if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                return false;
-            }
             
             if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
@@ -58,13 +49,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert())
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {
                     var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer1.Write(medic);
                     writer1.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -78,8 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 else if (role.Player.IsShielded())
                 {
                     var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer1.Write(medic);
                     writer1.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -90,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                     StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                     Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
                 }
-                else
+                else if (!role.Player.IsProtected())
                     Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
 
                 return false;
@@ -111,16 +100,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
                 return false;
             }
-            else if (role.ClosestPlayer.IsVesting())
+            else if (role.Player.IsOtherRival(role.ClosestPlayer))
             {
-                role.LastStaked.AddSeconds(CustomGameOptions.VestKCReset);
-
-                return false;
-            }
-            else if (role.ClosestPlayer.IsProtected())
-            {
-                role.LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
-
+                role.LastStaked = DateTime.UtcNow;
                 return false;
             }
             

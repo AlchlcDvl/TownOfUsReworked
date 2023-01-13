@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TrackAltTLTM;
-            AddToRoleHistory(RoleType);
         }
 
         public float TimeLordRewindTimer()

@@ -35,9 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
-                PlayerControl.LocalPlayer.CanMove;
-
+            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
             var killButton = __instance.KillButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
@@ -91,14 +89,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 }
             }
 
-            if (isDead)
-                killButton.gameObject.SetActive(false);
-            else
-            {
-                killButton.gameObject.SetActive(!MeetingHud.Instance);
-                KillButtonTarget.SetTarget(killButton, closestBody, role);
-                __instance.KillButton.SetCoolDown(0f, 1f);
-            }
+            killButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            KillButtonTarget.SetTarget(killButton, closestBody, role);
+            __instance.KillButton.SetCoolDown(0f, 1f);
         }
     }
 }

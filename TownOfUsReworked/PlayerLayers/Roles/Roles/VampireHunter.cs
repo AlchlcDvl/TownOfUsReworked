@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.SurvVHVampVig;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public float StakeTimer()
@@ -66,7 +65,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void TurnVigilante()
         {
-            RoleDictionary.Remove(Player.PlayerId);
             var role = new Vigilante(Player);
 
             foreach (var player in PlayerControl.AllPlayerControls)

@@ -5,7 +5,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -15,24 +14,12 @@ using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 {
-    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
-    public static class AirshipExileController_WrapUpAndSpawn
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
+    public static class SetPhantom
     {
-        public static void Postfix(AirshipExileController __instance) => SetPhantom.ExileControllerPostfix(__instance);
-    }
-    
-    [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetPhantom
-    {
-        public static PlayerControl WillBePhantom;
-        public static Vector2 StartPosition;
-
-        public static void ExileControllerPostfix(ExileController __instance)
+        public static void Postfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
-
-            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !exiled.Is(ObjectifierEnum.Lovers))
-                WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
@@ -40,49 +27,28 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
             if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
                 return;
 
-            if (PlayerControl.LocalPlayer != WillBePhantom)
+            var phantom = Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer);
+
+            if (!phantom.HasDied)
                 return;
 
-            if (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
-            {
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
-                var role = new Phantom(PlayerControl.LocalPlayer);
-                role.RegenTask();
-
-                RemoveTasks(PlayerControl.LocalPlayer);
-                PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-
-                System.Console.WriteLine("Become Phantom - Phantom");
-
-                PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.PhantomDied, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
-            if (Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
+            if (phantom.Caught)
                 return;
 
             var startingVent = ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
                 
             unchecked
             {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos,
-                    SendOption.Reliable, -1);
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
                 writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer2.Write(startingVent.transform.position.x);
                 writer2.Write(startingVent.transform.position.y);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
 
-            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x,
-                startingVent.transform.position.y + 0.3636f));
+            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
             PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
         }
-
-        public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
 
         public static void RemoveTasks(PlayerControl player)
         {
@@ -141,8 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 if (tasksLeft <= CustomGameOptions.PhantomTasksRemaining)
                 {
                     role.Caught = true;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.CatchPhantom, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchPhantom, SendOption.Reliable, -1);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

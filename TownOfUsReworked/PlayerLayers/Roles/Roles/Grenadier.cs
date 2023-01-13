@@ -44,7 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
             FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again.";
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton FlashButton

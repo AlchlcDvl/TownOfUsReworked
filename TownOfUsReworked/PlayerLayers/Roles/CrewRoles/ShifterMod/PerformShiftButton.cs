@@ -298,8 +298,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 }
                 else
                     new Crewmate(other);
-
-                Role.RoleDictionary.Add(shifter.PlayerId, newRole);
             }
             
             if (swapTasks) //&& CustomGameOptions.ShiftSwapsTasks

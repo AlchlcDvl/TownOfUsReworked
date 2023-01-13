@@ -1,15 +1,17 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
+using System.Linq;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public static class HUDRecruit
+    public class HUDRecruit
     {
-        public static Sprite Placeholder = TownOfUsReworked.Placeholder;
+        public static Sprite Recruit => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -25,36 +27,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Jackal))
                 return;
 
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
-            var button = role.RecruitButton;
 
-            if (button == null)
+            if (role.HasRecruited)
+                return;
+
+            if (role.RecruitButton == null)
             {
-                button = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                button.graphic.enabled = true;
+                role.RecruitButton = Object.Instantiate(__instance.KillButton, __instance.UseButton.transform.parent);
+                role.RecruitButton.graphic.enabled = true;
+                role.RecruitButton.gameObject.SetActive(false);
             }
 
-            button.GetComponent<AspectPosition>().Update();
-            button.graphic.sprite = Placeholder;
-
-            button.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
-
-            var renderer = button.graphic;
-
-            renderer.sprite = Placeholder;
-            
-            if (!button.isCoolingDown)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            role.RecruitButton.GetComponent<AspectPosition>().Update();
+            role.RecruitButton.graphic.sprite = Recruit;
+            role.RecruitButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !role.HasRecruited && !LobbyBehaviour.Instance);
+            var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notRecruited);
+            role.RecruitButton.SetCoolDown(role.RecruitTimer(), CustomGameOptions.RecruitCooldown);
         }
     }
 }

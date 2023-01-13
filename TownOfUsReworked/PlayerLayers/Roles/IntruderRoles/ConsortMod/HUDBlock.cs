@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
             role.RoleblockButton.GetComponent<AspectPosition>().Update();
             role.RoleblockButton.graphic.sprite = Roleblock;
-            role.RoleblockButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.RoleblockButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             Utils.SetTarget(ref role.ClosestPlayer, role.RoleblockButton);
         }
     }

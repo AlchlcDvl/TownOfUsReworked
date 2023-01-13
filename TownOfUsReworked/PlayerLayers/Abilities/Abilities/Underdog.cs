@@ -8,9 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class Underdog : Ability
     {
-        public float MaxTimer => Utils.LastImp() ? CustomGameOptions.IntKillCooldown - CustomGameOptions.UnderdogKillBonus :
+        public float MaxTimer => Player.Is(Faction.Intruder) ? (Utils.LastImp() ? CustomGameOptions.IntKillCooldown - CustomGameOptions.UnderdogKillBonus :
             (PerformKill.IncreasedKC() ? CustomGameOptions.IntKillCooldown + CustomGameOptions.UnderdogKillBonus :
-            CustomGameOptions.IntKillCooldown);
+            CustomGameOptions.IntKillCooldown)) : (Utils.LastSyn() ? CustomGameOptions.ChaosDriveKillCooldown - CustomGameOptions.UnderdogKillBonus :
+            (PerformKill.IncreasedKC() ? CustomGameOptions.ChaosDriveKillCooldown + CustomGameOptions.UnderdogKillBonus :
+            CustomGameOptions.ChaosDriveKillCooldown));
 
         public Underdog(PlayerControl player) : base(player)
         {
@@ -20,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 : "You have a long kill cooldown until you're alone";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Underdog : Colors.Ability;
             AbilityType = AbilityEnum.Underdog;
-            AddToAbilityHistory(AbilityType);
+            Hidden = !CustomGameOptions.UnderdogKnows;
         }
 
         public void SetKillTimer()

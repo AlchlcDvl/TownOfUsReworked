@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             if (role.DragDropButton.graphic.sprite == TownOfUsReworked.DropSprite && role.CurrentlyDragging == null)
                 role.DragDropButton.graphic.sprite = TownOfUsReworked.DragSprite;
 
-            role.DragDropButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.DragDropButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (role.DragDropButton.graphic.sprite == TownOfUsReworked.DragSprite)
             {

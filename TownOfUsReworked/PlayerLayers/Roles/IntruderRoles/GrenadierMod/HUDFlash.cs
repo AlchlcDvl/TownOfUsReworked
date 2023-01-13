@@ -65,22 +65,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 
             role.FlashButton.GetComponent<AspectPosition>().Update();
             role.FlashButton.graphic.sprite = FlashSprite;
-            role.FlashButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.FlashButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (role.Flashed)
             {
                 role.FlashButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.GrenadeDuration);
                 return;
             }
-
-            role.FlashButton.SetCoolDown(role.FlashTimer(), CustomGameOptions.GrenadeCd);
+            else 
+                role.FlashButton.SetCoolDown(role.FlashTimer(), CustomGameOptions.GrenadeCd);
 
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
             var sabActive = specials.Any(s => s.IsActive);
 
-            if (sabActive & !dummyActive)
+            if (sabActive && !dummyActive)
             {
                 role.FlashButton.graphic.color = Palette.DisabledClear;
                 role.FlashButton.graphic.material.SetFloat("_Desat", 1f);

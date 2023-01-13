@@ -13,15 +13,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Arsonist : Role
     {
         private KillButton _igniteButton;
-        public bool ArsonistWins;
-        public bool LastKiller;
-        public PlayerControl ClosestPlayerDouse;
-        public PlayerControl ClosestPlayerIgnite;
+        public bool ArsonistWins = false;
+        public bool LastKiller => PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+            x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))).ToList().Count() == 0;
+        public PlayerControl ClosestPlayerDouse = null;
+        public PlayerControl ClosestPlayerIgnite = null;
         public List<byte> DousedPlayers = new List<byte>();
         public DateTime LastDoused;
         public DateTime LastIgnited;
-        public int DousedAlive => DousedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null &&
-            !Utils.PlayerById(x).Data.IsDead);
+        public int DousedAlive => DousedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead);
 
         public Arsonist(PlayerControl player) : base(player)
         {
@@ -47,7 +47,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
             Objectives = IsRecruit ? JackalWinCon : NKWinCon;
-            AddToRoleHistory(RoleType);
+            LastDoused = DateTime.UtcNow;
+            LastIgnited = DateTime.UtcNow;
         }
 
         public KillButton IgniteButton

@@ -37,7 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = TownOfUsReworked.MorphlingIntro;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton MorphButton

@@ -52,8 +52,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             role.FreezeButton.GetComponent<AspectPosition>().Update();
             role.FreezeButton.graphic.sprite = IgniteSprite;
 
-            role.FreezeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.FreezeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             role.FreezeButton.SetCoolDown(0f, 1f);
             __instance.KillButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
 
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notDoused);
 
-            if (!role.FreezeButton.isCoolingDown & role.FreezeButton.isActiveAndEnabled & !role.FreezeUsed)
+            if (!role.FreezeButton.isCoolingDown && role.FreezeButton.isActiveAndEnabled && !role.FreezeUsed)
             {
                 role.FreezeButton.graphic.color = Palette.EnabledColor;
                 role.FreezeButton.graphic.material.SetFloat("_Desat", 0f);

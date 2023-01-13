@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = CUDescription;
             FactionDescription = CrewFactionDescription;
             Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

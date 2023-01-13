@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var flag2 = (role.TimeLordRewindTimer() == 0f) & !RecordRewind.rewinding;
+            var flag2 = (role.TimeLordRewindTimer() == 0f) && !RecordRewind.rewinding;
 
             if (!flag2)
                 return false;

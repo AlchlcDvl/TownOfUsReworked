@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 
             role.MineButton.GetComponent<AspectPosition>().Update();
             role.MineButton.graphic.sprite = MineSprite;
-            role.MineButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.MineButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             role.MineButton.SetCoolDown(role.MineTimer(), CustomGameOptions.MineCd);
             var hits = Physics2D.OverlapBoxAll(PlayerControl.LocalPlayer.transform.position, role.VentSize, 0);

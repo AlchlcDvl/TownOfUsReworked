@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.WraithDetGrenVet;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";
-            AddToRoleHistory(RoleType);
         }
 
         public float AlertTimer()

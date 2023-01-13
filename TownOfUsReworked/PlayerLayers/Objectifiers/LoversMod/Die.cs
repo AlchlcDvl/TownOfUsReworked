@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             if (!flag3)
                 return true;
 
-            var otherLover = Objectifier.GetObjectifier<Lovers>(__instance).OtherLover.Player;
+            var otherLover = Objectifier.GetObjectifier<Lovers>(__instance).OtherLover;
 
             if (otherLover.Data.IsDead)
                 return true;

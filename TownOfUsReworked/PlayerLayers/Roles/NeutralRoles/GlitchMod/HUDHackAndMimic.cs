@@ -29,48 +29,52 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
 
-            if (role.GlitchButton == null)
+            if (role.HackButton == null)
             {
-                role.GlitchButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.GlitchButton.graphic.enabled = true;
-
-                if (role.ClosestPlayer == null)
-                    role.GlitchButton.graphic.sprite = MimicSprite;
-                else
-                    role.GlitchButton.graphic.sprite = HackSprite;
-
-                role.GlitchButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
-                role.GlitchButton.gameObject.SetActive(false);
+                role.HackButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.HackButton.graphic.enabled = true;
+                role.HackButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.HackButton.gameObject.SetActive(false);
             }
 
-            role.GlitchButton.GetComponent<AspectPosition>().Update();
-
-            if (role.GlitchButton.graphic.sprite != HackSprite && role.GlitchButton.graphic.sprite != MimicSprite)
-                role.GlitchButton.graphic.sprite = HackSprite;
-
-            role.GlitchButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            
-            if (role.GlitchButton.graphic.sprite == HackSprite)
+            if (role.KillButton == null)
             {
-                role.GlitchButton.SetCoolDown(role.HackTimer(), CustomGameOptions.GlitchCooldown);
-                Utils.SetTarget(ref role.ClosestPlayer, role.GlitchButton);
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            if (role.MimicButton == null)
+            {
+                role.MimicButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.MimicButton.graphic.enabled = true;
+                role.MimicButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.SabotagePosition;
+                role.MimicButton.gameObject.SetActive(false);
+            }
+
+            role.MimicButton.GetComponent<AspectPosition>().Update();
+            role.HackButton.GetComponent<AspectPosition>().Update();
+            role.HackButton.graphic.sprite = HackSprite;
+            role.MimicButton.graphic.sprite = MimicSprite;
+            role.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.HackButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.MimicButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.GlitchKillCooldown);
+            role.HackButton.SetCoolDown(role.HackTimer(), CustomGameOptions.HackCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
+            Utils.SetTarget(ref role.ClosestPlayer, role.HackButton);
+            
+            if (role.IsUsingMimic)
+            {
+                role.MimicButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.MimicDuration);
+                return;
             }
             else
             {
-                if (role.IsUsingMimic)
-                {
-                    role.GlitchButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.MorphlingDuration);
-                    return;
-                }
-
-                role.GlitchButton.SetCoolDown(role.MimicTimer(), CustomGameOptions.GlitchCooldown);
-                role.GlitchButton.graphic.color = Palette.EnabledColor;
-                role.GlitchButton.graphic.material.SetFloat("_Desat", 0f);
+                role.MimicButton.SetCoolDown(role.MimicTimer(), CustomGameOptions.MimicCooldown);
+                role.MimicButton.graphic.color = Palette.EnabledColor;
+                role.MimicButton.graphic.material.SetFloat("_Desat", 0f);
             }
-
-            role.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.GlitchKillCooldown);
-            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
         }
     }
 }

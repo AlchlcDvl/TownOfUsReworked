@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Camouflager : Role
     {
         private KillButton _camouflageButton;
-        public bool Enabled;
+        public bool Enabled = false;
         public DateTime LastCamouflaged { get; set; }
         public float TimeRemaining;
         public bool Camouflaged => TimeRemaining > 0f;
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "advantage and kill while unsuspected in front of everyone!";
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
+            LastCamouflaged = DateTime.UtcNow;
         }
 
         public KillButton CamouflageButton

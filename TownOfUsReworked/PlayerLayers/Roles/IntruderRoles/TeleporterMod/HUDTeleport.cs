@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
             if (role.TeleportButton.graphic.sprite != MarkSprite && role.TeleportButton.graphic.sprite != TeleportSprite)
                 role.TeleportButton.graphic.sprite = MarkSprite;
 
-            role.TeleportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.TeleportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             role.TeleportButton.graphic.color = Palette.EnabledColor;
             role.TeleportButton.graphic.material.SetFloat("_Desat", 0f);
 

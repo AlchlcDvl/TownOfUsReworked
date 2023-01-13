@@ -44,7 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public float ConsigliereTimer()

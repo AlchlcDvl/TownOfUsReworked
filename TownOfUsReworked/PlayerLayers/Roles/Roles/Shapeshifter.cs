@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
             Results = InspResults.DisgMorphCamoAgent;
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton ShapeshiftButton

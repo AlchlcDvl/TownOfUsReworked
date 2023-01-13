@@ -51,7 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TransWarpTeleTask;
-            AddToRoleHistory(RoleType);
         }
 
         public float TransportTimer()
@@ -169,6 +168,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                     if (!Input.GetMouseButtonDown(0) && LastMouse)
                                     {
                                         LastMouse = false;
+                                        
                                         foreach (var player in PlayerControl.AllPlayerControls)
                                         {
                                             if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
@@ -176,7 +176,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                 if (TransportPlayer1 == null)
                                                 {
                                                     TransportPlayer1 = player;
-                                                    bubble.Cast<ChatBubble>().Background.color = new Color32(0, 255, 0, 255);
+                                                    bubble.Cast<ChatBubble>().Background.color = Colors.Transporter;
                                                 }
                                                 else if (player.PlayerId == TransportPlayer1.PlayerId)
                                                 {
@@ -334,8 +334,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public static IEnumerator TransportPlayers(byte player1, byte player2, bool die)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter) || PlayerControl.LocalPlayer == Utils.PlayerById(player1) || PlayerControl.LocalPlayer
-                == Utils.PlayerById(player2))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter) || PlayerControl.LocalPlayer == Utils.PlayerById(player1) || PlayerControl.LocalPlayer == Utils.PlayerById(player2))
             {
                 try
                 {

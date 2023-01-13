@@ -28,11 +28,10 @@ namespace TownOfUsReworked.Patches
 
         public static void GenButton(PlayerVoteArea voteArea)
         {
-            var targetId = voteArea.TargetPlayerId;
-
             if (IsExempt(voteArea))
                 return;
                 
+            var targetId = voteArea.TargetPlayerId;
             var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var newButton = Object.Instantiate(colorButton, voteArea.transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
@@ -67,12 +66,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.LighterDarker)
             {
                 foreach (var voteArea in __instance.playerStates)
-                {   
-                    try
-                    {
-                        GenButton(voteArea);
-                    } catch {}
-                }
+                    GenButton(voteArea);
             }
         }
     }

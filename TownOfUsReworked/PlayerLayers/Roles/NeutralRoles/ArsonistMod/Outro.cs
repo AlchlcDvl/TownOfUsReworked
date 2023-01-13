@@ -4,8 +4,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
@@ -14,18 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
-                return;
-
             var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
 
             if (role == null)

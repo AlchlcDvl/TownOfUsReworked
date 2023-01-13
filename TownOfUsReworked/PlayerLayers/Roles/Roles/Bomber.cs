@@ -1,11 +1,8 @@
 using Reactor.Utilities.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using TMPro;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
@@ -41,7 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " though, as any unofortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations might be the key to victory.";
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SyKDescription;
-            AddToRoleHistory(RoleType);
+            LastPlaced = DateTime.UtcNow;
+            LastDetonated = DateTime.UtcNow;
         }
 
         public float BombTimer()

@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "Smol bean" + fastText;
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
             ModifierType = ModifierEnum.Dwarf;
-            AddToModifierHistory(ModifierType);
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

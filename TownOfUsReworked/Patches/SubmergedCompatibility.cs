@@ -12,10 +12,8 @@ using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using Hazel;
@@ -283,9 +281,6 @@ namespace TownOfUsReworked.Patches
 
         public static void ExileRoleChangePostfix()
         {
-            SetPhantom.ExileControllerPostfix(ExileController.Instance);
-            SetRevealer.ExileControllerPostfix(ExileController.Instance);
-
             Coroutines.Start(waitMeeting(resetTimers));
             Coroutines.Start(waitMeeting(GhostRoleBegin));
         }
@@ -326,7 +321,9 @@ namespace TownOfUsReworked.Patches
 
         public static void resetTimers()
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead) return;
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+                return;
+
             Utils.ResetCustomTimers();
         }
 
@@ -339,8 +336,7 @@ namespace TownOfUsReworked.Patches
             {
                 if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
                 {
-                    var startingVent =
-                        ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
                     while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
                         startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
@@ -349,8 +345,7 @@ namespace TownOfUsReworked.Patches
 
                     unchecked
                     {
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
                         writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer2.Write(startingVent.transform.position.x);
                         writer2.Write(startingVent.transform.position.y);
@@ -361,9 +356,12 @@ namespace TownOfUsReworked.Patches
                     PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
                 }
             }
+            
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
             {
-                if (!Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
+                var phantom = Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer);
+
+                if (!phantom.Caught && phantom.HasDied)
                 {
                     var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -374,8 +372,7 @@ namespace TownOfUsReworked.Patches
 
                     unchecked
                     {
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos,
-                            SendOption.Reliable, -1);
+                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
                         writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer2.Write(startingVent.transform.position.x);
                         writer2.Write(startingVent.transform.position.y);

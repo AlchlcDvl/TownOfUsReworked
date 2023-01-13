@@ -28,10 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
-
-            if (isDead)
-                return;
-
             var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
             if (role.WarpButton == null)
@@ -43,9 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
                 role.WarpButton.gameObject.SetActive(false);
             }
 
-            role.WarpButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.WarpButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             role.WarpButton.GetComponent<AspectPosition>().Update();
-
             role.WarpButton.SetCoolDown(role.WarpTimer(), CustomGameOptions.WarpCooldown);
             role.WarpButton.graphic.color = Palette.EnabledColor;
             role.WarpButton.graphic.material.SetFloat("_Desat", 0f);

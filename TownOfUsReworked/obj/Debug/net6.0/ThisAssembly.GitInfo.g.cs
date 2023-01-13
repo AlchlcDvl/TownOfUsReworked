@@ -32,23 +32,23 @@ namespace
     /// <summary>Provides access to the git information for the current assembly.</summary>
     public partial class Git
     {
-      /// <summary>IsDirty: true</summary>
-      public const bool IsDirty = true;
+      /// <summary>IsDirty: false</summary>
+      public const bool IsDirty = false;
 
-      /// <summary>IsDirtyString: true</summary>
-      public const string IsDirtyString = "true";
+      /// <summary>IsDirtyString: false</summary>
+      public const string IsDirtyString = "false";
 
       /// <summary>Branch: master</summary>
       public const string Branch = "master";
 
-      /// <summary>Commit: a30b920</summary>
-      public const string Commit = "a30b920";
+      /// <summary>Commit: d26a905</summary>
+      public const string Commit = "d26a905";
 
-      /// <summary>Sha: a30b920b7dee0c1a2f9ad3e51a7083673f939e3b</summary>
-      public const string Sha = "a30b920b7dee0c1a2f9ad3e51a7083673f939e3b";
+      /// <summary>Sha: d26a905782ab00217308d4701790b6d189ffb602</summary>
+      public const string Sha = "d26a905782ab00217308d4701790b6d189ffb602";
 
-      /// <summary>Commits on top of base version: 52</summary>
-      public const string Commits = "52";
+      /// <summary>Commits on top of base version: 53</summary>
+      public const string Commits = "53";
 
       /// <summary>Tag: </summary>
       public const string Tag = "";
@@ -78,8 +78,8 @@ namespace
         /// <summary>Minor: 0</summary>
         public const string Minor = "0";
 
-        /// <summary>Patch: 52</summary>
-        public const string Patch = "52";
+        /// <summary>Patch: 53</summary>
+        public const string Patch = "53";
 
         /// <summary>Label: </summary>
         public const string Label = "";

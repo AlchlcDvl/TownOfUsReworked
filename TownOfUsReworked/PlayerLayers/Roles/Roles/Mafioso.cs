@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Mafioso! You are the successor to the leader of the Intruders. When the Godfather dies, you will become the new" +
                 " Godfather and will inherit stronger variations of your former role.";
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()
@@ -86,11 +85,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void TurnGodfather()
         {
-            var formerRole = Role.GetRole<Mafioso>(Player).FormerRole;
+            var mafioso = Role.GetRole<Mafioso>(Player);
+            var formerRole = mafioso.FormerRole;
             var role = new Godfather(Player);
             role.WasMafioso = true;
             role.HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote;
             role.FormerRole = formerRole;
+            role.RoleHistory.Add(mafioso);
+            role.RoleHistory.AddRange(mafioso.RoleHistory);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {

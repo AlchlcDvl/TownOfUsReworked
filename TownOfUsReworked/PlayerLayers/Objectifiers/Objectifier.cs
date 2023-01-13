@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public abstract class Objectifier
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
-        public static readonly List<KeyValuePair<byte, ObjectifierEnum>> ObjectifierHistory = new List<KeyValuePair<byte, ObjectifierEnum>>();
         public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
+        public List<KillButton> ExtraButtons = new List<KillButton>();
 
         protected Objectifier(PlayerControl player)
         {
@@ -30,6 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal string TaskText { get; set; }
         protected internal bool Hidden { get; set; } = false;
 
+        public virtual void Loses() {}
+        public virtual void Wins() {}
+
         protected internal string GetColoredSymbol()
         {
             return $"{ColorString}{SymbolName}</color>";
@@ -38,47 +41,30 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
         public bool LostByRPC { get; protected set; }
-        
-        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.Count;
 
         public PlayerControl Player
         {
             get => _player;
             set
             {
-                if (_player != null) _player.nameText().color = Color.white;
+                if (_player != null)
+                    _player.nameText().color = Color.white;
 
                 _player = value;
                 PlayerName = value.Data.PlayerName;
             }
         }
+        
 
-        public void RegenTask()
+        protected internal int TasksLeft()
         {
-            bool createTask;
-
-            try
-            {
-                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                createTask = !firstText.Text.Contains("Role:");
-            }
-            catch (InvalidCastException)
-            {
-                createTask = true;
-            }
-
-            if (createTask)
-            {
-                var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(Player.transform, false);
-                task.Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
-                Player.myTasks.Insert(0, task);
-                return;
-            }
-
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
+            if (Player == null || Player.Data == null)
+                return 0;
+            
+            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         }
+
+        protected internal bool TasksDone => TasksLeft() <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
@@ -86,11 +72,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         private bool Equals(Objectifier other)
         {
             return Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
-        }
-
-        public void AddToObjectifierHistory(ObjectifierEnum objectifier)
-        {
-            ObjectifierHistory.Add(KeyValuePair.Create(_player.PlayerId, objectifier));
         }
 
         internal virtual bool EABBNOODFGL(ShipStatus __instance)
@@ -127,6 +108,22 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             return a.ObjectifierType == b.ObjectifierType && a.Player.PlayerId == b.Player.PlayerId;
         }
+        
+        public static Objectifier GetObjectifierValue(ObjectifierEnum objEnum)
+        {
+            foreach (var obj in AllObjectifiers)
+            {
+                if (obj.ObjectifierType == objEnum)
+                    return obj;
+            }
+
+            return null;
+        }
+        
+        public static T GetObjectifierValue<T>(ObjectifierEnum objEnum) where T : Objectifier
+        {
+            return GetObjectifierValue(objEnum) as T;
+        }
 
         public static bool operator !=(Objectifier a, Objectifier b)
         {
@@ -143,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return GetObjectifier(player) as T;
         }
 
-        public static Objectifier GetObjectifierVote(PlayerVoteArea area)
+        public static Objectifier GetObjectifier(PlayerVoteArea area)
         {
             var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
             return player == null ? null : GetObjectifier(player);
@@ -154,12 +151,25 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
         }
 
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-        public static class LobbyBehaviour_Start
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
+        public static class ShipStatus_KMPKPPGPNIH
         {
-            private static void Postfix(LobbyBehaviour __instance)
+            public static bool Prefix(ShipStatus __instance)
             {
-                ObjectifierDictionary.Clear();
+                if (!AmongUsClient.Instance.AmHost)
+                    return false;
+
+                var result = true;
+
+                foreach (var obj in AllObjectifiers)
+                {
+                    var objIsEnd = obj.EABBNOODFGL(__instance);
+
+                    if (!objIsEnd)
+                        result = false;
+                }
+
+                return result;
             }
         }
     }

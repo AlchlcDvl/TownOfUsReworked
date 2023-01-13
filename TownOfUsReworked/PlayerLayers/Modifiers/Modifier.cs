@@ -4,7 +4,6 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-using HarmonyLib;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
@@ -12,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     public abstract class Modifier
     {
         public static readonly Dictionary<byte, Modifier> ModifierDictionary = new Dictionary<byte, Modifier>();
-        public static readonly List<KeyValuePair<byte, ModifierEnum>> ModifierHistory = new List<KeyValuePair<byte, ModifierEnum>>();
 
         protected Modifier(PlayerControl player)
         {
@@ -28,9 +26,17 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected internal string Name { get; set; }
         protected internal string ModifierDescription { get; set; }
         protected internal string TaskText { get; set; }
-        
-        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.Count;
+        protected internal bool Hidden { get; set; } = false;
+
+        protected internal int TasksLeft()
+        {
+            if (Player == null || Player.Data == null)
+                return 0;
+            
+            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        }
+
+        protected internal bool TasksDone => TasksLeft() <= 0;
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -48,17 +54,11 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         }
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
-
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Modifier other)
         {
             return Equals(Player, other.Player) && ModifierType == other.ModifierType;
-        }
-
-        public void AddToModifierHistory(ModifierEnum modifier)
-        {
-            ModifierHistory.Add(KeyValuePair.Create(_player.PlayerId, modifier));
         }
 
         internal virtual bool EABBNOODFGL(ShipStatus __instance)
@@ -121,15 +121,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         {
             var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
             return player == null ? null : GetModifier(player);
-        }
-
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-        public static class LobbyBehaviour_Start
-        {
-            private static void Postfix(LobbyBehaviour __instance)
-            {
-                ModifierDictionary.Clear();
-            }
         }
     }
 }

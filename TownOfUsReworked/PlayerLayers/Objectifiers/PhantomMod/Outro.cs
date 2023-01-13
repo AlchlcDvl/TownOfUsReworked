@@ -2,9 +2,7 @@ using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
@@ -14,12 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
             var role = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Phantom && ((Phantom)x).CompletedTasks);
 
             if (role == null)

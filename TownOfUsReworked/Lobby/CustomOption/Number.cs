@@ -25,7 +25,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         protected internal float Get()
         {
-            return (float) Value;
+            return (float)Value;
         }
        
         protected internal void Increase()

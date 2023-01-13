@@ -1,4 +1,3 @@
-using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Patches;
@@ -17,17 +16,17 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 return;
 
             var role = Objectifier.GetObjectifier<Phantom>(__instance);
-            var taskinfos = __instance.Data.Tasks.ToArray();
-            var tasksLeft = taskinfos.Count(x => !x.Complete);
 
-            if (tasksLeft == 0 && !role.Caught)
+            if (!role.HasDied)
+                return;
+
+            if (role.TasksDone && !role.Caught)
             {
                 role.CompletedTasks = true;
 
                 if (AmongUsClient.Instance.AmHost)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PhantomWin,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PhantomWin,SendOption.Reliable, -1);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

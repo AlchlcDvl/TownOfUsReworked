@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.Linq;
-using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -44,42 +43,54 @@ namespace TownOfUsReworked.Patches
                 var roleName = "";
                 var modifierName = "";
                 var abilityName = "";
-                var endString = "";
+                var endString = "</color>";
                 var modifierString = "";
                 var abilityString = "";
-                var totalString = "";
+                var roleString = "";
                 var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
                 var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
-                
-                foreach (var role in Role.RoleHistory.Where(x => x.Key == playerControl.PlayerId))
+
+                var role = Role.GetRole(playerControl);
+
+                if (role != null)
                 {
-                    var role2 = Role.GetRoleValue(role.Value);
-                    totalString = "";
-
-                    if (role2 != null)
+                    if (role.RoleHistory.Count != 0)
                     {
-                        colorString = "<color=#" + role2.Color.ToHtmlStringRGBA() + ">";
-                        roleName = role2.Name;
-                        endString = "</color> → ";
+                        role.RoleHistory.Reverse();
 
-                        totalString = colorString + roleName + endString;
+                        foreach (var role2 in role.RoleHistory)
+                        {
+                            colorString = role2.ColorString;
+                            roleName = role2.Name;
+                            roleString = colorString + roleName + endString + " → ";
+
+                            summary += roleString;
+                        }
                     }
+                    
+                    colorString = role.ColorString;
+                    roleName = role.Name;
+                    roleString = colorString + roleName + endString;
 
-                    summary += totalString;
+                    summary += roleString;
                 }
 
-                if (summary.Length != 0)
-                    summary = summary.Remove(summary.Length - 3);
+                if (playerControl.IsRecruit())
+                    summary += " <color=#575657FF>$</color>";
+
+                var objectifier = Objectifier.GetObjectifier(playerControl);
+
+                if (objectifier != null)
+                    summary += $" {objectifier.GetColoredSymbol()}";
 
                 var modifier = Modifier.GetModifier(playerControl);
 
                 if (modifier != null)
                 {
-                    colorString = " (<color=#" + modifier.Color.ToHtmlStringRGBA() + ">";
+                    colorString = " (" + modifier.ColorString;
                     modifierName = modifier.Name;
-                    endString = "</color>)";
 
-                    modifierString = colorString + modifierName + endString;
+                    modifierString = colorString + modifierName + endString + ")";
 
                     summary += modifierString;
                 }
@@ -88,28 +99,19 @@ namespace TownOfUsReworked.Patches
 
                 if (ability != null)
                 {
-                    colorString = " [<color=#" + ability.Color.ToHtmlStringRGBA() + ">";
+                    colorString = " [" + ability.ColorString;
                     abilityName = ability.Name;
-                    endString = "</color>]";
 
-                    abilityString = colorString + abilityName + endString;
+                    abilityString = colorString + abilityName + endString + "]";
 
                     summary += abilityString;
                 }
-
-                var objectifier = Objectifier.GetObjectifier(playerControl);
-
-                if (objectifier != null)
-                    summary += $" {objectifier.GetColoredSymbol()}";
 
                 if (playerControl.IsGATarget())
                     summary += " <color=#FFFFFFFF>★</color>";
 
                 if (playerControl.IsExeTarget())
                     summary += " <color=#CCCCCCFF>§</color>";
-
-                if (playerControl.IsRecruit())
-                    summary += " <color=#575657FF>$</color>";
                 
                 if (playerControl.CanDoTasks())
                     summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
@@ -127,8 +129,7 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(EndGameManager __instance)
         {
             GameObject bonusText = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
-            bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f,
-                __instance.WinText.transform.position.z);
+            bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f, __instance.WinText.transform.position.z);
             bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
             TMPro.TMP_Text textRenderer = bonusText.GetComponent<TMPro.TMP_Text>();
             textRenderer.text = "";
@@ -143,7 +144,9 @@ namespace TownOfUsReworked.Patches
             var losersText = new StringBuilder();
             var winners = TempData.winners;
 
-            roleSummaryText.AppendLine("<size=120%><u><b>End Game Summary</b></u>:</size>");
+            var winnerCount = 0;
+
+            roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
             roleSummaryText.AppendLine(" ");
             winnersText.AppendLine("<size=105%><b>Winners</b></size> -");
             losersText.AppendLine("<size=105%><b>Losers</b></size> -");
@@ -151,13 +154,19 @@ namespace TownOfUsReworked.Patches
             foreach (var data in AdditionalTempData.playerRoles)
             {
                 var role = string.Join(" ", data.Role);
-                var dataString = $"<size=95%>{data.PlayerName} - {role}</size>";
+                var dataString = $"<size=75%>{data.PlayerName} - {role}</size>";
 
                 if (data.PlayerName.IsWinner())
+                {
                     winnersText.AppendLine(dataString);
+                    winnerCount += 1;
+                }
                 else
                     losersText.AppendLine(dataString);
             }
+
+            if (winnerCount == 0)
+                winnersText.AppendLine("<size=70%>No One Won</size>");
 
             winnersText.AppendLine(" ");
             

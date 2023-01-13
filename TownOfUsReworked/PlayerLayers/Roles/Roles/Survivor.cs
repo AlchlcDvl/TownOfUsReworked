@@ -39,7 +39,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
-            AddToRoleHistory(RoleType);
         }
 
         public float VestTimer()

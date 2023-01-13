@@ -14,6 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
                 return;
 
             var role = Objectifier.GetObjectifier<Phantom>(__instance.myPlayer);
+
+            if (!role.HasDied)
+                return;
+                
             __instance.myPlayer.Collider.enabled = !role.Caught;
         }
     }

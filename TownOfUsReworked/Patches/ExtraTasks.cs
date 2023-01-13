@@ -1,9 +1,6 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Lobby.CustomOption;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {

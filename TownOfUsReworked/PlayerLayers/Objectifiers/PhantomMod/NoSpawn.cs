@@ -12,7 +12,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
         {
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
             {
-                var caught = Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught;
+                var phantom = Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer);
+
+                if (!phantom.HasDied)
+                    return false;
+
+                var caught = phantom.Caught;
 
                 if (!caught)
                 {

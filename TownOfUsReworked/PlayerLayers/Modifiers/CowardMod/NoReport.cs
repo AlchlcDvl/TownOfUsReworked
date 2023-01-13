@@ -13,7 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.CowardMod
             {
                 if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
                 {
-                    DestroyableSingleton<HudManager>.Instance.ReportButton.SetActive(false);
+                    __instance.ReportButton.graphic.enabled = false;
+                    __instance.ReportButton.gameObject.SetActive(false);
                 }
             }
         }

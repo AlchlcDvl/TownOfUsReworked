@@ -3,13 +3,13 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using System.Collections.Generic;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Taskmaster : Objectifier
     {
-        public bool Revealed => TasksLeft <= CustomGameOptions.TMTasksRemaining;
-        public bool TasksDone => TasksLeft <= 0;
+        public bool Revealed => TasksLeft() <= CustomGameOptions.TMTasksRemaining;
         public int TasksToBeDone;
         public bool WinTasksDone;
         public bool TaskmasterWins { get; set; }
@@ -23,26 +23,34 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
-            AddToObjectifierHistory(ObjectifierType);
         }
 
-        public void Wins()
+        public override void Wins()
         {
             TaskmasterWins = true;
         }
 
-        public void Loses()
+        public override void Loses()
         {
             LostByRPC = true;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (!WinTasksDone || !Player.Data.IsDead && !Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
+                
+            if (WinTasksDone)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TaskmasterWin, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                Wins();
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
 
-            Utils.EndGame();
-            return false;
+            return true;
         }
     }
 }

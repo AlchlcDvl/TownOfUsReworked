@@ -5,14 +5,12 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
-using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public abstract class Ability
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
-        public static readonly List<KeyValuePair<byte, AbilityEnum>> AbilityHistory = new List<KeyValuePair<byte, AbilityEnum>>();
 
         protected Ability(PlayerControl player)
         {
@@ -31,24 +29,31 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         protected internal AbilityEnum AbilityType { get; set; }
         protected internal bool Hidden { get; set; } = false;
 
-        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.Count;
-        protected internal bool TasksDone => TasksLeft <= 0;
-
-        public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
+        public string PlayerName { get; set; }
 
         public PlayerControl Player
         {
             get => _player;
             set
             {
-                if (_player != null) _player.nameText().color = Color.white;
-
+                if (_player != null)
+                    _player.nameText().color = new Color32(255, 255, 255, 255);
+                
                 _player = value;
                 PlayerName = value.Data.PlayerName;
             }
         }
+
+        protected internal int TasksLeft()
+        {
+            if (Player == null || Player.Data == null)
+                return 0;
+            
+            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        }
+
+        protected internal bool TasksDone => TasksLeft() <= 0;
         
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
@@ -60,11 +65,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         internal virtual bool EABBNOODFGL(ShipStatus __instance)
         {
             return true;
-        }
-
-        public void AddToAbilityHistory(AbilityEnum ability)
-        {
-            AbilityHistory.Add(KeyValuePair.Create(_player.PlayerId, ability));
         }
 
         public override bool Equals(object obj)
@@ -84,22 +84,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override int GetHashCode()
         {
             return HashCode.Combine(Player, (int)AbilityType);
-        }
-
-        public static bool operator ==(Ability a, Ability b)
-        {
-            if (a is null && b is null)
-                return true;
-
-            if (a is null || b is null)
-                return false;
-
-            return a.AbilityType == b.AbilityType && a.Player.PlayerId == b.Player.PlayerId;
-        }
-
-        public static bool operator !=(Ability a, Ability b)
-        {
-            return !(a == b);
         }
 
         public static Ability GetAbility(PlayerControl player)
@@ -165,13 +149,20 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
         }
 
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-        public static class LobbyBehaviour_Start
+        public static bool operator ==(Ability a, Ability b)
         {
-            private static void Postfix(LobbyBehaviour __instance)
-            {
-                AbilityDictionary.Clear();
-            }
+            if (a is null && b is null)
+                return true;
+
+            if (a is null || b is null)
+                return false;
+
+            return a.AbilityType == b.AbilityType && a.Player.PlayerId == b.Player.PlayerId;
+        }
+
+        public static bool operator !=(Ability a, Ability b)
+        {
+            return !(a == b);
         }
     }
 }

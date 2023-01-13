@@ -31,20 +31,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-
-            if (PlayerControl.LocalPlayer.Is(Faction.Neutral) || PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
-            {
-                if (player == null || player.Data.IsDead || player.Data.Disconnected)
+            
+            if (player == null || player.Data.IsDead || player.Data.Disconnected)
                     return true;
-            }
-            else
-            {
-                if (player == null || player.Data.IsImpostor() || player.Data.IsDead || player.Data.Disconnected)
-                    return true;
-            }
 
             var role = Role.GetRole(player);
-            return role != null;
+            return role != null && role.Criteria();
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
@@ -153,6 +145,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                 var targetId = voteArea.TargetPlayerId;
                 var currentGuess = role.Guesses[targetId];
+                var targetPlayer = Utils.PlayerById(targetId);
 
                 if (currentGuess == "None")
                     return;
@@ -160,12 +153,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var playerRole = Role.GetRole(voteArea);
                 var playerAbility = Ability.GetAbility(voteArea);
                 var playerModifier = Modifier.GetModifier(voteArea);
-                var playerObjectifier = Objectifier.GetObjectifierVote(voteArea);
+                var playerObjectifier = Objectifier.GetObjectifier(voteArea);
 
-                var flag = playerRole.Name == currentGuess || (playerModifier.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers) ||
-                    (playerObjectifier.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers || (playerAbility.Name == currentGuess &&
-                    CustomGameOptions.AssassinGuessAbilities));
+                var roleflag = playerRole != null && playerRole.Name == currentGuess;
+                var modifierflag = playerModifier != null && playerModifier.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers;
+                var abilityflag = playerAbility != null && playerAbility.Name == currentGuess && CustomGameOptions.AssassinGuessAbilities;
+                var objectifierflag = playerObjectifier != null && playerObjectifier.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers;
+                var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
 
+                var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag;
                 var toDie = flag ? playerRole.Player : role.Player;
 
                 if (!toDie.Is(RoleEnum.Pestilence) || PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
@@ -188,7 +184,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                             if (toDie.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
                             {
-                                var lover = ((Lovers)playerObjectifier).OtherLover.Player;
+                                var lover = ((Lovers)playerObjectifier).OtherLover;
 
                                 if (!lover.Is(RoleEnum.Pestilence))
                                     ShowHideButtons.HideSingle(role, lover.PlayerId, false, true);
@@ -203,7 +199,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                         if (toDie.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
                         {
-                            var lover = ((Lovers)playerObjectifier).OtherLover.Player;
+                            var lover = ((Lovers)playerObjectifier).OtherLover;
 
                             if (!lover.Is(RoleEnum.Pestilence))
                                 ShowHideButtons.HideSingle(role, lover.PlayerId, false, true);
@@ -217,12 +213,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin))
-                return;
-
             foreach (var ability in Ability.GetAbilities(AbilityEnum.Assassin))
             {
                 var assassin = (Assassin)ability;
@@ -230,6 +220,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 assassin.Buttons.Clear();
                 assassin.GuessedThisMeeting = false;
             }
+
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+                return;
+
+            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin))
+                return;
 
             var assassinAbility = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
 

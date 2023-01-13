@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                 if (role != null)
                 {
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
-                        Role.GetRole<Transporter>(PlayerControl.LocalPlayer).Update(__instance);
+                        role.Update(__instance);
                 }
             }
         }

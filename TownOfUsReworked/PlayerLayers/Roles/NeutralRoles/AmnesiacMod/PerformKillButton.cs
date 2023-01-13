@@ -4,13 +4,10 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using System;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using Il2CppSystem.Collections.Generic;
 
@@ -47,13 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             if (!__instance.enabled)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
             if (role == null)
                 return false;
 
             if (role.CurrentTarget == null)
                 return false;
+
+            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
             if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
@@ -61,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var playerId = role.CurrentTarget.ParentId;
             var player = Utils.PlayerById(playerId);
 
-            if ((player.IsInfected() || role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
+            if (player.IsInfected() || role.Player.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
@@ -69,8 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Remember,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Remember, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -89,18 +85,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
         {
             var role = Role.GetRole(other);
             var roleType = role.RoleType;
-            var objectifier = Utils.GetObjectifier(other);
             var ability = Utils.GetAbility(other);
-            var modifier = Utils.GetModifier(other);
             var amnesiac = amneRole.Player;
             List<PlayerTask> tasks1, tasks2;
             List<GameData.TaskInfo> taskinfos1, taskinfos2;
-
-            var rememberImp = false;
-            var rememberNeut = false;
-            var rememberSyn = false;
-            var rememberCrew = false;
-
             Role newRole;
 
             if (PlayerControl.LocalPlayer == amnesiac)
@@ -113,199 +101,294 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             switch (roleType)
             {
-                case RoleEnum.Sheriff:
-                case RoleEnum.Engineer:
-                case RoleEnum.Mayor:
-                case RoleEnum.Swapper:
-                case RoleEnum.Investigator:
-                case RoleEnum.TimeLord:
-                case RoleEnum.Medic:
                 case RoleEnum.Agent:
+                    newRole = new Agent(amnesiac);
+                    break;
+
                 case RoleEnum.Altruist:
-                case RoleEnum.Vigilante:
-                case RoleEnum.Veteran:
-                case RoleEnum.Crewmate:
-                case RoleEnum.Tracker:
-                case RoleEnum.Transporter:
-                case RoleEnum.Medium:
-                case RoleEnum.Coroner:
-                case RoleEnum.Operative:
-                case RoleEnum.Detective:
-                case RoleEnum.Shifter:
-                case RoleEnum.Inspector:
-                case RoleEnum.Escort:
-                case RoleEnum.VampireHunter:
-
-                    rememberCrew = true;
-
+                    newRole = new Altruist(amnesiac);
                     break;
-
-                case RoleEnum.Warper:
-                case RoleEnum.Anarchist:
-                case RoleEnum.Gorgon:
-                case RoleEnum.Concealer:
-                case RoleEnum.Rebel:
-                case RoleEnum.Sidekick:
-                case RoleEnum.Shapeshifter:
-                case RoleEnum.Bomber:
-                case RoleEnum.Framer:
-
-                    rememberSyn = true;
-
-                    break;
-
-                case RoleEnum.Jester:
-                case RoleEnum.Executioner:
-                case RoleEnum.Arsonist:
-                case RoleEnum.Amnesiac:
-                case RoleEnum.Glitch:
-                case RoleEnum.Juggernaut:
-                case RoleEnum.Murderer:
-                case RoleEnum.Survivor:
-                case RoleEnum.GuardianAngel:
-                case RoleEnum.Plaguebearer:
-                case RoleEnum.Pestilence:
-                case RoleEnum.SerialKiller:
-                case RoleEnum.Cannibal:
-                case RoleEnum.Werewolf:
-                case RoleEnum.Troll:
-                case RoleEnum.Thief:
-                case RoleEnum.Dracula:
-                case RoleEnum.Vampire:
-                case RoleEnum.Dampyr:
-                case RoleEnum.Cryomaniac:
-
-                    rememberNeut = true;
-
-                    break;
-
-                case RoleEnum.Impostor:
-                case RoleEnum.Blackmailer:
-                case RoleEnum.Camouflager:
-                case RoleEnum.Consigliere:
-                case RoleEnum.Consort:
-                case RoleEnum.Disguiser:
-                case RoleEnum.Godfather:
-                case RoleEnum.Grenadier:
-                case RoleEnum.Janitor:
-                case RoleEnum.Mafioso:
-                case RoleEnum.Miner:
-                case RoleEnum.Morphling:
-                case RoleEnum.Poisoner:
-                case RoleEnum.Teleporter:
-                case RoleEnum.TimeMaster:
-                case RoleEnum.Undertaker:
-                case RoleEnum.Wraith:
-
-                    rememberImp = true;
-
-                    break;
-            }
-
-            if (roleType == RoleEnum.Investigator)
-                Footprint.DestroyAll(Role.GetRole<Investigator>(other));
-
-            newRole = Role.GetRole(other);
-            newRole.Player = amnesiac;
-
-            Role.RoleDictionary.Remove(amnesiac.PlayerId);
-            Role.RoleDictionary.Remove(other.PlayerId);
-
-            if (rememberCrew)
-            {
-                new Crewmate(other);
                     
-                if (CustomGameOptions.AmneTurnAssassin)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
-                        SendOption.Reliable, -1);
-                    writer.Write(amnesiac.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                case RoleEnum.Amnesiac:
+                    newRole = new Amnesiac(amnesiac);
+                    break;
+                    
+                case RoleEnum.Anarchist:
+                    newRole = new Anarchist(amnesiac);
+                    break;
+                    
+                case RoleEnum.Arsonist:
+                    newRole = new Arsonist(amnesiac);
+                    break;
+                    
+                case RoleEnum.Blackmailer:
+                    newRole = new Blackmailer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Bomber:
+                    newRole = new Bomber(amnesiac);
+                    break;
+                    
+                case RoleEnum.Camouflager:
+                    newRole = new Camouflager(amnesiac);
+                    break;
+                    
+                case RoleEnum.Cannibal:
+                    newRole = new Cannibal(amnesiac);
+                    break;
+                    
+                case RoleEnum.Concealer:
+                    newRole = new Concealer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Consigliere:
+                    newRole = new Consigliere(amnesiac);
+                    break;
+                    
+                case RoleEnum.Consort:
+                    newRole = new Consort(amnesiac);
+                    break;
+                    
+                case RoleEnum.Coroner:
+                    newRole = new Coroner(amnesiac);
+                    break;
+                    
+                case RoleEnum.Crewmate:
+                    newRole = new Crewmate(amnesiac);
+                    break;
+                    
+                case RoleEnum.Cryomaniac:
+                    newRole = new Cryomaniac(amnesiac);
+                    break;
+                    
+                case RoleEnum.Dampyr:
+                    newRole = new Dampyr(amnesiac);
+                    break;
+                    
+                case RoleEnum.Detective:
+                    newRole = new Detective(amnesiac);
+                    break;
+                    
+                case RoleEnum.Disguiser:
+                    newRole = new Disguiser(amnesiac);
+                    break;
+                    
+                case RoleEnum.Dracula:
+                    newRole = new Dracula(amnesiac);
+                    break;
+                    
+                case RoleEnum.Engineer:
+                    newRole = new Engineer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Escort:
+                    newRole = new Escort(amnesiac);
+                    break;
+                    
+                case RoleEnum.Executioner:
+                    newRole = new Executioner(amnesiac);
+                    break;
+                    
+                case RoleEnum.Framer:
+                    newRole = new Framer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Glitch:
+                    newRole = new Glitch(amnesiac);
+                    break;
+                    
+                case RoleEnum.Godfather:
+                    newRole = new Godfather(amnesiac);
+                    break;
+                    
+                case RoleEnum.Gorgon:
+                    newRole = new Gorgon(amnesiac);
+                    break;
+                    
+                case RoleEnum.Grenadier:
+                    newRole = new Grenadier(amnesiac);
+                    break;
+                    
+                case RoleEnum.GuardianAngel:
+                    newRole = new GuardianAngel(amnesiac);
+                    break;
+                    
+                case RoleEnum.Impostor:
+                    newRole = new Impostor(amnesiac);
+                    break;
+                    
+                case RoleEnum.Inspector:
+                    newRole = new Inspector(amnesiac);
+                    break;
+                    
+                case RoleEnum.Investigator:
+                    newRole = new Investigator(amnesiac);
+                    break;
+                    
+                case RoleEnum.Jackal:
+                    newRole = new Jackal(amnesiac);
+                    break;
+                    
+                case RoleEnum.Jester:
+                    newRole = new Jester(amnesiac);
+                    break;
+                    
+                case RoleEnum.Juggernaut:
+                    newRole = new Juggernaut(amnesiac);
+                    break;
+                    
+                case RoleEnum.Sheriff:
+                    newRole = new Sheriff(amnesiac);
+                    break;
+                    
+                case RoleEnum.Mayor:
+                    newRole = new Mayor(amnesiac);
+                    break;
+                    
+                case RoleEnum.Mafioso:
+                    newRole = new Mafioso(amnesiac);
+                    break;
+                    
+                case RoleEnum.Miner:
+                    newRole = new Miner(amnesiac);
+                    break;
+                    
+                case RoleEnum.Morphling:
+                    newRole = new Morphling(amnesiac);
+                    break;
+                    
+                case RoleEnum.Swapper:
+                    newRole = new Swapper(amnesiac);
+                    break;
+                    
+                case RoleEnum.Medic:
+                    newRole = new Medic(amnesiac);
+                    break;
+                    
+                case RoleEnum.Tracker:
+                    newRole = new Tracker(amnesiac);
+                    break;
+                    
+                case RoleEnum.Transporter:
+                    newRole = new Transporter(amnesiac);
+                    break;
+                    
+                case RoleEnum.Medium:
+                    newRole = new Medium(amnesiac);
+                    break;
+                    
+                case RoleEnum.Operative:
+                    newRole = new Operative(amnesiac);
+                    break;
+                    
+                case RoleEnum.Shifter:
+                    newRole = new Shifter(amnesiac);
+                    break;
+                    
+                case RoleEnum.Rebel:
+                    newRole = new Rebel(amnesiac);
+                    break;
+                    
+                case RoleEnum.Sidekick:
+                    newRole = new Sidekick(amnesiac);
+                    break;
+                    
+                case RoleEnum.Shapeshifter:
+                    newRole = new Shapeshifter(amnesiac);
+                    break;
+                    
+                case RoleEnum.Murderer:
+                    newRole = new Murderer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Survivor:
+                    newRole = new Survivor(amnesiac);
+                    break;
+                    
+                case RoleEnum.Plaguebearer:
+                    newRole = new Plaguebearer(amnesiac);
+                    break;
+                    
+                case RoleEnum.Pestilence:
+                    newRole = new Pestilence(amnesiac);
+                    break;
+                    
+                case RoleEnum.SerialKiller:
+                    newRole = new SerialKiller(amnesiac);
+                    break;
+                    
+                case RoleEnum.Werewolf:
+                    newRole = new Werewolf(amnesiac);
+                    break;
+                    
+                case RoleEnum.Janitor:
+                    newRole = new Janitor(amnesiac);
+                    break;
+                    
+                case RoleEnum.Poisoner:
+                    newRole = new Poisoner(amnesiac);
+                    break;
+                    
+                case RoleEnum.TimeLord:
+                    newRole = new TimeLord(amnesiac);
+                    break;
+                    
+                case RoleEnum.Teleporter:
+                    newRole = new Teleporter(amnesiac);
+                    break;
+                    
+                case RoleEnum.TimeMaster:
+                    newRole = new TimeMaster(amnesiac);
+                    break;
+                    
+                case RoleEnum.Troll:
+                    newRole = new Troll(amnesiac);
+                    break;
+                    
+                case RoleEnum.Thief:
+                    newRole = new Thief(amnesiac);
+                    break;
+                    
+                case RoleEnum.Undertaker:
+                    newRole = new Undertaker(amnesiac);
+                    break;
+                    
+                case RoleEnum.Vampire:
+                    newRole = new Vampire(amnesiac);
+                    break;
+                    
+                case RoleEnum.VampireHunter:
+                    newRole = new VampireHunter(amnesiac);
+                    break;
+                    
+                case RoleEnum.Veteran:
+                    newRole = new Veteran(amnesiac);
+                    break;
+                    
+                case RoleEnum.Vigilante:
+                    newRole = new Vigilante(amnesiac);
+                    break;
+                    
+                case RoleEnum.Warper:
+                    newRole = new Warper(amnesiac);
+                    break;
+                    
+                case RoleEnum.Wraith:
+                    newRole = new Wraith(amnesiac);
+                    break;
+                
+                default:
+                    newRole = new Amnesiac(amnesiac);
+                    break;
             }
-            else if (rememberSyn)
-            {
-                new Anarchist(other);
+            
+            newRole.RoleHistory.Add(amneRole);
+            newRole.RoleHistory.AddRange(amneRole.RoleHistory);
 
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(Faction.Syndicate))
-                    {
-                        var role2 = Role.GetRole(player);
-
-                        if (CustomGameOptions.FactionSeeRoles)
-                            player.nameText().color = role2.Color;
-                        else
-                            player.nameText().color = Colors.Syndicate;
-                    }
-                }
-
-                if (CustomGameOptions.AmneTurnAssassin)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
-                        SendOption.Reliable, -1);
-                    writer.Write(amnesiac.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-            }
-            else if (rememberNeut)
-            {
-                if (role.RoleAlignment == RoleAlignment.NeutralKill)
-                {
-                    if (CustomGameOptions.AmneTurnAssassin)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
-                            SendOption.Reliable, -1);
-                        writer.Write(amnesiac.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-                }
-                else
-                    new Amnesiac(other);
-            }
-            else if (rememberImp)
-            {
-                new Impostor(other);
-                amnesiac.Data.Role.TeamType = RoleTeamTypes.Impostor;
-                RoleManager.Instance.SetRole(amnesiac, RoleTypes.Impostor);
-                amnesiac.SetKillTimer(CustomGameOptions.IntKillCooldown);
-
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player.Data.IsImpostor() && PlayerControl.LocalPlayer.Data.IsImpostor())
-                    {
-                        var role2 = Role.GetRole(player);
-
-                        if (CustomGameOptions.FactionSeeRoles)
-                            player.nameText().color = role2.Color;
-                        else
-                            player.nameText().color = Colors.Intruder;
-                    }
-                }
-
-                if (CustomGameOptions.AmneTurnAssassin)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAssassin,
-                        SendOption.Reliable, -1);
-                    writer.Write(amnesiac.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
-                if (amnesiac.Is(RoleEnum.Poisoner))
-                {
-                    if (PlayerControl.LocalPlayer == amnesiac)
-                    {
-                        var poisonerRole = Role.GetRole<Poisoner>(amnesiac);
-                        poisonerRole.LastPoisoned = DateTime.UtcNow;
-                        DestroyableSingleton<HudManager>.Instance.KillButton.graphic.enabled = false;
-                    }
-                    else if (PlayerControl.LocalPlayer == other)
-                    {
-                        DestroyableSingleton<HudManager>.Instance.KillButton.enabled = true;
-                        DestroyableSingleton<HudManager>.Instance.KillButton.graphic.enabled = true;
-                    }
-                }
-            }
+            DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
+            
+            if (newRole.Player == PlayerControl.LocalPlayer)
+                newRole.RegenTask();
 
             tasks1 = other.myTasks;
             taskinfos1 = other.Data.Tasks;
@@ -330,214 +413,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     foreach (var player in PlayerControl.AllPlayerControls)
                         player.nameText().color = Color.white;
                 }
-
-                DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
             }
-
-            if (roleType == RoleEnum.Vigilante)
-            {
-                var vigilanteRole = Role.GetRole<Vigilante>(amnesiac);
-                vigilanteRole.LastKilled = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Engineer)
-            {
-                var engiRole = Role.GetRole<Engineer>(amnesiac);
-                engiRole.UsedThisRound = false;
-            }
-            else if (roleType == RoleEnum.Medic)
-            {
-                var medicRole = Role.GetRole<Medic>(amnesiac);
-                medicRole.UsedAbility = false;
-            }
-            else if (roleType == RoleEnum.Mayor)
-            {
-                var mayorRole = Role.GetRole<Mayor>(amnesiac);
-                mayorRole.VoteBank = CustomGameOptions.MayorVoteBank;
-                DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-            }
-            else if (roleType == RoleEnum.Veteran)
-            {
-                var vetRole = Role.GetRole<Veteran>(amnesiac);
-                vetRole.UsesLeft = CustomGameOptions.MaxAlerts;
-                vetRole.LastAlerted = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Tracker)
-            {
-                var trackerRole = Role.GetRole<Tracker>(amnesiac);
-                trackerRole.TrackerArrows.Values.DestroyAll();
-                trackerRole.TrackerArrows.Clear();
-                trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
-                trackerRole.LastTracked = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Detective)
-            {
-                var detectiveRole = Role.GetRole<Detective>(amnesiac);
-                detectiveRole.LastExamined = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Coroner)
-            {
-                var coronerRole = Role.GetRole<Coroner>(amnesiac);
-                coronerRole.BodyArrows.Values.DestroyAll();
-                coronerRole.BodyArrows.Clear();
-                DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-            }
-            else if (roleType == RoleEnum.TimeLord)
-            {
-                var tlRole = Role.GetRole<TimeLord>(amnesiac);
-                tlRole.FinishRewind = DateTime.UtcNow;
-                tlRole.StartRewind = DateTime.UtcNow;
-                tlRole.StartRewind = tlRole.StartRewind.AddSeconds(-10.0f);
-                tlRole.UsesLeft = CustomGameOptions.RewindMaxUses;
-            }
-            else if (roleType == RoleEnum.Transporter)
-            {
-                var tpRole = Role.GetRole<Transporter>(amnesiac);
-                tpRole.PressedButton = false;
-                tpRole.MenuClick = false;
-                tpRole.LastMouse = false;
-                tpRole.TransportList = null;
-                tpRole.TransportPlayer1 = null;
-                tpRole.TransportPlayer2 = null;
-                tpRole.LastTransported = DateTime.UtcNow;
-                tpRole.UsesLeft = CustomGameOptions.TransportMaxUses;
-            }
-            else if (roleType == RoleEnum.Medium)
-            {
-                var medRole = Role.GetRole<Medium>(amnesiac);
-                medRole.MediatedPlayers.Values.DestroyAll();
-                medRole.MediatedPlayers.Clear();
-                medRole.LastMediated = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Werewolf)
-            {
-                var wwRole = Role.GetRole<Werewolf>(amnesiac);
-                wwRole.LastMauled = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Sheriff)
-            {
-                var sheriffRole = Role.GetRole<Sheriff>(amnesiac);
-                sheriffRole.Interrogated.RemoveRange(0, sheriffRole.Interrogated.Count);
-                sheriffRole.LastInterrogated = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Arsonist)
-            {
-                var arsoRole = Role.GetRole<Arsonist>(amnesiac);
-                arsoRole.DousedPlayers.RemoveRange(0, arsoRole.DousedPlayers.Count);
-                arsoRole.LastDoused = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Survivor)
-            {
-                var survRole = Role.GetRole<Survivor>(amnesiac);
-                survRole.LastVested = DateTime.UtcNow;
-                survRole.UsesLeft = CustomGameOptions.MaxVests;
-            }
-            else if (roleType == RoleEnum.GuardianAngel)
-            {
-                var gaRole = Role.GetRole<GuardianAngel>(amnesiac);
-                gaRole.LastProtected = DateTime.UtcNow;
-                gaRole.UsesLeft = CustomGameOptions.MaxProtects;
-            }
-            else if (roleType == RoleEnum.Glitch)
-            {
-                var glitchRole = Role.GetRole<Glitch>(amnesiac);
-                glitchRole.LastKill = DateTime.UtcNow;
-                glitchRole.LastHack = DateTime.UtcNow;
-                glitchRole.LastMimic = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Juggernaut)
-            {
-                var juggRole = Role.GetRole<Juggernaut>(amnesiac);
-                juggRole.JuggKills = 0;
-                juggRole.LastKill = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Murderer)
-            {
-                var murdRole = Role.GetRole<Murderer>(amnesiac);
-                murdRole.LastKill = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Grenadier)
-            {
-                var grenadeRole = Role.GetRole<Grenadier>(amnesiac);
-                grenadeRole.LastFlashed = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Morphling)
-            {
-                var morphlingRole = Role.GetRole<Morphling>(amnesiac);
-                morphlingRole.LastMorphed = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Wraith)
-            {
-                var wraithRole = Role.GetRole<Wraith>(amnesiac);
-                wraithRole.LastInvis = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Blackmailer)
-            {
-                var blackmailerRole = Role.GetRole<Blackmailer>(amnesiac);
-                blackmailerRole.LastBlackmailed = DateTime.UtcNow;
-                blackmailerRole.Blackmailed = null;
-            }
-            else if (roleType == RoleEnum.Camouflager)
-            {
-                var camoRole = Role.GetRole<Camouflager>(amnesiac);
-                camoRole.LastCamouflaged = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Disguiser)
-            {
-                var disguiserRole = Role.GetRole<Disguiser>(amnesiac);
-                disguiserRole.LastDisguised = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Miner)
-            {
-                var minerRole = Role.GetRole<Miner>(amnesiac);
-                minerRole.LastMined = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Undertaker)
-            {
-                var dienerRole = Role.GetRole<Undertaker>(amnesiac);
-                dienerRole.LastDragged = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.SerialKiller)
-            {
-                var skRole = Role.GetRole<SerialKiller>(amnesiac);
-                skRole.LastLusted = DateTime.UtcNow;
-                skRole.LastKilled = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Plaguebearer)
-            {
-                var plagueRole = Role.GetRole<Plaguebearer>(amnesiac);
-                plagueRole.InfectedPlayers.Add(amnesiac.PlayerId);
-                plagueRole.LastInfected = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Pestilence)
-            {
-                var pestRole = Role.GetRole<Pestilence>(amnesiac);
-                pestRole.LastKill = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Operative)
-            {
-                var opRole = Role.GetRole<Operative>(amnesiac);
-                opRole.lastBugged = DateTime.UtcNow;
-                opRole.UsesLeft = CustomGameOptions.MaxBugs;
-                opRole.buggedPlayers.Clear();
-                opRole.bugs.ClearBugs();
-            }
-            else if (roleType == RoleEnum.Cannibal)
-            {
-                var cannibalRole = Role.GetRole<Cannibal>(amnesiac);
-                cannibalRole.LastEaten = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Shifter)
-            {
-                var shifterRole = Role.GetRole<Shifter>(amnesiac);
-                shifterRole.LastShifted = DateTime.UtcNow;
-            }
-            else if (roleType == RoleEnum.Consigliere)
-            {
-                var consigRole = Role.GetRole<Consigliere>(amnesiac);
-                consigRole.LastInvestigated = DateTime.UtcNow;
-            }
-            else if (!(amnesiac.Is(RoleEnum.Altruist) || amnesiac.Is(RoleEnum.Amnesiac) || amnesiac.Is(Faction.Intruder)))
-                DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
 
             if (amnesiac.Is(Faction.Intruder) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
             {
@@ -568,22 +444,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         snitchRole.ImpArrows.Add(arrow);
                     }
                 }
-            }
-
-            if (other.Is(RoleEnum.Crewmate))
-            {
-                var role2 = Role.GetRole<Crewmate>(other);
-                role2.RegenTask();
-            }
-            else if (other.Is(RoleEnum.Survivor))
-            {
-                var role2 = Role.GetRole<Survivor>(other);
-                role2.RegenTask();
-            }
-            else
-            {
-                var role2 = Role.GetRole<Impostor>(other);
-                role2.RegenTask();
             }
         }
     }

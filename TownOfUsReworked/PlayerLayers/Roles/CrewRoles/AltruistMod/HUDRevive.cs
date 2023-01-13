@@ -29,8 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver)
-                && PlayerControl.LocalPlayer.CanMove;
+            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
             var killButton = __instance.KillButton;
             DeadBody closestBody = null;
@@ -54,12 +53,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 closestBody = component;
                 closestDistance = distance;
             }
-
-            if (isDead)
-                killButton.gameObject.SetActive(false);
-            else
-                killButton.gameObject.SetActive(!MeetingHud.Instance);
-
+            
+            killButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance && !role.ReviveUsed);
             KillButtonTarget.SetTarget(killButton, closestBody, role);
             __instance.KillButton.SetCoolDown(0f, 1f);
         }

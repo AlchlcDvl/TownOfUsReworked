@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "Ummmmmm";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Shy : Colors.Modifier;
             ModifierType = ModifierEnum.Shy;
-            AddToModifierHistory(ModifierType);
         }
     }
 }

@@ -122,6 +122,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
                 return false;
             }
+            else if (role.Player.IsOtherRival(role.ClosestPlayerDouse))
+            {
+                role.LastDoused = DateTime.UtcNow;
+                return false;
+            }
 
             unchecked
             {

@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
             Results = InspResults.ArsoCryoPBOpTroll;
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -54,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return false;
             }   
             
-            return false;
+            return true;
         }
 
         public override void Wins()

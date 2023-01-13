@@ -32,9 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (role.HasDeclared || role.WasMafioso)
-                return;
-
             if (role.DeclareButton == null)
             {
                 role.DeclareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
@@ -45,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             role.DeclareButton.GetComponent<AspectPosition>().Update();
             role.DeclareButton.graphic.sprite = Promote;
-            role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance);
+            role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.HasDeclared && !role.WasMafioso);
 
             if (role.ClosestIntruder.Is(Faction.Intruder))
                 Utils.SetTarget(ref role.ClosestIntruder, role.DeclareButton);

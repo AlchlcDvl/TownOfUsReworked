@@ -29,10 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                 return;
 
             var role = Role.GetRole<Juggernaut>(PlayerControl.LocalPlayer);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.JuggKillCooldown + 5.0f - CustomGameOptions.JuggKillBonus *
-                role.JuggKills);
-
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.JuggKillCooldown + 5.0f - CustomGameOptions.JuggKillBonus * role.JuggKills);
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }
     }

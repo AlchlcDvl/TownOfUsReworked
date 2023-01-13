@@ -1,137 +1,93 @@
 using System.Collections.Generic;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Rivals : Objectifier
     {
-        public Rivals OtherRival { get; set; }
-        public PlayerControl OtherRivalPlayer { get; set; }
+        public PlayerControl OtherRival { get; set; }
         public bool RivalWins { get; set; }
-        public int Num { get; set; }
 
         public Rivals(PlayerControl player) : base(player)
         {
             Name = "Rival";
-            SymbolName = "✦";
-            TaskText = "Your Rival is " + OtherRival.Player.name;
+            SymbolName = "α";
+            TaskText = "You have a Rival!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
-            AddToObjectifierHistory(ObjectifierType);
-        }
-
-        public List<PlayerControl> GetTeammates()
-        {
-            var rivalTeam = new List<PlayerControl>
-            {
-                PlayerControl.LocalPlayer,
-                OtherRival.Player
-            };
-
-            return rivalTeam;
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
         {
             List<PlayerControl> all = new List<PlayerControl>();
 
-            foreach(var player in canHaveObjectifiers)
+            foreach (var player in canHaveObjectifiers)
                 all.Add(player);
 
             if (all.Count < 3)
                 return;
 
-            all.Shuffle();
+            PlayerControl firstRival = null;
+            PlayerControl secondRival = null;
+            
+            while (firstRival == null || secondRival == null || firstRival == secondRival || (firstRival.GetFaction() == secondRival.GetFaction() && !CustomGameOptions.RivalsFaction))
+            {
+                all.Shuffle();
 
-            PlayerControl firstLover;
-            var num = Random.RandomRangeInt(0, all.Count);
-            firstLover = all[num];
-            canHaveObjectifiers.Remove(firstLover);
+                var num = Random.RandomRangeInt(0, all.Count);
+                firstRival = all[num];
 
-            PlayerControl secondLover;
-            var num2 = Random.RandomRangeInt(0, all.Count);
-            secondLover = all[num2];
-            canHaveObjectifiers.Remove(secondLover);
+                var num2 = Random.RandomRangeInt(0, all.Count);
+                secondRival = all[num2];
+            }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetDuo,
-                SendOption.Reliable, -1);
-            writer.Write(firstLover.PlayerId);
-            writer.Write(secondLover.PlayerId);
-            var lover1 = new Lovers(firstLover);
-            var lover2 = new Lovers(secondLover);
+            canHaveObjectifiers.Remove(firstRival);
+            canHaveObjectifiers.Remove(secondRival);
 
-            lover1.OtherLover = lover2;
-            lover2.OtherLover = lover1;
+            var rival1 = new Rivals(firstRival);
+            var rival2 = new Rivals(secondRival);
 
+            rival1.OtherRival = rival2.Player;
+            rival2.OtherRival = rival1.Player;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetDuo, SendOption.Reliable, -1);
+            writer.Write(firstRival.PlayerId);
+            writer.Write(secondRival.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
         {
-            if (FourPeopleLeft())
-                return false;
-
-            if (CheckLoversWin())
+            if (Utils.RivalsWin(ObjectifierType))
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.LoveWin,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RivalWin, SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Win();
+                Wins();
                 Utils.EndGame();
                 return false;
             }
 
-            return true;
+            return false;
         }
 
-        private bool FourPeopleLeft()
+        public bool RivalDead()
         {
-            var players = PlayerControl.AllPlayerControls.ToArray();
-            var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherRival.Player;
+            PlayerControl rival1 = Player;
+            PlayerControl rival2 = OtherRival;
             
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && alives.Count() == 4 &&
-                (lover1.Is(Faction.Intruder) || lover2.Is(Faction.Intruder));
+            return !(rival1.Data.IsDead || rival1.Data.Disconnected) && (rival2.Data.IsDead || rival2.Data.Disconnected);
         }
 
-        private bool CheckLoversWin()
+        public override void Wins()
         {
-            //System.Console.WriteLine("CHECKWIN");
-            var players = PlayerControl.AllPlayerControls.ToArray();
-            var alives = players.Where(x => !x.Data.IsDead).ToList();
-            var lover1 = Player;
-            var lover2 = OtherRival.Player;
-
-            return !lover1.Data.IsDead && !lover1.Data.Disconnected && !lover2.Data.IsDead && !lover2.Data.Disconnected && (alives.Count == 3) ||
-                (alives.Count == 2);
-        }
-
-        public void Win()
-        {
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Lovers).Any(x => ((Lovers)x).LoveCoupleWins))
-                return;
-
-            RivalWins = true;
-            OtherRival.RivalWins = true;
+            if (RivalDead())
+                RivalWins = true;
         }
     }
 }

@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -10,14 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class Update
     {
-        public static string NameText(PlayerControl player, string str = "", bool meeting = false)
-        {
-            if (CamouflageUnCamouflage.IsCamoed)
-                return "";
-
-            return player.name + str;
-        }
-
         private static void UpdateMeeting(MeetingHud __instance, Inspector inspector)
         {
             foreach (var player in inspector.Examined)
@@ -88,12 +79,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             var inspector = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            if (MeetingHud.Instance != null)
-                UpdateMeeting(MeetingHud.Instance, inspector);
-
             foreach (var player in inspector.Examined)
             {
-                player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
+                player.nameText().transform.localPosition = new Vector3(0f, player.Data.DefaultOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
 
                 var playerName = player.nameText().text;
                 player.nameText().color = new Color32(255, 255, 255, 255);

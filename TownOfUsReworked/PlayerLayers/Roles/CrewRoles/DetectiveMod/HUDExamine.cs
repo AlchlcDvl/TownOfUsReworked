@@ -33,14 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             var examineButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Detective>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                examineButton.gameObject.SetActive(false);
-            else
-            {
-                examineButton.gameObject.SetActive(!MeetingHud.Instance);
-                examineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
-                Utils.SetTarget(ref role.ClosestPlayer, examineButton, float.NaN);
-            }
+            examineButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            examineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
+            Utils.SetTarget(ref role.ClosestPlayer, examineButton, float.NaN);
 
             var renderer = examineButton.graphic;
             

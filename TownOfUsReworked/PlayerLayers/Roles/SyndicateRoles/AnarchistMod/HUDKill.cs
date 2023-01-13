@@ -25,10 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
 
             var role = Role.GetRole<Anarchist>(PlayerControl.LocalPlayer);
 
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-
-            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.MurdKCD);
-
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }
     }

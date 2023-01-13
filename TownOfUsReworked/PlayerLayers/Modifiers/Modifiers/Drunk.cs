@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "Inverrrrrted contrrrrols";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
             ModifierType = ModifierEnum.Drunk;
-            AddToModifierHistory(ModifierType);
         }
     }
 }

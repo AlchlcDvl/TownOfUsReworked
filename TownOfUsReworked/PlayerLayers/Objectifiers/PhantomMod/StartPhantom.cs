@@ -12,6 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
         {
             if (!__instance.Is(ObjectifierEnum.Phantom))
                 return;
+            
+            if (!Objectifier.GetObjectifier<Phantom>(__instance).HasDied)
+                return;
 
             if (Objectifier.GetObjectifier<Phantom>(__instance).Caught)
                 return;

@@ -37,14 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-            if (isDead)
-                KillButton.gameObject.SetActive(false);
-            else
-            {
-                KillButton.gameObject.SetActive(!MeetingHud.Instance);
-                KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
-                Utils.SetTarget(ref role.ClosestPlayer, KillButton);
-            }
+            KillButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && !role.KilledInno);
+            KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
+            Utils.SetTarget(ref role.ClosestPlayer, KillButton);
         }
     }
 }

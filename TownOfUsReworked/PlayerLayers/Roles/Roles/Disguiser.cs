@@ -43,7 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "Basic";
             AlignmentDescription = IDDescription;
             RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you.";
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton DisguiseButton

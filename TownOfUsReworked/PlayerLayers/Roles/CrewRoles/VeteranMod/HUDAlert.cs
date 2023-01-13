@@ -48,13 +48,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            if (isDead)
-                alertButton.gameObject.SetActive(false);
-            else if (role.OnAlert)
+            if (role.OnAlert)
                 alertButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.AlertDuration);
             else
             {
-                alertButton.gameObject.SetActive(!MeetingHud.Instance);
+                alertButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && role.ButtonUsable);
 
                 if (role.ButtonUsable)
                     alertButton.SetCoolDown(role.AlertTimer(), CustomGameOptions.AlertCd);

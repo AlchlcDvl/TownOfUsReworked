@@ -44,17 +44,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 player.nameText().color = Color.black;
             }
 
-            if (isDead)
-                infectButton.gameObject.SetActive(false);
-            else
-            {
-                infectButton.gameObject.SetActive(!MeetingHud.Instance);
-                infectButton.SetCoolDown(role.InfectTimer(), CustomGameOptions.InfectCd);
-
-                var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.InfectedPlayers.Contains(player.PlayerId)).ToList();
-
-                Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notInfected);
-            }
+            infectButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            infectButton.SetCoolDown(role.InfectTimer(), CustomGameOptions.InfectCd);
+            var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.InfectedPlayers.Contains(player.PlayerId)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notInfected);
 
             if (role.CanTransform && (PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1) &&
                 !isDead)

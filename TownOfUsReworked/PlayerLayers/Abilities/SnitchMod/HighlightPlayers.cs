@@ -25,7 +25,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     if (CustomGameOptions.SnitchSeesRoles)
                     {
                         if (role.Faction == Faction.Intruder || role.Faction == Faction.Syndicate)
-                            state.NameText.color = role.Color;
+                        {
+                            if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
+                                state.NameText.color = role.FactionColor;
+                            else
+                                state.NameText.color = role.Color;
+                        }
                         else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                             state.NameText.color = role.Color;
                         else if (role.Faction == Faction.Crew && CustomGameOptions.SnitchSeesCrew)
@@ -33,8 +38,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     }
                     else
                     {
-                        if (player.Is(Faction.Intruder) || role.Faction == Faction.Syndicate)
-                            state.NameText.color = role.FactionColor;
+                        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
+                        {
+                            if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
+                                state.NameText.color = role.FactionColor;
+                            else
+                                state.NameText.color = role.FactionColor;
+                        }
                         else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                             state.NameText.color = role.FactionColor;
                         else if (role.Faction == Faction.Crew && CustomGameOptions.SnitchSeesCrew)
@@ -49,7 +59,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                 return;
 
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
             var ability = Ability.GetAbility<Snitch>(PlayerControl.LocalPlayer);
 
             if (!ability.TasksDone)
@@ -60,10 +69,17 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
+                var role = Role.GetRole(player);
+
                 if (CustomGameOptions.SnitchSeesRoles)
                 {
                     if (role.Faction == Faction.Intruder || role.Faction == Faction.Syndicate)
-                        player.nameText().color = role.Color;
+                    {
+                        if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
+                            player.nameText().color = role.FactionColor;
+                        else
+                            player.nameText().color = role.Color;
+                    }
                     else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                         player.nameText().color = role.Color;
                     else if (role.Faction == Faction.Crew && CustomGameOptions.SnitchSeesCrew)
@@ -72,7 +88,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                 else
                 {
                     if (player.Is(Faction.Intruder) || role.Faction == Faction.Syndicate)
-                        player.nameText().color = role.FactionColor;
+                    {
+                        if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
+                            player.nameText().color = role.FactionColor;
+                        else
+                            player.nameText().color = role.FactionColor;
+                    }
                     else if (role.Faction == Faction.Neutral && CustomGameOptions.SnitchSeesNeutrals)
                         player.nameText().color = role.FactionColor;
                     else if (role.Faction == Faction.Crew && CustomGameOptions.SnitchSeesCrew)

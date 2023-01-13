@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "EEEK";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Flincher : Colors.Modifier;
             ModifierType = ModifierEnum.Flincher;
-            AddToModifierHistory(ModifierType);
         }
     }
 }

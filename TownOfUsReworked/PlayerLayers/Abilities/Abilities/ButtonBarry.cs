@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = "Call a button from anywhere!";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
-            AddToAbilityHistory(AbilityType);
         }
     }
 }

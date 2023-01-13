@@ -38,8 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             {
                 role.UsesText = Object.Instantiate(vestButton.cooldownTimerText, vestButton.transform);
                 role.UsesText.gameObject.SetActive(true);
-                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f,
-                    role.UsesText.transform.localPosition.y + 0.29f, role.UsesText.transform.localPosition.z);
+                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
+                    role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
@@ -48,16 +48,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            if (isDead)
-                vestButton.gameObject.SetActive(false);
-            else if (role.Vesting)
+            if (role.Vesting)
             {
                 vestButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.VestDuration);
                 return;
             }
             else
             {
-                vestButton.gameObject.SetActive(!MeetingHud.Instance);
+                vestButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && role.ButtonUsable);
 
                 if (role.ButtonUsable)
                     vestButton.SetCoolDown(role.VestTimer(), CustomGameOptions.VestCd);

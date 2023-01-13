@@ -18,6 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
 
                 if (objectifier.Player.Data.Disconnected)
                     return;
+                
+                if (!phantom.HasDied)
+                    continue;
 
                 var caught = phantom.Caught;
                 

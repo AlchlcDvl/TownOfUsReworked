@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You have become a Dampyr! Your new goal is the help the Dracula convert everyone. Kill anyone who does not submit to the Dracula" +
                 " and avoid losing the Dracula or else you're done for!";
             SubFactionColor = Colors.Undead;
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()

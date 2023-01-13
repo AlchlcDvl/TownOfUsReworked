@@ -98,6 +98,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 role.LastDoused = DateTime.UtcNow;
                 return false;
             }
+            else if (role.Player.IsOtherRival(role.ClosestPlayer))
+            {
+                role.LastDoused = DateTime.UtcNow;
+                return false;
+            }
 
             unchecked
             {

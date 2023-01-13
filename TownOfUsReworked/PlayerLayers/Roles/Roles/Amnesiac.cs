@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Amnesiac : Role
     {
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
-        public DeadBody CurrentTarget;
+        public DeadBody CurrentTarget = null;
 
         public Amnesiac(PlayerControl player) : base(player)
         {
@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NBDescription;
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
             FactionDescription = NeutralFactionDescription;
-            AddToRoleHistory(RoleType);
         }
 
         public override void Loses()

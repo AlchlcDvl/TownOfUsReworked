@@ -3,9 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
@@ -15,18 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Taskmaster).Any(x => ((Taskmaster)x).WinTasksDone))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
-                return;
-
             var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jackal && Role.CabalWin);
 
             if (role == null) return;

@@ -62,9 +62,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             var formerRole = Role.GetRole(target);
             var sidekick = new Sidekick(target);
             sidekick.FormerRole = formerRole;
-            
-            Role.RoleDictionary.Remove(target.PlayerId);
-            Role.RoleDictionary.Add(target.PlayerId, sidekick);
+            sidekick.RoleHistory.Add(formerRole);
+            sidekick.RoleHistory.AddRange(formerRole.RoleHistory);
         }
     }
 }

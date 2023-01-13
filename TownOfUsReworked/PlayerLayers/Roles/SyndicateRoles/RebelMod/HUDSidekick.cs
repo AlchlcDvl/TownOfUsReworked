@@ -26,10 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 return;
 
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-
-            if (isDead)
-                return;
-
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
 
             if (role.HasDeclared || role.WasSidekick)
@@ -45,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             role.DeclareButton.GetComponent<AspectPosition>().Update();
             role.DeclareButton.graphic.sprite = Promote;
-            role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance);
+            role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.WasSidekick && !role.HasDeclared);
 
             if (role.ClosestSyndicate.Is(Faction.Syndicate))
                 Utils.SetTarget(ref role.ClosestSyndicate, role.DeclareButton);

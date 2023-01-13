@@ -43,15 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            if (isDead)
-                bugButton.gameObject.SetActive(false);
-            else
-            {
-                bugButton.gameObject.SetActive(!MeetingHud.Instance);
+            bugButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && role.ButtonUsable);
 
-                if (role.ButtonUsable)
-                    bugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
-            }
+            if (role.ButtonUsable)
+                bugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
 
             var renderer = bugButton.graphic;
             

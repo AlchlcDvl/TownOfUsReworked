@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = "Complete all your tasks to reveal impostors!";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Revealer : Colors.Ability;
             AbilityType = AbilityEnum.Revealer;
-            AddToAbilityHistory(AbilityType);
         }
 
         public void Fade()

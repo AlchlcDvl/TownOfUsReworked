@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = "You can see more than others";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Lighter : Colors.Ability;
             AbilityType = AbilityEnum.Lighter;
-            AddToAbilityHistory(AbilityType);
         }
     }
 }

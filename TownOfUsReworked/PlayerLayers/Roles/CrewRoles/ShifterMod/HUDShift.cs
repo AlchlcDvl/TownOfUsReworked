@@ -29,14 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             var shiftButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                shiftButton.gameObject.SetActive(false);
-            else
-            {
-                shiftButton.gameObject.SetActive(!MeetingHud.Instance);
-                shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
-                Utils.SetTarget(ref role.ClosestPlayer, shiftButton);
-            }
+            shiftButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
+            Utils.SetTarget(ref role.ClosestPlayer, shiftButton);
         }
     }
 }

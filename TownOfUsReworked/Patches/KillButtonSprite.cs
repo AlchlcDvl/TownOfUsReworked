@@ -64,6 +64,8 @@ namespace TownOfUsReworked.Patches
         private static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
         private static Sprite Placeholder => TownOfUsReworked.Placeholder;
         private static Sprite Clear => TownOfUsReworked.Clear;
+        private static Sprite Stab => TownOfUsReworked.StabSprite;
+        private static Sprite Bite => TownOfUsReworked.Placeholder;
         private static Sprite Kill;
 
         public static void Postfix(HudManager __instance)
@@ -170,7 +172,7 @@ namespace TownOfUsReworked.Patches
             {
                 var sk = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
                 __instance.KillButton.gameObject.SetActive(sk.Lusted);
-                __instance.KillButton.graphic.sprite = Placeholder;
+                __instance.KillButton.graphic.sprite = Stab;
 
                 flag = true;
             }
@@ -186,7 +188,8 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
             {
-                __instance.KillButton.graphic.sprite = EraseData;
+                var glitch = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
+                glitch.KillButton.graphic.sprite = EraseData;
                 flag = true;
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))

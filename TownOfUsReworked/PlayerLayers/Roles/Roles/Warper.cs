@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Support)";
             Results = InspResults.TransWarpTeleTask;
             IntroSound = TownOfUsReworked.WarperIntro;
-            AddToRoleHistory(RoleType);
         }
 
         public void Warp()

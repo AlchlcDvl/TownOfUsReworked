@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "Basic";
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
-            AddToRoleHistory(RoleType);
+            RoleBlockImmune = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -1,10 +1,10 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
+namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
     public class EndGame
@@ -14,16 +14,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
             if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
                 return true;
 
-            foreach (var objectifier in Objectifier.AllObjectifiers)
+            foreach (var role in Objectifier.AllObjectifiers)
             {
-                if (objectifier.ObjectifierType == ObjectifierEnum.Phantom)
-                    ((Phantom)objectifier).Loses();
+                if (role.ObjectifierType == ObjectifierEnum.Corrupted)
+                    ((Corrupted)role).Loses();
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.PhantomLose,
-                SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CorruptedLose, SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-
             return true;
         }
     }

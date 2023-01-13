@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
-            AddToAbilityHistory(AbilityType);
 
             //Adds all the roles that have a non-zero chance of being in the game
             if (!PlayerControl.LocalPlayer.Is(Faction.Crew))
@@ -95,11 +94,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.VigilanteOn > 0)
                     ColorMapping.Add("Vigilante", Colors.Vigilante);
 
-                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
+                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
                     ColorMapping.Add(("Vampire Hunter"), Colors.VampireHunter);
             }
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
+            if (!PlayerControl.LocalPlayer.Is(Faction.Intruder) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 
@@ -149,7 +148,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 }
             }
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+            if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate) && CustomGameOptions.SyndicateCount > 0)
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 
@@ -164,6 +163,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
                 if (CustomGameOptions.ShapeshifterOn > 0)
                     ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
+
+                if (CustomGameOptions.FramerOn > 0)
+                    ColorMapping.Add("Framer", Colors.Framer);
+
+                if (CustomGameOptions.BomberOn > 0)
+                    ColorMapping.Add("Bomber", Colors.Bomber);
 
                 if (CustomGameOptions.RebelOn > 0)
                 {
@@ -197,7 +202,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             {
                 if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
                     ColorMapping.Add("Pestilence", Colors.Pestilence);
-                else if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
+                
+                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
                     ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
             }
             
@@ -277,7 +283,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     ColorMapping.Add("Lover", Colors.Lovers);
 
                 if (CustomGameOptions.TaskmasterOn > 0)
-                    ColorMapping.Add("Tasmaster", Colors.Taskmaster);
+                    ColorMapping.Add("Taskmaster", Colors.Taskmaster);
+
+                if (CustomGameOptions.CorruptedOn > 0)
+                    ColorMapping.Add("Corrupted", Colors.Corrupted);
                     
                 if (CustomGameOptions.TraitorOn > 0)
                     ColorMapping.Add("Traitor", Colors.Traitor);
@@ -286,13 +295,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     ColorMapping.Add("Fanatic", Colors.Lovers);
 
                 if (CustomGameOptions.RivalsOn > 0)
-                    ColorMapping.Add("Rivals", Colors.Traitor);
+                    ColorMapping.Add("Rival", Colors.Rivals);
 
                 if (CustomGameOptions.PhantomOn > 0)
                     ColorMapping.Add("Phantom", Colors.Phantom);
 
-                /*if (CustomGameOptions.OverlordOn > 0)
-                    ColorMapping.Add("Overlord", Colors.Overlord);*/
+                if (CustomGameOptions.OverlordOn > 0)
+                    ColorMapping.Add("Overlord", Colors.Overlord);
             }
 
             //Add Abilities if enabled

@@ -18,7 +18,6 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
-using System.Collections.Generic;
 /*using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;
@@ -35,7 +34,6 @@ namespace TownOfUsReworked
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
-    //[ReactorModFlags(ModFlags.RequireOnAllClients)]
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
@@ -116,6 +114,7 @@ namespace TownOfUsReworked
         public static Sprite Placeholder;
         public static Sprite VoteCount;
         public static Sprite VoteCountDisabled;
+        public static Sprite StabSprite;
         public static Sprite Clear;
 
         public static Sprite SettingsButtonSprite;
@@ -206,8 +205,8 @@ namespace TownOfUsReworked
         public static Sprite DiscordImage;
 
         public static Vector3 BelowVentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
-        /*public static Vector3 AboveKillPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
-        public static Vector3 SabotagePosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
+        public static Vector3 SabotagePosition { get; private set; } = new Vector3(1.75f, 1.6f, -9f);
+        /*public static Vector3 MeetingPlayerIcon { get; private set; } = new Vector3(2.6f, 0.7f, -9f);
         public static Vector3 VentPosition { get; private set; } = new Vector3(2.6f, 0.7f, -9f);*/
 
 		private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
@@ -285,6 +284,7 @@ namespace TownOfUsReworked
             MimicSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mimic.png");
             LockSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Lock.png");
             Camouflage = CreateSprite("TownOfUsReworked.Resources.Buttons.Camouflage.png");
+            StabSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Stab.png");
             Shift = CreateSprite("TownOfUsReworked.Resources.Buttons.Shift.png");
             ShootSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Shoot.png");
             MaulSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Maul.png");

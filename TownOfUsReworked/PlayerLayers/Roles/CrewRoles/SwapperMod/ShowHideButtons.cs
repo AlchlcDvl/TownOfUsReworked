@@ -66,6 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 if (swapper.ListOfActives.Count(x => x) == 2)
                 {
                     var toSet1 = true;
+
                     for (var i = 0; i < swapper.ListOfActives.Count; i++)
                     {
                         if (!swapper.ListOfActives[i])
@@ -84,8 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                     return true;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Anarchist : Role
     {
-        public PlayerControl ClosestPlayer;
+        public PlayerControl ClosestPlayer = null;
         public DateTime LastKill { get; set; }
 
         public Anarchist(PlayerControl player) : base(player)
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = SUDescription;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
+            LastKill = DateTime.UtcNow;
         }
 
         public float KillTimer()

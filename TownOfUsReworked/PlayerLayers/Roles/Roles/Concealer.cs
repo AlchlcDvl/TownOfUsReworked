@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = SSuDescription;
             FactionDescription = SyndicateFactionDescription;
             Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton ConcealButton

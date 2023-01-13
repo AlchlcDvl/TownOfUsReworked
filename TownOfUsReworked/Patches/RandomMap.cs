@@ -182,7 +182,8 @@ namespace TownOfUsReworked.Patches
             Generate.DouseCooldown.Set((float)Generate.DouseCooldown.Value + change, false);
             Generate.InfectCooldown.Set((float)Generate.InfectCooldown.Value + change, false);
             Generate.PestKillCooldown.Set((float)Generate.PestKillCooldown.Value + change, false);
-            Generate.GlitchCooldown.Set((float)Generate.GlitchCooldown.Value + change, false);
+            Generate.HackCooldown.Set((float)Generate.HackCooldown.Value + change, false);
+            Generate.MimicCooldown.Set((float)Generate.MimicCooldown.Value + change, false);
             Generate.GlitchKillCooldown.Set((float)Generate.GlitchKillCooldown.Value + change, false);
             Generate.JuggKillCooldown.Set((float)Generate.JuggKillCooldown.Value + change, false);
             Generate.BloodlustCooldown.Set((float)Generate.BloodlustCooldown.Value + change, false);

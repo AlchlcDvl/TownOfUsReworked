@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         private KillButton _frameButton;
         public PlayerControl ClosestPlayer;
-        public List<byte> DousedPlayers = new List<byte>();
+        public List<byte> Framed = new List<byte>();
         public DateTime LastFramed;
 
         public Framer(PlayerControl player) : base(player)
@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SDDescription;
             Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         public KillButton FrameButton

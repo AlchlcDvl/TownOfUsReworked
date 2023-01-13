@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.EngiAmneThiefCann;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
         }
 
         public float KillTimer()

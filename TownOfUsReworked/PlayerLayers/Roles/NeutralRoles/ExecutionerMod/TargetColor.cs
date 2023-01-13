@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (role.TargetPlayer == null)
                 return;
 
-            if (MeetingHud.Instance != null)
+            if (MeetingHud.Instance)
                 UpdateMeeting(MeetingHud.Instance, role);
 
             if (!CustomGameOptions.ExeKnowsTargetRole)
@@ -63,8 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -74,41 +73,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
         public static void ExeToJes(PlayerControl player)
         {
-            player.myTasks.RemoveAt(0);
-            Role.RoleDictionary.Remove(player.PlayerId);
+            var exe = Role.GetRole<Executioner>(player);
+            Role newRole;
 
             if (CustomGameOptions.OnTargetDead == OnTargetDead.Jester)
-            {
-                var jester = new Jester(player);
-                var task = new GameObject("JesterTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = $"{jester.ColorString}Role: {jester.Name}\nYour target was killed. Now you have to get voted out!\nFake Tasks:";
-                player.myTasks.Insert(0, task);
-            }
+                newRole = new Jester(player);
             else if (CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac)
-            {
-                var amnesiac = new Amnesiac(player);
-                var task = new GameObject("AmnesiacTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = $"{amnesiac.ColorString}Role: {amnesiac.Name}\nYour target was killed. Now remember a new role!";
-                player.myTasks.Insert(0, task);
-            }
+                newRole = new Amnesiac(player);
             else if (CustomGameOptions.OnTargetDead == OnTargetDead.Survivor)
-            {
-                var surv = new Survivor(player);
-                var task = new GameObject("SurvivorTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = $"{surv.ColorString}Role: {surv.Name}\nYour target was killed. Now you just need to live!";
-                player.myTasks.Insert(0, task);
-            }
+                newRole = new Survivor(player);
             else
-            {
-                var crew = new Crewmate(player);
-                var task = new GameObject("CrewmateTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = $"{crew.ColorString}Role: {crew.Name}\nYour target was killed. Now you side with the Crew!";
-                player.myTasks.Insert(0, task);
-            }
+                newRole = new Crewmate(player);
+
+            newRole.RoleHistory.Add(exe);
+            newRole.RoleHistory.AddRange(exe.RoleHistory);
+            
+            if (newRole.Player == PlayerControl.LocalPlayer)
+                newRole.RegenTask();
         }
     }
 }

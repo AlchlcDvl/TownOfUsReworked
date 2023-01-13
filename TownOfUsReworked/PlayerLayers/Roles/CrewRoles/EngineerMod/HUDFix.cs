@@ -7,12 +7,11 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
-    [HarmonyPatch(typeof(HudManager))]
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class HUDFix
     {
         private static Sprite Fix => TownOfUsReworked.EngineerFix;
         
-        [HarmonyPatch(nameof(HudManager.Update))]
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1)
@@ -34,11 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             
             __instance.KillButton.graphic.sprite = Fix;
             __instance.KillButton.SetCoolDown(0f, 10f);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled &&
-                !MeetingHud.Instance);
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (!ShipStatus.Instance)
                 return;
@@ -48,19 +43,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             if (system == null)
                 return;
 
-            var camouflager = Role.GetRoleValue(RoleEnum.Camouflager);
-            var camo = (Camouflager)camouflager;
-            var concealer = Role.GetRoleValue(RoleEnum.Concealer);
-            var conc = (Concealer)concealer;
-            var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
-            var ss = (Shapeshifter)shapeshifter;
+            var camouflager = Role.GetRoleValue<Camouflager>(RoleEnum.Camouflager);
+            var concealer = Role.GetRoleValue<Concealer>(RoleEnum.Concealer);
+            var shapeshifter = Role.GetRoleValue<Shapeshifter>(RoleEnum.Shapeshifter);
 
             var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
-            var active = specials.Any(s => s.IsActive) || camo.Camouflaged || conc.Concealed || ss.Shapeshifted;
+            var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
             var renderer = __instance.KillButton.graphic;
             
-            if (active & !dummyActive & !role.UsedThisRound & __instance.KillButton.enabled)
+            if (active && !dummyActive && !role.UsedThisRound && __instance.KillButton.enabled)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

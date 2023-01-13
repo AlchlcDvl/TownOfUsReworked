@@ -1,6 +1,10 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using TownOfUsReworked.Enums;
+using System.Linq;
 
 namespace TownOfUsReworked.Patches
 {
@@ -30,13 +34,11 @@ namespace TownOfUsReworked.Patches
             [HarmonyPostfix]
             public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target)
             {
-                string report = $"The body was found in {location}.";
-
                 if (target != null && CustomGameOptions.LocationReports)
                 {
+                    string report = $"The body was found in {location}.";
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
                     writer.Write(report);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

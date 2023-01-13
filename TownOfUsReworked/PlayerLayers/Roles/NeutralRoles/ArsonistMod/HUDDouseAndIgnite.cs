@@ -52,10 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             role.IgniteButton.GetComponent<AspectPosition>().Update();
             role.IgniteButton.graphic.sprite = IgniteSprite;
 
-            role.IgniteButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.IgniteButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             
-            if (!role.LastKiller || !CustomGameOptions.ArsoIgniteNeedsCooldown)
+            if (!role.LastKiller && !CustomGameOptions.ArsoLastKillerBoost)
                 role.IgniteButton.SetCoolDown(role.IgniteTimer(), CustomGameOptions.IgniteCd);
             else
                 role.IgniteButton.SetCoolDown(0f, CustomGameOptions.IgniteCd);

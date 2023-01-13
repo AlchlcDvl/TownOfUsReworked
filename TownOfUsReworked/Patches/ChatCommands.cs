@@ -2234,8 +2234,7 @@ namespace TownOfUsReworked.Patches
                     __instance.TextArea.Clear();
                     __instance.quickChatMenu.ResetGlyphs();
                 }
-
-                __instance.TimeSinceLastMessage = CustomGameOptions.ChatCooldown;
+                
                 return !chatHandled;
             }
         }

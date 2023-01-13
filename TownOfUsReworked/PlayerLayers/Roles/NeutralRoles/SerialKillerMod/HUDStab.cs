@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             var role = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && role.Lusted);
             __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.LustKillCd);
 
             if (role.BloodlustButton == null)
@@ -48,8 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 
             role.BloodlustButton.GetComponent<AspectPosition>().Update();
             role.BloodlustButton.graphic.sprite = LustSprite;
-
-            role.BloodlustButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            role.BloodlustButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (role.Lusted)
             {

@@ -101,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
-                var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover.Player;
+                var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));

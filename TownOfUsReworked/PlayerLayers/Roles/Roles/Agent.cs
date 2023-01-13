@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "Your are an Agent! You can see extra information from the admin table and the vitals screen. When active, all " +
                 "players in detectable rooms will have their color revealed to you. The Vitals screen will show you how long has someone been dead for.";
             Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

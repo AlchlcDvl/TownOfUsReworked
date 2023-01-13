@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "None";
             DefenseString = "None";
             IntroSound = null;
-            AddToRoleHistory(RoleType);
         }
 
         public float MediateTimer()

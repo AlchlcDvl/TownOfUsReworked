@@ -152,19 +152,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                     role.LastKilled = DateTime.UtcNow;
 
                 StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
                 return false;
             }
             else if (role.ClosestPlayer.IsVesting())
             {
                 role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
                 return false;
             }
             else if (role.ClosestPlayer.IsProtected())
             {
                 role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
+                return false;
+            }
+            else if (role.Player.IsOtherRival(role.ClosestPlayer))
+            {
+                role.LastKilled = DateTime.UtcNow;
                 return false;
             }
 

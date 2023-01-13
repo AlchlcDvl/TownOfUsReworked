@@ -137,13 +137,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
             else if (role.ClosestPlayer.IsVesting())
             {
                 role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
-
                 return false;
             }
             else if (role.ClosestPlayer.IsProtected())
             {
                 role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
-
+                return false;
+            }
+            else if (role.Player.IsOtherRival(role.ClosestPlayer))
+            {
+                role.LastKill = DateTime.UtcNow;
                 return false;
             }
 

@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             if (alpha < 0 || alpha > 1)
                 alpha = 0;
             
-            if (RainbowUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) & !Grey)
+            if (RainbowUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) && !Grey)
                 Color = RainbowUtils.Rainbow;
             else if (Grey)
                 Color = new Color(0.2f, 0.2f, 0.2f, 1f);

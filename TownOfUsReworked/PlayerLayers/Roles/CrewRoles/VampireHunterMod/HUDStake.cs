@@ -11,12 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDStake
     {
-        private static KillButton KillButton;
-
         public static void Postfix(HudManager __instance)
         {
-            KillButton = __instance.KillButton;
-
             if (PlayerControl.AllPlayerControls.Count <= 1)
                 return;
 
@@ -34,25 +30,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
             var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-            if (isDead)
-                return;
-
             if (role.VampsDead && !isDead)
             {
                 role.TurnVigilante();
 
                 unchecked
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante,    
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante, SendOption.Reliable, -1);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
+                return;
             }
 
-            KillButton.gameObject.SetActive(!MeetingHud.Instance);
-            KillButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.VigiKillCd);
-            Utils.SetTarget(ref role.ClosestPlayer, KillButton);
+            __instance.KillButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            __instance.KillButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }
     }
 }

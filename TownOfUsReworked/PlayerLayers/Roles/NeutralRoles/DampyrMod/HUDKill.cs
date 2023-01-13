@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
                 return;
 
             var role = Role.GetRole<Dampyr>(PlayerControl.LocalPlayer);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance);
+            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             __instance.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.MurdKCD);
             Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
         }

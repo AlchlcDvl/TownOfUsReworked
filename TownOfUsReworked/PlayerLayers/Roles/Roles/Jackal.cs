@@ -13,9 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl EvilRecruit = null;
         public PlayerControl GoodRecruit = null;
         public PlayerControl BackupRecruit = null;
+        public PlayerControl ClosestPlayer;
         public KillButton _recruitButton;
+        public bool HasRecruited = false;
         public DateTime LastRecruited { get; set; }
-        public bool Recruited => BackupRecruit != null;
 
         public Jackal(PlayerControl player) : base(player)
         {
@@ -32,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
             Results = InspResults.SurvVHVampVig;
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()
@@ -43,6 +43,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Loses()
         {
             LostByRPC = true;
+        }
+        
+        public float RecruitTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastRecruited;
+            var num = CustomGameOptions.RecruitCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

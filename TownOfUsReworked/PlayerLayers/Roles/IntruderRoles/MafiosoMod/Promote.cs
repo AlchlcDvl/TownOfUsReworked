@@ -38,6 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
+                return;
             }
         }
     }

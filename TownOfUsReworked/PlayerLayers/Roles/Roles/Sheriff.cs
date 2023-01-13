@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.SherConsigInspBm;
-            AddToRoleHistory(RoleType);
         }
 
         public float InterrogateTimer()

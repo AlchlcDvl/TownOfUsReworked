@@ -40,7 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.ArsoCryoPBOpTroll;
-            AddToRoleHistory(RoleType);
         }
 
         public float BugTimer()

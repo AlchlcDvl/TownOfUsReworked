@@ -793,12 +793,29 @@ namespace TownOfUsReworked.Patches
                 {
                     var lover = (Lovers)objectifier;
 
-                    if (lover.LoveCoupleWins)
+                    if (lover.LoveWins)
                     {
-                        var otherLover = lover.OtherLover;
+                        var other = lover.OtherLover;
+                        var otherLover = Objectifier.GetObjectifier<Lovers>(other);
 
                         winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == lover.PlayerName).ToList()[0]);
                         winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == otherLover.PlayerName).ToList()[0]);
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+
+                        return;
+                    }
+                }
+                else if (type == ObjectifierEnum.Rivals)
+                {
+                    var rival = (Rivals)objectifier;
+
+                    if (rival.RivalWins)
+                    {
+                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == rival.PlayerName).ToList()[0]);
 
                         TempData.winners = new List<WinningPlayerData>();
 
@@ -831,6 +848,39 @@ namespace TownOfUsReworked.Patches
                     if (taskmaster.WinTasksDone)
                     {
                         winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == taskmaster.PlayerName).ToList()[0]);
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+                            
+                        return;
+                    }
+                }
+                else if (type == ObjectifierEnum.Overlord)
+                {
+                    var overlord = (Overlord)objectifier;
+
+                    if (overlord.OverlordWins)
+                    {
+                        winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == overlord.PlayerName).ToList()[0]);
+
+                        TempData.winners = new List<WinningPlayerData>();
+
+                        foreach (var win in winners)
+                            TempData.winners.Add(win);
+                            
+                        return;
+                    }
+                }
+                else if (type == ObjectifierEnum.Corrupted)
+                {
+                    var corrupted = (Corrupted)objectifier;
+
+                    if (corrupted.CorruptedWin)
+                    {
+                        foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == corr.PlayerName).ToList()[0]);
 
                         TempData.winners = new List<WinningPlayerData>();
 

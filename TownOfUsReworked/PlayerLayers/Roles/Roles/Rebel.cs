@@ -42,7 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
             RoleDescription = "You are a Rebel! You are the leader of the Syndicate. You can promote a fellow Syndicate into becoming your Sidekick." +
                 " When you die, the Sidekick will become the new Rebel and will inherit stronger variations of their former role.";
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()

@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = CIDescription;
             RoleDescription = "You are an Investigator! You can see other's footprints and can tell how long as it been since they passed by a certain point. Use this info to find out" + 
                 " people who have been around bodies and not reporting them!";
-            AddToRoleHistory(RoleType);
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

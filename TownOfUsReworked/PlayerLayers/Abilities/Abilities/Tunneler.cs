@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = "You can dig yourself into the ground";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
             AbilityType = AbilityEnum.Tunneler;
-            AddToAbilityHistory(AbilityType);
+            Hidden = !CustomGameOptions.TunnelerKnows;
         }
     }
 }

@@ -24,8 +24,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             if (CustomGameOptions.AddTeleporters)
             {
-                if (!TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f &&
-                    UnityEngine.Object.FindObjectOfType<AirshipStatus>() != null)
+                if (!TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f && UnityEngine.Object.FindObjectOfType<AirshipStatus>() != null)
                     Coroutines.Start(CoTeleportPlayer(__instance));
             }
         }

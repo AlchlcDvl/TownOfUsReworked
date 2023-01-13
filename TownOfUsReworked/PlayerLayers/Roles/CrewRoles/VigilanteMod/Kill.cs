@@ -46,18 +46,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
             if (!flag3)
                 return false;
-
-            var flag4 = role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
-                role.ClosestPlayer.Is(Faction.Syndicate) || (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) ||
-                (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (role.ClosestPlayer.Is(RoleEnum.Cannibal)
-                && CustomGameOptions.VigiKillsCannibal) || (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) ||
-                role.ClosestPlayer.Is(SubFaction.Undead) || role.ClosestPlayer.Is(SubFaction.Cabal);
-
-            if (role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                return false;
-            }
             
             if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
             {
@@ -65,48 +53,61 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert())
+            if (role.ClosestPlayer.Is(RoleEnum.Arsonist))
+            {
+                foreach (var pb in Role.GetRoles(RoleEnum.Arsonist))
+                    ((Arsonist)pb).RpcSpreadDouse(role.ClosestPlayer, role.Player);
+            }
+
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.ClosestPlayer.IsShielded())
                 {
                     var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer1.Write(medic);
-                    writer1.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    writer.Write(medic);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
                         role.LastKilled = DateTime.UtcNow;
 
                     StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
+
+                    if (role.Player.IsShielded())
+                    {
+                        var medic2 = role.Player.GetMedic().Player.PlayerId;
+                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                        writer.Write(medic2);
+                        writer.Write(role.Player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                        StopKill.BreakShield(medic2, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                    }
+                    else if (!role.Player.IsProtected())
+                        Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
                 }
                 else if (role.Player.IsShielded())
                 {
                     var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer1.Write(medic);
-                    writer1.Write(role.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    writer.Write(medic);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
                         role.LastKilled = DateTime.UtcNow;
 
                     StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
                 }
-                else
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-
+                else if (!role.Player.IsProtected())
+                    Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                    
                 return false;
             }
             else if (role.ClosestPlayer.IsShielded())
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -115,51 +116,67 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     role.LastKilled = DateTime.UtcNow;
 
                 StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
                 return false;
             }
             else if (role.ClosestPlayer.IsVesting())
             {
                 role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
                 return false;
             }
             else if (role.ClosestPlayer.IsProtected())
             {
                 role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
+                return false;
+            }
+            else if (role.Player.IsOtherRival(role.ClosestPlayer))
+            {
+                role.LastKilled = DateTime.UtcNow;
                 return false;
             }
 
-            if (!flag4)
+            var flag4 = role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) || role.ClosestPlayer.Is(Faction.Syndicate) ||
+                (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) || (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) ||
+                (role.ClosestPlayer.Is(RoleEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) ||
+                role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsRecruit() || role.ClosestPlayer.IsFramed() ||
+                role.Player.IsTurnedTraitor() || role.Player.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll);
+            
+            if (flag4)
             {
-                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
-
-                if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
-                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
-
-                else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
-                {
-                    if (CustomGameOptions.VigiKnowsInno)
-                    {
-                        role.LastKilled.AddSeconds(1000);
-
-                        foreach (var player in PlayerControl.AllPlayerControls)
-                        {
-                            if (player == PlayerControl.LocalPlayer)
-                                Coroutines.Start(Utils.FlashCoroutine(Colors.Vigilante));
-                        }
-                    }
-                    else 
-                        role.LastKilled = DateTime.UtcNow;
-                    
-                    MeetingDeath.MeetingDeathHappen(role.Player);
-                }
+                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                role.LastKilled = DateTime.UtcNow;
+                role.KilledInno = false;
+                return false;
             }
             else
             {
-                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                role.LastKilled = DateTime.UtcNow;
+                if (CustomGameOptions.MisfireKillsInno)
+                    Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                
+                if (CustomGameOptions.VigiKnowsInno)
+                {
+                    if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
+                        Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message)
+                        role.InnoMessage = true;
+                }
+                
+                if (CustomGameOptions.VigiKillAgain)
+                {
+                    role.LastKilled = DateTime.UtcNow;
+                    role.KilledInno = false;
+                }
+                else
+                    role.KilledInno = true;
+
+                if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
+                {
+                    Utils.RpcMurderPlayer(role.Player, role.Player);
+                    return false;
+                }
+                else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
+                    role.PreMeetingDie = true;
+                else if (CustomGameOptions.VigiOptions == VigiOptions.PostMeeting)
+                    role.PostMeetingDie = true;
             }
 
             return false;

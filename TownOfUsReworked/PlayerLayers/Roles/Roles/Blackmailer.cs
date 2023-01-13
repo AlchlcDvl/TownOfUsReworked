@@ -11,9 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Blackmailer : Role
     {
         private KillButton _blackmailButton;
-        public PlayerControl ClosestPlayer;
-        public PlayerControl Blackmailed;
-        public DateTime LastBlackmailed { get; set; }
+        public PlayerControl ClosestPlayer = null;
+        public PlayerControl Blackmailed = null;
+        public DateTime LastBlackmailed;
         public bool blackmailed => Blackmailed != null;
 
         public Blackmailer(PlayerControl player) : base(player)
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " blackmail yourself so the others will get wise to your identity pretty quickly.";
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            AddToRoleHistory(RoleType);
+            LastBlackmailed = DateTime.UtcNow;
         }
 
         public KillButton BlackmailButton

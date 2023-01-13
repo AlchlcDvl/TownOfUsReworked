@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => (!TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && TargetPlayer != null && !Player.Data.Disconnected) ||
-            TargetPlayer == null || TargetPlayer.Data.Disconnected;
+        public bool TargetAlive => TargetPlayer == null || (!TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && TargetPlayer != null && !Player.Data.Disconnected) ||
+            TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
 
         public GuardianAngel(PlayerControl player) : base(player)
@@ -41,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " even if they lose!";
             AlignmentDescription = NBDescription;
             FactionDescription = NeutralFactionDescription;
-            AddToRoleHistory(RoleType);
         }
 
         public float ProtectTimer()

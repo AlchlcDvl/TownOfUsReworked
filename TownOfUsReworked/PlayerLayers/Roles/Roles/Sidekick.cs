@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Syndicate (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Sidekick! You are the successor to the leader of the Intruders. When the Rebel dies, you will become the new" +
                 " Rebel and will inherit stronger variations of your former role.";
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()
@@ -86,12 +85,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void TurnRebel()
         {
-            var formerRole = Role.GetRole<Sidekick>(Player).FormerRole;
-            RoleDictionary.Remove(Player.PlayerId);
+            var sidekick = Role.GetRole<Sidekick>(Player);
+            var formerRole = sidekick.FormerRole;
             var role = new Rebel(Player);
             role.WasSidekick = true;
             role.HasDeclared = !CustomGameOptions.PromotedSidekickCanPromote;
             role.FormerRole = formerRole;
+            role.RoleHistory.Add(sidekick);
+            role.RoleHistory.AddRange(sidekick.RoleHistory);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {

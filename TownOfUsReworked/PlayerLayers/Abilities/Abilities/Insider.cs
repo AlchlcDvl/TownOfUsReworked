@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using UnityEngine;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
@@ -16,9 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = TasksDone
                     ? "Learn votes of others!"
                     : "Do your tasks to be able to see the votes of others!";
-            Color = Colors.Insider;
+            Color = CustomGameOptions.CustomAbilityColors ? Colors.Insider : Colors.Ability;
             AbilityType = AbilityEnum.Insider;
-            AddToAbilityHistory(AbilityType);
+            Hidden = !CustomGameOptions.InsiderKnows;
         }
     }
 }

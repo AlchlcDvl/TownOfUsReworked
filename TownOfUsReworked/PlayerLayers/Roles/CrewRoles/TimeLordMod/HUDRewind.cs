@@ -28,15 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             var rewindButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
 
-            if (isDead)
-                rewindButton.gameObject.SetActive(false);
-            else
-            {
-                rewindButton.gameObject.SetActive(!MeetingHud.Instance);
+            rewindButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && role.ButtonUsable);
 
-                if (role.ButtonUsable)
-                    rewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
-            }
+            if (role.ButtonUsable)
+                rewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
@@ -54,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 
             var renderer = rewindButton.graphic;
             
-            if (!rewindButton.isCoolingDown & !RecordRewind.rewinding & rewindButton.enabled && role.ButtonUsable)
+            if (!rewindButton.isCoolingDown && !RecordRewind.rewinding && rewindButton.enabled && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

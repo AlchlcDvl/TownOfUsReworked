@@ -124,6 +124,12 @@ namespace TownOfUsReworked.Extensions
 
                 if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && playerControl.Is(Faction.Syndicate))
                     playerControl.nameText().color = Colors.Syndicate;
+
+                if (PlayerControl.LocalPlayer.Is(SubFaction.Undead) && playerControl.Is(SubFaction.Undead))
+                    playerControl.nameText().color = Colors.Undead;
+
+                if (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) && playerControl.Is(SubFaction.Cabal))
+                    playerControl.nameText().color = Colors.Cabal;
                 
                 if (CustomGameOptions.PlayerNumbers)
                     playerControl.nameText().text += $" {playerControl.PlayerId}";

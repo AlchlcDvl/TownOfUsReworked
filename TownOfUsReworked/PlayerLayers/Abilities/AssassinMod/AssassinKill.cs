@@ -2,7 +2,6 @@
 using Hazel;
 using UnityEngine;
 using UnityEngine.UI;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
@@ -73,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                 importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                if (!CustomGameOptions.GhostTasksCountToWin)
+                if (!PlayerControl.GameOptions.GhostsDoTasks)
                 {
                     for (int i = 0; i < player.myTasks.Count; i++)
                     {
@@ -83,14 +82,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     }
 
                     player.myTasks.Clear();
-                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostIgnoreTasks,
-                        new Il2CppReferenceArray<Il2CppSystem.Object>(0));
+                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostIgnoreTasks, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                 }
                 else
-                {
-                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks,
-                        new Il2CppReferenceArray<Il2CppSystem.Object>(0));
-                }
+                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
 
                 player.myTasks.Insert(0, importantTextTask);
 
@@ -111,14 +106,17 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 }
 
                 if (player.Is(AbilityEnum.Assassin))
-                    ShowHideButtons.HideButtons(assassin);
+                {
+                    var assassin2 = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
+                    ShowHideButtons.HideButtons(assassin2);
+                }
             }
 
             player.Die(DeathReason.Kill);
             
             var role2 = Role.GetRole(player);
             role2.DeathReason = DeathReasonEnum.Guessed;
-            role2.KilledBy = " By" + assassinPlayer.nameText().text;
+            role2.KilledBy = " By " + assassin.PlayerName;
 
             if (checkLover && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
@@ -164,9 +162,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     {
                         voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
                         voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x -
-                            BlackmailMeetingUpdate.LetterXOffset, voteArea.XMark.transform.localPosition.y -
-                            BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
+                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                     }
                 }
             }
@@ -178,12 +175,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSwaps,
-                        SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
                 }
 
                 var swapperrole = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
@@ -251,8 +246,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                                 
                             unchecked
                             {
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                    (byte) CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
                                 writer.Write(mayor.Player.PlayerId);
                                 writer.Write(votesRegained);
                                 AmongUsClient.Instance.FinishRpcImmediately(writer);

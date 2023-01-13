@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
             TaskText = "Your killers get a higher cooldown";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Diseased : Colors.Modifier;
             ModifierType = ModifierEnum.Diseased;
-            AddToModifierHistory(ModifierType);
+            Hidden = !CustomGameOptions.DiseasedKnows;
         }
     }
 }

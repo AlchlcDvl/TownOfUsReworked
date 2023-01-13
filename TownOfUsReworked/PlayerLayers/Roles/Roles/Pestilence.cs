@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.GFMayorRebelPest;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";
-            AddToRoleHistory(RoleType);
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

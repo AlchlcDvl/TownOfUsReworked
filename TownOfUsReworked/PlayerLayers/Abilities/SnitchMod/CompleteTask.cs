@@ -21,24 +21,19 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             if (__instance.Data.IsDead)
                 return;
 
-            var taskinfos = __instance.Data.Tasks.ToArray();
-            var tasksLeft = taskinfos.Count(x => !x.Complete);
-            var role = Ability.GetAbility<Snitch>(__instance);
-            var localRole = Ability.GetAbility(PlayerControl.LocalPlayer);
+            var snitch = Ability.GetAbility<Snitch>(__instance);
 
-            switch (tasksLeft)
+            switch (snitch.TasksLeft())
             {
                 case 1:
-                    if (tasksLeft == CustomGameOptions.SnitchTasksRemaining)
+                    if (snitch.TasksLeft() == CustomGameOptions.SnitchTasksRemaining)
                     {
-                        role.RegenTask();
-
                         if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
-                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                            Coroutines.Start(Utils.FlashCoroutine(snitch.Color));
                         else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
                             CustomGameOptions.SnitchSeesNeutrals) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         {
-                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                            Coroutines.Start(Utils.FlashCoroutine(snitch.Color));
                             var gameObj = new GameObject();
                             var arrow = gameObj.AddComponent<ArrowBehaviour>();
                             gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -46,14 +41,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                             renderer.sprite = Sprite;
                             arrow.image = renderer;
                             gameObj.layer = 5;
-                            role.ImpArrows.Add(arrow);
+                            snitch.ImpArrows.Add(arrow);
                         }
                     }
 
                     break;
                 case 0:
-                    role.RegenTask();
-
                     if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
@@ -68,11 +61,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                             renderer.sprite = Sprite;
                             arrow.image = renderer;
                             gameObj.layer = 5;
-                            role.SnitchArrows.Add(imp.PlayerId, arrow);
+                            snitch.SnitchArrows.Add(imp.PlayerId, arrow);
                         }
                     }
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
-                            CustomGameOptions.SnitchSeesNeutrals) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
 
                     break;

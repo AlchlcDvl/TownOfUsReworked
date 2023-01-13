@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = "Neutral (Proselyte)";
             Results = InspResults.SurvVHVampVig;
-            AddToRoleHistory(RoleType);
         }
 
         public override void Wins()

@@ -29,38 +29,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
-
-            if (isDead)
-                return;
-
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
-            var vamps = role.Converted;
-            var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => vamps.Contains(player)).ToList();
-            var button = role.BiteButton;
 
-            if (button == null)
+            if (role.BiteButton == null)
             {
-                button = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                button.graphic.enabled = true;
-                button.gameObject.SetActive(false);
+                role.BiteButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.BiteButton.graphic.enabled = true;
+                role.BiteButton.gameObject.SetActive(false);
             }
 
-            button.GetComponent<AspectPosition>().Update();
-            button.graphic.sprite = ConvertSprite;
-
-            button.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
-            button.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
-            Utils.SetTarget(ref role.ClosestPlayer, button, float.NaN, notVamp);
+            role.BiteButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance);
+            role.BiteButton.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
+            var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.BiteButton, float.NaN, notVamp);
+            var renderer = role.BiteButton.graphic;
             
             if (role.ClosestPlayer != null)
             {
-                button.graphic.color = Palette.EnabledColor;
-                button.graphic.material.SetFloat("_Desat", 0f);
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
             }
             else
             {
-                button.graphic.color = Palette.DisabledClear;
-                button.graphic.material.SetFloat("_Desat", 1f);
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

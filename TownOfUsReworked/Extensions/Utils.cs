@@ -7,12 +7,12 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UD = TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -32,7 +32,6 @@ namespace TownOfUsReworked.Extensions
         private static GameData.PlayerInfo voteTarget = null;
         public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
-        public static Dictionary<byte, DateTime> tickDictionary = new Dictionary<byte, DateTime>();
         public static Sprite LockSprite = TownOfUsReworked.LockSprite;
 
         public static void Invis(PlayerControl player)
@@ -370,18 +369,16 @@ namespace TownOfUsReworked.Extensions
             var rivalflag = player.Is(ObjectifierEnum.Rivals);
             var phantomflag = player.Is(ObjectifierEnum.Phantom);
             var taskmasterflag = player.Is(ObjectifierEnum.Taskmaster);
+            var corruptedflag = player.Is(ObjectifierEnum.Corrupted);
             var recruitflag = player.IsRecruit();
 
             var isdead = player.Data.IsDead;
 
-            var flag1 = crewflag && !(loverflag || rivalflag);
+            var flag1 = crewflag && !(loverflag || rivalflag || corruptedflag);
             var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
             var flag = (flag1 || flag2) && !recruitflag;
 
-            if (flag)
-                return true;
-            else
-                return false;
+            return flag;
         }
 
         public static Jackal GetJackal(this PlayerControl player)
@@ -506,6 +503,17 @@ namespace TownOfUsReworked.Extensions
             return null;
         }
 
+        public static PlayerControl PlayerByPool(this PoolablePlayer player)
+        {
+            foreach (var player2 in PlayerControl.AllPlayerControls)
+            {
+                if (player2.nameText() == player.NameText())
+                    return player2;
+            }
+
+            return null;
+        }
+
         public static bool IsShielded(this PlayerControl player)
         {
             return Role.GetRoles(RoleEnum.Medic).Any(role =>
@@ -563,6 +571,29 @@ namespace TownOfUsReworked.Extensions
             });
         }
 
+        public static bool IsFramed(this PlayerControl player)
+        {
+            return Role.GetRoles(RoleEnum.Framer).Any(role =>
+            {
+                var framer = (Framer)role;
+
+                return framer != null && framer.Framed.Contains(player.PlayerId);
+            });
+        }
+
+        public static bool IsWinningRival(this PlayerControl player)
+        {
+            if (player == null || player.Data == null)
+                return false;
+
+            if (!player.Is(ObjectifierEnum.Rivals))
+                return false;
+            
+            var rival = Objectifier.GetObjectifier<Rivals>(player);
+
+            return rival.RivalDead();
+        }
+
         public static bool IsTurnedTraitor(this PlayerControl player)
         {
             return player.IsIntTraitor() || player.IsSynTraitor();
@@ -570,7 +601,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsIntTraitor(this PlayerControl player)
         {
-            if (player == null)
+            if (player == null || player.Data == null)
                 return false;
 
             if (!player.Is(ObjectifierEnum.Traitor))
@@ -583,7 +614,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsSynTraitor(this PlayerControl player)
         {
-            if (player == null)
+            if (player == null || player.Data == null)
                 return false;
 
             if (!player.Is(ObjectifierEnum.Traitor))
@@ -594,56 +625,107 @@ namespace TownOfUsReworked.Extensions
             return traitor.IsSynTraitor;
         }
 
+        public static bool IsOtherRival(this PlayerControl player, PlayerControl refPlayer)
+        {
+            if (player == null || player.Data == null)
+                return false;
+
+            if (!player.Is(ObjectifierEnum.Rivals) || !refPlayer.Is(ObjectifierEnum.Rivals))
+                return false;
+            
+            var rival1 = Objectifier.GetObjectifier<Rivals>(player);
+            var rival2 = Objectifier.GetObjectifier<Rivals>(refPlayer);
+
+            return rival1.OtherRival == refPlayer && rival2.OtherRival == player;
+        }
+
         public static bool CrewWins()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() ||
-                x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
-                x.Is(RoleAlignment.NeutralPros) || x.IsTurnedTraitor())) == 0) || TasksDone();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || x.Is(ObjectifierEnum.Lovers) ||
+                x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
+                x.IsTurnedTraitor() || x.Is(ObjectifierEnum.Corrupted) || x.IsWinningRival())) == 0) || TasksDone();
 
             return flag;
         }
 
         public static bool IntrudersWin()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() ||
-                x.Is(Faction.Crew) || x.Is(RoleAlignment.NeutralKill) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralNeo) ||
-                x.Is(RoleAlignment.NeutralPros))) == 0) || Sabotaged();
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || x.Is(ObjectifierEnum.Lovers) ||
+                x.Is(Faction.Crew) || x.Is(RoleAlignment.NeutralKill) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralNeo) || x.Is(RoleAlignment.NeutralPros) ||
+                x.IsWinningRival())) == 0) || Sabotaged();
 
             return flag;
         }
 
         public static bool NKWins(RoleEnum nk)
         {
-            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
-                (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
-                x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew))) == 0;
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) &&
+                !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) ||
+                x.IsWinningRival())) == 0;
 
+            return flag;
+        }
+
+        public static bool CorruptedWin()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted)) == 0;
+            return flag;
+        }
+
+        public static bool LoversWin(ObjectifierEnum obj)
+        {
+            var flag1 = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 3;
+            var flag2 = false;
+
+            if (obj == ObjectifierEnum.Lovers)
+            {
+                var lover = Objectifier.GetObjectifierValue<Lovers>(obj);
+                flag2 = lover.OtherLover != null && lover.Player != null && !lover.OtherLover.Data.IsDead && !lover.Player.Data.IsDead &&
+                    !lover.OtherLover.Data.Disconnected && !lover.Player.Data.Disconnected;
+            }
+
+            var flag = flag1 && flag2;
+            return flag;
+        }
+
+        public static bool RivalsWin(ObjectifierEnum obj)
+        {
+            var flag1 = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 2;
+            var flag2 = false;
+
+            if (obj == ObjectifierEnum.Rivals)
+            {
+                var rival = Objectifier.GetObjectifierValue<Rivals>(obj);
+                flag2 = rival.RivalDead();
+            }
+
+            var flag = flag1 && flag2;
             return flag;
         }
 
         public static bool SyndicateWins()
         {
-            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || 
-                x.Is(RoleAlignment.NeutralKill) || x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Crew) ||
-                x.Is(RoleAlignment.NeutralPros))) == 0) || (CustomGameOptions.AltImps && Sabotaged());
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || x.Is(RoleAlignment.NeutralKill) ||
+                x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Crew) || x.Is(RoleAlignment.NeutralPros) || x.Is(ObjectifierEnum.Lovers) ||
+                x.IsWinningRival())) == 0) || (CustomGameOptions.AltImps && Sabotaged());
 
             return flag;
         }
 
         public static bool UndeadWin()
         {
-            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
-                x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) || x.Is(Faction.Syndicate) ||
-                x.Is(Faction.Crew) || x.IsRecruit() || (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) || x.Is(RoleEnum.Vampire))))) == 0;
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
+                (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Dracula)) || x.Is(Faction.Syndicate) || x.Is(Faction.Crew) || x.IsRecruit() || x.Is(ObjectifierEnum.Lovers) ||
+                (x.Is(RoleAlignment.NeutralPros) && !(x.Is(RoleEnum.Dampyr) || x.Is(RoleEnum.Vampire))) || x.IsWinningRival())) == 0;
 
             return flag;
         }
 
         public static bool CabalWin()
         {
-            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
-                x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) || x.Is(Faction.Syndicate) ||
-                x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew)) && !x.IsRecruit()) == 0;
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
+                (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
+                x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsRecruit()) == 0;
 
             return flag;
         }
@@ -737,8 +819,315 @@ namespace TownOfUsReworked.Extensions
             return GetClosestPlayer(refplayer, PlayerControl.AllPlayerControls.ToArray().ToList());
         }
 
-        public static void SetTarget(ref PlayerControl closestPlayer, KillButton button, float maxDistance = float.NaN,
-            List<PlayerControl> targets = null)
+        public static string GetRoleColor(this string roleName)
+        {
+            if (roleName == null || roleName.Length == 0)
+                return "";
+            
+            var color = new Color32(255, 255, 255, 255);
+
+            switch (roleName)
+            {
+                case "Agent":
+                    color = Colors.Agent;
+                    break;
+
+                case "Altruist":
+                    color = Colors.Altruist;
+                    break;
+
+                case "Amnesiac":
+                    color = Colors.Amnesiac;
+                    break;
+
+                case "Anarchist":
+                    color = Colors.Syndicate;
+                    break;
+
+                case "Arsonist":
+                    color = Colors.Arsonist;
+                    break;
+
+                case "Blackmailer":
+                    color = Colors.Blackmailer;
+                    break;
+
+                case "Bomber":
+                    color = Colors.Bomber;
+                    break;
+
+                case "Camouflager":
+                    color = Colors.Camouflager;
+                    break;
+
+                case "Cannibal":
+                    color = Colors.Cannibal;
+                    break;
+
+                case "Concealer":
+                    color = Colors.Concealer;
+                    break;
+
+                case "Consigliere":
+                    color = Colors.Consigliere;
+                    break;
+
+                case "Consort":
+                    color = Colors.Consort;
+                    break;
+
+                case "Coroner":
+                    color = Colors.Coroner;
+                    break;
+
+                case "Crewmate":
+                    color = Colors.Crew;
+                    break;
+
+                case "Cryomaniac":
+                    color = Colors.Cryomaniac;
+                    break;
+
+                case "Dampyr":
+                    color = Colors.Dampyr;
+                    break;
+
+                case "Detective":
+                    color = Colors.Detective;
+                    break;
+
+                case "Disguiser":
+                    color = Colors.Disguiser;
+                    break;
+
+                case "Dracula":
+                    color = Colors.Dracula;
+                    break;
+
+                case "Engineer":
+                    color = Colors.Engineer;
+                    break;
+
+                case "Escort":
+                    color = Colors.Escort;
+                    break;
+
+                case "Executioner":
+                    color = Colors.Executioner;
+                    break;
+
+                case "Framer":
+                    color = Colors.Framer;
+                    break;
+
+                case "Glitch":
+                    color = Colors.Glitch;
+                    break;
+
+                case "Godfather":
+                    color = Colors.Godfather;
+                    break;
+
+                case "Gorgon":
+                    color = Colors.Gorgon;
+                    break;
+
+                case "Grenadier":
+                    color = Colors.Grenadier;
+                    break;
+
+                case "Guardian Angel":
+                    color = Colors.GuardianAngel;
+                    break;
+
+                case "Impostor":
+                    color = Colors.Intruder;
+                    break;
+
+                case "Inspector":
+                    color = Colors.Inspector;
+                    break;
+
+                case "Investigator":
+                    color = Colors.Investigator;
+                    break;
+
+                case "Jackal":
+                    color = Colors.Jackal;
+                    break;
+
+                case "Janitor":
+                    color = Colors.Janitor;
+                    break;
+
+                case "Jester":
+                    color = Colors.Jester;
+                    break;
+
+                case "Juggernaut":
+                    color = Colors.Juggernaut;
+                    break;
+
+                case "Mafioso":
+                    color = Colors.Mafioso;
+                    break;
+
+                case "Mayor":
+                    color = Colors.Mayor;
+                    break;
+
+                case "Medic":
+                    color = Colors.Medic;
+                    break;
+
+                case "Medium":
+                    color = Colors.Medium;
+                    break;
+
+                case "Miner":
+                    color = Colors.Miner;
+                    break;
+
+                case "Morphling":
+                    color = Colors.Morphling;
+                    break;
+
+                case "Murderer":
+                    color = Colors.Murderer;
+                    break;
+
+                case "Operative":
+                    color = Colors.Operative;
+                    break;
+
+                case "Pestilence":
+                    color = Colors.Pestilence;
+                    break;
+
+                case "Plaguebearer":
+                    color = Colors.Plaguebearer;
+                    break;
+
+                case "Poisoner":
+                    color = Colors.Poisoner;
+                    break;
+
+                case "Rebel":
+                    color = Colors.Rebel;
+                    break;
+
+                case "Serial Killer":
+                    color = Colors.SerialKiller;
+                    break;
+
+                case "Shapeshifter":
+                    color = Colors.Shapeshifter;
+                    break;
+
+                case "Sheriff":
+                    color = Colors.Sheriff;
+                    break;
+
+                case "Shifter":
+                    color = Colors.Shifter;
+                    break;
+
+                case "Sidekick":
+                    color = Colors.Sidekick;
+                    break;
+
+                case "Survivor":
+                    color = Colors.Survivor;
+                    break;
+
+                case "Swapper":
+                    color = Colors.Swapper;
+                    break;
+
+                case "Teleporter":
+                    color = Colors.Teleporter;
+                    break;
+
+                case "Thief":
+                    color = Colors.Thief;
+                    break;
+
+                case "Time Lord":
+                    color = Colors.TimeLord;
+                    break;
+
+                case "Time Master":
+                    color = Colors.TimeMaster;
+                    break;
+
+                case "Tracker":
+                    color = Colors.Tracker;
+                    break;
+
+                case "Transporter":
+                    color = Colors.Transporter;
+                    break;
+
+                case "Troll":
+                    color = Colors.Troll;
+                    break;
+
+                case "Undertaker":
+                    color = Colors.Undertaker;
+                    break;
+
+                case "Vampire":
+                    color = Colors.Vampire;
+                    break;
+
+                case "Vampire Hunter":
+                    color = Colors.VampireHunter;
+                    break;
+
+                case "Veteran":
+                    color = Colors.Veteran;
+                    break;
+
+                case "Vigilante":
+                    color = Colors.Vigilante;
+                    break;
+
+                case "Warper":
+                    color = Colors.Warper;
+                    break;
+
+                case "Werewolf":
+                    color = Colors.Werewolf;
+                    break;
+
+                case "Wraith":
+                    color = Colors.Wraith;
+                    break;
+
+                default:
+                    color = new Color32(255, 255, 255, 255);
+                    break;
+            }
+
+            var role = Role.AllRoles.FirstOrDefault(x => x.Name == roleName);
+
+            if (role == null)
+                return "";
+
+            if (role.Faction == Faction.Intruder && !CustomGameOptions.CustomIntColors)
+                color = Colors.Intruder;
+            else if (role.Faction == Faction.Syndicate && !CustomGameOptions.CustomSynColors)
+                color = Colors.Syndicate;
+            else if (role.Faction == Faction.Neutral && !CustomGameOptions.CustomNeutColors)
+                color = Colors.Neutral;
+            else if (role.Faction == Faction.Crew && !CustomGameOptions.CustomCrewColors)
+                color = Colors.Crew;
+
+            var colorString = "<color=#" + color.ToHtmlStringRGBA() + ">";
+            return colorString;
+        }
+
+        public static void SetTarget(ref PlayerControl closestPlayer, KillButton button, float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (!button.isActiveAndEnabled)
                 return;
@@ -772,8 +1161,7 @@ namespace TownOfUsReworked.Extensions
 
             unchecked
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BypassKill,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
                 writer.Write(killer.PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -782,6 +1170,9 @@ namespace TownOfUsReworked.Extensions
 
         public static void MurderPlayer(PlayerControl killer, PlayerControl target)
         {
+            if (killer == null || target == null)
+                return;
+
             var data = target.Data;
 
             if (data != null && !data.IsDead)
@@ -858,6 +1249,12 @@ namespace TownOfUsReworked.Extensions
                 }
                 else
                     targetRole.DeathReason = DeathReasonEnum.Suicide;
+                
+                if (target.Is(ObjectifierEnum.Phantom))
+                {
+                    var phantom = Objectifier.GetObjectifier<Phantom>(target);
+                    phantom.HasDied = true;
+                }
 
                 if (target.Is(RoleEnum.Troll))
                 {
@@ -937,6 +1334,21 @@ namespace TownOfUsReworked.Extensions
                     return;
                 }
             }
+        }
+
+        public static string GetRoleList(PlayerControl inspector, PlayerControl target)
+        {
+            var insp = Role.GetRole<Inspector>(inspector);
+            var role = Role.GetRole(target);
+            var yes = "";
+
+            switch (role.Results)
+            {
+                case InspResults.SherConsigInspBm:
+                    break;
+            }
+
+            return yes;
         }
 
         public static void BaitReport(PlayerControl killer, PlayerControl target)
@@ -1070,8 +1482,7 @@ namespace TownOfUsReworked.Extensions
             static void Postfix(MeetingHud __instance)
             {
                 //Deactivate skip Button if skipping on emergency meetings is disabled 
-                if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
-                    (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always))
+                if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) || (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always))
                     __instance.SkipVoteButton.gameObject.SetActive(false);
             }
         }
@@ -1259,6 +1670,14 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Warper role in Role.GetRoles(RoleEnum.Warper))
                 role.LastWarped = DateTime.UtcNow;
+
+            foreach (Framer role in Role.GetRoles(RoleEnum.Framer))
+                role.LastFramed = DateTime.UtcNow;
+            #endregion
+
+            #region Objectifiers
+            foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+                corr.LastKilled = DateTime.UtcNow;
             #endregion
         }
         
@@ -1270,8 +1689,7 @@ namespace TownOfUsReworked.Extensions
             player.NetTransform.SnapTo(vector);
         }
 
-        public static PlayerControl SetClosestPlayerToPlayer(PlayerControl fromPlayer, ref PlayerControl closestPlayer,
-            float maxDistance = float.NaN, List<PlayerControl> targets = null)
+        public static PlayerControl SetClosestPlayerToPlayer(PlayerControl fromPlayer, ref PlayerControl closestPlayer, float maxDistance = float.NaN, List<PlayerControl> targets = null)
         {
             if (float.IsNaN(maxDistance)) 
                 maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
@@ -1291,6 +1709,16 @@ namespace TownOfUsReworked.Extensions
             return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
+        public static bool CrewDead()
+        {
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead || x.Data.Disconnected)) == 0;
+        }
+
+        public static bool ImpsDead()
+        {
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 0;
+        }
+
         public static bool LastNeut()
         {
             return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Neutral) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
@@ -1308,12 +1736,10 @@ namespace TownOfUsReworked.Extensions
 
         public static IEnumerator Block(PlayerControl blocker, PlayerControl target)
         {
+            var tickDictionary = new Dictionary<byte, DateTime>();
             GameObject[] lockImg = {null, null, null, null};
 
             if (!(blocker.Is(RoleEnum.Glitch) || blocker.Is(RoleEnum.Escort) || blocker.Is(RoleEnum.Consort)))
-                yield break;
-
-            if (blocker.Is(RoleEnum.Glitch) || blocker.Is(RoleEnum.Escort) || blocker.Is(RoleEnum.Consort))
                 yield break;
             
             if (target.Is(RoleEnum.SerialKiller))
@@ -1344,8 +1770,7 @@ namespace TownOfUsReworked.Extensions
                         }
 
                         lockImg[0].layer = 5;
-                        lockImg[0].transform.position = new Vector3(HudManager.Instance.KillButton.transform.position.x,
-                            HudManager.Instance.KillButton.transform.position.y, -50f);
+                        lockImg[0].transform.position = new Vector3(HudManager.Instance.KillButton.transform.position.x, HudManager.Instance.KillButton.transform.position.y, -50f);
                         HudManager.Instance.KillButton.enabled = false;
                         HudManager.Instance.KillButton.graphic.color = Palette.DisabledClear;
                         HudManager.Instance.KillButton.graphic.material.SetFloat("_Desat", 1f);
@@ -1360,8 +1785,7 @@ namespace TownOfUsReworked.Extensions
                             lockImgR.sprite = LockSprite;
                         }
 
-                        lockImg[1].transform.position = new Vector3(HudManager.Instance.UseButton.transform.position.x,
-                            HudManager.Instance.UseButton.transform.position.y, -50f);
+                        lockImg[1].transform.position = new Vector3(HudManager.Instance.UseButton.transform.position.x, HudManager.Instance.UseButton.transform.position.y, -50f);
                         lockImg[1].layer = 5;
                         HudManager.Instance.UseButton.enabled = false;
                         HudManager.Instance.UseButton.graphic.color = Palette.DisabledClear;
@@ -1377,8 +1801,7 @@ namespace TownOfUsReworked.Extensions
                             lockImgR.sprite = LockSprite;
                         }
 
-                        lockImg[2].transform.position = new Vector3(HudManager.Instance.ReportButton.transform.position.x,
-                            HudManager.Instance.ReportButton.transform.position.y, -50f);
+                        lockImg[2].transform.position = new Vector3(HudManager.Instance.ReportButton.transform.position.x, HudManager.Instance.ReportButton.transform.position.y, -50f);
                         lockImg[2].layer = 5;
                         HudManager.Instance.ReportButton.enabled = false;
                         HudManager.Instance.ReportButton.SetActive(false);
@@ -1397,8 +1820,7 @@ namespace TownOfUsReworked.Extensions
                                 lockImgR.sprite = LockSprite;
                             }
 
-                            lockImg[3].transform.position = new Vector3(role.ExtraButtons[0].transform.position.x,
-                                role.ExtraButtons[0].transform.position.y, -50f);
+                            lockImg[3].transform.position = new Vector3(role.ExtraButtons[0].transform.position.x, role.ExtraButtons[0].transform.position.y, -50f);
                             lockImg[3].layer = 5;
                             role.ExtraButtons[0].enabled = false;
                             role.ExtraButtons[0].graphic.color = Palette.DisabledClear;
@@ -1454,7 +1876,7 @@ namespace TownOfUsReworked.Extensions
                 }
 
                 yield return null;
-                }
+            }
         }
 
         public static bool TasksDone()
@@ -1464,18 +1886,22 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (!player.Is(Faction.Crew) || player.Is(ObjectifierEnum.Lovers))
-                    continue;
-                else
+                if (player.CanDoTasks() && player.Is(Faction.Crew))
+                {
                     allCrew.Add(player);
                 
-                var TasksLeft = player.Data.Tasks.ToArray().Count(x => !x.Complete);
+                    var TasksLeft = player.Data.Tasks.ToArray().Count(x => !x.Complete);
 
-                if (TasksLeft <= 0)
-                    crewWithNoTasks.Add(player);
+                    if (TasksLeft <= 0)
+                        crewWithNoTasks.Add(player);
+                }
             }
 
-            return allCrew.Count == crewWithNoTasks.Count;
+            var flag1 = allCrew.Count == crewWithNoTasks.Count;
+            var flag2 = CrewDead();
+            var flag = flag1 && !flag2;
+
+            return flag;
         }
 
         public static Il2CppSystem.Collections.Generic.List<PlayerControl> FindClosestPlayers(PlayerControl player, float radius)
@@ -1508,59 +1934,33 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Sabotaged()
         {
-            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-            var specials = system.specials.ToArray();
+            var result = false;
 
-            var sabotaged = false;
-
-            switch (PlayerControl.GameOptions.MapId)
+            if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
             {
-                case 0:
+                var lifeSuppSystemType = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
-                case 1:
-                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if ((reactor2.IsActive && reactor2.Countdown <= 0f) || (oxygen2.IsActive && oxygen2.Countdown <= 0f))
-                        sabotaged = true;
-
-                    break;
-
-                case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (seismic.IsActive && seismic.Countdown <= 0f)
-                        sabotaged = true;
-
-                    break;
-
-                case 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if ((reactor1.IsActive && reactor1.Countdown <= 0f) || (oxygen1.IsActive && oxygen1.Countdown <= 0f))
-                        sabotaged = true;
-
-                    break;
-
-                case 4:
-                    var crash = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-
-                    if (crash.IsActive && crash.Countdown <= 0f)
-                        sabotaged = true;
-
-                    break;
-
-                case 5:
-                    var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor5.IsActive && reactor5.Countdown <= 0f)
-                        sabotaged = true;
-
-                    break;
+                if (lifeSuppSystemType.Countdown < 0f)
+                    result = true;
             }
 
-            return sabotaged;
+            if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
+            {
+                var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+
+                if (reactorSystemType.Countdown < 0f)
+                    result = true;
+            }
+
+            if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor))
+            {
+                var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
+
+                if (reactorSystemType.Countdown < 0f)
+                    result = true;
+            }
+
+            return result;
         }
     }
 }

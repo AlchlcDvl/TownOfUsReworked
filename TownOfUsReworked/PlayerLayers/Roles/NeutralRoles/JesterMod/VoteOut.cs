@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             {
                 var jest = (Jester)role;
                 jest.Wins();
-                jest.Haunt(MeetingHud.Instance);
+                jest.SetHaunted(MeetingHud.Instance);
             }
         }
     }

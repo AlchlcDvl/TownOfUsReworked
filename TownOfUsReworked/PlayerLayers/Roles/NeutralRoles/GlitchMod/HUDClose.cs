@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
             {
                 var role2 = (Glitch) role;
-                role2.GlitchButton.graphic.sprite = TownOfUsReworked.SampleSprite;
                 role2.LastMimic = DateTime.UtcNow;
                 role2.LastHack = DateTime.UtcNow;
             }

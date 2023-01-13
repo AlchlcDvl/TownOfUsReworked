@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             {
                 var mediateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
                 var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
-                mediateButton.gameObject.SetActive(!MeetingHud.Instance && !data.IsDead);
+                mediateButton.gameObject.SetActive(!MeetingHud.Instance && !data.IsDead && !LobbyBehaviour.Instance);
 
                 if (data.IsDead)
                     return;
@@ -65,11 +65,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
             }
-            else if (CustomGameOptions.ShowMediumToDead && Role.AllRoles.Any(x => x.RoleType == RoleEnum.Medium &&
-                ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.LocalPlayer.PlayerId)))
+            else if (CustomGameOptions.ShowMediumToDead && Role.AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.LocalPlayer.PlayerId)))
             {
-                var role = (Medium)Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Medium &&
-                    ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.LocalPlayer.PlayerId));
+                var role = (Medium)Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.LocalPlayer.PlayerId));
                 role.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role.Player.transform.position;
             }
         }

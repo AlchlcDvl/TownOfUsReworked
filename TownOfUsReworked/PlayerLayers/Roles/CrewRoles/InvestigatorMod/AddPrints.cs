@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator))
+            if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator) || LobbyBehaviour.Instance)
                 return;
             
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
@@ -57,7 +57,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
                     try
                     {
                         var footprint = investigator.AllPrints[i];
-                        if (footprint.Update()) i--;
+
+                        if (footprint.Update())
+                            i--;
                     }
                     catch
                     {

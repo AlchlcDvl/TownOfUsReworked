@@ -11,18 +11,17 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
     {
         public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
         public Dictionary<byte, ArrowBehaviour> SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
-        public bool SnitchWin;
-        public bool Revealed => TasksLeft <= CustomGameOptions.SnitchTasksRemaining;
+        public bool Revealed => TasksLeft() <= CustomGameOptions.SnitchTasksRemaining;
 
         public Snitch(PlayerControl player) : base(player)
         {
             Name = "Snitch";
             TaskText = TasksDone
-                    ? "Follow the arrows pointing to the <color=#FF0000FF>Intruders</color>!"
-                    : "Complete all your tasks to discover the <color=#FF0000FF>Intruders</color>!";
+                ? "Follow the arrows pointing to the <color=#FF0000FF>Intruders</color>!"
+                : "Complete all your tasks to discover the <color=#FF0000FF>Intruders</color>!";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
             AbilityType = AbilityEnum.Snitch;
-            AddToAbilityHistory(AbilityType);
+            Hidden = !CustomGameOptions.SnitchKnows;
         }
         
         public void DestroyArrow(byte targetPlayerId)
