@@ -11,18 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Cryomaniac cryo in Role.GetRoles(RoleEnum.Cryomaniac))
             {
-                if (role.RoleType == RoleEnum.Cryomaniac)
-                    ((Cryomaniac)role).Loses();
+                if (!Role.AllNeutralsWin && !Role.NKWins && !cryo.CryoWins)
+                {
+                    cryo.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CryomaniacLose, SendOption.Reliable, -1);
+                    writer.Write(cryo.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CryomaniacLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

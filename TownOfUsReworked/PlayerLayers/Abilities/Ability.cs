@@ -44,16 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 PlayerName = value.Data.PlayerName;
             }
         }
-
-        protected internal int TasksLeft()
-        {
-            if (Player == null || Player.Data == null)
-                return 0;
-            
-            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        }
-
-        protected internal bool TasksDone => TasksLeft() <= 0;
         
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 

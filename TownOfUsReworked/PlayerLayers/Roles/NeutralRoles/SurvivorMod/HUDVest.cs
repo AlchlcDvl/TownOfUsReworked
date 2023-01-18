@@ -12,21 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            UpdateVestButton(__instance);
-        }
-
-        public static void UpdateVestButton(PlayerControl __instance)
-        {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
                 return;
 
             var data = PlayerControl.LocalPlayer.Data;

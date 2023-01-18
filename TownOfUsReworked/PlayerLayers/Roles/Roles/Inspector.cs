@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleType = RoleEnum.Inspector;
             StartText = "Inspect Player For Their Roles";
             AbilitiesText = "- You can check a player to get a role list of what they could be.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -31,6 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = CIDescription;
             RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
                 "list, they are not Crew.";
+            Objectives = CrewWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -11,18 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Arsonist arso in Role.GetRoles(RoleEnum.Arsonist))
             {
-                if (role.RoleType == RoleEnum.Arsonist)
-                    ((Arsonist) role).Loses();
+                if (!Role.AllNeutralsWin && !arso.ArsonistWins && !Role.NKWins)
+                {
+                    arso.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ArsonistLose, SendOption.Reliable, -1);
+                    writer.Write(arso.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ArsonistLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

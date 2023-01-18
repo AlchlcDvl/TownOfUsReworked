@@ -11,19 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
     {
         private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-            
-            if (CustomGameOptions.PlaguebearerOn == 0)
-                return;
-            
-            if (info == null)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || CustomGameOptions.PlaguebearerOn == 0 ||
+                info == null)
                 return;
             
             bool pbflag = false;
@@ -37,16 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
             if (!pbflag)
                 return;
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            if (PlayerControl.LocalPlayer.IsInfected() || info.Object.IsInfected())
             {
-                if (player.PlayerId == info.Object.PlayerId)
-                {
-                    if (PlayerControl.LocalPlayer.IsInfected() || player.IsInfected())
-                    {
-                        foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                            ((Plaguebearer)pb).RpcSpreadInfection(PlayerControl.LocalPlayer, player);
-                    }
-                }
+                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
+                    ((Plaguebearer)pb).RpcSpreadInfection(PlayerControl.LocalPlayer, Utils.PlayerById(info.Object.PlayerId));
             }
         }
     }

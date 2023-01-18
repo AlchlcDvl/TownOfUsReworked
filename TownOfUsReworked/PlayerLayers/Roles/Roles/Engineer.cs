@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Engineer : Role
     {
         public bool UsedThisRound = false;
+        private KillButton _fixButton;
 
         public Engineer(PlayerControl player) : base(player)
         {
@@ -17,20 +18,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Just Fix It";
             AbilitiesText = "- You can fix sabotages at any time during the game.";
             AttributesText = "- You can vent.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            Results = InspResults.EngiAmneThiefCann;
+            Results = InspResults.EngiMineBombVampWW;
             IntroSound = TownOfUsReworked.EngineerIntro;
             FactionDescription = CrewFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
             RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
                 " the systems you spent blood, sweat and tears to make. Make them pay.";
             AlignmentDescription = CSDescription;
+        }
+
+        public KillButton FixButton
+        {
+            get => _fixButton;
+            set
+            {
+                _fixButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

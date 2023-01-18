@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => TargetPlayer == null || (!TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && TargetPlayer != null && !Player.Data.Disconnected) ||
-            TargetPlayer.Data.Disconnected;
+        public bool TargetAlive => (TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && !Player.Data.Disconnected) || TargetPlayer.Data.Disconnected ||
+            TargetPlayer == null;
         public bool Protecting => TimeRemaining > 0f;
 
         public GuardianAngel(PlayerControl player) : base(player)
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Protect Your Target With Your Life";
-            Results = InspResults.GAExeMedicPup;
+            Results = InspResults.GAExeJackAg;
             AbilitiesText = "- You can protect your target from death for a short while.";
             RoleDescription = "You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep your target alive at all costs" +
                 " even if they lose!";

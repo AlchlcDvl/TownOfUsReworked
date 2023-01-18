@@ -14,26 +14,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer))
-                return;
-
-            if (__instance.KillButton == null)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Engineer))
                 return;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
+
+            if (role.FixButton == null)
+            {
+                role.FixButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.FixButton.graphic.enabled = true;
+                role.FixButton.gameObject.SetActive(false);
+            }
             
-            __instance.KillButton.graphic.sprite = Fix;
-            __instance.KillButton.SetCoolDown(0f, 10f);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.FixButton.SetCoolDown(0f, 10f);
+            role.FixButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance && !LobbyBehaviour.Instance);
 
             if (!ShipStatus.Instance)
                 return;
@@ -50,17 +44,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
             var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
-            var renderer = __instance.KillButton.graphic;
+            var renderer = role.FixButton.graphic;
             
             if (active && !dummyActive && !role.UsedThisRound && __instance.KillButton.enabled)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
-                return;
             }
-
-            renderer.color = Palette.DisabledClear;
-            renderer.material.SetFloat("_Desat", 1f);
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
-            Results = InspResults.CoroJaniUTMed;
+            Results = InspResults.CorJaniUTMed;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

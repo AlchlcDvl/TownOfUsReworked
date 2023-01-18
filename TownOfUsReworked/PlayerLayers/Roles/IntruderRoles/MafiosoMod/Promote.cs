@@ -31,14 +31,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
             {
                 role.TurnGodfather();
 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnGodfather,    
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnGodfather, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return;
             }
         }

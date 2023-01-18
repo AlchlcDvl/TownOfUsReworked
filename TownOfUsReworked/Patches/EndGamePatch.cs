@@ -106,15 +106,15 @@ namespace TownOfUsReworked.Patches
 
                     summary += abilityString;
                 }
+                
+                if (playerControl.CanDoTasks())
+                    summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
 
                 if (playerControl.IsGATarget())
                     summary += " <color=#FFFFFFFF>★</color>";
 
                 if (playerControl.IsExeTarget())
                     summary += " <color=#CCCCCCFF>§</color>";
-                
-                if (playerControl.CanDoTasks())
-                    summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
                 
                 summary += " | " + playerControl.DeathReason();
 

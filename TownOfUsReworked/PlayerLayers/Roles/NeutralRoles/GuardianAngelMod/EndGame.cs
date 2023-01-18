@@ -1,5 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Patches;
+using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
@@ -9,19 +11,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
+            foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
             {
-                var ga = (GuardianAngel)role;
-
                 if (ga.TargetPlayer == null)
                     continue;
                     
                 if (ga.TargetAlive)
+                {
                     ga.Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GuardianAngelWin, SendOption.Reliable, -1);
+                    writer.Write(ga.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
                 else
+                {
                     ga.Loses();
-
-                return true;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GuardianAngelLose, SendOption.Reliable, -1);
+                    writer.Write(ga.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
 
             return true;

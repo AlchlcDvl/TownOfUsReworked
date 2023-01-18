@@ -11,18 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Troll troll in Role.GetRoles(RoleEnum.Troll))
             {
-                if (role.RoleType == RoleEnum.Troll)
-                    ((Troll)role).Loses();
+                if (!troll.Killed)
+                {
+                    troll.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.TrollLose, SendOption.Reliable, -1);
+                    writer.Write(troll.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.TrollLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

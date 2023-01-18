@@ -40,13 +40,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 
             role.ButtonUsed = true;
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BarryButton,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BarryButton, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             if (AmongUsClient.Instance.AmHost)
             {

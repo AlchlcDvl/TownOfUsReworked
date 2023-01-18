@@ -10,12 +10,12 @@ using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using Hazel;
 
 namespace TownOfUsReworked.Patches
@@ -37,22 +37,21 @@ namespace TownOfUsReworked.Patches
         {
             if (SubmergedCompatibility.isSubmerged())
             {
-                if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+                if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
                 {
-                    if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
+                    if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
                         __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
                     else
                         __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
                 }
-                if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
+                else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
                 {
-                    if (!Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer).Caught)
+                    if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
                         __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
                     else 
                         __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
                 }
             }
-                
         }
     }
 
@@ -176,8 +175,8 @@ namespace TownOfUsReworked.Patches
             Assembly = Plugin!.GetType().Assembly;
             Types = AccessTools.GetTypesFromAssembly(Assembly);
 
-            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
-                .Invoke(null, Array.Empty<object>());
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null,
+                Array.Empty<object>());
 
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");
             SubmergedInstance = AccessTools.Field(SubmarineStatusType, "Instance");
@@ -283,21 +282,20 @@ namespace TownOfUsReworked.Patches
         {
             Coroutines.Start(waitMeeting(resetTimers));
             Coroutines.Start(waitMeeting(GhostRoleBegin));
+            
+            SetPhantom.ExileControllerPostfix(ExileController.Instance);
+            SetRevealer.ExileControllerPostfix(ExileController.Instance);
         }
 
         public static IEnumerator waitStart(Action next)
         {
             while (DestroyableSingleton<HudManager>.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
-            {
                 yield return null;
-            }
 
             yield return new WaitForSeconds(0.5f);
 
             while (DestroyableSingleton<HudManager>.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
-            {
                 yield return null;
-            }
 
             next();
         }
@@ -305,16 +303,12 @@ namespace TownOfUsReworked.Patches
         public static IEnumerator waitMeeting(Action next)
         {
             while (!PlayerControl.LocalPlayer.moveable)
-            {
                 yield return null;
-            }
 
             yield return new WaitForSeconds(0.5f);
 
             while (DestroyableSingleton<HudManager>.Instance.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
-            {
                 yield return null;
-            } 
 
             next();
         }
@@ -332,9 +326,9 @@ namespace TownOfUsReworked.Patches
             if (!PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
             {
-                if (!Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
+                if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
                 {
                     var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -343,25 +337,22 @@ namespace TownOfUsReworked.Patches
 
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
-                    unchecked
-                    {
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
-                        writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer2.Write(startingVent.transform.position.x);
-                        writer2.Write(startingVent.transform.position.y);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                    }
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer2.Write(startingVent.transform.position.x);
+                    writer2.Write(startingVent.transform.position.y);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
                     PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
                     PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
                 }
             }
             
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Phantom))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var phantom = Objectifier.GetObjectifier<Phantom>(PlayerControl.LocalPlayer);
+                var phantom = Role.GetRole<Phantom>(PlayerControl.LocalPlayer);
 
-                if (!phantom.Caught && phantom.HasDied)
+                if (!phantom.Caught)
                 {
                     var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -370,14 +361,11 @@ namespace TownOfUsReworked.Patches
 
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
-                    unchecked
-                    {
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
-                        writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer2.Write(startingVent.transform.position.x);
-                        writer2.Write(startingVent.transform.position.y);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                    }
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer2.Write(startingVent.transform.position.x);
+                    writer2.Write(startingVent.transform.position.y);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
                     PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
                     PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
@@ -391,9 +379,9 @@ namespace TownOfUsReworked.Patches
             {
                 PlayerControl player = __instance.myPlayer;
 
-                if (player.Is(ObjectifierEnum.Phantom))
+                if (player.Is(RoleEnum.Phantom))
                 {
-                    if (!Objectifier.GetObjectifier<Phantom>(player).Caught)
+                    if (!Role.GetRole<Phantom>(player).Caught)
                     {
                         if (player.AmOwner) 
                             MoveDeadPlayerElevator(player);
@@ -408,10 +396,9 @@ namespace TownOfUsReworked.Patches
                         __instance.myPlayer.gameObject.layer = 8;
                     }
                 }
-
-                if (player.Is(AbilityEnum.Revealer))
+                else if (player.Is(RoleEnum.Revealer))
                 {
-                    if (!Ability.GetAbility<Revealer>(player).Caught)
+                    if (!Role.GetRole<Revealer>(player).Caught)
                     {
                         if (player.AmOwner)
                             MoveDeadPlayerElevator(player);
@@ -472,7 +459,8 @@ namespace TownOfUsReworked.Patches
             {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
-            } catch (System.NullReferenceException) {}
+            }
+            catch (System.NullReferenceException) {}
         }
 
         public static bool isSubmerged()

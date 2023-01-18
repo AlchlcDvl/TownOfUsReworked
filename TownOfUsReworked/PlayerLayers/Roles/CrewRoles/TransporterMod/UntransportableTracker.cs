@@ -65,19 +65,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             public static void Prefix(MovingPlatformBehaviour __instance)
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
-                {
-                    Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(PlayerControl.LocalPlayer.PlayerId,
-                        DateTime.UtcNow);
-                }
+                    Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(PlayerControl.LocalPlayer.PlayerId, DateTime.UtcNow);
                 else
                 {
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetUntransportable,
-                            SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetUntransportable, SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
         }

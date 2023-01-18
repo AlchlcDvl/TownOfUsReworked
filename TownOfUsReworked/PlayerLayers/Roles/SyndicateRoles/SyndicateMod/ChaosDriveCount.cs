@@ -5,7 +5,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
     public class ChaosDriveCount
     {
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         public class Sendchat
         {
             [HarmonyPostfix]
@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             {
                 Role.ChaosDriveMeetingTimerCount += 1;
 
-                if (Role.ChaosDriveMeetingTimerCount >= CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive)
+                if (Role.ChaosDriveMeetingTimerCount >= CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive && !Role.SyndicateHasChaosDrive)
                     Role.SyndicateHasChaosDrive = true;
             }
         }

@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastExamined { get; set; }
+        private KillButton _examineButton;
 
         public Detective(PlayerControl player) : base(player)
         {
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Examine Players To Find Bloody Hands";
             AbilitiesText = "- You can examine players to see if they have killed recently.";
             AttributesText = $"- Your screen will flash red if your target has killed in the last {CustomGameOptions.RecentKill}s.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
             LastExamined = DateTime.UtcNow;
             RoleType = RoleEnum.Detective;
             Faction = Faction.Crew;
@@ -27,11 +28,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.WraithDetGrenVet;
+            Results = InspResults.DetJuggOpTroll;
             FactionDescription = CrewFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
             AlignmentDescription = CIDescription;
             RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers in the act!";
+        }
+
+        public KillButton ExamineButton
+        {
+            get => _examineButton;
+            set
+            {
+                _examineButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float ExamineTimer()

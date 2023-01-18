@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Results = InspResults.EngiAmneThiefCann;
+            Results = InspResults.ThiefAmneTrackInvest;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Time Lord";
             StartText = "Rewind Time";
             AbilitiesText = "Rewind Time!";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew;
             StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
             FinishRewind = DateTime.UtcNow;
             RoleType = RoleEnum.TimeLord;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            Results = InspResults.TrackAltTLTM;
+            Results = InspResults.TLAltTMCann;
         }
 
         public float TimeLordRewindTimer()

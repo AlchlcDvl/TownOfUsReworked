@@ -43,14 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestIntruder, role.Player);
             }
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Declare, SendOption.Reliable, -1);
-                writer.Write(role.Player.PlayerId);
-                writer.Write(role.ClosestIntruder.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Declare, SendOption.Reliable, -1);
+            writer.Write(role.Player.PlayerId);
+            writer.Write(role.ClosestIntruder.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Declare(role, role.ClosestIntruder);
             return false;
         }

@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Transporter";
             StartText = "Choose Two Players To Swap Locations";
             AbilitiesText = "Choose two players to swap locations";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
             LastTransported = DateTime.UtcNow;
             RoleType = RoleEnum.Transporter;
             Faction = Faction.Crew;
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            Results = InspResults.TransWarpTeleTask;
+            Results = InspResults.TeleWarpTransWraith;
         }
 
         public float TransportTimer()
@@ -229,17 +229,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                             else if (!Player.IsProtected())
                                                             {
                                                                 Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, Player.PlayerId, true));
-
-                                                                unchecked
-                                                                {
-                                                                    var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                                                        (byte)CustomRPC.Transport, SendOption.Reliable, -1);
-                                                                    write2.Write(TransportPlayer1.PlayerId);
-                                                                    write2.Write(Player.PlayerId);
-                                                                    write2.Write(true);
-                                                                    AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                }
-
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                                    SendOption.Reliable, -1);
+                                                                write2.Write(TransportPlayer1.PlayerId);
+                                                                write2.Write(Player.PlayerId);
+                                                                write2.Write(true);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
                                                                 return;
                                                             }
 
@@ -267,16 +262,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                             else if (!Player.IsProtected())
                                                             {
                                                                 Coroutines.Start(TransportPlayers(TransportPlayer2.PlayerId, Player.PlayerId, true));
-
-                                                                unchecked
-                                                                {
-                                                                    var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                                                        (byte)CustomRPC.Transport, SendOption.Reliable, -1);
-                                                                    write2.Write(TransportPlayer2.PlayerId);
-                                                                    write2.Write(Player.PlayerId);
-                                                                    write2.Write(true);
-                                                                    AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                }
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                                    SendOption.Reliable, -1);
+                                                                write2.Write(TransportPlayer2.PlayerId);
+                                                                write2.Write(Player.PlayerId);
+                                                                write2.Write(true);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
                                                                 return;
                                                             }
 
@@ -286,18 +277,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                                                         LastTransported = DateTime.UtcNow;
                                                         UsesLeft--;
-
                                                         Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, TransportPlayer2.PlayerId, false));
-                                                        
-                                                        unchecked
-                                                        {
-                                                            var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                                                (byte)CustomRPC.Transport, SendOption.Reliable, -1);
-                                                            write.Write(TransportPlayer1.PlayerId);
-                                                            write.Write(TransportPlayer2.PlayerId);
-                                                            write.Write(false);
-                                                            AmongUsClient.Instance.FinishRpcImmediately(write);
-                                                        }
+                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                            SendOption.Reliable, -1);
+                                                        write.Write(TransportPlayer1.PlayerId);
+                                                        write.Write(TransportPlayer2.PlayerId);
+                                                        write.Write(false);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write);
                                                     }
                                                     else
                                                         (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));

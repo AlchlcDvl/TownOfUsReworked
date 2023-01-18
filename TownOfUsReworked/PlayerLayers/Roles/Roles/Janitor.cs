@@ -18,7 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Janitor";
             StartText = "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = "Clean bodies to prevent the <color=#8BFDFDFF>Crew</color> from discovering them";
+            AbilitiesText = "- You can clean up dead bodies, making them disappear from sight.";
+            AttributesText = "- Bodies cleaned by you will disappear and cannot be reported.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
             RoleType = RoleEnum.Janitor;
             Faction = Faction.Intruder;
@@ -26,9 +27,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
-            Results = InspResults.CoroJaniUTMed;
+            Results = InspResults.CorJaniUTMed;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+            FactionDescription = IntruderFactionDescription;
+            Objectives = IntrudersWinCon;
+            AlignmentDescription = ICDescription;
+            RoleDescription = "You are a Janitor! You are a sanitation expert who got swept up with the wrong company. Clean up everyone's messes to ensure nothing goes wrong!";
         }
 
         public KillButton CleanButton

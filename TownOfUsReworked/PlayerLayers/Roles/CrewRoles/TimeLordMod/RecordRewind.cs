@@ -83,13 +83,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                         PlayerControl.LocalPlayer.Collider.enabled = true;
                         PlayerControl.LocalPlayer.NetTransform.enabled = true;
 
-                        unchecked
-                        {
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixAnimation,
-                                SendOption.Reliable, -1);
-                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixAnimation, SendOption.Reliable, -1);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
 
                     var currentPoint = points[0];
@@ -109,13 +105,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                         deadTime = 0;
                         isDead = false;
 
-                        unchecked
-                        {
-                            var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.RewindRevive,
-                                SendOption.Reliable, -1);
-                            write.Write(PlayerControl.LocalPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(write);
-                        }
+                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.RewindRevive, SendOption.Reliable, -1);
+                        write.Write(PlayerControl.LocalPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(write);
                     }
                 }
 

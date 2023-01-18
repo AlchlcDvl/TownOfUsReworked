@@ -60,13 +60,9 @@ namespace TownOfUsReworked.Patches
                 PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                 //PlayerControl.GameOptions.MaxPlayers = CustomGameOptions.LobbySize;
 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings,
-                        SendOption.Reliable, -1);
-                    writer.Write(map);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings, SendOption.Reliable, -1);
+                writer.Write(map);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 if (CustomGameOptions.AutoAdjustSettings)
                     AdjustSettings(map);

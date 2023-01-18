@@ -15,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
                 return;
 
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
@@ -65,10 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             Utils.SetTarget(ref role.ClosestPlayer, role.HackButton);
             
             if (role.IsUsingMimic)
-            {
                 role.MimicButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.MimicDuration);
-                return;
-            }
             else
             {
                 role.MimicButton.SetCoolDown(role.MimicTimer(), CustomGameOptions.MimicCooldown);

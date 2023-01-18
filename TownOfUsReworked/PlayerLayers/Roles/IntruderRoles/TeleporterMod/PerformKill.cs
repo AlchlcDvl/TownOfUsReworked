@@ -57,15 +57,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                     if (role.TeleportTimer() != 0)
                         return false;
 
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Teleport,
-                            SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(role.TeleportPoint);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Teleport, SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.TeleportPoint);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.LastTeleport = DateTime.UtcNow;
                     Teleporter.Teleport(role.Player);
                 }

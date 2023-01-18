@@ -48,13 +48,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.EscConsGliPois;
+            Results = InspResults.MorphGliEscCons;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             IntroSound = TownOfUsReworked.GlitchIntro;
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
-            Objectives = IsRecruit ? JackalWinCon : NKWinCon;
+            Objectives = NKWinCon;
             MenuClick = false;
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";

@@ -143,14 +143,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 return false;
             }
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Convert, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Convert, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Convert(role, role.ClosestPlayer);
             role.LastBitten = DateTime.UtcNow;
             return false;

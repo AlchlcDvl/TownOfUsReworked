@@ -42,14 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             role.UsesLeft--;
             StartStop.StartRewind(role);
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Rewind,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-            
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Rewind, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+    
             try
             {
                 SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);

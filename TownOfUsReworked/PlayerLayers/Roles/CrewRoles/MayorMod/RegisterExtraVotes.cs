@@ -124,14 +124,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                             if (mayor.Player == PlayerControl.LocalPlayer)
                                 mayor.VoteBank += votesRegained;
 
-                            unchecked
-                            {
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                    (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
-                                writer.Write(mayor.Player.PlayerId);
-                                writer.Write(mayor.VoteBank);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            }
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                            writer.Write(mayor.Player.PlayerId);
+                            writer.Write(mayor.VoteBank);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
                     }
                 }

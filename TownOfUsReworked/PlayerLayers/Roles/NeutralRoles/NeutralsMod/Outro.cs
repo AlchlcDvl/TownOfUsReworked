@@ -8,12 +8,11 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public class Outro
+    public class AllNeutralsOutro
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Survivor || x.RoleType == RoleEnum.Executioner || x.RoleType == RoleEnum.GuardianAngel ||
-                x.RoleType == RoleEnum.Jester) && Role.NeutralsWin);
+            var role = Role.AllRoles.FirstOrDefault(x => (x.Faction == Faction.Neutral && Role.NeutralsWin) || Input.GetKeyDown(KeyCode.F8));
 
             if (role == null)
                 return;

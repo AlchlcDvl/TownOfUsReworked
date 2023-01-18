@@ -12,9 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Jackal && Role.CabalWin);
+            var role = Role.AllRoles.FirstOrDefault(x => x.SubFaction == SubFaction.Cabal && Role.CabalWin);
 
-            if (role == null) return;
+            if (role == null)
+                return;
 
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 

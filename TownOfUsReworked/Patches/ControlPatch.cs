@@ -1,6 +1,7 @@
 using HarmonyLib;
-using InnerNet;
+using TownOfUsReworked.Extensions;
 using UnityEngine;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
 {
@@ -43,6 +44,15 @@ namespace TownOfUsReworked.Patches
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 82);
+            }
+            
+            if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
+            {
+                if (Input.GetKeyDown(KeyCode.F8))
+                {
+                    Role.NobodyWins = true;
+                    Utils.EndGame();
+                }
             }
         }
     }

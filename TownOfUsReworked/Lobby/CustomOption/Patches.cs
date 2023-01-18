@@ -145,10 +145,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             {
                 var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
                 var diff = 0.7f * Menus.Length - 2;
-                obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y,
+                obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
+                __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y,
                     obj.transform.localPosition.z);
-                __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = new Vector3(obj.transform.localPosition.x,
-                    obj.transform.localPosition.y, obj.transform.localPosition.z);
                 List<GameObject> menug = new List<GameObject>();
                 List<SpriteRenderer> menugs = new List<SpriteRenderer>();
 

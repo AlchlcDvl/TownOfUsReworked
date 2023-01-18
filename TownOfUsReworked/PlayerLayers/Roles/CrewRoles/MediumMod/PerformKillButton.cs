@@ -46,15 +46,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
                 {
                     role.AddMediatePlayer(dead.PlayerId);
-
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Mediate,
-                            SendOption.Reliable, -1);
-                        writer.Write(dead.PlayerId);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Mediate, SendOption.Reliable, -1);
+                    writer.Write(dead.PlayerId);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
                         return false;

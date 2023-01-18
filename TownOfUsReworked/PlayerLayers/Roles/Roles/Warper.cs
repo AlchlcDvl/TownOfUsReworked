@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             FactionName = "Syndicate";
             AlignmentName = "Syndicate (Support)";
-            Results = InspResults.TransWarpTeleTask;
+            Results = InspResults.TeleWarpTransWraith;
             IntroSound = TownOfUsReworked.WarperIntro;
         }
 
@@ -38,21 +38,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Dictionary<byte, Vector2> coordinates = GenerateWarpCoordinates();
 
-            unchecked
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Warp, SendOption.Reliable, -1);
+            writer.Write((byte)coordinates.Count);
+
+            foreach ((byte key, Vector2 value) in coordinates)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Warp,
-                    SendOption.Reliable, -1);
-                writer.Write((byte)coordinates.Count);
-
-                foreach ((byte key, Vector2 value) in coordinates)
-                {
-                    writer.Write(key);
-                    writer.Write(value);
-                }
-
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                writer.Write(key);
+                writer.Write(value);
             }
 
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             WarpPlayersToCoordinates(coordinates);
         }
 

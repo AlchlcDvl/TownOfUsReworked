@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool CurrentlyReviving = false;
         public DeadBody CurrentTarget = null;
         public bool ReviveUsed = false;
+        private KillButton _reviveButton;
         
         public Altruist(PlayerControl player) : base(player)
         {
@@ -19,19 +20,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Sacrifice Yourself To Save Another";
             AbilitiesText = "- You can revive a dead body at the cost of your own life.";
             AttributesText = "- Reviving someone takes time.\n- If a meeting is called during your revive, both you and\nyour target will be pronounced dead.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-            Results = InspResults.TrackAltTLTM;
+            Results = InspResults.TLAltTMCann;
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CPDescription;
             RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -66,6 +67,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Loses()
         {
             LostByRPC = true;
+        }
+
+        public KillButton ReviveButton
+        {
+            get => _reviveButton;
+            set
+            {
+                _reviveButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

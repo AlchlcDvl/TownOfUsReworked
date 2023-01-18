@@ -3,9 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {
@@ -14,15 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (Role.GetRoles(RoleEnum.Cannibal).Any(x => ((Cannibal)x).EatNeed == 0))
-                return;
-
-            if (Role.GetRoles(RoleEnum.Troll).Any(x => ((Troll)x).Killed))
-                return;
-
-            if (Objectifier.GetObjectifiers(ObjectifierEnum.Phantom).Any(x => ((Phantom)x).CompletedTasks))
-                return;
-            
             var objectifier = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Taskmaster && ((Taskmaster)x).WinTasksDone);
 
             if (objectifier == null)

@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.JestJuggWWInv;
+            Results = InspResults.EngiMineBombVampWW;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }
@@ -117,7 +117,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player))
                     continue;
                     
-                if (Player.PlayerId != player.PlayerId && !player.Is(RoleType) && !player.Is(RoleEnum.Pestilence))
+                if (player != Player && !player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player2, player);
                 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
@@ -127,6 +127,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 {
                     foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                         ((Plaguebearer)pb).RpcSpreadInfection(player, Player);
+                }
+
+                if (player.Is(RoleEnum.Arsonist))
+                {
+                    foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
+                        ((Arsonist)arso).RpcSpreadDouse(player, Player);
                 }
             }
         }

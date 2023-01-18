@@ -23,14 +23,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Who Likes Ice Cream?";
             AbilitiesText = "- You can douse players in coolant.\n- You can choose to freeze all currently doused players which kills them at the start of the next meeting.";
             AttributesText = "- People who interact with you will also get doused.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral);
+            Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
             RoleType = RoleEnum.Cryomaniac;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.ArsoCryoPBOpTroll;
+            Results = InspResults.ArsoPBCryoVet;
             Attack = AttackEnum.Powerful;
             Defense = DefenseEnum.Basic;
             AttackString = "Powerful";
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
             RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
-            Objectives = IsRecruit ? JackalWinCon : NKWinCon;
+            Objectives = NKWinCon;
         }
 
         public KillButton FreezeButton

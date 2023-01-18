@@ -29,14 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         {
             MurderPlayer(assassin, voteArea, player, guess);
 
-            unchecked
-            {
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AssassinKill,
-                    SendOption.Reliable, -1);
-                writer.Write(player.PlayerId);
-                writer.Write(guess);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AssassinKill, SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            writer.Write(guess);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public static void MurderPlayer(Assassin assassin, PlayerControl player, string guess, bool checkLover = true)
@@ -244,13 +240,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                             if (mayor.Player == PlayerControl.LocalPlayer)
                                 mayor.VoteBank += votesRegained;
                                 
-                            unchecked
-                            {
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
-                                writer.Write(mayor.Player.PlayerId);
-                                writer.Write(votesRegained);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            }
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                            writer.Write(mayor.Player.PlayerId);
+                            writer.Write(votesRegained);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
                     }
                 }

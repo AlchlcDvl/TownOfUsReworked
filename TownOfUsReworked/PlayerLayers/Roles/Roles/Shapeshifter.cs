@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
-            Results = InspResults.DisgMorphCamoAgent;
+            Results = InspResults.DisgCamoSSConc;
         }
 
         public KillButton ShapeshiftButton

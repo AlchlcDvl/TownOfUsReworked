@@ -38,15 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 if (role.InvisTimer() != 0)
                     return false;
                 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Invis,
-                        SendOption.Reliable, -1);
-                    var position = PlayerControl.LocalPlayer.transform.position;
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-                
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Invis, SendOption.Reliable, -1);
+                var position = PlayerControl.LocalPlayer.transform.position;
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.InvisDuration;
                 role.Invis();
                 //SoundManager.Instance.PlaySound(TownOfUsReworked.InvisSound, false, 0.4f);

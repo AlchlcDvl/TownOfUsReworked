@@ -67,7 +67,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Pirate = new Color32(237, 194, 64, 255); //#EDC240FF
         public readonly static Color32 Vampire = new Color32(43, 210, 156, 255); //#2BD29CFF
         public readonly static Color32 Jackal = new Color32(69, 7, 106, 255); //#45076AFF
-		public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
+        public readonly static Color32 Phantom = new Color32(102, 41, 98, 255); //#662962FF
 
         //Intruder Colors
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
@@ -123,11 +123,11 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
         public readonly static Color32 Radar = new Color32(255, 0, 128, 255); //#FF0080FF
         public readonly static Color32 Multitasker = new Color32(255, 128, 77, 255); //#FF804DFF
+        public readonly static Color32 Ruthless = new Color32(33, 96, 221, 255); //#2160DDFF
 
         //Objectifier Colors
         public readonly static Color32 Lovers = new Color32(255, 102, 204, 255); //#FF66CCFF
         public readonly static Color32 Traitor = new Color32(55, 13, 67, 255); //#370D43FF
-        public readonly static Color32 Phantom = new Color32(102, 41, 98, 255); //#662962FF
         public readonly static Color32 Rivals = new Color32(61, 45, 44, 255); //#3D2D2CFF
         public readonly static Color32 Fanatic = new Color32(103, 141, 54, 255); //#678D36FF
         public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
@@ -139,13 +139,14 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Alignment = new Color32(29, 124, 242, 255); //#1D7CF2FF
         public readonly static Color32 Status = new Color32(155, 89, 182, 255); //#9B59B6FF
         public readonly static Color32 Clear = new Color32(0, 0, 0, 0); //#00000000
+		public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
 
         //Color Storage For Colors I Will Use Later
         public readonly static Color32 Coven = new Color32(191, 95, 255, 255); //#BF5FFFFF
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 something = new Color32(168, 67, 0, 0); //#A84300FF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2160dd #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
+        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
         //#286e58 #db4f20 #f995fc #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #e6108a #4e4e4e #b148e2 #fffead
         //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #8d0f8c #F6AAB7

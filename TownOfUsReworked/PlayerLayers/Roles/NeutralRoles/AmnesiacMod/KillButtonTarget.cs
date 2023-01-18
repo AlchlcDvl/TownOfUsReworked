@@ -30,14 +30,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", Color.red);
+                component.material.SetColor("_OutlineColor", role.Color);
                 __instance.graphic.color = Palette.EnabledColor;
                 __instance.graphic.material.SetFloat("_Desat", 0f);
-                return;
             }
-
-            __instance.graphic.color = Palette.DisabledClear;
-            __instance.graphic.material.SetFloat("_Desat", 1f);
+            else
+            {
+                __instance.graphic.color = Palette.DisabledClear;
+                __instance.graphic.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

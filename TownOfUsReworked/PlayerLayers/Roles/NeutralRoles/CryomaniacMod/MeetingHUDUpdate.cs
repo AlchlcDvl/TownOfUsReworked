@@ -11,15 +11,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
         public static void Postfix(MeetingHud __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            var _role = Role.GetRole(localPlayer);
 
-            if (_role?.RoleType != RoleEnum.Cryomaniac)
+            if (!localPlayer.Is(RoleEnum.Cryomaniac) || localPlayer.Data.IsDead)
                 return;
 
-            if (localPlayer.Data.IsDead)
-                return;
-
-            var role = (Cryomaniac)_role;
+            var role = Role.GetRole<Cryomaniac>(localPlayer);
 
             foreach (var state in __instance.playerStates)
             {

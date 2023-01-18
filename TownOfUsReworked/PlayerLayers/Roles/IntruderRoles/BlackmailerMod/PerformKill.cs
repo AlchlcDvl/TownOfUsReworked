@@ -73,14 +73,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                 role.Blackmailed = target;
                 role.BlackmailButton.SetCoolDown(1f, 1f);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Blackmail, SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Blackmail, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(target.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 
                 return false;
             }

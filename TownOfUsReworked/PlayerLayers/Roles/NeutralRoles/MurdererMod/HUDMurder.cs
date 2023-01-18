@@ -11,21 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     {
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
-                return;
-
-            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-
-            if (isDead)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
                 return;
 
             var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);

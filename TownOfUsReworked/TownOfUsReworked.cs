@@ -34,6 +34,7 @@ namespace TownOfUsReworked
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
+    //[ReactorModFlags(ModFlags.RequireOnAllClients)]
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";

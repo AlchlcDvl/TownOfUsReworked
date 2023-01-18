@@ -33,12 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Results = InspResults.SurvVHVampVig;
-            IntroSound = null;
-            Attack = AttackEnum.None;
-            Defense = DefenseEnum.None;
-            AttackString = "None";
-            DefenseString = "None";
+            Results = InspResults.VigVHSurvGorg;
         }
 
         public float VestTimer()

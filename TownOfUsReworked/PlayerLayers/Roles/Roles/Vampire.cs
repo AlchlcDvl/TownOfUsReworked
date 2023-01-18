@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = "Neutral (Proselyte)";
-            Results = InspResults.SurvVHVampVig;
+            Results = InspResults.EngiMineBombVampWW;
         }
 
         public override void Wins()

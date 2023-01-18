@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         public class StartMeetingPatch
         {
-            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo meetingTarget)
+            public static void Prefix(PlayerControl __instance)
             {
                 if (__instance == null)
                     return;

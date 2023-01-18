@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist) x).ArsonistWins);
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Arsonist && ((Arsonist)x).ArsonistWins);
 
             if (role == null)
                 return;

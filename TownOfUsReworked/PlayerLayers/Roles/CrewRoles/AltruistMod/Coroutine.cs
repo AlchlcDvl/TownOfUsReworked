@@ -7,7 +7,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -120,8 +119,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Minigame.Instance.Close();
             }
 
-            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
-                !(PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil)))
+            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) ||
+                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo))
             {
                 var gameObj = new GameObject();
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();

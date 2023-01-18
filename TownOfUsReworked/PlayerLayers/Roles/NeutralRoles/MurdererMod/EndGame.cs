@@ -11,18 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Murderer murd in Role.GetRoles(RoleEnum.Murderer))
             {
-                if (role.RoleType == RoleEnum.Murderer)
-                    ((Murderer)role).Loses();
+                if (!Role.AllNeutralsWin && !Role.NKWins && !murd.MurdWins)
+                {
+                    murd.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MurdererLose, SendOption.Reliable, -1);
+                    writer.Write(murd.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MurdererLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

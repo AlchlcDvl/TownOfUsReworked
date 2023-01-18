@@ -17,17 +17,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Investigator";
             StartText = "Examine Footprints To Find The <color=#FF0000FF>Intruders</color>";
             AbilitiesText = "- You can see everyone's footprints.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Investigator : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Investigator : Colors.Crew;
             RoleType = RoleEnum.Investigator;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.JestJuggWWInv;
+            Results = InspResults.ThiefAmneTrackInvest;
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CIDescription;
             RoleDescription = "You are an Investigator! You can see other's footprints and can tell how long as it been since they passed by a certain point. Use this info to find out" + 
                 " people who have been around bodies and not reporting them!";
+            Objectives = CrewWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

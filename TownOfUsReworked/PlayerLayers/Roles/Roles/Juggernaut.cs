@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.JestJuggWWInv;
+            Results = InspResults.DetJuggOpTroll;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

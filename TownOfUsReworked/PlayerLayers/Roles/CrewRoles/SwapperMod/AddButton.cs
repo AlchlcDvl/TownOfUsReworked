@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             var passive = newButton.GetComponent<PassiveButton>();
 
             renderer.sprite = DisabledSprite;
-            newButton.transform.position = confirmButton.transform.position - new Vector3(1.2f, 0f, 0f);
+            newButton.transform.position = confirmButton.transform.position - new Vector3(-0.95f, 0.03f, -1.3f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
             newButton.transform.parent = confirmButton.transform.parent.parent;

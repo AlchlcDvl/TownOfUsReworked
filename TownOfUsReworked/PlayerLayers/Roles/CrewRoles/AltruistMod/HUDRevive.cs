@@ -12,16 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
     {
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-            
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Altruist))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Altruist))
                 return;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
@@ -31,9 +22,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
             var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
-            var killButton = __instance.KillButton;
+            var killButton = role.ReviveButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
+
+            if (killButton == null)
+            {
+                killButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                killButton.graphic.enabled = true;
+                killButton.gameObject.SetActive(false);
+            }
 
             foreach (var collider2D in allocs)
             {

@@ -1,18 +1,18 @@
 using System.Linq;
 using HarmonyLib;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
     public static class Outro
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Phantom && ((Phantom)x).CompletedTasks);
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Phantom && ((Phantom)x).CompletedTasks);
 
             if (role == null)
                 return;
@@ -27,11 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-
-            try
-            {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-            } catch {}
         }
     }
 }

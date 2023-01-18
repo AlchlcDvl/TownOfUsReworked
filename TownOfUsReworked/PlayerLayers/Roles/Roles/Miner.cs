@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            Results = InspResults.MineMafiSideDamp;
+            Results = InspResults.EngiMineBombVampWW;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

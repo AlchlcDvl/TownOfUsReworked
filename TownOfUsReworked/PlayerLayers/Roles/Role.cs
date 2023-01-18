@@ -87,6 +87,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsBlocked { get; set; } = false;
         protected internal bool RoleBlockImmune { get; set; } = false;
 
+        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill: <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
             "<color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
@@ -99,6 +101,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string IDDescription = "You are an Intruder (Deception) role! It's your job to ensure there's only false information spreading around about you. Keep the " +
             "misinformation circulating, for it can be advantageous to completely fool even one player.";
         public static string IUDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
+        public static string IKDescription = "You are a Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " + 
+            "with your abilities!";
 
         public static string SyndicateWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#575657FF>Recruited</color> <color=#008000FF>Syndicate</color>, " +
             "<color=#8BFDFDFF>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
@@ -112,6 +116,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string SDDescription = "You are a Syndicate (Disruption) role! Your main abilities lie in disrupting the flow of the game via unconventional and indirect means." + 
             " Create extreme levels of chaos by just the click of a button!";
         public static string SyKDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
+        public static string SPDescription = "You are a Syndicate (Power) role! You are a powerful role who's only goal is to chaos and destruction. Ensure that the crew cannot get " +
+            "their wits and information in order!";
 
         public static string CrewFactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
             " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
@@ -124,8 +130,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             "<color=#008000FF>Syndicate</color>,\n<color=#370D43FF>Traitor</color>, <color=#4545FFFF>Corrupted</color> and <color=#575657FF>Recruited</color> " +
             "<color=#8BFDFDFF>Crew</color>,\n<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
-        public static string CSDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on it's own. Use your abilities to their " +
-            "fullest extent to bring about a Crew victory.";
+        public static string CSDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +
+            "fullest extent to bring about a Crew victory!";
+        public static string CADescription = "You are a Crew (Auditor) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +
+            "fullest extent to bring about a Crew victory!";
             
         public static string NeutralFactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
             " a certain objective.";
@@ -145,7 +153,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             "Non-<color=#7B8968FF>Undead</color> <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
         public static string NNDescription = "You are a Neutral (Neophyte) role! You are the leader of your little faction and your main purpose is to convert others to your cause. " +
-            "Gain a mojority and overrun the crew!";
+            "Gain a majority and overrun the crew!";
 
         protected Role(PlayerControl player)
         {
@@ -173,23 +181,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool LostByRPC { get; protected set; }
 
-        protected internal int TasksLeft()
-        {
-            if (Player == null || Player.Data == null)
-                return 0;
-            
-            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        }
-
+        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
-        protected internal bool TasksDone => TasksLeft() <= 0;
+        protected internal bool TasksDone => TasksLeft <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 
         public static uint NetId => PlayerControl.LocalPlayer.NetId;
         public string PlayerName { get; set; }
 
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
         public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
 
@@ -294,74 +294,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(59, "lighter"); //Rainbow
         }
 
-        internal static bool NobodyEndCriteria(ShipStatus __instance)
-        {
-            bool CheckNoImpsNoCrews()
-            {
-                var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-                if (alives.Count == 0)
-                    return false;
-
-                var flag = alives.All(x =>
-                {
-                    var role = GetRole(x);
-
-                    if (role == null)
-                        return false;
-
-                    var flag2 = role.Faction == Faction.Neutral && x.Is(RoleAlignment.NeutralBen);
-
-                    return flag2;
-                });
-
-                return flag;
-            }
-
-            bool SurvOnly()
-            {
-                var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
-                var flag = false;
-
-                if (alives.Count == 0)
-                    return flag;
-
-                foreach (var player in alives)
-                {
-                    if (player.Is(RoleEnum.Survivor))
-                        flag = true;
-                }
-
-                return flag;
-            }
-
-            if (CheckNoImpsNoCrews())
-            {
-                if (SurvOnly())
-                {
-                    var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NeutralsWin,
-                        SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
-
-                    NeutralsOnlyWin();
-                    Utils.EndGame();
-                    return false;
-                }
-                else
-                {
-                    var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NobodyWins,
-                        SendOption.Reliable, -1);
-                    AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
-
-                    NobodyWinsFunc();
-                    Utils.EndGame();
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         internal virtual bool EABBNOODFGL(ShipStatus __instance)
         {
             return true;
@@ -390,11 +322,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
 
             return false;
-        }
-
-        internal virtual bool NumberCriteria()
-        {
-            return CustomGameOptions.PlayerNumbers;
         }
 
         internal virtual bool Criteria()
@@ -488,7 +415,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag;
         }
 
-        protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, bool revealNumber, PlayerVoteArea player = null)
+        protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
         {
             if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
                 return "";
@@ -501,16 +428,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!Local)
                 return PlayerName;
 
-            if (revealNumber && !Local)
-                PlayerName += $" [{Player.PlayerId}]";
-
             var objectifier = Objectifier.GetObjectifier(Player);
 
             if (objectifier != null && revealObjectifier)
                 PlayerName += $" {objectifier.GetColoredSymbol()}";
 
             if (revealTasks && PlayerControl.LocalPlayer.CanDoTasks() && !TasksDone && CustomGameOptions.SeeTasks)
-                PlayerName += $" ({TotalTasks - TasksLeft()}/{TotalTasks})";
+                PlayerName += $" ({TotalTasks - TasksLeft}/{TotalTasks})";
 
             if (Local && CustomGameOptions.GATargetKnows && PlayerControl.LocalPlayer.IsGATarget())
                 PlayerName += " <color=#FFFFFFFF> ★</color>";
@@ -561,9 +485,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static T Gen<T>(Type type, PlayerControl player, CustomRPC rpc)
         {
-            if (player == null)
-                return default(T);
-
             var role = (T)Activator.CreateInstance(type, new object[] {player});
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)rpc, SendOption.Reliable, -1);
             writer.Write(player.PlayerId);
@@ -573,14 +494,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static T Gen<T>(Type type, List<PlayerControl> players, CustomRPC rpc)
         {
-            if (players.Count <= 0)
-                return default(T);
-
             var player = players[Random.RandomRangeInt(0, players.Count)];
-            
-            if (player == null)
-                return default(T);
-            
             var role = Gen<T>(type, player, rpc);
             players.Remove(player);
             return role;
@@ -671,10 +585,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var ability = Ability.GetAbility(player);
                     var flag = modifier == null && ability == null && objectifier == null;
 
-                    if (!flag)
-                        StatusText = Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false);
-                    else
-                        StatusText = null;
+                    StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
                 }
             }
 
@@ -689,10 +600,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var ability = Ability.GetAbility(player);
                     var flag = modifier == null && ability == null && objectifier == null;
 
-                    if (!flag)
-                        StatusText = Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false);
-                    else
-                        StatusText = null;
+                    StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
                 }
             }
             
@@ -740,24 +648,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var objectifier = Objectifier.GetObjectifier(player);
                         var ability = Ability.GetAbility(player);
 
-                        var statusString = "<color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status:</color>";
+                        var statusString = "";
+                        var status = "";
 
                         if (modifier != null && !modifier.Hidden)
-                            statusString += $" {modifier.ColorString}{modifier.Name}</color>";
+                            status += $" {modifier.ColorString}{modifier.Name}</color>";
 
                         if (objectifier != null && !objectifier.Hidden)
-                            statusString += $" {objectifier.ColorString}{objectifier.Name}</color>";
+                            status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
                         if (ability != null && !ability.Hidden)
-                            statusString += $" {ability.ColorString}{ability.Name}</color>";
-                        
-                        var substatus = statusString.Replace("<color=#", "");
-                        substatus.Replace(">Status:</color>", "");
+                            status += $" {ability.ColorString}{ability.Name}</color>";
 
-                        if (substatus.Length == 8)
-                            statusString = "";
-
-                        statusString = "<size=4>" + statusString + "</size>";
+                        if (status.Length != 0)
+                            statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
 
                         StatusText.text = statusString;
                         StatusText.outlineColor = Colors.Status;
@@ -799,24 +703,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var objectifier = Objectifier.GetObjectifier(player);
                         var ability = Ability.GetAbility(player);
 
-                        var statusString = "<color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status:</color>";
+                        var statusString = "";
+                        var status = "";
 
                         if (modifier != null && !modifier.Hidden)
-                            statusString += $" {modifier.ColorString}{modifier.Name}</color>";
+                            status += $" {modifier.ColorString}{modifier.Name}</color>";
 
                         if (objectifier != null && !objectifier.Hidden)
-                            statusString += $" {objectifier.ColorString}{objectifier.Name}</color>";
+                            status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
                         if (ability != null && !ability.Hidden)
-                            statusString += $" {ability.ColorString}{ability.Name}</color>";
-                        
-                        var substatus = statusString.Replace("<color=#", "");
-                        substatus.Replace(">Status:</color>", "");
+                            status += $" {ability.ColorString}{ability.Name}</color>";
 
-                        if (substatus.Length == 8)
-                            statusString = "";
-                        
-                        statusString = "<size=4>" + statusString + "</size>";
+                        if (status.Length != 0)
+                            statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
 
                         StatusText.text = statusString;
                         StatusText.outlineColor = Colors.Status;
@@ -934,7 +834,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                     task.transform.SetParent(player.transform, false);
-                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? Role.JackalWinCon : role.Objectives)}\nAttack/Defense:" +
+                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? JackalWinCon : role.Objectives)}\nAttack/Defense:" +
                         $" {role.AttackString}/{role.DefenseString}\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
                         
                     player.myTasks.Insert(0, task);
@@ -950,20 +850,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
 
-                var result = true;
-
                 foreach (var role in AllRoles)
                 {
                     var roleIsEnd = role.EABBNOODFGL(__instance);
 
                     if (!roleIsEnd)
-                        result = false;
+                        return false;
                 }
 
-                if (!NobodyEndCriteria(__instance))
-                    result = false;
-
-                return result;
+                return true;
             }
         }
 
@@ -1045,10 +940,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool localFlag = role.Local;
                         bool loverrivalFlag1 = role.LoverRivalCriteria();
                         bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
-                        bool numberFlag = role.NumberCriteria();
 
                         player.NameText.text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag ||
-                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1, numberFlag, player);
+                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1, player);
 
                         if (role.ColorCriteria())
                             player.NameText.color = role.Color;
@@ -1060,22 +954,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
                         } catch {}
                     }
+                        
+                    if (CustomGameOptions.PlayerNumbers)
+                        player.NameText.text = $"[{player.TargetPlayerId}] " + player.NameText.text;
                 }
             }
 
             [HarmonyPriority(Priority.First)]
             private static void Postfix(HudManager __instance)
             {
-                if (MeetingHud.Instance != null)
+                if (LobbyBehaviour.Instance)
+                    return;
+                    
+                if (MeetingHud.Instance)
                     UpdateMeeting(MeetingHud.Instance);
 
-                if (PlayerControl.AllPlayerControls.Count <= 1)
-                    return;
-
-                if (PlayerControl.LocalPlayer == null)
-                    return;
-
-                if (PlayerControl.LocalPlayer.Data == null)
+                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                     return;
 
                 foreach (var player in PlayerControl.AllPlayerControls)
@@ -1099,17 +993,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool localFlag = role.Local;
                         bool loverrivalFlag1 = role.LoverRivalCriteria();
                         bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
-                        bool numberFlag = role.NumberCriteria();
 
                         player.nameText().text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag ||
-                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1, numberFlag);
+                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1);
 
-                        if (role.ColorCriteria())
+                        if (role.ColorCriteria() && !LobbyBehaviour.Instance)
                             player.nameText().color = role.Color;
                     }
 
-                    if (player.Data != null && PlayerControl.LocalPlayer.Data.IsImpostor() && player.Data.IsImpostor())
-                        continue;
+                    if (CustomGameOptions.PlayerNumbers && !LobbyBehaviour.Instance)
+                        player.nameText().text = $"[{player.PlayerId}] " + player.nameText().text;
                 }
             }
         }

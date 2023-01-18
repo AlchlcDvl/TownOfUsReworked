@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Medium";
             StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
             AbilitiesText = "Follow ghosts to get clues from them";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             LastMediated = DateTime.UtcNow;
             RoleType = RoleEnum.Medium;
             Faction = Faction.Crew;
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.CoroJaniUTMed;
+            Results = InspResults.CorJaniUTMed;
             Attack = AttackEnum.None;
             Defense = DefenseEnum.None;
             AttackString = "None";

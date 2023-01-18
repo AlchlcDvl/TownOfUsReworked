@@ -68,15 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 return false;
             }
             
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.Interrogate, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Interrogate, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             role.Interrogated.Add(role.ClosestPlayer.PlayerId);
             role.LastInterrogated = DateTime.UtcNow;
             //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);

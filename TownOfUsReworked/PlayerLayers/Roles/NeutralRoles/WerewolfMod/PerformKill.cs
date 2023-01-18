@@ -46,15 +46,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
 
             role.Maul(role.Player);
             role.LastMauled = DateTime.UtcNow;
-
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Maul,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Maul, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             return false;
         }
     }

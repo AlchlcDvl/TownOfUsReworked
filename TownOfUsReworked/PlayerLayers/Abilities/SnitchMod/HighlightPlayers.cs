@@ -59,9 +59,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                 return;
 
-            var ability = Ability.GetAbility<Snitch>(PlayerControl.LocalPlayer);
+            var role2 = Role.GetRole(PlayerControl.LocalPlayer);
 
-            if (!ability.TasksDone)
+            if (!role2.TasksDone)
                 return;
 
             if (MeetingHud.Instance && CustomGameOptions.SnitchSeesImpInMeeting)

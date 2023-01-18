@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Operative";
             StartText = "Detect Which Roles Are Here";
             AbilitiesText = "Place bugs around the map to discover the <color=#FF0000FF>Intruders</color>";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
             lastBugged = DateTime.UtcNow;
             buggedPlayers = new List<RoleEnum>();
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.ArsoCryoPBOpTroll;
+            Results = InspResults.DetJuggOpTroll;
         }
 
         public float BugTimer()

@@ -1,15 +1,14 @@
 using HarmonyLib;
+using TownOfUsReworked.Enums;
+using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
+using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HighlightImpostors
@@ -23,9 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                     if (player.PlayerId != state.TargetPlayerId)
                         continue;
 
-                    var ability = Ability.GetAbility(player);
-                    var objectifier = Objectifier.GetObjectifier(player);
                     var role = Role.GetRole(player);
+                    var objectifier = Objectifier.GetObjectifier(player);
 
                     if (CustomGameOptions.RevealerRevealsRoles)
                     {
@@ -48,17 +46,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                             }
                         }
                         else if (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals)
-                        {
                             state.NameText.color = role.Color;
-                        }
                         else if (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew)
-                        {
                             state.NameText.color = role.Color;
-                        }
                     }
                     else
                     {
-                        if (player.Is(Faction.Intruder)) 
+                        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)) 
                         {
                             if ((player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) || !player.Is(ObjectifierEnum.Traitor))
                                 state.NameText.color = role.FactionColor;
@@ -71,28 +65,22 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 }
             }
         }
-        
         public static void Postfix(HudManager __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
                 return;
 
-            var ability = Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Revealer>(PlayerControl.LocalPlayer);
 
-            if (!ability.CompletedTasks || ability.Caught)
+            if (!role.CompletedTasks || role.Caught)
                 return;
 
             if (MeetingHud.Instance)
             {
                 UpdateMeeting(MeetingHud.Instance);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RevealerFinished,
-                        SendOption.Reliable, -1);
-                    writer.Write(ability.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RevealerFinished, SendOption.Reliable, -1);
+                writer.Write(role.Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
     }

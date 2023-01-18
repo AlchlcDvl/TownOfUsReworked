@@ -17,13 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
@@ -40,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             role.EatButton.GetComponent<AspectPosition>().Update();
             role.EatButton.graphic.sprite = TownOfUsReworked.CannibalEat;
-            role.EatButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead);
+            role.EatButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;

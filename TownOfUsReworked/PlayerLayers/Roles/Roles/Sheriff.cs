@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Sheriff";
             StartText = "Reveal The Alignment Of Other Players";
             AbilitiesText = "Reveal alignments of other players to find the <color=#FF0000FF>Intruders</color>";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             LastInterrogated = DateTime.UtcNow;
             RoleType = RoleEnum.Sheriff;
             Faction = Faction.Crew;

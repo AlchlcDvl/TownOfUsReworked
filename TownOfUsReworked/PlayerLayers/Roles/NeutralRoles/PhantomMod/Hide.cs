@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
@@ -12,18 +12,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.PhantomMod
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var objectifier in Objectifier.GetObjectifiers(ObjectifierEnum.Phantom))
+            foreach (var role in Role.GetRoles(RoleEnum.Phantom))
             {
-                var phantom = (Phantom)objectifier;
+                var phantom = (Phantom)role;
 
-                if (objectifier.Player.Data.Disconnected)
+                if (role.Player.Data.Disconnected)
                     return;
                 
-                if (!phantom.HasDied)
-                    continue;
-
                 var caught = phantom.Caught;
-                
+
                 if (!caught)
                     phantom.Fade();
                 else if (phantom.Faded)

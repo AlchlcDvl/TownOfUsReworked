@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Swapper";
             StartText = "Swap The Votes Of Two People";
             AbilitiesText = "Swap two people's votes to save the <color=#8BFDFDFF>Crew</color>!";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Swapper : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Swapper : Colors.Crew;
             RoleType = RoleEnum.Swapper;
             Faction = Faction.Crew;
             FactionName = "Crew";

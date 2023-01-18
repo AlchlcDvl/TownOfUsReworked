@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
             RoleType = RoleEnum.Crewmate;
             StartText = "Do Your Tasks";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : Colors.Crew));
+            Color = Colors.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewUtil;
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Crew (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = CUDescription;
             FactionDescription = CrewFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

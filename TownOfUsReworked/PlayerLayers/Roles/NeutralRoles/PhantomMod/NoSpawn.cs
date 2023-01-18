@@ -1,19 +1,19 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
     public class NoSpawn
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var caught = Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught;
-                
+                var caught = Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught;
+
                 if (!caught)
                 {
                     __instance.Close();

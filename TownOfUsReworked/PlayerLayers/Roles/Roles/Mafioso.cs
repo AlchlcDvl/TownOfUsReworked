@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            Results = InspResults.MineMafiSideDamp;
+            Results = InspResults.JestMafiSideDamp;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +

@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = "Intruder (Deception)";
-            Results = InspResults.EscConsGliPois;
+            Results = InspResults.GrenFramMedicPois;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

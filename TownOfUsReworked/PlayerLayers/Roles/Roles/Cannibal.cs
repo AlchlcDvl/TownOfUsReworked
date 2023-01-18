@@ -14,8 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         private KillButton _eatButton;
         public DeadBody CurrentTarget { get; set; }
-        public int EatNeed;
-        public string body;
+        public int EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
+            CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
+        public string body => EatNeed == 1 ? "body" : "bodies";
         public bool CannibalWin;
         public DateTime LastEaten { get; set; }
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
@@ -26,19 +27,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
             Faction = Faction.Neutral;
-            LastEaten = DateTime.UtcNow;
-            EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ?
-                PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
-            body = EatNeed == 1 ? "body" : "bodies";
             AbilitiesText = "- You can consume a body, making it disappear from the game.";
             AttributesText = "- You know when someone dies, so you can find their body.";
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.EngiAmneThiefCann;
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral);
-            RoleDescription = $"You are a Cannibal! You have an everlasting hunger for dead bodies. You need to eat {EatNeed} {body} to win!";
+            Results = InspResults.TLAltTMCann;
+            Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
+            RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             AlignmentDescription = NEDescription;
             FactionDescription = NeutralFactionDescription;
             Objectives = $"- Eat {EatNeed} {body}.";
@@ -53,8 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.CabalWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin, SendOption.Reliable, -1);
                     writer.Write(Player.PlayerId);
                     Wins();
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -64,8 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (EatNeed == 0)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CannibalWin,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.CannibalWin, SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

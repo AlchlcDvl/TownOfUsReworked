@@ -15,9 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Glitch);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
                 return true;
 
             if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead)

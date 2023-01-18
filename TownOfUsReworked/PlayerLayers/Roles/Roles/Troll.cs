@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.ArsoCryoPBOpTroll;
+            Results = InspResults.DetJuggOpTroll;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

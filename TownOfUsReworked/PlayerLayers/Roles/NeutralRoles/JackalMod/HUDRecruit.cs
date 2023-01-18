@@ -15,21 +15,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Jackal))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Jackal))
                 return;
 
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
 
-            if (role.HasRecruited)
+            if (role.HasRecruited || !role.RecruitsDead)
                 return;
 
             if (role.RecruitButton == null)
@@ -41,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
             role.RecruitButton.GetComponent<AspectPosition>().Update();
             role.RecruitButton.graphic.sprite = Recruit;
-            role.RecruitButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !role.HasRecruited && !LobbyBehaviour.Instance);
+            role.RecruitButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !role.HasRecruited && !LobbyBehaviour.Instance && role.RecruitsDead);
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notRecruited);
             role.RecruitButton.SetCoolDown(role.RecruitTimer(), CustomGameOptions.RecruitCooldown);

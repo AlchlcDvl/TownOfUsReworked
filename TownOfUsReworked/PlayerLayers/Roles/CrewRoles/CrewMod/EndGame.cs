@@ -10,18 +10,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason == GameOverReason.HumansByVote || reason == GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (var role in Role.GetRoles(Faction.Crew))
             {
-                if (role.Faction == Faction.Crew && !role.IsRecruit)
+                if (!Role.CrewWin)
+                {
                     role.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewLose, SendOption.Reliable, -1);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

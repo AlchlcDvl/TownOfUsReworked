@@ -1453,19 +1453,19 @@ If they guess wrong, they die instead.
 
 ## Revealer
 
-The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crewmates after a meeting is called. However, if the Haunter is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
+The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crewmates after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Haunter | The percentage probability of the Haunter appearing | Percentage | 0% |
-| When Haunter Can Be Clicked | The amount of tasks remaining when the Haunter Can Be Clicked | Number | 5 |
-| Haunter Alert | The amount of tasks remaining when the Impostors are alerted that the Haunter is nearly finished | Number | 1 |
-| Haunter Reveals Neutral Roles | Whether the Haunter also Reveals Neutral Roles | Toggle | False |
-| Haunter Reveals Crew Roles | Whether the Haunter also Reveals Crew Roles | Toggle | False |
-| Haunter Reveals Exact Roles | Whether the Haunter also Reveals all Roles | Toggle | False |
-| Who can Click Haunter | Whether even other Crewmates can click the Haunter | All / Non-Crew / Imps Only | All |
+| Revealer | The percentage probability of the Revealer appearing | Percentage | 0% |
+| When Revealer Can Be Clicked | The amount of tasks remaining when the Revealer Can Be Clicked | Number | 5 |
+| Revealer Alert | The amount of tasks remaining when the Impostors are alerted that the Revealer is nearly finished | Number | 1 |
+| Revealer Reveals Neutral Roles | Whether the Revealer also Reveals Neutral Roles | Toggle | False |
+| Revealer Reveals Crew Roles | Whether the Revealer also Reveals Crew Roles | Toggle | False |
+| Revealer Reveals Exact Roles | Whether the Revealer also Reveals all Roles | Toggle | False |
+| Who can Click Revealer | Whether even other Crewmates can click the Revealer | All / Non-Crew / Imps Only | All |
 
 ## Snitch
 

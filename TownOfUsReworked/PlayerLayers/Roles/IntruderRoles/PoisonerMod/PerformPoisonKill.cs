@@ -172,14 +172,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             role.TimeRemaining = CustomGameOptions.PoisonDuration;
             role.PoisonButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.PoisonDuration);
 
-            unchecked
-            {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Poison,
-                    SendOption.Reliable, -1);
-                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer2.Write(role.PoisonedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-            }
+            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Poison, SendOption.Reliable, -1);
+            writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer2.Write(role.PoisonedPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer2);
             
             try
             {

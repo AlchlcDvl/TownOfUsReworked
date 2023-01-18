@@ -19,20 +19,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Syndicate;
             RoleType = RoleEnum.Anarchist;
             StartText = "Wreck Everyone With A Passion";
-            Color = IsRecruit ? Colors.Cabal : Colors.Syndicate;
+            Color = Colors.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
             Results = InspResults.CrewImpAnMurd;
             Base = true;
-            Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
+            Objectives = SyndicateWinCon;
             RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SUDescription;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            LastKill = DateTime.UtcNow;
         }
 
         public float KillTimer()

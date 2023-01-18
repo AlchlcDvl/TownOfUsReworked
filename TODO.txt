@@ -60,8 +60,8 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Return: Brought back the option to toggle Lovers Chat
 - Return: Brought back the Colorblind Meetings
 - Mega Rework: Split Objectifiers into Abilities (additional stuff) and Objectifiers (new win con)
-- Mega Rework: Lovers, Traitor, Taskmaster and Phantom are now Objectifiers
-- Mega Rework: Button Barry, Snitch, Haunter (now Revealer), Underdog, Torch, Tiebreaker and Lighter are now Abilities
+- Mega Rework: Lovers, Traitor and Taskmaster are now Objectifiers
+- Mega Rework: Button Barry, Snitch, Underdog, Torch, Tiebreaker and Lighter are now Abilities
 - Rework: Improved win cons of all roles, now each faction/role can only win if only specific enemy roles/factions are dead
 - Rework: Engineer can now cancel a Camouflager's camouflage
 - Rework: Plaguebearers and Pestilences can win with each other (for the special case of Amnesiac remembering Plaguebearer, becoming Pestilence and then winning)
@@ -121,5 +121,12 @@ AS's Bugs Corner
 - Vigi suicides don't work properly
 - Thief's stealing half works
 - Inspector has double results showing up
+- Incomplete task lists
+- RPCs don't work properly :(
+- End game is buggy as heck
+
+AS's To-Do Corner
+- FFS FINISH THE DETAILS OF ALL THE ROLES
+- Remove all unchecked places
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

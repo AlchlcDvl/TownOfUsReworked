@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Shifter";
             StartText = "Shift around different roles";
             AbilitiesText = "Steal other people's roles";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;
             LastShifted = DateTime.UtcNow;
             Faction = Faction.Crew;

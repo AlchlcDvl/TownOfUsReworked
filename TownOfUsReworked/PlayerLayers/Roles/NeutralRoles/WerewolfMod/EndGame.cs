@@ -11,17 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Werewolf ww in Role.GetRoles(RoleEnum.Werewolf))
             {
-                if (role.RoleType == RoleEnum.Werewolf)
-                    ((Werewolf)role).Loses();
+                if (!Role.AllNeutralsWin && !Role.NKWins && !ww.WWWins)
+                {
+                    ww.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WerewolfLose, SendOption.Reliable, -1);
+                    writer.Write(ww.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WerewolfLose, SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

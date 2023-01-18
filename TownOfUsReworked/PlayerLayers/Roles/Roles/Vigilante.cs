@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Vigilante";
             StartText = "Shoot The <color=#FF0000FF>Intruders</color>";
             AbilitiesText = "Kill the <color=#FF0000FF>Intruders</color> but not the <color=#8BFDFDFF>Crew</color>";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Vigilante;
             Faction = Faction.Crew;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Killing)";
-            Results = InspResults.SurvVHVampVig;
+            Results = InspResults.VigVHSurvGorg;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

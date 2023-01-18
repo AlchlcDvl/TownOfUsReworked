@@ -23,12 +23,8 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(MeetingHud __instance)
         {
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies,
-                    SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable, -1);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             var buggedBodies = Object.FindObjectsOfType<DeadBody>();
 

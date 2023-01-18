@@ -24,8 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Results = InspResults.EngiAmneThiefCann;
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral);
+            Results = InspResults.ThiefAmneTrackInvest;
+            Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             IntroSound = TownOfUsReworked.AmnesiacIntro;
             RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
                 " instead need to win as the role you become after finding a dead body.";

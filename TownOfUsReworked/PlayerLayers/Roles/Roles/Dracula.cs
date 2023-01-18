@@ -41,6 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ShiftSwapSKDrac;
             Objectives = UndeadWinCon;
             SubFactionColor = Colors.Undead;
+            SubFactionName = "Undead";
         }
 
         public float ConvertTimer()

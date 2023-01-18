@@ -20,16 +20,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Examine The Dead For Info";
             AbilitiesText = "- You know when players die and for a brief period know where their body is.";
             AttributesText = "- When reporting a body, you get all of the required info from it.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.CoroJaniUTMed;
+            Results = InspResults.CorJaniUTMed;
             FactionDescription = CrewFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
             AlignmentDescription = CIDescription;
             RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies and are so skilled to the point you even know when someone dies!" +
                 " Your strong skill makes you a very tempting target for evils so be careful when revealing information.";

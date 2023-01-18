@@ -16,26 +16,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.CanMove)
                 return false;
 
             var role = Role.GetRole<Juggernaut>(PlayerControl.LocalPlayer);
 
-            if (role.Player.inVent)
-                return false;
-
-            if (role.KillTimer() != 0)
-                return false;
-
-            if (role.ClosestPlayer == null)
+            if (role.Player.inVent || role.KillTimer() != 0 || role.ClosestPlayer == null)
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -55,8 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                 if (role.ClosestPlayer.IsShielded())
                 {
                     var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -73,8 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                 else if (role.Player.IsShielded())
                 {
                     var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -85,9 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                     StopKill.BreakShield(medic, role.Player.PlayerId,
                         CustomGameOptions.ShieldBreaks);
                 }
-                else if (role.ClosestPlayer.IsProtected())
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
-                else
+                else if (!role.ClosestPlayer.IsProtected())
                     Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
                     
                 return false;
@@ -95,8 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
             else if (role.ClosestPlayer.IsShielded())
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer.Write(medic);
                 writer.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

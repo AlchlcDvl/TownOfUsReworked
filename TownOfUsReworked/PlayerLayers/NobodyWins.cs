@@ -18,8 +18,6 @@ namespace TownOfUsReworked.PlayerLayers
             {
                 text = Object.Instantiate(__instance.WinText);
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
-                var color = __instance.WinText.color;
-                color.a = 1f;
                 text.color = Colors.Stalemate;
                 text.text = "Stalemate!";
                 pos = __instance.WinText.transform.localPosition;

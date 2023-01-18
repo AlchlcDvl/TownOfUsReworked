@@ -23,8 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting.";
             AttributesText = "- You can blackmail fellow <color=#FF0000FF>Intruders</color>.\n- Everyone will be alerted at the start of the meeting" + 
                 " that someone has been blackmailed.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder);
-            LastBlackmailed = DateTime.UtcNow;
+            Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             Faction = Faction.Intruder;
             FactionName = "Intruder";
@@ -41,7 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " blackmail yourself so the others will get wise to your identity pretty quickly.";
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
-            LastBlackmailed = DateTime.UtcNow;
         }
 
         public KillButton BlackmailButton

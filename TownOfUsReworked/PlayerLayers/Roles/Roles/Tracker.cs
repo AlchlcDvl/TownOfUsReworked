@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Tracker";
             StartText = "Stalk Everyone To Monitor Their Movements";
             AbilitiesText = "Track suspicious players";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
             LastTracked = DateTime.UtcNow;
             RoleType = RoleEnum.Tracker;
             Faction = Faction.Crew;
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.TrackAltTLTM;
+            Results = InspResults.ThiefAmneTrackInvest;
         }
 
         public float TrackerTimer()

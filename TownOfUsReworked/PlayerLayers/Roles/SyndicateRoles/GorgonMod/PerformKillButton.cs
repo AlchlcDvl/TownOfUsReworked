@@ -7,7 +7,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -44,14 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             if (role.gazeList.ContainsKey(role.ClosestPlayer.PlayerId))
                 return false;
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Gaze,
-                    SendOption.Reliable, -1);
-                writer.Write(role.Player.PlayerId);
-                writer.Write(role.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Gaze, SendOption.Reliable, -1);
+            writer.Write(role.Player.PlayerId);
+            writer.Write(role.ClosestPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             
             role.gazeList.Add(role.ClosestPlayer.PlayerId, 0);
 

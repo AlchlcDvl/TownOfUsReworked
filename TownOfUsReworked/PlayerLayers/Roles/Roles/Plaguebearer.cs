@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.ArsoCryoPBOpTroll;
+            Results = InspResults.ArsoPBCryoVet;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)
@@ -118,28 +118,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (InfectedPlayers.Contains(source.PlayerId))
             {
                 InfectedPlayers.Add(target.PlayerId);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Infect,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Infect, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                writer.Write(target.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             else if (InfectedPlayers.Contains(target.PlayerId))
             {
                 InfectedPlayers.Add(source.PlayerId);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Infect,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
-                    writer.Write(source.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Infect, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                writer.Write(source.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
 

@@ -15,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac))
                 return;
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
@@ -65,11 +56,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             {
                 role.FreezeButton.graphic.color = Palette.EnabledColor;
                 role.FreezeButton.graphic.material.SetFloat("_Desat", 0f);
-                return;
             }
-
-            role.FreezeButton.graphic.color = Palette.DisabledClear;
-            role.FreezeButton.graphic.material.SetFloat("_Desat", 1f);
+            else
+            {
+                role.FreezeButton.graphic.color = Palette.DisabledClear;
+                role.FreezeButton.graphic.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Arsonist : Role
     {
         private KillButton _igniteButton;
+        private KillButton _douseButton;
         public bool ArsonistWins = false;
         public bool LastKiller => PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))).ToList().Count() == 0;
@@ -35,8 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.ArsoCryoPBOpTroll;
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral);
+            Results = InspResults.ArsoPBCryoVet;
+            Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             Attack = AttackEnum.Unstoppable;
             AttackString = "Unstoppable";
             DefenseString = "Basic";
@@ -46,9 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 $" you are done for. There are currently {DousedAlive} players doused.";
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
-            Objectives = IsRecruit ? JackalWinCon : NKWinCon;
-            LastDoused = DateTime.UtcNow;
-            LastIgnited = DateTime.UtcNow;
+            Objectives = NKWinCon;
         }
 
         public KillButton IgniteButton
@@ -57,6 +56,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _igniteButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public KillButton DouseButton
+        {
+            get => _douseButton;
+            set
+            {
+                _douseButton = value;
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }
@@ -181,15 +191,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (DousedPlayers.Contains(source.PlayerId))
             {
                 DousedPlayers.Add(target.PlayerId);
-
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse, SendOption.Reliable, -1);
+                writer.Write(Player.PlayerId);
+                writer.Write(target.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
     }

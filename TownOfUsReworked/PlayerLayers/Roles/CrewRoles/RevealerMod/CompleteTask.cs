@@ -1,13 +1,12 @@
-using System.Linq;
 using HarmonyLib;
 using Reactor.Utilities;
 using UnityEngine;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
     public class CompleteTask
@@ -16,18 +15,16 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (!__instance.Is(AbilityEnum.Revealer))
+            if (!__instance.Is(RoleEnum.Revealer))
                 return;
 
-            var role = Ability.GetAbility<Revealer>(__instance);
-            var taskinfos = __instance.Data.Tasks.ToArray();
-            var tasksLeft = taskinfos.Count(x => !x.Complete);
+            var role = Role.GetRole<Revealer>(__instance);
 
-            if (tasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
+            if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
             {
-                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
+                else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                 {
                     role.Revealed = true;
@@ -43,14 +40,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 }
             }
 
-            if (tasksLeft == 0 && !role.Caught)
+            if (role.TasksDone && !role.Caught)
             {
                 role.CompletedTasks = true;
 
-                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
-                    CustomGameOptions.RevealerRevealsNeutrals))
+                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+                    Coroutines.Start(Utils.FlashCoroutine(Color.white));
+                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals))
                     Coroutines.Start(Utils.FlashCoroutine(Color.white));
             }
         }

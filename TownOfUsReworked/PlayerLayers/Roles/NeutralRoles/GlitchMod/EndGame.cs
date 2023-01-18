@@ -11,17 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Glitch gli in Role.GetRoles(RoleEnum.Glitch))
             {
-                if (role.RoleType == RoleEnum.Glitch)
-                    ((Glitch) role).Loses();
+                if (!Role.AllNeutralsWin && !gli.GlitchWins && !Role.NKWins)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GlitchLose, SendOption.Reliable, -1);
+                    writer.Write(gli.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    gli.Loses();
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.GlitchLose, SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

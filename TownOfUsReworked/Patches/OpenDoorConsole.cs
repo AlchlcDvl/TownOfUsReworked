@@ -5,9 +5,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.Patches
 {
@@ -20,8 +19,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -60,8 +59,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -110,8 +109,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -150,8 +149,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -175,8 +174,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -200,8 +199,8 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(ObjectifierEnum.Phantom) && !Objectifier.GetObjectifier<Phantom>(playerControl).Caught) ||
-                (playerControl.Is(AbilityEnum.Revealer) && !Ability.GetAbility<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
+                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;

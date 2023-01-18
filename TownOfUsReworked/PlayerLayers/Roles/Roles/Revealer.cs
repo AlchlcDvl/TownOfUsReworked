@@ -1,13 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Extensions;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
+namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
-    public class Revealer : Ability
+    public class Revealer : Role
     {
         public bool Caught;
         public bool Revealed;
@@ -20,9 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Revealer(PlayerControl player) : base(player)
         {
             Name = "Revealer";
-            TaskText = "Complete all your tasks to reveal impostors!";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Revealer : Colors.Ability;
-            AbilityType = AbilityEnum.Revealer;
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
+            RoleType = RoleEnum.Revealer;
+            Faction = Faction.Crew;
         }
 
         public void Fade()
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             Faded = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * CustomGameOptions.CrewVision;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * PlayerControl.GameOptions.CrewLightMod;
 
             if (PlayerControl.LocalPlayer == null)
                 return;
@@ -41,9 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             distPercent = Mathf.Max(0, distPercent - 1);
 
             var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
-            color.a = 0.07f + velocity / Player.MyPhysics.GhostSpeed * 0.13f;
+            color.a = 0.07f + velocity / Player.MyPhysics.TrueGhostSpeed * 0.13f;
             color.a = Mathf.Lerp(color.a, 0, distPercent);
-
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
             {
@@ -56,10 +55,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     PlayerName = ""
                 });
             }
-            
+
             Player.myRend().color = color;
-            Player.nameText().color = Color.clear;
-            Player.cosmetics.colorBlindText.color = Color.clear;
+            Player.nameText().color = new Color(0f, 0f, 0f, 0f);
+            Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
     }
 }

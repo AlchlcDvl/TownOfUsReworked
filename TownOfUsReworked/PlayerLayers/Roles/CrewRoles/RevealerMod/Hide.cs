@@ -1,11 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
@@ -13,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
     {
         public static void Postfix(HudManager __instance)
         {
-            foreach (var role in Ability.GetAbilities(AbilityEnum.Revealer))
+            foreach (var role in Role.GetRoles(RoleEnum.Revealer))
             {
                 var haunter = (Revealer) role;
 
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 else if (haunter.Faded)
                 {
                     Utils.DefaultOutfit(haunter.Player);
-                    haunter.Player.myRend().color = Colors.Revealer;
+                    haunter.Player.myRend().color = Color.white;
                     haunter.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     haunter.Faded = false;
                     haunter.Player.MyPhysics.ResetMoveState();

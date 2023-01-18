@@ -4,7 +4,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
     {
         Never,
         SameNKs,
-        SameRoles,
         AllNKs,
         AllNeutrals
     }

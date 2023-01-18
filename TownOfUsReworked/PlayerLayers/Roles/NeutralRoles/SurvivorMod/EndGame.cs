@@ -11,16 +11,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            foreach (var role in Role.AllRoles)
+            foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
             {
-                if (role.RoleType == RoleEnum.Survivor)
-                    ((Survivor)role).Loses();
+                if (surv.Alive)
+                {
+                    surv.Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SurvivorWin, SendOption.Reliable, -1);
+                    writer.Write(surv.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else
+                {
+                    surv.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SurvivorLose, SendOption.Reliable, -1);
+                    writer.Write(surv.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SurvivorLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            
             return true;
         }
     }

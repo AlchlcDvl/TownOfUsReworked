@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Mayor";
             StartText = "Save Your Votes To Mayor Dump Someone";
             AbilitiesText = "Save your votes to vote multiple times";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             RoleType = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
             Faction = Faction.Crew;

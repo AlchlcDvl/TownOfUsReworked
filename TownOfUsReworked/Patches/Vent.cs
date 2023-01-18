@@ -185,42 +185,17 @@ namespace TownOfUsReworked.Patches
             var player = PlayerControl.LocalPlayer;
 
             if (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent)
-            {
-                if (CustomGameOptions.JestVentSwitch)
-                    return true;
-                else
-                    return false;
-            }
+                return CustomGameOptions.JestVentSwitch;
             else if (player.Is(RoleEnum.Executioner) && CustomGameOptions.ExeVent)
-            {
-                if (CustomGameOptions.ExeVentSwitch)
-                    return true;
-                else
-                    return false;
-            }
+                return CustomGameOptions.ExeVentSwitch;
             else if (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent)
-            {
-                if (CustomGameOptions.SurvVentSwitch)
-                    return true;
-                else
-                    return false;
-            }
+                return CustomGameOptions.SurvVentSwitch;
             else if (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent)
-            {
-                if (CustomGameOptions.AmneVentSwitch)
-                    return true;
-                else
-                    return false;
-            }
+                return CustomGameOptions.AmneVentSwitch;
             else if (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent)
-            {
-                if (CustomGameOptions.GAVentSwitch)
-                    return true;
-                else
-                    return false;
-            }
-
-            return true;
+                return CustomGameOptions.GAVentSwitch;
+            else
+                return true;
         }
     }
 }

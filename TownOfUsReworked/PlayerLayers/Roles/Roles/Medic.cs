@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Medic";
             StartText = "Shield a <color=#8BFDFDFF>Crewmate</color> to protect them";
             AbilitiesText = "Protect a <color=#8BFDFDFF>Crewmate</color> using a shield";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
             RoleType = RoleEnum.Medic;
             Faction = Faction.Crew;
             ShieldedPlayer = null;
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-            Results = InspResults.GAExeMedicPup;
+           // Results = InspResults.GAExeMedicPup;
             IntroSound = TownOfUsReworked.MedicIntro;
         }
 

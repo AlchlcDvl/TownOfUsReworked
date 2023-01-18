@@ -18,10 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod
 
         internal static bool IncreasedKC()
         {
-            if (CustomGameOptions.UnderdogIncreasedKC)
-                return true;
-            else
-                return false;
+            return CustomGameOptions.UnderdogIncreasedKC;
         }
     }
 }

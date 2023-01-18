@@ -18,9 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public VampireHunter(PlayerControl player) : base(player)
         {
             Name = "Vampire Hunter";
-            StartText = "Stake The <color=#7B8968FF>Vampires</color>";
-            AbilitiesText = "Stake the <color=#7B8968FF>Vampires</color>";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew)));
+            StartText = "Stake The <color=#7B8968FF>Undead</color>";
+            AbilitiesText = "Stake the <color=#7B8968FF>Undead</color>";
+            Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             LastStaked = DateTime.UtcNow;
             RoleType = RoleEnum.VampireHunter;
             Faction = Faction.Crew;
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = "Crew (Auditor)";
-            Results = InspResults.SurvVHVampVig;
+            Results = InspResults.VigVHSurvGorg;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

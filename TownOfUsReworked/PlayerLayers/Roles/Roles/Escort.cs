@@ -24,15 +24,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AbilitiesText = "- You can seduce players.";
             AttributesText = "- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
                 "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            Results = InspResults.EscConsGliPois;
+            Results = InspResults.MorphGliEscCons;
             AlignmentDescription = CSDescription;
             FactionDescription = CrewFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
         }
 

@@ -86,6 +86,8 @@ namespace TownOfUsReworked.Patches
         SetBackupRecruit,
         SetBomber,
         SetFramer,
+        SetPhantom,
+        SetRevealer,
 
         SetDiseased,
         SetGiant,
@@ -106,13 +108,11 @@ namespace TownOfUsReworked.Patches
         SetAssassin,
         SetTunneler,
         SetButtonBarry,
-        SetRevealer,
         SetMultitasker,
         SetRadar,
         SetInsider,
 
         SetCouple,
-        SetPhantom,
         SetDuo,
         SetFanatic,
         SetTraitor,
@@ -123,8 +123,8 @@ namespace TownOfUsReworked.Patches
         PhantomDied,
         CatchPhantom,
 
-        RevealerDied,
         CatchRevealer,
+        RevealerDied,
 
         TurnTraitor,
 
@@ -135,10 +135,13 @@ namespace TownOfUsReworked.Patches
         JuggernautLose,
         ArsonistWin,
         ArsonistLose,
+        JesterWin,
         JesterLose,
+        ExecutionerWin,
         ExecutionerLose,
         NeutralsWin,
         NobodyWins,
+        SurvivorWin,
         SurvivorLose,
         PlaguebearerWin,
         PlaguebearerLose,
@@ -148,7 +151,6 @@ namespace TownOfUsReworked.Patches
         WerewolfLose,
         CannibalWin,
         CannibalLose,
-        GALose,
         MurdererWin,
         MurdererLose,
         SerialKillerWin,
@@ -160,6 +162,10 @@ namespace TownOfUsReworked.Patches
         ThiefLose,
         PirateWin,
         PirateLose,
+        PhantomWin,
+        PhantomLose,
+        GuardianAngelWin,
+        GuardianAngelLose,
 
         CrewWin,
         CrewLose,
@@ -174,7 +180,6 @@ namespace TownOfUsReworked.Patches
         CabalLose,
 
         LoveWin,
-        PhantomWin,
         TaskmasterWin,
         RivalWin,
         CorruptedLose,
@@ -242,6 +247,7 @@ namespace TownOfUsReworked.Patches
         Shapeshift,
         Declare,
         Sidekick,
+        Steal,
 
         BypassKill,
         Mimic,

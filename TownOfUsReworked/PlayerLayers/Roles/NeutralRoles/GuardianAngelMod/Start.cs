@@ -21,14 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
                 if (ga.TargetPlayer == null && PlayerControl.LocalPlayer == ga.Player)
                 {
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GAToSurv,
-                            SendOption.Reliable, -1);
-                        writer.Write(ga.Player.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GAToSurv, SendOption.Reliable, -1);
+                    writer.Write(ga.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     GATargetColor.GAToSurv(ga.Player);
                 }
             }

@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderDecep;
             FactionColor = Colors.Intruder;
             AlignmentName = "Intruder (Deception)";
-            Results = InspResults.DisgMorphCamoAgent;
+            Results = InspResults.MorphGliEscCons;
             IntroSound = TownOfUsReworked.MorphlingIntro;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";

@@ -30,12 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
-            Results = InspResults.WraithDetGrenVet;
-            IntroSound = null;
+            Results = InspResults.TeleWarpTransWraith;
             Attack = AttackEnum.Basic;
-            Defense = DefenseEnum.None;
             AttackString = "Basic";
-            DefenseString = "None";
         }
 
         public KillButton InvisButton

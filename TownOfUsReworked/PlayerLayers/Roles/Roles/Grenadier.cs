@@ -37,13 +37,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName ="Intruder (Concealing)";
-            Results = InspResults.WraithDetGrenVet;
+            Results = InspResults.GrenFramMedicPois;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             AlignmentDescription = ICDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            Objectives = IntrudersWinCon;
             FactionDescription = IntruderFactionDescription;
-            RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again.";
+            RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
         }
 
         public KillButton FlashButton

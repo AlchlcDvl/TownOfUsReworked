@@ -16,14 +16,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Executioner";
             StartText = "Eject Your Target";
             Objectives = "- Eject your target.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral);
+            Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             RoleType = RoleEnum.Executioner;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.GAExeMedicPup;
+            Results = InspResults.GAExeJackAg;
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NEDescription;
             RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";

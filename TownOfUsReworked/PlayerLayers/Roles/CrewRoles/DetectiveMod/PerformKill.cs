@@ -8,7 +8,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
@@ -18,31 +17,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Detective))
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton || !PlayerControl.LocalPlayer.Is(RoleEnum.Detective))
                 return true;
 
             var role = Role.GetRole<Detective>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
-                return false;
-
-            var flag2 = role.ExamineTimer() == 0f;
-
-            if (!flag2)
-                return false;
-
-            if (!__instance.enabled)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null || role.ExamineTimer() != 0f || !__instance.enabled)
                 return false;
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer) > maxDistance)
-                return false;
-
-            if (role.ClosestPlayer == null)
+            if (Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer) > maxDistance || role.ClosestPlayer == null)
                 return false;
 
             if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
@@ -51,12 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
+            if (role.ClosestPlayer.Is(RoleEnum.Arsonist))
+            {
+                foreach (var pb in Role.GetRoles(RoleEnum.Arsonist))
+                    ((Arsonist)pb).RpcSpreadDouse(role.ClosestPlayer, role.Player);
+            }
+
             if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.Player.IsShielded())
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer2.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -66,15 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     if (CustomGameOptions.ShieldBreaks)
                         role.LastExamined = DateTime.UtcNow;
 
-                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId,
-                        CustomGameOptions.ShieldBreaks);
-                    return false;
+                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (!role.Player.IsProtected())
-                {
                     Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
 
                 role.LastExamined = DateTime.UtcNow;
                 return false;
@@ -84,8 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
             foreach (var player in Murder.KilledPlayers)
             {
-                if (player.KillerId == role.ClosestPlayer.PlayerId && (float)(DateTime.UtcNow - player.KillTime).TotalSeconds <
-                    CustomGameOptions.RecentKill)
+                if (player.KillerId == role.ClosestPlayer.PlayerId && (float)(DateTime.UtcNow - player.KillTime).TotalSeconds < CustomGameOptions.RecentKill)
                     hasKilled = true;
             }
 
@@ -95,7 +79,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                 Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 
             role.LastExamined = DateTime.UtcNow;
-
             return false;
         }
     }

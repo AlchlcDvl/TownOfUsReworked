@@ -26,19 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Executioner))
-                return;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null ||
+                !PlayerControl.LocalPlayer.Is(RoleEnum.Executioner) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var role = Role.GetRole<Executioner>(PlayerControl.LocalPlayer);
@@ -61,13 +50,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (role.TargetVotedOut)
                 return;
             
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             ExeToJes(PlayerControl.LocalPlayer);
         }
 

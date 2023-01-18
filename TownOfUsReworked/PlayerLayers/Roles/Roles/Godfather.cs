@@ -34,10 +34,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             FactionDescription = IntruderFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            Objectives = IntrudersWinCon;
             AlignmentDescription = ISDescription;
             RoleDescription = "You are the Godfather! You are the leader of the Intruders. You can promote a fellow Intruder into becoming your Mafioso." +
-                " When you die, the Mafioso will become the new Godfather and will inherit stronger variations of their former role.";
+                " When you die, the Mafioso will become the new Godfather and will inherit stronger variations of their former role!";
         }
 
         public override void Wins()

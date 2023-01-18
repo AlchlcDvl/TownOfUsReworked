@@ -15,8 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.DrunkMod
         {
             public static void Postfix(PlayerPhysics __instance)
             {
-                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Drunk) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove &&
-                    !MeetingHud.Instance)
+                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Drunk) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !MeetingHud.Instance)
                 {
                     _time += Time.deltaTime;
 

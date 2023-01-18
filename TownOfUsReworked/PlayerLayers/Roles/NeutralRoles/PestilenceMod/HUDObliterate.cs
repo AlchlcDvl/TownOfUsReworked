@@ -11,16 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
     {
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null ||
+                !PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
                 return;
 
             var role = Role.GetRole<Pestilence>(PlayerControl.LocalPlayer);

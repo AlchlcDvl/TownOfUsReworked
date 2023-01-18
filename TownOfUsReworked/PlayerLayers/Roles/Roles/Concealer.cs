@@ -22,19 +22,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Concealer";
             StartText = "Make The <color=#8BFDFDFF>Crew</color> Invisible For Some Chaos";
             AbilitiesText = "- You can turn off player's ability to see things properly, making all other players appear invisible to themselves.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate);
+            Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
             RoleType = RoleEnum.Concealer;
             Faction = Faction.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = "Syndicate (Support)";
-            Results = InspResults.ConcealGorg;
+            Results = InspResults.DisgCamoSSConc;
             RoleDescription = "You are a Concealer! You can turn everyone invisible to everyone else but themselves by making them unable to see things properly. " +
                 "Use this to get away from crime scenes as fast as possible!";
             AlignmentDescription = SSuDescription;
             FactionDescription = SyndicateFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
+            Objectives = SyndicateWinCon;
         }
 
         public KillButton ConcealButton

@@ -61,6 +61,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption ShifterOn;
         public static CustomNumberOption EscortOn;
         public static CustomNumberOption TransporterOn;
+        public static CustomNumberOption RevealerOn;
 
         //CU Role Spawn
         public static CustomHeaderOption CrewUtilityRoles;
@@ -84,6 +85,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption JesterOn;
         public static CustomNumberOption CannibalOn;
         public static CustomNumberOption TrollOn;
+        public static CustomNumberOption PhantomOn;
 
         //NK Role Spawn
         public static CustomHeaderOption NeutralKillingRoles;
@@ -172,14 +174,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption TunnelerOn;
         public static CustomNumberOption UnderdogOn;
         public static CustomNumberOption SnitchOn;
-        public static CustomNumberOption RevealerOn;
         public static CustomNumberOption RadarOn;
         public static CustomNumberOption MultitaskerOn;
 
         //Objectifier Spawn
         public static CustomHeaderOption Objectifiers;
         public static CustomNumberOption LoversOn;
-        public static CustomNumberOption PhantomOn;
         public static CustomNumberOption TraitorOn;
         public static CustomNumberOption RivalsOn;
         public static CustomNumberOption FanaticOn;
@@ -1301,6 +1301,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             CrewSupportRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
             EngineerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>", 0, 0, 100, 10, PercentFormat);
             EscortOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#803333FF>Escort</color>", 0, 0, 100, 10, PercentFormat);
+            RevealerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>", 0, 0, 100, 10, PercentFormat);
             ShifterOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>", 0, 0, 100, 10, PercentFormat);
             TransporterOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color>", 0, 0, 100, 10, PercentFormat);
 
@@ -1317,6 +1318,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             CannibalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>", 0, 0, 100, 10, PercentFormat);
             ExecutionerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0, 0, 100, 10, PercentFormat);
             JesterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0, 0, 100, 10, PercentFormat);
+            PhantomOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
             TrollOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralKillingRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
@@ -1395,7 +1397,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             LighterOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#1AFF74FF>Lighter</color>", 0, 0, 100, 10, PercentFormat);
             MultitaskerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>", 0, 0, 100, 10, PercentFormat);
             RadarOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>", 0, 0, 100, 10, PercentFormat);
-            RevealerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color>", 0, 0, 100, 10, PercentFormat);
             SnitchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>", 0, 0, 100, 10, PercentFormat);
             TiebreakerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>", 0, 0, 100, 10, PercentFormat);
             TorchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>", 0, 0, 100, 10, PercentFormat);
@@ -1407,7 +1408,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             FanaticOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>", 0, 0, 100, 10, PercentFormat);
             LoversOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>", 0, 0, 100, 10, PercentFormat);
             OverlordOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>", 0, 0, 100, 10, PercentFormat);
-            PhantomOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
             RivalsOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>", 0, 0, 100, 10, PercentFormat);
             TaskmasterOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>", 0, 0, 100, 10, PercentFormat);
             TraitorOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>", 0, 0, 100, 10, PercentFormat);
@@ -1582,6 +1582,16 @@ namespace TownOfUsReworked.Lobby.CustomOption
             EscRoleblockCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             EscRoleblockDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Roleblock Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
+            Revealer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>");
+            RevealerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Count", 1, 1, 14, 1);
+            RevealerKnows = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Knows Who They Are On Game Start", true);
+            RevealerTasksRemainingClicked = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
+            RevealerTasksRemainingAlert = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When Revealed", 1, 1, 5, 1);
+            RevealerRevealsNeutrals = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
+            RevealerRevealsCrew = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
+            RevealerRevealsRoles = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals Exact Roles", false);
+            RevealerCanBeClickedBy = new CustomStringOption(true, num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] {"All", "Non-Crew", "Imps Only"});
+
             Shifter = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>");
             ShifterCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Count", 1, 1, 14, 1);
             UniqueShifter = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Is Unique In All Any", false);
@@ -1691,6 +1701,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JestSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Switch Vents", false);
             JestEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
             VigiKillsJester = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false);
+
+            Phantom = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
+            PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
+            PhantomKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Knows Who They Are On Game Start", false);
+            PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
 
             Troll = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>");
             TrollCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Count", 1, 1, 14, 1);
@@ -2087,16 +2102,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Radar = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>");
             RadarCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
 
-            Revealer = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color>");
-            RevealerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color> Count", 1, 1, 14, 1);
-            RevealerKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color> Knows Who They Are On Game Start", true);
-            RevealerTasksRemainingClicked = new CustomNumberOption(true, num++, MultiMenu.ability, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
-            RevealerTasksRemainingAlert = new CustomNumberOption(true, num++, MultiMenu.ability, "Tasks Remaining When Revealed", 1, 1, 5, 1);
-            RevealerRevealsNeutrals = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
-            RevealerRevealsCrew = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
-            RevealerRevealsRoles = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D3D3D3FF>Revealer</color> Reveals Exact Roles", false);
-            RevealerCanBeClickedBy = new CustomStringOption(true, num++, MultiMenu.ability, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] {"All", "Non-Crew", "Imps Only"});
-
             Snitch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>");
             SnitchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);
             SnitchKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start", true);
@@ -2145,11 +2150,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Overlord = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>");
             OverlordCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Count", 1, 1, 14, 1);
             OverlordMeetingWinCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Meeting Timer", 2f, 1f, 20f, 1f);
-
-            Phantom = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#662962FF>Phantom</color>");
-            PhantomCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
-            PhantomKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#662962FF>Phantom</color> Knows Who They Are On Game Start", false);
-            PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
 
             Rivals = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>");
             RivalsCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Count", 1, 1, 14, 1);

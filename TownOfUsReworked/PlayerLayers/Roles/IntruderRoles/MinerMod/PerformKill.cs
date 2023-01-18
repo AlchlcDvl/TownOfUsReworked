@@ -47,19 +47,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)
                     return false;
                 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Mine,
-                        SendOption.Reliable, -1);
-                    var position = PlayerControl.LocalPlayer.transform.position;
-                    var id = GetAvailableId();
-                    writer.Write(id);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(position);
-                    writer.Write(0.01f);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    SpawnVent(id, role, position, 0.01f);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Mine, SendOption.Reliable, -1);
+                var position = PlayerControl.LocalPlayer.transform.position;
+                var id = GetAvailableId();
+                writer.Write(id);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(position);
+                writer.Write(0.01f);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                SpawnVent(id, role, position, 0.01f);
 
                 try
                 {

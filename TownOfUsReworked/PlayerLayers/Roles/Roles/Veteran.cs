@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Veteran";
             StartText = "Alert To Kill Anyone Who Touches You";
             AbilitiesText = "Alert to kill whoever interacts with you";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
             RoleType = RoleEnum.Veteran;
             Faction = Faction.Crew;
             UsesLeft = CustomGameOptions.MaxAlerts;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Killing)";
-            Results = InspResults.WraithDetGrenVet;
+            Results = InspResults.ArsoPBCryoVet;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";
         }

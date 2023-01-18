@@ -11,17 +11,17 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Objectifier.AllObjectifiers)
+            foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
             {
-                if (role.ObjectifierType == ObjectifierEnum.Corrupted)
-                    ((Corrupted)role).Loses();
+                if (!corr.CorruptedWin)
+                {
+                    corr.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CorruptedLose, SendOption.Reliable, -1);
+                    writer.Write(corr.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CorruptedLose, SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             return true;
         }
     }

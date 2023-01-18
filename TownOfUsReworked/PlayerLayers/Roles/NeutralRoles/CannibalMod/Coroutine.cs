@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             }
 
             Object.Destroy(body.gameObject);  
-              
             role.EatNeed--;
             
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))

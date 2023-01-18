@@ -38,14 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 if (role.FreezeTimer() != 0)
                     return false;
 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.TimeFreeze,
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-                
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.TimeFreeze, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.FreezeDuration;
                 role.TimeFreeze();
 

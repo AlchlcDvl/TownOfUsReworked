@@ -56,11 +56,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                     
                 return false;
             }
-            else if (role.Player.IsOtherRival(role.ClosestPlayer))
-            {
-                role.LastRecruited = DateTime.UtcNow;
-                return false;
-            }
 
             var target = role.ClosestPlayer;
             role.BackupRecruit = target;
@@ -68,16 +63,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             var targetRole = Role.GetRole(target);
             targetRole.SubFaction = SubFaction.Cabal;
             targetRole.IsRecruit = true;
+            targetRole.Faction = Faction.Neutral;
             role.RecruitButton.gameObject.SetActive(false);
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable, -1);
+            writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer2.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer2);
             return false;
         }
     }

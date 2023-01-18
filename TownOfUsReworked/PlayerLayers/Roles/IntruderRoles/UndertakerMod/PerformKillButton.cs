@@ -46,17 +46,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 
                     var playerId = role.CurrentTarget.ParentId;
 
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Drag,
-                            SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(playerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Drag, SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(playerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.CurrentlyDragging = role.CurrentTarget;
-
                     KillButtonTarget.SetTarget(__instance, null, role);
                     __instance.graphic.sprite = TownOfUsReworked.DropSprite;
                     return false;
@@ -66,34 +60,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     if (!__instance.enabled)
                         return false;
 
-                    unchecked
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Drop, SendOption.Reliable, -1);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
+
+                    if (SubmergedCompatibility.isSubmerged())
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Drop,
-                            SendOption.Reliable, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
-
-
-                        if (SubmergedCompatibility.isSubmerged())
-                        {
-                            if (position.y > -7f)
-                                position.z = 0.0208f;
-                            else
-                                position.z = -0.0273f;
-                        }
-
-                        writer.Write(position);
-                        writer.Write(position.z);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        var body = role.CurrentlyDragging;
-                        body.bodyRenderer.material.SetFloat("_Outline", 0f);
-                        role.CurrentlyDragging = null;
-                        __instance.graphic.sprite = TownOfUsReworked.DragSprite;
-                        role.LastDragged = DateTime.UtcNow;
-
-                        body.transform.position = position;
+                        if (position.y > -7f)
+                            position.z = 0.0208f;
+                        else
+                            position.z = -0.0273f;
                     }
-
+                    
+                    writer.Write(position);
+                    writer.Write(position.z);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    var body = role.CurrentlyDragging;
+                    body.bodyRenderer.material.SetFloat("_Outline", 0f);
+                    role.CurrentlyDragging = null;
+                    __instance.graphic.sprite = TownOfUsReworked.DragSprite;
+                    role.LastDragged = DateTime.UtcNow;
+                    body.transform.position = position;
                     return false;
                 }
             }

@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
             RoleType = RoleEnum.Teleporter;
             Faction = Faction.Intruder;
-            Results = InspResults.TransWarpTeleTask;
+            Results = InspResults.TeleWarpTransWraith;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

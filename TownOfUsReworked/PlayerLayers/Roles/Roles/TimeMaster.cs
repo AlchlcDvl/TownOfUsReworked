@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            Results = InspResults.TrackAltTLTM;
+            Results = InspResults.TLAltTMCann;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

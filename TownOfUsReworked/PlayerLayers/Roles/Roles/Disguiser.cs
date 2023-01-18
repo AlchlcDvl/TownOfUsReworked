@@ -29,20 +29,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Disguiser";
             StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
             AbilitiesText = "- You can disguise a player into someone else's appearance.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder);
+            Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
             RoleType = RoleEnum.Disguiser;
             Faction = Faction.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = "Intruder (Deception)";
-            Results = InspResults.DisgMorphCamoAgent;
+            Results = InspResults.DisgCamoSSConc;
             FactionDescription = IntruderFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            Objectives = IntrudersWinCon;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             AlignmentDescription = IDDescription;
-            RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you.";
+            RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
         }
 
         public KillButton DisguiseButton

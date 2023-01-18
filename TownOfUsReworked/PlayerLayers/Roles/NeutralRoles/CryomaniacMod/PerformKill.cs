@@ -16,15 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.CanMove)
                 return false;
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
@@ -39,13 +34,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 
                 role.FreezeUsed = true;
 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AllFreeze,
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AllFreeze, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 
                 return false;
             }
@@ -53,16 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
                 return true;
 
-            if (!__instance.isActiveAndEnabled)
-                return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
-
-            if (role.DouseTimer() != 0)
-                return false;
-
-            if (role.DousedPlayers.Contains(role.ClosestPlayer.PlayerId))
+            if (!__instance.isActiveAndEnabled || role.ClosestPlayer == null || role.DouseTimer() != 0 || role.DousedPlayers.Contains(role.ClosestPlayer.PlayerId))
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -71,12 +53,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             if (!flag3)
                 return false;
 
-            if (role.ClosestPlayer.IsOnAlert())
+            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
                 if (role.Player.IsShielded())
                 {
-                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer3.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
                     writer3.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer3);
@@ -90,10 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                     return false;
                 }
                 else if (!role.Player.IsProtected())
-                {
                     Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
 
                 role.LastDoused = DateTime.UtcNow;
                 return false;
@@ -104,18 +82,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 return false;
             }
 
-            unchecked
-            {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Douse,
-                    SendOption.Reliable, -1);
-                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer2.Write(role.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-            }
-            
+            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Douse, SendOption.Reliable, -1);
+            writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer2.Write(role.ClosestPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer2);
             role.DousedPlayers.Add(role.ClosestPlayer.PlayerId);
             role.LastDoused = DateTime.UtcNow;
-
             __instance.SetTarget(null);
             return false;
         }

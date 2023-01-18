@@ -32,12 +32,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Attack = AttackEnum.Basic;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
-            Results = InspResults.ConcealGorg;
+            Results = InspResults.VigVHSurvGorg;
             AttackString = "Basic";
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
             FactionDescription = SyndicateFactionDescription;         
-            Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
+            Objectives = SyndicateWinCon;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
             AlignmentDescription = SyKDescription;
         }

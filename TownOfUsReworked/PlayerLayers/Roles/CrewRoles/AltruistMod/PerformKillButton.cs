@@ -15,38 +15,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton || !PlayerControl.LocalPlayer.Is(RoleEnum.Altruist))
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Altruist);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
-            var flag2 = __instance.isCoolingDown;
 
-            if (flag2)
-                return false;
-
-            if (!__instance.enabled)
+            if (__instance.isCoolingDown || !__instance.enabled)
                 return false;
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (role == null)
-                return false;
-
-            if (role.CurrentTarget == null)
-                return false;
-
-            if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (role == null || role.CurrentTarget == null || Utils.GetDistBetweenPlayers(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId)) > maxDistance)
                 return false;
 
             var playerId = role.CurrentTarget.ParentId;
@@ -58,15 +40,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
             }
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AltruistRevive,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-            
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AltruistRevive, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);        
             Coroutines.Start(Coroutine.AltruistRevive(role.CurrentTarget, role));
             return false;
         }

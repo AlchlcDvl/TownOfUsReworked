@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
                 return true;
 
             return __instance == DestroyableSingleton<HudManager>.Instance.KillButton;
@@ -23,18 +23,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget && __instance.enabled)
+            if (role.CurrentTarget != null)
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);
                 component.material.SetColor("_OutlineColor", role.Color);
                 __instance.graphic.color = Palette.EnabledColor;
                 __instance.graphic.material.SetFloat("_Desat", 0f);
-                return;
             }
-
-            __instance.graphic.color = Palette.DisabledClear;
-            __instance.graphic.material.SetFloat("_Desat", 1f);
+            else
+            {
+                __instance.graphic.color = Palette.DisabledClear;
+                __instance.graphic.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

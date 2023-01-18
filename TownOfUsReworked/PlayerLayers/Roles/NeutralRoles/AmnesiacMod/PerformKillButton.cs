@@ -20,39 +20,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
         
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton || !PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac) || !PlayerControl.LocalPlayer.CanMove ||
+                PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
-            var flag2 = __instance.isCoolingDown;
-
-            if (flag2)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            if (role == null)
-                return false;
-
-            if (role.CurrentTarget == null)
+            if (__instance.isCoolingDown || !__instance.enabled || role == null || role.CurrentTarget == null)
                 return false;
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Utils.GetDistBetweenPlayers(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId)) > maxDistance)
                 return false;
 
             var playerId = role.CurrentTarget.ParentId;
@@ -64,13 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
             }
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Remember, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Remember, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             
             try
             {
@@ -420,8 +396,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {
                     var snitchRole = (Snitch)snitch;
+                    var role3 = Role.GetRole(snitch.Player);
 
-                    if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
+                    if (role3.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -432,7 +409,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(amnesiac.PlayerId, arrow);
                     }
-                    else if (snitchRole.Revealed && PlayerControl.LocalPlayer == amnesiac)
+                    else if (role3.TasksDone && PlayerControl.LocalPlayer == amnesiac)
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();

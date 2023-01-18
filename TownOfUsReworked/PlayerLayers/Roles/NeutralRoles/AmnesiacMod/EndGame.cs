@@ -11,18 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Amnesiac amne in Role.GetRoles(RoleEnum.Amnesiac))
             {
-                if (role.RoleType == RoleEnum.Amnesiac)
-                    ((Amnesiac) role).Loses();
+                if (!Role.AllNeutralsWin)
+                {
+                    amne.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AmnesiacLose, SendOption.Reliable, -1);
+                    writer.Write(amne.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AmnesiacLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

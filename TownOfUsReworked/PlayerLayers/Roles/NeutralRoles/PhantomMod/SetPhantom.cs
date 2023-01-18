@@ -6,79 +6,72 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Patches;
+using TownOfUsReworked.Lobby.CustomOption;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
-    public enum RevealerCanBeClickedBy
-    {
-        All,
-        NonCrew,
-        ImpsOnly
-    }
-    
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static class AirshipExileController_WrapUpAndSpawn
     {
-        public static void Postfix(AirshipExileController __instance) => SetRevealer.ExileControllerPostfix(__instance);
+        public static void Postfix(AirshipExileController __instance) => SetPhantom.ExileControllerPostfix(__instance);
     }
     
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetRevealer
+    public class SetPhantom
     {
-        public static PlayerControl WillBeRevealer;
+        public static PlayerControl WillBePhantom;
         public static Vector2 StartPosition;
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBeRevealer != null && !WillBeRevealer.Data.IsDead && exiled.Is(Faction.Crew))
-                WillBeRevealer = exiled;
+            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral))
+                WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
-
-            if (exiled == PlayerControl.LocalPlayer && (PlayerControl.LocalPlayer.Is(RoleEnum.Jester) || PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)))
+            
+            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
                 return;
 
-            if (PlayerControl.LocalPlayer != WillBeRevealer)
+            if (PlayerControl.LocalPlayer != WillBePhantom)
                 return;
 
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Revealer))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                Ability.AbilityDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
-                var role = new Revealer(PlayerControl.LocalPlayer);
+                var former = Role.GetRole(PlayerControl.LocalPlayer);
+                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
+                var role = new Phantom(PlayerControl.LocalPlayer);
                 role.RegenTask();
+                role.RoleHistory.AddRange(former.RoleHistory);
 
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
 
+                System.Console.WriteLine("Become Phantom - Phantom");
+
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.RevealerDied, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PhantomDied, SendOption.Reliable, -1);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
-            if (Ability.GetAbility<Revealer>(PlayerControl.LocalPlayer).Caught)
+            if (Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
                 return;
 
             var startingVent = ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-            unchecked
-            {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
-                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer2.Write(startingVent.transform.position.x);
-                writer2.Write(startingVent.transform.position.y);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-            }
+
+            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+            writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer2.Write(startingVent.transform.position.x);
+            writer2.Write(startingVent.transform.position.y);
+            AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
             PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
@@ -93,7 +86,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 if (task.TryCast<NormalPlayerTask>() != null)
                 {
                     var normalPlayerTask = task.Cast<NormalPlayerTask>();
+
                     var updateArrow = normalPlayerTask.taskStep > 0;
+                    
                     normalPlayerTask.taskStep = 0;
                     normalPlayerTask.Initialize();
 
@@ -107,6 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
 
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                         normalPlayerTask.taskStep = 1;
+
                     if (updateArrow)
                         normalPlayerTask.UpdateArrow();
                     
@@ -116,7 +112,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
             }
         }
 
-        public static void AddCollider(Revealer role)
+        public static void AddCollider(Phantom role)
         {
             var player = role.Player;
             var collider2d = player.gameObject.AddComponent<BoxCollider2D>();
@@ -134,21 +130,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                 if (PlayerControl.LocalPlayer.Data.IsDead)
                     return;
 
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.ImpsOnly && !PlayerControl.LocalPlayer.Data.IsImpostor())
-                    return;
-
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Data.IsImpostor() ||
-                PlayerControl.LocalPlayer.Is(Faction.Neutral)))
-                    return;
-
-                var taskinfos = player.Data.Tasks.ToArray();
-                var tasksLeft = taskinfos.Count(x => !x.Complete);
-                
-                if (tasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
+                if (role.TasksLeft <= CustomGameOptions.PhantomTasksRemaining)
                 {
                     role.Caught = true;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.CatchRevealer, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchPhantom, SendOption.Reliable, -1);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

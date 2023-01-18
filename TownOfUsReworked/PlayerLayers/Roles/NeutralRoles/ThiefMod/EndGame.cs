@@ -11,18 +11,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
-            if (reason != GameOverReason.HumansByVote && reason != GameOverReason.HumansByTask)
-                return true;
-
-            foreach (var role in Role.AllRoles)
+            foreach (Thief thief in Role.GetRoles(RoleEnum.Thief))
             {
-                if (role.RoleType == RoleEnum.Pestilence)
-                    ((Thief)role).Loses();
+                thief.Loses();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ThiefLose, SendOption.Reliable, -1);
+                writer.Write(thief.Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ThiefLose,
-                SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             return true;
         }

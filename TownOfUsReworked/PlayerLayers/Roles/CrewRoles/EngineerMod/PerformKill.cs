@@ -13,26 +13,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer))
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Engineer);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!__instance.enabled)
+            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead || !__instance.enabled)
                 return false;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
-            if (role.UsedThisRound)
+            if (role.UsedThisRound || __instance != role.FixButton)
                 return false;
 
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
@@ -51,11 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var conc = (Concealer)concealer;
             var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
             var ss = (Shapeshifter)shapeshifter;
-
-            try
-            {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
-            } catch {}
 
             switch (PlayerControl.GameOptions.MapId)
             {
@@ -213,10 +197,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                     break;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFix,
-                SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFix, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            try
+            {
+                SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
+            } catch {}
 
             return false;
         }
@@ -274,26 +262,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
         private static bool FixSubOxygen()
         {
             SubmergedCompatibility.RepairOxygen();
-
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.SubmergedFixOxygen,
-                    SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.NetId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.NetId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             return false;
         }
 
         private static bool FixLights(SwitchSystem lights)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.FixLights, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixLights, SendOption.Reliable, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-
             lights.ActualSwitches = lights.ExpectedSwitches;
-
             return false;
         }
     }

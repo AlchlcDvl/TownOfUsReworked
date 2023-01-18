@@ -25,9 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             AlignmentDescription = IUDescription;
-            RoleDescription = "You are an Impostor! Your role is the base role for the Crew faction. You have no special abilities and should probably just kill normally.";
+            RoleDescription = "You are an Impostor! Your role is the base role for the Intruder faction. You have no special abilities and should probably just kill normally.";
             FactionDescription = IntruderFactionDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            Objectives = IntrudersWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -47,14 +47,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                 if (role.FlashTimer() != 0)
                     return false;
 
-                unchecked
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FlashGrenade,
-                        SendOption.Reliable, -1);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-                
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FlashGrenade, SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.GrenadeDuration;
                 
                 try

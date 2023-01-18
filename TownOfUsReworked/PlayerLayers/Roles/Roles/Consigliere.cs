@@ -18,10 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastInvestigated { get; set; }
         public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-        public static Ability ability = PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ?
-            Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer) : null;
-        public static string CanAssassinate = ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ?
-            "You cannot assassinate players you have revealed" : "None";
+        public Ability ability => PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer)
+            : null;
+        public string CanAssassinate => ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "You cannot assassinate players you have revealed" : "None";
 
         public Consigliere(PlayerControl player) : base(player)
         {
@@ -41,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Consigliere! You are a corrupt Inspector who is so capable of finding someone's identity. Help your mate assassinate or prioritise others" +
                 " by revealing players for who they really are!";
             AlignmentDescription = ISDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
+            Objectives = IntrudersWinCon;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
         }

@@ -8,7 +8,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -16,15 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.CanMove)
                 return false;
 
             var role = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
@@ -34,10 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 
             if (__instance == role.BloodlustButton)
             {
-                if (role.LustTimer() != 0) 
-                    return false;
-
-                if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
+                if (role.LustTimer() != 0 || !__instance.isActiveAndEnabled || __instance.isCoolingDown)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.BloodlustDuration;
@@ -45,19 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 return false;
             }
 
-            if (role.KillTimer() != 0)
-                return false;
-
-            if (!role.Lusted)
-                return false;
-
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
-                return false;
-
-            if (role.ClosestPlayer == null)
+            if (role.KillTimer() != 0 || !role.Lusted || __instance != DestroyableSingleton<HudManager>.Instance.KillButton || !__instance.isActiveAndEnabled || __instance.isCoolingDown ||
+                role.ClosestPlayer == null)
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -82,14 +62,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 
                     StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
+                else if (!role.Player.IsProtected())
+                    Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
 
-                if (role.Player.IsProtected())
-                {
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    return false;
-                }
-
-                Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
                 return false;
             }
 
@@ -104,8 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 if (role.ClosestPlayer.IsShielded())
                 {
                     var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -121,8 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 else if (role.Player.IsShielded())
                 {
                     var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                     writer.Write(medic);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -132,9 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 
                     StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
-                else if (role.ClosestPlayer.IsProtected())
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
-                else
+                else if (!role.ClosestPlayer.IsProtected())
                     Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
                     
                 return false;
@@ -142,8 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             else if (role.ClosestPlayer.IsShielded())
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer.Write(medic);
                 writer.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

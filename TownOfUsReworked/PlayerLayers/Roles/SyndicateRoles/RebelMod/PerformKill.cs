@@ -43,15 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestSyndicate, role.Player);
             }
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Sidekick,
-                    SendOption.Reliable, -1);
-                writer.Write(role.Player.PlayerId);
-                writer.Write(role.ClosestSyndicate.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Sidekick, SendOption.Reliable, -1);
+            writer.Write(role.Player.PlayerId);
+            writer.Write(role.ClosestSyndicate.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Sidekick(role, role.ClosestSyndicate);
             return false;
         }

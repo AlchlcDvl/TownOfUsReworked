@@ -14,16 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
                 return;
 
             var role = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
@@ -40,12 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 role.BloodlustButton.gameObject.SetActive(false);
             }
 
-            if (isDead)
-            {
-                role.BloodlustButton.gameObject.SetActive(false);
-                return;
-            }
-
             role.BloodlustButton.GetComponent<AspectPosition>().Update();
             role.BloodlustButton.graphic.sprite = LustSprite;
             role.BloodlustButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
@@ -53,18 +38,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             if (role.Lusted)
             {
                 role.BloodlustButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.BloodlustDuration);
-                Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN);
-
-                return;
+                Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
             }
             else
             {
                 role.BloodlustButton.SetCoolDown(role.LustTimer(), CustomGameOptions.BloodlustCd);
-
                 role.BloodlustButton.graphic.color = Palette.EnabledColor;
                 role.BloodlustButton.graphic.material.SetFloat("_Desat", 0f);
-
-                return;
             }
         }
     }

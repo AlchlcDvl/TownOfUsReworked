@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            Results = InspResults.MineMafiSideDamp;
+            Results = InspResults.JestMafiSideDamp;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +

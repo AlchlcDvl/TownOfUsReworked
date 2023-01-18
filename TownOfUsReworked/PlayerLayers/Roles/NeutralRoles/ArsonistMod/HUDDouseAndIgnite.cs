@@ -12,19 +12,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     public static class HUDDouseAndIgnite
     {
         public static Sprite IgniteSprite => TownOfUsReworked.IgniteSprite;
+        public static Sprite DouseSprite => TownOfUsReworked.DouseSprite;
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
                 return;
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);

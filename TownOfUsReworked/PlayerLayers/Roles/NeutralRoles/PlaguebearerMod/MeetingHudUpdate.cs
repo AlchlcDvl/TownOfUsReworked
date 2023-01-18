@@ -11,15 +11,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
         public static void Postfix(MeetingHud __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            var _role = Role.GetRole(localPlayer);
 
-            if (_role?.RoleType != RoleEnum.Plaguebearer)
+            if (localPlayer.Is(RoleEnum.Plaguebearer) || localPlayer.Data.IsDead)
                 return;
 
-            if (localPlayer.Data.IsDead)
-                return;
-
-            var role = (Plaguebearer)_role;
+            var role = Role.GetRole<Plaguebearer>(localPlayer);
 
             foreach (var state in __instance.playerStates)
             {

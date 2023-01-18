@@ -1,11 +1,15 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class Tunneler : Ability
     {
+        public int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        public bool TasksDone => TasksLeft <= 0;
+
         public Tunneler(PlayerControl player) : base(player)
         {
             Name = "Tunneler";

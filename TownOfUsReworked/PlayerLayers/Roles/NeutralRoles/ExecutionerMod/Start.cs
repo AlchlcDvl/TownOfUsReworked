@@ -17,14 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
                 if (exe.TargetPlayer == null && PlayerControl.LocalPlayer == exe.Player)
                 {
-                    unchecked
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest,
-                            SendOption.Reliable, -1);
-                        writer.Write(exe.Player.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
+                    writer.Write(exe.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     TargetColor.ExeToJes(exe.Player);
                 }
             }

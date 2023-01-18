@@ -17,20 +17,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Agent";
             StartText = "Snoop Around And Find Stuff Out";
             AbilitiesText = "- You can see which colors are where on the admin table.\n- On Vitals, the time of death for each player will be\nshown";
-            Color = IsRecruit ? Colors.Cabal : (IsIntTraitor ? Colors.Intruder : (IsSynTraitor ? Colors.Syndicate : (CustomGameOptions.CustomCrewColors ? Colors.Agent : Colors.Crew)));
+            Color = CustomGameOptions.CustomCrewColors ? Colors.Agent : Colors.Crew;
             RoleType = RoleEnum.Agent;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            Results = InspResults.DisgMorphCamoAgent;
+            Results = InspResults.GAExeJackAg;
             IntroSound = TownOfUsReworked.AgentIntro;
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CIDescription;
             RoleDescription = "Your are an Agent! You can see extra information from the admin table and the vitals screen. When active, all " +
                 "players in detectable rooms will have their color revealed to you. The Vitals screen will show you how long has someone been dead for.";
-            Objectives = IsRecruit ? JackalWinCon : CrewWinCon;
+            Objectives = CrewWinCon;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

@@ -2,23 +2,10 @@ namespace TownOfUsReworked.Enums
 {
     public enum InspResults
     {
-        GAExeMedicPup,
-        DisgMorphCamoAgent,
-        JestJuggWWInv,
-        SurvVHVampVig,
-        EscConsGliPois,
-        TransWarpTeleTask,
-        EngiAmneThiefCann,
-        WraithDetGrenVet,
-        ShiftSwapSKDrac,
-        ArsoCryoPBOpTroll,
-        TrackAltTLTM,
-        ConcealGorg,
-
         CrewImpAnMurd,
         JestMafiSideDamp,
         GFMayorRebelPest,
-        CoroJaniUTMed,
+        CorJaniUTMed,
         GAExeJackAg,
         DisgCamoSSConc,
         ArsoPBCryoVet,
@@ -27,7 +14,11 @@ namespace TownOfUsReworked.Enums
         MorphGliEscCons,
         SherConsigInspBm,
         TeleWarpTransWraith,
-        
+        ShiftSwapSKDrac,
+        ThiefAmneTrackInvest,
+        GrenFramMedicPois,
+        DetJuggOpTroll,
+        EngiMineBombVampWW,
 
         None
     }

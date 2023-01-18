@@ -3,16 +3,16 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public class UpdateArrows
     {
         public static void Postfix(PlayerControl __instance)
         {
-            foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Revealer))
+            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Revealer))
             {
                 var haunter = (Revealer)role;
 
@@ -32,7 +32,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RevealerMod
                     if (target.Data.IsDead)
                     {
                         arrow.Destroy();
-                        if (arrow.gameObject != null) arrow.gameObject.Destroy();
+
+                        if (arrow.gameObject != null)
+                            arrow.gameObject.Destroy();
                     }
 
                     arrow.target = target.transform.position;

@@ -7,6 +7,7 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UD = TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod;
@@ -361,13 +362,14 @@ namespace TownOfUsReworked.Extensions
         {
             if (player == null)
                 return false;
+                
+            var phantomflag = player.Is(RoleEnum.Phantom);
             
             var crewflag = player.Is(Faction.Crew);
             var neutralflag = player.Is(Faction.Neutral);
 
             var loverflag = player.Is(ObjectifierEnum.Lovers);
             var rivalflag = player.Is(ObjectifierEnum.Rivals);
-            var phantomflag = player.Is(ObjectifierEnum.Phantom);
             var taskmasterflag = player.Is(ObjectifierEnum.Taskmaster);
             var corruptedflag = player.Is(ObjectifierEnum.Corrupted);
             var recruitflag = player.IsRecruit();
@@ -657,11 +659,28 @@ namespace TownOfUsReworked.Extensions
             return flag;
         }
 
+        public static bool AllNeutralsWin()
+        {
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.IsRecruit() || x.Is(ObjectifierEnum.Lovers) ||
+                x.Is(Faction.Crew) || x.Is(Faction.Syndicate) || x.IsWinningRival() || x.Is(Faction.Intruder))) == 0) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals;
+
+            return flag;
+        }
+
         public static bool NKWins(RoleEnum nk)
         {
             var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) &&
                 !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) ||
                 x.IsWinningRival())) == 0;
+
+            return flag;
+        }
+
+        public static bool AllNKsWin()
+        {
+            var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) ||
+                x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival())) == 0) && CustomGameOptions.NoSolo
+                == NoSolo.AllNKs;
 
             return flag;
         }
@@ -1159,13 +1178,10 @@ namespace TownOfUsReworked.Extensions
         {
             MurderPlayer(killer, target);
 
-            unchecked
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
-                writer.Write(killer.PlayerId);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
+            writer.Write(killer.PlayerId);
+            writer.Write(target.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public static void MurderPlayer(PlayerControl killer, PlayerControl target)
@@ -1193,17 +1209,20 @@ namespace TownOfUsReworked.Extensions
 
                 if (target.AmOwner)
                 {
-                    if (Minigame.Instance)
+                    try
                     {
-                        Minigame.Instance.Close();
-                        Minigame.Instance.Close();
-                    }
+                        if (Minigame.Instance)
+                        {
+                            Minigame.Instance.Close();
+                            Minigame.Instance.Close();
+                        }
 
-                    if (MapBehaviour.Instance)
-                    {
-                        MapBehaviour.Instance.Close();
-                        MapBehaviour.Instance.Close();
-                    }
+                        if (MapBehaviour.Instance)
+                        {
+                            MapBehaviour.Instance.Close();
+                            MapBehaviour.Instance.Close();
+                        }
+                    } catch {}
 
                     DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
                     DestroyableSingleton<HudManager>.Instance.ShadowQuad.gameObject.SetActive(false);
@@ -1212,7 +1231,7 @@ namespace TownOfUsReworked.Extensions
                     var importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                     importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                    if (!CustomGameOptions.GhostTasksCountToWin)
+                    if (!PlayerControl.GameOptions.GhostsDoTasks)
                     {
                         for (var i = 0; i < target.myTasks.Count; i++)
                         {
@@ -1227,8 +1246,7 @@ namespace TownOfUsReworked.Extensions
                     }
                     else
                     {
-                        importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks,
-                            new Il2CppReferenceArray<Il2CppSystem.Object>(0));
+                        importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
                     }
 
                     target.myTasks.Insert(0, importantTextTask);
@@ -1237,7 +1255,7 @@ namespace TownOfUsReworked.Extensions
                 var targetRole = Role.GetRole(target);
                 var killerRole = Role.GetRole(killer);
 
-                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.TimeMaster) && !killer.Is(RoleEnum.Gorgon))
+                if (!killer.Is(RoleEnum.Poisoner) && !killer.Is(RoleEnum.Arsonist) && !killer.Is(RoleEnum.Gorgon))
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
                 else
                     killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));
@@ -1249,12 +1267,9 @@ namespace TownOfUsReworked.Extensions
                 }
                 else
                     targetRole.DeathReason = DeathReasonEnum.Suicide;
-                
-                if (target.Is(ObjectifierEnum.Phantom))
-                {
-                    var phantom = Objectifier.GetObjectifier<Phantom>(target);
-                    phantom.HasDied = true;
-                }
+
+                if (killer == target)
+                    return;
 
                 if (target.Is(RoleEnum.Troll))
                 {
@@ -1384,14 +1399,10 @@ namespace TownOfUsReworked.Extensions
                 {
                     if (body.ParentId == target.PlayerId)
                     {
-                        unchecked
-                        {
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BaitReport,
-                                SendOption.Reliable, -1);
-                            writer.Write(killer.PlayerId);
-                            writer.Write(target.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BaitReport, SendOption.Reliable, -1);
+                        writer.Write(killer.PlayerId);
+                        writer.Write(target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                             
                         break;
                     }

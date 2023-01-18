@@ -3,6 +3,7 @@ using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 
             if (__instance.Data.IsDead)
                 return;
+                
             var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
 
             if (traitor == null || !traitor.TasksDone)
@@ -35,8 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 TurnTraitor(__instance);
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)CustomRPC.TurnTraitor,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)CustomRPC.TurnTraitor, SendOption.Reliable, -1);
                 writer.Write(__instance.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -150,8 +151,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
             {
                 var snitchAbility = (Snitch)snitch;
+                var role3 = Role.GetRole(snitchAbility.Player);
 
-                if (snitchAbility.Revealed && traitor.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
+                if (role3.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && traitor.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
                 {
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -164,11 +166,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 }
             }
 
-            foreach (var revealer in Ability.GetAbilities(AbilityEnum.Revealer))
+            foreach (var revealer in Role.GetRoles(RoleEnum.Revealer))
             {
-                var revealerAbility = (Revealer)revealer;
+                var revealerRole = (Revealer)revealer;
 
-                if (revealerAbility.Revealed && traitor.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor)
+                if (revealerRole.Revealed && traitor.Is(ObjectifierEnum.Traitor) && traitorObj.Turned && CustomGameOptions.RevealerRevealsTraitor)
                 {
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -177,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     renderer.sprite = Sprite;
                     arrow.image = renderer;
                     gameObj.layer = 5;
-                    revealerAbility.ImpArrows.Add(arrow);
+                    revealerRole.ImpArrows.Add(arrow);
                 }
             }
         }

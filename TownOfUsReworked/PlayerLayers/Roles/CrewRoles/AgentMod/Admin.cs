@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     
                     // Show first row numbers below player icons
                     // Show second row numbers above player icons
-                    // show all icons on player icons when there are three rows
+                    // Show all icons on player icons when there are three rows
 
                     if(useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);
@@ -65,6 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
         public static void UpdateBlips(MapCountOverlay __instance)
         {
             var rooms = ShipStatus.Instance.FastRooms;
+
             foreach (var area in __instance.CountAreas)
             {
                 if (!rooms.ContainsKey(area.RoomType))
@@ -95,6 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     if (data != null && !data.Disconnected && !data.IsDead)
                         colorMap.Add(data.DefaultOutfit.ColorId);
                 }
+                
                 UpdateBlips(area, colorMap);
             }
         }

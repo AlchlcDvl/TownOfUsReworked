@@ -8,7 +8,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
@@ -16,26 +15,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.CanMove)
                 return false;
 
             var role = Role.GetRole<Pestilence>(PlayerControl.LocalPlayer);
 
-            if (role.Player.inVent)
-                return false;
-
-            if (role.KillTimer() != 0)
-                return false;
-
-            if (role.ClosestPlayer == null)
+            if (role.Player.inVent || role.KillTimer() != 0 || role.ClosestPlayer == null)
                 return false;
 
             var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
@@ -46,8 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
             else if (role.ClosestPlayer.IsShielded())
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer.Write(medic);
                 writer.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

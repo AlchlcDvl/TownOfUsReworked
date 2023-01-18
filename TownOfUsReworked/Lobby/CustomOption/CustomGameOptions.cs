@@ -3,7 +3,7 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
-using TownOfUsReworked.PlayerLayers.Abilities.RevealerMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
