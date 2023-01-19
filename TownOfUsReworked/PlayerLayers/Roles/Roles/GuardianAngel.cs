@@ -20,6 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool TargetAlive => (TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && !Player.Data.Disconnected) || TargetPlayer.Data.Disconnected ||
             TargetPlayer == null;
         public bool Protecting => TimeRemaining > 0f;
+        private KillButton _protectButton;
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
@@ -41,6 +42,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " even if they lose!";
             AlignmentDescription = NBDescription;
             FactionDescription = NeutralFactionDescription;
+        }
+
+        public KillButton ProtectButton
+        {
+            get => _protectButton;
+            set
+            {
+                _protectButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float ProtectTimer()

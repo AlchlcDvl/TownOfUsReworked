@@ -7,23 +7,15 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
-    public enum BecomeEnum
-    {
-        Shifter,
-        Crewmate
-    }
-
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformShiftButton
     {
@@ -74,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
                 var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
@@ -87,8 +79,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 return false;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Shift, SendOption.Reliable, -1);
+            if (!role.ClosestPlayer.Is(Faction.Crew))
+            {
+                Utils.RpcMurderPlayer(role.Player, role.Player);
+                return false;
+            }
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Shift, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -98,237 +95,144 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
         public static void Shift(Shifter shifterRole, PlayerControl other)
         {
-            var role = Utils.GetRole(other);
+            var role = Role.GetRole(other);
+            var roleType = role.RoleType;
             var ability = Utils.GetAbility(other);
             shifterRole.LastShifted = DateTime.UtcNow;
             var shifter = shifterRole.Player;
             List<PlayerTask> tasks1, tasks2;
             List<GameData.TaskInfo> taskinfos1, taskinfos2;
-            var swapTasks = true;
-            var resetShifter = false;
-            var snitch = false;
-            var shift = false;
             Role newRole;
 
-            switch (role)
+            switch (roleType)
             {
-                case RoleEnum.Sheriff:
-                case RoleEnum.Engineer:
-                case RoleEnum.Mayor:
-                case RoleEnum.Swapper:
-                case RoleEnum.Investigator:
-                case RoleEnum.TimeLord:
-                case RoleEnum.Medic:
                 case RoleEnum.Agent:
+                    newRole = new Agent(shifter);
+                    break;
+
                 case RoleEnum.Altruist:
-                case RoleEnum.Vigilante:
-                case RoleEnum.Veteran:
-                case RoleEnum.Crewmate:
-                case RoleEnum.Tracker:
-                case RoleEnum.Transporter:
-                case RoleEnum.Medium:
+                    newRole = new Altruist(shifter);
+                    break;
+                    
                 case RoleEnum.Coroner:
-                case RoleEnum.Operative:
+                    newRole = new Coroner(shifter);
+                    break;
+                    
+                case RoleEnum.Crewmate:
+                    newRole = new Crewmate(shifter);
+                    break;
+                    
                 case RoleEnum.Detective:
-                case RoleEnum.Shifter:
+                    newRole = new Detective(shifter);
+                    break;
+                    
+                case RoleEnum.Engineer:
+                    newRole = new Engineer(shifter);
+                    break;
+                    
                 case RoleEnum.Escort:
+                    newRole = new Escort(shifter);
+                    break;
+                    
+                case RoleEnum.Inspector:
+                    newRole = new Inspector(shifter);
+                    break;
+                    
+                case RoleEnum.Investigator:
+                    newRole = new Investigator(shifter);
+                    break;
+                    
+                case RoleEnum.Sheriff:
+                    newRole = new Sheriff(shifter);
+                    break;
+                    
+                case RoleEnum.Mayor:
+                    newRole = new Mayor(shifter);
+                    break;
+                    
+                case RoleEnum.Swapper:
+                    newRole = new Swapper(shifter);
+                    break;
+                    
+                case RoleEnum.Medic:
+                    newRole = new Medic(shifter);
+                    break;
+                    
+                case RoleEnum.Tracker:
+                    newRole = new Tracker(shifter);
+                    break;
+                    
+                case RoleEnum.Transporter:
+                    newRole = new Transporter(shifter);
+                    break;
+                    
+                case RoleEnum.Medium:
+                    newRole = new Medium(shifter);
+                    break;
+                    
+                case RoleEnum.Operative:
+                    newRole = new Operative(shifter);
+                    break;
+                    
+                case RoleEnum.Shifter:
+                    newRole = new Shifter(shifter);
+                    break;
+                    
+                case RoleEnum.TimeLord:
+                    newRole = new TimeLord(shifter);
+                    break;
+                    
                 case RoleEnum.VampireHunter:
-
-                    shift = true;
-
+                    newRole = new VampireHunter(shifter);
+                    break;
+                    
+                case RoleEnum.Veteran:
+                    newRole = new Veteran(shifter);
+                    break;
+                    
+                case RoleEnum.Vigilante:
+                    newRole = new Vigilante(shifter);
+                    break;
+                
+                default:
+                    newRole = new Shifter(shifter);
                     break;
             }
-
-            if (shift == false)
-            {
-                Utils.RpcMurderPlayer(shifter, shifter);
-                return;
-            }
-
-            if (shift)
-            {
-                newRole = Role.GetRole(other);
-                newRole.Player = shifter;
-
-                var modifier = Modifier.GetModifier(other);
-                var modifier2 = Modifier.GetModifier(shifter);
-
-                if (modifier2 != null)
-                {
-                    modifier2.Player = other;
-                    Modifier.ModifierDictionary.Remove(shifter.PlayerId);
-                    Modifier.ModifierDictionary.Add(other.PlayerId, modifier2);
-                }
-                else if (modifier != null)
-                {
-                    modifier.Player = shifter;
-                    Modifier.ModifierDictionary.Remove(other.PlayerId);
-                    Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
-                }                    
-                else if (modifier != null && modifier2 != null)
-                {
-                    modifier.Player = shifter;
-                    modifier2.Player = other;
-                    Modifier.ModifierDictionary.Remove(other.PlayerId);
-                    Modifier.ModifierDictionary.Remove(shifter.PlayerId);
-                    Modifier.ModifierDictionary.Add(shifter.PlayerId, modifier);
-                    Modifier.ModifierDictionary.Add(other.PlayerId, modifier2);
-                }
-
-                Role.RoleDictionary.Remove(shifter.PlayerId);
-                Role.RoleDictionary.Remove(other.PlayerId);
-
-                if (ability == AbilityEnum.Snitch)
-                {
-                    var snitchRole = Ability.GetAbility<Snitch>(shifter);
-                    snitchRole.ImpArrows.DestroyAll();
-                    snitchRole.SnitchArrows.Values.DestroyAll();
-                    snitchRole.SnitchArrows.Clear();
-                    CompleteTask.Postfix(shifter);
-
-                    if (other.AmOwner)
-                    {
-                        foreach (var player1 in PlayerControl.AllPlayerControls)
-                            player1.nameText().color = Color.white;
-                    }
-
-                    DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-                } 
-                
-                if (role == RoleEnum.Investigator)
-                {
-                    var invRole = Role.GetRole<Investigator>(shifter);
-                    Footprint.DestroyAll(invRole);
-                }
-                else if (role == RoleEnum.Vigilante)
-                {
-                    var vigilanteRole = Role.GetRole<Vigilante>(shifter);
-                    vigilanteRole.LastKilled = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Engineer)
-                {
-                    var engiRole = Role.GetRole<Engineer>(shifter);
-                    engiRole.UsedThisRound = false;
-                }
-                else if (role == RoleEnum.Medic)
-                {
-                    var medicRole = Role.GetRole<Medic>(shifter);
-                    medicRole.UsedAbility = false;
-                }
-                else if (role == RoleEnum.Mayor)
-                {
-                    var mayorRole = Role.GetRole<Mayor>(shifter);
-                    mayorRole.VoteBank = CustomGameOptions.MayorVoteBank;
-                    DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-                }
-                else if (role == RoleEnum.Veteran)
-                {
-                    var vetRole = Role.GetRole<Veteran>(shifter);
-                    vetRole.UsesLeft = CustomGameOptions.MaxAlerts;
-                    vetRole.LastAlerted = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Tracker)
-                {
-                    var trackerRole = Role.GetRole<Tracker>(shifter);
-                    trackerRole.TrackerArrows.Values.DestroyAll();
-                    trackerRole.TrackerArrows.Clear();
-                    trackerRole.UsesLeft = CustomGameOptions.MaxTracks;
-                    trackerRole.LastTracked = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Detective)
-                {
-                    var detectiveRole = Role.GetRole<Detective>(shifter);
-                    detectiveRole.LastExamined = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Coroner)
-                {
-                    var coronerRole = Role.GetRole<Coroner>(shifter);
-                    coronerRole.BodyArrows.Values.DestroyAll();
-                    coronerRole.BodyArrows.Clear();
-                    DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-                }
-                else if (role == RoleEnum.TimeLord)
-                {
-                    var tlRole = Role.GetRole<TimeLord>(shifter);
-                    tlRole.FinishRewind = DateTime.UtcNow;
-                    tlRole.StartRewind = DateTime.UtcNow;
-                    tlRole.StartRewind = tlRole.StartRewind.AddSeconds(-10.0f);
-                    tlRole.UsesLeft = CustomGameOptions.RewindMaxUses;
-                }
-                else if (role == RoleEnum.Transporter)
-                {
-                    var tpRole = Role.GetRole<Transporter>(shifter);
-                    tpRole.PressedButton = false;
-                    tpRole.MenuClick = false;
-                    tpRole.LastMouse = false;
-                    tpRole.TransportList = null;
-                    tpRole.TransportPlayer1 = null;
-                    tpRole.TransportPlayer2 = null;
-                    tpRole.LastTransported = DateTime.UtcNow;
-                    tpRole.UsesLeft = CustomGameOptions.TransportMaxUses;
-                }
-                else if (role == RoleEnum.Medium)
-                {
-                    var medRole = Role.GetRole<Medium>(shifter);
-                    medRole.MediatedPlayers.Values.DestroyAll();
-                    medRole.MediatedPlayers.Clear();
-                    medRole.LastMediated = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Sheriff)
-                {
-                    var sheriffRole = Role.GetRole<Sheriff>(shifter);
-                    sheriffRole.Interrogated.RemoveRange(0, sheriffRole.Interrogated.Count);
-                    sheriffRole.LastInterrogated = DateTime.UtcNow;
-                }
-                else if (role == RoleEnum.Operative)
-                {
-                    var opRole = Role.GetRole<Operative>(shifter);
-                    opRole.lastBugged = DateTime.UtcNow;
-                    opRole.UsesLeft = CustomGameOptions.MaxBugs;
-                    opRole.buggedPlayers.Clear();
-                    opRole.bugs.ClearBugs();
-                }
-                else if (role == RoleEnum.Shifter)
-                    shifterRole.LastShifted = DateTime.UtcNow;
-
-                if (CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter)
-                {
-                    resetShifter = true;
-                    new Shifter(other);
-                }
-                else
-                    new Crewmate(other);
-            }
             
-            if (swapTasks) //&& CustomGameOptions.ShiftSwapsTasks
-            {
-                tasks1 = other.myTasks;
-                taskinfos1 = other.Data.Tasks;
-                tasks2 = shifter.myTasks;
-                taskinfos2 = shifter.Data.Tasks;
-                shifter.myTasks = tasks1;
-                shifter.Data.Tasks = taskinfos1;
-                other.myTasks = tasks2;
-                other.Data.Tasks = taskinfos2;
+            newRole.RoleHistory.Add(shifterRole);
+            newRole.RoleHistory.AddRange(shifterRole.RoleHistory);
+            
+            if (newRole.Player == PlayerControl.LocalPlayer)
+                newRole.RegenTask();
 
-                if (snitch)
-                {
-                    var snitchRole = Ability.GetAbility<Snitch>(shifter);
-                    snitchRole.ImpArrows.DestroyAll();
-                    snitchRole.SnitchArrows.Clear();
-                    snitchRole.ImpArrows.Clear();
-                    CompleteTask.Postfix(shifter);
+            if (other.IsRecruit())
+                newRole.IsRecruit = true;
+            
+            Role newRole2;
+            
+            if (CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter)
+                newRole2 = new Shifter(other);
+            else
+                newRole2 = new Crewmate(other);
 
-                    if (other.AmOwner)
-                    {
-                        foreach (var player in PlayerControl.AllPlayerControls)
-                            player.name.Color("white");
-                    }
-                }
+            newRole2.RoleHistory.Add(role);
+            newRole2.RoleHistory.AddRange(role.RoleHistory);
 
-                if (resetShifter)
-                    shifterRole.RegenTask();
-            }
+            if (other.IsRecruit())
+                newRole2.IsRecruit = true;
+
+            if (other == PlayerControl.LocalPlayer)
+                newRole2.RegenTask();
+            
+            tasks1 = other.myTasks;
+            taskinfos1 = other.Data.Tasks;
+            tasks2 = shifter.myTasks;
+            taskinfos2 = shifter.Data.Tasks;
+
+            shifter.myTasks = tasks1;
+            shifter.Data.Tasks = taskinfos1;
+            other.myTasks = tasks2;
+            other.Data.Tasks = taskinfos2;
         }
     }
 }

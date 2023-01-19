@@ -116,6 +116,7 @@ namespace TownOfUsReworked
         public static Sprite VoteCount;
         public static Sprite VoteCountDisabled;
         public static Sprite StabSprite;
+        public static Sprite SyndicateKill;
         public static Sprite Clear;
 
         public static Sprite SettingsButtonSprite;
@@ -300,6 +301,7 @@ namespace TownOfUsReworked
             MarkSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mark.png");
             WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Warp.png");
             Placeholder = CreateSprite("TownOfUsReworked.Resources.Buttons.Placeholder.png");
+            SyndicateKill = CreateSprite("TownOfUsReworked.Resources.Buttons.SyndicateKill.png");
             VoteCount = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCount.png");
             VoteCountDisabled = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCountDisabled.png");
             Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");

@@ -84,10 +84,10 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (Role.AllNeutralsWin)
                 {
-                    foreach (var role2 in Role.GetRoles(RoleEnum.Survivor))
+                    foreach (var role2 in Role.GetRoles(Faction.Neutral))
                     {
-                        if (!role.Player.Data.Disconnected)
-                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role.PlayerName).ToList()[0]);
+                        if (!role2.Player.Data.Disconnected)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
 
                     TempData.winners = new List<WinningPlayerData>();
@@ -675,7 +675,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var cannibal = (Cannibal)role;
 
-                    if (cannibal.EatNeed == 0)
+                    if (cannibal.CannibalWin)
                     {
                         foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
@@ -759,7 +759,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var troll = (Troll)role;
 
-                    if (troll.Killed)
+                    if (troll.TrollWins)
                     {
                         foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
@@ -799,7 +799,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var phantom = (Phantom)role;
 
-                    if (phantom.CompletedTasks)
+                    if (phantom.PhantomWin)
                     {
                         foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                         {
@@ -884,7 +884,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var taskmaster = (Taskmaster)objectifier;
 
-                    if (taskmaster.WinTasksDone)
+                    if (taskmaster.TaskmasterWins)
                     {
                         winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == taskmaster.PlayerName).ToList()[0]);
 

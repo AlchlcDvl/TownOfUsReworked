@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using Hazel;
-using System.Linq;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 
@@ -13,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Shapeshifter : Role
     {
         private KillButton _shapeshiftButton;
+        private KillButton _killButton;
         public bool Enabled;
         public DateTime LastShapeshifted { get; set; }
         public float TimeRemaining;
@@ -31,6 +31,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
             Results = InspResults.DisgCamoSSConc;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton ShapeshiftButton

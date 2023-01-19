@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class SerialKiller : Role
     {
         private KillButton _bloodlustButton;
+        private KillButton _stabButton;
         public bool Enabled;
         public bool SerialKillerWins;
         public PlayerControl ClosestPlayer;
@@ -36,6 +37,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ShiftSwapSKDrac;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton StabButton
+        {
+            get => _stabButton;
+            set
+            {
+                _stabButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton BloodlustButton

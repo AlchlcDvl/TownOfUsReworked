@@ -23,6 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public List<RoleEnum> buggedPlayers;
         public bool ButtonUsable => UsesLeft != 0;
+        private KillButton _bugButton;
 
         public Operative(PlayerControl player) : base(player)
         {
@@ -40,6 +41,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.DetJuggOpTroll;
+        }
+
+        public KillButton BugButton
+        {
+            get => _bugButton;
+            set
+            {
+                _bugButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float BugTimer()

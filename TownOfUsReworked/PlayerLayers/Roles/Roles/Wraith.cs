@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastInvis;
         public float TimeRemaining;
         public bool IsInvis => TimeRemaining > 0f;
+        private KillButton _killButton;
 
         public Wraith(PlayerControl player) : base(player)
         {
@@ -33,6 +34,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.TeleWarpTransWraith;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton InvisButton

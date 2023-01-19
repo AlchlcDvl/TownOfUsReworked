@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                     System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                     if (CustomGameOptions.ShieldBreaks)
-                        role.LastExamined = DateTime.UtcNow;
+                        role.LastInspected = DateTime.UtcNow;
 
                     StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                     return false;
@@ -72,12 +72,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                     return false;
                 }
 
-                role.LastExamined = DateTime.UtcNow;
+                role.LastInspected = DateTime.UtcNow;
                 return false;
             }
 
-            role.Examined.Add(role.ClosestPlayer);
-            role.LastExamined = DateTime.UtcNow;
+            role.Inspected.Add(role.ClosestPlayer);
+            role.LastInspected = DateTime.UtcNow;
             
             try
             {

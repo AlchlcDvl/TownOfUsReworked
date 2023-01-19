@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private KillButton _cleanButton;
         public DeadBody CurrentTarget { get; set; }
         public DateTime LastCleaned;
+        private KillButton _killButton;
 
         public Janitor(PlayerControl player) : base(player)
         {
@@ -34,6 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
             AlignmentDescription = ICDescription;
             RoleDescription = "You are a Janitor! You are a sanitation expert who got swept up with the wrong company. Clean up everyone's messes to ensure nothing goes wrong!";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton CleanButton

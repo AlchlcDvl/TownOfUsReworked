@@ -7,6 +7,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
 
+
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class VampireHunter : Role
@@ -14,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked { get; set; }
         public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && x.Is(SubFaction.Undead)) == 0;
+        private KillButton _stakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
@@ -31,6 +33,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.VigVHSurvGorg;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton StakeButton
+        {
+            get => _stakeButton;
+            set
+            {
+                _stakeButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float StakeTimer()

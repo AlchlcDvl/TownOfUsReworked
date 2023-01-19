@@ -12,8 +12,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Escort : Role
     {
         public PlayerControl ClosestPlayer;
+        public PlayerControl BlockTarget;
+        public bool Enabled = false;
         public DateTime LastBlock { get; set; }
         public float TimeRemaining;
+        private KillButton _blockButton;
+        public bool Blocking => TimeRemaining > 0f;
 
         public Escort(PlayerControl player) : base(player)
         {
@@ -36,6 +40,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
         }
 
+        public KillButton BlockButton
+        {
+            get => _blockButton;
+            set
+            {
+                _blockButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var team = new List<PlayerControl>();
@@ -53,6 +68,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
+        public void Block()
+        {
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
+
+            BlockTarget = ClosestPlayer;
+            var targetRole = GetRole(BlockTarget);
+            targetRole.IsBlocked = true;
+
+            if (Player.Data.IsDead)
+                TimeRemaining = 0f;
+        }
+
+        public void UnBlock()
+        {
+            Enabled = false;
+            LastBlock = DateTime.UtcNow;
+
+            var targetRole = GetRole(BlockTarget);
+            targetRole.IsBlocked = false;
+            BlockTarget = null;
+        }
+
         public float RoleblockTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -64,24 +102,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public void Roleblock()
-        {
-            TimeRemaining -= Time.deltaTime;
-            Utils.Block(Player, ClosestPlayer);
-
-            if (Player.Data.IsDead)
-                TimeRemaining = 0f;
-        }
-
-        public void Unroleblock()
-        {
-            TimeRemaining -= Time.deltaTime;
-            Utils.Block(Player, ClosestPlayer);
-
-            if (Player.Data.IsDead)
-                TimeRemaining = 0f;
         }
 
         public override void Wins()

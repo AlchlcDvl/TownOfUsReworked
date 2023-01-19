@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public Role FormerRole = null;
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Rebel)).Count() == 0;
+        private KillButton _killButton;
 
         public Sidekick(PlayerControl player) : base(player)
         {
@@ -36,6 +37,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Syndicate (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Sidekick! You are the successor to the leader of the Intruders. When the Rebel dies, you will become the new" +
                 " Rebel and will inherit stronger variations of your former role.";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public override void Wins()

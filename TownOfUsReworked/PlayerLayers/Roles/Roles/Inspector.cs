@@ -11,8 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Inspector : Role
     {
         public PlayerControl ClosestPlayer;
-        public DateTime LastExamined { get; set; }
-        public List<PlayerControl> Examined = new List<PlayerControl>();
+        public DateTime LastInspected { get; set; }
+        public List<PlayerControl> Inspected = new List<PlayerControl>();
+        private KillButton _inspectButton;
 
         public Inspector(PlayerControl player) : base(player)
         {
@@ -32,6 +33,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
                 "list, they are not Crew.";
             Objectives = CrewWinCon;
+        }
+
+        public KillButton InspectButton
+        {
+            get => _inspectButton;
+            set
+            {
+                _inspectButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -54,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float ExamineTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastExamined;
+            var timeSpan = utcNow - LastInspected;
             var num = CustomGameOptions.InspectCooldown * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 

@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastDragged { get; set; }
         public DeadBody CurrentTarget { get; set; }
         public DeadBody CurrentlyDragging { get; set; }
+        private KillButton _killButton;
 
         public Undertaker(PlayerControl player) : base(player)
         {
@@ -31,6 +32,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.CorJaniUTMed;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton DragDropButton

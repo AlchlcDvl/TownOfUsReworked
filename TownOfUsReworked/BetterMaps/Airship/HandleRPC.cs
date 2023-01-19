@@ -30,12 +30,15 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 return false;
             }
 
-            if (CallId == (byte)CustomRPC.SyncPlateform)
+            unchecked
             {
-                bool isLeft = reader.ReadBoolean();
-                CallPlateform.SyncPlateform(isLeft);
+                if (CallId == (byte)CustomRPC.SyncPlateform)
+                {
+                    bool isLeft = reader.ReadBoolean();
+                    CallPlateform.SyncPlateform(isLeft);
 
-                return false;
+                    return false;
+                }
             }
 
             return true;

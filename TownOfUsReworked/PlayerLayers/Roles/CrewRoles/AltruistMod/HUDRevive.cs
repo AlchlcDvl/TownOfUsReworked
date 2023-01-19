@@ -10,6 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDRevive
     {
+        private static Sprite Revive => TownOfUsReworked.ReviveSprite;
+
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Altruist))
@@ -52,9 +54,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 closestDistance = distance;
             }
             
+            killButton.graphic.sprite = Revive;
             killButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance && !role.ReviveUsed);
             KillButtonTarget.SetTarget(killButton, closestBody, role);
-            __instance.KillButton.SetCoolDown(0f, 1f);
+            killButton.SetCoolDown(0f, 1f);
         }
     }
 }

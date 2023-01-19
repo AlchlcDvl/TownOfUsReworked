@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastMauled { get; set; }
         public bool WWWins { get; set; }
         public bool CanMaul;
+        private KillButton _maulButton;
 
         public Werewolf(PlayerControl player) : base(player)
         {
@@ -31,6 +32,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.EngiMineBombVampWW;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton MaulButton
+        {
+            get => _maulButton;
+            set
+            {
+                _maulButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

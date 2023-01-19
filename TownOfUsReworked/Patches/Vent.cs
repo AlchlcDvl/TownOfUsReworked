@@ -33,12 +33,18 @@ namespace TownOfUsReworked.Patches
         public static bool CanVent(PlayerControl player)
         {
             bool mainflag = false;
+            var playerRole = Role.GetRole(player);
 
             if (player.Data.IsDead || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone || player == null || player.Data == null || player.Data.Disconnected ||
                 LobbyBehaviour.Instance || MeetingHud.Instance)
-                mainflag = false;
+                return false;
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
-                mainflag = true;
+                return true;
+                
+            if (playerRole == null)
+                mainflag = player.Data.IsImpostor();
+            else if (playerRole.IsBlocked)
+                mainflag = false;
             else if (player.IsRecruit())
                 mainflag = CustomGameOptions.RecruitVent;
             else if (player.Is(Faction.Syndicate))
@@ -55,7 +61,7 @@ namespace TownOfUsReworked.Patches
                         mainflag = !flag;
                     else if (player.Is(RoleEnum.Undertaker))
                     {
-                        var undertaker = Role.GetRole<Undertaker>(player);
+                        var undertaker = (Undertaker)playerRole;
                 
                         mainflag = CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always || undertaker.CurrentlyDragging != null &&
                             CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body || undertaker.CurrentlyDragging == null &&
@@ -95,10 +101,13 @@ namespace TownOfUsReworked.Patches
                     mainflag = flag;
                 else if (player.Is(RoleEnum.SerialKiller))
                 {
-                    var role2 = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
+                    var role2 = (SerialKiller)playerRole;
 
-                    if (CustomGameOptions.SKVentOptions == SKVentOptions.Always || (role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust) ||
-                        (!role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.NoLust))
+                    if (CustomGameOptions.SKVentOptions == SKVentOptions.Always)
+                        mainflag = true;
+                    else if (role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust)
+                        mainflag = true;
+                    else if (!role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.NoLust)
                         mainflag = true;
                     else
                         mainflag = false;

@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Disguiser : Role, IVisualAlteration
     {
         private KillButton _disguiseButton;
+        private KillButton _killButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastDisguised;
         public PlayerControl DisguisedPlayer;
@@ -43,6 +44,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttackString = "Basic";
             AlignmentDescription = IDDescription;
             RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton DisguiseButton

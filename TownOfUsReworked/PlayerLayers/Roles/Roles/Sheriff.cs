@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public List<byte> Interrogated = new List<byte>();
         public bool UsedThisRound { get; set; } = false;
         public PlayerControl ClosestPlayer;
+        private KillButton _interrogateButton;
         public DateTime LastInterrogated { get; set; }
 
         public Sheriff(PlayerControl player) : base(player)
@@ -29,6 +30,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.SherConsigInspBm;
+        }
+
+        public KillButton InterrogateButton
+        {
+            get => _interrogateButton;
+            set
+            {
+                _interrogateButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float InterrogateTimer()

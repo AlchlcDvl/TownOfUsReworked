@@ -22,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         static readonly Color blindVision = new Color32(212, 212, 212, 255);
         public List<PlayerControl> flashedPlayers = new List<PlayerControl>();
         public bool Flashed => TimeRemaining > 0f;
+        private KillButton _killButton;
 
         public Grenadier(PlayerControl player) : base(player)
         {
@@ -44,6 +45,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
             FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton FlashButton

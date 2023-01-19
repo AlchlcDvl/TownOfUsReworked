@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastBlock { get; set; }
         public float TimeRemaining;
         private KillButton _roleblockButton;
+        private KillButton _killButton;
 
         public Consort(PlayerControl player) : base(player)
         {
@@ -40,6 +41,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
             RoleBlockImmune = true;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

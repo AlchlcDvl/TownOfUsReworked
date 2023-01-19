@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool ButtonUsable => UsesLeft != 0;
         public DateTime StartRewind { get; set; }
         public DateTime FinishRewind { get; set; }
+        private KillButton _rewindButton;
 
         public TimeLord(PlayerControl player) : base(player)
         {
@@ -34,6 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TLAltTMCann;
+        }
+
+        public KillButton RewindButton
+        {
+            get => _rewindButton;
+            set
+            {
+                _rewindButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float TimeLordRewindTimer()

@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             foreach (var role in Role.GetRoles(RoleEnum.Inspector))
             {
                 var role2 = (Inspector) role;
-                role2.LastExamined = DateTime.UtcNow;
-                role2.LastExamined = role2.LastExamined.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
+                role2.LastInspected = DateTime.UtcNow;
+                role2.LastInspected = role2.LastInspected.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
             }
         }
     }

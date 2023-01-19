@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool PreMeetingDie = false;
         public bool PostMeetingDie = false;
         public bool InnoMessage = false;
+        private KillButton _shootButton;
 
         public Vigilante(PlayerControl player) : base(player)
         {
@@ -35,6 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.VigVHSurvGorg;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton ShootButton
+        {
+            get => _shootButton;
+            set
+            {
+                _shootButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float KillTimer()

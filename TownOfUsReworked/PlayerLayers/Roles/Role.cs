@@ -127,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             " can deduce who is good and who is not.";
         public static string CUDescription = "You are a Crewmate! Your role is the base role for the Crew faction. You have no special abilities and should probably do your tasks.";
         public static string CrewWinCon = "- Finish your tasks along with other <color=#8BFDFDFF>Crew</color>.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, " +
-            "<color=#008000FF>Syndicate</color>,\n<color=#370D43FF>Traitor</color>, <color=#4545FFFF>Corrupted</color> and <color=#575657FF>Recruited</color> " +
+            "<color=#008000FF>Syndicate</color>, <color=#370D43FF>Traitor</color>, <color=#4545FFFF>Corrupted</color> and <color=#575657FF>Recruited</color> " +
             "<color=#8BFDFDFF>Crew</color>,\n<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
             "<color=#1D7CF2FF>Neophytes</color>.";
         public static string CSDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +

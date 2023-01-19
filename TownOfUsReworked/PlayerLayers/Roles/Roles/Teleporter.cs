@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Teleporter : Role
     {
         private KillButton _teleportButton;
+        private KillButton _killButton;
         public DateTime LastTeleport;
         public Vector3 TeleportPoint;
 
@@ -27,6 +28,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.TeleWarpTransWraith;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton TeleportButton

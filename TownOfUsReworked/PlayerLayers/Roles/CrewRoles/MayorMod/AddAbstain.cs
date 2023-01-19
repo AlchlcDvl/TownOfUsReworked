@@ -79,7 +79,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     return;
 
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                if (__0 != 251) mayorRole.Abstain.ClearButtons();
+
+                if (__0 != 251)
+                    mayorRole.Abstain.ClearButtons();
 
                 UpdateButton(mayorRole, __instance);
             }
@@ -108,17 +110,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
 
-                switch (__instance.state)
+                if (__instance.state == MeetingHud.VoteStates.Discussion)
                 {
-                    case MeetingHud.VoteStates.Discussion:
-                        if (__instance.discussionTimer < CustomGameOptions.DiscussionTime)
-                        {
-                            mayorRole.Abstain.SetDisabled();
-                            break;
-                        }
-
+                    if (__instance.discussionTimer < CustomGameOptions.DiscussionTime)
+                        mayorRole.Abstain.SetDisabled();
+                    else
                         mayorRole.Abstain.SetEnabled();
-                        break;
                 }
 
                 UpdateButton(mayorRole, __instance);

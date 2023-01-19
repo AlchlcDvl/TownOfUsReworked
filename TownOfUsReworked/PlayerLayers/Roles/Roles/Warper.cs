@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         private KillButton _warpButton;
         public DateTime LastWarped { get; set; }
+        private KillButton _killButton;
 
         public Warper(PlayerControl player) : base(player)
         {
@@ -32,6 +33,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Support)";
             Results = InspResults.TeleWarpTransWraith;
             IntroSound = TownOfUsReworked.WarperIntro;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public void Warp()

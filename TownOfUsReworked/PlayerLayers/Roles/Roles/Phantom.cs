@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public bool Caught;
         public bool CompletedTasks;
+        public bool PhantomWin;
         public bool Faded;
 
         public Phantom(PlayerControl player) : base(player)
@@ -65,6 +66,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Loses()
         {
             LostByRPC = true;
+        }
+
+        public override void Wins()
+        {
+            PhantomWin = true;
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

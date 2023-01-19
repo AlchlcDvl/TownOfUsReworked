@@ -47,10 +47,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         private static void UsePlateforRpc(MovingPlatformBehaviour Plateform, bool isLeft)
         {
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform,
-                SendOption.None, -1);
-            messageWriter.Write(isLeft);
-            AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+            unchecked
+            {
+                var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.None, -1);
+                messageWriter.Write(isLeft);
+                AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+            }
 
             Coroutines.Start(UsePlatform(Plateform, isLeft));
         }

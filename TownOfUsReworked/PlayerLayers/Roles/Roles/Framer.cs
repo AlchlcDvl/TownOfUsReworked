@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public List<byte> Framed = new List<byte>();
         public DateTime LastFramed;
+        private KillButton _killButton;
 
         public Framer(PlayerControl player) : base(player)
         {
@@ -34,6 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SDDescription;
             Objectives = SyndicateWinCon;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton FrameButton

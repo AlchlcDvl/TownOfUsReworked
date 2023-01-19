@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Cryomaniac : Role
     {
         private KillButton _freezeButton;
+        private KillButton _douseButton;
         public bool CryoWins;
         public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new List<byte>();
@@ -39,6 +40,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NKDescription;
             RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
             Objectives = NKWinCon;
+        }
+
+        public KillButton DouseButton
+        {
+            get => _douseButton;
+            set
+            {
+                _douseButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton FreezeButton

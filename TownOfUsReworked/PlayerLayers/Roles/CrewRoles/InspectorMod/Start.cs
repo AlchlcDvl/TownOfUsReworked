@@ -14,8 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             foreach (var role in Role.GetRoles(RoleEnum.Inspector))
             {
                 var inspector = (Inspector) role;
-                inspector.LastExamined = DateTime.UtcNow;
-                inspector.LastExamined = inspector.LastExamined.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
+                inspector.LastInspected = DateTime.UtcNow;
+                inspector.LastInspected = inspector.LastInspected.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
             }
         }
     }

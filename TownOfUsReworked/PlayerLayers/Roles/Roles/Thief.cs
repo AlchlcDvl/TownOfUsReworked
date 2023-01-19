@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled { get; set; }
+        private KillButton _stealButton;
 
         public Thief(PlayerControl player) : base(player)
         {
@@ -27,6 +28,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ThiefAmneTrackInvest;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton StealButton
+        {
+            get => _stealButton;
+            set
+            {
+                _stealButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float KillTimer()
