@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastCamouflaged { get; set; }
         public float TimeRemaining;
         public bool Camouflaged => TimeRemaining > 0f;
+        private KillButton _killButton;
 
         public Camouflager(PlayerControl player) : base(player)
         {
@@ -47,6 +48,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _camouflageButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
                 ExtraButtons.Clear();
                 ExtraButtons.Add(value);
             }

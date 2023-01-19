@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastShifted { get; set; }
+        private KillButton _shiftButton;
 
         public Shifter(PlayerControl player) : base(player)
         {
@@ -32,6 +33,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Defense = DefenseEnum.None;
             AttackString = "None";
             DefenseString = "None";
+        }
+
+        public KillButton ShiftButton
+        {
+            get => _shiftButton;
+            set
+            {
+                _shiftButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float ShifterShiftTimer()

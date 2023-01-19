@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Concealer : Role
     {
         private KillButton _concealButton;
+        private KillButton _killButton;
         public bool Enabled;
         public DateTime LastConcealed { get; set; }
         public float TimeRemaining;
@@ -35,6 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = SSuDescription;
             FactionDescription = SyndicateFactionDescription;
             Objectives = SyndicateWinCon;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton ConcealButton

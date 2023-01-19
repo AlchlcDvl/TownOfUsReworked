@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = obj.ColorString + player.NameText().text + "</color>";
+                player.NameText().text = player.name.GetEndGameName();
 
             __instance.BackgroundBar.material.color = obj.Color;
             var text = Object.Instantiate(__instance.WinText);

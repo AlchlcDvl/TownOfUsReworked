@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool WasMafioso = false;
         public Role FormerRole = null;
         public KillButton _declareButton;
+        private KillButton _killButton;
 
         public Godfather(PlayerControl player) : base(player)
         {
@@ -38,6 +39,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = ISDescription;
             RoleDescription = "You are the Godfather! You are the leader of the Intruders. You can promote a fellow Intruder into becoming your Mafioso." +
                 " When you die, the Mafioso will become the new Godfather and will inherit stronger variations of their former role!";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public override void Wins()

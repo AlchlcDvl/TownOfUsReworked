@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public bool OnAlert => TimeRemaining > 0f;
+        private KillButton _alertButton;
 
         public Veteran(PlayerControl player) : base(player)
         {
@@ -36,6 +37,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ArsoPBCryoVet;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";
+        }
+
+        public KillButton AlertButton
+        {
+            get => _alertButton;
+            set
+            {
+                _alertButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float AlertTimer()

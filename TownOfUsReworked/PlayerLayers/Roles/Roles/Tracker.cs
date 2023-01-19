@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int UsesLeft;
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
+        private KillButton _trackButton;
 
         public Tracker(PlayerControl player) : base(player)
         {
@@ -35,6 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.ThiefAmneTrackInvest;
+        }
+
+        public KillButton TrackButton
+        {
+            get => _trackButton;
+            set
+            {
+                _trackButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float TrackerTimer()

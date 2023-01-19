@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
-using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -12,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public Role FormerRole = null;
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Godfather)).Count() == 0;
+        private KillButton _killButton;
 
         public Mafioso(PlayerControl player) : base(player)
         {
@@ -36,6 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Mafioso! You are the successor to the leader of the Intruders. When the Godfather dies, you will become the new" +
                 " Godfather and will inherit stronger variations of your former role.";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public override void Wins()

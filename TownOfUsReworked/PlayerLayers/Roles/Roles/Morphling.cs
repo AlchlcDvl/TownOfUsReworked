@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Morphling : Role, IVisualAlteration
     {
         private KillButton _morphButton;
+        private KillButton _killButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
@@ -37,6 +38,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             IntroSound = TownOfUsReworked.MorphlingIntro;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton MorphButton

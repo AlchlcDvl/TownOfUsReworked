@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             var examineButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             examineButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
             examineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.InspectCooldown);
-            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Examined.Contains(x)).ToList();
+            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, examineButton, float.NaN, notinspected);
 
             var renderer = examineButton.graphic;

@@ -60,7 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                     
                     role.WinTasksDone = true;
-                        
                     break;
             }
         }

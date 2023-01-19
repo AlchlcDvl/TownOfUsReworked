@@ -248,6 +248,9 @@ namespace TownOfUsReworked.Patches
         Declare,
         Sidekick,
         Steal,
+        EscRoleblock,
+        ConsRoleblock,
+        GlitchRoleblock,
 
         BypassKill,
         Mimic,

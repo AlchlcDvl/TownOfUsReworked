@@ -1274,7 +1274,7 @@ namespace TownOfUsReworked.Extensions
                 if (target.Is(RoleEnum.Troll))
                 {
                     var troll = (Troll)targetRole;
-                    troll.Wins();
+                    troll.Killed = true;
                     return;
                 }
 
@@ -1366,6 +1366,31 @@ namespace TownOfUsReworked.Extensions
             return yes;
         }
 
+        public static string GetEndGameName(this string playerName)
+        {
+            if (playerName == null)
+                return "";
+            
+            PlayerControl target = null;
+            
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.name == playerName)
+                {
+                    target = player;
+                    break;
+                }
+            }
+
+            if (target == null)
+                return "";
+
+            var role = Role.GetRole(target);
+            var colorString = role == null ? "<color=#FFFFFFFF>" : role.ColorString;
+            var winString = colorString + playerName + "\n" + role.Name + "</color>";
+            return winString;
+        }
+
         public static void BaitReport(PlayerControl killer, PlayerControl target)
         {
             Coroutines.Start(BaitReportDelay(killer, target));
@@ -1403,7 +1428,6 @@ namespace TownOfUsReworked.Extensions
                         writer.Write(killer.PlayerId);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            
                         break;
                     }
                 }
@@ -1520,7 +1544,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastInterrogated = DateTime.UtcNow;
 
             foreach (Inspector role in Role.GetRoles(RoleEnum.Inspector))
-                role.LastExamined = DateTime.UtcNow;
+                role.LastInspected = DateTime.UtcNow;
 
             foreach (Vigilante role in Role.GetRoles(RoleEnum.Vigilante))
                 role.LastKilled = DateTime.UtcNow;
@@ -1551,9 +1575,6 @@ namespace TownOfUsReworked.Extensions
 
             foreach (Shifter role in Role.GetRoles(RoleEnum.Shifter))
                 role.LastShifted = DateTime.UtcNow;
-
-            foreach (Inspector role in Role.GetRoles(RoleEnum.Inspector))
-                role.LastExamined = DateTime.UtcNow;
 
             foreach (VampireHunter role in Role.GetRoles(RoleEnum.VampireHunter))
                 role.LastStaked = DateTime.UtcNow;

@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer = null;
         public DateTime LastKill { get; set; }
+        private KillButton _killButton;
 
         public Anarchist(PlayerControl player) : base(player)
         {
@@ -45,6 +46,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

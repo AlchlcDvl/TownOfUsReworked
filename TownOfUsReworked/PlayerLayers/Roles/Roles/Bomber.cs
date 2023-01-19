@@ -16,6 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public static Material bombMaterial = bundle.LoadAsset<Material>("trap").DontUnload();
         public DateTime LastPlaced { get; set; }
         public DateTime LastDetonated { get; set; }
+        public bool HasPlaced;
+        private KillButton _bombButton;
+        private KillButton _killButton;
 
         public Bomber(PlayerControl player) : base(player)
         {
@@ -38,6 +41,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " though, as any unfortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations are key to victory!";
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SyKDescription;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
+
+        public KillButton BombButton
+        {
+            get => _bombButton;
+            set
+            {
+                _bombButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float BombTimer()

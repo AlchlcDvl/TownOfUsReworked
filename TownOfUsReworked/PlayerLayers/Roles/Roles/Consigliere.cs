@@ -21,6 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Ability ability => PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer)
             : null;
         public string CanAssassinate => ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "You cannot assassinate players you have revealed" : "None";
+        private KillButton _killButton;
 
         public Consigliere(PlayerControl player) : base(player)
         {
@@ -43,6 +44,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float ConsigliereTimer()

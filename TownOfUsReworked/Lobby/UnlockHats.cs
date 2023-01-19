@@ -2,7 +2,7 @@ using System.Linq;
 using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Lobby
 {
     [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedHats))]
     public class UnlockHats

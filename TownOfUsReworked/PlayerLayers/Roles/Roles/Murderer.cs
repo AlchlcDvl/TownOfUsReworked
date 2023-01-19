@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastKill { get; set; }
         public bool MurdWins { get; set; }
+        private KillButton _murderButton;
 
         public Murderer(PlayerControl player) : base(player)
         {
@@ -41,8 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.CabalWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
-                        SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin, SendOption.Reliable, -1);
                     writer.Write(Player.PlayerId);
                     Wins();
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -52,8 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (Utils.NKWins(RoleType))
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MurdererWin,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MurdererWin, SendOption.Reliable, -1);
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -62,6 +61,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
 
             return false;
+        }
+
+        public KillButton MurderButton
+        {
+            get => _murderButton;
+            set
+            {
+                _murderButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public override void Wins()

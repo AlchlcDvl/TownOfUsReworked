@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool UsedAbility { get; set; } = false;
         public PlayerControl ShieldedPlayer { get; set; }
         public PlayerControl exShielded { get; set; }
+        private KillButton _shieldButton;
 
         public Medic(PlayerControl player) : base(player)
         {
@@ -26,8 +27,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-           // Results = InspResults.GAExeMedicPup;
+            Results = InspResults.GrenFramMedicPois;
             IntroSound = TownOfUsReworked.MedicIntro;
+        }
+
+        public KillButton ShieldButton
+        {
+            get => _shieldButton;
+            set
+            {
+                _shieldButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

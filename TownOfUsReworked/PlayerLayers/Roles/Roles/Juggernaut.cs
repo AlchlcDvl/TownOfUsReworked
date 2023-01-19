@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastKill { get; set; }
         public bool JuggernautWins { get; set; }
         public int JuggKills { get; set; } = 0;
+        private KillButton _assaultButton;
 
         public Juggernaut(PlayerControl player) : base(player)
         {
@@ -31,6 +32,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.DetJuggOpTroll;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton AssaultButton
+        {
+            get => _assaultButton;
+            set
+            {
+                _assaultButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

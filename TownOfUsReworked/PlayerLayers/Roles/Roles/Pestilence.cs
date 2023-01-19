@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastKill { get; set; }
         public bool PestilenceWins { get; set; }
+        private KillButton _obliterateButton;
 
         public Pestilence(PlayerControl owner) : base(owner)
         {
@@ -30,6 +31,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.GFMayorRebelPest;
             Attack = AttackEnum.Powerful;
             AttackString = "Powerful";
+        }
+
+        public KillButton ObliterateButton
+        {
+            get => _obliterateButton;
+            set
+            {
+                _obliterateButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

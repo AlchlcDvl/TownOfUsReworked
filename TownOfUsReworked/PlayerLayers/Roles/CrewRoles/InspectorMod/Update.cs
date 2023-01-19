@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     {
         private static void UpdateMeeting(MeetingHud __instance, Inspector inspector)
         {
-            foreach (var player in inspector.Examined)
+            foreach (var player in inspector.Inspected)
             {
                 foreach (var state in __instance.playerStates)
                 {
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             var inspector = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            foreach (var player in inspector.Examined)
+            foreach (var player in inspector.Inspected)
             {
                 player.nameText().transform.localPosition = new Vector3(0f, player.Data.DefaultOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
 

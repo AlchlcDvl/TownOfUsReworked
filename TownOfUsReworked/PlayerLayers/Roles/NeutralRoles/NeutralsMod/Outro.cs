@@ -8,11 +8,11 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public class AllNeutralsOutro
+    public class Outro
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => (x.Faction == Faction.Neutral && Role.NeutralsWin) || Input.GetKeyDown(KeyCode.F8));
+            var role = Role.AllRoles.FirstOrDefault(x => (x.Faction == Faction.Neutral && Role.NeutralsWin));
 
             if (role == null)
                 return;
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = role.ColorString + player.NameText().text + "</color>";
+                player.NameText().text = player.name.GetEndGameName();
 
             __instance.BackgroundBar.material.color = Colors.Neutral;
             var text = Object.Instantiate(__instance.WinText);

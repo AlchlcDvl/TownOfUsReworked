@@ -18,7 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 return;
 
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
-            array[0].NameText().text = role.ColorString + array[0].NameText().text + "</color>";
+
+            foreach (var player in array)
+                player.NameText().text = player.name.GetEndGameName();
+                
             __instance.BackgroundBar.material.color = role.Color;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "Phantom Wins!";

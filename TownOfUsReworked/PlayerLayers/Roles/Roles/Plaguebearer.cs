@@ -17,8 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastInfected;
         public bool PlaguebearerWins { get; set; }
         public List<byte> InfectedPlayers = new List<byte>();
-        public int InfectedAlive => InfectedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead);
+        public int InfectedAlive => InfectedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead &&
+            !Utils.PlayerById(x).Data.Disconnected);
         public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead) <= InfectedAlive;
+        private KillButton _infectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
         {
@@ -34,6 +36,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
             Results = InspResults.ArsoPBCryoVet;
+        }
+
+        public KillButton InfectButton
+        {
+            get => _infectButton;
+            set
+            {
+                _infectButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

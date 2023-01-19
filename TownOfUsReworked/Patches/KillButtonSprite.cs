@@ -42,7 +42,6 @@ namespace TownOfUsReworked.Patches
         private static Sprite Medic => TownOfUsReworked.MedicSprite;
         private static Sprite Seer => TownOfUsReworked.SeerSprite;
         private static Sprite Douse => TownOfUsReworked.DouseSprite;
-        private static Sprite Revive => TownOfUsReworked.ReviveSprite;
         private static Sprite Alert => TownOfUsReworked.AlertSprite;
         private static Sprite Remember => TownOfUsReworked.RememberSprite;
         private static Sprite Eat => TownOfUsReworked.CannibalEat;
@@ -53,7 +52,6 @@ namespace TownOfUsReworked.Patches
         private static Sprite Protect => TownOfUsReworked.ProtectSprite;
         private static Sprite Infect => TownOfUsReworked.InfectSprite;
         private static Sprite Bug => TownOfUsReworked.BugSprite;
-        private static Sprite Examine => TownOfUsReworked.ExamineSprite;
         private static Sprite Button => TownOfUsReworked.ButtonSprite;
         private static Sprite Fix => TownOfUsReworked.EngineerFix;
         private static Sprite Shoot => TownOfUsReworked.ShootSprite;
@@ -101,11 +99,6 @@ namespace TownOfUsReworked.Patches
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
             {
                 __instance.KillButton.graphic.sprite = Douse;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Altruist))
-            {
-                __instance.KillButton.graphic.sprite = Revive;
                 flag = true;
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Veteran))
@@ -156,11 +149,6 @@ namespace TownOfUsReworked.Patches
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Operative))
             {
                 __instance.KillButton.graphic.sprite = Bug;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Detective))
-            {
-                __instance.KillButton.graphic.sprite = Examine;
                 flag = true;
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Vigilante))

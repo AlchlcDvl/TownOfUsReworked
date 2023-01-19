@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             }
             
             role.FixButton.SetCoolDown(0f, 10f);
-            role.FixButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && __instance.UseButton.isActiveAndEnabled && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.FixButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.UsedThisRound);
 
             if (!ShipStatus.Instance)
                 return;
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
             var renderer = role.FixButton.graphic;
             
-            if (active && !dummyActive && !role.UsedThisRound && __instance.KillButton.enabled)
+            if (active && !dummyActive && !role.UsedThisRound)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

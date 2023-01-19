@@ -115,7 +115,6 @@ AS's Bugs Corner
 - Syndicate and Intruders can kill members of the same faction
 - Roleblocks not working
 - Camouflage code = bad (Chosen to ignore)
-- Phantom can't do tasks when dead
 - Morphling can no longer morph
 - Snitch is being weird on intro
 - Vigi suicides don't work properly
@@ -127,6 +126,9 @@ AS's Bugs Corner
 
 AS's To-Do Corner
 - FFS FINISH THE DETAILS OF ALL THE ROLES
-- Remove all unchecked places
+- Add in whispering system
+- Fix funny Amne/Shift/Thief-Snitch interactions
+- Finish promoted Godfather and Rebel HUDs
+- Redo the buttons
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

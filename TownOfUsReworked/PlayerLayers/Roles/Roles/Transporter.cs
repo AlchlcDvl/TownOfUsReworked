@@ -29,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public Dictionary<byte, DateTime> UntransportablePlayers = new Dictionary<byte, DateTime>();
+        private KillButton _transportButton;
         
         public Transporter(PlayerControl player) : base(player)
         {
@@ -51,6 +52,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TeleWarpTransWraith;
+        }
+
+        public KillButton TransportButton
+        {
+            get => _transportButton;
+            set
+            {
+                _transportButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float TransportTimer()

@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool ButtonUsable => UsesLeft != 0;
         public bool Vesting => TimeRemaining > 0f;
         public bool Alive => !Player.Data.Disconnected && !Player.Data.IsDead;
+        private KillButton _vestButton;
 
         public Survivor(PlayerControl player) : base(player)
         {
@@ -34,6 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
             Results = InspResults.VigVHSurvGorg;
+        }
+
+        public KillButton VestButton
+        {
+            get => _vestButton;
+            set
+            {
+                _vestButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public float VestTimer()

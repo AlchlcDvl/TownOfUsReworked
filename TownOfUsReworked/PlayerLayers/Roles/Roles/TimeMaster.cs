@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class TimeMaster : Role
     {
         private KillButton _freezeButton;
+        private KillButton _killButton;
         public bool Enabled;
         public float TimeRemaining;
         public DateTime LastFrozen { get; set; }
@@ -34,6 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.TLAltTMCann;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
         
         public KillButton FreezeButton

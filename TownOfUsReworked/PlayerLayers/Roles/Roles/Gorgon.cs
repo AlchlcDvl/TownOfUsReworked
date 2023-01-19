@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float TimeRemaining;
         public PlayerControl StonedPlayer;
         public bool Stoned => TimeRemaining > 0f;
+        private KillButton _killButton;
 
         public Gorgon(PlayerControl player) : base(player)
         {
@@ -40,6 +41,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = SyndicateWinCon;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
             AlignmentDescription = SyKDescription;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
         
         public KillButton GazeButton

@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
         public override void Wins()
         {
-            WinTasksDone = true;
             TaskmasterWins = true;
         }
 

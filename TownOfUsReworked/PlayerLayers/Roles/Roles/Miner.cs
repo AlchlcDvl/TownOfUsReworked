@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastMined;
         public bool CanPlace { get; set; }
         public Vector2 VentSize { get; set; }
+        private KillButton _killButton;
 
         public Miner(PlayerControl player) : base(player)
         {
@@ -33,6 +34,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.EngiMineBombVampWW;
             Attack = AttackEnum.Basic;
             AttackString = "Basic";
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         public KillButton MineButton

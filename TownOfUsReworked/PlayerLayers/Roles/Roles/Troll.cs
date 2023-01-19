@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastInteracted { get; set; }
         public KillButton _interactbutton;
         public PlayerControl ClosestPlayer;
+        public bool TrollWins { get; set; }
 
         public Troll(PlayerControl player) : base(player)
         {
@@ -58,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            Killed = true;
+            TrollWins = true;
         }
 
         public override void Loses()

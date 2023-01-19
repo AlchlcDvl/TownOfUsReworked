@@ -1386,6 +1386,78 @@ namespace TownOfUsReworked.Patches
                         new Shifter(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.SetUndertaker:
+                        new Undertaker(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetAssassin:
+                        new Assassin(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTraitor:
+                        new Traitor(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetPlaguebearer:
+                        new Plaguebearer(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetInsider:
+                        new Insider(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetFanatic:
+                        new Fanatic(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetCorrupted:
+                        new Corrupted(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetOverlord:
+                        new Overlord(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetOperative:
+                        new Operative(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGorgon:
+                        new Gorgon(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetShapeshifter:
+                        new Shapeshifter(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetVIP:
+                        new VIP(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetShy:
+                        new Shy(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetVeteran:
+                        new Veteran(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTransporter:
+                        new Transporter(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetMedium:
+                        new Medium(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetCoroner:
+                        new Coroner(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetUnderdog:
+                        new Underdog(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
                     case CustomRPC.SetCamouflager:
                         new Camouflager(Utils.PlayerById(reader.ReadByte()));
                         break;
@@ -1466,9 +1538,178 @@ namespace TownOfUsReworked.Patches
                         new Thief(Utils.PlayerById(reader.ReadByte()));
                         break;
 
+                    case CustomRPC.SetBlackmailer:
+                        new Blackmailer(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetVampireHunter:
+                        new VampireHunter(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGodfather:
+                        new Godfather(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetExecutioner:
+                        new Executioner(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetSheriff:
+                        new Sheriff(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGlitch:
+                        new Glitch(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                    
+                    case CustomRPC.SetTeleporter:
+                        new Teleporter(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetJuggernaut:
+                        new Juggernaut(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetMurderer:
+                        new Murderer(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetEscort:
+                        new Escort(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetConsort:
+                        new Consort(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTroll:
+                        new Troll(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGuardianAngel:
+                        new GuardianAngel(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetAgent:
+                        new Agent(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTaskmaster:
+                        new Taskmaster(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetImpostor:
+                        new Impostor(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetCrewmate:
+                        new Crewmate(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetAnarchist:
+                        new Anarchist(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetBomber:
+                        new Bomber(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetWarper:
+                        new Warper(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                        
+                    case CustomRPC.SetRadar:
+                        new Radar(Utils.PlayerById(reader.ReadByte()));
+                        break;
+                        
+                    case CustomRPC.SetInsepctor:
+                        new Inspector(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetAltruist:
+                        new Altruist(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGiant:
+                        new Giant(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTracker:
+                        new Tracker(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetDetective:
+                        new Detective(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetSurvivor:
+                        new Survivor(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetMiner:
+                        new Miner(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetSnitch:
+                        new Snitch(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTimeMaster:
+                        new TimeMaster(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetWraith:
+                        new Wraith(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetGrenadier:
+                        new Grenadier(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetDisguiser:
+                        new Disguiser(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetWerewolf:
+                        new Werewolf(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetTiebreaker:
+                        new Tiebreaker(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetCoward:
+                        new Coward(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetVolatile:
+                        new Volatile(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetArsonist:
+                        new Arsonist(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetPestilence:
+                        new Pestilence(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetSerialKiller:
+                        new SerialKiller(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
+                    case CustomRPC.SetFramer:
+                        new Framer(Utils.PlayerById(reader.ReadByte()));
+                        break;
+
                     case CustomRPC.SetRevealer:
                         readByte = reader.ReadByte();
                         SetRevealer.WillBeRevealer = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
+                        break;
+
+                    case CustomRPC.SetPhantom:
+                        readByte = reader.ReadByte();
+                        SetPhantom.WillBePhantom = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
                         break;
 
                     case CustomRPC.RevealerFinished:
@@ -1504,11 +1745,6 @@ namespace TownOfUsReworked.Patches
                         var theCryomaniac = Utils.PlayerById(reader.ReadByte());
                         var theCryomaniacRole = Role.GetRole<Cryomaniac>(theCryomaniac);
                         theCryomaniacRole.FreezeUsed = true;
-                        break;
-
-                    case CustomRPC.SetPhantom:
-                        readByte = reader.ReadByte();
-                        SetPhantom.WillBePhantom = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
                         break;
 
                     case CustomRPC.PhantomDied:
@@ -1728,10 +1964,6 @@ namespace TownOfUsReworked.Patches
                         var other3 = Utils.PlayerById(reader.ReadByte());
                         PerformConvertButton.Convert(Role.GetRole<Dracula>(drac), other3);
                         break;
-                    
-                    case CustomRPC.SetTeleporter:
-                        new Teleporter(Utils.PlayerById(reader.ReadByte()));
-                        break;
 
                     case CustomRPC.Teleport:
                         var teleporter = Utils.PlayerById(reader.ReadByte());
@@ -1766,18 +1998,6 @@ namespace TownOfUsReworked.Patches
                         var medicId = reader.ReadByte();
                         readByte = reader.ReadByte();
                         StopKill.BreakShield(medicId, readByte, CustomGameOptions.ShieldBreaks);
-                        break;
-
-                    case CustomRPC.SetGlitch:
-                        new Glitch(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetJuggernaut:
-                        new Juggernaut(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetMurderer:
-                        new Murderer(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.BypassKill:
@@ -1820,12 +2040,8 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.InspExamine:
                         var inspector = Utils.PlayerById(reader.ReadByte());
                         var otherPlayer1 = Utils.PlayerById(reader.ReadByte());
-                        Role.GetRole<Inspector>(inspector).Examined.Add(otherPlayer1);
-                        Role.GetRole<Inspector>(inspector).LastExamined = DateTime.UtcNow;
-                        break;
-
-                    case CustomRPC.SetSheriff:
-                        new Sheriff(Utils.PlayerById(reader.ReadByte()));
+                        Role.GetRole<Inspector>(inspector).Inspected.Add(otherPlayer1);
+                        Role.GetRole<Inspector>(inspector).LastInspected = DateTime.UtcNow;
                         break;
 
                     case CustomRPC.Morph:
@@ -1852,26 +2068,6 @@ namespace TownOfUsReworked.Patches
                         poisonerRole.PoisonedPlayer = poisoned;
                         break;
 
-                    case CustomRPC.SetExecutioner:
-                        new Executioner(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetEscort:
-                        new Escort(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetConsort:
-                        new Consort(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetTroll:
-                        new Troll(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetGuardianAngel:
-                        new GuardianAngel(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.TurnTraitor:
                         var traitor = Utils.PlayerById(reader.ReadByte());
                         var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
@@ -1879,10 +2075,6 @@ namespace TownOfUsReworked.Patches
                         if (traitorObj.Turned)
                             SetTraitor.TurnTraitor(traitor);
 
-                        break;
-
-                    case CustomRPC.SetGodfather:
-                        new Godfather(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.SetTarget:
@@ -1930,25 +2122,9 @@ namespace TownOfUsReworked.Patches
                         (Role.GetRole(evilRecruit)).IsRecruit = true;
                         break;
 
-                    case CustomRPC.SetBlackmailer:
-                        new Blackmailer(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetVampireHunter:
-                        new VampireHunter(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.Blackmail:
                         var blackmailer = Role.GetRole<Blackmailer>(Utils.PlayerById(reader.ReadByte()));
                         blackmailer.Blackmailed = Utils.PlayerById(reader.ReadByte());
-                        break;
-
-                    case CustomRPC.SetAgent:
-                        new Agent(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetTaskmaster:
-                        new Taskmaster(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.ExeToJest:
@@ -1957,26 +2133,6 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.GAToSurv:
                         GATargetColor.GAToSurv(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetSnitch:
-                        new Snitch(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetTracker:
-                        new Tracker(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetDetective:
-                        new Detective(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetSurvivor:
-                        new Survivor(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetMiner:
-                        new Miner(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.Mine:
@@ -1993,14 +2149,6 @@ namespace TownOfUsReworked.Patches
                         var tmRole = Role.GetRole<TimeMaster>(tm);
                         tmRole.TimeRemaining = CustomGameOptions.FreezeDuration;
                         tmRole.TimeFreeze();
-                        break;
-
-                    case CustomRPC.SetTimeMaster:
-                        new TimeMaster(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetWraith:
-                        new Wraith(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.Invis:
@@ -2051,18 +2199,6 @@ namespace TownOfUsReworked.Patches
                         medium.AddMediatePlayer(mediatedPlayer.PlayerId);
                         break;
 
-                    case CustomRPC.SetGrenadier:
-                        new Grenadier(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetDisguiser:
-                        new Disguiser(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetWerewolf:
-                        new Werewolf(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.FlashGrenade:
                         var grenadier = Utils.PlayerById(reader.ReadByte());
                         var grenadierRole = Role.GetRole<Grenadier>(grenadier);
@@ -2074,30 +2210,6 @@ namespace TownOfUsReworked.Patches
                         var ww = Utils.PlayerById(reader.ReadByte());
                         var wwRole = Role.GetRole<Werewolf>(ww);
                         wwRole.Maul(wwRole.Player);
-                        break;
-
-                    case CustomRPC.SetTiebreaker:
-                        new Tiebreaker(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetCoward:
-                        new Coward(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetVolatile:
-                        new Volatile(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetArsonist:
-                        new Arsonist(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetPestilence:
-                        new Pestilence(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetSerialKiller:
-                        new SerialKiller(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.Douse:
@@ -2152,40 +2264,8 @@ namespace TownOfUsReworked.Patches
                         Role.GetRole<Mafioso>(Utils.PlayerById(reader.ReadByte())).TurnGodfather();
                         break;
 
-                    case CustomRPC.SetImpostor:
-                        new Impostor(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetCrewmate:
-                        new Crewmate(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetAnarchist:
-                        new Anarchist(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetWarper:
-                        new Warper(Utils.PlayerById(reader.ReadByte()));
-                        break;
-                        
-                    case CustomRPC.SetRadar:
-                        new Radar(Utils.PlayerById(reader.ReadByte()));
-                        break;
-                        
-                    case CustomRPC.SetInsepctor:
-                        new Inspector(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.SyncCustomSettings:
                         Rpc.ReceiveRpc(reader);
-                        break;
-
-                    case CustomRPC.SetAltruist:
-                        new Altruist(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetGiant:
-                        new Giant(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.AltruistRevive:
@@ -2264,10 +2344,6 @@ namespace TownOfUsReworked.Patches
                         murderKiller.CheckMurder(murderTarget);
                         break;
 
-                    case CustomRPC.SetUndertaker:
-                        new Undertaker(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.Drag:
                         readByte1 = reader.ReadByte();
                         var dienerPlayer = Utils.PlayerById(readByte1);
@@ -2294,60 +2370,8 @@ namespace TownOfUsReworked.Patches
                         body2.transform.position = new Vector3(v2.x, v2.y, v2z);
                         break;
 
-                    case CustomRPC.SetAssassin:
-                        new Assassin(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetVeteran:
-                        new Veteran(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetTransporter:
-                        new Transporter(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetMedium:
-                        new Medium(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetCoroner:
-                        new Coroner(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetUnderdog:
-                        new Underdog(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
                     case CustomRPC.CatchRevealer:
                         Role.GetRole<Revealer>(Utils.PlayerById(reader.ReadByte())).Caught = true;
-                        break;
-
-                    case CustomRPC.SetTraitor:
-                        new Traitor(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetPlaguebearer:
-                        new Plaguebearer(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetInsider:
-                        new Insider(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetFanatic:
-                        new Fanatic(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetCorrupted:
-                        new Corrupted(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetOverlord:
-                        new Overlord(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetOperative:
-                        new Operative(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.AddMayorVoteBank:
@@ -2442,22 +2466,6 @@ namespace TownOfUsReworked.Patches
                         }
 
                         Utils.AirKill(gorgon.Player, Utils.PlayerById(readByte1));
-                        break;
-
-                    case CustomRPC.SetGorgon:
-                        new Gorgon(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetShapeshifter:
-                        new Shapeshifter(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetVIP:
-                        new VIP(Utils.PlayerById(reader.ReadByte()));
-                        break;
-
-                    case CustomRPC.SetShy:
-                        new Shy(Utils.PlayerById(reader.ReadByte()));
                         break;
 
                     case CustomRPC.SetProfessional:

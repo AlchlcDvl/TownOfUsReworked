@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
         public DeadBody CurrentTarget = null;
+        private KillButton _rememberButton;
 
         public Amnesiac(PlayerControl player) : base(player)
         {
@@ -37,6 +38,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Loses()
         {
             LostByRPC = true;
+        }
+
+        public KillButton RememberButton
+        {
+            get => _rememberButton;
+            set
+            {
+                _rememberButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)

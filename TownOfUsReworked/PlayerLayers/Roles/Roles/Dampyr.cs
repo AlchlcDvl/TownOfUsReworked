@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKill { get; set; }
+        private KillButton _killButton;
 
         public Dampyr(PlayerControl player) : base(player)
         {
@@ -41,6 +42,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Wins()
         {
             UndeadWin = true;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         internal override bool EABBNOODFGL(ShipStatus __instance)

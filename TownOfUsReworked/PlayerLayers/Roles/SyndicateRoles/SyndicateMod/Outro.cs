@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public class Outro
+    public static class Outro
     {
         public static void Postfix(EndGameManager __instance)
         {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = role.ColorString + player.NameText().text + "</color>";
+                player.NameText().text = player.name.GetEndGameName();
 
             __instance.BackgroundBar.material.color = role.FactionColor;
             var text = Object.Instantiate(__instance.WinText);

@@ -13,13 +13,10 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         public static void Prefix(PlayerControl __instance)
         {   
-            if (__instance == null)
+            if (LobbyBehaviour.Instance || __instance == null || __instance.Data == null || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            if (__instance.Data == null)
-                return;
-
-            if (__instance.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+            if (__instance?.PlayerId != PlayerControl.LocalPlayer.PlayerId)
                 return;
 
             if (CustomGameOptions.AddTeleporters)

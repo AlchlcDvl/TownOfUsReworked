@@ -16,20 +16,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Escort))
                 return true;
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
-                return false;
-
-            var flag2 = role.RoleblockTimer() == 0f;
-
-            if (!flag2)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null || role.RoleblockTimer() != 0f)
                 return false;
 
             if (!__instance.enabled)
@@ -64,24 +56,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                     if (CustomGameOptions.ShieldBreaks)
                         role.LastBlock = DateTime.UtcNow;
 
-                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId,
-                        CustomGameOptions.ShieldBreaks);
-                    return false;
+                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (!role.Player.IsProtected())
-                {
                     Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
 
                 role.LastBlock = DateTime.UtcNow;
                 return false;
             }
-
-            Utils.Block(role.Player, role.ClosestPlayer);
-                
-            role.LastBlock = DateTime.UtcNow;
-
+            
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EscRoleblock, SendOption.Reliable, -1);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            role.TimeRemaining = CustomGameOptions.CamouflagerDuration;
+            role.Block();
             return false;
         }
     }

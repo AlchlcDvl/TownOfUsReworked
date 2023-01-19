@@ -18,13 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
 
-                if (PlayerControl.LocalPlayer.Data.IsDead)
-                    return false;
-
-                if (__instance.AmDead)
-                    return false;
-
-                if (!role.CanVote || !__instance.Parent.Select(__instance.TargetPlayerId))
+                if (PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !role.CanVote || !__instance.Parent.Select(__instance.TargetPlayerId))
                     return false;
 
                 __instance.Buttons.SetActive(true);

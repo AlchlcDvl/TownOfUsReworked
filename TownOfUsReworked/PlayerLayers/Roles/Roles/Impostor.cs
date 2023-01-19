@@ -8,6 +8,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Impostor : Role
     {
+        private KillButton _killButton;
+
         public Impostor(PlayerControl player) : base(player)
         {
             Name = "Impostor";
@@ -28,6 +30,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Impostor! Your role is the base role for the Intruder faction. You have no special abilities and should probably just kill normally.";
             FactionDescription = IntruderFactionDescription;
             Objectives = IntrudersWinCon;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
