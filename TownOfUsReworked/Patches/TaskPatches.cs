@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && (playerInfo._object.Is(Faction.Crew) &&
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && (playerInfo._object.CanDoTasks() &&
                         !(playerInfo._object.Is(ObjectifierEnum.Lovers) || (playerInfo._object.Is(RoleEnum.Revealer) && playerInfo.IsDead))))
                     {
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)

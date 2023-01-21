@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (!Killed || !Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -60,11 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public override void Wins()
         {
             TrollWins = true;
-        }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
         }
 
         public float InteractTimer()

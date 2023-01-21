@@ -20,9 +20,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
             foreach (var state in __instance.playerStates)
             {
                 var targetId = state.TargetPlayerId;
-                var playerData = Utils.PlayerById(targetId)?.Data;
+                var player = Utils.PlayerById(targetId);
 
-                if (playerData == null || playerData.Disconnected)
+                if (player == null)
+                    continue;
+
+                var playerData = player.Data;
+
+                if (playerData == null || playerData.Disconnected || playerData.IsDead)
                 {
                     role.InfectedPlayers.Remove(targetId);
                     continue;

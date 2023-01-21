@@ -63,17 +63,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public override void Wins()
         {
             PhantomWin = true;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (!Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

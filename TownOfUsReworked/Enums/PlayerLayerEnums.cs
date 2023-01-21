@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum AbilityEnum
     {
-        Assassin = 0,
+        Assassin,
         ButtonBarry,
         Insider,
         Lighter,
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Enums
 
     public enum ObjectifierEnum
     {
-        Corrupted = 0,
+        Corrupted,
         Fanatic,
         Lovers,
         Overlord,
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Enums
 
     public enum RoleEnum
     {
-        Agent = 0,
+        Agent,
         Altruist,
         Coroner,
         Crewmate,
@@ -118,7 +118,7 @@ namespace TownOfUsReworked.Enums
 
     public enum ModifierEnum
     {
-        Bait = 0,
+        Bait,
         Coward,
         Diseased,
         Drunk,

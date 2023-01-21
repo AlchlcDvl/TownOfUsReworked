@@ -38,6 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
+            RoleBlockImmune = true;
         }
 
         public KillButton BlockButton
@@ -75,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             BlockTarget = ClosestPlayer;
             var targetRole = GetRole(BlockTarget);
-            targetRole.IsBlocked = true;
+            targetRole.IsBlocked = !targetRole.RoleBlockImmune;
 
             if (Player.Data.IsDead)
                 TimeRemaining = 0f;
@@ -116,12 +117,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

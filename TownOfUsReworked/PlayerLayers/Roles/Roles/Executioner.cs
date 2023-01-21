@@ -55,10 +55,5 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 
             TargetVotedOut = true;
         }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
     }
 }

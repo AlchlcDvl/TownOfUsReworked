@@ -14,30 +14,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Escort))
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort))
                 return;
 
-            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
-            var roleblockButton = role.BlockButton;
 
-            if (roleblockButton == null)
+            if (role.BlockButton == null)
             {
-                roleblockButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                roleblockButton.graphic.enabled = true;
-                roleblockButton.gameObject.SetActive(false);
+                role.BlockButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.BlockButton.graphic.enabled = true;
+                role.BlockButton.gameObject.SetActive(false);
             }
 
-            roleblockButton.graphic.sprite = Placeholder;
-            roleblockButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
-            Utils.SetTarget(ref role.ClosestPlayer, roleblockButton);
+            role.BlockButton.GetComponent<AspectPosition>().Update();
+            role.BlockButton.graphic.sprite = Placeholder;
+            role.BlockButton.gameObject.SetActive(Utils.SetActive(role.Player));
+            Utils.SetTarget(ref role.ClosestPlayer, role.BlockButton);
 
             if (role.Enabled)
-                roleblockButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+                role.BlockButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.EscRoleblockDuration);
             else
-                roleblockButton.SetCoolDown(role.RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown);
+                role.BlockButton.SetCoolDown(role.RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown);
 
-            var renderer = roleblockButton.graphic;
+            var renderer = role.BlockButton.graphic;
             
             if (role.ClosestPlayer != null)
             {

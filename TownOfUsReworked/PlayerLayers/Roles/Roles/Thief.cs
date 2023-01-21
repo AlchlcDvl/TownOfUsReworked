@@ -60,10 +60,5 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             team.Add(PlayerControl.LocalPlayer);
             __instance.teamToShow = team;
         }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
     }
 }

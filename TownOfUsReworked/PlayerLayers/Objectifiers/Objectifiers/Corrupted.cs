@@ -39,12 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             CorruptedWin = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return Equals(Player, other.Player) && AbilityType == other.AbilityType;
         }
 
-        internal virtual bool EABBNOODFGL(ShipStatus __instance)
+        internal virtual bool GameEnd(ShipStatus __instance)
         {
             return true;
         }

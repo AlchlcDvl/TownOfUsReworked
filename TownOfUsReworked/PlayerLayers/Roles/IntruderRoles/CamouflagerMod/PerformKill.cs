@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.CamouflagerDuration;
-                Utils.Camouflage();
+                role.Camouflage();
                 return false;
             }
 

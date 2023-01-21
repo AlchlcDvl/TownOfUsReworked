@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             __instance.KillButton.Hide();
             
             var position = __instance.KillButton.transform.localPosition;
-            role.PoisonButton.transform.localPosition = new Vector3(position.x, position.y, position.z);
+            role.PoisonButton.transform.localPosition = position;
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsImpostor()).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.PoisonButton, float.NaN, notImp);
 

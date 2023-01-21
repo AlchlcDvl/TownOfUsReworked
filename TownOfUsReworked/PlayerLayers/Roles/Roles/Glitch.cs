@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -98,11 +98,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else
                 GlitchWins = true;
-        }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
         }
 
         public void MimicButtonPress()

@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             {
                 var role2 = (Consort) role;
                 role2.LastBlock = DateTime.UtcNow;
-                role2.LastBlock = role2.LastBlock.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ExamineCd);
+                role2.LastKill = DateTime.UtcNow;
             }
         }
     }

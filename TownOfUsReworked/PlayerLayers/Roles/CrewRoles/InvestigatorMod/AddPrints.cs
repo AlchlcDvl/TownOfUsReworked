@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public static class AddPrints
     {
-        private const float PeriodInterval = 0.25f;
         private static float _time;
         public static bool GameStarted = false;
         private static float Interval => CustomGameOptions.FootprintInterval*10;

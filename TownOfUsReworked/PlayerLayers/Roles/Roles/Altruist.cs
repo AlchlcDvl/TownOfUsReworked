@@ -64,11 +64,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ReviveButton
         {
             get => _reviveButton;
@@ -80,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

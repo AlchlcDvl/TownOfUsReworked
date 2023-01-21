@@ -1,7 +1,6 @@
-Changelog (v1.0.0-dev7 to v1.0.0-dev8)
+Changelog (v1.0.0-dev7 to v1.0.0-dev9)
 - New Faction: Syndicate
-- New Sub Factions: Undead, Cabal
-- New Roles: 3 Crew, 9 Neutral, 4 Intruder, 9 Syndicate
+- New Sub Factions: Undead, Cabal, Reanimated, Sect
 - New Role: Warper [Syndicate (Support)]
 - New Role: Rebel [Syndicate (Support)] | 
 - New Role: Concealer [Syndicate (Support)] 
@@ -9,50 +8,45 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - New Role: Framer [Syndicate (Disruption)]
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
-- New Role: Gorgon [Syndicate (Killing)]
+- New Role: Gorgon [Syndicate (Killing)] |
 - New Role: Bomber [Syndicate (Killing)] |
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
 - New Role: Mafioso [Intruder (Utility)] |
-- New Role: Dracula [Neutral (Neophyte)] |
+- New Role: Dracula [Neutral (Neophyte)]
 - New Role: Jackal [Neutral (Neophyte)]
-- New Role: Vampire [Neutral (Proselyte)] |
-- New Role: Dampyr [Neutral (Proselyte)] |
+- New Role: Vampire [Neutral (Proselyte)]
+- New Role: Dampyr [Neutral (Proselyte)]
 - New Role: Murderer [Neutral (Killing)]
 - New Role: Serial Killer [Neutral (Killing)] 
 - New Role: Cryomaniac [Neutral (Killing)]
 - New Role: Troll [Neutral (Evil)]
-- New Role: Thief [Neutral (Benign)] |
+- New Role: Thief [Neutral (Benign)]
 - New Role: Vampire Hunter [Crew (Auditor)] 
-- New Role: Escort [Crew (Support)] |
+- New Role: Escort [Crew (Support)]
 - New Role: Inspector [Crew (Investigative)]
-- 4 New Modifiers
+- New Role: Coroner [Crew (Investigative)]
 - New Modifier: Flincher
 - New Modifier: VIP
 - New Modifier: Professional
 - New Modifier: Shy
-- 4 New Objectifiers
 - New Objectifier: Rivals
-- New Objectifier: Fanatic |
 - New Objectifier: Overlord
 - New Objectifier: Corrupted
-- 4 New Abilities
 - New Ability: Tunneler
 - New Ability: Multitasker
 - New Ability: Insider |
 - New Ability: Radar |
-- New Ability: Ruthless |
 - 8 New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
-- Mega Additions: Crew and Intruder victory screens
-- Mega Additions: Better Skeld and Airship maps
+- Mega Addition: Crew and Intruder victory screens
+- Mega Addition: Better Skeld and Airship maps
 - Addition: You can now customise the spawn chance of Crewmate, Anarchist and Impostor (they will still spawn by default if the number of the factioned players are more than the number of the faction's roles that are active)
 - Addition: New Syndicate, Objectifiers and Abilities settings tabs
 - Addition: More better buttons
 - Addition: More credits
 - Addition: Added features from ToU-R v3.4.0
-- Addition: Added a whole lot of options and simplified some other options
-- Addition: Added role reveal screen sounds (for some roles)
+- Addition: Options were simplied, split and/or removed for customisation
 - Addition: Added chat commands
 - Addition: Made the mod more descriptive
 - Addition: More save slots for settings, let your creations go wild
@@ -73,7 +67,6 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Rename: Werewolf has been renamed to Serial Killer
 - Rename: Mystic has been renamed to Coroner
 - Rename: Haunter has been renamed to Revealer
-- Rewrite: Glitch has been completely rewritten |
 - Buff: Werewolf (now Serial Killer) now kills Glitch/Escort/Consort should they try to block the Serial Killer, regardless of their cooldown
 - Buff: Guardian Angel can now protect when dead (optional)
 - Nerf: Mystic (now Coroner) no longer gets info from every body, every meeting, basically now they have to report a body to get info specific to that body
@@ -89,6 +82,7 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Improvements: Separate data files for the mod now form to prevent overriding existing vanilla ToU-R data files
 - Improvements: Fixed some bad engrish
 - Improvements: Inter-role interactions have been buffed
+- Improvements: Dead players are now alerted when someone dies like the Coroner
 - Update: Updated mod to v2022.10.25
 - Visual Fix: Fixed color mismatch for certain areas
 - Visual Fix: Fixed the issue with multiple of the same person appearing in the win screen
@@ -102,27 +96,40 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev8)
 - Role Fix: Fixed Janitor clean cooldown not occuring correctly
 - Role Fix: Spy (now Agent) can see the time for death for players again
 - Regular Fix: Optimized code for smoother functionality (hopefully x2)
+- Temporary Removal: Intruder (Killing) as there are currently no roles belonging to this alignment
 - Removed: All Any Random Impostor Option, for it to be truly All Any, the number of Impostors should always be random
 - Removed: Glitch Hack Distance setting since all interactions are now controlled by the default vanilla distance
 - Removed: Crew and Neutral (Postmortal) alignments
 - Removed: Max Doused option for Arsonist because it's unnecessary
-- Temporary Removal: Intruder (Killing) as there are currently no roles belonging to this alignment
+
+Changelog (v1.0.0-dev9 to v1.0.0-dev10)
+- New Sub Factions: Reanimated, Sect
+- New Role: Necromancer [Neutral (Neophyte)]
+- New Role: Whisperer [Neutral (Neophyte)]
+- New Role: Chameleon [Crew (Support)] |
+- New Role: Imitator [Crew (Support)] |
+- New Role: Seer [Crew (Investigative)] |
+- New Objectifier: Fanatic |
+- New Objectifier: Allied |
+- New Ability: Ruthless |
+- Addition: Added role reveal screen sounds (for some roles) |
+- Rewrite: Glitch has been completely rewritten |
 
 AS's Bugs Corner
 - Missing sounds??
 - Bugged conceal
-- Disg and Consig killing players for using their abilities
+- Imp ability buttons kill targets for no reason
 - Syndicate and Intruders can kill members of the same faction
 - Roleblocks not working
 - Camouflage code = bad (Chosen to ignore)
 - Morphling can no longer morph
-- Snitch is being weird on intro
-- Vigi suicides don't work properly
 - Thief's stealing half works
 - Inspector has double results showing up
 - Incomplete task lists
 - RPCs don't work properly :(
 - End game is buggy as heck
+- Radar no work :(
+- 
 
 AS's To-Do Corner
 - FFS FINISH THE DETAILS OF ALL THE ROLES
@@ -130,5 +137,6 @@ AS's To-Do Corner
 - Fix funny Amne/Shift/Thief-Snitch interactions
 - Finish promoted Godfather and Rebel HUDs
 - Redo the buttons
+- Finish roleblocks
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum MurderEnum
     {
-        Normal = 0,
+        Normal,
         Vigilante,
         Veteran,
         Shifter,
@@ -19,8 +19,10 @@ namespace TownOfUsReworked.Enums
         VampireHunter,
         Dampyr,
         Dracula,
-        Other,
         Gorgon,
+        Jester,
+
+        Other,
         
         None
     }

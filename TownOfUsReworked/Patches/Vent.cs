@@ -33,13 +33,14 @@ namespace TownOfUsReworked.Patches
         public static bool CanVent(PlayerControl player)
         {
             bool mainflag = false;
-            var playerRole = Role.GetRole(player);
 
-            if (player.Data.IsDead || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone || player == null || player.Data == null || player.Data.Disconnected ||
+            if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone ||
                 LobbyBehaviour.Instance || MeetingHud.Instance)
                 return false;
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
                 return true;
+
+            var playerRole = Role.GetRole(player);
                 
             if (playerRole == null)
                 mainflag = player.Data.IsImpostor();
@@ -53,12 +54,12 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.IntrudersVent)
                 {
-                    var flag = (player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) ||
-                        (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent) ||
-                        (player.Is(RoleEnum.Poisoner) && !CustomGameOptions.PoisonerVent);
+                    var flag = (player.Is(RoleEnum.Morphling) && CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && CustomGameOptions.WraithVent) ||
+                        (player.Is(RoleEnum.Grenadier) && CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && CustomGameOptions.TeleVent) ||
+                        (player.Is(RoleEnum.Poisoner) && CustomGameOptions.PoisonerVent);
 
                     if (flag)
-                        mainflag = !flag;
+                        mainflag = true;
                     else if (player.Is(RoleEnum.Undertaker))
                     {
                         var undertaker = (Undertaker)playerRole;
@@ -67,6 +68,8 @@ namespace TownOfUsReworked.Patches
                             CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body || undertaker.CurrentlyDragging == null &&
                             CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless;
                     }
+                    else
+                        mainflag = true;
                 }
                 else
                     mainflag = false;

@@ -78,7 +78,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void TurnVigilante()
         {
+            var vh = Role.GetRole<VampireHunter>(Player);
             var role = new Vigilante(Player);
+            role.RoleHistory.Add(vh);
+            role.RoleHistory.AddRange(vh.RoleHistory);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
@@ -99,12 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

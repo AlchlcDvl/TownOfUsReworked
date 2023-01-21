@@ -80,11 +80,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastProtected = DateTime.UtcNow;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
         {
             var gaTeam = new List<PlayerControl>();

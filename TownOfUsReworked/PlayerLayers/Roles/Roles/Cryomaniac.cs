@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -64,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -102,11 +103,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else
                 CryoWins = true;
-        }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -150,6 +146,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
+        {
+            new WaitForSeconds(1f);
+
+            if (!source.Is(RoleType))
+                return;
+
+            DousedPlayers.Add(target.PlayerId);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            writer.Write(target.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

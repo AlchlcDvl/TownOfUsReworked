@@ -48,11 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             VotedOut = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public void SetHaunted(MeetingHud __instance)
         {
             ToHaunt.Clear();

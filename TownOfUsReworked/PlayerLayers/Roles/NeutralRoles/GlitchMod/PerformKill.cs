@@ -111,7 +111,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 }
                 else if (__instance == role.HackButton)
                 {
-                    Utils.Block(role.Player, role.ClosestPlayer);
                     role.LastHack = DateTime.UtcNow;
                     return false;
                 }

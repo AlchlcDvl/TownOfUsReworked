@@ -47,11 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             CabalWin = true;
         }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
         
         public float RecruitTimer()
         {
@@ -66,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

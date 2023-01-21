@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum Faction
     {
-        Crew = 0,
+        Crew,
         Intruder,
         Neutral,
         Syndicate,
@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Enums
 
     public enum RoleAlignment
     {
-        CrewSupport = 0,
+        CrewSupport,
         CrewInvest,
         CrewProt,
         CrewKill,
@@ -45,8 +45,10 @@ namespace TownOfUsReworked.Enums
 
     public enum SubFaction
     {
-        Undead = 0,
+        Undead,
         Cabal,
+        Reanimated,
+        Sect,
         
         None
     }

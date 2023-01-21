@@ -35,11 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = NeutralFactionDescription;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton RememberButton
         {
             get => _rememberButton;

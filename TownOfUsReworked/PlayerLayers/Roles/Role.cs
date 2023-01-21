@@ -7,7 +7,6 @@ using Reactor.Utilities.Extensions;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
         public List<KillButton> ExtraButtons = new List<KillButton>();
-        public List<AbilityButton> OtherButtons = new List<AbilityButton>();
+        //public List<CustomButton> OtherButtons = new List<CustomButton>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
@@ -47,8 +46,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
 
-        public virtual void Loses() {}
+        public virtual void Loses()
+        {
+            LostByRPC = true;
+        }
+
         public virtual void Wins() {}
+
+        public virtual void HudUpdate() {}
+        protected virtual void AddCustomButtons() {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
@@ -62,7 +68,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal DefenseEnum Defense { get; set; } = DefenseEnum.None;
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
-        protected internal List<byte> Report { get; set; } = new List<byte>();
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
@@ -80,6 +85,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string KilledBy { get; set; } = "";
         protected internal bool Base { get; set; } = false;
         protected internal bool IsRecruit { get; set; } = false;
+        protected internal bool IsRevived { get; set; } = false;
+        protected internal bool IsPursuaded { get; set; } = false;
         protected internal bool IsIntTraitor { get; set; } = false;
         protected internal bool IsSynTraitor { get; set; } = false;
         protected internal bool IsIntFanatic { get; set; } = false;
@@ -158,8 +165,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected Role(PlayerControl player)
         {
             Player = player;
-            RoleDictionary.Remove(player.PlayerId);
-            RoleDictionary.Add(player.PlayerId, this);
+
+            if (!RoleDictionary.ContainsKey(player.PlayerId))
+                RoleDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
@@ -181,8 +189,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool LostByRPC { get; protected set; }
 
-        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
+        private Tuple<int, int> Tasks => Utils.TaskInfo(Player);
+        protected internal int TasksLeft => Tasks.Item1;
+        protected internal int TotalTasks => Tasks.Item2;
         protected internal bool TasksDone => TasksLeft <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
@@ -294,10 +303,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(59, "lighter"); //Rainbow
         }
 
-        internal virtual bool EABBNOODFGL(ShipStatus __instance)
+        internal virtual bool GameEnd(ShipStatus __instance)
         {
             return true;
         }
+        
+        /*protected void RegisterCustomButton(CustomButton button)
+		{
+			button.OwnerId = Player.PlayerId;
+			OtherButtons.Add(button);
+		}*/
 
         internal virtual bool DeadCriteria()
         {
@@ -309,19 +324,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal virtual bool FactionCriteria()
         {
-            if ((Faction == Faction.Syndicate || IsSynTraitor) && PlayerControl.LocalPlayer.Is(Faction.Syndicate) && CustomGameOptions.FactionSeeRoles)
-                return true;
+            var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
+            var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
+            var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
+            var sectFlag = ((SubFaction == SubFaction.Sect || IsPursuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsRecruit()));
+            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsRevived) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsRecruit()));
+            var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
 
-            if ((Faction == Faction.Intruder || IsIntTraitor) && PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.FactionSeeRoles)
-                return true;
-            
-            if (SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead))
-                return true;
-            
-            if ((SubFaction == SubFaction.Cabal || IsRecruit) && PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
-                return true;
-
-            return false;
+            var mainFlag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
+            return mainFlag;
         }
 
         internal virtual bool Criteria()
@@ -336,7 +347,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         internal virtual bool RoleCriteria()
         {
             var coronerFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Contains(Player.PlayerId);
-            var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId) && CustomGameOptions.ConsigInfo == ConsigInfo.Role;
+            var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId) &&
+                CustomGameOptions.ConsigInfo == ConsigInfo.Role;
             return coronerFlag || consigFlag;
         }
 
@@ -433,7 +445,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (objectifier != null && revealObjectifier)
                 PlayerName += $" {objectifier.GetColoredSymbol()}";
 
-            if (revealTasks && PlayerControl.LocalPlayer.CanDoTasks() && !TasksDone && CustomGameOptions.SeeTasks)
+            if (player != null && PlayerControl.LocalPlayer.CanDoTasks() && !TasksDone && CustomGameOptions.SeeTasks && revealTasks)
                 PlayerName += $" ({TotalTasks - TasksLeft}/{TotalTasks})";
 
             if (Local && CustomGameOptions.GATargetKnows && PlayerControl.LocalPlayer.IsGATarget())
@@ -489,14 +501,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)rpc, SendOption.Reliable, -1);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return role;
-        }
-
-        public static T Gen<T>(Type type, List<PlayerControl> players, CustomRPC rpc)
-        {
-            var player = players[Random.RandomRangeInt(0, players.Count)];
-            var role = Gen<T>(type, player, rpc);
-            players.Remove(player);
             return role;
         }
         
@@ -852,7 +856,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var role in AllRoles)
                 {
-                    var roleIsEnd = role.EABBNOODFGL(__instance);
+                    var roleIsEnd = role.GameEnd(__instance);
 
                     if (!roleIsEnd)
                         return false;
@@ -861,6 +865,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
             }
         }
+        
+        public PlayerControl GetTarget(bool targetPlayersInVents = false, List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer =
+            null, bool evenWhenDead = false)
+		{
+			PlayerControl result = null;
+			float num = GameOptionsData.KillDistances[Mathf.Clamp(PlayerControl.GameOptions.KillDistance, 0, 2)];
+
+			if (!ShipStatus.Instance)
+				return result;
+
+			if (targetingPlayer == null)
+				targetingPlayer = PlayerControl.LocalPlayer;
+
+			if (!evenWhenDead && targetingPlayer.Data.IsDead)
+				return result;
+
+			Vector2 truePosition = targetingPlayer.GetTruePosition();
+
+			foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
+			{
+				if (!playerInfo.Disconnected && playerInfo.PlayerId != targetingPlayer.PlayerId && !playerInfo.IsDead &&  !playerInfo.Role.IsImpostor)
+				{
+					PlayerControl @object = playerInfo.Object;
+
+					if ((untargetablePlayers == null || !untargetablePlayers.Any((PlayerControl x) => x == @object)) && @object && (!@object.inVent || targetPlayersInVents))
+					{
+						Vector2 vector = @object.GetTruePosition() - truePosition;
+						float magnitude = vector.magnitude;
+
+						if (magnitude <= num && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, magnitude, Constants.ShipAndObjectsMask))
+						{
+							result = @object;
+							num = magnitude;
+						}
+					}
+				}
+			}
+
+			return result;
+		}
 
         [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
         public static class LobbyBehaviour_Start
@@ -1000,9 +1044,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         if (role.ColorCriteria() && !LobbyBehaviour.Instance)
                             player.nameText().color = role.Color;
                     }
-
-                    if (CustomGameOptions.PlayerNumbers && !LobbyBehaviour.Instance)
-                        player.nameText().text = $"[{player.PlayerId}] " + player.nameText().text;
                 }
             }
         }

@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             {
                 var role2 = (Escort) role;
                 role2.LastBlock = DateTime.UtcNow;
-                role2.LastBlock = role2.LastBlock.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ExamineCd);
             }
         }
     }

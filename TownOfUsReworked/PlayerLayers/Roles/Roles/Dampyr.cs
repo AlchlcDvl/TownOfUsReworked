@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -72,11 +72,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             
             return false;
-        }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
         }
 
         public float KillTimer()

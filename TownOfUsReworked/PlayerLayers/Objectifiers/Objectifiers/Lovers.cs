@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             foreach (var player in canHaveObjectifiers)
                 all.Add(player);
 
-            if (all.Count < 3)
+            if (all.Count < 5)
                 return;
 
             PlayerControl firstLover = null;
@@ -52,8 +52,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var lover1 = new Lovers(firstLover);
             var lover2 = new Lovers(secondLover);
 
-            lover1.OtherLover = lover2.Player;
-            lover2.OtherLover = lover1.Player;
+            lover1.OtherLover = secondLover;
+            lover2.OtherLover = firstLover;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCouple, SendOption.Reliable, -1);
             writer.Write(firstLover.PlayerId);
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (LoverDead())
                 return true;

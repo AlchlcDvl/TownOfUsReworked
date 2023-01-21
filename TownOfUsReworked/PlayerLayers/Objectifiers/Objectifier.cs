@@ -74,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
         }
 
-        internal virtual bool EABBNOODFGL(ShipStatus __instance)
+        internal virtual bool GameEnd(ShipStatus __instance)
         {
             return true;
         }
@@ -163,7 +163,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
                 foreach (var obj in AllObjectifiers)
                 {
-                    var objIsEnd = obj.EABBNOODFGL(__instance);
+                    var objIsEnd = obj.GameEnd(__instance);
 
                     if (!objIsEnd)
                         result = false;

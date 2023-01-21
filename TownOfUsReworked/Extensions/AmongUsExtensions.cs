@@ -8,7 +8,6 @@ using UnityEngine;
 using Object = System.Object;
 using System;
 using InnerNet;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -130,9 +129,6 @@ namespace TownOfUsReworked.Extensions
 
                 if (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) && playerControl.Is(SubFaction.Cabal))
                     playerControl.nameText().color = Colors.Cabal;
-                
-                if (CustomGameOptions.PlayerNumbers)
-                    playerControl.nameText().text += $" {playerControl.PlayerId}";
             }
             else
                 playerControl.nameText().color = Color.white;

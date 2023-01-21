@@ -52,8 +52,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var rival1 = new Rivals(firstRival);
             var rival2 = new Rivals(secondRival);
 
-            rival1.OtherRival = rival2.Player;
-            rival2.OtherRival = rival1.Player;
+            rival1.OtherRival = secondRival;
+            rival2.OtherRival = firstRival;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetDuo, SendOption.Reliable, -1);
             writer.Write(firstRival.PlayerId);
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Utils.RivalsWin(ObjectifierType))
             {

@@ -15,11 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
                 return;
 
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
             if (role.BiteButton == null)
@@ -29,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 role.BiteButton.gameObject.SetActive(false);
             }
 
-            role.BiteButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance);
+            role.BiteButton.gameObject.SetActive(Utils.SetActive(role.Player));
             role.BiteButton.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
             var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.BiteButton, float.NaN, notVamp);

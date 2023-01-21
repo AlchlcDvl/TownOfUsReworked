@@ -1,12 +1,10 @@
 ﻿using Hazel;
 using System;
 using HarmonyLib;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
@@ -16,59 +14,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Escort))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort))
+                return false;
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null || role.RoleblockTimer() != 0f)
+            if (Utils.CannotUseButton(role.Player, RoleEnum.Escort, role.ClosestPlayer, __instance))
                 return false;
 
-            if (!__instance.enabled)
+            if (role.RoleblockTimer() != 0f && __instance == role.BlockButton)
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
+            Utils.Spread(role.Player, role.ClosestPlayer);
 
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
-                return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
+                Utils.AlertKill(role.Player, role.ClosestPlayer);
 
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                if (role.Player.IsShielded())
-                {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                        (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer2.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                if (CustomGameOptions.ShieldBreaks)
+                    role.LastBlock = DateTime.UtcNow;
 
-                    System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastBlock = DateTime.UtcNow;
-
-                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (!role.Player.IsProtected())
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-
-                role.LastBlock = DateTime.UtcNow;
                 return false;
             }
             
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EscRoleblock, SendOption.Reliable, -1);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            role.TimeRemaining = CustomGameOptions.CamouflagerDuration;
+            role.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
             role.Block();
             return false;
         }

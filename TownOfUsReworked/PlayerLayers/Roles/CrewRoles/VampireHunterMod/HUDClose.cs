@@ -3,6 +3,9 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Patches;
+using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 {
@@ -13,11 +16,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
         {
             if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
                 return;
+            
+            var VampsExist = false;
 
-            foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
-                var vh = (VampireHunter) role;
-                vh.LastStaked = DateTime.UtcNow;
+                if (player.Is(SubFaction.Undead))
+                {
+                    VampsExist = true;
+                    break;
+                }
+            }
+
+            if (!VampsExist)
+            {
+                foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
+                {
+                    vh.TurnVigilante();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante, SendOption.Reliable, -1);
+                    writer.Write(vh.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            else
+            {
+                foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
+                    vh.LastStaked = DateTime.UtcNow;
             }
         }
     }

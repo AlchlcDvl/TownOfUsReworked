@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        internal override bool EABBNOODFGL(ShipStatus __instance)
+        internal override bool GameEnd(ShipStatus __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -110,11 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else
                 ArsonistWins = true;
-        }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance)
@@ -188,14 +183,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             new WaitForSeconds(1f);
 
-            if (DousedPlayers.Contains(source.PlayerId))
-            {
-                DousedPlayers.Add(target.PlayerId);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse, SendOption.Reliable, -1);
-                writer.Write(Player.PlayerId);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+            if (!source.Is(RoleType))
+                return;
+
+            DousedPlayers.Add(target.PlayerId);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Douse, SendOption.Reliable, -1);
+            writer.Write(Player.PlayerId);
+            writer.Write(target.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }
 }

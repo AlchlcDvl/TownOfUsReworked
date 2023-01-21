@@ -18,6 +18,8 @@ using UnityEngine;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
+using Reactor.Networking;
+using Reactor.Networking.Attributes;
 /*using AmongUs.Data;
 using Reactor.Utilities.ImGui;
 using InnerNet;
@@ -34,11 +36,11 @@ namespace TownOfUsReworked
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
-    //[ReactorModFlags(ModFlags.RequireOnAllClients)]
+    [ReactorModFlags(ModFlags.RequireOnAllClients)]
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "1.0.0.8";
+        public const string VersionString = "1.0.0.9";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -47,7 +49,7 @@ namespace TownOfUsReworked
         public static string dev = VersionString.Substring(6);
         public static string version = VersionString.Remove(VersionString.Length - 2);
         public static bool isDev = dev != "0";
-        public static bool isTest = true;
+        public static bool isTest = false;
         public static string devString = isDev ? $"dev{dev}" : "";
         public static string test = isTest ? "_test" : "";
         public static string versionFinal = version + devString + test;
@@ -97,7 +99,6 @@ namespace TownOfUsReworked
         public static Sprite ExamineSprite;
         public static Sprite HackSprite;
         public static Sprite MimicSprite;
-        public static Sprite LockSprite;
         public static Sprite MaulSprite;
         public static Sprite ShootSprite;
         public static Sprite AssaultSprite;
@@ -197,10 +198,6 @@ namespace TownOfUsReworked
         public static Sprite ArsoKill;
         public static Sprite VetKill;*/
 
-        public static Sprite RaiseHandActive;
-        public static Sprite RaiseHandInactive;
-        public static Sprite MeetingOverlay;
-
         public static Sprite HorseEnabledImage;
         public static Sprite HorseDisabledImage;
         public static Sprite UpdateImage;
@@ -284,7 +281,6 @@ namespace TownOfUsReworked
             ExamineSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Examine.png");
             HackSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Hack.png");
             MimicSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mimic.png");
-            LockSprite = CreateSprite("TownOfUsReworked.Resources.Misc.Lock.png");
             Camouflage = CreateSprite("TownOfUsReworked.Resources.Buttons.Camouflage.png");
             StabSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Stab.png");
             Shift = CreateSprite("TownOfUsReworked.Resources.Buttons.Shift.png");
@@ -324,11 +320,6 @@ namespace TownOfUsReworked
             HorseDisabledImage = CreateSprite("TownOfUsReworked.Resources.Misc.HorseOff.png");
             DiscordImage = CreateSprite("TownOfUsReworked.Resources.Misc.Discord.png");
             UpdateImage = CreateSprite("TownOfUsReworked.Resources.Misc.Update.png");
-
-            //Hand Raising feature, Thanks to https://github.com/xxomega77xx for the code
-            MeetingOverlay = CreateSprite("TownOfUsReworked.Resources.Misc.RaisedHandOverlay.png");
-            RaiseHandInactive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandInactive.png");
-            RaiseHandActive = CreateSprite("TownOfUsReworked.Resources.Misc.RaiseHandActive.png");
 
             //Sound effects, most of them are from Town Of H
             JuggernautWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.JuggernautWin.raw");

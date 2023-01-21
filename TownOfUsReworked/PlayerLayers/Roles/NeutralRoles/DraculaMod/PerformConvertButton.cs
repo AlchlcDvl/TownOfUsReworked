@@ -18,104 +18,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
+                return false;
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
+            if (Utils.CannotUseButton(role.Player, RoleEnum.Dracula, role.ClosestPlayer, __instance))
                 return false;
 
-            var flag2 = role.ConvertTimer() == 0f;
-
-            if (!flag2)
+            if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
                 return false;
 
-            if (!__instance.enabled)
-                return false;
+            Utils.Spread(role.Player, role.ClosestPlayer);
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var distBetweenPlayers = Utils.GetDistBetweenPlayers(PlayerControl.LocalPlayer, role.ClosestPlayer);
-            var flag3 = distBetweenPlayers < maxDistance;
-
-            if (!flag3)
-                return false;
-
-            var playerId = role.ClosestPlayer.PlayerId;
-
-            if (role.ClosestPlayer.IsInfected())
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter)))
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
+                Utils.AlertKill(role.Player, role.ClosestPlayer, true);
 
-            if (role.ClosestPlayer.Is(RoleEnum.Arsonist))
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Arsonist))
-                    ((Arsonist)pb).RpcSpreadDouse(role.ClosestPlayer, role.Player);
-            }
-
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence) || role.ClosestPlayer.Is(RoleEnum.VampireHunter))
-            {
-                if (role.ClosestPlayer.IsShielded())
-                {
-                    var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer.Write(medic);
-                    writer.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastBitten = DateTime.UtcNow;
-
-                    StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
-                    if (role.Player.IsShielded())
-                    {
-                        var medic2 = role.Player.GetMedic().Player.PlayerId;
-                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                        writer.Write(medic2);
-                        writer.Write(role.Player.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                        if (CustomGameOptions.ShieldBreaks)
-                            role.LastBitten = DateTime.UtcNow;
-
-                        StopKill.BreakShield(medic2, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                    }
-                    else if (!role.Player.IsProtected())
-                        Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
-                }
-                else if (role.Player.IsShielded())
-                {
-                    var medic = role.Player.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer.Write(medic);
-                    writer.Write(role.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastBitten = DateTime.UtcNow;
-
-                    StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (!role.Player.IsProtected())
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, role.Player);
+                if (CustomGameOptions.ShieldBreaks)
+                    role.LastBitten = DateTime.UtcNow;
                     
                 return false;
             }
             else if (role.ClosestPlayer.IsShielded())
             {
                 var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer1.Write(medic);
                 writer1.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer1);
+                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
 
                 if (CustomGameOptions.ShieldBreaks)
                     role.LastBitten = DateTime.UtcNow;
 
-                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                 return false;
             }
             else if (role.ClosestPlayer.IsVesting())
@@ -145,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Convert, SendOption.Reliable, -1);
             writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer3.Write(playerId);
+            writer3.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer3);
             Convert(role, role.ClosestPlayer);
             role.LastBitten = DateTime.UtcNow;
