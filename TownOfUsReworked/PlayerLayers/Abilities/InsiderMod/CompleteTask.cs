@@ -1,8 +1,8 @@
-using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
+using TownOfUsReworked.PlayerLayers.Roles;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.InsiderMod
@@ -18,11 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.InsiderMod
             if (__instance.Data.IsDead)
                 return;
 
-            var taskinfos = __instance.Data.Tasks.ToArray();
-            var tasksLeft = taskinfos.Count(x => !x.Complete);
             var ability = Ability.GetAbility<Insider>(__instance);
+            var role = Role.GetRole(ability.Player);
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Insider) && tasksLeft == 0)
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Insider) && role.TasksDone)
                 Coroutines.Start(Utils.FlashCoroutine(ability.Color));
         }
     }

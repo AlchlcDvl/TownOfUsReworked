@@ -6,6 +6,8 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using HarmonyLib;
+using Hazel;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -18,8 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected Objectifier(PlayerControl player)
         {
             Player = player;
-            ObjectifierDictionary.Remove(player.PlayerId);
-            ObjectifierDictionary.Add(player.PlayerId, this);
+
+            if (!ObjectifierDictionary.ContainsKey(player.PlayerId))
+                ObjectifierDictionary.Add(player.PlayerId, this);
         }
 
         protected internal Color Color { get; set; }
@@ -150,6 +153,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             return AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
         }
+
+        public static T GenObjectifier<T>(Type type, PlayerControl player, int id, List<PlayerControl> players = null)
+		{
+			var objectifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable, -1);
+			writer.Write(player.PlayerId);
+			writer.Write(id);
+			AmongUsClient.Instance.FinishRpcImmediately(writer);
+			return objectifier;
+		}
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
         public static class ShipStatus_KMPKPPGPNIH

@@ -4,7 +4,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -63,7 +62,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     if (role.DisguiseTimer() != 0)
                         return false;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Disguise, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer.Write((byte)ActionsRPC.Disguise);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(role.MeasuredPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

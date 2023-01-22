@@ -68,10 +68,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
             if (Utils.LoversWin(ObjectifierType))
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.LoveWin, SendOption.Reliable, -1);
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.LoveWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Wins();
                 Utils.EndGame();
                 return false;
             }

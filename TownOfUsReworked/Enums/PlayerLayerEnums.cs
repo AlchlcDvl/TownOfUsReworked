@@ -20,6 +20,7 @@ namespace TownOfUsReworked.Enums
 
     public enum ObjectifierEnum
     {
+        Allied,
         Corrupted,
         Fanatic,
         Lovers,
@@ -35,6 +36,7 @@ namespace TownOfUsReworked.Enums
     {
         Agent,
         Altruist,
+        Chameleon,
         Coroner,
         Crewmate,
         Detective,
@@ -42,15 +44,16 @@ namespace TownOfUsReworked.Enums
         Escort,
         Inspector,
         Investigator,
+        Imitator,
         Mayor,
         Medic,
         Medium,
+        Mystic,
         Operative,
         Revealer,
         Seer,
         Sheriff,
         Shifter,
-        Spy,
         Swapper,
         TimeLord,
         Tracker,

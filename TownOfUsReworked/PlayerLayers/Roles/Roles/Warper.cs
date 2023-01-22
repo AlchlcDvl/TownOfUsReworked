@@ -51,7 +51,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Dictionary<byte, Vector2> coordinates = GenerateWarpCoordinates();
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Warp, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.Warp);
             writer.Write((byte)coordinates.Count);
 
             foreach ((byte key, Vector2 value) in coordinates)
@@ -369,10 +370,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.CabalWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
                     Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -380,8 +381,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (Utils.SyndicateWins())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
-                    SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.SyndicateWin);
                 writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

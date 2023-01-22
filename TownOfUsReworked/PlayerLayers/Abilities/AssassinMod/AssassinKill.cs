@@ -29,7 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         {
             MurderPlayer(assassin, voteArea, player, guess);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AssassinKill, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.AssassinKill);
             writer.Write(player.PlayerId);
             writer.Write(guess);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -171,7 +172,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer2.Write((byte)ActionsRPC.SetSwaps);
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);

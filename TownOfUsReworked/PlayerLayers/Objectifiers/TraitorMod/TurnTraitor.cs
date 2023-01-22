@@ -37,7 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 TurnTraitor(__instance);
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)CustomRPC.TurnTraitor, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                writer.Write((byte)TurnRPC.TurnTraitor);
                 writer.Write(__instance.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -140,13 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
 
             if (CustomGameOptions.TraitorCanAssassin)
-            {
-                Ability.AbilityDictionary.Remove(traitor.PlayerId);
-                new Assassin(traitor);
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(traitor.NetId, (byte)CustomRPC.SetAssassin, SendOption.Reliable, -1);
-                writer2.Write(traitor.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-            }
+                Ability.GenAbility<Ability>(typeof(Assassin), traitor, 0);
 
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
             {

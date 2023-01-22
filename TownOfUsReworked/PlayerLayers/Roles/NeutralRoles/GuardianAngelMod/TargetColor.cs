@@ -3,20 +3,11 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
-    public enum BecomeOptions
-    {
-        Crew,
-        Amnesiac,
-        Survivor,
-        Jester
-    }
-
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class GATargetColor
     {
@@ -69,8 +60,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GAToSurv,
-                SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+            writer.Write((byte)TurnRPC.GAToSurv);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

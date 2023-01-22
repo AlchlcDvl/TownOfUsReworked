@@ -5,6 +5,8 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
+using Hazel;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -15,8 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         protected Ability(PlayerControl player)
         {
             Player = player;
-            AbilityDictionary.Remove(player.PlayerId);
-            AbilityDictionary.Add(player.PlayerId, this);
+
+            if (!AbilityDictionary.ContainsKey(player.PlayerId))
+                AbilityDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
@@ -154,5 +157,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             return !(a == b);
         }
+
+        public static T GenAbility<T>(Type type, PlayerControl player, int id)
+		{
+			var ability = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable, -1);
+			writer.Write(player.PlayerId);
+			writer.Write(id);
+			AmongUsClient.Instance.FinishRpcImmediately(writer);
+			return ability;
+		}
     }
 }

@@ -32,8 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            Attack = AttackEnum.Basic;
-            AttackString = "Basic";
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NNDescription;
             RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
@@ -84,10 +82,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (Utils.UndeadWin())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.UndeadWin,
-                    SendOption.Reliable,-1);
-                writer.Write(Player.PlayerId);
                 Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.UndeadWin);
+                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

@@ -1,0 +1,117 @@
+Roles:-
+
+- Crew :-
+  - Mayor = 0
+  - Sheriff = 1
+  - Inspector = 2
+  - Vigilante = 3
+  - Engineer = 4
+  - Swapper = 5
+  - Investigator = 6
+  - Time Lord = 7
+  - Medic = 8
+  - Agent = 9
+  - Altruist = 10
+  - Veteran = 11
+  - Tracker = 12
+  - Transporter = 13
+  - Medium = 14
+  - Coroner = 15
+  - Operative = 16
+  - Detective = 17
+  - Escort = 18
+  - Shifter = 19
+  - Crewmate = 20
+  - Vampire Hunter = 21
+
+Neutral:-
+  - Jester = 22
+  - Amnesiac = 23
+  - Executioner = 24
+  - Survivor = 25
+  - Guardian Angel = 26
+  - Glitch = 27
+  - Murderer = 28
+  - Cryomaniac = 29
+  - Werewolf = 30
+  - Arsonist = 31
+  - Jackal = 32
+  - Plaguebearer = 33
+  - Pestilence = 34
+  - Serial Killer = 35
+  - Juggernaut = 36
+  - Cannibal = 37
+  - Thief = 38
+  - Dracula = 39
+  - Troll = 40
+
+Intruders:-
+  - Undertaker = 41
+  - Morphling = 42
+  - Blackmailer = 43
+  - Miner = 44
+  - Teleporter = 45
+  - Wraith = 46
+  - Consort = 47
+  - Janitor = 48
+  - Camouflager = 49
+  - Grenadier = 50
+  - Poisoner = 51
+  - Impostor = 52
+  - Consigliere = 53
+  - Disguiser = 54
+  - Time Master = 55
+  - Godfather = 56
+
+Syndicate:-
+  - Anarchist = 57
+  - Shapeshifter = 58
+  - Gorgon = 59
+  - Framer = 60
+  - Rebel = 61
+  - Concealer = 62
+  - Warper = 63
+  - Bomber = 64
+
+  Roles that don't spawn:-
+  - Dampyr
+  - Vampire
+  - Sidekick
+  - Mafioso
+  - Revealer
+  - Phantom
+
+Modifiers:-
+- Diseased = 0
+- Bait = 1
+- Dwarf = 2
+- VIP = 3
+- Shy = 4
+- Giant = 5
+- Drunk = 6
+- Flincher = 7
+- Coward = 8
+- Volatile = 9
+- Professional = 10
+
+Abilities:-
+- Assassin = 0
+- Snitch = 1
+- Insider = 2
+- Lighter = 3
+- Multitasker = 4
+- Radar = 5
+- Tiebreaker = 6
+- Torch = 7
+- Underdog = 8
+- Tunneler = 9
+
+Objectifiers:-
+- Lovers = 0
+- Rivals = 1
+- Fanatic = 2
+- Corrupted = 3
+- Overlord = 4
+- Allied = 5
+- Traitor = 6
+- Taskmaster = 7

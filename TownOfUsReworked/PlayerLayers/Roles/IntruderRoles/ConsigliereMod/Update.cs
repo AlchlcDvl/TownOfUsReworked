@@ -46,7 +46,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 if (!consig.Investigated.Contains(player.PlayerId))
                     continue;
 
-                var roleType = Utils.GetRole(player);
                 var role = Role.GetRole(player);
                 player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
                 player.nameText().color = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? role.Color : role.FactionColor;

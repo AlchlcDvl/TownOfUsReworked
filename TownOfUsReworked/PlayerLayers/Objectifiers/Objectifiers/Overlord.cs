@@ -28,9 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
                 
             if (MeetingCountAchieved())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.OverlordWin, SendOption.Reliable, -1);
-                writer.Write(Player.PlayerId);
                 Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.OverlordWin);
+                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

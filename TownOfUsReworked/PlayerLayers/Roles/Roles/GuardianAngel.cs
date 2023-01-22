@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => (TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && !Player.Data.Disconnected) || TargetPlayer.Data.Disconnected ||
-            TargetPlayer == null;
+        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && !Player.Data.Disconnected) || TargetPlayer.Data.Disconnected ||
+            TargetPlayer == null) && !Player.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         private KillButton _protectButton;
 

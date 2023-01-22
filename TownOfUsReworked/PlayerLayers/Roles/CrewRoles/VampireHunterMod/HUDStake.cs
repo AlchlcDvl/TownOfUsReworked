@@ -2,7 +2,6 @@
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -33,8 +32,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             if (role.VampsDead && !isDead)
             {
                 role.TurnVigilante();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante, SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                writer.Write((byte)TurnRPC.TurnVigilante);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return;
             }

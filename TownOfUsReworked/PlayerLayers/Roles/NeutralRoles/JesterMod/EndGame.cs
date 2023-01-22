@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
@@ -15,7 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             {
                 if (!jest.VotedOut)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.JesterLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.JesterLose);
                     writer.Write(jest.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     jest.Loses();

@@ -2,7 +2,7 @@
 using Hazel;
 using System.Collections;
 using UnityEngine;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using Reactor.Utilities;
 
@@ -47,13 +47,9 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         private static void UsePlateforRpc(MovingPlatformBehaviour Plateform, bool isLeft)
         {
-            unchecked
-            {
-                var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.None, -1);
-                messageWriter.Write(isLeft);
-                AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
-            }
-
+            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.None, -1);
+            messageWriter.Write(isLeft);
+            AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
             Coroutines.Start(UsePlatform(Plateform, isLeft));
         }
 

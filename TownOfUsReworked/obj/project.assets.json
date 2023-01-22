@@ -4714,7 +4714,7 @@
     "C:\\Users\\Guest User\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0.9",
+    "version": "1.0.0.10",
     "restore": {
       "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
@@ -4744,9 +4744,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreLockProperties": {
-        "restorePackagesWithLockFile": "true"
       }
     },
     "frameworks": {

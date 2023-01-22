@@ -24,6 +24,8 @@ using Object = UnityEngine.Object;
 using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
+using InnerNet;
+using TownOfUsReworked.MultiClientInstancing;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -250,7 +252,7 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRole(player)?.RoleAlignment == alignment;
         }
 
-        public static bool Is(this PlayerControl player, AttackEnum attack)
+        /*public static bool Is(this PlayerControl player, AttackEnum attack)
         {
             return Role.GetRole(player)?.Attack == attack;
         }
@@ -258,7 +260,7 @@ namespace TownOfUsReworked.Extensions
         public static bool Is(this PlayerControl player, DefenseEnum defense)
         {
             return Role.GetRole(player)?.Defense == defense;
-        }
+        }*/
 
         public static Faction GetFaction(this PlayerControl player)
         {
@@ -286,6 +288,19 @@ namespace TownOfUsReworked.Extensions
                 impostors.Add(impData.Object);
 
             return impostors;
+        }
+
+        public static bool HasObjectifier(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+                
+            var role = Objectifier.GetObjectifier(player);
+
+            if (role == null)
+                return false;
+            else
+                return true;
         }
 
         public static bool IsRecruit(this PlayerControl player)
@@ -568,7 +583,7 @@ namespace TownOfUsReworked.Extensions
             }) as Jackal;
         }
 
-        public static DefenseEnum GetDefense(PlayerControl player)
+        /*public static DefenseEnum GetDefense(PlayerControl player)
         {
             if (player == null)
                 return DefenseEnum.None;
@@ -604,59 +619,7 @@ namespace TownOfUsReworked.Extensions
                 flag = true;
 
             return flag;
-        }
-
-        public static RoleEnum GetRole(PlayerControl player)
-        {
-            if (player == null || player.Data == null)
-                return RoleEnum.None;
-
-            var role = Role.GetRole(player);
-
-            if (role != null)
-                return role.RoleType;
-
-            return player.Data.IsImpostor() ? RoleEnum.Impostor : RoleEnum.Crewmate;
-        }
-
-        public static AbilityEnum GetAbility(PlayerControl player)
-        {
-            if (player == null || player.Data == null)
-                return AbilityEnum.None;
-
-            var ability = Ability.GetAbility(player);
-
-            if (ability == null)
-                return AbilityEnum.None;
-
-            return ability.AbilityType;
-        }
-
-        public static ObjectifierEnum GetObjectifier(PlayerControl player)
-        {
-            if (player == null || player.Data == null)
-                return ObjectifierEnum.None;
-
-            var objectifier = Objectifier.GetObjectifier(player);
-
-            if (objectifier == null)
-                return ObjectifierEnum.None;
-
-            return objectifier.ObjectifierType;
-        }
-
-        public static ModifierEnum GetModifier(PlayerControl player)
-        {
-            if (player == null || player.Data == null)
-                return ModifierEnum.None;
-
-            var modifier = Modifier.GetModifier(player);
-
-            if (modifier == null)
-                return ModifierEnum.None;
-
-            return modifier.ModifierType;
-        }
+        }*/
 
         public static PlayerControl PlayerById(byte id)
         {
@@ -858,14 +821,10 @@ namespace TownOfUsReworked.Extensions
         public static bool LoversWin(ObjectifierEnum obj)
         {
             var flag1 = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 3;
-            var flag2 = false;
 
-            if (obj == ObjectifierEnum.Lovers)
-            {
-                var lover = Objectifier.GetObjectifierValue<Lovers>(obj);
-                flag2 = lover.OtherLover != null && lover.Player != null && !lover.OtherLover.Data.IsDead && !lover.Player.Data.IsDead &&
-                    !lover.OtherLover.Data.Disconnected && !lover.Player.Data.Disconnected;
-            }
+            var lover = Objectifier.GetObjectifierValue<Lovers>(obj);
+            var flag2 = lover.OtherLover != null && lover.Player != null && !lover.OtherLover.Data.IsDead && !lover.Player.Data.IsDead && !lover.OtherLover.Data.Disconnected &&
+                !lover.Player.Data.Disconnected;
 
             var flag = flag1 && flag2;
             return flag;
@@ -1341,7 +1300,8 @@ namespace TownOfUsReworked.Extensions
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)
         {
             MurderPlayer(killer, target);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BypassKill, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.BypassKill);
             writer.Write(killer.PlayerId);
             writer.Write(target.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1576,7 +1536,8 @@ namespace TownOfUsReworked.Extensions
                 {
                     if (body.ParentId == target.PlayerId)
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BaitReport, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.BaitReport);
                         writer.Write(killer.PlayerId);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -2003,6 +1964,48 @@ namespace TownOfUsReworked.Extensions
             }
 
             return result;
+        }
+        public static void CleanUpLoad()
+        {
+            if (GameData.Instance.AllPlayers.Count == 1)
+            {
+                InstanceControl.clients.Clear();
+                InstanceControl.PlayerIdClientId.Clear();
+            } 
+        }
+
+        public static PlayerControl CreatePlayerInstance(string name = "", int id = -1)
+        {
+            PlatformSpecificData samplePSD = new PlatformSpecificData();
+            samplePSD.Platform = Platforms.StandaloneItch;
+            samplePSD.PlatformName = "Robot";
+
+            int sampleId = id;
+
+            if (sampleId == -1)
+                sampleId = InstanceControl.availableId();
+
+            var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
+            PlayerControl playerControl = UnityEngine.Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);
+            playerControl.PlayerId = (byte)GameData.Instance.GetAvailableId();
+            playerControl.FriendCode = sampleC.FriendCode;
+            playerControl.Puid = sampleC.ProductUserId;
+            sampleC.Character = playerControl;
+
+            if (ShipStatus.Instance)
+                ShipStatus.Instance.SpawnPlayer(playerControl, Palette.PlayerColors.Length, false);
+
+            AmongUsClient.Instance.Spawn(playerControl, sampleC.Id, SpawnFlags.IsClientCharacter);
+            GameData.Instance.AddPlayer(playerControl);
+            
+            playerControl.SetName(name + $" {{{playerControl.PlayerId}:{sampleId}}}");
+            playerControl.SetSkin(HatManager.Instance.allSkins[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            playerControl.SetColor(UnityEngine.Random.Range(0, Palette.PlayerColors.Length));
+
+            //PlayerControl.AllPlayerControls.Add(playerControl);
+            InstanceControl.clients.Add(sampleId, sampleC);
+            InstanceControl.PlayerIdClientId.Add(playerControl.PlayerId, sampleId);
+            return playerControl;
         }
     }
 }

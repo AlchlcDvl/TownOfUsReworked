@@ -27,6 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             var fanaticRole = Role.GetRole(fanatic);
             var attackerRole = Role.GetRole(attacker);
+
+            fanaticRole.Faction = attackerRole.Faction;
+            Turned = true;
         }
     }
 }

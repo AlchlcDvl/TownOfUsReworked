@@ -9,7 +9,6 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev9)
 - New Role: Anarchist [Syndicate (Utility)] 
 - New Role: Sidekick [Syndicate (Utility)] |
 - New Role: Gorgon [Syndicate (Killing)] |
-- New Role: Bomber [Syndicate (Killing)] |
 - New Role: Teleporter [Intruder (Support)]
 - New Role: Consort [Intruder (Support)]
 - New Role: Godfather [Intruder (Support)] |
@@ -38,10 +37,12 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev9)
 - New Ability: Multitasker
 - New Ability: Insider |
 - New Ability: Radar |
-- 8 New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing), Ability, Objectifier
+- 8 New Alignments: Crew (Sovereign), Crew (Auditor), Neutral (Neophyte), Neutral (Proselyte), Syndicate (Utility), Syndicate (Support), Syndicate(Disruption), Syndicate (Killing),
+    Ability, Objectifier
 - Mega Addition: Crew and Intruder victory screens
 - Mega Addition: Better Skeld and Airship maps
-- Addition: You can now customise the spawn chance of Crewmate, Anarchist and Impostor (they will still spawn by default if the number of the factioned players are more than the number of the faction's roles that are active)
+- Addition: You can now customise the spawn chance of Crewmate, Anarchist and Impostor (they will still spawn by default if the number of the factioned players are more than the number of
+    the faction's roles that are active)
 - Addition: New Syndicate, Objectifiers and Abilities settings tabs
 - Addition: More better buttons
 - Addition: More credits
@@ -104,16 +105,21 @@ Changelog (v1.0.0-dev7 to v1.0.0-dev9)
 
 Changelog (v1.0.0-dev9 to v1.0.0-dev10)
 - New Sub Factions: Reanimated, Sect
-- New Role: Necromancer [Neutral (Neophyte)]
-- New Role: Whisperer [Neutral (Neophyte)]
+- New Role: Bomber [Syndicate (Killing)] |
+- New Role: Necromancer [Neutral (Neophyte)] |
+- New Role: Whisperer [Neutral (Neophyte)] |
 - New Role: Chameleon [Crew (Support)] |
 - New Role: Imitator [Crew (Support)] |
 - New Role: Seer [Crew (Investigative)] |
 - New Objectifier: Fanatic |
-- New Objectifier: Allied |
+- New Objectifier: Allied
 - New Ability: Ruthless |
 - Addition: Added role reveal screen sounds (for some roles) |
 - Rewrite: Glitch has been completely rewritten |
+- Mega Addition: You can now test roles yourself by using MultiClientInstancing (thanks MDB) while in a local game (NOT a server game like normal!)
+- Improvement: Modifiers, Abilities and Objectifiers can now spawn in Killing only
+- Changes: Reworked the RPC system so hopefully I don't have to add too many unchecked statements like last time
+- 
 
 AS's Bugs Corner
 - Missing sounds??
@@ -129,6 +135,7 @@ AS's Bugs Corner
 - RPCs don't work properly :(
 - End game is buggy as heck
 - Radar no work :(
+- Insider is weird on intro now
 - 
 
 AS's To-Do Corner
@@ -138,5 +145,7 @@ AS's To-Do Corner
 - Finish promoted Godfather and Rebel HUDs
 - Redo the buttons
 - Finish roleblocks
+- Finish the README
+- 
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

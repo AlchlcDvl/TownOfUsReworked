@@ -26,8 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
             Results = InspResults.ThiefAmneTrackInvest;
-            Attack = AttackEnum.Basic;
-            AttackString = "Basic";
         }
 
         public KillButton StealButton

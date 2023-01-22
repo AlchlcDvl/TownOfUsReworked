@@ -5,7 +5,6 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
@@ -85,7 +84,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                     return true;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.SetSwaps);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -143,7 +143,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     
                     foreach (var role in Role.GetRoles(RoleEnum.Mayor))
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetExtraVotes, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.SetExtraVotes);
                         writer.Write(role.Player.PlayerId);
                         writer.WriteBytesAndSize(((Mayor) role).ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -3,9 +3,7 @@ using Hazel;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
@@ -50,13 +48,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (role.TargetVotedOut)
                 return;
             
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+            writer.Write((byte)TurnRPC.ExeToJest);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            ExeToJes(PlayerControl.LocalPlayer);
+            ExeToJest(PlayerControl.LocalPlayer);
         }
 
-        public static void ExeToJes(PlayerControl player)
+        public static void ExeToJest(PlayerControl player)
         {
             var exe = Role.GetRole<Executioner>(player);
             Role newRole;

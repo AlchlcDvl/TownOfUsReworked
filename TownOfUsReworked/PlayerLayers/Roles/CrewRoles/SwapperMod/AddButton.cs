@@ -3,12 +3,12 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
@@ -18,9 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         private static Sprite ActiveSprite => TownOfUsReworked.SwapperSwitch;
         public static Sprite DisabledSprite => TownOfUsReworked.SwapperSwitchDisabled;
 
-        public static void GenButton(Swapper role, int index, bool isDead)
+        public static void GenButton(Swapper role, int index, bool noButton)
         {
-            if (isDead)
+            if (noButton)
             {
                 role.MoarButtons.Add(null);
                 role.ListOfActives.Add(false);
@@ -73,14 +73,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer2.Write((byte)ActionsRPC.SetSwaps);
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     return;
                 }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SetSwaps, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.SetSwaps);
                 writer.Write(SwapVotes.Swap1.TargetPlayerId);
                 writer.Write(SwapVotes.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -98,16 +100,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 swapper.MoarButtons.Clear();
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                 return;
 
             var swapperrole = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
 
             for (var i = 0; i < __instance.playerStates.Length; i++)
-                GenButton(swapperrole, i, __instance.playerStates[i].AmDead);
+            {
+                var player = Utils.PlayerById(__instance.playerStates[i].TargetPlayerId);
+                var dead = player.Data.IsDead;
+                var disconnected = player.Data.Disconnected;
+                var swap = player == PlayerControl.LocalPlayer && !CustomGameOptions.SwapSelf && player.Is(RoleEnum.Swapper);
+                var voteswap = player == PlayerControl.LocalPlayer && __instance.playerStates[i].DidVote && player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapAfterVoting;
+                GenButton(swapperrole, i, dead || disconnected || swap || voteswap);
+            }
         }
     }
 }

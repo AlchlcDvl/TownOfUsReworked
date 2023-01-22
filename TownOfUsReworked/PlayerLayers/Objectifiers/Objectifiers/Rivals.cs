@@ -63,17 +63,21 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
         internal override bool GameEnd(ShipStatus __instance)
         {
+            if (Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
+
             if (Utils.RivalsWin(ObjectifierType))
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RivalWin, SendOption.Reliable, -1);
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.RivalWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Wins();
                 Utils.EndGame();
                 return false;
             }
 
-            return false;
+            return !RivalDead();
         }
 
         public bool RivalDead()
@@ -86,8 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 
         public override void Wins()
         {
-            if (RivalDead())
-                RivalWins = true;
+            RivalWins = true;
         }
     }
 }

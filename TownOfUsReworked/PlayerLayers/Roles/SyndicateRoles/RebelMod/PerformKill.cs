@@ -3,8 +3,6 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Patches;
-
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
 
@@ -43,7 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestSyndicate, role.Player);
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Sidekick, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.Sidekick);
             writer.Write(role.Player.PlayerId);
             writer.Write(role.ClosestSyndicate.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

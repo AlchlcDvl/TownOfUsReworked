@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     if (player.PlayerId != state.TargetPlayerId) 
                         continue;
 
-                    var roleType = Utils.GetRole(player);
+                    var roleType = (Role.GetRole(player))?.RoleType;
 
                     switch (roleType)
                     {

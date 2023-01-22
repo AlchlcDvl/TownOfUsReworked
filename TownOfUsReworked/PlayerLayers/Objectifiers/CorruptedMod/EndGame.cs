@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
@@ -16,7 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
                 if (!corr.CorruptedWin)
                 {
                     corr.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CorruptedLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.CorruptedLose);
                     writer.Write(corr.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Patches;
 using Hazel;
 using TownOfUsReworked.Extensions;
 
@@ -30,7 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
                 {
                     vh.TurnVigilante();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TurnVigilante, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    writer.Write((byte)TurnRPC.TurnVigilante);
                     writer.Write(vh.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

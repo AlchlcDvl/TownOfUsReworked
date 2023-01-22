@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Enums
 {
     internal enum RPC
     {

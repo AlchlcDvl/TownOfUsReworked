@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -12,41 +11,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Medic);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Medic))
                 return true;
 
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead || role.UsedAbility || role.ClosestPlayer == null)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (role.UsedAbility || role.ClosestPlayer == null)
-                return false;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
+            Utils.Spread(role.Player, role.ClosestPlayer);
 
             if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
             {
-                if (!PlayerControl.LocalPlayer.IsProtected())
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-
+                Utils.AlertKill(role.Player, role.ClosestPlayer);
                 return false;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                (byte) CustomRPC.Protect, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.Protect);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             writer.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

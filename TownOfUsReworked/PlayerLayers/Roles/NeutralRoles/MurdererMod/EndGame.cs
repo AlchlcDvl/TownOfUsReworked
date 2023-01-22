@@ -16,7 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
                 if (!Role.AllNeutralsWin && !Role.NKWins && !murd.MurdWins)
                 {
                     murd.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MurdererLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.MurdererLose);
                     writer.Write(murd.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

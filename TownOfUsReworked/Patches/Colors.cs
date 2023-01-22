@@ -20,8 +20,8 @@ namespace TownOfUsReworked.Patches
         //Subfaction Colors
         public readonly static Color32 Undead = new Color32(123, 137, 104, 255); //#7B8968FF
         public readonly static Color32 Cabal = new Color32(87, 86, 87, 255); //#575657FF
-        public readonly static Color32 Reanimated = new Color32(87, 86, 87, 255); //#E6108AFF
-        public readonly static Color32 Sect = new Color32(87, 86, 87, 255); //#F995FCFF
+        public readonly static Color32 Reanimated = new Color32(230, 16, 138, 255); //#E6108AFF
+        public readonly static Color32 Sect = new Color32(249, 149, 252, 255); //#F995FCFF
 
         //Crew Colors
         public readonly static Color32 Mayor = new Color32(112, 79, 168, 255); //#704FA8FF
@@ -46,10 +46,10 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Escort = new Color32(128, 51, 51, 255); //#803333FF
         public readonly static Color32 Inspector = new Color32 (126, 60, 100, 255); //#7E3C64FF
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
-        public readonly static Color32 Seer = new Color32(211, 211, 211, 255); //#EEE5BEFF
-        public readonly static Color32 Mystic = new Color32(211, 211, 211, 255); //#708EEFFF
-        public readonly static Color32 Imitator = new Color32(211, 211, 211, 255); //#8D0F8CFF
-        public readonly static Color32 Chameleon = new Color32(211, 211, 211, 255); //#5411F8FF
+        public readonly static Color32 Seer = new Color32(238, 229, 190, 255); //#EEE5BEFF
+        public readonly static Color32 Mystic = new Color32(112, 142, 239, 255); //#708EEFFF
+        public readonly static Color32 Imitator = new Color32(141, 15, 140, 255); //#8D0F8CFF
+        public readonly static Color32 Chameleon = new Color32(84, 17, 248, 255); //#5411F8FF
 
         //Neutral Colors
         public readonly static Color32 Jester = new Color32(247, 179, 218, 255); //#F7B3DAFF
@@ -139,8 +139,9 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Rivals = new Color32(61, 45, 44, 255); //#3D2D2CFF
         public readonly static Color32 Fanatic = new Color32(103, 141, 54, 255); //#678D36FF
         public readonly static Color32 Taskmaster = new Color32(171, 171, 255, 255); //#ABABFFFF
-        public readonly static Color32 Overlord = new Color32(0, 128, 128, 255); //#008080FF 
+        public readonly static Color32 Overlord = new Color32(0, 128, 128, 255); //#008080FF
         public readonly static Color32 Corrupted = new Color32(69, 69, 255, 255); //#4545FFFF
+        public readonly static Color32 Allied = new Color32(69, 69, 169, 255); //#4545A9FF
 
         //Other
         public readonly static Color32 Stalemate = new Color32(239, 230, 230, 255); //#E6E6E6FF
@@ -148,6 +149,8 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Status = new Color32(155, 89, 182, 255); //#9B59B6FF
         public readonly static Color32 Clear = new Color32(0, 0, 0, 0); //#00000000
 		public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
+		public readonly static Color32 Pursuaded = new Color32(17, 128, 106, 255); //#11806AFF
+		public readonly static Color32 Revived = new Color32(145, 102, 64, 255); //#916640FF
 
         //Color Storage For Colors I Will Use Later
         public readonly static Color32 Coven = new Color32(191, 95, 255, 255); //#BF5FFFFF
@@ -156,13 +159,13 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
         //#286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #4e4e4e #b148e2 #fffead
-        //#1abc9c #11806a #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
+        //#1abc9c #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7
-        //#EC1C45 #EC62A5 #916640 #00EEFF #4545A9 #204D42 #78c689 #e1c849 #a7c596 #b51e39 #fccc52 #6b2d2a #aab43e
+        //#EC1C45 #EC62A5 #00EEFF #204D42 #78c689 #e1c849 #a7c596 #b51e39 #fccc52 #6b2d2a #aab43e
         //#0028F5 #FC0303 #FCBA03 #ff351f #F8CD46 #2DE5BE #FF4D00 #7EFBC2 #8637C2 #00ACC2
         //#3769FE #1E300B #4d4d4d #8ff731
 
         //Symbol Storage For Objectifiers I Will Make Later
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ γ ε ζ η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ π ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ γ ε η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ π ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 
     }
 }

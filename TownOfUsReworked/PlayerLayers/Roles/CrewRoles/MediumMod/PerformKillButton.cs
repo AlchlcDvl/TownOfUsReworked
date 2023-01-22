@@ -6,7 +6,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod;
 using System;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -46,7 +45,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
                 {
                     role.AddMediatePlayer(dead.PlayerId);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Mediate, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer.Write((byte)ActionsRPC.Mediate);
                     writer.Write(dead.PlayerId);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

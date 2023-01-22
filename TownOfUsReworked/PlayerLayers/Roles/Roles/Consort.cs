@@ -44,8 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = IntruderFactionDescription;
             AlignmentDescription = ISDescription;
             Objectives = IntrudersWinCon;
-            Attack = AttackEnum.Basic;
-            AttackString = "Basic";
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
             RoleBlockImmune = true;
@@ -164,10 +162,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.CabalWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
                     Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -175,10 +173,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (Utils.IntrudersWin())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
-                    SendOption.Reliable, -1);
-                writer.Write(Player.PlayerId);
                 Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.IntruderWin);
+                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
@@ -240,7 +238,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void PerformBlock()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(Player.NetId, (byte)CustomRPC.ConsRoleblock, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(Player.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.ConsRoleblock);
             writer.Write(Player.PlayerId);
             writer.Write(ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

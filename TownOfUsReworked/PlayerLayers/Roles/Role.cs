@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public virtual void Wins() {}
 
         public virtual void HudUpdate() {}
-        protected virtual void AddCustomButtons() {}
+        //protected virtual void AddCustomButtons() {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
@@ -64,35 +64,42 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
         protected internal InspResults Results { get; set; } = InspResults.None;
         protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
-        protected internal AttackEnum Attack { get; set; } = AttackEnum.None;
-        protected internal DefenseEnum Defense { get; set; } = DefenseEnum.None;
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
+
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
         protected internal string AttributesText { get; set; } = " - None.";
+
         protected internal string Name { get; set; } = "";
         protected internal string AlignmentName { get; set; } = "";
         protected internal string FactionName { get; set; } = "";
         protected internal string SubFactionName { get; set; } = "";
-        protected internal string AttackString { get; set; } = "None";
-        protected internal string DefenseString { get; set; } = "None";
+
         protected internal string FactionDescription { get; set; } = "";
         protected internal string RoleDescription { get; set; } = "";
         protected internal string AlignmentDescription { get; set; } = "";
+
         protected internal string Objectives { get; set; } = "";
         protected internal string KilledBy { get; set; } = "";
+
+        protected internal bool RoleBlockImmune { get; set; } = false;
+
         protected internal bool Base { get; set; } = false;
+
         protected internal bool IsRecruit { get; set; } = false;
         protected internal bool IsRevived { get; set; } = false;
         protected internal bool IsPursuaded { get; set; } = false;
         protected internal bool IsIntTraitor { get; set; } = false;
-        protected internal bool IsSynTraitor { get; set; } = false;
+        protected internal bool IsIntAlly { get; set; } = false;
         protected internal bool IsIntFanatic { get; set; } = false;
+        protected internal bool IsSynTraitor { get; set; } = false;
+        protected internal bool IsSynAlly { get; set; } = false;
         protected internal bool IsSynFanatic { get; set; } = false;
+        protected internal bool IsCrewAlly { get; set; } = false;
+        
         protected internal bool IsBlocked { get; set; } = false;
-        protected internal bool RoleBlockImmune { get; set; } = false;
 
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
@@ -189,9 +196,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool LostByRPC { get; protected set; }
 
-        private Tuple<int, int> Tasks => Utils.TaskInfo(Player);
-        protected internal int TasksLeft => Tasks.Item1;
-        protected internal int TotalTasks => Tasks.Item2;
+        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
         protected internal bool TasksDone => TasksLeft <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
@@ -327,8 +333,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
             var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
             var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
-            var sectFlag = ((SubFaction == SubFaction.Sect || IsPursuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsRecruit()));
-            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsRevived) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsRecruit()));
+            var sectFlag = ((SubFaction == SubFaction.Sect || IsPursuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPursuaded()));
+            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsRevived) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsRevived()));
             var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
 
             var mainFlag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
@@ -470,8 +476,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void RegenTask()
         {
             bool createTask;
-            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAttack/Defense:" +
-                $" {AttackString}/{DefenseString}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
+            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
 
             try
             {
@@ -495,14 +500,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = tasks;
         }
 
-        public static T Gen<T>(Type type, PlayerControl player, CustomRPC rpc)
-        {
-            var role = (T)Activator.CreateInstance(type, new object[] {player});
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)rpc, SendOption.Reliable, -1);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return role;
-        }
+        public static T GenRole<T>(Type type, PlayerControl player, int id)
+		{
+			var role = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable, -1);
+			writer.Write(player.PlayerId);
+			writer.Write(id);
+			AmongUsClient.Instance.FinishRpcImmediately(writer);
+			return role;
+		}
         
         public static Role GetRole(PlayerControl player)
         {
@@ -566,6 +572,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static IEnumerable<Role> GetRoles(Faction faction)
         {
             return AllRoles.Where(x => x.Faction == faction);
+        }
+
+        public static IEnumerable<Role> GetRoles(RoleAlignment ra)
+        {
+            return AllRoles.Where(x => x.RoleAlignment == ra);
         }
 
         public static IEnumerable<Role> GetRoles(SubFaction subfaction)
@@ -838,8 +849,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                     task.transform.SetParent(player.transform, false);
-                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? JackalWinCon : role.Objectives)}\nAttack/Defense:" +
-                        $" {role.AttackString}/{role.DefenseString}\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
+                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? JackalWinCon : role.Objectives)}\n" +
+                        $"\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
                         
                     player.myTasks.Insert(0, task);
                 }
@@ -999,7 +1010,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         } catch {}
                     }
                         
-                    if (CustomGameOptions.PlayerNumbers)
+                    if (CustomGameOptions.Whispers)
                         player.NameText.text = $"[{player.TargetPlayerId}] " + player.NameText.text;
                 }
             }

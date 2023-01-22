@@ -180,6 +180,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Objectifier Spawn
         public static CustomHeaderOption Objectifiers;
         public static CustomNumberOption LoversOn;
+        public static CustomNumberOption AlliedOn;
         public static CustomNumberOption TraitorOn;
         public static CustomNumberOption RivalsOn;
         public static CustomNumberOption FanaticOn;
@@ -222,8 +223,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption Whispers;
         public static CustomToggleOption AppearanceAnimation;
         public static CustomToggleOption LighterDarker;
-        public static CustomToggleOption PlayerNumbers;
         public static CustomToggleOption RandomSpawns;
+        public static CustomToggleOption EnableModifiers;
+        public static CustomToggleOption EnableAbilities;
+        public static CustomToggleOption EnableObjectifiers;
 
         //QoL Options
         public static CustomHeaderOption QualityChanges;
@@ -1071,6 +1074,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption FanaticKnows;
         public static CustomToggleOption FanaticCanAssassin;
 
+        //Fanatic Options
+        public static CustomHeaderOption Allied;
+        public static CustomNumberOption AlliedCount;
+        public static CustomStringOption AlliedFaction;
+
         //Corrupted Options
         public static CustomHeaderOption Corrupted;
         public static CustomNumberOption CorruptedCount;
@@ -1191,6 +1199,18 @@ namespace TownOfUsReworked.Lobby.CustomOption
             InitialCooldowns = new CustomNumberOption(true, num++, MultiMenu.main, "Game Start Cooldowns", 10f, 10f, 30f, 2.5f, CooldownFormat);
             //ChatCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Chat Cooldown", 0f, 3f, 10f, 0.5f, CooldownFormat);
 
+            GameModeSettings = new CustomHeaderOption(num++, MultiMenu.main, "Game Mode Settings");
+            GameMode = new CustomStringOption(true, num++, MultiMenu.main, "Game Mode", new[] {"Classic", "All Any", "Killing Only", "Custom"});
+
+            KillingOnlySettings = new CustomHeaderOption(num++, MultiMenu.main, "<color=#1D7CF2FF>Killing</color> Only Mode Settings");
+            NeutralRoles = new CustomNumberOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> Count", 1, 0f, 13, 1);
+            AddArsonist = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#EE7600FF>Arsonist</color>", false);
+            AddCryomaniac = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#642DEAFF>Cryomaniac</color>", false);
+            AddPlaguebearer = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
+
+            AllAnySettings = new CustomHeaderOption(num++, MultiMenu.main, "All Any Mode Settings");
+            EnableUniques = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Unique <color=#FFD700FF>Roles</color>", false);
+
             GameModifiers = new CustomHeaderOption(num++, MultiMenu.main, "Game Modifiers");
             ColourblindComms = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Comms", true);
             MeetingColourblind = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Meetings", false);
@@ -1207,8 +1227,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Whispers = new CustomToggleOption(true, num++, MultiMenu.main, "PSSST *Whispers*", true);
             AppearanceAnimation = new CustomToggleOption(true, num++, MultiMenu.main, "Kill Animations Show Morphed Player", true);
             LighterDarker = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Lighter Darker Colors", true);
-            PlayerNumbers = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Player Numbers", true);
             RandomSpawns = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", false);
+            EnableAbilities = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", true);
+            EnableModifiers = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", true);
+            EnableObjectifiers = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", true);
 
             QualityChanges = new CustomHeaderOption(num++, MultiMenu.main, "Quality Additions");
             DeadSeeEverything = new CustomToggleOption(true, num++, MultiMenu.main, "Dead Can See Everyone's Roles && Votes", true);
@@ -1216,18 +1238,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             WhiteNameplates = new CustomToggleOption(true, num++, MultiMenu.main, "Disable Player Nameplates", false);
             SeeTasks = new CustomToggleOption(true, num++, MultiMenu.main, "See Tasks During The Game", true);
             CustomEject = new CustomToggleOption(true, num++, MultiMenu.main, "Custom Ejection Messages", true);
-
-            GameModeSettings = new CustomHeaderOption(num++, MultiMenu.main, "Game Mode Settings");
-            GameMode = new CustomStringOption(true, num++, MultiMenu.main, "Game Mode", new[] {"Classic", "All Any", "Killing Only", "Custom"});
-
-            KillingOnlySettings = new CustomHeaderOption(num++, MultiMenu.main, "<color=#1D7CF2FF>Killing</color> Only Mode Settings");
-            NeutralRoles = new CustomNumberOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> Count", 1, 0f, 13, 1);
-            AddArsonist = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#EE7600FF>Arsonist</color>", false);
-            AddCryomaniac = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#642DEAFF>Cryomaniac</color>", false);
-            AddPlaguebearer = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
-
-            AllAnySettings = new CustomHeaderOption(num++, MultiMenu.main, "All Any Mode Settings");
-            EnableUniques = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Unique <color=#FFD700FF>Roles</color>", false);
 
             MapSettings = new CustomHeaderOption(num++, MultiMenu.main, "Map Settings");
             //Map = new CustomStringOption(true, num++, MultiMenu.main, "Map", new[] {"Skeld", "Mira HQ", "Polus", "Airship", "Submerged"});
@@ -1404,6 +1414,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UnderdogOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>", 0, 0, 100, 10, PercentFormat);
 
             Objectifiers = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifiers</color>");
+            AlliedOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>", 0, 0, 100, 10, PercentFormat);
             CorruptedOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>", 0, 0, 100, 10, PercentFormat);
             FanaticOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>", 0, 0, 100, 10, PercentFormat);
             LoversOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>", 0, 0, 100, 10, PercentFormat);
@@ -2126,10 +2137,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UnderdogCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Count", 1, 1, 14, 1);
             UnderdogKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are On Game Start", true);
             UnderdogKillBonus = new CustomNumberOption(true, num++, MultiMenu.ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            UnderdogIncreasedKC = new CustomToggleOption(true, num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ <color=#FF0000FF>Intruders</color>", true);
+            UnderdogIncreasedKC = new CustomToggleOption(true, num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates", true);
 
             ObjectifierSettings = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifier</color> Settings");
             CustomObjectifierColors = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors", true);
+
+            Allied = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>");
+            AlliedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Count", 1, 1, 14, 1);
+            AlliedFaction = new CustomStringOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Faction", new[] {"Intruder", "Syndicate", "Crew", "Random"});
 
             Corrupted = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>");
             CorruptedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Count", 1, 1, 14, 1);

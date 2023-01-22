@@ -5,6 +5,8 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Enums;
+using Hazel;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
@@ -15,8 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected Modifier(PlayerControl player)
         {
             Player = player;
-            ModifierDictionary.Remove(player.PlayerId);
-            ModifierDictionary.Add(player.PlayerId, this);
+
+            if (!ModifierDictionary.ContainsKey(player.PlayerId))
+                ModifierDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
@@ -122,5 +125,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
             return player == null ? null : GetModifier(player);
         }
+
+        public static T GenModifier<T>(Type type, PlayerControl player, int id)
+		{
+			var modifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable, -1);
+			writer.Write(player.PlayerId);
+			writer.Write(id);
+			AmongUsClient.Instance.FinishRpcImmediately(writer);
+			return modifier;
+		}
     }
 }

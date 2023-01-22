@@ -2,6 +2,7 @@ using HarmonyLib;
 using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {

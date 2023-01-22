@@ -82,6 +82,45 @@ namespace TownOfUsReworked.Patches
 
                     return;
                 }
+                else if (Role.NKWins)
+                {
+                    foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
+                    {
+                        if (surv.Alive)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                    {
+                        if (ga.TargetAlive)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
+                    {
+                        if (jest.VotedOut)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+                    {
+                        if (exe.TargetVotedOut)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                    }
+                    
+                    foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralKill))
+                    {
+                        if (!role2.Player.Data.Disconnected)
+                            winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
+                    }
+
+                    TempData.winners = new List<WinningPlayerData>();
+
+                    foreach (var win in winners)
+                        TempData.winners.Add(win);
+
+                    return;
+                }
                 else if (Role.AllNeutralsWin)
                 {
                     foreach (var role2 in Role.GetRoles(Faction.Neutral))
@@ -115,13 +154,13 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
                         foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
                         {
-                            if (exe.TargetVotedOut)
+                            if (exe.TargetVotedOut && !exe.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
                         }
                             
@@ -157,7 +196,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -199,7 +238,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -241,7 +280,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -283,7 +322,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -327,7 +366,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -377,7 +416,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -415,7 +454,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -459,7 +498,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -509,7 +548,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -559,7 +598,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -603,7 +642,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -647,7 +686,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -691,7 +730,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -731,7 +770,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -775,7 +814,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 
@@ -815,7 +854,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
                         {
-                            if (jest.VotedOut)
+                            if (jest.VotedOut && !jest.Player.Data.Disconnected)
                                 winners.Add(Utils.potentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
                         }
 

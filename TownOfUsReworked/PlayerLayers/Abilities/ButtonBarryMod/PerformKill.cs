@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
@@ -15,32 +14,18 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.ButtonBarry))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
-                return true;
-
             var role = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
 
             if (__instance != role.ButtonButton)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (role.ButtonUsed)
-                return false;
-
-            if (PlayerControl.LocalPlayer.RemainingEmergencies <= 0)
-                return false;
-
-            if (!__instance.enabled)
+            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead || role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies <= 0 || !__instance.enabled)
                 return false;
 
             role.ButtonUsed = true;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BarryButton, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer.Write((byte)ActionsRPC.BarryButton);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 

@@ -13,6 +13,7 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
+using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
@@ -48,8 +49,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool Whispers => Generate.Whispers.Get();
         public static bool AppearanceAnimation => Generate.AppearanceAnimation.Get();
         public static bool LighterDarker => Generate.LighterDarker.Get();
-        public static bool PlayerNumbers => Generate.PlayerNumbers.Get();
         public static bool RandomSpawns => Generate.RandomSpawns.Get();
+        public static bool EnableAbilities => Generate.EnableAbilities.Get();
+        public static bool EnableModifiers => Generate.EnableModifiers.Get();
+        public static bool EnableObjectifiers => Generate.EnableObjectifiers.Get();
 
         //QOL Changes
         public static bool DeadSeeEverything => Generate.DeadSeeEverything.Get();
@@ -178,11 +181,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int ConsigliereOn => (int)Generate.ConsigliereOn.Get();
         public static int MinerOn => (int)Generate.MinerOn.Get();
         public static int TimeMasterOn => (int)Generate.TimeMasterOn.Get();
+        public static int PhantomOn => (int)Generate.PhantomOn.Get();
+        public static int RevealerOn => (int)Generate.RevealerOn.Get();
 
         //Ability Spawn
         public static int AssassinOn => (int)Generate.AssassinOn.Get();
         public static int UnderdogOn => (int)Generate.UnderdogOn.Get();
-        public static int RevealerOn => (int)Generate.RevealerOn.Get();
         public static int SnitchOn => (int)Generate.SnitchOn.Get();
         public static int MultitaskerOn => (int)Generate.MultitaskerOn.Get();
         public static int TorchOn => (int)Generate.TorchOn.Get();
@@ -200,7 +204,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int CorruptedOn => (int)Generate.CorruptedOn.Get();
         public static int OverlordOn => (int)Generate.OverlordOn.Get();
         public static int LoversOn => (int)Generate.LoversOn.Get();
-        public static int PhantomOn => (int)Generate.PhantomOn.Get();
+        public static int AlliedOn => (int)Generate.AlliedOn.Get();
 
         //Modifier Spawn
         public static int ProfessionalOn => (int)Generate.ProfessionalOn.Get();
@@ -965,6 +969,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Overlord Settings
         public static int OverlordCount => (int)Generate.OverlordCount.Get();
         public static int OverlordMeetingWinCount => (int)Generate.OverlordMeetingWinCount.Get();
+
+        //Allied Settings
+        public static int AlliedCount => (int)Generate.AlliedCount.Get();
+        public static AlliedFaction AlliedFaction => (AlliedFaction)Generate.AlliedFaction.Get();
 
         //Corrupted Settings
         public static int CorruptedCount => (int)Generate.CorruptedCount.Get();

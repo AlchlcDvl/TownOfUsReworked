@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
     {
         public static void Postfix(VitalsMinigame __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Spy))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Agent))
                 return;
 
             var spy = Role.GetRole<Agent>(PlayerControl.LocalPlayer);

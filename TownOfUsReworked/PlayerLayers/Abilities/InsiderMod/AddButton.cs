@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.InsiderMod
 
         public static void GenButton(Insider role, int index, bool isDead)
         {
-            if (isDead || (byte) index == role.Player.PlayerId)
+            if (isDead)
             {
                 role.Buttons.Add(null);
                 return;

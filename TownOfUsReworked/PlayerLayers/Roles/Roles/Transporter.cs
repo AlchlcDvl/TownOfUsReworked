@@ -241,8 +241,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                             else if (!Player.IsProtected())
                                                             {
                                                                 Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
                                                                     SendOption.Reliable, -1);
+                                                                write2.Write((byte)ActionsRPC.Transport);
                                                                 write2.Write(TransportPlayer1.PlayerId);
                                                                 write2.Write(Player.PlayerId);
                                                                 write2.Write(true);
@@ -257,8 +258,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                         {
                                                             if (Player.IsShielded())
                                                             {
-                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                                                                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                    SendOption.Reliable, -1);
+                                                                writer2.Write((byte)ActionsRPC.Transport);
                                                                 writer2.Write(Player.GetMedic().Player.PlayerId);
                                                                 writer2.Write(Player.PlayerId);
                                                                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -274,8 +276,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                             else if (!Player.IsProtected())
                                                             {
                                                                 Coroutines.Start(TransportPlayers(TransportPlayer2.PlayerId, Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
                                                                     SendOption.Reliable, -1);
+                                                                write2.Write((byte)ActionsRPC.Transport);
                                                                 write2.Write(TransportPlayer2.PlayerId);
                                                                 write2.Write(Player.PlayerId);
                                                                 write2.Write(true);
@@ -290,8 +293,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                         LastTransported = DateTime.UtcNow;
                                                         UsesLeft--;
                                                         Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, TransportPlayer2.PlayerId, false));
-                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Transport,
+                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
                                                             SendOption.Reliable, -1);
+                                                        write.Write((byte)ActionsRPC.Transport);
                                                         write.Write(TransportPlayer1.PlayerId);
                                                         write.Write(TransportPlayer2.PlayerId);
                                                         write.Write(false);
@@ -517,36 +521,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.CabalWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CabalWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
                     Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
                 }
             }
-            else if (IsIntTraitor)
+            else if (IsIntTraitor || IsIntFanatic)
             {
                 if (Utils.IntrudersWin())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.IntruderWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
                     Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.IntruderWin);
+                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
                 }
             }
-            else if (IsSynTraitor)
+            else if (IsSynTraitor || IsSynFanatic)
             {
                 if (Utils.SyndicateWins())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyndicateWin,
-                        SendOption.Reliable, -1);
-                    writer.Write(Player.PlayerId);
                     Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SyndicateWin);
+                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -554,10 +558,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (Utils.CrewWins())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CrewWin,
-                    SendOption.Reliable, -1);
-                writer.Write(Player.PlayerId);
                 Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                writer.Write((byte)WinLoseRPC.CrewWin);
+                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

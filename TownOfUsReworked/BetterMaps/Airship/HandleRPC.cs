@@ -3,7 +3,7 @@ using Hazel;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
@@ -29,16 +29,14 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
                 return false;
             }
-
-            unchecked
+            
+            
+            if (CallId == (byte)CustomRPC.SyncPlateform)
             {
-                if (CallId == (byte)CustomRPC.SyncPlateform)
-                {
-                    bool isLeft = reader.ReadBoolean();
-                    CallPlateform.SyncPlateform(isLeft);
+                bool isLeft = reader.ReadBoolean();
+                CallPlateform.SyncPlateform(isLeft);
 
-                    return false;
-                }
+                return false;
             }
 
             return true;

@@ -47,7 +47,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)
                     return false;
                 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Mine, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Mine);
                 var position = PlayerControl.LocalPlayer.transform.position;
                 var id = GetAvailableId();
                 writer.Write(id);

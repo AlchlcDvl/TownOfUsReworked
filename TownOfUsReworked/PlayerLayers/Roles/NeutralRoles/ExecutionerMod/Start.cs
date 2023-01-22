@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -17,10 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
                 if (exe.TargetPlayer == null && PlayerControl.LocalPlayer == exe.Player)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ExeToJest, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    writer.Write((byte)TurnRPC.ExeToJest);
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    TargetColor.ExeToJes(exe.Player);
+                    TargetColor.ExeToJest(exe.Player);
                 }
             }
         }
