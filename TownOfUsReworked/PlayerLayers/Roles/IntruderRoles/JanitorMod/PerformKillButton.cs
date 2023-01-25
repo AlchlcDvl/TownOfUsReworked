@@ -3,7 +3,7 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.CleanSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.CleanSound, false, 1f);
                 } catch {}
 
                 return false;

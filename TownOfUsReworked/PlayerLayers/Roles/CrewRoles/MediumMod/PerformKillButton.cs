@@ -17,21 +17,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Medium))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
+                return false;
 
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort, null, __instance) || __instance != role.MediateButton)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            if (role.MediateTimer() != 0f)
+            if (role.MediateTimer() != 0f && __instance == role.MediateButton)
                 return false;
 
             role.LastMediated = DateTime.UtcNow;
@@ -57,7 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             }
             
             //SoundManager.Instance.PlaySound(TownOfUsReworked.MediateSound, false, 0.4f);
-
             return false;
         }
     }

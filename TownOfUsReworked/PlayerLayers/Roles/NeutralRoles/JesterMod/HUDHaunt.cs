@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             role.HauntButton.gameObject.SetActive(!MeetingHud.Instance && role.VotedOut && !LobbyBehaviour.Instance && !role.HasHaunted && PlayerControl.LocalPlayer.Data.IsDead);
             role.HauntButton.SetCoolDown(role.HauntTimer(), CustomGameOptions.BiteCd);
             var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => role.ToHaunt.Contains(x.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.HauntButton, float.NaN, ToBeHaunted);
+            Utils.SetTarget(ref role.ClosestPlayer, role.HauntButton, ToBeHaunted);
             var renderer = role.HauntButton.graphic;
             
             if (role.ClosestPlayer != null)

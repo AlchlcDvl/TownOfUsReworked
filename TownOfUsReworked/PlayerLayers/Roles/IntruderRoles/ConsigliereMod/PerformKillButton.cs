@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿/*using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -10,10 +10,10 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(CustomAbilityButton), nameof(CustomAbilityButton.DoClick))]
     public class PerformKillButton
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(CustomAbilityButton __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                 return true;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             if (Utils.GetDistBetweenPlayers(role.Player, role.ClosestPlayer) > maxDistance)
                 return false;
 
-            if (__instance == role.InvestigateButton)
+            if (__instance == role.InvestigateButton2)
             {
                 if (!__instance.isActiveAndEnabled || role.ClosestPlayer == null || __instance.isCoolingDown || !__instance.isActiveAndEnabled || role.ConsigliereTimer() != 0)
                     return false;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
                 {
                     if (role.Player.IsShielded())
                     {
@@ -73,4 +73,4 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
     }
 }
 
-//WHY THE FUCK DOES CONSIG INSIST ON KILLING?!
+//WHY THE FUCK DOES CONSIG INSIST ON KILLING?!*/

@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 else
                     role.DisguiseButton.SetCoolDown(role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown);
 
-                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance]);
+                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton);
                 role.DisguiseButton.graphic.color = Palette.EnabledColor;
                 role.DisguiseButton.graphic.material.SetFloat("_Desat", 0f);
             }

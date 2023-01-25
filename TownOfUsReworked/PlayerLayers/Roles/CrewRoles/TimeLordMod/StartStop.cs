@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             PlayerControl.LocalPlayer.moveable = false;
             oldColor = HudManager.Instance.FullScreen.color;
             HudManager.Instance.FullScreen.gameObject.active = true;
-            HudManager.Instance.FullScreen.color = new Color(0f, 0.5f, 0.8f, 0.3f);
+            HudManager.Instance.FullScreen.color = new Color32(0, 0, 255, 128);
             HudManager.Instance.FullScreen.enabled = true;
             role.StartRewind = DateTime.UtcNow;
         }

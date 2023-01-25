@@ -7,7 +7,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
         }
 
-        internal virtual bool GameEnd(ShipStatus __instance)
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
         {
             return true;
         }
@@ -164,11 +164,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 			return objectifier;
 		}
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
+       [HarmonyPatch]
         public static class ShipStatus_KMPKPPGPNIH
         {
-            public static bool Prefix(ShipStatus __instance)
+            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+            public static bool Prefix(LogicGameFlowNormal __instance)
             {
+                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+                    return true;
+
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
 

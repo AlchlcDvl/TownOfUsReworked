@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 1f);
                 } catch {}
 
                 role.Flash();

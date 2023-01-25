@@ -1,5 +1,4 @@
 using HarmonyLib;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 
@@ -10,11 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     {
         public static bool Prefix(VitalsMinigame __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && !PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                Object.Destroy(__instance.gameObject);
-                return false;
-            }
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && !PlayerControl.LocalPlayer.Data.IsDead && VitalsMinigame.Instance)
+                __instance.Close();
 
             return true;
         }

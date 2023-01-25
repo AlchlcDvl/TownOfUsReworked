@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             role.FrameButton.graphic.sprite = FrameSprite;
             role.FrameButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.FrameButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notFramed);
+            Utils.SetTarget(ref role.ClosestPlayer, role.FrameButton, notFramed);
             role.FrameButton.SetCoolDown(role.FrameTimer(), CustomGameOptions.FrameCooldown);
         }
     }

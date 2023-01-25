@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             var position = __instance.KillButton.transform.localPosition;
             role.PoisonButton.transform.localPosition = position;
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsImpostor()).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.PoisonButton, float.NaN, notImp);
+            Utils.SetTarget(ref role.ClosestPlayer, role.PoisonButton, notImp);
 
             if (role.ClosestPlayer != null)
                 role.ClosestPlayer.myRend().material.SetColor("_OutlineColor", role.Color);

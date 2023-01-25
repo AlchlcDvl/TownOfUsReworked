@@ -5,6 +5,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {

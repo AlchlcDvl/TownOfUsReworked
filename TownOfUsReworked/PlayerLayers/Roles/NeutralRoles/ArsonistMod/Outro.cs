@@ -4,6 +4,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = role.Color;
             var text = Object.Instantiate(__instance.WinText);
@@ -33,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.ArsonistWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.ArsonistWin, false, 1f);
             } catch {}
         }
     }

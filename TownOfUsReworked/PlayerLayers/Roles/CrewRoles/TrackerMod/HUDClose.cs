@@ -18,12 +18,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
             foreach (var role in Role.GetRoles(RoleEnum.Tracker))
             {
-                var tracker = (Tracker) role;
+                var tracker = (Tracker)role;
                 tracker.LastTracked = DateTime.UtcNow;
-                tracker.UsesLeft = CustomGameOptions.MaxTracks;
                 
                 if (CustomGameOptions.ResetOnNewRound)
                 {
+                    tracker.UsesLeft = CustomGameOptions.MaxTracks;
                     tracker.TrackerArrows.Values.DestroyAll();
                     tracker.TrackerArrows.Clear();
                 }

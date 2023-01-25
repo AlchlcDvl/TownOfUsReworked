@@ -4,48 +4,83 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using Reactor.Utilities;
+using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
-    [HarmonyPatch(typeof(ActionButton), nameof(ActionButton.DoClick))]
+    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformKill
     {
-        public static bool Prefix(ActionButton __instance)
+        public static bool Prefix(KillButton __instance)
         {
             if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
                 return false;
 
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance))
+            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance) || (__instance != role.KillButton && __instance != role.BlockButton))
                 return false;
 
-            if ((role.RoleblockTimer() != 0f && __instance == role.BlockButton) || (role.KillTimer() != 0f && __instance == role.KillButton))
-                return false;
-
-            Utils.Spread(role.Player, role.ClosestPlayer);
-
-            if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
+            if ((role.RoleblockTimer() == 0f && __instance == role.BlockButton) || (role.KillTimer() == 0f && __instance == role.KillButton))
             {
-                Utils.AlertKill(role.Player, role.ClosestPlayer);
+                Utils.Spread(role.Player, role.ClosestPlayer);
 
-                if (CustomGameOptions.ShieldBreaks)
+                if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
                 {
-                    if (__instance == role.KillButton)
+                    Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
+
+                    if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
                         role.LastKill = DateTime.UtcNow;
-                    else if (__instance == role.BlockButton)
-                        role.LastBlock = DateTime.UtcNow;
+                        
+                    return false;
+                }
+            }
+
+            if (__instance == role.BlockButton)
+            {
+                if (role.RoleblockTimer() != 0f)
+                    return false;
+
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.ConsRoleblock);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(role.ClosestPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                role.Block();
+            }
+            else if (__instance == role.KillButton)
+            {
+                if (role.KillTimer() != 0f)
+                    return false;
+
+                if (role.ClosestPlayer.IsShielded())
+                {
+                    var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
+                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    writer1.Write(medic);
+                    writer1.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer1);
+                    StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+
+                    if (CustomGameOptions.ShieldBreaks)
+                        role.LastKill = DateTime.UtcNow;
+                }
+                else if (role.ClosestPlayer.IsVesting())
+                    role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
+                else if (role.ClosestPlayer.IsProtected())
+                    role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (PlayerControl.LocalPlayer.IsOtherRival(role.ClosestPlayer))
+                    role.LastKill = DateTime.UtcNow;
+                else
+                {
+                    role.LastKill = DateTime.UtcNow;
+                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Alert Done");
                 return false;
             }
-            
-            if (__instance == role.BlockButton)
-                role.PerformBlock();
-            else if (__instance == role.KillButton)
-                role.PerformKill();
 
             return false;
         }

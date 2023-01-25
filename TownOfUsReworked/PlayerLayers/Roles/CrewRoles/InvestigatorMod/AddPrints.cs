@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
+using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
@@ -12,8 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
     public static class AddPrints
     {
         private static float _time;
-        public static bool GameStarted = false;
-        private static float Interval => CustomGameOptions.FootprintInterval*10;
+        private static float Interval => CustomGameOptions.FootprintInterval * 10;
         private static bool Vent => CustomGameOptions.VentFootprintVisible;
 
         private static Vector2 Position(PlayerControl player)
@@ -23,10 +23,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (!GameStarted || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator) || LobbyBehaviour.Instance)
+            if (!GameStates.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator) || LobbyBehaviour.Instance || MeetingHud.Instance)
                 return;
             
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
+
+            if (investigator.IsBlocked)
+            {
+                Footprint.DestroyAll(investigator);
+                return;
+            }
+
             _time += Time.deltaTime;
 
             if (_time >= Interval)
@@ -38,8 +45,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
                     if (player == null || player.Data.IsDead || player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                         continue;
 
-                    var canPlace = !investigator.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f &&
-                        print.Color.a > 0.5 && print.Player.PlayerId == player.PlayerId);
+                    var canPlace = !investigator.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
+                        player.PlayerId);
 
                     if (Vent && ShipStatus.Instance != null)
                     {

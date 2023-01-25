@@ -1,13 +1,9 @@
 ﻿using System;
 using HarmonyLib;
-using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
@@ -19,71 +15,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
         public static Sprite Sprite => TownOfUsReworked.Arrow;
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Tracker))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
+                return false;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Tracker, role.ClosestPlayer, __instance) || __instance != role.TrackButton)
                 return false;
 
-            var flag2 = role.TrackerTimer() == 0f;
-
-            if (!flag2)
+            if (role.TrackerTimer() != 0f && __instance == role.TrackButton)
                 return false;
 
-            if (!__instance.enabled)
-                return false;
+            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
+            {
+                Utils.AlertKill(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
+            }
 
             var target = role.ClosestPlayer;
-
-            if (!role.ButtonUsable)
-                return false;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
-
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                if (role.Player.IsShielded())
-                {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer2.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastTracked = DateTime.UtcNow;
-
-                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-                    return false;
-                }
-                else if (!role.Player.IsProtected())
-                {
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
-
-                role.LastTracked = DateTime.UtcNow;
-                return false;
-            }
-
             var gameObj = new GameObject();
             var arrow = gameObj.AddComponent<ArrowBehaviour>();
             gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -109,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
             } catch {}
             
             return false;

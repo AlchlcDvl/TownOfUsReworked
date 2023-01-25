@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (!(Role.NobodyWins && Input.GetKeyDown(KeyCode.F8)))
+            if (!Role.NobodyWins)
                 return;
 
             __instance.BackgroundBar.material.color = Colors.Stalemate;

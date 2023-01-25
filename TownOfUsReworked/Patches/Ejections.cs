@@ -59,15 +59,15 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.CustomEject)
                 {
-                    if (PlayerControl.GameOptions.MapId == 0 || PlayerControl.GameOptions.MapId == 3)
+                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3)
                         ejectString = $"{player.name} is now one with space.";
-                    else if (PlayerControl.GameOptions.MapId == 1)
+                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1)
                         ejectString = $"{player.name} is now experiencing fatal free fall.";
-                    else if (PlayerControl.GameOptions.MapId == 2)
+                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2)
                         ejectString = $"{player.name} is now enjoying a hot bath.";
-                    else if (PlayerControl.GameOptions.MapId == 4)
+                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4)
                         ejectString = $"{player.name} is now experiencing gravity.";
-                    else if (PlayerControl.GameOptions.MapId == 5)
+                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 5)
                         ejectString = $"{player.name} is now off to a scuba adventure.";
                 }
                 else

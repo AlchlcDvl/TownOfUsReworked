@@ -63,6 +63,13 @@ namespace TownOfUsReworked.Enums
         GlitchRoleblock,
         BypassKill,
         Mimic,
-        Hack
+        Hack,
+        Ressurect,
+        Pursuade,
+        ChameleonSwoop,
+        Imitate,
+        StartImitate,
+        Detonate,
+        UnMimic
     }
 }

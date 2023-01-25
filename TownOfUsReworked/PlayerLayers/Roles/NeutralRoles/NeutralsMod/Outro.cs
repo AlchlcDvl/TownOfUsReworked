@@ -4,6 +4,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using UnityEngine;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
 {
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => (x.Faction == Faction.Neutral && Role.NeutralsWin));
+            var role = Role.AllRoles.FirstOrDefault(x => (x.Faction == Faction.Neutral && Role.AllNeutralsWin));
 
             if (role == null)
                 return;
@@ -20,7 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
+
+            foreach (var player in array)
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = Colors.Neutral;
             var text = Object.Instantiate(__instance.WinText);
@@ -33,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.NeutralsWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.NeutralsWin, false, 1f);
             } catch {}
         }
     }

@@ -69,6 +69,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 points.RemoveAt(0);
                 points.RemoveAt(0);
 
+                if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer.Data.Disconnected || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) ||
+                    (PlayerControl.LocalPlayer.Is(RoleEnum.TimeMaster) && CustomGameOptions.TMImmunity))
+                    return;
+
                 if (PlayerControl.LocalPlayer.inVent)
                 {
                     PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
@@ -147,8 +151,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
             {
                 var TimeLord = (TimeLord) role;
-                if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds > CustomGameOptions.RewindDuration * 1000f &&
-                    TimeLord.FinishRewind < TimeLord.StartRewind)
+
+                if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds > CustomGameOptions.RewindDuration * 1000f && TimeLord.FinishRewind < TimeLord.StartRewind)
                     StartStop.StopRewind(TimeLord);
             }
         }

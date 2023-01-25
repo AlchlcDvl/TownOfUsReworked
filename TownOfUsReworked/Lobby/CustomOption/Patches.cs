@@ -201,6 +201,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 passiveButton2.OnClick.AddListener(ToggleButton(__instance, menug, menugs, 1));
 
                 __instance.RegularGameSettings.GetComponentInChildren<Scrollbar>().parent = __instance.RegularGameSettings.GetComponentInChildren<Scroller>();
+                
+                try
+                {
+                    __instance.RolesSettings.GetComponentInChildren<Scrollbar>().parent = __instance.RolesSettings.GetComponentInChildren<Scroller>();
+                } catch {}
             }
 
             private static Sprite GetSettingSprite(int index)
@@ -311,6 +316,24 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 
                 foreach (var option in __instance.Children)
                     option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
+                
+                try
+                {
+                    var commonTasks = __instance.Children.FirstOrDefault(x => x.name == "NumCommonTasks").TryCast<NumberOption>();
+
+                    if (commonTasks != null)
+                        commonTasks.ValidRange = new FloatRange(0f, 4f);
+
+                    var shortTasks = __instance.Children.FirstOrDefault(x => x.name == "NumShortTasks").TryCast<NumberOption>();
+
+                    if (shortTasks != null)
+                        shortTasks.ValidRange = new FloatRange(0f, 26f);
+
+                    var longTasks = __instance.Children.FirstOrDefault(x => x.name == "NumLongTasks").TryCast<NumberOption>();
+
+                    if (longTasks != null)
+                        longTasks.ValidRange = new FloatRange(0f, 15f);
+                } catch {}
             }
         }
 
@@ -476,6 +499,18 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSyncSettings))]
         private class PlayerControlPatch
+        {
+            public static void Postfix()
+            {
+                if (PlayerControl.AllPlayerControls.Count < 2 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
+                    return;
+
+                Rpc.SendRpc();
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoSpawnPlayer))]
+        private class PlayerJoinPatch
         {
             public static void Postfix()
             {

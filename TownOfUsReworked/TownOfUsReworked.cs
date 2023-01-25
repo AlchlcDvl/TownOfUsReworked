@@ -20,6 +20,7 @@ using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using System.IO;
 using Reactor.Networking;
 using Reactor.Networking.Attributes;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked
 {
@@ -110,6 +111,13 @@ namespace TownOfUsReworked
         public static Sprite VoteCountDisabled;
         public static Sprite StabSprite;
         public static Sprite SyndicateKill;
+        public static Sprite PlantSprite;
+        public static Sprite DetonateSprite;
+        public static Sprite RessurectSprite;
+        public static Sprite WhisperSprite;
+        public static Sprite ImitateSelectSprite;
+        public static Sprite ImitateDeselectSprite;
+        public static Sprite Lock;
         public static Sprite Clear;
 
         public static Sprite SettingsButtonSprite;
@@ -124,7 +132,7 @@ namespace TownOfUsReworked
         public static Sprite UpdateTOUButton;
         public static Sprite UpdateSubmergedButton;
 
-        public static AudioClip JuggernautWin;
+        /*public static AudioClip JuggernautWin;
         public static AudioClip AlertSound;
         public static AudioClip ArsonistWin;
         public static AudioClip AttemptSound;
@@ -173,7 +181,7 @@ namespace TownOfUsReworked
         public static AudioClip WarperIntro;
         public static AudioClip StabSound;
         public static AudioClip VoteLockSound;
-        public static AudioClip KillSFX;
+        public static AudioClip KillSFX;*/
         
         /*public static Sprite NormalKill;
         public static Sprite ShiftKill;
@@ -227,8 +235,8 @@ namespace TownOfUsReworked
             _harmony = new Harmony("TownOfUsReworked");
             Generate.GenerateAll();
 
-            GameOptionsData.RecommendedImpostors = GameOptionsData.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
-            GameOptionsData.MinPlayers = Enumerable.Repeat(2, 127).ToArray();
+            NormalGameOptionsV07.RecommendedImpostors = NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
+            NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(2, 127).ToArray();
 
             //Ability buttons
             JanitorClean = CreateSprite("TownOfUsReworked.Resources.Buttons.Clean.png");
@@ -260,6 +268,8 @@ namespace TownOfUsReworked
             PoisonSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Poison.png");
             PoisonedSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Poisoned.png");
             TransportSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Transport.png");
+            PlantSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Plant.png");
+            DetonateSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Detonate.png");
             MediateSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mediate.png");
             VestSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Vest.png");
             ProtectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Protect.png");
@@ -292,6 +302,11 @@ namespace TownOfUsReworked
             SyndicateKill = CreateSprite("TownOfUsReworked.Resources.Buttons.SyndicateKill.png");
             VoteCount = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCount.png");
             VoteCountDisabled = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCountDisabled.png");
+            Lock = CreateSprite("TownOfUsReworked.Resources.Misc.Lock.png");
+            RessurectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Ressurect.png");
+            WhisperSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Whisper.png");
+            ImitateSelectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.ImitateSelect.png");
+            ImitateDeselectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.ImitateDeselect.png");
             Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");
 
             //Settings buttons
@@ -314,7 +329,7 @@ namespace TownOfUsReworked
             UpdateImage = CreateSprite("TownOfUsReworked.Resources.Misc.Update.png");
 
             //Sound effects, most of them are from Town Of H
-            JuggernautWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.JuggernautWin.raw");
+            /*JuggernautWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.JuggernautWin.raw");
             AlertSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Alert.raw");
             ArsonistWin = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.ArsonistWin.raw");
             AttemptSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.Attempt.raw");
@@ -363,7 +378,7 @@ namespace TownOfUsReworked
             TimeFreezeSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             WarperIntro = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.MorphlingIntro.raw");
             VoteLockSound = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.VoteLock.raw");
-            KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");
+            KillSFX = LoadAudioClipFromResources("TownOfUsReworked.Resources.Sounds.KillSFX.raw");*/
             
             //MessagesToSend = new List<(string, byte)>();
 

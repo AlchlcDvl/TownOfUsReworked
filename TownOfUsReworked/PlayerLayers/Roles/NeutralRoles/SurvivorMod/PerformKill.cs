@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.VestSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.VestSound, false, 1f);
                 } catch {}
 
                 return false;

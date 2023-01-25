@@ -10,36 +10,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDAlert
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Alert => TownOfUsReworked.AlertSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            UpdateAlertButton(__instance);
-        }
-
-        public static void UpdateAlertButton(PlayerControl __instance)
-        {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Veteran))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Veteran))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var alertButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Veteran>(PlayerControl.LocalPlayer);
+
+            if (role.AlertButton == null)
+            {
+                role.AlertButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.AlertButton.graphic.enabled = true;
+                role.AlertButton.gameObject.SetActive(false);
+            }
+
+            role.AlertButton.graphic.sprite = Alert;
+            role.AlertButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
-                role.UsesText = Object.Instantiate(alertButton.cooldownTimerText, alertButton.transform);
+                role.UsesText = Object.Instantiate(role.AlertButton.cooldownTimerText, role.AlertButton.transform);
                 role.UsesText.gameObject.SetActive(true);
-                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f,
-                    role.UsesText.transform.localPosition.y + 0.29f, role.UsesText.transform.localPosition.z);
+                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
+                    role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
@@ -48,19 +43,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            if (role.OnAlert)
-                alertButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.AlertDuration);
+            if (role.Enabled)
+                role.AlertButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.AlertDuration);
             else
             {
-                alertButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && role.ButtonUsable);
-
                 if (role.ButtonUsable)
-                    alertButton.SetCoolDown(role.AlertTimer(), CustomGameOptions.AlertCd);
+                    role.AlertButton.SetCoolDown(role.AlertTimer(), CustomGameOptions.AlertCd);
             }
 
-            var renderer = alertButton.graphic;
+            var renderer = role.AlertButton.graphic;
             
-            if (role.OnAlert || (!alertButton.isCoolingDown && role.ButtonUsable))
+            if (!role.AlertButton.isCoolingDown && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

@@ -179,7 +179,7 @@ namespace TownOfUsReworked.Patches
                     if (player.Data.Disconnected || player.Data.IsDead)
                         continue;
                         
-                    var map = PlayerControl.GameOptions.MapId;
+                    var map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
 
                     switch (map)
                     {
@@ -402,7 +402,7 @@ namespace TownOfUsReworked.Patches
                     if (player.Data.Disconnected || player.Data.IsDead)
                         continue;
 
-                    var map = PlayerControl.GameOptions.MapId;
+                    var map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
 
                     switch (map)
                     {

@@ -3,6 +3,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using System.Collections.Generic;
+using Reactor.Utilities;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 {
@@ -17,8 +19,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || player.Is(Faction.Intruder)))
-                        frozen.Add(player);
+                    if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
+                        CustomGameOptions.TMImmunity) || (player.Is(Faction.Intruder) && CustomGameOptions.IntruderImmunity))
+                        continue;
+                    
+                    frozen.Add(player);
+
+                    if (player == PlayerControl.LocalPlayer)
+                        Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
                 }
 
                 foreach (var player in frozen)
@@ -37,8 +45,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || player.Is(Faction.Intruder)))
-                        frozen.Add(player);
+                    if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
+                        CustomGameOptions.TMImmunity) || (player.Is(Faction.Intruder) && CustomGameOptions.IntruderImmunity))
+                        continue;
+                    
+                    frozen.Add(player);
+
+                    if (player == PlayerControl.LocalPlayer)
+                        Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
                 }
 
                 foreach (var player in frozen)

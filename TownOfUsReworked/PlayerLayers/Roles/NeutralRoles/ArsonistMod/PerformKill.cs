@@ -6,6 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
@@ -45,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.IgniteSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.IgniteSound, false, 1f);
                 } catch {}
 
                 role.Ignite();
@@ -99,7 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     
                     try
                     {
-                        SoundManager.Instance.PlaySound(TownOfUsReworked.DouseSound, false, 1f);
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.DouseSound, false, 1f);
                     } catch {}
 
                     return false;

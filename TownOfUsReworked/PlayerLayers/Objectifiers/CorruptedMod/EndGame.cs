@@ -5,10 +5,10 @@ using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
     public class EndGame
     {
-        public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
+        public static bool Prefix(GameManager __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
             foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
             {

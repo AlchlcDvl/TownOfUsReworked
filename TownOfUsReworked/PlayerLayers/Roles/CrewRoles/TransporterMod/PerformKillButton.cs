@@ -10,21 +10,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
+                return false;
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Transporter, null, __instance) || __instance != role.TransportButton)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            if (role.TransportTimer() != 0f)
+            if (role.TransportTimer() != 0f && __instance == role.TransportButton)
                 return false;
 
             if (role.TransportList == null && role.ButtonUsable)

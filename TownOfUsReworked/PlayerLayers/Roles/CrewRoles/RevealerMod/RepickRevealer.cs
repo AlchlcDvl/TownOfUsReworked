@@ -4,7 +4,6 @@ using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {

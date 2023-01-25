@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
                 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
                 } catch {}
                 
                 return false;

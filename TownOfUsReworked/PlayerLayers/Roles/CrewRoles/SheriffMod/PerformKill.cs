@@ -1,11 +1,9 @@
 ﻿using System;
 using HarmonyLib;
 using Hazel;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
@@ -14,68 +12,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff);
-
-            if (!flag)
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff))
+                return false;
 
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
-            if (role.UsedThisRound)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff, role.ClosestPlayer, __instance) || __instance != role.InterrogateButton)
                 return false;
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
+            if (role.InterrogateTimer() != 0f && __instance == role.InterrogateButton)
                 return false;
 
-            var flag2 = role.InterrogateTimer() == 0f;
+            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
-            if (!flag2)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
-                return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
-
-            var playerId = role.ClosestPlayer.PlayerId;
-            role.UsedThisRound = true;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
-
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                if (!role.Player.IsProtected())
-                {
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
-
-                role.LastInterrogated = DateTime.UtcNow;
+                Utils.AlertKill(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 return false;
             }
             
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.Interrogate);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(playerId);
+            writer.Write(role.ClosestPlayer);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             role.Interrogated.Add(role.ClosestPlayer.PlayerId);
             role.LastInterrogated = DateTime.UtcNow;
             //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);
-            
             return false;
         }
     }

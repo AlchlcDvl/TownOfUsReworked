@@ -7,7 +7,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDFix
     {
         private static Sprite Fix => TownOfUsReworked.EngineerFix;

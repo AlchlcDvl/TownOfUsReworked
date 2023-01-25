@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
             var ss = (Shapeshifter)shapeshifter;
 
-            switch (PlayerControl.GameOptions.MapId)
+            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
             {
                 case 0:
 
@@ -204,7 +204,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
             } catch {}
 
             return false;

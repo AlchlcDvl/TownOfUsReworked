@@ -49,7 +49,7 @@ namespace TownOfUsReworked.Patches
                     TempData.winners.Clear();
                     return;
                 }
-                else if (Role.NeutralsWin)
+                else if (Role.AllNeutralsWin)
                 {
                     foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
                     {

@@ -6,6 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {

@@ -7,6 +7,7 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {

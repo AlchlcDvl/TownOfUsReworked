@@ -35,7 +35,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Detective](#detective)
 - [Escort](#escort)
 - [Engineer](#engineer)
-- [Imitator](#imitator)
+- [Retributionist](#imitator)
 - [Inspector](#inspector)
 - [Investigator](#investigator)
 - [Mayor](#mayor)
@@ -138,6 +138,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Underdog](#underdog)
 
 [**Objectifiers**](#objectifiers)
+- [Allied](#allied)
 - [Corrupted](#corrupted)
 - [Fanatic](#fanatic)
 - [Lovers](#lovers)

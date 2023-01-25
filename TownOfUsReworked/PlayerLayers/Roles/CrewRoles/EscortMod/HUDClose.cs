@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 

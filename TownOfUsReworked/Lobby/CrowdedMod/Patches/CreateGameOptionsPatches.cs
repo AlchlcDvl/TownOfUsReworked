@@ -3,6 +3,7 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using UnityEngine;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
 {
@@ -68,8 +69,13 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
                         var text = playerButton.GetComponentInChildren<TextMeshPro>();
 
                         playerButton.OnClick.RemoveAllListeners();
-                        playerButton.OnClick.AddListener((Action)(() =>
-                            __instance.SetMaxPlayersButtons(byte.Parse(text.text))));
+                        playerButton.OnClick.AddListener((Action)(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text))));
+
+                        for (var j = 0; j < __instance.MaxPlayerButtons.Count; j++)
+                        {
+                            __instance.MaxPlayerButtons[j].enabled = __instance.MaxPlayerButtons[j].GetComponentInChildren<TextMeshPro>().text ==
+                                __instance.GetTargetOptions().MaxPlayers.ToString();
+                        }
                     }
                 }
 
@@ -82,6 +88,7 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
                     secondButton.GetComponent<BoxCollider2D>().Destroy();
 
                     var secondButtonText = secondButton.GetComponentInChildren<TextMeshPro>();
+                    secondButtonText.text = __instance.GetTargetOptions().NumImpostors.ToString();
 
                     var firstButtonRenderer = __instance.ImpostorButtons[0];
                     firstButtonRenderer.enabled = false;
@@ -115,10 +122,10 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
         [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
         public static class CreateOptionsPicker_UpdateMaxPlayersButtons
         {
-            public static bool Prefix(CreateOptionsPicker __instance, [HarmonyArgument(0)] GameOptionsData opts)
+            public static bool Prefix(CreateOptionsPicker __instance, [HarmonyArgument(0)] IGameOptions opts)
             {
                 if (__instance.CrewArea)
-                    __instance.CrewArea.SetCrewSize(opts.MaxPlayers, opts.numImpostors);
+                    __instance.CrewArea.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
 
                 var selectedAsString = opts.MaxPlayers.ToString();
                 
@@ -137,23 +144,6 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
         {
             public static bool Prefix()
             {
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.GameHostOptions), MethodType.Getter)]
-        public static class SaveManager_get_GameHostOptions
-        {
-            public static bool Prefix(out GameOptionsData __result)
-            {
-                GameOptionsData.hostOptionsData ??= GameOptionsData.LoadGameHostOptions();
-
-                // patched because of impostor clamping
-                GameOptionsData.hostOptionsData.NumImpostors = Mathf.Clamp(GameOptionsData.hostOptionsData.NumImpostors, 1,
-                    GameOptionsData.hostOptionsData.MaxPlayers - 1);
-                GameOptionsData.hostOptionsData.KillDistance = Mathf.Clamp(GameOptionsData.hostOptionsData.KillDistance, 0, 2);
-
-                __result = GameOptionsData.hostOptionsData;
                 return false;
             }
         }

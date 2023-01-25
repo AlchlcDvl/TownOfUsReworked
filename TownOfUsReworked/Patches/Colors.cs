@@ -48,7 +48,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
         public readonly static Color32 Seer = new Color32(238, 229, 190, 255); //#EEE5BEFF
         public readonly static Color32 Mystic = new Color32(112, 142, 239, 255); //#708EEFFF
-        public readonly static Color32 Imitator = new Color32(141, 15, 140, 255); //#8D0F8CFF
+        public readonly static Color32 Retributionist = new Color32(141, 15, 140, 255); //#8D0F8CFF
         public readonly static Color32 Chameleon = new Color32(84, 17, 248, 255); //#5411F8FF
 
         //Neutral Colors
@@ -82,7 +82,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
         public readonly static Color32 Grenadier = new Color32(133, 170, 91, 255); //#85AA5BFF
         public readonly static Color32 Morphling = new Color32(187, 69, 176, 255); //#BB45B0FF
-        public readonly static Color32 Wraith = new Color32(92, 79, 117, 255); //##5C4F75FF
+        public readonly static Color32 Wraith = new Color32(92, 79, 117, 255); //#5C4F75FF
         public readonly static Color32 Poisoner = new Color32(181, 0, 76, 255); //#B5004CFF
         public readonly static Color32 Undertaker = new Color32(0, 86, 67, 255); //#005643FF
         public readonly static Color32 Camouflager = new Color32(55, 138, 192, 255); //#378AC0FF
@@ -149,7 +149,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Status = new Color32(155, 89, 182, 255); //#9B59B6FF
         public readonly static Color32 Clear = new Color32(0, 0, 0, 0); //#00000000
 		public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
-		public readonly static Color32 Pursuaded = new Color32(17, 128, 106, 255); //#11806AFF
+		public readonly static Color32 Persuaded = new Color32(17, 128, 106, 255); //#11806AFF
 		public readonly static Color32 Revived = new Color32(145, 102, 64, 255); //#916640FF
 
         //Color Storage For Colors I Will Use Later

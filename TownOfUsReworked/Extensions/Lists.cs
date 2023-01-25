@@ -5,9 +5,11 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Extensions
 {
+    [HarmonyPatch]
     public static class Lists
     {
         public static List<Role> NeutralKillers;
@@ -90,7 +92,7 @@ namespace TownOfUsReworked.Extensions
             AllAbilities = new List<Ability>();
             AllObjectifiers = new List<Objectifier>();
             
-            Sounds = new List<AudioClip>();
+            //Sounds = new List<AudioClip>();
 
             foreach (var role in Role.AllRoles)
             {
@@ -176,7 +178,7 @@ namespace TownOfUsReworked.Extensions
             foreach (var objectifier in Objectifier.AllObjectifiers)
                 AllObjectifiers.Add(objectifier);
 
-            Sounds.Add(TownOfUsReworked.AlertSound);
+            /*Sounds.Add(TownOfUsReworked.AlertSound);
             Sounds.Add(TownOfUsReworked.ArsonistWin);
             Sounds.Add(TownOfUsReworked.JuggernautWin);
             Sounds.Add(TownOfUsReworked.AttemptSound);
@@ -225,7 +227,7 @@ namespace TownOfUsReworked.Extensions
             Sounds.Add(TownOfUsReworked.ShootingSound);
             Sounds.Add(TownOfUsReworked.TimeFreezeSound);
             Sounds.Add(TownOfUsReworked.VoteLockSound);
-            Sounds.Add(TownOfUsReworked.KillSFX);
+            Sounds.Add(TownOfUsReworked.KillSFX);*/
         }
     }
 }

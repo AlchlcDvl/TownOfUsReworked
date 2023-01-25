@@ -7,7 +7,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
@@ -16,76 +15,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Shifter);
-
-            if (!flag)
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Shifter))
+                return false;
 
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Shifter, role.ClosestPlayer, __instance) || __instance != role.ShiftButton)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (role.ShiftTimer() != 0f && __instance == role.ShiftButton)
                 return false;
 
-            var flag2 = role.ShifterShiftTimer() == 0f;
-
-            if (!flag2)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (Utils.GetDistBetweenPlayers(role.Player, role.ClosestPlayer) > maxDistance)
-                return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
-
-            var playerId = role.ClosestPlayer.PlayerId;
-            var player = PlayerControl.LocalPlayer;
-
-            if ((player.IsInfected() || role.Player.IsInfected()) && !player.Is(RoleEnum.Plaguebearer))
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
-            }
-
-            if (role.ClosestPlayer.IsShielded())
-            {
-                var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
-                    (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                writer1.Write(medic);
-                writer1.Write(role.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer1);
-
-                if (CustomGameOptions.ShieldBreaks)
-                    role.LastShifted = DateTime.UtcNow;
-
-                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-
-                return false;
-            }
+            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
             if (!role.ClosestPlayer.Is(Faction.Crew))
             {
-                Utils.RpcMurderPlayer(role.Player, role.Player);
+                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
                 return false;
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.Shift);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(playerId);
+            writer.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Shift(role, role.ClosestPlayer);
+            role.LastShifted = DateTime.UtcNow;
             return false;
         }
 
@@ -93,7 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
         {
             var role = Role.GetRole(other);
             var roleType = role.RoleType;
-            shifterRole.LastShifted = DateTime.UtcNow;
             var shifter = shifterRole.Player;
             List<PlayerTask> tasks1, tasks2;
             List<GameData.TaskInfo> taskinfos1, taskinfos2;
@@ -199,9 +153,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             
             if (newRole.Player == PlayerControl.LocalPlayer)
                 newRole.RegenTask();
-
-            if (other.IsRecruit())
-                newRole.IsRecruit = true;
             
             Role newRole2;
             
@@ -228,6 +179,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             shifter.Data.Tasks = taskinfos1;
             other.myTasks = tasks2;
             other.Data.Tasks = taskinfos2;
+
+            if (other.IsShielded())
+            {
+                var medic = other.GetMedic();
+                medic.ShieldedPlayer = shifter;
+            }
         }
     }
 }

@@ -57,10 +57,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
             var doused = PlayerControl.AllPlayerControls.ToArray().Where(player => role.DousedPlayers.Contains(player.PlayerId)).ToList();
 
-            Utils.SetTarget(ref role.ClosestPlayerDouse, __instance.KillButton, float.NaN, notDoused);
+            Utils.SetTarget(ref role.ClosestPlayerDouse, __instance.KillButton, notDoused);
 
             if (role.DousedAlive > 0)
-                Utils.SetTarget(ref role.ClosestPlayerIgnite, role.IgniteButton, float.NaN, doused);
+                Utils.SetTarget(ref role.ClosestPlayerIgnite, role.IgniteButton, doused);
 
             return;
         }

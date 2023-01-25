@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 
             role.GazeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             var notImpostor = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.GazeButton, float.NaN, notImpostor);
+            Utils.SetTarget(ref role.ClosestPlayer, role.GazeButton, notImpostor);
             
             if (role.ClosestPlayer != null)
             {

@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 {
@@ -12,27 +13,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
-                return false;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-            
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
                 return false;
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
 
+            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance) || (__instance != role.KillButton && __instance != role.CamouflageButton))
+                return false;
+
             if (__instance == role.CamouflageButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.CamouflageTimer() != 0)
                     return false;
+
+                Utils.Spread(role.Player, role.ClosestPlayer);
+
+                if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
+                {
+                    Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
+
+                    if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
+                        role.LastKill = DateTime.UtcNow;
+                        
+                    return false;
+                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                 writer.Write((byte)ActionsRPC.Camouflage);

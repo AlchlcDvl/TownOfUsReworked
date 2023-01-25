@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             TaskmasterWins = true;
         }
 
-        internal override bool GameEnd(ShipStatus __instance)
+        internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

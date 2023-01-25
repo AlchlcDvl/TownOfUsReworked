@@ -3,7 +3,6 @@ using Reactor.Utilities;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 1f);
             } catch {}
 
             if (!flag)

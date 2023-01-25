@@ -10,6 +10,7 @@ using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using Il2CppSystem.Collections.Generic;
 using System;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {

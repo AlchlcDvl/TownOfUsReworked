@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
 {
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = role.FactionColor;
             var text = Object.Instantiate(__instance.WinText);
@@ -34,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
 
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.CrewWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.CrewWin, false, 1f);
             } catch {}
         }
     }

@@ -44,7 +44,7 @@
             "AmongUs.GameLibs.Steam": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2022.10.25, )"
+              "version": "[2022.12.14, )"
             },
             "BepInEx.AutoPlugin": {
               "suppressParent": "All",
@@ -69,7 +69,7 @@
             },
             "Reactor": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.1.0, )"
             },
             "System.Text.Json": {
               "suppressParent": "All",

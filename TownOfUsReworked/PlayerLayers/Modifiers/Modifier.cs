@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             return Equals(Player, other.Player) && ModifierType == other.ModifierType;
         }
 
-        internal virtual bool GameEnd(ShipStatus __instance)
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
         {
             return true;
         }

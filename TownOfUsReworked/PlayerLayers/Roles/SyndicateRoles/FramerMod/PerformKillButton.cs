@@ -3,7 +3,7 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
+                if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
                 {
                     if (role.Player.IsShielded())
                     {

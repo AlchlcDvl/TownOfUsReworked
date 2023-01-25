@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using Il2CppSystem.Collections.Generic;
@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
             } catch {}
 
             Remember(role, player);

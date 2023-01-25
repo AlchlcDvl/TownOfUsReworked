@@ -31,10 +31,10 @@ namespace TownOfUsReworked.Patches
             if (InvButton == null)
                 return;
 
-            var horseObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
+            //var horseObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
             var discObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
 
-            var iconrenderer = horseObj.GetComponent<SpriteRenderer>();
+            /*var iconrenderer = horseObj.GetComponent<SpriteRenderer>();
             iconrenderer.sprite = ClientOptions.HorseEnabled ? TownOfUsReworked.HorseEnabledImage : TownOfUsReworked.HorseDisabledImage;
 
             var button = horseObj.GetComponent<PassiveButton>();
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.Patches
                     particles.pool.ReclaimAll();
                     particles.Start();
                 }
-            }));
+            }));*/
 
             var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
             iconrenderer1.sprite = TownOfUsReworked.DiscordImage;

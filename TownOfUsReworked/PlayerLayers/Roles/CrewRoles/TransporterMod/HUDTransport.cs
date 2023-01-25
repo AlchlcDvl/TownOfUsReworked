@@ -7,63 +7,61 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDTransport
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Transport => TownOfUsReworked.TransportSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null) 
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var transportButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
-            transportButton.gameObject.SetActive(!MeetingHud.Instance && !data.IsDead && !LobbyBehaviour.Instance && role.ButtonUsable);
 
-            if (data.IsDead)
-                return;
+            if (role.TransportButton == null)
+            {
+                role.TransportButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.TransportButton.graphic.enabled = true;
+                role.TransportButton.gameObject.SetActive(false);
+            }
+
+            role.TransportButton.graphic.sprite = Transport;
+            role.TransportButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
 
             if (role.ButtonUsable)
-                transportButton.SetCoolDown(role.TransportTimer(), CustomGameOptions.TransportCooldown);
+                role.TransportButton.SetCoolDown(role.TransportTimer(), CustomGameOptions.TransportCooldown);
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
-                role.UsesText = Object.Instantiate(transportButton.cooldownTimerText, transportButton.transform);
+                role.UsesText = Object.Instantiate(role.TransportButton.cooldownTimerText, role.TransportButton.transform);
                 role.UsesText.gameObject.SetActive(true);
-                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f,
-                    role.UsesText.transform.localPosition.y + 0.29f, role.UsesText.transform.localPosition.z);
+                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
+                    role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
 
-            var renderer = transportButton.graphic;
+            var renderer = role.TransportButton.graphic;
             
-            if (!transportButton.isCoolingDown && role.ButtonUsable)
+            if (!role.TransportButton.isCoolingDown && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
                 role.UsesText.color = Palette.EnabledColor;
                 role.UsesText.material.SetFloat("_Desat", 0f);
-                return;
             }
-
-            renderer.color = Palette.DisabledClear;
-            renderer.material.SetFloat("_Desat", 1f);
-            role.UsesText.color = Palette.DisabledClear;
-            role.UsesText.material.SetFloat("_Desat", 1f);
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+                role.UsesText.color = Palette.DisabledClear;
+                role.UsesText.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

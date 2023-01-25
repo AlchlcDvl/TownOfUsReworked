@@ -1,14 +1,9 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -20,7 +15,7 @@ namespace TownOfUsReworked.Patches
             if (__instance.ImpostorVentButton == null || __instance.ImpostorVentButton.gameObject == null || __instance.ImpostorVentButton.IsNullOrDestroyed())
                 return;
 
-            bool active = PlayerControl.LocalPlayer != null && VentPatches.CanVent(PlayerControl.LocalPlayer) && !MeetingHud.Instance && !LobbyBehaviour.Instance;
+            bool active = PlayerControl.LocalPlayer != null && Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && !MeetingHud.Instance && !LobbyBehaviour.Instance;
 
             if (active != __instance.ImpostorVentButton.gameObject.active)
                 __instance.ImpostorVentButton.gameObject.SetActive(active);
@@ -30,107 +25,22 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentPatches
     {
-        public static bool CanVent(PlayerControl player)
-        {
-            bool mainflag = false;
-
-            if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone ||
-                LobbyBehaviour.Instance || MeetingHud.Instance)
-                return false;
-            else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
-                return true;
-
-            var playerRole = Role.GetRole(player);
-                
-            if (playerRole == null)
-                mainflag = player.Data.IsImpostor();
-            else if (playerRole.IsBlocked)
-                mainflag = false;
-            else if (player.IsRecruit())
-                mainflag = CustomGameOptions.RecruitVent;
-            else if (player.Is(Faction.Syndicate))
-                mainflag = CustomGameOptions.SyndicateVent;
-            else if (player.Is(Faction.Intruder))
-            {
-                if (CustomGameOptions.IntrudersVent)
-                {
-                    var flag = (player.Is(RoleEnum.Morphling) && CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && CustomGameOptions.WraithVent) ||
-                        (player.Is(RoleEnum.Grenadier) && CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && CustomGameOptions.TeleVent) ||
-                        (player.Is(RoleEnum.Poisoner) && CustomGameOptions.PoisonerVent);
-
-                    if (flag)
-                        mainflag = true;
-                    else if (player.Is(RoleEnum.Undertaker))
-                    {
-                        var undertaker = (Undertaker)playerRole;
-                
-                        mainflag = CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always || undertaker.CurrentlyDragging != null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body || undertaker.CurrentlyDragging == null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless;
-                    }
-                    else
-                        mainflag = true;
-                }
-                else
-                    mainflag = false;
-            }
-            else if (player.Is(Faction.Crew))
-            {            
-                if (player.Is(AbilityEnum.Tunneler) && !player.Is(RoleEnum.Engineer))
-                {
-                    var tunneler = Ability.GetAbility<Tunneler>(player);
-                    mainflag = tunneler.TasksDone;
-                }
-                else if (player.Is(RoleEnum.Engineer))
-                    mainflag = true;
-                else if (CustomGameOptions.CrewVent)
-                    mainflag = true;
-                else
-                    mainflag = false;
-            }
-            else if (player.Is(Faction.Neutral))
-            {
-                var flag = (player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) || (player.Is(RoleEnum.Glitch) && CustomGameOptions.GlitchVent) ||
-                    (player.Is(RoleEnum.Juggernaut) && CustomGameOptions.JuggVent) || (player.Is(RoleEnum.Pestilence) && CustomGameOptions.PestVent) ||
-                    (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) || (player.Is(RoleEnum.Plaguebearer) && CustomGameOptions.PBVent) ||
-                    (player.Is(RoleEnum.Arsonist) && CustomGameOptions.ArsoVent) || (player.Is(RoleEnum.Executioner) &&  CustomGameOptions.ExeVent) ||
-                    (player.Is(RoleEnum.Cannibal) && CustomGameOptions.CannibalVent) || (player.Is(RoleEnum.Dracula) && CustomGameOptions.DracVent) ||
-                    (player.Is(RoleEnum.Vampire) && CustomGameOptions.VampVent) || (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) ||
-                    (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) || (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) ||
-                    (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) || (player.Is(RoleEnum.Dampyr) && CustomGameOptions.DampVent) ||
-                    (player.Is(RoleEnum.Jackal) && CustomGameOptions.JackalVent);
-
-                if (flag)
-                    mainflag = flag;
-                else if (player.Is(RoleEnum.SerialKiller))
-                {
-                    var role2 = (SerialKiller)playerRole;
-
-                    if (CustomGameOptions.SKVentOptions == SKVentOptions.Always)
-                        mainflag = true;
-                    else if (role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.Bloodlust)
-                        mainflag = true;
-                    else if (!role2.Lusted && CustomGameOptions.SKVentOptions == SKVentOptions.NoLust)
-                        mainflag = true;
-                    else
-                        mainflag = false;
-                }
-                else
-                    mainflag = false;
-            }
-            else
-                mainflag = false;
-
-            return mainflag;
-        }
-
         public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,
             [HarmonyArgument(2)] ref bool couldUse, ref float __result)
         {
             float num = float.MaxValue;
             PlayerControl playerControl = playerInfo.Object;
-            couldUse = CanVent(playerControl) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) && (playerControl.CanMove ||
-                playerControl.inVent);
+
+            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
+            {
+                couldUse = Utils.CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) &&
+                (playerControl.CanMove || playerControl.inVent);
+            }
+            else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek && playerControl.Data.IsImpostor())
+                couldUse = false;
+            else
+                couldUse = true;
+
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
             if (ventitaltionSystem != null && ventitaltionSystem.PlayersCleaningVents != null)

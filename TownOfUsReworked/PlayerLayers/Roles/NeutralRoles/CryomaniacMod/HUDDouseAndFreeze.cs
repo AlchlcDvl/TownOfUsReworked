@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
 
-            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, float.NaN, notDoused);
+            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, notDoused);
 
             if (!role.FreezeButton.isCoolingDown && role.FreezeButton.isActiveAndEnabled && !role.FreezeUsed)
             {

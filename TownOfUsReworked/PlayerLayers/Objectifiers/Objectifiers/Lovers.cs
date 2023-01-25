@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool GameEnd(ShipStatus __instance)
+        internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (LoverDead())
                 return true;

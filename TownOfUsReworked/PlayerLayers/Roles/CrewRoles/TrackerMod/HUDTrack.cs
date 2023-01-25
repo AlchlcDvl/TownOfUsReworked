@@ -8,35 +8,33 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDTrack
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Track => TownOfUsReworked.TrackSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Tracker))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var trackButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
+            if (role.TrackButton == null)
+            {
+                role.TrackButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.TrackButton.graphic.enabled = true;
+                role.TrackButton.gameObject.SetActive(false);
+            }
+
+            role.TrackButton.graphic.sprite = Track;
+
             if (role.UsesText == null && role.UsesLeft > 0)
             {
-                role.UsesText = Object.Instantiate(trackButton.cooldownTimerText, trackButton.transform);
+                role.UsesText = Object.Instantiate(role.TrackButton.cooldownTimerText, role.TrackButton.transform);
                 role.UsesText.gameObject.SetActive(true);
-                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f,
-                    role.UsesText.transform.localPosition.y + 0.29f, role.UsesText.transform.localPosition.z);
+                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
+                    role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
@@ -45,16 +43,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             if (role.UsesText != null)
                 role.UsesText.text = role.UsesLeft + "";
 
-            trackButton.gameObject.SetActive(!MeetingHud.Instance && !isDead && !LobbyBehaviour.Instance && role.ButtonUsable);
-            trackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
+            role.TrackButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
+            role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
+            var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);
 
             if (role.UsesLeft == 0)
                 return;
 
-            var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, trackButton, float.NaN, notTracked);
-
-            var renderer = trackButton.graphic;
+            var renderer = role.TrackButton.graphic;
             
             if (role.ClosestPlayer != null && role.ButtonUsable)
             {

@@ -44,36 +44,33 @@ namespace TownOfUsReworked.MultiClientInstancing
                 InstanceControl.SwitchTo((byte)controllingFigure);
             }
             
-            if (GameStates.IsInGame && !GameStates.IsMeeting && !GameStates.IsLobby)
+            if (Input.GetKeyDown(KeyCode.F8))
             {
-                if (Input.GetKeyDown(KeyCode.F8))
-                {
-                    Role.NobodyWins = true;
-                    Utils.EndGame();
-                }
+                Role.NobodyWins = true;
+                Utils.EndGame();
+            }
+        
+            if (Input.GetKeyDown(KeyCode.F4))
+            {
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 79);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 82);
+            }
             
-                if (Input.GetKeyDown(KeyCode.F4))
-                {
-                    ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 79);
-                    ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
-                    ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
-                    ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 82);
-                }
-                
-                if (Input.GetKeyDown(KeyCode.F3))
-                    PlayerControl.LocalPlayer.Data.Object.SetKillTimer(0f);
-                
-                if (Input.GetKeyDown(KeyCode.F2))
-                {
-                    foreach (var task in PlayerControl.LocalPlayer.myTasks)
-                        PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
-                }
+            if (Input.GetKeyDown(KeyCode.F3))
+                PlayerControl.LocalPlayer.Data.Object.SetKillTimer(0f);
             
-                if (Input.GetKeyDown(KeyCode.F12))
-                {
-                    HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
-                    HudManager.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
-                }
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                foreach (var task in PlayerControl.LocalPlayer.myTasks)
+                    PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+            }
+        
+            if (Input.GetKeyDown(KeyCode.F12))
+            {
+                HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
+                HudManager.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
             }
         }
     }

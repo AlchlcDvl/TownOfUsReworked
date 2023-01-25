@@ -7,70 +7,39 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class Update
     {
-        public static string NameText(PlayerControl player, string str = "", bool meeting = false)
-        {
-            if (CamouflageUnCamouflage.IsCamoed)
-            {
-                if (meeting)
-                    return player.name + str;
-
-                return "";
-            }
-
-            return player.name + str;
-        }
-
         private static void UpdateMeeting(MeetingHud __instance, Sheriff sheriff)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player2 in sheriff.Interrogated)
             {
-                if (!sheriff.Interrogated.Contains(player.PlayerId))
-                    continue;
+                var player = Utils.PlayerById(player2);
 
                 foreach (var state in __instance.playerStates)
                 {
                     if (player.PlayerId != state.TargetPlayerId) 
                         continue;
 
-                    var roleType = (Role.GetRole(player))?.RoleType;
-
-                    switch (roleType)
+                    if ((player.Is(RoleAlignment.NeutralEvil) && !CustomGameOptions.NeutEvilRed) || (player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NeutKillingRed))
+                        state.NameText.color = Colors.Intruder;
+                    else if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
                     {
-                        default:
-                            if (((player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Cryomaniac) ||
-                                player.Is(RoleEnum.Cannibal)) && !CustomGameOptions.NeutEvilRed) || ((player.Is(RoleEnum.Arsonist) ||
-                                player.Is(RoleEnum.Glitch) || player.Is(RoleEnum.Juggernaut) || player.Is(RoleEnum.Plaguebearer) ||
-                                player.Is(RoleEnum.Pestilence) || player.Is(RoleEnum.SerialKiller) || player.Is(RoleEnum.Murderer)) &&
-                                !CustomGameOptions.NeutKillingRed))
-                                state.NameText.color = Colors.Intruder;
-                            else if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
-                            {
-                                foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
-                                {
-                                    var traitor = (Traitor)role;
-                                    state.NameText.color = Colors.Intruder;
-                                }
-                            }
-                            else if (player.Is(ObjectifierEnum.Traitor) && !CustomGameOptions.TraitorColourSwap)
-                            {
-                                foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
-                                {
-                                    var traitor = (Traitor)role;
-                                    state.NameText.color = Colors.Glitch;
-                                }
-                            }
-                            else
-                                state.NameText.color = Colors.Intruder;
+                        foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
+                        {
+                            var traitor = (Traitor)role;
 
-                            break;
+                            if (traitor.Player == player && traitor.Turned)
+                                state.NameText.color = Colors.Intruder;
+                        }
                     }
+                    else if (player.Is(ObjectifierEnum.Traitor) && !CustomGameOptions.TraitorColourSwap)
+                        state.NameText.color = Colors.Glitch;
+                    else
+                        state.NameText.color = Colors.Intruder;
                 }
             }
         }
@@ -98,36 +67,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             if (MeetingHud.Instance != null)
                 UpdateMeeting(MeetingHud.Instance, sheriff);
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player2 in sheriff.Interrogated)
             {
-                if (!sheriff.Interrogated.Contains(player.PlayerId))
-                    continue;
+                var player = Utils.PlayerById(player2);
 
                 player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
 
-                if (((player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Cannibal) ||
-                    player.Is(RoleEnum.Cryomaniac)) && !CustomGameOptions.NeutEvilRed) || ((player.Is(RoleEnum.Murderer) ||
-                    player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Glitch) || player.Is(RoleEnum.Juggernaut) ||
-                    player.Is(RoleEnum.Plaguebearer) || player.Is(RoleEnum.Pestilence) || player.Is(RoleEnum.SerialKiller)) &&
-                    !CustomGameOptions.NeutKillingRed))
+                if ((player.Is(RoleAlignment.NeutralEvil) && !CustomGameOptions.NeutEvilRed) || (player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NeutKillingRed))
                     player.nameText().color = Colors.Intruder;
-                        
-                if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
+                else if (player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.TraitorColourSwap)
                 {
                     foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
                     {
                         var traitor = (Traitor)role;
-                        player.nameText().color = Colors.Intruder;
+
+                        if (traitor.Player == player && traitor.Turned)
+                            player.nameText().color = Colors.Intruder;
                     }
                 }
                 else if (player.Is(ObjectifierEnum.Traitor) && !CustomGameOptions.TraitorColourSwap)
-                {
-                    foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Traitor))
-                    {
-                        var traitor = (Traitor)role;
-                        player.nameText().color = Colors.Glitch;
-                    }
-                }
+                    player.nameText().color = Colors.Glitch;
                 else
                     player.nameText().color = Colors.Intruder;
             }

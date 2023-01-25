@@ -48,9 +48,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     text.gameObject.SetActive(true);
                     text.text = colorMapping[i].ToString();
                     
-                    // Show first row numbers below player icons
-                    // Show second row numbers above player icons
-                    // Show all icons on player icons when there are three rows
+                    //Show first row numbers below player icons
+                    //Show second row numbers above player icons
+                    //Show all icons on player icons when there are three rows
 
                     if(useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);

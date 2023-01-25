@@ -15,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer))
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
                 return;
 
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
@@ -37,12 +28,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 role.BlackmailButton.gameObject.SetActive(false);
             }
 
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+            }
+
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+
+            if (role.IsRecruit)
+                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
+
             role.BlackmailButton.GetComponent<AspectPosition>().Update();
             role.BlackmailButton.graphic.sprite = Blackmail;
-            role.BlackmailButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.Blackmailed?.PlayerId != player.PlayerId).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, float.NaN, notBlackmailed);
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);
+            role.BlackmailButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.Blackmailed?.PlayerId != player.PlayerId).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, notBlackmailed);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
 
             if (role.Blackmailed != null && !role.Blackmailed.Data.IsDead && !role.Blackmailed.Data.Disconnected)
             {

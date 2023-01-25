@@ -21,7 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (role != null)
                 {
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
-                        role.Update(__instance);
+                        return;
+                        //role.Update(__instance);
                 }
             }
         }

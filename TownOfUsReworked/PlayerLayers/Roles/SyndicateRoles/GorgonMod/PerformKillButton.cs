@@ -5,6 +5,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
@@ -56,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
             } catch {}
             
             return false;

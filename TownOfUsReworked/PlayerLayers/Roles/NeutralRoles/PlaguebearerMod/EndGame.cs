@@ -5,10 +5,10 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
     public class EndGame
     {
-        public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameOverReason reason)
+        public static bool Prefix(GameManager __instance, [HarmonyArgument(0)] GameOverReason reason)
         {
             foreach (Plaguebearer pb in Role.GetRoles(RoleEnum.Plaguebearer))
             {

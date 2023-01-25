@@ -16,63 +16,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Inspector))
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
+                return false;
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Inspector, role.ClosestPlayer, __instance) || __instance != role.InspectButton)
                 return false;
 
-            var flag2 = role.ExamineTimer() == 0f;
-
-            if (!flag2)
+            if (role.ExamineTimer() != 0f && __instance == role.InspectButton)
                 return false;
 
-            if (!__instance.enabled)
-                return false;
+            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
-                return false;
-
-            if (role.ClosestPlayer == null)
-                return false;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
-
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
-            {
-                if (role.Player.IsShielded())
-                {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer2.Write(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastInspected = DateTime.UtcNow;
-
-                    StopKill.BreakShield(PlayerControl.LocalPlayer.GetMedic().Player.PlayerId, PlayerControl.LocalPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
-                    return false;
-                }
-                else if (!role.Player.IsProtected())
-                {
-                    Utils.RpcMurderPlayer(role.ClosestPlayer, PlayerControl.LocalPlayer);
-                    return false;
-                }
-
-                role.LastInspected = DateTime.UtcNow;
+                Utils.AlertKill(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 return false;
             }
 
@@ -81,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
             } catch {}
             
             return false;

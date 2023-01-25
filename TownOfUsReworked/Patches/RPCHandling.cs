@@ -29,11 +29,13 @@ using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using Reactor.Networking.Extensions;
+using AmongUs.GameOptions;
 using Coroutine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod.Coroutine;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using Eat = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod.Coroutine;
 using Revive = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.Coroutine;
+using Alt = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget;
 using PerformKillButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod.PerformKillButton;
 using PerformStealButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod.PerformKillButton;
 using PerformDeclareButton = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformKill;
@@ -75,6 +77,7 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, int, int)> ProfessionalModifiers = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> BaitModifiers = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> DiseasedModifiers = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int)> AllModifiers = new List<(Type, int, int)>();
 
         private static readonly List<(Type, int, int)> GlobalAbilityGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> IntruderAbilityGet = new List<(Type, int, int)>();
@@ -87,6 +90,7 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, int, int)> EvilAbilityGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> SyndicateAbilityGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> NeutralAbilityGet = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int)> AllAbilities = new List<(Type, int, int)>();
 
         private static readonly List<(Type, int, int)> CrewObjectifierGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> CorruptedObjectifierGet = new List<(Type, int, int)>();
@@ -94,6 +98,7 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, int, int)> OverlordObjectifierGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> LoverRivalObjectifierGet = new List<(Type, int, int)>();
         private static readonly List<(Type, int, int)> GlobalObjectifierGet = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int)> AllObjectifiers = new List<(Type, int, int)>();
 
         private static readonly bool IsAA = CustomGameOptions.GameMode == GameMode.AllAny;
         private static readonly bool IsCustom = CustomGameOptions.GameMode == GameMode.Custom;
@@ -742,6 +747,30 @@ namespace TownOfUsReworked.Patches
                     IntruderRoles.Shuffle();
                     NeutralRoles.Shuffle();
 
+                    AllModifiers.AddRange(GlobalModifiers);
+                    AllModifiers.AddRange(ProfessionalModifiers);
+                    AllModifiers.AddRange(BaitModifiers);
+                    AllModifiers.AddRange(DiseasedModifiers);
+
+                    AllAbilities.AddRange(GlobalAbilityGet);
+                    AllAbilities.AddRange(IntruderAbilityGet);
+                    AllAbilities.AddRange(CrewAbilityGet);
+                    AllAbilities.AddRange(TunnelerAbilityGet);
+                    AllAbilities.AddRange(NonEvilAbilityGet);
+                    AllAbilities.AddRange(TaskedAbilityGet);
+                    AllAbilities.AddRange(SnitchAbilityGet);
+                    AllAbilities.AddRange(NonVentingAbilityGet);
+                    AllAbilities.AddRange(EvilAbilityGet);
+                    AllAbilities.AddRange(SyndicateAbilityGet);
+                    AllAbilities.AddRange(NeutralAbilityGet);
+                    
+                    AllObjectifiers.AddRange(CrewObjectifierGet);
+                    AllObjectifiers.AddRange(CorruptedObjectifierGet);
+                    AllObjectifiers.AddRange(NeutralObjectifierGet);
+                    AllObjectifiers.AddRange(OverlordObjectifierGet);
+                    AllObjectifiers.AddRange(GlobalObjectifierGet);
+                    AllObjectifiers.AddRange(LoverRivalObjectifierGet);
+
                     PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Role Sort Done");
                 }
 
@@ -1164,34 +1193,37 @@ namespace TownOfUsReworked.Patches
                 canHaveObjectifier2.RemoveAll(player => !player.Is(Faction.Crew));
                 canHaveObjectifier2.Shuffle();
                 
-                while ((canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0) || (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0) || (canHaveObjectifier3.Count >
-                    0 && GlobalObjectifierGet.Count > 0) || (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0))
+                if (!IsAA)
                 {
-                    var random = Random.RandomRangeInt(0, 4);
+                    while ((canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0) || (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0) || (canHaveObjectifier3.Count >
+                        0 && GlobalObjectifierGet.Count > 0) || (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0))
+                    {
+                        var random = Random.RandomRangeInt(0, 4);
 
-                    if (canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0 && random == 0)
-                    {
-                        var (type, _, id) = NeutralObjectifierGet.TakeFirst();
-                        Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier.TakeFirst(), id);
-                    }
-                    else if (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0 && random == 1)
-                    {
-                        var (type, _, id) = CrewObjectifierGet.TakeFirst();
-                        Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier2.TakeFirst(), id);
-                    }
-                    else if (canHaveObjectifier3.Count > 0 && GlobalObjectifierGet.Count > 0 && random == 2)
-                    {
-                        var (type, _, id) = GlobalObjectifierGet.TakeFirst();
-                        Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier3.TakeFirst(), id);  
-                    }
-                    else if (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0 && random == 3)
-                    {
-                        var (type, _, id) = LoverRivalObjectifierGet.TakeFirst();
+                        if (canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0 && random == 0)
+                        {
+                            var (type, _, id) = NeutralObjectifierGet.TakeFirst();
+                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier.TakeFirst(), id);
+                        }
+                        else if (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0 && random == 1)
+                        {
+                            var (type, _, id) = CrewObjectifierGet.TakeFirst();
+                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier2.TakeFirst(), id);
+                        }
+                        else if (canHaveObjectifier3.Count > 0 && GlobalObjectifierGet.Count > 0 && random == 2)
+                        {
+                            var (type, _, id) = GlobalObjectifierGet.TakeFirst();
+                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier3.TakeFirst(), id);  
+                        }
+                        else if (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0 && random == 3)
+                        {
+                            var (type, _, id) = LoverRivalObjectifierGet.TakeFirst();
 
-                        if (id == 0)
-                            Lovers.Gen(canHaveLoverorRival);
-                        else if (id == 1)
-                            Rivals.Gen(canHaveLoverorRival);
+                            if (id == 0)
+                                Lovers.Gen(canHaveLoverorRival);
+                            else if (id == 1)
+                                Rivals.Gen(canHaveLoverorRival);
+                        }
                     }
                 }
 
@@ -1242,63 +1274,66 @@ namespace TownOfUsReworked.Patches
                 canHaveAbility10.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
                 canHaveAbility10.Shuffle();
                 
-                while ((canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0) || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 &&
-                    TunnelerAbilityGet.Count > 0) || (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0) || (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0) ||
-                    (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0) || (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0) || (canHaveAbility.Count > 0 &&
-                    IntruderAbilityGet.Count > 0) || (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0) || (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0) ||
-                    (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0))
+                if (!IsAA)
                 {
-                    var random = Random.RandomRangeInt(0, 10);
+                    while ((canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0) || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 &&
+                        TunnelerAbilityGet.Count > 0) || (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0) || (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0) ||
+                        (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0) || (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0) || (canHaveAbility.Count > 0 &&
+                        IntruderAbilityGet.Count > 0) || (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0) || (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0) ||
+                        (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0))
+                    {
+                        var random = Random.RandomRangeInt(0, 10);
 
-                    if (canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0 && random == 0)
-                    {
-                        var (type, _, id) = SnitchAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility7.TakeFirst(), id);
-                    }
-                    else if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 && TunnelerAbilityGet.Count > 0 && random == 1)
-                    {
-                        var (type, _, id) = TunnelerAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility5.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0 && random == 2)
-                    {
-                        var (type, _, id) = NonEvilAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility9.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0 && random == 3)
-                    {
-                        var (type, _, id) = EvilAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility10.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0 && random == 4)
-                    {
-                        var (type, _, id) = TaskedAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility8.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0 && random == 5)
-                    {
-                        var (type, _, id) = CrewAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility3.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility.Count > 0 && IntruderAbilityGet.Count > 0 && random == 6)
-                    {
-                        var (type, _, id) = IntruderAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0 && random == 7)
-                    {
-                        var (type, _, id) = NeutralAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility2.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0 && random == 8)
-                    {
-                        var (type, _, id) = SyndicateAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility4.TakeFirst(), id);
-                    }
-                    else if (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0 && random == 9)
-                    {
-                        var (type, _, id) = GlobalAbilityGet.TakeFirst();
-                        Ability.GenAbility<Ability>(type, canHaveAbility11.TakeFirst(), id);
+                        if (canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0 && random == 0)
+                        {
+                            var (type, _, id) = SnitchAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility7.TakeFirst(), id);
+                        }
+                        else if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 && TunnelerAbilityGet.Count > 0 && random == 1)
+                        {
+                            var (type, _, id) = TunnelerAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility5.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0 && random == 2)
+                        {
+                            var (type, _, id) = NonEvilAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility9.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0 && random == 3)
+                        {
+                            var (type, _, id) = EvilAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility10.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0 && random == 4)
+                        {
+                            var (type, _, id) = TaskedAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility8.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0 && random == 5)
+                        {
+                            var (type, _, id) = CrewAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility3.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility.Count > 0 && IntruderAbilityGet.Count > 0 && random == 6)
+                        {
+                            var (type, _, id) = IntruderAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0 && random == 7)
+                        {
+                            var (type, _, id) = NeutralAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility2.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0 && random == 8)
+                        {
+                            var (type, _, id) = SyndicateAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility4.TakeFirst(), id);
+                        }
+                        else if (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0 && random == 9)
+                        {
+                            var (type, _, id) = GlobalAbilityGet.TakeFirst();
+                            Ability.GenAbility<Ability>(type, canHaveAbility11.TakeFirst(), id);
+                        }
                     }
                 }
 
@@ -1321,30 +1356,33 @@ namespace TownOfUsReworked.Patches
                 canHaveModifier3.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
                 canHaveModifier3.Shuffle();
                 
-                while ((canHaveModifier1.Count > 0 && BaitModifiers.Count > 0) || (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0) || (canHaveModifier3.Count > 0 &&
-                    ProfessionalModifiers.Count > 0) || (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0))
+                if (!IsAA)
                 {
-                    var random = Random.RandomRangeInt(0, 4);
+                    while ((canHaveModifier1.Count > 0 && BaitModifiers.Count > 0) || (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0) || (canHaveModifier3.Count > 0 &&
+                        ProfessionalModifiers.Count > 0) || (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0))
+                    {
+                        var random = Random.RandomRangeInt(0, 4);
 
-                    if (canHaveModifier1.Count > 0 && BaitModifiers.Count > 0 && random == 0)
-                    {
-                        var (type, _, id) = BaitModifiers.TakeFirst();
-                        Modifier.GenModifier<Modifier>(type, canHaveModifier1.TakeFirst(), id);
-                    }
-                    else if (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0 && random == 1)
-                    {
-                        var (type, _, id) = DiseasedModifiers.TakeFirst();
-                        Modifier.GenModifier<Modifier>(type, canHaveModifier2.TakeFirst(), id);
-                    }
-                    else if (canHaveModifier3.Count > 0 && ProfessionalModifiers.Count > 0 && random == 2)
-                    {
-                        var (type, _, id) = ProfessionalModifiers.TakeFirst();
-                        Modifier.GenModifier<Modifier>(type, canHaveModifier3.TakeFirst(), id);
-                    }
-                    else if (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0 && random == 3)
-                    {
-                        var (type, _, id) = GlobalModifiers.TakeFirst();
-                        Modifier.GenModifier<Modifier>(type, canHaveModifier4.TakeFirst(), id);
+                        if (canHaveModifier1.Count > 0 && BaitModifiers.Count > 0 && random == 0)
+                        {
+                            var (type, _, id) = BaitModifiers.TakeFirst();
+                            Modifier.GenModifier<Modifier>(type, canHaveModifier1.TakeFirst(), id);
+                        }
+                        else if (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0 && random == 1)
+                        {
+                            var (type, _, id) = DiseasedModifiers.TakeFirst();
+                            Modifier.GenModifier<Modifier>(type, canHaveModifier2.TakeFirst(), id);
+                        }
+                        else if (canHaveModifier3.Count > 0 && ProfessionalModifiers.Count > 0 && random == 2)
+                        {
+                            var (type, _, id) = ProfessionalModifiers.TakeFirst();
+                            Modifier.GenModifier<Modifier>(type, canHaveModifier3.TakeFirst(), id);
+                        }
+                        else if (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0 && random == 3)
+                        {
+                            var (type, _, id) = GlobalModifiers.TakeFirst();
+                            Modifier.GenModifier<Modifier>(type, canHaveModifier4.TakeFirst(), id);
+                        }
                     }
                 }
 
@@ -1637,6 +1675,9 @@ namespace TownOfUsReworked.Patches
                             case 64:
                                 new Bomber(player);
                                 break;
+                            case 65:
+                                new Chameleon(player);
+                                break;
                         }
 
                         break;
@@ -1830,7 +1871,6 @@ namespace TownOfUsReworked.Patches
                         revealerRole.RoleHistory.AddRange(former.RoleHistory);
                         revealer.gameObject.layer = LayerMask.NameToLayer("Players");
                         SetRevealer.RemoveTasks(revealer);
-                        SetRevealer.AddCollider(revealerRole);
 
                         if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
                             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
@@ -1860,85 +1900,23 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.Start:
                         Utils.ShowDeadBodies = false;
-
                         Role.NobodyWins = false;
-                        Role.NeutralsWin = false;
-
                         Role.CrewWin = false;
                         Role.SyndicateWin = false;
                         Role.IntruderWin = false;
                         Role.AllNeutralsWin = false;
-                                
                         Role.UndeadWin = false;
                         Role.CabalWin = false;
-
                         Role.NKWins = false;
-
                         Role.SyndicateHasChaosDrive = false;
                         Role.ChaosDriveMeetingTimerCount = 0;
-
-                        CrewAuditorRoles.Clear();
-                        CrewInvestigativeRoles.Clear();
-                        CrewKillingRoles.Clear();
-                        CrewProtectiveRoles.Clear();
-                        CrewSovereignRoles.Clear();
-                        CrewSupportRoles.Clear();
-                        CrewRoles.Clear();
-
-                        NeutralEvilRoles.Clear();
-                        NeutralBenignRoles.Clear();
-                        NeutralKillingRoles.Clear();
-                        NeutralNeophyteRoles.Clear();
-                        NeutralRoles.Clear();
-
-                        IntruderDeceptionRoles.Clear();
-                        IntruderConcealingRoles.Clear();
-                        IntruderKillingRoles.Clear();
-                        IntruderSupportRoles.Clear();
-                        IntruderRoles.Clear();
-
-                        SyndicateDisruptionRoles.Clear();
-                        SyndicateKillingRoles.Clear();
-                        SyndicateSupportRoles.Clear();
-                        SyndicatePowerRoles.Clear();
-                        SyndicateRoles.Clear();
-
-                        GlobalModifiers.Clear();
-                        BaitModifiers.Clear();
-                        DiseasedModifiers.Clear();
-                        ProfessionalModifiers.Clear();
-
-                        GlobalAbilityGet.Clear();
-                        IntruderAbilityGet.Clear();
-                        CrewAbilityGet.Clear();
-                        TunnelerAbilityGet.Clear();
-                        NonEvilAbilityGet.Clear();
-                        TaskedAbilityGet.Clear();
-                        SnitchAbilityGet.Clear();
-                        NonVentingAbilityGet.Clear();
-                        EvilAbilityGet.Clear();
-                        SyndicateAbilityGet.Clear();
-                        NeutralAbilityGet.Clear();
-
-                        CrewObjectifierGet.Clear();
-                        NeutralObjectifierGet.Clear();
-                        CorruptedObjectifierGet.Clear();
-                        OverlordObjectifierGet.Clear();
-                        GlobalObjectifierGet.Clear();
-                        LoverRivalObjectifierGet.Clear();
-
+                        ExileControllerPatch.lastExiled = null;
                         RecordRewind.points.Clear();
                         Murder.KilledPlayers.Clear();
-
                         Role.Buttons.Clear();
                         Role.SetColors();
-
                         Lists.DefinedLists();
-
-                        PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
-                
-                        PhantomOn = false;
-                        RevealerOn = false;
+                        Alt.DontRevive = byte.MaxValue;
                         break;
 
                     case CustomRPC.AttemptSound:
@@ -2035,28 +2013,28 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetSettings:
                         readByte = reader.ReadByte();
-                        PlayerControl.GameOptions.MapId = readByte == byte.MaxValue ? (byte)0 : readByte;
-                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-                        PlayerControl.GameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                        PlayerControl.GameOptions.CrewLightMod = CustomGameOptions.CrewVision;
-                        PlayerControl.GameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                        PlayerControl.GameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
-                        PlayerControl.GameOptions.VisualTasks = CustomGameOptions.VisualTasks;
-                        PlayerControl.GameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
-                        PlayerControl.GameOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                        PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                        PlayerControl.GameOptions.TaskBarMode = (TaskBarMode)CustomGameOptions.TaskBarMode;
-                        PlayerControl.GameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-                        PlayerControl.GameOptions.VotingTime = CustomGameOptions.VotingTime;
-                        PlayerControl.GameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-                        PlayerControl.GameOptions.KillDistance = CustomGameOptions.InteractionDistance;
-                        PlayerControl.GameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
-                        PlayerControl.GameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
-                        PlayerControl.GameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
-                        PlayerControl.GameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                        //PlayerControl.GameOptions.MaxPlayers = CustomGameOptions.LobbySize;
+                        GameOptionsManager.Instance.currentNormalGameOptions.MapId = readByte == byte.MaxValue ? (byte)0 : readByte;
+                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
+                        GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                        GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomGameOptions.CrewVision;
+                        GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+                        GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                        GameOptionsManager.Instance.currentNormalGameOptions.VisualTasks = CustomGameOptions.VisualTasks;
+                        GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+                        GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors = CustomGameOptions.IntruderCount;
+                        GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                        GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
+                        GameOptionsManager.Instance.currentNormalGameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
+                        GameOptionsManager.Instance.currentNormalGameOptions.VotingTime = CustomGameOptions.VotingTime;
+                        GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
+                        GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                        GameOptionsManager.Instance.currentNormalGameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
+                        GameOptionsManager.Instance.currentNormalGameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+                        GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
+                        GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                        //GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = CustomGameOptions.LobbySize;
 
                         if (CustomGameOptions.AutoAdjustSettings)
                             RandomMap.AdjustSettings(readByte);
@@ -2221,6 +2199,12 @@ namespace TownOfUsReworked.Patches
                                 glitchRole.MimicTarget = mimicPlayer;
                                 break;
 
+                            case ActionsRPC.UnMimic:
+                                var glitchPlayer3 = Utils.PlayerById(reader.ReadByte());
+                                var glitchRole2 = Role.GetRole<Glitch>(glitchPlayer3);
+                                glitchRole2.UnMimic();
+                                break;
+
                             case ActionsRPC.Hack:
                                 var hackPlayer = Utils.PlayerById(reader.ReadByte());
                                 var glitchPlayer2 = Utils.PlayerById(reader.ReadByte());
@@ -2234,7 +2218,6 @@ namespace TownOfUsReworked.Patches
                                 var sheriffRole = Role.GetRole<Sheriff>(sheriff);
                                 sheriffRole.Interrogated.Add(otherPlayer.PlayerId);
                                 sheriffRole.LastInterrogated = DateTime.UtcNow;
-                                sheriffRole.UsedThisRound = true;
                                 break;
 
                             case ActionsRPC.Morph:
@@ -2422,7 +2405,7 @@ namespace TownOfUsReworked.Patches
                                     MeetingRoomManager.Instance.target = null;
                                     AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
 
-                                    if (ShipStatus.Instance.CheckTaskCompletion())
+                                    if (GameManager.Instance.CheckTaskCompletion())
                                         return;
 
                                     DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(buttonBarry);
@@ -2537,289 +2520,299 @@ namespace TownOfUsReworked.Patches
                             case WinLoseRPC.CrewWin:
                                 var crew = Utils.PlayerById(reader.ReadByte());
                                 var crewRole = Role.GetRole(crew);
-                                crewRole.Wins();
+                                crewRole?.Wins();
+                                Role.CrewWin = true;
                                 break;
                             
                             case WinLoseRPC.CrewLose:
                                 var crew2 = Utils.PlayerById(reader.ReadByte());
                                 var crewRole2 = Role.GetRole(crew2);
-                                crewRole2.Loses();
+                                crewRole2?.Loses();
+                                Role.CrewWin = false;
                                 break;
                             
                             case WinLoseRPC.IntruderWin:
                                 var imp = Utils.PlayerById(reader.ReadByte());
                                 var impRole = Role.GetRole(imp);
-                                impRole.Wins();
+                                impRole?.Wins();
+                                Role.IntruderWin = true;
                                 break;
                             
                             case WinLoseRPC.IntruderLose:
                                 var imp2 = Utils.PlayerById(reader.ReadByte());
                                 var impRole2 = Role.GetRole(imp2);
-                                impRole2.Loses();
+                                impRole2?.Loses();
+                                Role.IntruderWin = false;
                                 break;
                             
                             case WinLoseRPC.SyndicateWin:
                                 var syn = Utils.PlayerById(reader.ReadByte());
                                 var synRole = Role.GetRole(syn);
-                                synRole.Wins();
+                                synRole?.Wins();
+                                Role.SyndicateWin = true;
                                 break;
                             
                             case WinLoseRPC.SyndicateLose:
                                 var syn2 = Utils.PlayerById(reader.ReadByte());
                                 var synRole2 = Role.GetRole(syn2);
-                                synRole2.Loses();
+                                synRole2?.Loses();
+                                Role.SyndicateWin = false;
                                 break;
                             
                             case WinLoseRPC.UndeadWin:
                                 var und = Utils.PlayerById(reader.ReadByte());
                                 var undRole = Role.GetRole(und);
-                                undRole.Wins();
+                                undRole?.Wins();
+                                Role.UndeadWin = true;
                                 break;
                             
                             case WinLoseRPC.UndeadLose:
                                 var und2 = Utils.PlayerById(reader.ReadByte());
                                 var undRole2 = Role.GetRole(und2);
-                                undRole2.Loses();
+                                undRole2?.Loses();
+                                Role.UndeadWin = false;
                                 break;
                             
                             case WinLoseRPC.CabalWin:
                                 var cab = Utils.PlayerById(reader.ReadByte());
                                 var cabRole = Role.GetRole(cab);
-                                cabRole.Wins();
+                                cabRole?.Wins();
+                                Role.CabalWin = true;
                                 break;
                             
                             case WinLoseRPC.CabalLose:
                                 var cab2 = Utils.PlayerById(reader.ReadByte());
                                 var cabRole2 = Role.GetRole(cab2);
-                                cabRole2.Loses();
+                                cabRole2?.Loses();
+                                Role.CabalWin = false;
                                 break;
                             
                             case WinLoseRPC.JesterWin:
                                 var jest = Utils.PlayerById(reader.ReadByte());
                                 var jestRole = Role.GetRole<Jester>(jest);
-                                jestRole.Wins();
+                                jestRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.JesterLose:
                                 var jest2 = Utils.PlayerById(reader.ReadByte());
                                 var jestRole2 = Role.GetRole<Jester>(jest2);
-                                jestRole2.Loses();
+                                jestRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.AmnesiacLose:
                                 var amne = Utils.PlayerById(reader.ReadByte());
                                 var amneRole = Role.GetRole<Amnesiac>(amne);
-                                amneRole.Loses();
+                                amneRole?.Loses();
                                 break;
                             
                             case WinLoseRPC.ThiefLose:
                                 var thief2 = Utils.PlayerById(reader.ReadByte());
                                 var thiefRole2 = Role.GetRole<Thief>(thief2);
-                                thiefRole2.Loses();
+                                thiefRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.ArsonistWin:
                                 var arso = Utils.PlayerById(reader.ReadByte());
                                 var arsoRole = Role.GetRole<Arsonist>(arso);
-                                arsoRole.Wins();
+                                arsoRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.ArsonistLose:
                                 var arso2 = Utils.PlayerById(reader.ReadByte());
                                 var arsoRole2 = Role.GetRole<Arsonist>(arso2);
-                                arsoRole2.Loses();
+                                arsoRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.CannibalWin:
                                 var cann = Utils.PlayerById(reader.ReadByte());
                                 var cannRole = Role.GetRole<Cannibal>(cann);
-                                cannRole.Wins();
+                                cannRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.CannibalLose:
                                 var cann2 = Utils.PlayerById(reader.ReadByte());
                                 var cannRole2 = Role.GetRole<Cannibal>(cann2);
-                                cannRole2.Loses();
+                                cannRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.CryomaniacWin:
                                 var cryo = Utils.PlayerById(reader.ReadByte());
                                 var cryoRole = Role.GetRole<Cryomaniac>(cryo);
-                                cryoRole.Wins();
+                                cryoRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.CryomaniacLose:
                                 var cryo2 = Utils.PlayerById(reader.ReadByte());
                                 var cryoRole2 = Role.GetRole<Cryomaniac>(cryo2);
-                                cryoRole2.Loses();
+                                cryoRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.ExecutionerWin:
                                 var exe2 = Utils.PlayerById(reader.ReadByte());
                                 var exeRole2 = Role.GetRole<Executioner>(exe2);
-                                exeRole2.Wins();
+                                exeRole2?.Wins();
                                 break;
                             
                             case WinLoseRPC.ExecutionerLose:
                                 var exe3 = Utils.PlayerById(reader.ReadByte());
                                 var exeRole3 = Role.GetRole<Executioner>(exe3);
-                                exeRole3.Loses();
+                                exeRole3?.Loses();
                                 break;
                             
                             case WinLoseRPC.GlitchWin:
                                 var gli = Utils.PlayerById(reader.ReadByte());
                                 var gliRole = Role.GetRole<Glitch>(gli);
-                                gliRole.Wins();
+                                gliRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.GlitchLose:
                                 var gli2 = Utils.PlayerById(reader.ReadByte());
                                 var gliRole2 = Role.GetRole<Glitch>(gli2);
-                                gliRole2.Loses();
+                                gliRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.GuardianAngelWin:
                                 var ga3 = Utils.PlayerById(reader.ReadByte());
                                 var gaRole3 = Role.GetRole<GuardianAngel>(ga3);
-                                gaRole3.Wins();
+                                gaRole3?.Wins();
                                 break;
                             
                             case WinLoseRPC.GuardianAngelLose:
                                 var ga4 = Utils.PlayerById(reader.ReadByte());
                                 var gaRole4 = Role.GetRole<GuardianAngel>(ga4);
-                                gaRole4.Loses();
+                                gaRole4?.Loses();
                                 break;
                             
                             case WinLoseRPC.JuggernautWin:
                                 var jugg = Utils.PlayerById(reader.ReadByte());
                                 var juggRole = Role.GetRole<Juggernaut>(jugg);
-                                juggRole.Wins();
+                                juggRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.JuggernautLose:
                                 var jugg2 = Utils.PlayerById(reader.ReadByte());
                                 var juggRole2 = Role.GetRole<Juggernaut>(jugg2);
-                                juggRole2.Loses();
+                                juggRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.MurdererWin:
                                 var murd = Utils.PlayerById(reader.ReadByte());
                                 var murdRole = Role.GetRole<Murderer>(murd);
-                                murdRole.Wins();
+                                murdRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.MurdererLose:
                                 var murd2 = Utils.PlayerById(reader.ReadByte());
                                 var murdRole2 = Role.GetRole<Murderer>(murd2);
-                                murdRole2.Loses();
+                                murdRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.PestilenceWin:
                                 var pest = Utils.PlayerById(reader.ReadByte());
                                 var pestRole = Role.GetRole<Pestilence>(pest);
-                                pestRole.Wins();
+                                pestRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.PestilenceLose:
                                 var pest2 = Utils.PlayerById(reader.ReadByte());
                                 var pestRole2 = Role.GetRole<Pestilence>(pest2);
-                                pestRole2.Loses();
+                                pestRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.PlaguebearerWin:
                                 var pb = Utils.PlayerById(reader.ReadByte());
                                 var pbRole = Role.GetRole<Plaguebearer>(pb);
-                                pbRole.Wins();
+                                pbRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.PlaguebearerLose:
                                 var pb2 = Utils.PlayerById(reader.ReadByte());
                                 var pbRole2 = Role.GetRole<Plaguebearer>(pb2);
-                                pbRole2.Loses();
+                                pbRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.SerialKillerWin:
                                 var sk = Utils.PlayerById(reader.ReadByte());
                                 var skRole = Role.GetRole<SerialKiller>(sk);
-                                skRole.Wins();
+                                skRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.SerialKillerLose:
                                 var sk2 = Utils.PlayerById(reader.ReadByte());
                                 var skRole2 = Role.GetRole<SerialKiller>(sk2);
-                                skRole2.Loses();
+                                skRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.SurvivorWin:
                                 var surv2 = Utils.PlayerById(reader.ReadByte());
                                 var survRole2 = Role.GetRole<Survivor>(surv2);
-                                survRole2.Wins();
+                                survRole2?.Wins();
                                 break;
                             
                             case WinLoseRPC.SurvivorLose:
                                 var surv3 = Utils.PlayerById(reader.ReadByte());
                                 var survRole3 = Role.GetRole<Survivor>(surv3);
-                                survRole3.Loses();
+                                survRole3?.Loses();
                                 break;
                             
                             case WinLoseRPC.TrollWin:
                                 var tro = Utils.PlayerById(reader.ReadByte());
                                 var troRole = Role.GetRole<Troll>(tro);
-                                troRole.Wins();
+                                troRole?.Wins();
                                 break;
                             
                             case WinLoseRPC.TrollLose:
                                 var tro2 = Utils.PlayerById(reader.ReadByte());
                                 var troRole2 = Role.GetRole<Troll>(tro2);
-                                troRole2.Loses();
+                                troRole2?.Loses();
                                 break;
                             
                             case WinLoseRPC.WerewolfWin:
                                 var ww2 = Utils.PlayerById(reader.ReadByte());
                                 var wwRole2 = Role.GetRole<Werewolf>(ww2);
-                                wwRole2.Wins();
+                                wwRole2?.Wins();
                                 break;
                             
                             case WinLoseRPC.WerewolfLose:
                                 var ww3 = Utils.PlayerById(reader.ReadByte());
                                 var wwRole3 = Role.GetRole<Werewolf>(ww3);
-                                wwRole3.Loses();
+                                wwRole3?.Loses();
                                 break;
                             
                             case WinLoseRPC.CorruptedWin:
                                 var corr = Utils.PlayerById(reader.ReadByte());
                                 var corrObj = Objectifier.GetObjectifier<Corrupted>(corr);
                                 var corrRole = Role.GetRole(corr);
-                                corrRole.Wins();
-                                corrObj.Wins();
+                                corrRole?.Wins();
+                                corrObj?.Wins();
                                 break;
                             
                             case WinLoseRPC.CorruptedLose:
                                 var corr2 = Utils.PlayerById(reader.ReadByte());
                                 var corrObj2 = Objectifier.GetObjectifier<Corrupted>(corr2);
                                 var corrRole2 = Role.GetRole(corr2);
-                                corrRole2.Loses();
-                                corrObj2.Loses();
+                                corrRole2?.Loses();
+                                corrObj2?.Loses();
                                 break;
 
                             case WinLoseRPC.LoveWin:
                                 var winnerlover = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Lovers>(winnerlover).Wins();
+                                Objectifier.GetObjectifier<Lovers>(winnerlover)?.Wins();
                                 break;
 
                             case WinLoseRPC.OverlordWin:
                                 var winnerov = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Overlord>(winnerov).Wins();
+                                Objectifier.GetObjectifier<Overlord>(winnerov)?.Wins();
                                 break;
 
                             case WinLoseRPC.TaskmasterWin:
                                 var winnertask = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Taskmaster>(winnertask).Wins();
+                                Objectifier.GetObjectifier<Taskmaster>(winnertask)?.Wins();
                                 break;
 
                             case WinLoseRPC.RivalWin:
                                 var winnerRival = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Rivals>(winnerRival).Wins();
+                                Objectifier.GetObjectifier<Rivals>(winnerRival)?.Wins();
                                 break;
 
                             case WinLoseRPC.PhantomWin:
@@ -2827,11 +2820,15 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case WinLoseRPC.NobodyWins:
-                                Role.NobodyWinsFunc();
+                                Role.NobodyWins = true;
                                 break;
 
-                            case WinLoseRPC.NeutralsWin:
-                                Role.NeutralsOnlyWin();
+                            case WinLoseRPC.AllNeutralsWin:
+                                Role.AllNeutralsWin = true;
+                                break;
+
+                            case WinLoseRPC.AllNKsWin:
+                                Role.NKWins = true;
                                 break;
                         }
 
@@ -2851,7 +2848,6 @@ namespace TownOfUsReworked.Patches
                 Utils.ShowDeadBodies = false;
 
                 Role.NobodyWins = false;
-                Role.NeutralsWin = false;
 
                 Role.CrewWin = false;
                 Role.SyndicateWin = false;
@@ -2925,8 +2921,10 @@ namespace TownOfUsReworked.Patches
                 Lists.DefinedLists();
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cleared Lists");
+                
+                ExileControllerPatch.lastExiled = null;
 
-                PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget.DontRevive = byte.MaxValue;
+                Alt.DontRevive = byte.MaxValue;
 
                 PhantomOn = false;
                 RevealerOn = false;
@@ -2935,8 +2933,9 @@ namespace TownOfUsReworked.Patches
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(startWriter);
-
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Unchecked Write Line");
+                
+                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+                    return;
                 
                 int num = 0;
 
@@ -3204,6 +3203,19 @@ namespace TownOfUsReworked.Patches
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shifter Done");
+                    }
+
+                    if (CustomGameOptions.ChameleonOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.ChameleonCount : 1;
+
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Chameleon), CustomGameOptions.ChameleonOn, 65, CustomGameOptions.UniqueChameleon));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Chameleon Done");
                     }
 
                     if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
@@ -3770,7 +3782,7 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Concealer Done");
                     }
 
-                    if (CustomGameOptions.WarperOn > 0 && PlayerControl.GameOptions.MapId != 4 && PlayerControl.GameOptions.MapId != 5)
+                    if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
                     {
                         num = IsCustom ? CustomGameOptions.WarperCount : 1;
 

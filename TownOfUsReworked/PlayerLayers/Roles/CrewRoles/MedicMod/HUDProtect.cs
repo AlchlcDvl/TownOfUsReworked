@@ -2,34 +2,45 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDProtect
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Medic => TownOfUsReworked.MedicSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Medic))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Medic))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
-            protectButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead && !role.UsedAbility);
-            protectButton.SetCoolDown(0f, 1f);
-            Utils.SetTarget(ref role.ClosestPlayer, protectButton);
+            if (role.ShieldButton == null)
+            {
+                role.ShieldButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.ShieldButton.graphic.enabled = true;
+                role.ShieldButton.gameObject.SetActive(false);
+            }
+
+            role.ShieldButton.graphic.sprite = Medic;
+            role.ShieldButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && !role.UsedAbility);
+            role.ShieldButton.SetCoolDown(0f, 1f);
+            Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
+            var renderer = role.ShieldButton.graphic;
+            
+            if (role.ClosestPlayer != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

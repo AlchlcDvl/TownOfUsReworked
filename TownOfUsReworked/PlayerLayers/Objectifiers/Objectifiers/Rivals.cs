@@ -61,9 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool GameEnd(ShipStatus __instance)
+        internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
+            if (BothRivalsDead())
                 return true;
 
             if (Utils.RivalsWin(ObjectifierType))
@@ -76,16 +76,35 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
+            
+            if (IsWinningRival())
+                return false;
 
-            return !RivalDead();
+            return true;
         }
 
         public bool RivalDead()
         {
-            PlayerControl rival1 = Player;
-            PlayerControl rival2 = OtherRival;
+            PlayerControl rival = OtherRival;
+
+            return !(rival.Data.IsDead || rival.Data.Disconnected);
+        }
+
+        public bool IsDeadRival()
+        {
+            PlayerControl rival = Player;
             
-            return !(rival1.Data.IsDead || rival1.Data.Disconnected) && (rival2.Data.IsDead || rival2.Data.Disconnected);
+            return !(rival.Data.IsDead || rival.Data.Disconnected);
+        }
+
+        public bool BothRivalsDead()
+        {
+            return IsDeadRival() && RivalDead();
+        }
+
+        public bool IsWinningRival()
+        {
+            return RivalDead() && !IsDeadRival();
         }
 
         public override void Wins()

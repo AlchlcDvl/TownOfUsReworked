@@ -13,13 +13,6 @@ using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
-    public enum RevealerCanBeClickedBy
-    {
-        All,
-        NonCrew,
-        ImpsOnly
-    }
-
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static class AirshipExileController_WrapUpAndSpawn
     {
@@ -74,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
             writer2.Write(PlayerControl.LocalPlayer.PlayerId);
             writer2.Write(startingVent.transform.position.x);
-            writer2.Write(startingVent.transform.position.y);
+            writer2.Write(startingVent.transform.position.y + 0.3636f);
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
@@ -82,6 +75,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
         }
 
         public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
+
+        [HarmonyPatch(typeof(Object), nameof(Object.Destroy), new Type[] { typeof(GameObject) })]
+        public static void Prefix(GameObject obj)
+        {
+            if (!SubmergedCompatibility.Loaded || GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
+                return;
+
+            if (obj.name.Contains("ExileCutscene"))
+                ExileControllerPostfix(ExileControllerPatch.lastExiled);
+        }
 
         public static void RemoveTasks(PlayerControl player)
         {
@@ -116,7 +119,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             }
         }
 
-        public static void AddCollider(Revealer role)
+        /*public static void AddCollider(Revealer role)
         {
             var player = role.Player;
             var collider2d = player.gameObject.AddComponent<BoxCollider2D>();
@@ -149,6 +152,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }));
-        }
+        }*/
     }
 }

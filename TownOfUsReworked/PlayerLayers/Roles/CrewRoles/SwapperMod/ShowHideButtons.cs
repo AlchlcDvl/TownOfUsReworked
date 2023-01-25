@@ -40,7 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap2 player has votes  = {swap2}");
             self[SwapVotes.Swap2.TargetPlayerId] = swap1;
             self[SwapVotes.Swap1.TargetPlayerId] = swap2;
-
             return self;
         }
 

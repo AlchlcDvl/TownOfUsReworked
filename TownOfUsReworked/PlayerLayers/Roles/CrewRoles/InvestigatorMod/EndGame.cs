@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             }
         }
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.RpcEndGame))]
+        [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
         public static class ShipStatusPatch
         {
             public static bool Prefix(ShipStatus __instance)

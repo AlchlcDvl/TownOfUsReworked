@@ -7,7 +7,6 @@ using InnerNet;
 using Reactor.Utilities;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
@@ -181,7 +180,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 {
                     try
                     {
-                        SoundManager.Instance.PlaySound(TownOfUsReworked.VoteLockSound, false, 1f);
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.VoteLockSound, false, 1f);
                     } catch {}
                 }
 
@@ -206,8 +205,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
         public static class VotingComplete
         {
-            public static void Postfix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states,
-                [HarmonyArgument(1)] GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
+            public static void Postfix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states, [HarmonyArgument(1)]
+                GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
             {
                 var exiledString = exiled == null ? "null" : exiled.PlayerName;
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exiled PlayerName = {exiledString}");
@@ -218,8 +217,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
         public static class PopulateResults
         {
-            public static bool Prefix(MeetingHud __instance,
-                [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> statess)
+            public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states)
             {
                 var allNums = new Dictionary<int, int>();
 
@@ -233,9 +231,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     playerVoteArea.ClearForResults();
                     allNums.Add(i, 0);
 
-                    for (var stateIdx = 0; stateIdx < statess.Length; stateIdx++)
+                    for (var stateIdx = 0; stateIdx < states.Length; stateIdx++)
                     {
-                        var voteState = statess[stateIdx];
+                        var voteState = states[stateIdx];
                         var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
 
                         if (playerInfo == null)
@@ -258,7 +256,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     var mayor = (Mayor)role;
                     var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);
                     var anonVotesOption = CustomGameOptions.AnonymousVoting;
-                    PlayerControl.GameOptions.AnonymousVotes = true;
+                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = true;
 
                     foreach (var extraVote in mayor.ExtraVotes)
                     {
@@ -285,7 +283,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                         }
                     }
 
-                    PlayerControl.GameOptions.AnonymousVotes = anonVotesOption;
+                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = anonVotesOption;
                 }
 
                 return false;

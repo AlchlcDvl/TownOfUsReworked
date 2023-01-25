@@ -109,7 +109,7 @@ Changelog (v1.0.0-dev9 to v1.0.0-dev10)
 - New Role: Necromancer [Neutral (Neophyte)] |
 - New Role: Whisperer [Neutral (Neophyte)] |
 - New Role: Chameleon [Crew (Support)] |
-- New Role: Imitator [Crew (Support)] |
+- New Role: Retributionist [Crew (Support)] |
 - New Role: Seer [Crew (Investigative)] |
 - New Objectifier: Fanatic |
 - New Objectifier: Allied
@@ -117,25 +117,21 @@ Changelog (v1.0.0-dev9 to v1.0.0-dev10)
 - Addition: Added role reveal screen sounds (for some roles) |
 - Rewrite: Glitch has been completely rewritten |
 - Mega Addition: You can now test roles yourself by using MultiClientInstancing (thanks MDB) while in a local game (NOT a server game like normal!)
+- Update: Updated mod to v2022.12.14
 - Improvement: Modifiers, Abilities and Objectifiers can now spawn in Killing only
 - Changes: Reworked the RPC system so hopefully I don't have to add too many unchecked statements like last time
-- 
+- Visual Fix: Dwarf and Giant have different sizes again
+- Other Fix: Fixed Plaguebearer spamming logs during meetings
+
 
 AS's Bugs Corner
-- Missing sounds??
 - Bugged conceal
 - Imp ability buttons kill targets for no reason
 - Syndicate and Intruders can kill members of the same faction
 - Roleblocks not working
-- Camouflage code = bad (Chosen to ignore)
 - Morphling can no longer morph
-- Thief's stealing half works
 - Inspector has double results showing up
 - Incomplete task lists
-- RPCs don't work properly :(
-- End game is buggy as heck
-- Radar no work :(
-- Insider is weird on intro now
 - 
 
 AS's To-Do Corner
@@ -146,6 +142,6 @@ AS's To-Do Corner
 - Redo the buttons
 - Finish roleblocks
 - Finish the README
-- 
+- Make better buttons
 
 Note to self: Lines ending in | mean that they are not fully implemented yet

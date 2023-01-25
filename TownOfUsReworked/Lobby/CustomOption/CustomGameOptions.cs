@@ -1,6 +1,5 @@
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
@@ -53,6 +52,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool EnableAbilities => Generate.EnableAbilities.Get();
         public static bool EnableModifiers => Generate.EnableModifiers.Get();
         public static bool EnableObjectifiers => Generate.EnableObjectifiers.Get();
+        public static bool VentTargetting => Generate.VentTargetting.Get();
 
         //QOL Changes
         public static bool DeadSeeEverything => Generate.DeadSeeEverything.Get();
@@ -183,6 +183,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int TimeMasterOn => (int)Generate.TimeMasterOn.Get();
         public static int PhantomOn => (int)Generate.PhantomOn.Get();
         public static int RevealerOn => (int)Generate.RevealerOn.Get();
+        public static int RetributionistOn => (int)Generate.RetributionistOn.Get();
+        public static int NecromancerOn => (int)Generate.NecromancerOn.Get();
+        public static int WhispererOn => (int)Generate.WhispererOn.Get();
+        public static int SeerOn => (int)Generate.SeerOn.Get();
+        public static int MysticOn => (int)Generate.MysticOn.Get();
+        public static int ChameleonOn => (int)Generate.ChameleonOn.Get();
 
         //Ability Spawn
         public static int AssassinOn => (int)Generate.AssassinOn.Get();
@@ -309,7 +315,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float CoronerKillerNameTime => Generate.CoronerKillerNameTime.Get();
 
         //Sheriff Settings
-        public static InterrogatePer InterrogatePer => (InterrogatePer)Generate.InterrogatePer.Get();
         public static bool NeutEvilRed => Generate.NeutEvilRed.Get();
         public static bool NeutKillingRed => Generate.NeutKillingRed.Get();
         public static bool UniqueSheriff => Generate.UniqueSheriff.Get();
@@ -330,7 +335,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float MinAmountOfTimeInBug => Generate.MinAmountOfTimeInBug.Get();
         public static int OperativeCount => (int)Generate.OperativeCount.Get();
         public static float BugRange => Generate.BugRange.Get();
-        public static float MinAmountOfPlayersInBug => Generate.MinAmountOfPlayersInBug.Get();
+        public static int MinAmountOfPlayersInBug => (int)Generate.MinAmountOfPlayersInBug.Get();
         public static bool BugsRemoveOnNewRound => Generate.BugsRemoveOnNewRound.Get();
         public static bool UniqueOperative => Generate.UniqueOperative.Get();
 
@@ -396,6 +401,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float EscRoleblockCooldown => Generate.EscRoleblockCooldown.Get();
         public static float EscRoleblockDuration => Generate.EscRoleblockDuration.Get();
         public static bool UniqueEscort => Generate.UniqueEscort.Get();
+
+        //Escort Settings
+        public static int ChameleonCount => (int)Generate.ChameleonCount.Get();
+        public static float SwoopCooldown => Generate.SwoopCooldown.Get();
+        public static float SwoopDuration => Generate.SwoopDuration.Get();
+        public static bool UniqueChameleon => Generate.UniqueChameleon.Get();
 
         //Shifter Settings
         public static BecomeEnum ShiftedBecomes => (BecomeEnum)Generate.ShiftedBecomes.Get();
@@ -654,6 +665,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float FreezeCooldown => Generate.FreezeCooldown.Get();
         public static int TimeMasterCount => (int)Generate.TimeMasterCount.Get();
         public static bool UniqueTimeMaster => Generate.UniqueTimeMaster.Get();
+        public static bool TMImmunity => Generate.TMImmunity.Get();
+        public static bool IntruderImmunity => Generate.IntruderImmunity.Get();
 
         //Consort Settings
         public static int ConsortCount => (int)Generate.ConsortCount.Get();

@@ -6,6 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
@@ -52,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             if (!flag3)
                 return false;
 
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
             {
                 if (role.Player.IsShielded())
                 {

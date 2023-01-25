@@ -12,6 +12,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -80,6 +81,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             }
 
             player.Revive();
+
+            if (player.Is(Faction.Intruder))
+                RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
+            else
+                RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
+
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
             revived.Add(player);
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
@@ -88,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             {
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
                 } catch {}
             }
 

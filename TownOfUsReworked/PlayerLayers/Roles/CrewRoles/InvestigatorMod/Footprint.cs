@@ -18,6 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
         public Color Color;
         public Vector3 Position;
         public Investigator Role;
+        public static float Duration => CustomGameOptions.FootprintDuration;
+        public static bool Grey => CustomGameOptions.AnonymousFootPrint || CamouflageUnCamouflage.IsCamoed;
 
         public Footprint(PlayerControl player, Investigator role)
         {
@@ -33,13 +35,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             role.AllPrints.Add(this);
         }
 
-        public static float Duration => CustomGameOptions.FootprintDuration;
-
-        public static bool Grey => CustomGameOptions.AnonymousFootPrint || CamouflageUnCamouflage.IsCamoed;
-
         public static void DestroyAll(Investigator role)
         {
-            while (role.AllPrints.Count != 0) role.AllPrints[0].Destroy();
+            while (role.AllPrints.Count != 0)
+                role.AllPrints[0].Destroy();
         }
 
         private void Start()

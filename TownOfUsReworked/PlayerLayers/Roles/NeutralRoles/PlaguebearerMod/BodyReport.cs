@@ -1,7 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
@@ -15,22 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 info == null)
                 return;
             
-            bool pbflag = false;
-            
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(RoleEnum.Plaguebearer))
-                    pbflag = true;
-            }
-
-            if (!pbflag)
-                return;
-
-            if (PlayerControl.LocalPlayer.IsInfected() || info.Object.IsInfected())
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(PlayerControl.LocalPlayer, Utils.PlayerById(info.Object.PlayerId));
-            }
+            Utils.Spread(PlayerControl.LocalPlayer, info.Object);
         }
     }
 }

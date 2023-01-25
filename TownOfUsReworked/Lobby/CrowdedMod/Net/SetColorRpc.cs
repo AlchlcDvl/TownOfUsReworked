@@ -1,10 +1,11 @@
 ﻿using Hazel;
 using Reactor.Networking.Attributes;
 using Reactor.Networking.Rpc;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Lobby.CrowdedMod.Net
 {
-    [RegisterCustomRpc((uint) CustomRpcCalls.SetColor)]
+    [RegisterCustomRpc((uint)CustomRPC.SetColor)]
     public class SetColorRpc : PlayerCustomRpc<TownOfUsReworked, byte>
     {
         public SetColorRpc(TownOfUsReworked plugin, uint id) : base(plugin, id) {}

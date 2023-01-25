@@ -11,6 +11,7 @@ namespace TownOfUsReworked.MultiClientInstancing
         public static Dictionary<int, ClientData> clients = new Dictionary<int, ClientData>();
         public static Dictionary<byte, int> PlayerIdClientId = new Dictionary<byte, int>();
         public const int MaxID = 100;
+        public static PlayerControl CurrentPlayerInPower { get; private set; }
 
         public static int availableId()
         {
@@ -26,14 +27,12 @@ namespace TownOfUsReworked.MultiClientInstancing
             return -1;
         }
 
-        public static PlayerControl CurrentPlayerInPower { get; private set; }
-
         public static void SwitchTo(byte playerId)
         {
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
             PlayerControl.LocalPlayer.moveable = false;
 
-            Object.Destroy(PlayerControl.LocalPlayer.myLight);
+            Object.Destroy(PlayerControl.LocalPlayer.lightSource);
 
             var newPlayer = Utils.PlayerById(playerId);
             PlayerControl.LocalPlayer = newPlayer;
@@ -57,10 +56,10 @@ namespace TownOfUsReworked.MultiClientInstancing
                     Object.Destroy(x.gameObject);
             });
 
-            PlayerControl.LocalPlayer.myLight = UnityEngine.Object.Instantiate<LightSource>(PlayerControl.LocalPlayer.LightPrefab);
-            PlayerControl.LocalPlayer.myLight.transform.SetParent(PlayerControl.LocalPlayer.transform);
-            PlayerControl.LocalPlayer.myLight.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
-            PlayerControl.LocalPlayer.myLight.Initialize();
+            PlayerControl.LocalPlayer.gameObject.SetActive(true);
+            PlayerControl.LocalPlayer.lightSource = UnityEngine.Object.Instantiate<LightSource>(PlayerControl.LocalPlayer.LightPrefab);
+            PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
+            PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
             Camera.main.GetComponent<FollowerCamera>().SetTarget(PlayerControl.LocalPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);

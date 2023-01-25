@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 {
@@ -14,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Camouflager))
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
                 return;
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
@@ -32,21 +24,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             {
                 role.CamouflageButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.CamouflageButton.graphic.enabled = true;
-                role.CamouflageButton.graphic.sprite = Camouflage;
                 role.CamouflageButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.CamouflageButton.gameObject.SetActive(false);
             }
-            
+
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+            }
+
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+
+            if (role.IsRecruit)
+                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
+
+            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            role.CamouflageButton.graphic.sprite = Camouflage;
             role.CamouflageButton.GetComponent<AspectPosition>().Update();
-            role.CamouflageButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.CamouflageButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
 
             if (role.Enabled)
                 role.CamouflageButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.CamouflagerDuration);
             else
                 role.CamouflageButton.SetCoolDown(role.CamouflageTimer(), CustomGameOptions.CamouflagerCd);
+
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
                 
             role.CamouflageButton.graphic.color = Palette.EnabledColor;
             role.CamouflageButton.graphic.material.SetFloat("_Desat", 0f);
+
+            var renderer = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

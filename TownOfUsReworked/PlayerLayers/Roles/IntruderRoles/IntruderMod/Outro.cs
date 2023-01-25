@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = role.FactionColor;
             var text = Object.Instantiate(__instance.WinText);
@@ -32,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.IntruderWin, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.IntruderWin, false, 1f);
             } catch {}
         }
     }

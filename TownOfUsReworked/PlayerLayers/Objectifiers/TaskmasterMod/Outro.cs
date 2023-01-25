@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = objectifier.Color;
             var text = Object.Instantiate(__instance.WinText);

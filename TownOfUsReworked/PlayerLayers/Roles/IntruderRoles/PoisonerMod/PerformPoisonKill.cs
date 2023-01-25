@@ -179,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.PoisonSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.PoisonSound, false, 1f);
             } catch {}
             
             return false;

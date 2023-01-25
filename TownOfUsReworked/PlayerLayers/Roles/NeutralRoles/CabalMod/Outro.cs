@@ -4,6 +4,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using UnityEngine;
 using TownOfUsReworked.Patches;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CabalMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = player.name.GetEndGameName();
+                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
             __instance.BackgroundBar.material.color = Colors.Cabal;
             var text = Object.Instantiate(__instance.WinText);

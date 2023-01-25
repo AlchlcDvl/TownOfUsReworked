@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 1f);
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 1f);
                 } catch {}
 
                 return false;

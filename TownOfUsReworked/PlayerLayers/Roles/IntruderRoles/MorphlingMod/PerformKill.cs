@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                         
                     try
                     {
-                        SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
                     } catch {}
                 }
                 else
@@ -73,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                     
                     try
                     {
-                        SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
                     } catch {}
                 }
 

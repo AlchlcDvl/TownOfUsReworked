@@ -18,12 +18,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             foreach (var role in Role.GetRoles(RoleEnum.Blackmailer))
             {
                 var role2 = (Blackmailer)role;
+                role2.Blackmailed = null;
+                role2.LastBlackmailed = DateTime.UtcNow;
 
                 if (role2.Player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     role2.Blackmailed?.myRend().material.SetFloat("_Outline", 0f);
-
-                role2.Blackmailed = null;
-                role2.LastBlackmailed = DateTime.UtcNow;
             }
         }
     }

@@ -9,6 +9,8 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
+using TownOfUsReworked.Extensions;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.Patches
 {
@@ -20,7 +22,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch
         {
-            static bool Prefix(ChatController __instance)
+            static bool Prefix()
             {
                 //Set up dictionaries and list for colours
                 var coloursDict = new Dictionary<int, string>();
@@ -85,7 +87,8 @@ namespace TownOfUsReworked.Patches
                 coloursDict.Add(58, "Purple Plumber");
                 coloursDict.Add(59, "Rainbow");
 
-                string text = __instance.TextArea.text;
+                var hudManager = DestroyableSingleton<HudManager>.Instance.Chat;
+                string text = hudManager.TextArea.text;
                 string otherText = text;
                 text = text.ToLower();
                 string inputText = "";
@@ -114,25 +117,25 @@ namespace TownOfUsReworked.Patches
                             "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls"
                         : $"Commands available:\n/modinfo, /setname,{setColor} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo," +
                             " /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls";
-                        __instance.AddChat(player, message);
+                        hudManager.AddChat(player, message);
                     }
                     //Display a message (Information about the mod)
                     else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Welcome to Town Of Us Reworked v" + TownOfUsReworked.versionFinal + "!");
-                        __instance.AddChat(player, "Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code.");
-                        __instance.AddChat(player, "Credits to the parties have already been given (good luck to those who want to try to cancel me for no reason). This mod has " +
+                        hudManager.AddChat(player, "Welcome to Town Of Us Reworked v" + TownOfUsReworked.versionFinal + "!");
+                        hudManager.AddChat(player, "Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code.");
+                        hudManager.AddChat(player, "Credits to the parties have already been given (good luck to those who want to try to cancel me for no reason). This mod has " +
                             "several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique" + 
                             " a player's experience will be each game. If I've missed someone, let me know via Discord.");
-                        __instance.AddChat(player, "Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page at " +
+                        hudManager.AddChat(player, "Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page at " +
                             "\nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
                     }
                     //Abbreviations help                    
                     else if (text == "/abbreviations" || text == "/abbreviations " || text == "/ab" || text == "/ab ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /abbreviations <name>");
+                        hudManager.AddChat(player, "Usage: /abbreviations <name>");
                     }
                     //Display a message (Information about the mod)
                     else if (text.StartsWith("/abbreviations ") || text.StartsWith("/ab "))
@@ -419,24 +422,24 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "The abbreviation for " + tempText + " is " + abbreviation + "!";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Credits
                     else if (text.StartsWith("/credits"))
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "The mod would not have been possible without these people!");
-                        __instance.AddChat(player, "Mod Creator: slushiegoose");
-                        __instance.AddChat(player, "Continued By: polus.gg");
-                        __instance.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        __instance.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
-                        __instance.AddChat(player, "Remaining credits are on the GitHub!");
+                        hudManager.AddChat(player, "The mod would not have been possible without these people!");
+                        hudManager.AddChat(player, "Mod Creator: slushiegoose");
+                        hudManager.AddChat(player, "Continued By: polus.gg");
+                        hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
+                        hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
                     //Name help                    
                     else if (text == "/setname" || text == "/setname ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /setname <name>");
+                        hudManager.AddChat(player, "Usage: /setname <name>");
                     }
                     //Change name (Can have multiple players the same name!)
                     else if (text.StartsWith("/setname "))
@@ -445,18 +448,18 @@ namespace TownOfUsReworked.Patches
                         inputText = otherText.Substring(9);
 
                         if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[a-zA-Z0-9]+$"))
-                            __instance.AddChat(player, "Name contains disallowed characters.");
+                            hudManager.AddChat(player, "Name contains disallowed characters.");
                         else
                         {
                             player.RpcSetName(inputText);
-                            __instance.AddChat(player, "Name changed!");
+                            hudManager.AddChat(player, "Name changed!");
                         }
                     }
                     //Colour help                    
                     else if (text == "/colour" || text == "/color" || text == "/colour " || text == "/color ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /colour <colour> or /color <color>");
+                        hudManager.AddChat(player, "Usage: /colour <colour> or /color <color>");
                     }
                     //Change colour (Can have multiple players the same colour!)
                     else if (text.StartsWith("/color ") || text.StartsWith("/colour "))
@@ -472,21 +475,21 @@ namespace TownOfUsReworked.Patches
 
                         if (!Int32.TryParse(inputText, out col))
                         {
-                            __instance.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID, go into the color" +
+                            hudManager.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID, go into the color" +
                                 " selection screen and count the number of colors starting from 0 to the position of the color you want to pick. The range of colors is from 0 to 59 meaning Red to Rainbow.");
                         }
                         else
                         {
                             col = Math.Clamp(col, 0, Palette.PlayerColors.Length - 1);
                             player.RpcSetColor((byte)col);
-                            __instance.AddChat(player, colourSpelling + " changed!");
+                            hudManager.AddChat(player, colourSpelling + " changed!");
                         }
                     }
                     //Kick help                    
                     else if (text == "/kick" || text == "/kick ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /kick <player name>");
+                        hudManager.AddChat(player, "Usage: /kick <player name>");
                     }
                     //Kick player (if able to kick, i.e. host command)
                     else if (text.StartsWith("/kick "))
@@ -507,7 +510,7 @@ namespace TownOfUsReworked.Patches
                     else if (text == "/ban" || text == "/ban ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /ban <player name>");
+                        hudManager.AddChat(player, "Usage: /ban <player name>");
                     }
                     //Ban player (if able to ban, i.e. host command)
                     else if (text.StartsWith("/ban "))
@@ -528,13 +531,13 @@ namespace TownOfUsReworked.Patches
                     else if (text == "/roleinfo" || text == "/roleinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /roleinfo <role name or role abbreviation>");
+                        hudManager.AddChat(player, "Usage: /roleinfo <role name or role abbreviation>");
                     }
                     //AlignmentInfo help                    
                     else if (text == "/alignmentinfo" || text == "/alignmentinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /alignmentinfo <faction name> <alignment name> or \n /alignmentinfo <alignment abbreviation>");
+                        hudManager.AddChat(player, "Usage: /alignmentinfo <faction name> <alignment name> or \n /alignmentinfo <alignment abbreviation>");
                     }
                     //Gives information regarding roles
                     else if (text.StartsWith("/roleinfo "))
@@ -786,7 +789,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
                     else if (text.StartsWith("/factioninfo "))
@@ -817,7 +820,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
                     else if (text.StartsWith("/alignmentinfo "))
@@ -901,7 +904,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
                     else if (text.StartsWith("/modifierinfo "))
@@ -943,7 +946,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding abilities
                     else if (text.StartsWith("/abilityinfo "))
@@ -989,7 +992,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
                     else if (text.StartsWith("/objectifierinfo "))
@@ -1030,37 +1033,37 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //ModifierInfo help                    
                     else if (text == "/modifierinfo" || text == "/modifierinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /modifierinfo <modifier name>");
+                        hudManager.AddChat(player, "Usage: /modifierinfo <modifier name>");
                     }
                     //ObjectifierInfo help                    
                     else if (text == "/objectifierinfo" || text == "/objectifierinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
+                        hudManager.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
                     }
                     //AbilityInfo help                    
                     else if (text == "/abilityinfo" || text == "/abilityinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /abilityinfo <ability name>");
+                        hudManager.AddChat(player, "Usage: /abilityinfo <ability name>");
                     }
                     //FactionInfo help                    
                     else if (text == "/factioninfo" || text == "/factioninfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /factioninfo <faction name>");
+                        hudManager.AddChat(player, "Usage: /factioninfo <faction name>");
                     }
                     //Quote help                    
                     else if (text == "/quote" || text == "/quote ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /quote <role name or abbreviation>");
+                        hudManager.AddChat(player, "Usage: /quote <role name or abbreviation>");
                     }
                     //Quotes
                     else if (text.StartsWith("/quote "))
@@ -1201,13 +1204,13 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Incorrect command
                     else if (text.StartsWith("/"))
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Invalid command.");
+                        hudManager.AddChat(player, "Invalid command.");
                     }
                 }
                 else if (AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started)
@@ -1218,7 +1221,7 @@ namespace TownOfUsReworked.Patches
                         chatHandled = true;
                         var message = $"Commands available:\n/mystate,{whisper} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /lookup, " +
                             "/abbreviations, /quote, /credits, /controls";
-                        __instance.AddChat(player, message);
+                        hudManager.AddChat(player, message);
                     }
                     //This command gives the current status and description of the player
                     else if (text.StartsWith("/mystate"))
@@ -1232,55 +1235,55 @@ namespace TownOfUsReworked.Patches
 
                         if (role != null)
                         {
-                            __instance.AddChat(player, role.FactionDescription);
-                            __instance.AddChat(player, role.AlignmentDescription);
-                            __instance.AddChat(player, role.RoleDescription);
+                            hudManager.AddChat(player, role.FactionDescription);
+                            hudManager.AddChat(player, role.AlignmentDescription);
+                            hudManager.AddChat(player, role.RoleDescription);
                         }
                         
                         if (modifier != null)
-                            __instance.AddChat(player, modifier.ModifierDescription);
+                            hudManager.AddChat(player, modifier.ModifierDescription);
                         
                         if (objectifier != null)
-                            __instance.AddChat(player, objectifier.ObjectifierDescription);
+                            hudManager.AddChat(player, objectifier.ObjectifierDescription);
                         
                         if (ability != null)
-                            __instance.AddChat(player, ability.AbilityDescription);
+                            hudManager.AddChat(player, ability.AbilityDescription);
                     }
                     //RoleInfo help                    
                     else if (text == "/roleinfo" || text == "/roleinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /roleinfo <role name>");
+                        hudManager.AddChat(player, "Usage: /roleinfo <role name>");
                     }
                     //ModifierInfo help                    
                     else if (text == "/modifierinfo" || text == "/modifierinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /modifierinfo <modifier name>");
+                        hudManager.AddChat(player, "Usage: /modifierinfo <modifier name>");
                     }
                     //ObjectifierInfo help                    
                     else if (text == "/objectifierinfo" || text == "/objectifierinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
+                        hudManager.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
                     }
                     //AbilityInfo help                    
                     else if (text == "/abilityinfo" || text == "/abilityinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /abilityinfo <ability name>");
+                        hudManager.AddChat(player, "Usage: /abilityinfo <ability name>");
                     }
                     //FactionInfo help                    
                     else if (text == "/factioninfo" || text == "/factioninfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /factioninfo <faction name>");
+                        hudManager.AddChat(player, "Usage: /factioninfo <faction name>");
                     }
                     //AlignmentInfo help                    
                     else if (text == "/alignmentinfo" || text == "/alignmentinfo ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /alignmentinfo <faction name> <alignment name>");
+                        hudManager.AddChat(player, "Usage: /alignmentinfo <faction name> <alignment name>");
                     }
                     //Gives information regarding roles
                     else if (text.StartsWith("/roleinfo "))
@@ -1532,7 +1535,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
                     else if (text.StartsWith("/factioninfo "))
@@ -1563,7 +1566,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
                     else if (text.StartsWith("/alignmentinfo "))
@@ -1647,7 +1650,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
                     else if (text.StartsWith("/modifierinfo "))
@@ -1689,7 +1692,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding abilities
                     else if (text.StartsWith("/abilityinfo "))
@@ -1735,7 +1738,7 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
                     else if (text.StartsWith("/objectifierinfo "))
@@ -1776,18 +1779,18 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Credits
                     else if (text.StartsWith("/credits"))
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "The mod would not have been possible without these people!");
-                        __instance.AddChat(player, "Mod Creator: slushiegoose");
-                        __instance.AddChat(player, "Continued By: polus.gg");
-                        __instance.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        __instance.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
-                        __instance.AddChat(player, "Remaining credits are on the GitHub!");
+                        hudManager.AddChat(player, "The mod would not have been possible without these people!");
+                        hudManager.AddChat(player, "Mod Creator: slushiegoose");
+                        hudManager.AddChat(player, "Continued By: polus.gg");
+                        hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
+                        hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
                     //Quotes
                     else if (text.StartsWith("/quote "))
@@ -1928,13 +1931,13 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "Invalid input.";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
                     }
                     //Abbreviations help                    
                     else if (text == "/abbreviations" || text == "/abbreviations ")
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Usage: /abbreviations <name>");
+                        hudManager.AddChat(player, "Usage: /abbreviations <name>");
                     }
                     //Display a message (Information about the mod)
                     else if (text.StartsWith("/abbreviations ") || text.StartsWith("/ab "))
@@ -2219,20 +2222,95 @@ namespace TownOfUsReworked.Patches
                         else
                             chatText = "The abbreviation for " + inputText + " is " + abbreviation + "!";
                         
-                        __instance.AddChat(player, chatText);
+                        hudManager.AddChat(player, chatText);
+                    }
+                    else if (text == "/whisper" || text == "/w")
+                    {
+                        chatHandled = true;
+                        hudManager.AddChat(player, "Usage: /whisper <meeting number>");
+                    }
+                    else if (text.StartsWith("/whisper ") || text.StartsWith("/w "))
+                    {
+                        chatHandled = true;
+
+                        if (!CustomGameOptions.Whispers)
+                            hudManager.AddChat(player, "Whispering is not turned on.");
+                        else
+                        {
+                            inputText = text.StartsWith("/w ") ? text.Substring(3) : text.Substring(9);
+                            var message = text.StartsWith("/w ") ? text.Substring(4) : text.Substring(10);
+                            var message2 = text.StartsWith("/w ") ? text.Substring(5) : text.Substring(11);
+                            var number = inputText.Replace(message, "");
+                            var number2 = inputText.Replace(message2, "");
+                            number = number.Replace(" ", "");
+                            number2 = number2.Replace(" ", "");
+                            PlayerControl whisperer = player;
+                            bool correctNumber = false;
+                            bool correctNumber2 = false;
+                            byte id1 = 100;
+                            byte id2 = 100;
+
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"|{number}| = |{message}");
+                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"|{number2}| = |{message2}");
+
+                            foreach (var player2 in PlayerControl.AllPlayerControls)
+                            {
+                                if (player2 == player)
+                                    whisperer = player2;
+                                else if ($"{player.PlayerId}" == number)
+                                {
+                                    correctNumber = true;
+                                    id1 = player2.PlayerId;
+                                }
+                                else if ($"{player.PlayerId}" == number2)
+                                {
+                                    correctNumber2 = true;
+                                    id2 = player2.PlayerId;
+                                }
+
+                                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"{player.PlayerId}");
+                            }
+
+                            if (correctNumber)
+                            {
+                                var target = Utils.PlayerById(id1);
+                                hudManager.AddChat(player, $"You whisper to {target.name}: {message}");
+                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message}");
+
+                                foreach (var player2 in PlayerControl.AllPlayerControls)
+                                {
+                                    if (player2 != whisperer && player2 != target)
+                                        hudManager.AddChat(player2, $"{whisperer.name} is whispering to {target.name}!");
+                                }
+                            }
+                            else if (correctNumber2)
+                            {
+                                var target = Utils.PlayerById(id2);
+                                hudManager.AddChat(player, $"You whisper to {target.name}: {message2}");
+                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message2}");
+
+                                foreach (var player2 in PlayerControl.AllPlayerControls)
+                                {
+                                    if (player2 != whisperer && player2 != target)
+                                        hudManager.AddChat(target, $"{whisperer.name} is whispering to {target.name}!");
+                                }
+                            }
+                            else
+                                hudManager.AddChat(player, "Who are you trying to whisper to?");
+                        }
                     }
                     //Incorrect command
                     else if (text.StartsWith("/"))
                     {
                         chatHandled = true;
-                        __instance.AddChat(player, "Invalid command.");
+                        hudManager.AddChat(player, "Invalid command.");
                     }
                 }
 
                 if (chatHandled)
                 {
-                    __instance.TextArea.Clear();
-                    __instance.quickChatMenu.ResetGlyphs();
+                    hudManager.TextArea.Clear();
+                    hudManager.quickChatMenu.ResetGlyphs();
                 }
                 
                 return !chatHandled;

@@ -1,5 +1,4 @@
 ﻿using Hazel;
-using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
@@ -18,21 +17,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Escort, role.ClosestPlayer, __instance))
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort, role.ClosestPlayer, __instance) || __instance != role.BlockButton)
                 return false;
 
             if (role.RoleblockTimer() != 0f && __instance == role.BlockButton)
                 return false;
 
-            Utils.Spread(role.Player, role.ClosestPlayer);
+            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
             if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
             {
-                Utils.AlertKill(role.Player, role.ClosestPlayer);
-
-                if (CustomGameOptions.ShieldBreaks)
-                    role.LastBlock = DateTime.UtcNow;
-
+                Utils.AlertKill(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 return false;
             }
             

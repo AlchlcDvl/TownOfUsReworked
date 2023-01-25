@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -19,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             {
                 var role2 = (Sheriff) role;
                 role2.LastInterrogated = DateTime.UtcNow;
-
-                if (CustomGameOptions.InterrogatePer == InterrogatePer.Round)
-                    role2.UsedThisRound = false;
             }
         }
     }

@@ -94,6 +94,18 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.VigilanteOn > 0)
                     ColorMapping.Add("Vigilante", Colors.Vigilante);
 
+                if (CustomGameOptions.RetributionistOn > 0)
+                    ColorMapping.Add("Retributionist", Colors.Retributionist);
+
+                if (CustomGameOptions.ChameleonOn > 0)
+                    ColorMapping.Add("Chameleon", Colors.Chameleon);
+
+                if (CustomGameOptions.SeerOn > 0)
+                    ColorMapping.Add("Seer", Colors.Seer);
+
+                if (CustomGameOptions.MysticOn > 0)
+                    ColorMapping.Add("Mystic", Colors.Mystic);
+
                 if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
                     ColorMapping.Add(("Vampire Hunter"), Colors.VampireHunter);
             }
@@ -219,6 +231,18 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 ColorMapping.Add("Jackal", Colors.Jackal);
                 ColorMapping.Add("Recruit", Colors.Cabal);
             }
+            
+            if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
+            {
+                ColorMapping.Add("Necromancer", Colors.Necromancer);
+                ColorMapping.Add("Ressurected", Colors.Reanimated);
+            }
+            
+            if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
+            {
+                ColorMapping.Add("Whisperer", Colors.Whisperer);
+                ColorMapping.Add("Persuaded", Colors.Sect);
+            }
 
             //Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
@@ -266,12 +290,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ProfessionalOn > 0)
                     ColorMapping.Add("Professional", Colors.Professional);
 
-                if (CustomGameOptions.CowardOn > 0)
-                    ColorMapping.Add("Coward", Colors.Coward);
-
-                if (CustomGameOptions.ShyOn > 0)
-                    ColorMapping.Add("Shy", Colors.Shy);
-
                 if (CustomGameOptions.VIPOn > 0)
                     ColorMapping.Add("VIP", Colors.VIP);
             }
@@ -296,9 +314,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
                 if (CustomGameOptions.RivalsOn > 0)
                     ColorMapping.Add("Rival", Colors.Rivals);
-
-                if (CustomGameOptions.PhantomOn > 0)
-                    ColorMapping.Add("Phantom", Colors.Phantom);
 
                 if (CustomGameOptions.OverlordOn > 0)
                     ColorMapping.Add("Overlord", Colors.Overlord);
@@ -330,9 +345,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
                 if (CustomGameOptions.SnitchOn > 0)
                     ColorMapping.Add("Snitch", Colors.Snitch);
-
-                if (CustomGameOptions.RevealerOn > 0)
-                    ColorMapping.Add("Revealer", Colors.Revealer);
 
                 if (CustomGameOptions.TunnelerOn > 0)
                     ColorMapping.Add("Tunneler", Colors.Tunneler);

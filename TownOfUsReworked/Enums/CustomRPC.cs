@@ -50,6 +50,8 @@ namespace TownOfUsReworked.Enums
         SetSpawn,
         SetSpawnAirship,
         DoorSyncToilet,
-        SyncPlateform
+        SyncPlateform,
+
+        SetColor
     }
 }

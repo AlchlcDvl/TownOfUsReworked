@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "AmongUs.GameLibs.Steam/2022.10.25": {
+      "AmongUs.GameLibs.Steam/2022.12.14": {
         "type": "package",
         "build": {
           "build/AmongUs.GameLibs.Steam.props": {}
@@ -365,10 +365,10 @@
           }
         }
       },
-      "Reactor/2.0.0": {
+      "Reactor/2.1.0": {
         "type": "package",
         "dependencies": {
-          "BepInEx.Unity.IL2CPP": "6.0.0-be.662"
+          "BepInEx.Unity.IL2CPP": "6.0.0-be.663"
         },
         "compile": {
           "lib/net6.0/Reactor.dll": {
@@ -1442,13 +1442,13 @@
     }
   },
   "libraries": {
-    "AmongUs.GameLibs.Steam/2022.10.25": {
-      "sha512": "PWgkH/VvMlShVhZB8G432q0tnMaNVZrbIdbEMCZN/fETUlT/ch+qQj4PdTcZhPHREbnJHH3ijHxlca1d7QMBcQ==",
+    "AmongUs.GameLibs.Steam/2022.12.14": {
+      "sha512": "/JnBzrKs6rHK0bS0nhNizN2eDESahqRmS0l40cKYE3BwL0hC1UtqpjNNzLeWYmvjdyhL6AI6rCkLrY9zkiD4Uw==",
       "type": "package",
-      "path": "amongus.gamelibs.steam/2022.10.25",
+      "path": "amongus.gamelibs.steam/2022.12.14",
       "files": [
         ".nupkg.metadata",
-        "amongus.gamelibs.steam.2022.10.25.nupkg.sha512",
+        "amongus.gamelibs.steam.2022.12.14.nupkg.sha512",
         "amongus.gamelibs.steam.nuspec",
         "build/AddressablesPlayAssetDelivery.dll",
         "build/AmongUs.GameLibs.Steam.props",
@@ -1486,6 +1486,16 @@
         "build/Unity.Addressables.dll",
         "build/Unity.Analytics.DataPrivacy.dll",
         "build/Unity.ResourceManager.dll",
+        "build/Unity.Services.Analytics.dll",
+        "build/Unity.Services.Core.Configuration.dll",
+        "build/Unity.Services.Core.Device.dll",
+        "build/Unity.Services.Core.Environments.Internal.dll",
+        "build/Unity.Services.Core.Internal.dll",
+        "build/Unity.Services.Core.Registration.dll",
+        "build/Unity.Services.Core.Scheduler.dll",
+        "build/Unity.Services.Core.Telemetry.dll",
+        "build/Unity.Services.Core.Threading.dll",
+        "build/Unity.Services.Core.dll",
         "build/Unity.TextMeshPro.dll",
         "build/UnityEngine.AIModule.dll",
         "build/UnityEngine.AndroidJNIModule.dll",
@@ -1925,17 +1935,17 @@
         "monomod.utils.nuspec"
       ]
     },
-    "Reactor/2.0.0": {
-      "sha512": "7Bq0QksAUVqhZ++2jdMvjbbZSBjb4eYN5BAp2Q/b8h2PiFfuvVd/oVooBMjwm6Mooa0URFcISA1tBXNIJEcoTw==",
+    "Reactor/2.1.0": {
+      "sha512": "sJaWGAn+c8efXKZS+sFcz+ybHYdp7CFJVdcX5+r0QbyPpruo/GotNdhrxvUUlCVAhhX/e0epIFKGRZJcprhp9w==",
       "type": "package",
-      "path": "reactor/2.0.0",
+      "path": "reactor/2.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "icon.png",
         "lib/net6.0/Reactor.dll",
         "lib/net6.0/Reactor.xml",
-        "reactor.2.0.0.nupkg.sha512",
+        "reactor.2.1.0.nupkg.sha512",
         "reactor.nuspec"
       ]
     },
@@ -4701,12 +4711,12 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "AmongUs.GameLibs.Steam >= 2022.10.25",
+      "AmongUs.GameLibs.Steam >= 2022.12.14",
       "BepInEx.AutoPlugin >= 1.1.0",
       "BepInEx.IL2CPP.MSBuild >= 2.0.1",
       "BepInEx.Unity.IL2CPP >= 6.0.0-be.664",
       "GitInfo >= 2.0.20",
-      "Reactor >= 2.0.0",
+      "Reactor >= 2.1.0",
       "System.Text.Json >= 6.0.3"
     ]
   },
@@ -4716,14 +4726,14 @@
   "project": {
     "version": "1.0.0.10",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectUniqueName": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
-      "projectPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+      "outputPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
+        "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
         "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
@@ -4753,7 +4763,7 @@
           "AmongUs.GameLibs.Steam": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2022.10.25, )"
+            "version": "[2022.12.14, )"
           },
           "BepInEx.AutoPlugin": {
             "suppressParent": "All",
@@ -4778,7 +4788,7 @@
           },
           "Reactor": {
             "target": "Package",
-            "version": "[2.0.0, )"
+            "version": "[2.1.0, )"
           },
           "System.Text.Json": {
             "suppressParent": "All",

@@ -8,6 +8,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -128,6 +129,9 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(EndGameManager __instance)
         {
+            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+                return;
+
             GameObject bonusText = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
             bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f, __instance.WinText.transform.position.z);
             bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);

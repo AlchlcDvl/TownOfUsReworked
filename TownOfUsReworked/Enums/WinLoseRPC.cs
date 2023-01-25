@@ -13,8 +13,6 @@ namespace TownOfUsReworked.Enums
         JesterLose,
         ExecutionerWin,
         ExecutionerLose,
-        NeutralsWin,
-        NobodyWins,
         SurvivorWin,
         SurvivorLose,
         PlaguebearerWin,
@@ -47,11 +45,18 @@ namespace TownOfUsReworked.Enums
         IntruderLose,
         SyndicateWin,
         SyndicateLose,
-        
+        AllNeutralsWin,
+
         UndeadWin,
         UndeadLose,
         CabalWin,
         CabalLose,
+        SectWin,
+        SectLose,
+        ReanimatedWin,
+        ReanimatedLose,
+
+        AllNKsWin,
 
         LoveWin,
         TaskmasterWin,
@@ -59,5 +64,7 @@ namespace TownOfUsReworked.Enums
         CorruptedLose,
         CorruptedWin,
         OverlordWin,
+
+        NobodyWins,
     }
 }

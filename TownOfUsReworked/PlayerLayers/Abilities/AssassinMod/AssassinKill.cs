@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             {
                 try
                 {
-                    SoundManager.Instance.PlaySound(TownOfUsReworked.KillSFX, false, 1f);
+                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
                 } catch {}
 
                 if (PlayerControl.LocalPlayer == player)
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
                 importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
 
-                if (!PlayerControl.GameOptions.GhostsDoTasks)
+                if (!GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks)
                 {
                     for (int i = 0; i < player.myTasks.Count; i++)
                     {
@@ -109,7 +109,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 }
             }
 
-            player.Die(DeathReason.Kill);
+            player.Die(DeathReason.Kill, false);
             
             var role2 = Role.GetRole(player);
             role2.DeathReason = DeathReasonEnum.Guessed;
@@ -214,16 +214,16 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     && assassin.Player != player2)
                 {
                     if (assassin.Player != player)
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player2, $"{assassin.Player.name} guessed {player.name} as {guess}!");
+                        hudManager.Chat.AddChat(player2, $"{assassin.Player.name} guessed {player.name} as {guess}!");
                     else
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player2, $"{assassin.Player.name} incorrectly guessed {player.name} as {guess} and died!");
+                        hudManager.Chat.AddChat(player2, $"{assassin.Player.name} incorrectly guessed {player.name} as {guess} and died!");
                 }
                 else if (assassin.Player == player2)
                 {
                     if (assassin.Player != player)
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player2, $"You guessed {player.name} as {guess}!");
+                        hudManager.Chat.AddChat(player2, $"You guessed {player.name} as {guess}!");
                     else
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player2, $"You incorrectly guessed {player.name} as {guess} and died!");
+                        hudManager.Chat.AddChat(player2, $"You incorrectly guessed {player.name} as {guess} and died!");
                 }
             }
 

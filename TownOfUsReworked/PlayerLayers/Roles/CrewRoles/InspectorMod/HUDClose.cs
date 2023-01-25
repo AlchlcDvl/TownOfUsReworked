@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -19,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             {
                 var role2 = (Inspector) role;
                 role2.LastInspected = DateTime.UtcNow;
-                role2.LastInspected = role2.LastInspected.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
             }
         }
     }

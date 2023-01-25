@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             {
                 if (ShipStatus.Instance)
                 {
-                    switch (PlayerControl.GameOptions.MapId)
+                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                     {
                         case 0:
                         case 2:

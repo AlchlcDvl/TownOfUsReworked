@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
     public class AddButton
     {
         private static Sprite LighterSprite => TownOfUsReworked.LighterSprite;
-        public static Sprite DarkerSprite => TownOfUsReworked.DarkerSprite;
+        private static Sprite DarkerSprite => TownOfUsReworked.DarkerSprite;
 
         private static bool IsExempt(PlayerVoteArea voteArea)
         {

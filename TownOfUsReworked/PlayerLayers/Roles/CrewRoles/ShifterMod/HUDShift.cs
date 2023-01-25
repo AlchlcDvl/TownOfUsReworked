@@ -1,37 +1,47 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDShift
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Shift => TownOfUsReworked.Shift;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Shifter))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Shifter))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var shiftButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            shiftButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
-            shiftButton.SetCoolDown(role.ShifterShiftTimer(), CustomGameOptions.ShifterCd);
-            Utils.SetTarget(ref role.ClosestPlayer, shiftButton);
+            if (role.ShiftButton == null)
+            {
+                role.ShiftButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.ShiftButton.graphic.enabled = true;
+                role.ShiftButton.gameObject.SetActive(false);
+            }
+
+            role.ShiftButton.graphic.sprite = Shift;
+            role.ShiftButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.ShiftButton.SetCoolDown(role.ShiftTimer(), CustomGameOptions.ShifterCd);
+            Utils.SetTarget(ref role.ClosestPlayer, role.ShiftButton);
+            var renderer = role.ShiftButton.graphic;
+            
+            if (role.ClosestPlayer != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

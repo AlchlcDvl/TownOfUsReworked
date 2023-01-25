@@ -4,7 +4,7 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                         ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
                 }
 
-                if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence) || (role.ClosestPlayer.Is(RoleEnum.SerialKiller) && __instance == role.HackButton))
+                if (Utils.CheckInteractionSesitive(role.ClosestPlayer) || (role.ClosestPlayer.Is(RoleEnum.SerialKiller) && __instance == role.HackButton))
                 {
                     if (role.ClosestPlayer.IsShielded())
                     {
@@ -121,7 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     return false;
 
                 role.MimicList = null;
-                role.MimicButtonPress();
+                //role.MimicButtonPress();
                 return false;
             }
 

@@ -11,36 +11,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton)
-                return true;
-
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord);
-
-            if (!flag)
-                return true;
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord))
+                return false;
 
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort, null, __instance) || __instance != role.RewindButton)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return false;
-
-            var flag2 = (role.TimeLordRewindTimer() == 0f) && !RecordRewind.rewinding;
-
-            if (!flag2)
-                return false;
-
-            if (!__instance.enabled)
-                return false;
-
-            if (!role.ButtonUsable)
+            if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding && __instance == role.RewindButton && role.ButtonUsable)
                 return false;
 
             role.UsesLeft--;
             StartStop.StartRewind(role);
-
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.Rewind);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -48,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     
             try
             {
-                SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
+                //SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
             } catch {}
             
             return false;

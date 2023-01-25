@@ -19,6 +19,7 @@ using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -26,12 +27,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
         public List<KillButton> ExtraButtons = new List<KillButton>();
-        //public List<CustomButton> OtherButtons = new List<CustomButton>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
         public static bool NobodyWins;
-        public static bool NeutralsWin;
         
         public static bool UndeadWin;
         public static bool CabalWin;
@@ -52,9 +51,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public virtual void Wins() {}
-
-        public virtual void HudUpdate() {}
-        //protected virtual void AddCustomButtons() {}
+		public virtual void AddCustomButtons() {}
+        public virtual void PlayerNameplateOverlay(MeetingHud instance) {}
+		public virtual void SetTarget() {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
@@ -90,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected internal bool IsRecruit { get; set; } = false;
         protected internal bool IsRevived { get; set; } = false;
-        protected internal bool IsPursuaded { get; set; } = false;
+        protected internal bool IsPersuaded { get; set; } = false;
         protected internal bool IsIntTraitor { get; set; } = false;
         protected internal bool IsIntAlly { get; set; } = false;
         protected internal bool IsIntFanatic { get; set; } = false;
@@ -101,7 +100,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         
         protected internal bool IsBlocked { get; set; } = false;
 
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+        protected internal int Kills { get; set; } = 0;
+        protected internal int CorrectKills { get; set; } = 0;
+        protected internal int IncorrectKills { get; set; } = 0;
+        protected internal int CorrectAssassinKills { get; set; } = 0;
+        protected internal int IncorrectAssassinKills { get; set; } = 0;
 
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill: <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
             "<color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
@@ -205,6 +208,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static uint NetId => PlayerControl.LocalPlayer.NetId;
         public string PlayerName { get; set; }
 
+        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
         public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
 
@@ -232,17 +236,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return HashCode.Combine(Player, (int)RoleType);
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__21 __instance) {}
-
-        public static void NobodyWinsFunc()
-        {
-            NobodyWins = true;
-        }
-
-        public static void NeutralsOnlyWin()
-        {
-            NeutralsWin = true;
-        }
+        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
         public static void SetColors()
         {
@@ -309,7 +303,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(59, "lighter"); //Rainbow
         }
 
-        internal virtual bool GameEnd(ShipStatus __instance)
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
         {
             return true;
         }
@@ -333,7 +327,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
             var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
             var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
-            var sectFlag = ((SubFaction == SubFaction.Sect || IsPursuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPursuaded()));
+            var sectFlag = ((SubFaction == SubFaction.Sect || IsPersuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPersuaded()));
             var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsRevived) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsRevived()));
             var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
 
@@ -433,6 +427,39 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag;
         }
 
+		public void SetPlayerOutline(PlayerControl target, Color color)
+		{
+			if (target != null)
+			{
+				CosmeticsLayer cosmetics = target.cosmetics;
+				Object @object;
+
+				if (cosmetics == null)
+					@object = null;
+				else
+				{
+					PlayerBodySprite currentBodySprite = cosmetics.currentBodySprite;
+					@object = ((currentBodySprite != null) ? currentBodySprite.BodySprite : null);
+				}
+
+				if (!(@object == null))
+				{
+					target.cosmetics.currentBodySprite.BodySprite.material.SetFloat("_Outline", 1f);
+					target.cosmetics.currentBodySprite.BodySprite.material.SetColor("_OutlineColor", color);
+					return;
+				}
+			}
+		}
+        
+		protected void SetDeadBodyOutline(DeadBody target, Color color)
+		{
+			if (target == null || target.bodyRenderer == null)
+				return;
+
+			target.bodyRenderer.material.SetFloat("_Outline", 1f);
+			target.bodyRenderer.material.SetColor("_OutlineColor", color);
+		}
+
         protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
         {
             if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
@@ -469,35 +496,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!revealRole)
                 return PlayerName;
 
-            Player.nameText().transform.localPosition = new Vector3(0f, Player.CurrentOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
+            Player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
             return PlayerName + "\n" + Name;
-        }
-
-        public void RegenTask()
-        {
-            bool createTask;
-            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
-
-            try
-            {
-                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                createTask = !firstText.Text.Contains("Role:");
-            }
-            catch (InvalidCastException)
-            {
-                createTask = true;
-            }
-
-            if (createTask)
-            {
-                var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(Player.transform, false);
-                task.Text = tasks;
-                Player.myTasks.Insert(0, task);
-                return;
-            }
-
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = tasks;
         }
 
         public static T GenRole<T>(Type type, PlayerControl player, int id)
@@ -619,10 +619,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
             
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__19), nameof(IntroCutscene._CoBegin_d__19.MoveNext))]
-            public static class IntroCutscene_CoBegin_d__19
+            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
+            public static class IntroCutscene_CoBegin_d__29
             {
-                public static void Postfix(IntroCutscene._CoBegin_d__19 __instance)
+                public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -687,10 +687,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__21), nameof(IntroCutscene._ShowTeam_d__21.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__32), nameof(IntroCutscene._ShowTeam_d__32.MoveNext))]
             public static class IntroCutscene_ShowTeam__d_21
             {
-                public static void Prefix(IntroCutscene._ShowTeam_d__21 __instance)
+                public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -698,7 +698,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         role.IntroPrefix(__instance);
                 }
 
-                public static void Postfix(IntroCutscene._ShowTeam_d__21 __instance)
+                public static void Postfix(IntroCutscene._ShowTeam_d__32 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -742,10 +742,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__24), nameof(IntroCutscene._ShowRole_d__24.MoveNext))]
+            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
             public static class IntroCutscene_ShowRole_d__24
             {
-                public static void Postfix(IntroCutscene._ShowRole_d__24 __instance)
+                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
                 {
                     var role = GetRole(PlayerControl.LocalPlayer);
 
@@ -757,10 +757,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         __instance.__4__this.RoleBlurbText.text = role.StartText;
                         __instance.__4__this.RoleBlurbText.color = role.Color;
 
-                        SoundManager.Instance.StopAllSound();
-
                         if (role.IntroSound != null)
                         {
+                            SoundManager.Instance.StopAllSound();
+
                             try
                             {
                                 SoundManager.Instance.PlaySound(role.IntroSound, false, 1f);
@@ -779,10 +779,90 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__110), nameof(PlayerControl._CoSetTasks_d__110.MoveNext))]
+		public virtual List<PlayerControl> GetUntargetables()
+		{
+			List<PlayerControl> list = new List<PlayerControl>();
+
+			List<PlayerControl> deadPlayers = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Data.IsDead || x.Data.Disconnected).ToList();
+			list.AddRange(deadPlayers);
+
+            List<PlayerControl> ventedPlayers = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.inVent &&
+                CustomGameOptions.VentTargetting).ToList();
+            list.AddRange(ventedPlayers);
+
+			return list;
+		}
+
+        public void RegenTask()
+        {
+            if (!Local)
+                return;
+
+            bool createTask;
+            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
+            string otherTasks = "";
+            string modifierTask = "";
+            string abilityTask = "";
+            string objectifierTask = "";
+
+            try
+            {
+                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
+                createTask = !firstText.Text.Contains("Role:");
+            }
+            catch (InvalidCastException)
+            {
+                createTask = true;
+            }
+
+            if (createTask)
+            {
+                var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
+                task.transform.SetParent(Player.transform, false);
+                task.Text = tasks;
+                Player.myTasks.Insert(0, task);
+                return;
+            }
+
+            var modifier = Modifier.GetModifier(Player);
+            var ability = Ability.GetAbility(Player);
+            var objectifier = Objectifier.GetObjectifier(Player);
+
+            if (objectifier != null)
+                objectifierTask += $"{objectifier.ColorString}Objectifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
+
+            if (modifier != null)
+                modifierTask += $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText}</color>";
+
+            if (ability != null)
+                abilityTask += $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+                tasks += $"\n<color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">- You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
+            }
+            
+            if (Player.IsGATarget() && CustomGameOptions.GATargetKnows)
+                tasks += "\n<color=#FFFFFFFF>- You are a Guardian Angel's target!</color>";
+            
+            if (Player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
+                tasks += "\n<color=#CCCCCCFF>- You are an Executioner's target!</color>";
+
+            if (!IsRecruit && !Player.IsGATarget() && !Player.IsExeTarget())
+                tasks = "";
+
+            if (!Player.CanDoTasks() && !Player.Is(Faction.Intruder))
+                tasks += $"\n<color=#" + Color.ToHtmlStringRGBA() + "Fake Tasks:";
+
+            tasks += objectifierTask + modifierTask + abilityTask + otherTasks;
+            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = tasks;
+        }
+
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__110 __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
             {
                 if (__instance == null)
                     return;
@@ -850,18 +930,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                     task.transform.SetParent(player.transform, false);
                     task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? JackalWinCon : role.Objectives)}\n" +
-                        $"\nAbilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
+                        $"Abilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
                         
                     player.myTasks.Insert(0, task);
                 }
             }
         }
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CheckEndCriteria))]
+        [HarmonyPatch]
         public static class ShipStatus_KMPKPPGPNIH
         {
-            public static bool Prefix(ShipStatus __instance)
+            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+            public static bool Prefix(LogicGameFlowNormal __instance)
             {
+                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+                    return true;
+
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
 
@@ -877,20 +961,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
         
-        public PlayerControl GetTarget(bool targetPlayersInVents = false, List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer =
-            null, bool evenWhenDead = false)
+        public PlayerControl GetTarget(List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer = null)
 		{
 			PlayerControl result = null;
-			float num = GameOptionsData.KillDistances[Mathf.Clamp(PlayerControl.GameOptions.KillDistance, 0, 2)];
+			float num = GameOptionsData.KillDistances[Mathf.Clamp(GameOptionsManager.Instance.currentNormalGameOptions.KillDistance, 0, 2)];
 
 			if (!ShipStatus.Instance)
 				return result;
 
 			if (targetingPlayer == null)
 				targetingPlayer = PlayerControl.LocalPlayer;
-
-			if (!evenWhenDead && targetingPlayer.Data.IsDead)
-				return result;
 
 			Vector2 truePosition = targetingPlayer.GetTruePosition();
 
@@ -900,7 +980,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 				{
 					PlayerControl @object = playerInfo.Object;
 
-					if ((untargetablePlayers == null || !untargetablePlayers.Any((PlayerControl x) => x == @object)) && @object && (!@object.inVent || targetPlayersInVents))
+					if ((untargetablePlayers == null || !untargetablePlayers.Any((PlayerControl x) => x == @object)) && @object)
 					{
 						Vector2 vector = @object.GetTruePosition() - truePosition;
 						float magnitude = vector.magnitude;
@@ -983,6 +1063,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var player in __instance.playerStates)
                 {
+                    player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
                     var role = GetRole(player);
 
                     if (role != null && role.Criteria())

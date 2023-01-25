@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                     state.PlayerIcon.SetBodyColor(6);
                     state.PlayerIcon.SetHat("None", 0);
                     state.PlayerIcon.SetSkin("None", 0);
+                    state.PlayerIcon.SetName(" ");
                 }
             }
         }

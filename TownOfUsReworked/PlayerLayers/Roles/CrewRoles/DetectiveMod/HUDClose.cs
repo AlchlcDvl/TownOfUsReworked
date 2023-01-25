@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -19,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             {
                 var role2 = (Detective) role;
                 role2.LastExamined = DateTime.UtcNow;
-                role2.LastExamined = role2.LastExamined.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ExamineCd);
             }
         }
     }

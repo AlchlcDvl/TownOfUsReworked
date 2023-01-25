@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             if (string.IsNullOrWhiteSpace(reportMsg))
                 return;
 
-            // Send the message through chat only visible to the Coroner
+            //Send the message through chat only visible to the Coroner
             if (DestroyableSingleton<HudManager>.Instance)
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
         }

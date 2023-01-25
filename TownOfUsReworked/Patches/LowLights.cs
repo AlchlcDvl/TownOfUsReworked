@@ -3,6 +3,7 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -11,6 +12,26 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameData.PlayerInfo player, ref float __result)
         {
+            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+            {
+                if (GameOptionsManager.Instance.currentHideNSeekGameOptions.useFlashlight)
+                {
+                    if (player.IsImpostor())
+                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorFlashlightSize;
+                    else
+                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewmateFlashlightSize;
+                }
+                else
+                {
+                    if (player.IsImpostor())
+                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorLightMod;
+                    else
+                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewLightMod;
+                }
+
+                return false;
+            }
+            
             if (player == null || player.IsDead)
             {
                 __result = __instance.MaxLightRadius;
@@ -29,10 +50,10 @@ namespace TownOfUsReworked.Patches
             if (SubmergedCompatibility.isSubmerged())
             {
                 if (player._object.Is(AbilityEnum.Torch))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * PlayerControl.GameOptions.CrewLightMod;
+                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
 
                 if (player._object.Is(AbilityEnum.Lighter))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * PlayerControl.GameOptions.ImpostorLightMod;
+                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
                     
                 return false;
             }

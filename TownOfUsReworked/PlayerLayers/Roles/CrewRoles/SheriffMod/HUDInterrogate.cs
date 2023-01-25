@@ -4,35 +4,46 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDInterrogate
     {
-        public static void Postfix(PlayerControl __instance)
+        private static Sprite Interrogate => TownOfUsReworked.SeerSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var investigateButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
-            investigateButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
-            investigateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
+            if (role.InterrogateButton == null)
+            {
+                role.InterrogateButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.InterrogateButton.graphic.enabled = true;
+                role.InterrogateButton.gameObject.SetActive(false);
+            }
+
+            role.InterrogateButton.graphic.sprite = Interrogate;
+            role.InterrogateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, investigateButton, float.NaN, notInvestigated);
+            Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);
+            var renderer = role.InterrogateButton.graphic;
+
+            if (role.ClosestPlayer != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ Roles:-
   - Shifter = 19
   - Crewmate = 20
   - Vampire Hunter = 21
+  - Chameleon = 65
 
 Neutral:-
   - Jester = 22

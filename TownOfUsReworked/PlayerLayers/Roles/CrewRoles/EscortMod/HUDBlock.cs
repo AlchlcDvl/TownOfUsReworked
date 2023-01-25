@@ -26,9 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                 role.BlockButton.gameObject.SetActive(false);
             }
 
-            role.BlockButton.GetComponent<AspectPosition>().Update();
             role.BlockButton.graphic.sprite = Placeholder;
-            role.BlockButton.gameObject.SetActive(Utils.SetActive(role.Player));
+            role.BlockButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
             Utils.SetTarget(ref role.ClosestPlayer, role.BlockButton);
 
             if (role.Enabled)

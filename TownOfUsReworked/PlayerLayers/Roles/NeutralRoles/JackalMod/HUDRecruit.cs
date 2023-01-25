@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             role.RecruitButton.graphic.sprite = Recruit;
             role.RecruitButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !role.HasRecruited && !LobbyBehaviour.Instance && role.RecruitsDead);
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance], notRecruited);
+            Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, notRecruited);
             role.RecruitButton.SetCoolDown(role.RecruitTimer(), CustomGameOptions.RecruitCooldown);
         }
     }

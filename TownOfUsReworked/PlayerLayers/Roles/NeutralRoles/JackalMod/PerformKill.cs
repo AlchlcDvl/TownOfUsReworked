@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (role.ClosestPlayer.IsOnAlert() || role.ClosestPlayer.Is(RoleEnum.Pestilence))
+            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
             {
                 if (role.Player.IsShielded())
                 {
