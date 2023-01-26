@@ -29,6 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.SherConsigInspBm;
+            FactionDescription = CrewFactionDescription;
+            AlignmentDescription = CIDescription;
+            Objectives = CrewWinCon;
         }
 
         public KillButton InterrogateButton

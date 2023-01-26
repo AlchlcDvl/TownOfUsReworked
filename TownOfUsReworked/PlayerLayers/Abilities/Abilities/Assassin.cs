@@ -8,6 +8,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
@@ -20,6 +21,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public bool GuessedThisMeeting { get; set; } = false;
         public int RemainingKills { get; set; }
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
+        private bool AmneFlag => (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac) || (CustomGameOptions.GuardianAngelOn > 0 &&
+            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
+        private bool SurvFlag => (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Survivor) || (CustomGameOptions.GuardianAngelOn > 0 &&
+            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Survivor) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
+        private bool JestFlag => CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester || (CustomGameOptions.GuardianAngelOn > 0 &&
+            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
 
         public Assassin(PlayerControl player) : base(player)
         {
@@ -100,8 +107,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ChameleonOn > 0)
                     ColorMapping.Add("Chameleon", Colors.Chameleon);
 
-                if (CustomGameOptions.SeerOn > 0)
-                    ColorMapping.Add("Seer", Colors.Seer);
+                /*if (CustomGameOptions.SeerOn > 0)
+                    ColorMapping.Add("Seer", Colors.Seer);*/
 
                 if (CustomGameOptions.MysticOn > 0)
                     ColorMapping.Add("Mystic", Colors.Mystic);
@@ -247,12 +254,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             //Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
             {
-                if (CustomGameOptions.AmnesiacOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac) ||
-                    (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac))
+                if (CustomGameOptions.AmnesiacOn > 0 || AmneFlag)
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
-                if (CustomGameOptions.SurvivorOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Survivor) ||
-                    (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Survivor))
+                if (CustomGameOptions.SurvivorOn > 0 || SurvFlag)
                         ColorMapping.Add("Survivor", Colors.Survivor);
 
                 if (CustomGameOptions.GuardianAngelOn > 0)
@@ -270,11 +275,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ExecutionerOn > 0)
                     ColorMapping.Add("Executioner", Colors.Executioner);
 
+                if (CustomGameOptions.GuesserOn > 0)
+                    ColorMapping.Add("Guesser", Colors.Guesser);
+
                 if (CustomGameOptions.TrollOn > 0)
                     ColorMapping.Add("Troll", Colors.Troll);
 
-                if (CustomGameOptions.JesterOn > 0 || (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester) ||
-                    (CustomGameOptions.GuardianAngelOn > 0 && CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester))
+                if (CustomGameOptions.JesterOn > 0 || JestFlag)
                     ColorMapping.Add("Jester", Colors.Jester);
             }
 

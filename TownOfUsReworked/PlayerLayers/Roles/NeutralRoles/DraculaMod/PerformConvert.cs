@@ -2,7 +2,6 @@ using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
@@ -13,78 +12,53 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformConvertButton
+    public class PerformConvert
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
                 return false;
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Dracula, role.ClosestPlayer, __instance))
+            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
                 return false;
 
             if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
                 return false;
+            
+            var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, Role.GetRoleValue<VampireHunter>(RoleEnum.VampireHunter), false, true);
 
-            Utils.Spread(role.Player, role.ClosestPlayer);
+            if (__instance == role.BiteButton)
+            {
+                if (interact[4] == true && interact[0] == true)
+                {
+                    var vampCount = PlayerControl.AllPlayerControls.ToArray().ToList().Count(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
 
-            if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter)))
-            {
-                Utils.AlertKill(role.Player, role.ClosestPlayer, true);
+                    if (vampCount == CustomGameOptions.AliveVampCount)
+                    {
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                        return false;
+                    }
 
-                if (CustomGameOptions.ShieldBreaks)
-                    role.LastBitten = DateTime.UtcNow;
-                    
-                return false;
-            }
-            else if (role.ClosestPlayer.IsShielded())
-            {
-                var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                writer1.Write(medic);
-                writer1.Write(role.ClosestPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer1);
-                StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer3.Write((byte)ActionsRPC.Convert);
+                    writer3.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer3.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer3);
+                    Convert(role, role.ClosestPlayer);
+                    return false;
+                }
+                else if (interact[1] == true)
+                    role.LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
+                else if (interact[3] == true)
+                    return false;
 
-                if (CustomGameOptions.ShieldBreaks)
-                    role.LastBitten = DateTime.UtcNow;
-
-                return false;
-            }
-            else if (role.ClosestPlayer.IsVesting())
-            {
-                role.LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
-                return false;
-            }
-            else if (role.ClosestPlayer.IsProtected())
-            {
-                role.LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
-                return false;
-            }
-            else if (role.Player.IsOtherRival(role.ClosestPlayer))
-            {
-                role.LastBitten = DateTime.UtcNow;
                 return false;
             }
 
-            var vampCount = PlayerControl.AllPlayerControls.ToArray().ToList().Count(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
-
-            if (vampCount == CustomGameOptions.AliveVampCount)
-            {
-                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
-                role.LastBitten = DateTime.UtcNow;
-                return false;
-            }
-
-            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer3.Write((byte)ActionsRPC.Convert);
-            writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer3.Write(role.ClosestPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer3);
-            Convert(role, role.ClosestPlayer);
-            role.LastBitten = DateTime.UtcNow;
             return false;
         }
 
@@ -106,7 +80,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Dracula:
 
                     alreadyVamp = true;
-
                     break;
 
                 case RoleEnum.Sheriff:
@@ -130,7 +103,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Escort:
 
                     convert = true;
-
                     break;
 
                 case RoleEnum.Vigilante:
@@ -138,7 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                     convertCK = true;
                     convert = true;
-
                     break;
 
                 case RoleEnum.Amnesiac:
@@ -149,7 +120,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Troll:
 
                     convertNeut = true;
-
                     break;
 
                 case RoleEnum.Cryomaniac:
@@ -160,10 +130,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Murderer:
                 case RoleEnum.SerialKiller:
                 case RoleEnum.Arsonist:
+                case RoleEnum.Guesser:
 
                     convertNK = true;
                     convertNeut = true;
-
                     break;
             }
 
@@ -262,22 +232,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 var dampyr = (Dampyr)role2;
                 dampyr.LastKill = DateTime.UtcNow;
 
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player == PlayerControl.LocalPlayer)
-                        dampyr.RegenTask();
-                }
+                if (dampyr.Player == PlayerControl.LocalPlayer)
+                    dampyr.RegenTask();
             }
 
             foreach (var role2 in Role.GetRoles(RoleEnum.Vampire))
             {
                 var vampire = (Vampire)role2;
 
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player == PlayerControl.LocalPlayer)
-                        vampire.RegenTask();
-                }
+                if (vampire.Player == PlayerControl.LocalPlayer)
+                    vampire.RegenTask();
             }
         }
     }

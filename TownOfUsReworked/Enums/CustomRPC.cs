@@ -26,6 +26,7 @@ namespace TownOfUsReworked.Enums
         SetBackupRecruit,
         SetTarget,
         SetGATarget,
+        SetGuessTarget,
 
         Action,
         WinLose,

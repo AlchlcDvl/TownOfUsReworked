@@ -126,6 +126,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Minigame.Instance.Close();
             }
 
+            role.ReviveUsed = true;
+            Utils.Spread(role.Player, player);
+
             if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) ||
                 PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo))
             {

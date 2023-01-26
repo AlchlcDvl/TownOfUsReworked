@@ -34,6 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         
         public static bool UndeadWin;
         public static bool CabalWin;
+        public static bool ReanimatedWin;
+        public static bool SectWin;
 
         public static bool NKWins;
         
@@ -240,6 +242,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static void SetColors()
         {
+            
             LightDarkColors.Clear();
             LightDarkColors.Add(0, "darker"); //Red
             LightDarkColors.Add(1, "darker"); //Blue
@@ -268,39 +271,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(24, "lighter"); //Lilac
             LightDarkColors.Add(25, "darker"); //Olive
             LightDarkColors.Add(26, "lighter"); //Azure
-            LightDarkColors.Add(27, "lighter"); //Tomato
-            LightDarkColors.Add(28, "darker"); //backrooms
-            LightDarkColors.Add(29, "darker"); //Gold
-            LightDarkColors.Add(30, "darker"); //Space
-            LightDarkColors.Add(31, "lighter"); //Ice
-            LightDarkColors.Add(32, "lighter"); //Mint
-            LightDarkColors.Add(33, "darker"); //BTS
-            LightDarkColors.Add(34, "darker"); //Forest Green
-            LightDarkColors.Add(35, "lighter"); //Donation
-            LightDarkColors.Add(36, "darker"); //Cherry
-            LightDarkColors.Add(37, "lighter"); //Toy
-            LightDarkColors.Add(38, "lighter"); //Pizzaria
-            LightDarkColors.Add(39, "lighter"); //Starlight
-            LightDarkColors.Add(40, "lighter"); //Softball
-            LightDarkColors.Add(41, "darker"); //Dark Jester
-            LightDarkColors.Add(42, "darker"); //FRESH
-            LightDarkColors.Add(43, "darker"); //Goner
-            LightDarkColors.Add(44, "lighter"); //Psychic Friend
-            LightDarkColors.Add(45, "lighter"); //Frost
-            LightDarkColors.Add(46, "darker"); //Abyss Green
-            LightDarkColors.Add(47, "darker"); //Midnight
-            LightDarkColors.Add(48, "darker"); //<3
-            LightDarkColors.Add(49, "lighter"); //Heat From Fire
-            LightDarkColors.Add(50, "lighter"); //Fire From Heat
-            LightDarkColors.Add(51, "lighter"); //Determination
-            LightDarkColors.Add(52, "lighter"); //Patience
-            LightDarkColors.Add(53, "darker"); //Bravery
-            LightDarkColors.Add(54, "darker"); //Integrity
-            LightDarkColors.Add(55, "darker"); //Perserverance
-            LightDarkColors.Add(56, "darker"); //Kindness
-            LightDarkColors.Add(57, "lighter"); //Bravery
-            LightDarkColors.Add(58, "darker"); //Purple Plumber
-            LightDarkColors.Add(59, "lighter"); //Rainbow
+            LightDarkColors.Add(27, "darker"); // Plum
+            LightDarkColors.Add(28, "darker"); // Jungle
+            LightDarkColors.Add(29, "lighter"); // Mint
+            LightDarkColors.Add(30, "lighter"); // Chartreuse
+            LightDarkColors.Add(31, "darker"); // Macau
+            LightDarkColors.Add(32, "darker"); // Tawny
+            LightDarkColors.Add(33, "lighter"); // Gold
+            LightDarkColors.Add(34, "lighter"); // Rainbow
         }
 
         internal virtual bool GameEnd(LogicGameFlowNormal __instance)
@@ -316,10 +294,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal virtual bool DeadCriteria()
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)
-                return Utils.ShowDeadBodies;
-
-            return false;
+            return PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything && !(PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) ||
+                PlayerControl.LocalPlayer.Is(RoleEnum.Phantom));
         }
 
         internal virtual bool FactionCriteria()
@@ -496,7 +472,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!revealRole)
                 return PlayerName;
 
-            Player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
+            Player.nameText().transform.localPosition = new Vector3(0f, Player.CurrentOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
             return PlayerName + "\n" + Name;
         }
 
@@ -798,7 +774,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!Local)
                 return;
 
-            bool createTask;
             string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
             string otherTasks = "";
             string modifierTask = "";
@@ -807,20 +782,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             try
             {
-                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                createTask = !firstText.Text.Contains("Role:");
+                var taskArray = Player.myTasks.ToArray();
+                var firstText = taskArray[0].Cast<ImportantTextTask>();
+            
+                if (firstText.Text.Contains("Role:"))
+                    taskArray.ToList().Remove(taskArray[0]);
+                
+                firstText = taskArray[0].Cast<ImportantTextTask>();
+            
+                if (firstText.Text.Contains("Modifier:"))
+                    taskArray.ToList().Remove(taskArray[0]);
+                
+                firstText = taskArray[0].Cast<ImportantTextTask>();
+            
+                if (firstText.Text.Contains("Ability:"))
+                    taskArray.ToList().Remove(taskArray[0]);
+                
+                firstText = taskArray[0].Cast<ImportantTextTask>();
+            
+                if (firstText.Text.Contains("Objectifier:"))
+                    taskArray.ToList().Remove(taskArray[0]);
             }
             catch (InvalidCastException)
             {
-                createTask = true;
-            }
-
-            if (createTask)
-            {
-                var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(Player.transform, false);
-                task.Text = tasks;
-                Player.myTasks.Insert(0, task);
                 return;
             }
 
@@ -964,7 +948,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl GetTarget(List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer = null)
 		{
 			PlayerControl result = null;
-			float num = GameOptionsData.KillDistances[Mathf.Clamp(GameOptionsManager.Instance.currentNormalGameOptions.KillDistance, 0, 2)];
+			float num = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
 			if (!ShipStatus.Instance)
 				return result;

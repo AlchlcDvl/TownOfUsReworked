@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastSwooped;
         public float TimeRemaining;
         public bool IsSwooped => TimeRemaining > 0f;
+        private KillButton _swoopButton;
 
         public Chameleon(PlayerControl player) : base(player)
         {
@@ -31,7 +32,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             var timeSpan = utcNow - LastSwooped;
             var num = CustomGameOptions.InvisCd * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-            if (flag2) return 0;
+
+            if (flag2)
+                return 0;
+
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
@@ -62,6 +66,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Player.myRend().color = color;
                 Player.nameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
+            }
+        }
+
+        public KillButton SwoopButton
+        {
+            get => _swoopButton;
+            set
+            {
+                _swoopButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
             }
         }
 

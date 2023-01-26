@@ -17,12 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Coroner))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Coroner))
                 return;
 
             var role = Role.GetRole<Coroner>(PlayerControl.LocalPlayer);
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)

@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Patches
     public static class GameStates
     {
         public static bool IsCountDown => GameStartManager.InstanceExists && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
-        public static bool IsInGame => AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && LobbyBehaviour.Instance;
+        public static bool IsInGame => AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Started && !LobbyBehaviour.Instance;
         public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
         public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Ended;
         public static bool IsHnS => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek;

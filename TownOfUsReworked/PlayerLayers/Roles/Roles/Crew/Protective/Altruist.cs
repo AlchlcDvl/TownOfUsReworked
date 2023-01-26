@@ -4,9 +4,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Extensions;
 using Hazel;
-using System;
-using Reactor.Utilities;
-using Mod = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {

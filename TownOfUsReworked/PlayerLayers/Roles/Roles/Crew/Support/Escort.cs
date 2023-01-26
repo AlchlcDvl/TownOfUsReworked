@@ -6,6 +6,7 @@ using System;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using Hazel;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -72,27 +73,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public void Block()
+        public void SetBlocked(PlayerControl blocked)
         {
-            Enabled = true;
-            TimeRemaining -= Time.deltaTime;
-
-            BlockTarget = ClosestPlayer;
-            var targetRole = GetRole(BlockTarget);
-            targetRole.IsBlocked = !targetRole.RoleBlockImmune;
-
-            if (Player.Data.IsDead)
-                TimeRemaining = 0f;
+            LastBlock = DateTime.UtcNow;
+            Coroutines.Start(Utils.Block(this, blocked));
         }
 
-        public void UnBlock()
+        public void RPCSetBlocked(PlayerControl blocked)
         {
-            Enabled = false;
-            LastBlock = DateTime.UtcNow;
-
-            var targetRole = GetRole(BlockTarget);
-            targetRole.IsBlocked = false;
-            BlockTarget = null;
+            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer3.Write((byte)ActionsRPC.EscRoleblock);
+            writer3.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer3.Write(blocked.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer3);
         }
 
         public float RoleblockTimer()

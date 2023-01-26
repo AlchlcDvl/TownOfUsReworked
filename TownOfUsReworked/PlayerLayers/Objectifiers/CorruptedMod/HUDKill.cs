@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
     {
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, ObjectifierEnum.Corrupted))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Corrupted))
                 return;
 
             var role = Objectifier.GetObjectifier<Corrupted>(PlayerControl.LocalPlayer);
@@ -21,13 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
-                role.KillButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.KillButton.graphic.sprite = TownOfUsReworked.Placeholder;
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.GetComponent<AspectPosition>().Update();
-            role.KillButton.graphic.sprite = TownOfUsReworked.Placeholder;
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.CorruptedKillCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
         }

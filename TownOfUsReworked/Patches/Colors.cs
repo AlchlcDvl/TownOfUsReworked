@@ -46,7 +46,6 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Escort = new Color32(128, 51, 51, 255); //#803333FF
         public readonly static Color32 Inspector = new Color32 (126, 60, 100, 255); //#7E3C64FF
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
-        public readonly static Color32 Seer = new Color32(238, 229, 190, 255); //#EEE5BEFF
         public readonly static Color32 Mystic = new Color32(112, 142, 239, 255); //#708EEFFF
         public readonly static Color32 Retributionist = new Color32(141, 15, 140, 255); //#8D0F8CFF
         public readonly static Color32 Chameleon = new Color32(84, 17, 248, 255); //#5411F8FF
@@ -77,6 +76,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 Phantom = new Color32(102, 41, 98, 255); //#662962FF
         public readonly static Color32 Necromancer = new Color32(255, 25, 25, 255); //#FF1919FF
         public readonly static Color32 Whisperer = new Color32(45, 106, 165, 255); //#2D6AA5FF
+        public readonly static Color32 Guesser = new Color32(238, 229, 190, 255); //#EEE5BEFF
 
         //Intruder Colors
         public readonly static Color32 Consigliere = new Color32(255, 255, 153, 255); //#FFFF99FF
@@ -166,6 +166,6 @@ namespace TownOfUsReworked.Patches
         //#3769FE #1E300B #4d4d4d #8ff731
 
         //Symbol Storage For Objectifiers I Will Make Later
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ γ ε η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ π ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ Ӫ γ ε η θ Δ Γ Θ ι κ λ Λ ν ξ Ξ ρ σ Σ τ υ φ Φ ψ Ψ ω χ ς 
     }
 }

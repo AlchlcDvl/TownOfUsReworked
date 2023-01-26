@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Escort))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Escort))
                 return;
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
@@ -23,11 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             {
                 role.BlockButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.BlockButton.graphic.enabled = true;
+                role.BlockButton.graphic.sprite = Placeholder;
                 role.BlockButton.gameObject.SetActive(false);
             }
 
-            role.BlockButton.graphic.sprite = Placeholder;
-            role.BlockButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.BlockButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
             Utils.SetTarget(ref role.ClosestPlayer, role.BlockButton);
 
             if (role.Enabled)

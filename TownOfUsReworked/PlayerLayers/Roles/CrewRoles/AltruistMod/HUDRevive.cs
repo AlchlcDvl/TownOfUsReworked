@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Altruist))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Altruist))
                 return;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
@@ -32,6 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             {
                 role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
                 role.ReviveButton.graphic.enabled = true;
+                role.ReviveButton.graphic.sprite = Revive;
                 role.ReviveButton.gameObject.SetActive(false);
             }
 
@@ -54,10 +55,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 closestDistance = distance;
             }
             
-            role.ReviveButton.graphic.sprite = Revive;
-            role.ReviveButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && !role.ReviveUsed);
+            role.ReviveButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.ReviveUsed);
             KillButtonTarget.SetTarget(role.ReviveButton, closestBody, role);
             role.ReviveButton.SetCoolDown(0f, 1f);
+
+            var renderer = role.ReviveButton.graphic;
+
+            if (role.CurrentTarget != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

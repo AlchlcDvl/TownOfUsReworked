@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Medium : Role
     {
         public DateTime LastMediated { get; set; }
-        public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
         public static Sprite Arrow => TownOfUsReworked.Arrow;
         private KillButton _mediateButton;
         private KillButton _seanceButton;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Medium";
             StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
-            AbilitiesText = "Follow ghosts to get clues from them";
+            AbilitiesText = "- You can mediate which makes ghosts visible to you.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             LastMediated = DateTime.UtcNow;
             RoleType = RoleEnum.Medium;
@@ -33,6 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.CorJaniUTMed;
+            FactionDescription = CrewFactionDescription;
+            AlignmentDescription = CIDescription;
+            Objectives = CrewWinCon;
+            RoleDescription = "You are a Medium! You can mediate the dead, which reveals the spirits of the dead to you! Use their movements and information to find the evils!";
+            LastMediated = DateTime.UtcNow;
         }
 
         public KillButton MediateButton

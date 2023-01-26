@@ -73,8 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             var roleType = role.RoleType;
             var ability = (Ability.GetAbility(other))?.AbilityType;
             var thief = thiefRole.Player;
-            List<PlayerTask> tasks1, tasks2;
-            List<GameData.TaskInfo> taskinfos1, taskinfos2;
             Role newRole;
 
             switch (roleType)
@@ -272,16 +270,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 if (other == PlayerControl.LocalPlayer)
                     newRole2.RegenTask();
             }
-
-            tasks1 = other.myTasks;
-            taskinfos1 = other.Data.Tasks;
-            tasks2 = thief.myTasks;
-            taskinfos2 = thief.Data.Tasks;
-
-            thief.myTasks = tasks1;
-            thief.Data.Tasks = taskinfos1;
-            other.myTasks = tasks2;
-            other.Data.Tasks = taskinfos2;
 
             if (ability == AbilityEnum.Snitch)
             {

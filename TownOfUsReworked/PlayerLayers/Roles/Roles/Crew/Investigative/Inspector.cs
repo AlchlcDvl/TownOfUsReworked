@@ -33,6 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
                 "list, they are not Crew.";
             Objectives = CrewWinCon;
+            LastInspected = DateTime.UtcNow;
         }
 
         public KillButton InspectButton

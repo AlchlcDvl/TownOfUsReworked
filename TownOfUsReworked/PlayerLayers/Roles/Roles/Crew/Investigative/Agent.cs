@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Agent";
             StartText = "Snoop Around And Find Stuff Out";
-            AbilitiesText = "- You can see which colors are where on the admin table.\n- On Vitals, the time of death for each player will be\nshown";
+            AbilitiesText = "- You can see which colors are where on the admin table.\n- On Vitals, the time of death for each player will be shown";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Agent : Colors.Crew;
             RoleType = RoleEnum.Agent;
             Faction = Faction.Crew;

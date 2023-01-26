@@ -4,7 +4,6 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
@@ -16,8 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Agent))
                 return;
-
-            var spy = Role.GetRole<Agent>(PlayerControl.LocalPlayer);
 
             for (var i = 0; i < __instance.vitals.Count; i++)
             {

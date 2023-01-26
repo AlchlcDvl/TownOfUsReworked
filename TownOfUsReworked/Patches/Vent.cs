@@ -116,6 +116,10 @@ namespace TownOfUsReworked.Patches
                 return CustomGameOptions.AmneVentSwitch;
             else if (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent)
                 return CustomGameOptions.GAVentSwitch;
+            else if (player.Is(RoleEnum.Guesser) && CustomGameOptions.GuessVent)
+                return CustomGameOptions.GuessVentSwitch;
+            else if (player.Is(RoleEnum.Troll) && CustomGameOptions.TrollVent)
+                return CustomGameOptions.TrollVentSwitch;
             else
                 return true;
         }

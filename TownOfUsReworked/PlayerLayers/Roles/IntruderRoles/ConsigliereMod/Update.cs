@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             var consig = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                 return;
 
             foreach (var player in PlayerControl.AllPlayerControls)

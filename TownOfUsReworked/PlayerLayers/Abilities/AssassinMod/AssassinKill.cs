@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             if (amOwner)
             {
-                Utils.ShowDeadBodies = true;
+                //Utils.ShowDeadBodies = true;
                 hudManager.ShadowQuad.gameObject.SetActive(false);
                 player.nameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 player.RpcSetScanner(false);
@@ -214,11 +214,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     && assassin.Player != player2)
                 {
                     if (assassin.Player != player)
-                        hudManager.Chat.AddChat(player2, $"{assassin.Player.name} guessed {player.name} as {guess}!");
+                        hudManager.Chat.AddChat(player2, $"{assassin.PlayerName} guessed {player.name} as {guess}!");
                     else
-                        hudManager.Chat.AddChat(player2, $"{assassin.Player.name} incorrectly guessed {player.name} as {guess} and died!");
+                        hudManager.Chat.AddChat(player2, $"{assassin.PlayerName} incorrectly guessed {player.name} as {guess} and died!");
                 }
-                else if (assassin.Player == player2)
+                else if (assassin.Player == player2 && assassin.Player == PlayerControl.LocalPlayer)
                 {
                     if (assassin.Player != player)
                         hudManager.Chat.AddChat(player2, $"You guessed {player.name} as {guess}!");

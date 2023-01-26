@@ -7,9 +7,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class ButtonBarry : Ability
     {
-        public KillButton ButtonButton;
+        public KillButton _buttonButton;
         public bool ButtonUsed;
-        public DateTime StartingCooldown { get; set; }
+        public DateTime LastButtoned { get; set; }
 
         public ButtonBarry(PlayerControl player) : base(player)
         {
@@ -18,12 +18,23 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
         }
+
+        public KillButton ButtonButton
+        {
+            get => _buttonButton;
+            set
+            {
+                _buttonButton = value;
+                ExtraButtons.Clear();
+                ExtraButtons.Add(value);
+            }
+        }
         
         public float StartTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - StartingCooldown;
-            var num = 10000f;
+            var timeSpan = utcNow - LastButtoned;
+            var num = CustomGameOptions.ButtonCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

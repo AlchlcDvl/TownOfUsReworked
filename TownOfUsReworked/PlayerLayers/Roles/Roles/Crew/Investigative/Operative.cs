@@ -29,7 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Operative";
             StartText = "Detect Which Roles Are Here";
-            AbilitiesText = "Place bugs around the map to discover the <color=#FF0000FF>Intruders</color>";
+            AbilitiesText = "- You can place bugs around the map.";
+            AttributesText = "- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
             lastBugged = DateTime.UtcNow;
@@ -41,6 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
             Results = InspResults.DetJuggOpTroll;
+            FactionDescription = CrewFactionDescription;
+            AlignmentDescription = CIDescription;
+            Objectives = CrewWinCon;
+            RoleDescription = "You are an Operative! You can place bugs all around the map and you will be told the roles of whoever triggers them! Use this to find everyone's identities!";
         }
 
         public KillButton BugButton

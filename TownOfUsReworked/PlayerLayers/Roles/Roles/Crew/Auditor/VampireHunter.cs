@@ -7,7 +7,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
 
-
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class VampireHunter : Role

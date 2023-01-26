@@ -53,39 +53,14 @@ namespace TownOfUsReworked.Patches
                 coloursDict.Add(24, "Lilac");
                 coloursDict.Add(25, "Olive");
                 coloursDict.Add(26, "Azure");
-                coloursDict.Add(27, "Tomato");
-                coloursDict.Add(28, "Backrooms");
-                coloursDict.Add(29, "Gold");
-                coloursDict.Add(30, "Space");
-                coloursDict.Add(31, "Ice");
-                coloursDict.Add(32, "Mint");
-                coloursDict.Add(33, "BTS");
-                coloursDict.Add(34, "Forest Green");
-                coloursDict.Add(35, "Donation");
-                coloursDict.Add(36, "Cherry");
-                coloursDict.Add(37, "Toy");
-                coloursDict.Add(38, "Pizzaria");
-                coloursDict.Add(39, "Starlight");
-                coloursDict.Add(40, "Softball");
-                coloursDict.Add(41, "Dark Jester");
-                coloursDict.Add(42, "Fresh");
-                coloursDict.Add(43, "Goner");
-                coloursDict.Add(44, "Psychic Friend");
-                coloursDict.Add(45, "Frost");
-                coloursDict.Add(46, "Abyss Green");
-                coloursDict.Add(47, "Midnight");
-                coloursDict.Add(48, "<3");
-                coloursDict.Add(49, "Heat From Fire");
-                coloursDict.Add(50, "Fire From Heat");
-                coloursDict.Add(51, "Determination");
-                coloursDict.Add(52, "Patience");
-                coloursDict.Add(53, "Bravery");
-                coloursDict.Add(54, "Integrity");
-                coloursDict.Add(55, "Perserverance");
-                coloursDict.Add(56, "Kindness");
-                coloursDict.Add(57, "Bravery");
-                coloursDict.Add(58, "Purple Plumber");
-                coloursDict.Add(59, "Rainbow");
+                coloursDict.Add(27, "Plum");
+                coloursDict.Add(28, "Jungle");
+                coloursDict.Add(29, "Mint");
+                coloursDict.Add(30, "Chartreuse");
+                coloursDict.Add(31, "Macau");
+                coloursDict.Add(32, "Tawny");
+                coloursDict.Add(33, "Gold");
+                coloursDict.Add(34, "Rainbow");
 
                 var hudManager = DestroyableSingleton<HudManager>.Instance.Chat;
                 string text = hudManager.TextArea.text;
@@ -2271,28 +2246,23 @@ namespace TownOfUsReworked.Patches
                                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"{player.PlayerId}");
                             }
 
+                            PlayerControl target = null;
+
                             if (correctNumber)
+                                target = Utils.PlayerById(id1);
+                            else if (correctNumber2)
+                                target = Utils.PlayerById(id2);
+
+                            if ((correctNumber || correctNumber2) && target != null)
                             {
-                                var target = Utils.PlayerById(id1);
-                                hudManager.AddChat(player, $"You whisper to {target.name}: {message}");
-                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message}");
+                                var message3 = correctNumber ? message : message2;
+                                hudManager.AddChat(player, $"You whisper to {target.name}: {message3}");
+                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message3}");
 
                                 foreach (var player2 in PlayerControl.AllPlayerControls)
                                 {
                                     if (player2 != whisperer && player2 != target)
                                         hudManager.AddChat(player2, $"{whisperer.name} is whispering to {target.name}!");
-                                }
-                            }
-                            else if (correctNumber2)
-                            {
-                                var target = Utils.PlayerById(id2);
-                                hudManager.AddChat(player, $"You whisper to {target.name}: {message2}");
-                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message2}");
-
-                                foreach (var player2 in PlayerControl.AllPlayerControls)
-                                {
-                                    if (player2 != whisperer && player2 != target)
-                                        hudManager.AddChat(target, $"{whisperer.name} is whispering to {target.name}!");
                                 }
                             }
                             else

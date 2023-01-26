@@ -38,6 +38,8 @@ namespace TownOfUsReworked.Enums
         PhantomLose,
         GuardianAngelWin,
         GuardianAngelLose,
+        GuesserWin,
+        GuesserLose,
 
         CrewWin,
         CrewLose,

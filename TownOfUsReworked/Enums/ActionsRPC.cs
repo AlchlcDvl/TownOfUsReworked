@@ -27,6 +27,7 @@ namespace TownOfUsReworked.Enums
         Drag,
         Drop,
         AssassinKill,
+        GuesserKill,
         RevealerFinished,
         FlashGrenade,
         Alert,
@@ -70,6 +71,7 @@ namespace TownOfUsReworked.Enums
         Imitate,
         StartImitate,
         Detonate,
-        UnMimic
+        UnMimic,
+        NecromancerResurrect
     }
 }

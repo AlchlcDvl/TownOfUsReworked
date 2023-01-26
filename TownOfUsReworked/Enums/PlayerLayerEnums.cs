@@ -51,7 +51,6 @@ namespace TownOfUsReworked.Enums
         Mystic,
         Operative,
         Revealer,
-        Seer,
         Sheriff,
         Shifter,
         Swapper,

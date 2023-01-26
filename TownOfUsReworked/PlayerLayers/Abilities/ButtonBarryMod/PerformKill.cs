@@ -11,15 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.ButtonBarry))
-                return true;
+            if (Utils.NoButton(PlayerControl.LocalPlayer, AbilityEnum.ButtonBarry, true))
+                return false;
 
             var role = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
 
-            if (__instance != role.ButtonButton)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead || role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies <= 0 || !__instance.enabled)
+            if (role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies > 0)
                 return false;
 
             role.ButtonUsed = true;

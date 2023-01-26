@@ -45,6 +45,9 @@ Neutral:-
   - Thief = 38
   - Dracula = 39
   - Troll = 40
+  - Guesser = 66
+  - Whisperer = 67
+  - Necromancer = 68
 
 Intruders:-
   - Undertaker = 41
@@ -57,7 +60,6 @@ Intruders:-
   - Janitor = 48
   - Camouflager = 49
   - Grenadier = 50
-  - Poisoner = 51
   - Impostor = 52
   - Consigliere = 53
   - Disguiser = 54
@@ -73,6 +75,7 @@ Syndicate:-
   - Concealer = 62
   - Warper = 63
   - Bomber = 64
+  - Poisoner = 51
 
   Roles that don't spawn:-
   - Dampyr

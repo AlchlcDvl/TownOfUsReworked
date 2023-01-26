@@ -38,7 +38,6 @@ namespace TownOfUsReworked.Extensions
     [HarmonyPatch]
     public static class Utils
     {
-        internal static bool ShowDeadBodies = false;
         private static GameData.PlayerInfo voteTarget = null;
         public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
@@ -97,15 +96,13 @@ namespace TownOfUsReworked.Extensions
                     var color = Colors.Clear;
                     var playerName = " ";
 
-                    if (player.Is(Faction.Syndicate) || player.Data.IsDead)
+                    if ((player.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) || PlayerControl.LocalPlayer.Data.IsDead)
                     {
                         color.a = 26;
                         playerName = player.name;
                     }
 
-                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
-                        player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
-                        player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
+                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
                     {
                         player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
                         {
@@ -115,6 +112,7 @@ namespace TownOfUsReworked.Extensions
                             VisorId = "",
                             PlayerName = playerName
                         });
+
                         PlayerMaterial.SetColors(color, player.myRend());
                         player.nameText().color = color;
                         player.cosmetics.colorBlindText.color = color;
@@ -149,24 +147,18 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var player in allPlayers)
             {
-                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
-                    player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
-                    player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
+                int random;
+
+                while (true)
                 {
-                    int random;
+                    random = Random.RandomRangeInt(0, allPlayers.Count);
 
-                    while (true)
-                    {
-                        random = Random.RandomRangeInt(0, allPlayers.Count);
-
-                        if (player != allPlayers[random])
-                            break;
-                    }
-
-                    var otherPlayer = allPlayers[random];
-
-                    Morph(player, otherPlayer);
+                    if (player != allPlayers[random])
+                        break;
                 }
+
+                var otherPlayer = allPlayers[random];
+                Morph(player, otherPlayer);
             }
         }
 
@@ -202,10 +194,7 @@ namespace TownOfUsReworked.Extensions
         public static void DefaultOutfitAll()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player != null)
-                    DefaultOutfit(player);
-            }
+                DefaultOutfit(player);
         }
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
@@ -445,100 +434,6 @@ namespace TownOfUsReworked.Extensions
             var flag1 = (crewflag && !(loverflag || rivalflag || corruptedflag));
             var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
             var flag = (flag1 || flag2) && !recruitflag; // && ((CustomGameOptions.GhostTasksCountToWin && isdead) || (!CustomGameOptions.GhostTasksCountToWin && !isdead))
-
-            return flag;
-        }
-
-        //Making these functions because I hate the copy paste in all of the HUD and PerformKill files
-        public static bool CannotUseButton(PlayerControl buttonWeilder, RoleEnum role, PlayerControl target = null, KillButton __instance = null, DeadBody deadbody = null)
-        {
-            var countFlag = PlayerControl.AllPlayerControls.ToArray().Count() <= 1;
-            var playerFlag = buttonWeilder == null;
-            var dataFlag = !playerFlag ? buttonWeilder.Data == null : false;
-            var disconnectFlag = !dataFlag ? buttonWeilder.Data.Disconnected : false;
-            var deadFlag = !dataFlag ? buttonWeilder.Data.IsDead : false;
-            var roleFlag = !buttonWeilder.Is(role);
-            var moveableFlag = !PlayerControl.LocalPlayer.CanMove;
-            var meetingFlag = MeetingHud.Instance;
-            var lobbyFlag = LobbyBehaviour.Instance;
-            var targetFlag = target != null;
-            var deadBodyFlag = deadbody != null;
-            var distanceFlag = false;
-            var activeFlag = false;
-            var cooldownFlag = false;
-            var enableFlag = false;
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (__instance != null)
-            {
-                activeFlag = __instance.isActiveAndEnabled;
-                cooldownFlag = __instance.isCoolingDown;
-                enableFlag = __instance.enabled;
-            }
-
-            if (targetFlag)
-            {
-                if (GetDistBetweenPlayers(buttonWeilder, target) > maxDistance)
-                    distanceFlag = true;
-            }
-
-            if (deadBodyFlag)
-            {
-                var deadperson = PlayerById(deadbody.ParentId);
-
-                if (GetDistBetweenPlayers(buttonWeilder, deadperson) > maxDistance)
-                    distanceFlag = true;
-            }
-
-            var flag = countFlag || playerFlag || dataFlag || disconnectFlag || deadFlag || activeFlag || cooldownFlag || roleFlag || moveableFlag || meetingFlag || lobbyFlag ||
-                enableFlag || (targetFlag && distanceFlag) || (deadBodyFlag && distanceFlag);
-
-            return flag;
-        }
-
-        //Making these functions because I hate the copy paste in all of the HUD and PerformKill files
-        public static bool CannotUseButton(PlayerControl buttonWeilder, ObjectifierEnum objectifier, PlayerControl target = null, KillButton __instance = null, DeadBody deadbody = null)
-        {
-            var countFlag = PlayerControl.AllPlayerControls.ToArray().Count() <= 1;
-            var playerFlag = buttonWeilder == null;
-            var dataFlag = !playerFlag ? buttonWeilder.Data == null : false;
-            var disconnectFlag = !dataFlag ? buttonWeilder.Data.Disconnected : false;
-            var deadFlag = !dataFlag ? buttonWeilder.Data.IsDead : false;
-            var objectifierFlag = !buttonWeilder.Is(objectifier);
-            var moveableFlag = !PlayerControl.LocalPlayer.CanMove;
-            var meetingFlag = MeetingHud.Instance;
-            var lobbyFlag = LobbyBehaviour.Instance;
-            var targetFlag = target != null;
-            var deadBodyFlag = deadbody != null;
-            var distanceFlag = false;
-            var activeFlag = false;
-            var cooldownFlag = false;
-            var enableFlag = false;
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (__instance != null)
-            {
-                activeFlag = __instance.isActiveAndEnabled;
-                cooldownFlag = __instance.isCoolingDown;
-                enableFlag = __instance.enabled;
-            }
-
-            if (targetFlag)
-            {
-                if (GetDistBetweenPlayers(buttonWeilder, target) > maxDistance)
-                    distanceFlag = true;
-            }
-
-            if (deadBodyFlag)
-            {
-                var deadperson = PlayerById(deadbody.ParentId);
-
-                if (GetDistBetweenPlayers(buttonWeilder, deadperson) > maxDistance)
-                    distanceFlag = true;
-            }
-
-            var flag = countFlag || playerFlag || dataFlag || disconnectFlag || deadFlag || activeFlag || cooldownFlag || objectifierFlag || moveableFlag || meetingFlag ||
-                lobbyFlag || enableFlag || (targetFlag && distanceFlag) || (deadBodyFlag && distanceFlag);
 
             return flag;
         }
@@ -869,6 +764,24 @@ namespace TownOfUsReworked.Extensions
             var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
                 (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Jackal)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
                 x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsRecruit()) == 0;
+
+            return flag;
+        }
+
+        public static bool SectWin()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
+                (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Whisperer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
+                x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsPersuaded()) == 0;
+
+            return flag;
+        }
+
+        public static bool ReanimatedWin()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
+                (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Necromancer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
+                x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsRevived()) == 0;
 
             return flag;
         }
@@ -1501,12 +1414,7 @@ namespace TownOfUsReworked.Extensions
             
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                var role2 = Role.GetRole(player);
-
-                if (role2 == null)
-                    return "<color=#FFFFFFFF>" + playerName + "</color>";
-
-                if (role2.PlayerName.Contains(playerName))
+                if (player.name == playerName)
                 {
                     target = player;
                     break;
@@ -2005,7 +1913,7 @@ namespace TownOfUsReworked.Extensions
         
 		public static IEnumerator Block(Role blocker, PlayerControl blockPlayer)
 		{
-			GameObject[] lockImg = { null, null, null, null };
+			GameObject[] lockImg = { null, null, null, null, null };
 
 			if (tickDictionary.ContainsKey(blockPlayer.PlayerId))
 			{
@@ -2098,6 +2006,27 @@ namespace TownOfUsReworked.Extensions
                         }
                     }
 
+                    var obj = Objectifier.GetObjectifier(blockPlayer);
+
+                    if (obj != null)
+                    {
+                        if (obj.ExtraButtons.Count > 0)
+                        {
+                            if (lockImg[4] == null)
+                            {
+                                lockImg[4] = new GameObject();
+                                var lockImgR = lockImg[4].AddComponent<SpriteRenderer>();
+                                lockImgR.sprite = TownOfUsReworked.Lock;
+                            }
+
+                            lockImg[4].transform.position = new Vector3(obj.ExtraButtons[0].transform.position.x, obj.ExtraButtons[0].transform.position.y, -50f);
+                            lockImg[4].layer = 5;
+                            obj.ExtraButtons[0].enabled = false;
+                            obj.ExtraButtons[0].graphic.color = Palette.DisabledClear;
+                            obj.ExtraButtons[0].graphic.material.SetFloat("_Desat", 1f);
+                        }
+                    }
+
                     if (Minigame.Instance)
                     {
                         Minigame.Instance.Close();
@@ -2147,6 +2076,18 @@ namespace TownOfUsReworked.Extensions
                                 role.ExtraButtons[0].enabled = true;
                                 role.ExtraButtons[0].graphic.color = Palette.EnabledColor;
                                 role.ExtraButtons[0].graphic.material.SetFloat("_Desat", 0f);
+                            }
+                        }
+
+                        var obj = Objectifier.GetObjectifier(blockPlayer);
+
+                        if (obj != null)
+                        {
+                            if (obj.ExtraButtons.Count > 0)
+                            {
+                                obj.ExtraButtons[0].enabled = true;
+                                obj.ExtraButtons[0].graphic.color = Palette.EnabledColor;
+                                obj.ExtraButtons[0].graphic.material.SetFloat("_Desat", 0f);
                             }
                         }
                     }
@@ -2256,7 +2197,7 @@ namespace TownOfUsReworked.Extensions
             return mainflag;
         }
         
-        public static List<bool> Interact(PlayerControl player, PlayerControl target, bool toKill = false, Role cautious = null)
+        public static List<bool> Interact(PlayerControl player, PlayerControl target, Role cautious = null, bool toKill = false, bool toConvert = false)
         {
             bool fullCooldownReset = false;
             bool gaReset = false;
@@ -2307,6 +2248,50 @@ namespace TownOfUsReworked.Extensions
                     StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
+            else if (cautious != null)
+            {
+                if (cautious.Player == target)
+                {
+                    if (player.IsShielded() || player.IsProtected())
+                    {
+                        if (player.IsShielded())
+                        {
+                            var medic = player.GetMedic().Player.PlayerId;
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                            writer.Write(medic);
+                            writer.Write(player.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                            if (CustomGameOptions.ShieldBreaks)
+                                fullCooldownReset = true;
+                            else
+                                zeroSecReset = true;
+
+                            StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                        }
+                        else if (player.IsProtected())
+                            gaReset = true;
+                    }
+                    else
+                        RpcMurderPlayer(target, player);
+                    
+                    if (target.IsShielded() && (toKill || toConvert))
+                    {
+                        var medic = target.GetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                        writer.Write(medic);
+                        writer.Write(target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                        if (CustomGameOptions.ShieldBreaks)
+                            fullCooldownReset = true;
+                        else
+                            zeroSecReset = true;
+
+                        StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                    }
+                }
+            }
             else if (target.IsOnAlert() && !player.Is(AbilityEnum.Ruthless))
             {
                 if (player.Is(RoleEnum.Pestilence))
@@ -2348,14 +2333,29 @@ namespace TownOfUsReworked.Extensions
                     gaReset = true;
                 else
                     RpcMurderPlayer(target, player);
+                
+                if (target.IsShielded() && (toKill || toConvert))
+                {
+                    var medic = target.GetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                    writer.Write(medic);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    if (CustomGameOptions.ShieldBreaks)
+                        fullCooldownReset = true;
+                    else
+                        zeroSecReset = true;
+
+                    StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                }
             }
-            else if (target.IsShielded() && toKill && !player.Is(AbilityEnum.Ruthless))
+            else if (target.IsShielded() && (toKill || toConvert) && !player.Is(AbilityEnum.Ruthless))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                 writer.Write(target.GetMedic().Player.PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                 if (CustomGameOptions.ShieldBreaks)
                     fullCooldownReset = true;
@@ -2364,10 +2364,12 @@ namespace TownOfUsReworked.Extensions
 
                 StopKill.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
-            else if (target.IsVesting() && toKill && !player.Is(AbilityEnum.Ruthless))
+            else if (target.IsVesting() && (toKill || toConvert) && !player.Is(AbilityEnum.Ruthless))
                 survReset = true;
-            else if (target.IsProtected() && toKill && !player.Is(AbilityEnum.Ruthless))
+            else if (target.IsProtected() && (toKill || toConvert) && !player.Is(AbilityEnum.Ruthless))
                 gaReset = true;
+            else if (player.IsOtherRival(target) && (toKill || toConvert))
+                fullCooldownReset = true;
             else if (toKill)
             {
                 if (player.Is(RoleEnum.Glitch))
@@ -2401,8 +2403,24 @@ namespace TownOfUsReworked.Extensions
                     var murd = Role.GetRole<Murderer>(player);
                     murd.LastKill = DateTime.UtcNow;
                 }
+                else if (player.Is(ObjectifierEnum.Corrupted))
+                {
+                    var corr = Objectifier.GetObjectifier<Corrupted>(player);
+                    corr.LastKilled = DateTime.UtcNow;
+                }
 
                 RpcMurderPlayer(player, target);
+                abilityUsed = true;
+                fullCooldownReset = true;
+            }
+            else if (toConvert)
+            {
+                if (player.Is(RoleEnum.Dracula))
+                {
+                    var drac = Role.GetRole<Dracula>(player);
+                    drac.LastBitten = DateTime.UtcNow;
+                }
+
                 abilityUsed = true;
                 fullCooldownReset = true;
             }
@@ -2456,6 +2474,14 @@ namespace TownOfUsReworked.Extensions
             return (GetDistBetweenPlayers(player, target) > maxDistance);
         }
 
+        public static bool ButtonUsable(KillButton button)
+        {
+            if (button.isActiveAndEnabled && !button.isCoolingDown)
+                return true;
+
+            return false;
+        }
+
         public static bool IsTooFar(PlayerControl player, DeadBody target)
         {
             if (player == null || target == null)
@@ -2465,68 +2491,35 @@ namespace TownOfUsReworked.Extensions
             return (GetDistBetweenPlayers(player, target) > maxDistance);
         }
 
-        public static bool SetActive(PlayerControl target)
+        public static bool SetActive(PlayerControl target, HudManager hud)
         {
-            return !target.Data.IsDead && !target.Data.Disconnected && !LobbyBehaviour.Instance && !MeetingHud.Instance && !(Role.GetRole(target)).IsBlocked;
+            var buttonFlag = hud.UseButton.isActiveAndEnabled || hud.PetButton.isActiveAndEnabled;
+            var meetingFlag = !MeetingHud.Instance;
+            return !target.Data.IsDead && Patches.GameStates.IsInGame && meetingFlag && buttonFlag;
         }
 
-        public static bool PlayerFlag(PlayerControl player, bool EvenAfterDeath = false, bool EvenWhenOccupied = false)
+        public static bool NoButton(PlayerControl target, RoleEnum role, bool clicked = false)
         {
-            if (player == null)
-                return true;
-
-            if (player.Data == null)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || (!target.CanMove && clicked) || !target.Is(role))
                 return true;
             
-            if (PlayerControl.AllPlayerControls.ToArray().Count() <= 1)
-                return true;
-
-            if (player.Data.Disconnected && !EvenAfterDeath)
-                return true;
-
-            if (player.Data.IsDead && !EvenWhenOccupied)
-                return true;
-            
-            if (LobbyBehaviour.Instance || Minigame.Instance || MeetingHud.Instance)
-                return true;
-            
-            if (!player.CanMove)
-                return true;
-
             return false;
         }
 
-        //Making these functions because I hate the copy paste in all of the HUD and PerformKill files
-        public static bool CannotUseButton(PlayerControl buttonWeilder, AbilityEnum ability, PlayerControl target = null, KillButton __instance = null)
+        public static bool NoButton(PlayerControl target, ObjectifierEnum obj, bool clicked = false)
         {
-            var playerFlag = PlayerFlag(buttonWeilder);
-            var abilityFlag = !buttonWeilder.Is(ability);
-            var meetingFlag = MeetingHud.Instance;
-            var lobbyFlag = LobbyBehaviour.Instance;
-            var targetFlag = target != null;
-            var activeFlag = false;
-            var cooldownFlag = false;
-            var enableFlag = false;
-
-            if (__instance != null)
-            {
-                activeFlag = __instance.isActiveAndEnabled;
-                cooldownFlag = __instance.isCoolingDown;
-                enableFlag = __instance.enabled;
-            }
-
-            var flag = playerFlag || activeFlag || cooldownFlag || abilityFlag || meetingFlag || lobbyFlag || enableFlag;
-            return flag;
+            if (PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || (!target.CanMove && clicked) || !target.Is(obj))
+                return true;
+            
+            return false;
         }
 
-        public static bool CheckInteractionSesitive(PlayerControl target, Role role = null)
+        public static bool NoButton(PlayerControl target, AbilityEnum ability, bool clicked = false)
         {
-            var flag1 = target.IsOnAlert();
-            var flag2 = target.Is(RoleEnum.Pestilence);
-            var flag3 = role != null ? role?.Player == target : false;
-
-            var mainflag = flag1 || flag2 || flag3;
-            return mainflag;
+            if (PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || (!target.CanMove && clicked) || !target.Is(ability))
+                return true;
+            
+            return false;
         }
 
         public static void Spread(PlayerControl interacter, PlayerControl target)

@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Engineer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Engineer))
                 return;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
@@ -23,11 +23,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             {
                 role.FixButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.FixButton.graphic.enabled = true;
+                role.FixButton.graphic.sprite = Fix;
                 role.FixButton.gameObject.SetActive(false);
             }
             
             role.FixButton.SetCoolDown(0f, 10f);
-            role.FixButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.UsedThisRound);
+            role.FixButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.UsedThisRound);
 
             if (!ShipStatus.Instance)
                 return;

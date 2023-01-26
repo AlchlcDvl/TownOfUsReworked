@@ -64,8 +64,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var roleType = role.RoleType;
             var ability = (Ability.GetAbility(other))?.AbilityType;
             var amnesiac = amneRole.Player;
-            List<PlayerTask> tasks1, tasks2;
-            List<GameData.TaskInfo> taskinfos1, taskinfos2;
             Role newRole;
 
             if (PlayerControl.LocalPlayer == amnesiac)
@@ -366,16 +364,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             
             if (newRole.Player == PlayerControl.LocalPlayer)
                 newRole.RegenTask();
-
-            tasks1 = other.myTasks;
-            taskinfos1 = other.Data.Tasks;
-            tasks2 = amnesiac.myTasks;
-            taskinfos2 = amnesiac.Data.Tasks;
-
-            amnesiac.myTasks = tasks1;
-            amnesiac.Data.Tasks = taskinfos1;
-            other.myTasks = tasks2;
-            other.Data.Tasks = taskinfos2;
 
             if (ability == AbilityEnum.Snitch)
             {

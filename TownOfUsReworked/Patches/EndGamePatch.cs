@@ -149,6 +149,7 @@ namespace TownOfUsReworked.Patches
             var winners = TempData.winners;
 
             var winnerCount = 0;
+            var loserCount = 0;
 
             roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
             roleSummaryText.AppendLine(" ");
@@ -166,11 +167,17 @@ namespace TownOfUsReworked.Patches
                     winnerCount += 1;
                 }
                 else
+                {
                     losersText.AppendLine(dataString);
+                    loserCount += 1;
+                }
             }
 
             if (winnerCount == 0)
-                winnersText.AppendLine("<size=70%>No One Won</size>");
+                winnersText.AppendLine("<size=75%>No One Won</size>");
+
+            if (loserCount == 0)
+                winnersText.AppendLine("<size=75%>No One Lost</size>");
 
             winnersText.AppendLine(" ");
             

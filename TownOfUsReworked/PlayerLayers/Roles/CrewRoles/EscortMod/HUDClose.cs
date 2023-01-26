@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             foreach (var role in Role.GetRoles(RoleEnum.Escort))
             {
-                var role2 = (Escort) role;
+                var role2 = (Escort)role;
                 role2.LastBlock = DateTime.UtcNow;
             }
         }

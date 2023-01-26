@@ -24,6 +24,7 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
@@ -41,7 +42,7 @@ using PerformStealButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.Thie
 using PerformDeclareButton = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformKill;
 using PerformSidekickButton = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformKill;
 using PerformShiftButton = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShiftButton;
-using PerformConvertButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvertButton;
+using PerformConvertButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvert;
 
 namespace TownOfUsReworked.Patches
 {
@@ -139,6 +140,9 @@ namespace TownOfUsReworked.Patches
 
         private static void SortThings(List<(Type, int, int, bool)> items, int max, int min)
         {
+            if (items.Count == 0)
+                return;
+
             items.Shuffle();
 
             if (items.Count < max)
@@ -209,6 +213,9 @@ namespace TownOfUsReworked.Patches
 
         private static void SortThings(List<(Type, int, int)> items, int max, int min)
         {
+            if (items.Count == 0)
+                return;
+                
             items.Shuffle();
 
             if (items.Count < max)
@@ -854,167 +861,6 @@ namespace TownOfUsReworked.Patches
 
                     PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Classic/Custom Role Spawn 2 Done");
                 }
-
-                var exeTargets = new List<PlayerControl>();
-                var gaTargets = new List<PlayerControl>();
-                var goodRecruits = new List<PlayerControl>();
-                var evilRecruits = new List<PlayerControl>();
-                
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player.Is(Faction.Crew))
-                    {
-                        if (!player.Is(RoleEnum.Altruist))
-                            gaTargets.Add(player);
-                        
-                        if (!player.HasObjectifier())
-                            goodRecruits.Add(player);
-                            
-                        if (!player.Is(RoleAlignment.CrewSov) && !player.Is(ObjectifierEnum.Traitor))
-                            exeTargets.Add(player);
-                    }
-                    else if (player.Is(Faction.Neutral))
-                    {
-                        if (!player.Is(RoleEnum.Executioner) && !player.Is(RoleEnum.Troll) && !player.Is(RoleEnum.GuardianAngel) && !player.Is(RoleEnum.Jester))
-                        {
-                            gaTargets.Add(player);
-                                
-                            if (player.Is(RoleAlignment.NeutralKill))
-                            {
-                                if (!player.HasObjectifier())
-                                    evilRecruits.Add(player);
-                            }
-                            else if (player.Is(RoleAlignment.NeutralEvil))
-                            {
-                                if (!player.HasObjectifier())
-                                    goodRecruits.Add(player);
-                            }
-                        }
-
-                        if (CustomGameOptions.ExeCanHaveNeutralTargets)
-                            exeTargets.Add(player);
-                    }
-                    else if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                    {
-                        gaTargets.Add(player);
-                        
-                        if (!player.HasObjectifier())
-                            evilRecruits.Add(player);
-
-                        if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
-                            exeTargets.Add(player);
-                    }
-                }
-
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Targets Set");
-
-                if (CustomGameOptions.ExecutionerOn > 0)
-                {
-                    foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
-                    {
-                        exe.TargetPlayer = null;
-
-                        if (exeTargets.Count > 0)
-                        {
-                            while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player)
-                            {
-                                exeTargets.Shuffle();
-                                var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
-                                exe.TargetPlayer = exeTargets[exeNum];
-                            }
-
-                            exeTargets.Remove(exe.TargetPlayer);
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget, SendOption.Reliable, -1);
-                            writer.Write(exe.Player.PlayerId);
-                            writer.Write(exe.TargetPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
-                        }
-                    }
-
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Exe Target Set");
-                }
-                
-                if (CustomGameOptions.GuardianAngelOn > 0)
-                {
-                    foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
-                    {
-                        ga.TargetPlayer = null;
-                        
-                        if (gaTargets.Count > 0)
-                        {
-                            while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
-                            {
-                                gaTargets.Shuffle();
-                                var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
-                                ga.TargetPlayer = gaTargets[gaNum];
-                            }
-
-                            gaTargets.Remove(ga.TargetPlayer);
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget, SendOption.Reliable, -1);
-                            writer.Write(ga.Player.PlayerId);
-                            writer.Write(ga.TargetPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"GA Target = {ga.TargetPlayer.name}");
-                        }
-                    }
-
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("GA Target Set");
-                }
-
-                if (CustomGameOptions.JackalOn > 0)
-                {
-                    foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
-                    {
-                        jackal.GoodRecruit = null;
-                        jackal.EvilRecruit = null;
-                        jackal.BackupRecruit = null;
-                        
-                        if (goodRecruits.Count > 0)
-                        {
-                            while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player)
-                            {
-                                goodRecruits.Shuffle();
-                                var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
-                                jackal.GoodRecruit = goodRecruits[goodNum];
-                            }
-
-                            goodRecruits.Remove(jackal.GoodRecruit);
-                            (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
-                            (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit, SendOption.Reliable, -1);
-                            writer.Write(jackal.Player.PlayerId);
-                            writer.Write(jackal.GoodRecruit.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Good Recruit = {jackal.GoodRecruit.name}");
-                        }
-                        
-                        if (evilRecruits.Count > 0)
-                        {
-                            while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player)
-                            {
-                                evilRecruits.Shuffle();
-                                var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
-                                jackal.EvilRecruit = evilRecruits[evilNum];
-                            }
-
-                            evilRecruits.Remove(jackal.EvilRecruit);
-                            (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
-                            (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit, SendOption.Reliable, -1);
-                            writer.Write(jackal.Player.PlayerId);
-                            writer.Write(jackal.EvilRecruit.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Evil Recruit = {jackal.EvilRecruit.name}");
-                        }
-                    }
-
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jackal Recruits Set");
-                }
             }
             else
             {
@@ -1422,45 +1268,240 @@ namespace TownOfUsReworked.Patches
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Allied Faction Set Done");
             }
 
-            var toChooseFromNeut = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral)).ToList();
-
-            if (PhantomOn && toChooseFromNeut.Count != 0)
+            if (!IsKilling)
             {
-                var rand = Random.RandomRangeInt(0, toChooseFromNeut.Count);
-                var pc = toChooseFromNeut[rand];
+                var toChooseFromNeut = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral)).ToList();
 
-                SetPhantom.WillBePhantom = pc;
+                if (PhantomOn && toChooseFromNeut.Count != 0)
+                {
+                    var rand = Random.RandomRangeInt(0, toChooseFromNeut.Count);
+                    var pc = toChooseFromNeut[rand];
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
-                writer.Write(pc.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-            else
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
-                writer.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
+                    SetPhantom.WillBePhantom = pc;
 
-            var toChooseFromCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Traitor) &&
-                !x.Is(ObjectifierEnum.Corrupted) && !x.Is(ObjectifierEnum.Fanatic)).ToList();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    writer.Write(pc.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    writer.Write(byte.MaxValue);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
 
-            if (RevealerOn && toChooseFromCrew.Count != 0)
-            {
-                var rand = Random.RandomRangeInt(0, toChooseFromCrew.Count);
-                var pc = toChooseFromCrew[rand];
+                var toChooseFromCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Traitor) &&
+                    !x.Is(ObjectifierEnum.Corrupted) && !x.Is(ObjectifierEnum.Fanatic)).ToList();
 
-                SetRevealer.WillBeRevealer = pc;
+                if (RevealerOn && toChooseFromCrew.Count != 0)
+                {
+                    var rand = Random.RandomRangeInt(0, toChooseFromCrew.Count);
+                    var pc = toChooseFromCrew[rand];
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
-                writer.Write(pc.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
-            else
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
-                writer.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    SetRevealer.WillBeRevealer = pc;
+
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    writer.Write(pc.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    writer.Write(byte.MaxValue);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                var exeTargets = new List<PlayerControl>();
+                var gaTargets = new List<PlayerControl>();
+                var guessTargets = new List<PlayerControl>();
+                var goodRecruits = new List<PlayerControl>();
+                var evilRecruits = new List<PlayerControl>();
+                
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction.Crew))
+                    {
+                        if (!player.Is(RoleEnum.Altruist))
+                            gaTargets.Add(player);
+                        
+                        if (!player.HasObjectifier())
+                            goodRecruits.Add(player);
+                            
+                        if (!player.Is(RoleAlignment.CrewSov) && !player.Is(ObjectifierEnum.Traitor))
+                            exeTargets.Add(player);
+                    }
+                    else if (player.Is(Faction.Neutral))
+                    {
+                        if (!player.Is(RoleEnum.Executioner) && !player.Is(RoleEnum.Troll) && !player.Is(RoleEnum.GuardianAngel) && !player.Is(RoleEnum.Jester))
+                        {
+                            gaTargets.Add(player);
+                                
+                            if (player.Is(RoleAlignment.NeutralKill))
+                            {
+                                if (!player.HasObjectifier())
+                                    evilRecruits.Add(player);
+                            }
+                            else if (player.Is(RoleAlignment.NeutralEvil))
+                            {
+                                if (!player.HasObjectifier())
+                                    goodRecruits.Add(player);
+                            }
+                        }
+
+                        if (CustomGameOptions.ExeCanHaveNeutralTargets)
+                            exeTargets.Add(player);
+                    }
+                    else if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
+                    {
+                        gaTargets.Add(player);
+                        
+                        if (!player.HasObjectifier())
+                            evilRecruits.Add(player);
+
+                        if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
+                            exeTargets.Add(player);
+                    }
+
+                    guessTargets.Add(player);
+                }
+
+                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Targets Set");
+
+                if (CustomGameOptions.ExecutionerOn > 0)
+                {
+                    foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+                    {
+                        exe.TargetPlayer = null;
+
+                        if (exeTargets.Count > 0)
+                        {
+                            while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player)
+                            {
+                                exeTargets.Shuffle();
+                                var exeNum = Random.RandomRangeInt(0, exeTargets.Count - 1);
+                                exe.TargetPlayer = exeTargets[exeNum];
+                            }
+
+                            exeTargets.Remove(exe.TargetPlayer);
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget, SendOption.Reliable, -1);
+                            writer.Write(exe.Player.PlayerId);
+                            writer.Write(exe.TargetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
+                        }
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Exe Target Set");
+                }
+
+                if (CustomGameOptions.GuesserOn > 0)
+                {
+                    foreach (Guesser guess in Role.GetRoles(RoleEnum.Guesser))
+                    {
+                        guess.TargetPlayer = null;
+
+                        if (guessTargets.Count > 0)
+                        {
+                            while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player)
+                            {
+                                guessTargets.Shuffle();
+                                var guessNum = Random.RandomRangeInt(0, guessTargets.Count - 1);
+                                guess.TargetPlayer = guessTargets[guessNum];
+                            }
+
+                            guessTargets.Remove(guess.TargetPlayer);
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGuessTarget, SendOption.Reliable, -1);
+                            writer.Write(guess.Player.PlayerId);
+                            writer.Write(guess.TargetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
+                        }
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guess Target Set");
+                }
+                
+                if (CustomGameOptions.GuardianAngelOn > 0)
+                {
+                    foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                    {
+                        ga.TargetPlayer = null;
+                        
+                        if (gaTargets.Count > 0)
+                        {
+                            while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
+                            {
+                                gaTargets.Shuffle();
+                                var gaNum = Random.RandomRangeInt(0, gaTargets.Count - 1);
+                                ga.TargetPlayer = gaTargets[gaNum];
+                            }
+
+                            gaTargets.Remove(ga.TargetPlayer);
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget, SendOption.Reliable, -1);
+                            writer.Write(ga.Player.PlayerId);
+                            writer.Write(ga.TargetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"GA Target = {ga.TargetPlayer.name}");
+                        }
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("GA Target Set");
+                }
+
+                if (CustomGameOptions.JackalOn > 0)
+                {
+                    foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
+                    {
+                        jackal.GoodRecruit = null;
+                        jackal.EvilRecruit = null;
+                        jackal.BackupRecruit = null;
+                        
+                        if (goodRecruits.Count > 0)
+                        {
+                            while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player)
+                            {
+                                goodRecruits.Shuffle();
+                                var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
+                                jackal.GoodRecruit = goodRecruits[goodNum];
+                            }
+
+                            goodRecruits.Remove(jackal.GoodRecruit);
+                            (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
+                            (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit, SendOption.Reliable, -1);
+                            writer.Write(jackal.Player.PlayerId);
+                            writer.Write(jackal.GoodRecruit.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Good Recruit = {jackal.GoodRecruit.name}");
+                        }
+                        
+                        if (evilRecruits.Count > 0)
+                        {
+                            while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player)
+                            {
+                                evilRecruits.Shuffle();
+                                var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
+                                jackal.EvilRecruit = evilRecruits[evilNum];
+                            }
+
+                            evilRecruits.Remove(jackal.EvilRecruit);
+                            (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
+                            (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit, SendOption.Reliable, -1);
+                            writer.Write(jackal.Player.PlayerId);
+                            writer.Write(jackal.EvilRecruit.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Evil Recruit = {jackal.EvilRecruit.name}");
+                        }
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jackal Recruits Set");
+                }
             }
         }
 
@@ -1678,6 +1719,12 @@ namespace TownOfUsReworked.Patches
                             case 65:
                                 new Chameleon(player);
                                 break;
+                            case 66:
+                                new Guesser(player);
+                                break;
+                            case 67:
+                                new Whisperer(player);
+                                break;
                         }
 
                         break;
@@ -1840,6 +1887,10 @@ namespace TownOfUsReworked.Patches
                                 GATargetColor.GAToSurv(Utils.PlayerById(reader.ReadByte()));
                                 break;
 
+                            case TurnRPC.GuessToAct:
+                                GuessTargetColor.GuessToAct(Utils.PlayerById(reader.ReadByte()));
+                                break;
+
                             case TurnRPC.TurnTraitor:
                                 var traitorObj = Objectifier.GetObjectifier<Traitor>(Utils.PlayerById(reader.ReadByte()));
 
@@ -1887,7 +1938,6 @@ namespace TownOfUsReworked.Patches
                         phantomRole.RoleHistory.AddRange(phantomFormer.RoleHistory);
                         phantom.gameObject.layer = LayerMask.NameToLayer("Players");
                         SetPhantom.RemoveTasks(phantom);
-                        SetPhantom.AddCollider(phantomRole);
 
                         if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
                             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
@@ -1899,7 +1949,7 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.Start:
-                        Utils.ShowDeadBodies = false;
+                        //Utils.ShowDeadBodies = false;
                         Role.NobodyWins = false;
                         Role.CrewWin = false;
                         Role.SyndicateWin = false;
@@ -1908,6 +1958,8 @@ namespace TownOfUsReworked.Patches
                         Role.UndeadWin = false;
                         Role.CabalWin = false;
                         Role.NKWins = false;
+                        Role.SectWin = false;
+                        Role.ReanimatedWin = false;
                         Role.SyndicateHasChaosDrive = false;
                         Role.ChaosDriveMeetingTimerCount = 0;
                         ExileControllerPatch.lastExiled = null;
@@ -1930,6 +1982,13 @@ namespace TownOfUsReworked.Patches
                         var exeTarget = Utils.PlayerById(reader.ReadByte());
                         var exeRole = Role.GetRole<Executioner>(exe);
                         exeRole.TargetPlayer = exeTarget;
+                        break;
+
+                    case CustomRPC.SetGuessTarget:
+                        var guess = Utils.PlayerById(reader.ReadByte());
+                        var guessTarget = Utils.PlayerById(reader.ReadByte());
+                        var guessRole = Role.GetRole<Guesser>(guess);
+                        guessRole.TargetPlayer = guessTarget;
                         break;
 
                     case CustomRPC.SetGATarget:
@@ -2000,6 +2059,13 @@ namespace TownOfUsReworked.Patches
                         player5.Collider.enabled = true;
                         player5.moveable = true;
                         player5.NetTransform.enabled = true;
+                        break;
+
+                    case CustomRPC.SetAlliedFaction:
+                        var player6 = Utils.PlayerById(reader.ReadByte());
+                        var alliedRole = Role.GetRole(player6);
+                        var faction = (Faction)reader.ReadByte();
+                        alliedRole.Faction = faction;
                         break;
 
                     case CustomRPC.SubmergedFixOxygen:
@@ -2186,9 +2252,16 @@ namespace TownOfUsReworked.Patches
 
                             case ActionsRPC.AssassinKill:
                                 var toDie = Utils.PlayerById(reader.ReadByte());
-                                var guess = reader.ReadString();
+                                var guessString = reader.ReadString();
                                 var assassin = Ability.GetAbilityValue<Assassin>(AbilityEnum.Assassin);
-                                AssassinKill.MurderPlayer(assassin, toDie, guess);
+                                AssassinKill.MurderPlayer(assassin, toDie, guessString);
+                                break;
+
+                            case ActionsRPC.GuesserKill:
+                                var toDie2 = Utils.PlayerById(reader.ReadByte());
+                                var guessString2 = reader.ReadString();
+                                var assassin2 = Role.GetRoleValue<Guesser>(RoleEnum.Guesser);
+                                GuesserKill.MurderPlayer(assassin2, toDie2, guessString2);
                                 break;
 
                             case ActionsRPC.Mimic:
@@ -2396,6 +2469,13 @@ namespace TownOfUsReworked.Patches
                                 Warper.WarpPlayersToCoordinates(coordinates);
                                 break;
 
+                            case ActionsRPC.Swoop:
+                                var chameleon = Utils.PlayerById(reader.ReadByte());
+                                var chameleonRole = Role.GetRole<Chameleon>(chameleon);
+                                chameleonRole.TimeRemaining = CustomGameOptions.SwoopDuration;
+                                chameleonRole.Invis();
+                                break;
+
                             case ActionsRPC.BarryButton:
                                 var buttonBarry = Utils.PlayerById(reader.ReadByte());
 
@@ -2571,6 +2651,34 @@ namespace TownOfUsReworked.Patches
                                 var undRole2 = Role.GetRole(und2);
                                 undRole2?.Loses();
                                 Role.UndeadWin = false;
+                                break;
+                            
+                            case WinLoseRPC.ReanimatedWin:
+                                var rean = Utils.PlayerById(reader.ReadByte());
+                                var reanRole = Role.GetRole(rean);
+                                reanRole?.Wins();
+                                Role.ReanimatedWin = true;
+                                break;
+                            
+                            case WinLoseRPC.ReanimatedLose:
+                                var rean2 = Utils.PlayerById(reader.ReadByte());
+                                var reanRole2 = Role.GetRole(rean2);
+                                reanRole2?.Loses();
+                                Role.ReanimatedWin = false;
+                                break;
+                            
+                            case WinLoseRPC.SectWin:
+                                var sect = Utils.PlayerById(reader.ReadByte());
+                                var sectRole = Role.GetRole(sect);
+                                sectRole?.Wins();
+                                Role.SectWin = true;
+                                break;
+                            
+                            case WinLoseRPC.SectLose:
+                                var sect2 = Utils.PlayerById(reader.ReadByte());
+                                var sectRole2 = Role.GetRole(sect2);
+                                sectRole2?.Loses();
+                                Role.SectWin = false;
                                 break;
                             
                             case WinLoseRPC.CabalWin:
@@ -2767,6 +2875,18 @@ namespace TownOfUsReworked.Patches
                                 troRole2?.Loses();
                                 break;
                             
+                            case WinLoseRPC.GuesserWin:
+                                var guess2 = Utils.PlayerById(reader.ReadByte());
+                                var guessRole2 = Role.GetRole<Guesser>(guess2);
+                                guessRole2?.Wins();
+                                break;
+                            
+                            case WinLoseRPC.GuesserLose:
+                                var guess3 = Utils.PlayerById(reader.ReadByte());
+                                var guessRole3 = Role.GetRole<Guesser>(guess3);
+                                guessRole3?.Loses();
+                                break;
+                            
                             case WinLoseRPC.WerewolfWin:
                                 var ww2 = Utils.PlayerById(reader.ReadByte());
                                 var wwRole2 = Role.GetRole<Werewolf>(ww2);
@@ -2845,7 +2965,7 @@ namespace TownOfUsReworked.Patches
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("RPC SET ROLE");
                 var infected = GameData.Instance.AllPlayers.ToArray().Where(o => o.IsImpostor());
 
-                Utils.ShowDeadBodies = false;
+                //Utils.ShowDeadBodies = false;
 
                 Role.NobodyWins = false;
 
@@ -2856,6 +2976,8 @@ namespace TownOfUsReworked.Patches
                         
                 Role.UndeadWin = false;
                 Role.CabalWin = false;
+                Role.SectWin = false;
+                Role.ReanimatedWin = false;
 
                 Role.NKWins = false;
 
@@ -3450,6 +3572,19 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cannibal Done");
                     }
 
+                    if (CustomGameOptions.GuesserOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.GuesserCount : 1;
+
+                        while (num > 0)
+                        {
+                            NeutralEvilRoles.Add((typeof(Guesser), CustomGameOptions.GuesserOn, 66, CustomGameOptions.UniqueGuesser));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guesser Done");
+                    }
+
                     if (CustomGameOptions.ThiefOn > 0)
                     {
                         num = IsCustom ? CustomGameOptions.ThiefCount : 1;
@@ -3474,6 +3609,19 @@ namespace TownOfUsReworked.Patches
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dracula Done");
+                    }
+
+                    if (CustomGameOptions.WhispererOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.WhispererCount : 1;
+
+                        while (num > 0)
+                        {
+                            NeutralNeophyteRoles.Add((typeof(Whisperer), CustomGameOptions.WhispererOn, 67, CustomGameOptions.UniqueWhisperer));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Whisperer Done");
                     }
 
                     if (CustomGameOptions.TrollOn > 0 && CustomGameOptions.GameMode != GameMode.Classic)
@@ -3623,19 +3771,6 @@ namespace TownOfUsReworked.Patches
                             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Grenadier Done");
                         }
 
-                        if (CustomGameOptions.PoisonerOn > 0)
-                        {
-                            num = IsCustom ? CustomGameOptions.PoisonerCount : 1;
-
-                            while (num > 0)
-                            {
-                                IntruderDeceptionRoles.Add((typeof(Poisoner), CustomGameOptions.PoisonerOn, 51, CustomGameOptions.UniquePoisoner));
-                                num--;
-                            }
-
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Poisoner Done");
-                        }
-
                         if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
                         {
                             num = CustomGameOptions.ImpCount;
@@ -3767,6 +3902,19 @@ namespace TownOfUsReworked.Patches
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
+                    }
+
+                    if (CustomGameOptions.PoisonerOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.PoisonerCount : 1;
+
+                        while (num > 0)
+                        {
+                            SyndicateDisruptionRoles.Add((typeof(Poisoner), CustomGameOptions.PoisonerOn, 51, CustomGameOptions.UniquePoisoner));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Poisoner Done");
                     }
 
                     if (CustomGameOptions.ConcealerOn > 0)

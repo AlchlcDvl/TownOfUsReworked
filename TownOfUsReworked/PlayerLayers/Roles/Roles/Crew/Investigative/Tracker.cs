@@ -35,6 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
+            FactionDescription = CrewFactionDescription;
+            AlignmentDescription = CIDescription;
+            Objectives = CrewWinCon;
             Results = InspResults.ThiefAmneTrackInvest;
         }
 

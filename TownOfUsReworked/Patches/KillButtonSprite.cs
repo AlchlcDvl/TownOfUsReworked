@@ -200,7 +200,7 @@ namespace TownOfUsReworked.Patches
                         ghostRole = true;
                 }
 
-                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && Utils.ShowDeadBodies && !MeetingHud.Instance);
+                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance);
             }
         }
     }

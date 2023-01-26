@@ -2,6 +2,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
@@ -186,9 +187,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int RetributionistOn => (int)Generate.RetributionistOn.Get();
         public static int NecromancerOn => (int)Generate.NecromancerOn.Get();
         public static int WhispererOn => (int)Generate.WhispererOn.Get();
-        public static int SeerOn => (int)Generate.SeerOn.Get();
+        //public static int SeerOn => (int)Generate.SeerOn.Get();
         public static int MysticOn => (int)Generate.MysticOn.Get();
         public static int ChameleonOn => (int)Generate.ChameleonOn.Get();
+        public static int GuesserOn => (int)Generate.GuesserOn.Get();
 
         //Ability Spawn
         public static int AssassinOn => (int)Generate.AssassinOn.Get();
@@ -506,6 +508,20 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool ExeVentSwitch => Generate.ExeSwitchVent.Get();
         public static bool UniqueExecutioner => Generate.UniqueExecutioner.Get();
 
+        //Guesser Settings
+        public static OnTargetGone OnTargetGone => (OnTargetGone)Generate.OnTargetGone.Get();
+        public static int GuesserCount => (int)Generate.GuesserCount.Get();
+        public static bool VigiKillsGuesser => Generate.VigiKillsGuesser.Get();
+        public static bool GuessVent => Generate.GuessVent.Get();
+        public static bool GuesserButton => Generate.GuesserButton.Get();
+        public static bool GuesserTargetKnows => Generate.GuessTargetKnows.Get();
+        public static bool GuessVentSwitch => Generate.GuessSwitchVent.Get();
+        public static bool UniqueGuesser => Generate.UniqueGuesser.Get();
+        public static bool GuesserAfterVoting => Generate.GuesserAfterVoting.Get();
+        public static bool MultipleGuesses => Generate.MultipleGuesses.Get();
+        public static int MeetingHintCount => (int)Generate.MeetingHintCount.Get();
+        public static int GuessCount => (int)Generate.GuessCount.Get();
+
         //Glitch Settings
         public static bool GlitchVent => Generate.GlitchVent.Get();
         public static float MimicCooldown => Generate.MimicCooldown.Get();
@@ -571,6 +587,28 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int DraculaCount => (int)Generate.DraculaCount.Get();
         public static int AliveVampCount => (int)Generate.AliveVampCount.Get();
         public static bool UniqueDracula => Generate.UniqueDracula.Get();
+
+        //Necromancer Settings
+        public static bool NecroVent => Generate.NecroVent.Get();
+        public static bool KillResurrectCooldownsLinked => Generate.KillResurrectCooldownsLinked.Get();
+        public static float ResurrectCooldown => Generate.ResurrectCooldown.Get();
+        public static float NecroKillCooldown => Generate.NecroKillCooldown.Get();
+        public static float NecroKillCooldownIncrease => Generate.NecroKillCooldownIncrease.Get();
+        public static int NecroKillCount => (int)Generate.NecroKillCount.Get();
+        public static float ResurrectCooldownIncrease => Generate.ResurrectCooldownIncrease.Get();
+        public static int ResurrectCount => (int)Generate.ResurrectCount.Get();
+        public static int NecromancerCount => (int)Generate.NecromancerCount.Get();
+        public static bool UniqueNecromancer => Generate.UniqueNecromancer.Get();
+
+        //Whisperer Settings
+        public static bool WhispVent => Generate.WhispVent.Get();
+        public static float WhisperCooldown => Generate.WhisperCooldown.Get();
+        public static float WhisperRadius => Generate.WhisperRadius.Get();
+        public static float WhisperCooldownIncrease => Generate.WhisperCooldownIncrease.Get();
+        public static float InitialWhisperRate => Generate.InitialWhisperRate.Get();
+        public static float WhisperRateDecrease => Generate.WhisperRateDecrease.Get();
+        public static int WhispererCount => (int)Generate.WhispererCount.Get();
+        public static bool UniqueWhisperer => Generate.UniqueWhisperer.Get();
 
         //Jackal Settings
         public static bool JackalVent => Generate.JackalVent.Get();
@@ -800,6 +838,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //BB Settings
         public static int ButtonBarryCount => (int)Generate.ButtonBarryCount.Get();
+        public static float ButtonCooldown => Generate.ButtonCooldown.Get();
 
         //Tiebreaker Settings
         public static bool TiebreakerKnows => Generate.TiebreakerKnows.Get();

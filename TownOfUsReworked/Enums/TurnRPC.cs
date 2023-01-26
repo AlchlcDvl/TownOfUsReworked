@@ -8,6 +8,7 @@ namespace TownOfUsReworked.Enums
         TurnRebel,
         ExeToJest,
         GAToSurv,
-        TurnTraitor
+        TurnTraitor,
+        GuessToAct
     }
 }

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             foreach (var role in Role.GetRoles(RoleEnum.Engineer))
             {
-                var role2 = (Engineer) role;
+                var role2 = (Engineer)role;
                 
                 if (CustomGameOptions.EngineerFixPer == EngineerFixPer.Round)
                     role2.UsedThisRound = false;
