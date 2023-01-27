@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
@@ -24,36 +24,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             {
                 role.TrackButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.TrackButton.graphic.enabled = true;
+                role.TrackButton.graphic.sprite = Track;
                 role.TrackButton.gameObject.SetActive(false);
             }
-
-            role.TrackButton.graphic.sprite = Track;
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
                 role.UsesText = Object.Instantiate(role.TrackButton.cooldownTimerText, role.TrackButton.transform);
-                role.UsesText.gameObject.SetActive(true);
                 role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
                     role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
+                role.UsesText.gameObject.SetActive(false);
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
 
-            role.TrackButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
+            role.TrackButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
             role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
             var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);
-
-            if (role.UsesLeft == 0)
-                return;
-
             var renderer = role.TrackButton.graphic;
             
-            if (role.ClosestPlayer != null && role.ButtonUsable)
+            if (role.ClosestPlayer != null && role.ButtonUsable && !role.TrackButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

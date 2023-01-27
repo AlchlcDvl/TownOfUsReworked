@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (__instance == role.BiteButton)
             {
-                if (interact[4] == true && interact[0] == true)
+                if (interact[3] == true && interact[0] == true)
                 {
                     var vampCount = PlayerControl.AllPlayerControls.ToArray().ToList().Count(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
 
@@ -53,8 +53,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     role.LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
                     role.LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
-                else if (interact[3] == true)
-                    return false;
 
                 return false;
             }

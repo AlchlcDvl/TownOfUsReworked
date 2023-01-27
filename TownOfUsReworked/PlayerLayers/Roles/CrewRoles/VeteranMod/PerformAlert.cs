@@ -8,19 +8,11 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class Alert
+    public class PerformAlert
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Veteran);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Veteran, true))
                 return false;
 
             var role = Role.GetRole<Veteran>(PlayerControl.LocalPlayer);
@@ -28,19 +20,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
             if (!role.ButtonUsable)
                 return false;
 
-            var alertButton = DestroyableSingleton<HudManager>.Instance.KillButton;
+            if (!Utils.ButtonUsable(__instance))
+                return false;
 
-            if (__instance == alertButton)
+            if (role.AlertTimer() != 0f && __instance == role.AlertButton)
+                return false;
+
+            if (__instance == role.AlertButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
-                if (role.AlertTimer() != 0)
-                    return false;
-
                 role.TimeRemaining = CustomGameOptions.AlertDuration;
                 role.UsesLeft--;
                 role.Alert();

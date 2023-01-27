@@ -14,10 +14,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
         {
             var role = Role.GetRole<Medic>(Utils.PlayerById(medicId));
 
-            if (PlayerControl.LocalPlayer.PlayerId == playerId && CustomGameOptions.NotificationShield == NotificationOptions.Shielded)
+            if (PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded ||
+                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic))
                 Coroutines.Start(Utils.FlashCoroutine(role.Color));
 
-            if (PlayerControl.LocalPlayer.PlayerId == medicId && CustomGameOptions.NotificationShield == NotificationOptions.Medic)
+            if (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
+                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic))
                 Coroutines.Start(Utils.FlashCoroutine(role.Color));
             
             if (CustomGameOptions.NotificationShield == NotificationOptions.Everyone)

@@ -101,9 +101,10 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Syndicate Roles**](#syndicate-roles)
 - [Anarchist](#anarchist)
--[Beamer](#beamer)
+- [Beamer](#beamer)
 - [Bomber](#bomber)
 - [Concealer](#concealer)
+- [Drunkard](#drunkard)
 - [Framer](#framer)
 - [Gorgon](#gorgon)
 - [Poisoner](#poisoner)

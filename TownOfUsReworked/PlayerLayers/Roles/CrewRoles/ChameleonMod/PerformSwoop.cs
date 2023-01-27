@@ -1,10 +1,6 @@
 using HarmonyLib;
 using Hazel;
-using System;
-using Reactor.Utilities;
-using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -23,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             if (__instance != role.SwoopButton)
                 return false;
-            
+
             if (!Utils.ButtonUsable(__instance))
                 return false;
 
@@ -42,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
                 return false;
             }
 
-            return true;
+            return false;
         }
     }
 }

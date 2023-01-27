@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Medic))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medic))
                 return;
 
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
@@ -22,11 +22,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             {
                 role.ShieldButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.ShieldButton.graphic.enabled = true;
+                role.ShieldButton.graphic.sprite = Medic;
                 role.ShieldButton.gameObject.SetActive(false);
             }
 
-            role.ShieldButton.graphic.sprite = Medic;
-            role.ShieldButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && !role.UsedAbility);
+            role.ShieldButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.UsedAbility);
             role.ShieldButton.SetCoolDown(0f, 1f);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
             var renderer = role.ShieldButton.graphic;

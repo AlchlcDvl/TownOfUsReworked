@@ -76,6 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void SetBlocked(PlayerControl blocked)
         {
             LastBlock = DateTime.UtcNow;
+            BlockTarget = blocked;
             Coroutines.Start(Utils.Block(this, blocked));
         }
 
@@ -83,9 +84,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer3.Write((byte)ActionsRPC.EscRoleblock);
-            writer3.Write(PlayerControl.LocalPlayer.PlayerId);
             writer3.Write(blocked.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer3);
+            SetBlocked(blocked);
         }
 
         public float RoleblockTimer()

@@ -34,11 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                 role.TeleportButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.TeleportButton.graphic.enabled = true;
                 role.TeleportButton.graphic.sprite = MarkSprite;
-                role.TeleportButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.TeleportButton.gameObject.SetActive(false);
             }
-
-            role.TeleportButton.GetComponent<AspectPosition>().Update();
 
             if (role.TeleportButton.graphic.sprite != MarkSprite && role.TeleportButton.graphic.sprite != TeleportSprite)
                 role.TeleportButton.graphic.sprite = MarkSprite;

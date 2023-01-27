@@ -1,5 +1,4 @@
-﻿using Hazel;
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -20,22 +19,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (role.RoleblockTimer() != 0f && __instance == role.BlockButton)
                 return false;
 
-            var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, Role.GetRoleValue<VampireHunter>(RoleEnum.VampireHunter), false, true);
-
             if (__instance == role.BlockButton)
             {
-                if (interact[4] == true && interact[0] == true)
+                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller));
+
+                if (interact[3] == true && interact[0] == true)
                 {
                     role.RPCSetBlocked(role.ClosestPlayer);
                     return false;
                 }
                 else if (interact[1] == true)
                     role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[3] == true)
-                    return false;
 
                 return false;
             }

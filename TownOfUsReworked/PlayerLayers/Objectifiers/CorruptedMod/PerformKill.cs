@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 
             var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, null, true);
 
-            if (interact[4] == true && interact[0] == true)
+            if (interact[3] == true && interact[0] == true)
                 return false;
             else if (interact[1] == true)
                 role.LastKilled = role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);

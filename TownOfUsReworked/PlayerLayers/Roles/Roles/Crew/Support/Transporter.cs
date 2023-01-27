@@ -205,20 +205,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
                                                     if (!UntransportablePlayers.ContainsKey(TransportPlayer1.PlayerId) && !UntransportablePlayers.ContainsKey(TransportPlayer2.PlayerId))
                                                     {
-                                                        if (Player.IsInfected() || TransportPlayer1.IsInfected())
-                                                        {
-                                                            foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                                                                ((Plaguebearer)pb).RpcSpreadInfection(Player, TransportPlayer1);
-                                                        }
+                                                        var interaction = Utils.Interact(Player, TransportPlayer1);
+                                                        var interaction2 = Utils.Interact(Player, TransportPlayer2);
 
-                                                        if (Player.IsInfected() || TransportPlayer2.IsInfected())
-                                                        {
-                                                            foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                                                                ((Plaguebearer)pb).RpcSpreadInfection(Player, TransportPlayer2);
-                                                        }
+                                                        Utils.Spread(Player, TransportPlayer1);
+                                                        Utils.Spread(Player, TransportPlayer2);
 
-                                                        var role = GetRole(Player);
-                                                        var transRole = (Transporter)role;
+                                                        var transRole = GetRole<Transporter>(Player);
 
                                                         if (TransportPlayer1.Is(RoleEnum.Pestilence) || TransportPlayer1.IsOnAlert())
                                                         {
@@ -229,8 +222,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                                 writer2.Write(Player.GetMedic().Player.PlayerId);
                                                                 writer2.Write(Player.PlayerId);
                                                                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                                                                System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                                                                 if (CustomGameOptions.ShieldBreaks)
                                                                     transRole.LastTransported = DateTime.UtcNow;
@@ -264,8 +255,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                                                                 writer2.Write(Player.GetMedic().Player.PlayerId);
                                                                 writer2.Write(Player.PlayerId);
                                                                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                                                                System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
 
                                                                 if (CustomGameOptions.ShieldBreaks)
                                                                     transRole.LastTransported = DateTime.UtcNow;

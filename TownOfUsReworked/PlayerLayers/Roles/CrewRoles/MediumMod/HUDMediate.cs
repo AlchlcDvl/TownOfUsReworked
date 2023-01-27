@@ -16,7 +16,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
+            if (PlayerControl.AllPlayerControls.Count <= 1)
+                return;
+
+            if (PlayerControl.LocalPlayer == null)
+                return;
+
+            if (PlayerControl.LocalPlayer.Data == null)
                 return;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Medium))
@@ -27,11 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 {
                     role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                     role.MediateButton.graphic.enabled = true;
+                    role.MediateButton.graphic.sprite = Mediate;
                     role.MediateButton.gameObject.SetActive(false);
                 }
 
-                role.MediateButton.graphic.sprite = Mediate;
-                role.MediateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+                role.MediateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {

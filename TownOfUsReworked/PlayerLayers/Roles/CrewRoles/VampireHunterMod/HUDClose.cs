@@ -16,32 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             if (ExileController.Instance == null || __instance != ExileController.Instance.gameObject)
                 return;
             
-            var VampsExist = false;
-
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
             {
-                if (player.Is(SubFaction.Undead))
-                {
-                    VampsExist = true;
-                    break;
-                }
-            }
-
-            if (!VampsExist)
-            {
-                foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
-                {
-                    vh.TurnVigilante();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
-                    writer.Write((byte)TurnRPC.TurnVigilante);
-                    writer.Write(vh.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-            }
-            else
-            {
-                foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
-                    vh.LastStaked = DateTime.UtcNow;
+                var vh = (VampireHunter)role;
+                vh.LastStaked = DateTime.UtcNow;
             }
         }
     }

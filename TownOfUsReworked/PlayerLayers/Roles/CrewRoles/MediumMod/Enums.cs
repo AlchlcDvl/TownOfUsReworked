@@ -4,6 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     {
         Oldest,
         Newest,
+        Random,
         All
     }
 }

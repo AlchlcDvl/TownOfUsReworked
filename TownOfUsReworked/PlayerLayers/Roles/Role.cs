@@ -90,7 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool Base { get; set; } = false;
 
         protected internal bool IsRecruit { get; set; } = false;
-        protected internal bool IsRevived { get; set; } = false;
+        protected internal bool IsResurrected { get; set; } = false;
         protected internal bool IsPersuaded { get; set; } = false;
         protected internal bool IsIntTraitor { get; set; } = false;
         protected internal bool IsIntAlly { get; set; } = false;
@@ -304,7 +304,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
             var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
             var sectFlag = ((SubFaction == SubFaction.Sect || IsPersuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPersuaded()));
-            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsRevived) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsRevived()));
+            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsResurrected) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsResurrected()));
             var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
 
             var mainFlag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;

@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             var renderer = role.BlockButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.BlockButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

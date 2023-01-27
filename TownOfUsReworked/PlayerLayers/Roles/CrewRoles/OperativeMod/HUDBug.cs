@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Operative))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative))
                 return;
 
             var role = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
@@ -23,32 +23,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             {
                 role.BugButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.BugButton.graphic.enabled = true;
+                role.BugButton.graphic.sprite = Bug;
                 role.BugButton.gameObject.SetActive(false);
             }
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
                 role.UsesText = Object.Instantiate(role.BugButton.cooldownTimerText, role.BugButton.transform);
-                role.UsesText.gameObject.SetActive(true);
                 role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
                     role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
+                role.UsesText.gameObject.SetActive(false);
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
 
-            role.BugButton.graphic.sprite = Bug;
-            role.BugButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
+            role.BugButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
 
             if (role.ButtonUsable)
                 role.BugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
 
             var renderer = role.BugButton.graphic;
             
-            if (!role.BugButton.isCoolingDown && role.BugButton.gameObject.active && role.ButtonUsable)
+            if (!role.BugButton.isCoolingDown && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

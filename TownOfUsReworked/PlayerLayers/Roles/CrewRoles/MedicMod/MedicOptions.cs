@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     {
         Medic,
         Shielded,
+        ShieldedAndMedic,
         Everyone,
         Nobody
     }

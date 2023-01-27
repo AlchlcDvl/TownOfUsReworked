@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
-        public float ExamineTimer()
+        public float InspectTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInspected;

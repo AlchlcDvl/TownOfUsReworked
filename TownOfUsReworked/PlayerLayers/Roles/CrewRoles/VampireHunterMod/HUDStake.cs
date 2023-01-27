@@ -15,13 +15,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.VampireHunter))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.VampireHunter))
                 return;
                 
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
-            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
 
-            if (role.VampsDead && !isDead)
+            if (role.StakeButton == null)
+            {
+                role.StakeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.StakeButton.graphic.enabled = true;
+                role.StakeButton.graphic.sprite = Placeholder;
+                role.StakeButton.gameObject.SetActive(false);
+            }
+
+            role.StakeButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.VampsDead);
+            role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
+
+            if (role.VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 role.TurnVigilante();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
@@ -30,18 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return;
             }
-
-            if (role.StakeButton == null)
-            {
-                role.StakeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.StakeButton.graphic.enabled = true;
-                role.StakeButton.gameObject.SetActive(false);
-            }
-
-            role.StakeButton.graphic.sprite = Placeholder;
-            role.StakeButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
-            role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
-            Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
         }
     }
 }

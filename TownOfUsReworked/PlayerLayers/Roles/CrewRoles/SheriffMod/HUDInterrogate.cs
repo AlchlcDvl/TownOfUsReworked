@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff))
                 return;
 
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
@@ -24,17 +24,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             {
                 role.InterrogateButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.InterrogateButton.graphic.enabled = true;
+                role.InterrogateButton.graphic.sprite = Interrogate;
                 role.InterrogateButton.gameObject.SetActive(false);
             }
 
-            role.InterrogateButton.graphic.sprite = Interrogate;
-            role.InterrogateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.InterrogateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
             role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);
             var renderer = role.InterrogateButton.graphic;
 
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.InterrogateButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

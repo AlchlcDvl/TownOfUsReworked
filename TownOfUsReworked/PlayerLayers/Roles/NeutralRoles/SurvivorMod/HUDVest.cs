@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
 
             if (role.Vesting)
             {

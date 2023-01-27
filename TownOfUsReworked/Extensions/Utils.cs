@@ -325,7 +325,7 @@ namespace TownOfUsReworked.Extensions
             return role.IsPersuaded;
         }
 
-        public static bool IsRevived(this PlayerControl player)
+        public static bool IsResurrected(this PlayerControl player)
         {
             if (player == null)
                 return false;
@@ -335,7 +335,7 @@ namespace TownOfUsReworked.Extensions
             if (role == null)
                 return false;
 
-            return role.IsRevived;
+            return role.IsResurrected;
         }
 
         public static bool NotOnTheSameSide(this PlayerControl player)
@@ -347,7 +347,7 @@ namespace TownOfUsReworked.Extensions
             //var fanaticFlag = player.IsTurnedFanatic();
             var recruitFlag = player.IsRecruit();
             var sectFlag = player.IsPersuaded();
-            var revivedFlag = player.IsRevived();
+            var revivedFlag = player.IsResurrected();
             var rivalFlag = player.IsWinningRival();
 
             return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag;
@@ -781,7 +781,7 @@ namespace TownOfUsReworked.Extensions
         {
             var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralKill) ||
                 (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Necromancer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
-                x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsRevived()) == 0;
+                x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival()) && !x.IsResurrected()) == 0;
 
             return flag;
         }
@@ -1808,7 +1808,8 @@ namespace TownOfUsReworked.Extensions
 
         public static bool LastNonCrew()
         {
-            return LastImp() && LastNeut() && LastSyn();
+            return PlayerControl.AllPlayerControls.ToArray().Count(x => (x.Is(Faction.Syndicate) || x.Is(Faction.Neutral) || x.Is(Faction.Intruder)) && !(x.Data.IsDead ||
+                x.Data.Disconnected)) == 1;
         }
 
         public static bool TasksDone()
@@ -1832,12 +1833,13 @@ namespace TownOfUsReworked.Extensions
             var flag1 = allCrew.Count == crewWithNoTasks.Count;
             var flag2 = CrewDead();
             var flag = flag1 && !flag2;
-
             return flag;
         }
 
         public static bool Sabotaged()
         {
+            var flag1 = false;
+
             if (ShipStatus.Instance.Systems != null)
             {
                 if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
@@ -1845,7 +1847,7 @@ namespace TownOfUsReworked.Extensions
                     var lifeSuppSystemType = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
                     if (lifeSuppSystemType.Countdown < 0f)
-                        return true;
+                        flag1 = true;
                 }
 
                 if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
@@ -1853,7 +1855,7 @@ namespace TownOfUsReworked.Extensions
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
                     if (reactorSystemType.Countdown < 0f)
-                        return true;
+                        flag1 = true;
                 }
 
                 if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor))
@@ -1861,11 +1863,14 @@ namespace TownOfUsReworked.Extensions
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
 
                     if (reactorSystemType.Countdown < 0f)
-                        return true;
+                        flag1 = true;
                 }
             }
 
-            return false;
+            var flag2 = ImpsDead();
+            var flag = flag1 && !flag2;
+
+            return flag;
         }
 
         public static void CleanUpLoad()
@@ -2042,7 +2047,9 @@ namespace TownOfUsReworked.Extensions
 
                 var totalHacktime = (DateTime.UtcNow - tickDictionary[blockPlayer.PlayerId]).TotalMilliseconds / 1000;
                 
-                if (MeetingHud.Instance || totalHacktime > CustomGameOptions.HackDuration || blockPlayer == null || blockPlayer.Data.IsDead)
+                if (MeetingHud.Instance || (totalHacktime > CustomGameOptions.HackDuration && blocker.RoleType == RoleEnum.Glitch) || (totalHacktime >
+                    CustomGameOptions.EscRoleblockDuration && blocker.RoleType == RoleEnum.Escort) || (totalHacktime > CustomGameOptions.ConsRoleblockDuration &&
+                    blocker.RoleType == RoleEnum.Consort) || blockPlayer == null || blockPlayer.Data.IsDead)
                 {
                     foreach (var obj in lockImg)
                     {
@@ -2202,7 +2209,6 @@ namespace TownOfUsReworked.Extensions
             bool fullCooldownReset = false;
             bool gaReset = false;
             bool survReset = false;
-            bool zeroSecReset = false;
             bool abilityUsed = false;
 
             Spread(player, target);
@@ -2221,8 +2227,6 @@ namespace TownOfUsReworked.Extensions
 
                         if (CustomGameOptions.ShieldBreaks)
                             fullCooldownReset = true;
-                        else
-                            zeroSecReset = true;
 
                         StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
@@ -2242,8 +2246,6 @@ namespace TownOfUsReworked.Extensions
 
                     if (CustomGameOptions.ShieldBreaks)
                         fullCooldownReset = true;
-                    else
-                        zeroSecReset = true;
 
                     StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
@@ -2264,8 +2266,6 @@ namespace TownOfUsReworked.Extensions
 
                             if (CustomGameOptions.ShieldBreaks)
                                 fullCooldownReset = true;
-                            else
-                                zeroSecReset = true;
 
                             StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
                         }
@@ -2285,8 +2285,6 @@ namespace TownOfUsReworked.Extensions
 
                         if (CustomGameOptions.ShieldBreaks)
                             fullCooldownReset = true;
-                        else
-                            zeroSecReset = true;
 
                         StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
@@ -2306,13 +2304,9 @@ namespace TownOfUsReworked.Extensions
 
                         if (CustomGameOptions.ShieldBreaks)
                             fullCooldownReset = true;
-                        else
-                            zeroSecReset = true;
 
                         StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
-                    else
-                        zeroSecReset = true;
                 }
                 else if (player.IsShielded())
                 {
@@ -2324,8 +2318,6 @@ namespace TownOfUsReworked.Extensions
 
                     if (CustomGameOptions.ShieldBreaks)
                         fullCooldownReset = true;
-                    else
-                        zeroSecReset = true;
 
                     StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
@@ -2344,8 +2336,6 @@ namespace TownOfUsReworked.Extensions
 
                     if (CustomGameOptions.ShieldBreaks)
                         fullCooldownReset = true;
-                    else
-                        zeroSecReset = true;
 
                     StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
@@ -2359,8 +2349,6 @@ namespace TownOfUsReworked.Extensions
 
                 if (CustomGameOptions.ShieldBreaks)
                     fullCooldownReset = true;
-                else
-                    zeroSecReset = true;
 
                 StopKill.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
@@ -2403,6 +2391,16 @@ namespace TownOfUsReworked.Extensions
                     var murd = Role.GetRole<Murderer>(player);
                     murd.LastKill = DateTime.UtcNow;
                 }
+                else if (player.Is(RoleEnum.Vigilante))
+                {
+                    var vig = Role.GetRole<Vigilante>(player);
+                    vig.LastKilled = DateTime.UtcNow;
+                }
+                else if (player.Is(RoleEnum.VampireHunter))
+                {
+                    var vh = Role.GetRole<VampireHunter>(player);
+                    vh.LastStaked = DateTime.UtcNow;
+                }
                 else if (player.Is(ObjectifierEnum.Corrupted))
                 {
                     var corr = Objectifier.GetObjectifier<Corrupted>(player);
@@ -2434,7 +2432,6 @@ namespace TownOfUsReworked.Extensions
             reset.Add(fullCooldownReset);
             reset.Add(gaReset);
             reset.Add(survReset);
-            reset.Add(zeroSecReset);
             reset.Add(abilityUsed);
             return reset;
         }
@@ -2476,10 +2473,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool ButtonUsable(KillButton button)
         {
-            if (button.isActiveAndEnabled && !button.isCoolingDown)
-                return true;
-
-            return false;
+            return button.isActiveAndEnabled && !button.isCoolingDown && button.enabled;
         }
 
         public static bool IsTooFar(PlayerControl player, DeadBody target)
@@ -2522,9 +2516,26 @@ namespace TownOfUsReworked.Extensions
             return false;
         }
 
+        public static bool SeemsEvil(PlayerControl player)
+        {
+            var intruderFlag = player.Is(Faction.Intruder) && !player.Is(ObjectifierEnum.Traitor);
+            var syndicateFlag = player.Is(Faction.Syndicate) && !player.Is(ObjectifierEnum.Traitor);
+            var traitorFlag = player.IsTurnedTraitor() && CustomGameOptions.TraitorColourSwap;
+            var nkFlag = player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NeutKillingRed;
+            var neFlag = player.Is(RoleAlignment.NeutralEvil) && !CustomGameOptions.NeutEvilRed;
+            var framedFlag = player.IsFramed();
+
+            return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag;
+        }
+
+        public static bool SeemsGood(PlayerControl player)
+        {
+            return !SeemsEvil(player);
+        }
+
         public static void Spread(PlayerControl interacter, PlayerControl target)
         {
-            if (interacter.IsInfected() || target.IsInfected())
+            if (interacter.IsInfected() || target.IsInfected() || target.Is(RoleEnum.Plaguebearer))
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
                     ((Plaguebearer)pb).RpcSpreadInfection(interacter, target);
@@ -2541,37 +2552,6 @@ namespace TownOfUsReworked.Extensions
                 foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
                     ((Cryomaniac)cryo).RpcSpreadDouse(target, interacter);
             }
-        }
-
-        public static void AlertKill(PlayerControl attacker, PlayerControl alerter, bool CanKill = false)
-        {
-            if (alerter.IsShielded())
-            {
-                var medic = alerter.GetMedic();
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(alerter.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                writer2.Write(medic.Player.PlayerId);
-                writer2.Write(alerter.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-                StopKill.BreakShield(medic.Player.PlayerId, alerter.PlayerId, CustomGameOptions.ShieldBreaks);
-            }
-
-            if (attacker.IsShielded() && CanKill)
-            {
-                var medic = attacker.GetMedic();
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(attacker.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                writer2.Write(medic.Player.PlayerId);
-                writer2.Write(attacker.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                System.Console.WriteLine(CustomGameOptions.ShieldBreaks + "- shield break");
-                StopKill.BreakShield(medic.Player.PlayerId, attacker.PlayerId, CustomGameOptions.ShieldBreaks);
-            }
-
-            if (!(attacker.IsProtected() || attacker.IsShielded()))
-                RpcMurderPlayer(alerter, attacker);
-            
-            if (attacker.Is(AbilityEnum.Ruthless) && CanKill)
-                RpcMurderPlayer(attacker, alerter);
         }
     }
 }

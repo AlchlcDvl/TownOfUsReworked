@@ -1,7 +1,5 @@
 ﻿using Hazel;
 using System;
-using System.Linq;
-using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
@@ -9,7 +7,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Il2CppSystem.Collections.Generic;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -435,25 +433,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void Hack()
+        public void SetHacked(PlayerControl hacked)
         {
-            TimeRemaining2 -= Time.deltaTime;
-            var targetRole = GetRole(HackTarget);
-            targetRole.IsBlocked = true;
-
-            if (Player.Data.IsDead)
-            {
-                TimeRemaining2 = 0f;
-                targetRole.IsBlocked = false;
-            }
+            LastHack = DateTime.UtcNow;
+            Coroutines.Start(Utils.Block(this, hacked));
         }
 
-        public void Unack()
+        public void RPCSetHacked(PlayerControl hacked)
         {
-            var targetRole = GetRole(HackTarget);
-            targetRole.IsBlocked = false;
-            HackTarget = null;
-            LastHack = DateTime.UtcNow;
+            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            writer3.Write((byte)ActionsRPC.ConsRoleblock);
+            writer3.Write(hacked.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer3);
+            SetHacked(hacked);
         }
     }
 }

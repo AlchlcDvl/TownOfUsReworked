@@ -38,14 +38,7 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
 
         public static bool IsRainbow(int id)
         {
-            try
-            {
-                return (int)Palette.ColorNames[id] == 999999;
-            }
-            catch
-            {
-                return false;
-            }
+            return (int)Palette.ColorNames[id] == 999999;
         }
     }
 

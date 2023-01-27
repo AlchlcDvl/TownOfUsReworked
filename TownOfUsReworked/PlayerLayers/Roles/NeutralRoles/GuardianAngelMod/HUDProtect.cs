@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
 
             if (isDead)
                 protectButton.gameObject.SetActive(CustomGameOptions.ProtectBeyondTheGrave && role.TargetAlive);

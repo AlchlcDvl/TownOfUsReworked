@@ -37,12 +37,12 @@ using Object = UnityEngine.Object;
 using Eat = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod.Coroutine;
 using Revive = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.Coroutine;
 using Alt = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget;
-using PerformKillButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod.PerformKillButton;
-using PerformStealButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod.PerformKillButton;
-using PerformDeclareButton = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformKill;
-using PerformSidekickButton = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformKill;
-using PerformShiftButton = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShiftButton;
-using PerformConvertButton = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvert;
+using PerformRemember = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod.PerformRemember;
+using PerformSteal = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod.PerformSteal;
+using PerformDeclare = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod.PerformAbility;
+using PerformSidekick = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformAbility;
+using PerformShift = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShift;
+using PerformConvert = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvert;
 
 namespace TownOfUsReworked.Patches
 {
@@ -2278,13 +2278,6 @@ namespace TownOfUsReworked.Patches
                                 glitchRole2.UnMimic();
                                 break;
 
-                            case ActionsRPC.Hack:
-                                var hackPlayer = Utils.PlayerById(reader.ReadByte());
-                                var glitchPlayer2 = Utils.PlayerById(reader.ReadByte());
-                                var theGlitchRole = Role.GetRole<Glitch>(glitchPlayer2);
-                                theGlitchRole.HackTarget = hackPlayer;
-                                break;
-
                             case ActionsRPC.Interrogate:
                                 var sheriff = Utils.PlayerById(reader.ReadByte());
                                 var otherPlayer = Utils.PlayerById(reader.ReadByte());
@@ -2534,19 +2527,36 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case ActionsRPC.EscRoleblock:
-                                var escPlayer = Utils.PlayerById(reader.ReadByte());
                                 var targetPlayer = Utils.PlayerById(reader.ReadByte());
-                                var esc = Role.GetRole<Escort>(escPlayer);
-                                esc.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
-                                esc.Block();
+
+                                if (targetPlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                                {
+                                    var escort = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Escort && ((Escort)x).BlockTarget == targetPlayer);
+                                    ((Escort)escort)?.SetBlocked(targetPlayer);
+                                }
+
                                 break;
 
                             case ActionsRPC.ConsRoleblock:
-                                var consPlayer = Utils.PlayerById(reader.ReadByte());
-                                var targetPlaye2r = Utils.PlayerById(reader.ReadByte());
-                                var cons = Role.GetRole<Consort>(consPlayer);
-                                cons.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
-                                cons.Block();
+                                var targetPlayer2 = Utils.PlayerById(reader.ReadByte());
+
+                                if (targetPlayer2.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                                {
+                                    var consort = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Consort && ((Consort)x).BlockTarget == targetPlayer2);
+                                    ((Consort)consort)?.SetBlocked(targetPlayer2);
+                                }
+
+                                break;
+
+                            case ActionsRPC.GlitchRoleblock:
+                                var targetPlayer3 = Utils.PlayerById(reader.ReadByte());
+
+                                if (targetPlayer3.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                                {
+                                    var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch)x).HackTarget == targetPlayer3);
+                                    ((Glitch)glitch)?.SetHacked(targetPlayer3);
+                                }
+
                                 break;
 
                             case ActionsRPC.Conceal:

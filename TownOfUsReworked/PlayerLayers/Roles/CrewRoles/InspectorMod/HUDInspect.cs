@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
                 return;
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
@@ -24,18 +24,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             {
                 role.InspectButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.InspectButton.graphic.enabled = true;
+                role.InspectButton.graphic.sprite = Placeholder;
                 role.InspectButton.gameObject.SetActive(false);
             }
 
-            role.InspectButton.graphic.sprite = Placeholder;
-            role.InspectButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
-            role.InspectButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.InspectCooldown);
+            role.InspectButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
             var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
-
             var renderer = role.InspectButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.InspectButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

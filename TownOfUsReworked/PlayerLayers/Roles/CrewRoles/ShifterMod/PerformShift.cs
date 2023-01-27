@@ -1,46 +1,53 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformShiftButton
+    public class PerformShift
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Shifter))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shifter, true))
                 return false;
 
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Shifter, role.ClosestPlayer, __instance) || __instance != role.ShiftButton)
+            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+                return false;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             if (role.ShiftTimer() != 0f && __instance == role.ShiftButton)
                 return false;
 
-            Utils.Spread(PlayerControl.LocalPlayer, role.ClosestPlayer);
-
-            if (!role.ClosestPlayer.Is(Faction.Crew))
+            if (__instance == role.ShiftButton)
             {
-                Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
+                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer);
+
+                if (interact[3] == true && interact[0] == true)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer.Write((byte)ActionsRPC.Shift);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Shift(role, role.ClosestPlayer);
+                    role.LastShifted = DateTime.UtcNow;
+                    return false;
+                }
+                else if (interact[1] == true)
+                    role.LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
+                
                 return false;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer.Write((byte)ActionsRPC.Shift);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(role.ClosestPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Shift(role, role.ClosestPlayer);
-            role.LastShifted = DateTime.UtcNow;
             return false;
         }
 
@@ -49,8 +56,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             var role = Role.GetRole(other);
             var roleType = role.RoleType;
             var shifter = shifterRole.Player;
-            List<PlayerTask> tasks1, tasks2;
-            List<GameData.TaskInfo> taskinfos1, taskinfos2;
             Role newRole;
 
             switch (roleType)
@@ -169,16 +174,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             if (other == PlayerControl.LocalPlayer)
                 newRole2.RegenTask();
-            
-            tasks1 = other.myTasks;
-            taskinfos1 = other.Data.Tasks;
-            tasks2 = shifter.myTasks;
-            taskinfos2 = shifter.Data.Tasks;
-
-            shifter.myTasks = tasks1;
-            shifter.Data.Tasks = taskinfos1;
-            other.myTasks = tasks2;
-            other.Data.Tasks = taskinfos2;
 
             if (other.IsShielded())
             {

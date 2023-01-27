@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord))
                 return;
 
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
@@ -22,28 +22,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             {
                 role.RewindButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.RewindButton.graphic.enabled = true;
+                role.RewindButton.graphic.sprite = Rewind;
                 role.RewindButton.gameObject.SetActive(false);
             }
-
-            role.RewindButton.graphic.sprite = Rewind;
-            role.RewindButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
-
-            if (role.ButtonUsable)
-                role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
                 role.UsesText = Object.Instantiate(role.RewindButton.cooldownTimerText, role.RewindButton.transform);
-                role.UsesText.gameObject.SetActive(true);
                 role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
                     role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
+                role.UsesText.gameObject.SetActive(false);
             }
 
             if (role.UsesText != null)
-                role.UsesText.text = role.UsesLeft + "";
+                role.UsesText.text = $"{role.UsesLeft}";
+
+            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.RewindButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+
+            if (role.ButtonUsable)
+                role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
 
             var renderer = role.RewindButton.graphic;
             

@@ -13,15 +13,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Engineer))
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead || !__instance.enabled)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Engineer, true))
                 return false;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
-            if (role.UsedThisRound || __instance != role.FixButton)
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
+            if (role.UsedThisRound)
                 return false;
 
             if (__instance == role.FixButton)

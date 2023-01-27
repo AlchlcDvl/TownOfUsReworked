@@ -29,19 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
         [HarmonyPriority(Priority.Last)]
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Inspector))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
                 return;
 
             var inspector = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);

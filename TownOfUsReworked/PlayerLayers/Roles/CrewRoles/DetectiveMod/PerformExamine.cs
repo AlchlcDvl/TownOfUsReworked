@@ -23,14 +23,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (role.ExamineTimer() != 0f && __instance == role.ExamineButton)
                 return false;
-            
-            var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer);
 
             if (__instance == role.ExamineButton)
             {
-                if (interact[4] == true && interact[0] == true)
+                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer);
+
+                if (interact[3] == true && interact[0] == true)
                 {
                     var hasKilled = false;
 
@@ -50,10 +53,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                 }
                 else if (interact[1] == true)
                     role.LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastExamined.AddSeconds(CustomGameOptions.VestKCReset);
-                else if (interact[3] == true)
-                    return false;
 
                 return false;
             }

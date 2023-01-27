@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Sheriff))
             {
-                var sheriff = (Sheriff) role;
+                var sheriff = (Sheriff)role;
                 sheriff.LastInterrogated = DateTime.UtcNow;
                 sheriff.LastInterrogated = sheriff.LastInterrogated.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InterrogateCd);
             }

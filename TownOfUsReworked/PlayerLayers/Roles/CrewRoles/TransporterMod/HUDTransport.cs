@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
                 return;
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
@@ -23,28 +23,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             {
                 role.TransportButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.TransportButton.graphic.enabled = true;
+                role.TransportButton.graphic.sprite = Transport;
                 role.TransportButton.gameObject.SetActive(false);
             }
-
-            role.TransportButton.graphic.sprite = Transport;
-            role.TransportButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer) && role.ButtonUsable);
-
-            if (role.ButtonUsable)
-                role.TransportButton.SetCoolDown(role.TransportTimer(), CustomGameOptions.TransportCooldown);
 
             if (role.UsesText == null && role.UsesLeft > 0)
             {
                 role.UsesText = Object.Instantiate(role.TransportButton.cooldownTimerText, role.TransportButton.transform);
-                role.UsesText.gameObject.SetActive(true);
                 role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
                     role.UsesText.transform.localPosition.z);
                 role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
                 role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
                 role.UsesText.fontStyle = TMPro.FontStyles.Bold;
+                role.UsesText.gameObject.SetActive(false);
             }
 
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
+
+            role.TransportButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+
+            if (role.ButtonUsable)
+                role.TransportButton.SetCoolDown(role.TransportTimer(), CustomGameOptions.TransportCooldown);
 
             var renderer = role.TransportButton.graphic;
             
