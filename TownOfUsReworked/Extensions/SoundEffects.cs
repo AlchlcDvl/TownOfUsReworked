@@ -6,11 +6,12 @@ using TownOfUsReworked.Lobby.CustomOption;
 //Thanks to The Other Roles for this code
 namespace TownOfUsReworked.Extentions
 {
-    // Class to preload all audio/sound effects that are contained in the embedded resources.
-    // The effects are made available through the soundEffects Dict / the get and the play methods.
+    //Class to preload all audio/sound effects that are contained in the embedded resources.
+    //The effects are made available through the soundEffects Dict / the get and the play methods.
     public static class SoundEffects
     {
-        private static Dictionary<string, AudioClip> soundEffects;
+        public static Dictionary<string, AudioClip> soundEffects;
+        public static List<AudioClip> Sounds;
 
         public static void Load()
         {
@@ -21,7 +22,10 @@ namespace TownOfUsReworked.Extentions
             foreach (string resourceName in resourceNames)
             {
                 if (resourceName.Contains("TownOfUsReworked.Resources.Sounds.") && resourceName.Contains(".raw"))
+                {
                     soundEffects.Add(resourceName, TownOfUsReworked.LoadAudioClipFromResources(resourceName));
+                    Sounds.Add(TownOfUsReworked.LoadAudioClipFromResources(resourceName));
+                }
             }
         }
 
@@ -35,7 +39,7 @@ namespace TownOfUsReworked.Extentions
             return soundEffects.TryGetValue(path, out returnValue) ? returnValue : null;
         }
 
-        public static void Play(string path, float volume=0.8f)
+        public static void Play(string path)
         {
             /*if (CustomGameOptions.EnableSFX)
                 return;*/
@@ -45,7 +49,7 @@ namespace TownOfUsReworked.Extentions
             Stop(path);
 
             if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.PlaySound(clipToPlay, false, volume);
+                SoundManager.Instance.PlaySound(clipToPlay, false);
         }
 
         public static void Stop(string path)

@@ -43,8 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _rewindButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

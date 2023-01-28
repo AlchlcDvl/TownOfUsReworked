@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 if (CustomGameOptions.ShieldBreaks)
-                    role.LastKill = DateTime.UtcNow;
+                    role.LastKilled = DateTime.UtcNow;
 
                 StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
 
@@ -48,21 +48,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
             }
             else if (role.ClosestPlayer.IsVesting())
             {
-                role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
+                role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
                 return false;
             }
             else if (role.ClosestPlayer.IsProtected())
             {
-                role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
+                role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 return false;
             }
             else if (role.Player.IsOtherRival(role.ClosestPlayer))
             {
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
                 return false;
             }
             
-            role.LastKill = DateTime.UtcNow;
+            role.LastKilled = DateTime.UtcNow;
             Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
             return false;
         }

@@ -43,8 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _stabButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -54,8 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _bloodlustButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

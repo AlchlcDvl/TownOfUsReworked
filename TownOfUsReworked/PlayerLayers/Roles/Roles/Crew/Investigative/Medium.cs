@@ -46,8 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _mediateButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -57,8 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _seanceButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

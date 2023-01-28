@@ -37,8 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _shiftButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

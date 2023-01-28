@@ -55,8 +55,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                         {
                             RoleEnum playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
 
-                            if (!t.buggedPlayers.Contains(playerrole) && entry != t.Player)
-                                t.buggedPlayers.Add(playerrole);
+                            if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
+                                t.BuggedPlayers.Add(playerrole);
                         }
                     }
                 }
@@ -84,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             BugPref.name = "Bug";
             BugPref.transform.localScale = new Vector3(CustomGameOptions.BugRange, CustomGameOptions.BugRange, CustomGameOptions.BugRange);
             GameObject.Destroy(BugPref.GetComponent<SphereCollider>());
-            BugPref.GetComponent<MeshRenderer>().material = Operative.bugMaterial;
+            BugPref.GetComponent<MeshRenderer>().material = Operative.BugMaterial;
             BugPref.transform.position = location;
             var BugScript = new Bug();
             BugScript.transform = BugPref.transform;

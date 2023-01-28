@@ -17,6 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl PoisonedPlayer;
         public float TimeRemaining;
         public bool Enabled = false;
+        public DateTime LastKilled { get; set; }
+        private KillButton _killButton;
 
         public Poisoner(PlayerControl player) : base(player)
         {
@@ -34,6 +36,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Deception)";
             Results = InspResults.GrenFramMedicPois;
         }
+
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
         
         public KillButton PoisonButton
         {
@@ -41,8 +56,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _poisonButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
+            }
+        }
+        
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                AddToExtraButtons(value);
             }
         }
 

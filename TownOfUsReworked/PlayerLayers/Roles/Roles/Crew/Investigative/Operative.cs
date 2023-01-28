@@ -15,13 +15,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Operative : Role
     {
-        public static AssetBundle bundle = loadBundle();
-        public static Material bugMaterial = bundle.LoadAsset<Material>("trap").DontUnload();
-        public List<Bug> bugs = new List<Bug>();
-        public DateTime lastBugged { get; set; }
+        public static AssetBundle Bundle = LoadBundle();
+        public static Material BugMaterial = Bundle.LoadAsset<Material>("trap").DontUnload();
+        public List<Bug> Bugs = new List<Bug>();
+        public DateTime LastBugged { get; set; }
         public int UsesLeft;
         public TextMeshPro UsesText;
-        public List<RoleEnum> buggedPlayers;
+        public List<RoleEnum> BuggedPlayers;
         public bool ButtonUsable => UsesLeft != 0;
         private KillButton _bugButton;
 
@@ -33,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AttributesText = "- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
-            lastBugged = DateTime.UtcNow;
-            buggedPlayers = new List<RoleEnum>();
+            LastBugged = DateTime.UtcNow;
+            BuggedPlayers = new List<RoleEnum>();
             Faction = Faction.Crew;
             FactionName = "Crew";
             UsesLeft = CustomGameOptions.MaxBugs;
@@ -54,15 +54,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _bugButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
         public float BugTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - lastBugged;
+            var timeSpan = utcNow - LastBugged;
             var num = CustomGameOptions.BugCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
@@ -72,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public static AssetBundle loadBundle()
+        public static AssetBundle LoadBundle()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var stream = assembly.GetManifestResourceStream("TownOfUsReworked.Resources.Sounds.operativeshader");

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Murderer : Role
     {
         public PlayerControl ClosestPlayer;
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         public bool MurdWins { get; set; }
         private KillButton _murderButton;
 
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Imagine Getting Boring Murderer";
             AbilitiesText = "Kill everyone!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
-            LastKill = DateTime.UtcNow;
+            LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Murderer;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -108,8 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _murderButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -130,7 +129,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.MurdKCD * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 

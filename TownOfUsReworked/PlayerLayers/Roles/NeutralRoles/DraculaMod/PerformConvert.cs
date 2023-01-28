@@ -21,13 +21,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
                 return false;
             
-            var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, Role.GetRoleValue<VampireHunter>(RoleEnum.VampireHunter), false, true);
+            var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
 
             if (__instance == role.BiteButton)
             {
@@ -205,8 +205,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     else if (role.RoleType == RoleEnum.Operative)
                     {
                         var opRole = Role.GetRole<Operative>(other);
-                        opRole.buggedPlayers.Clear();
-                        opRole.bugs.ClearBugs();
+                        opRole.BuggedPlayers.Clear();
+                        opRole.Bugs.ClearBugs();
                     }
                     else if (role.RoleType == RoleEnum.Medic)
                     {
@@ -228,7 +228,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
             {
                 var dampyr = (Dampyr)role2;
-                dampyr.LastKill = DateTime.UtcNow;
+                dampyr.LastKilled = DateTime.UtcNow;
 
                 if (dampyr.Player == PlayerControl.LocalPlayer)
                     dampyr.RegenTask();

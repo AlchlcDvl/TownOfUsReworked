@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                     Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
 
                     if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
-                        role.LastKill = DateTime.UtcNow;
+                        role.LastKilled = DateTime.UtcNow;
                         
                     return false;
                 }
@@ -65,17 +65,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                     StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        role.LastKill = DateTime.UtcNow;
+                        role.LastKilled = DateTime.UtcNow;
                 }
                 else if (role.ClosestPlayer.IsVesting())
-                    role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
                 else if (role.ClosestPlayer.IsProtected())
-                    role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (PlayerControl.LocalPlayer.IsOtherRival(role.ClosestPlayer))
-                    role.LastKill = DateTime.UtcNow;
+                    role.LastKilled = DateTime.UtcNow;
                 else
                 {
-                    role.LastKill = DateTime.UtcNow;
+                    role.LastKilled = DateTime.UtcNow;
                     Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
                 }
 

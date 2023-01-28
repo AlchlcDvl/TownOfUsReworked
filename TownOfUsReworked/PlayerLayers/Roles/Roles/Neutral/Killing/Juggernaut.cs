@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Juggernaut : Role
     {
         public PlayerControl ClosestPlayer;
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         public bool JuggernautWins { get; set; }
         public int JuggKills { get; set; } = 0;
         private KillButton _assaultButton;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Your Power Grows With Every Kill";
             AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
-            LastKill = DateTime.UtcNow;
+            LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Juggernaut;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -38,8 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _assaultButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -131,7 +130,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = (CustomGameOptions.JuggKillCooldown - CustomGameOptions.JuggKillBonus * JuggKills) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 

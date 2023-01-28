@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
     public class Corrupted : Objectifier
     {
-        public KillButton _killButton;
+        private KillButton _killButton;
         public DateTime LastKilled { get; set; }
         public bool CorruptedWin { get; set; }
         public PlayerControl ClosestPlayer;

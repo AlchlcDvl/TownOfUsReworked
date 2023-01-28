@@ -1,4 +1,4 @@
-﻿/*using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUsReworked.Lobby;
 
 namespace TownOfUsReworked.Patches
@@ -12,4 +12,4 @@ namespace TownOfUsReworked.Patches
             return false;
         }
     }
-}*/
+}

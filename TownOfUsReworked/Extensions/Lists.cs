@@ -50,8 +50,6 @@ namespace TownOfUsReworked.Extensions
         public static List<Ability> AllAbilities;
         public static List<Objectifier> AllObjectifiers;
         
-        public static List<AudioClip> Sounds = new List<AudioClip>();
-        
         public static void DefinedLists()
         {
             NeutralKillers = new List<Role>();
@@ -91,8 +89,6 @@ namespace TownOfUsReworked.Extensions
             AllModifiers = new List<Modifier>();
             AllAbilities = new List<Ability>();
             AllObjectifiers = new List<Objectifier>();
-            
-            //Sounds = new List<AudioClip>();
 
             foreach (var role in Role.AllRoles)
             {
@@ -177,57 +173,6 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var objectifier in Objectifier.AllObjectifiers)
                 AllObjectifiers.Add(objectifier);
-
-            /*Sounds.Add(TownOfUsReworked.AlertSound);
-            Sounds.Add(TownOfUsReworked.ArsonistWin);
-            Sounds.Add(TownOfUsReworked.JuggernautWin);
-            Sounds.Add(TownOfUsReworked.AttemptSound);
-            Sounds.Add(TownOfUsReworked.CleanSound);
-            Sounds.Add(TownOfUsReworked.DouseSound);
-            Sounds.Add(TownOfUsReworked.FixSound);
-            Sounds.Add(TownOfUsReworked.EngineerIntro);
-            Sounds.Add(TownOfUsReworked.FlashSound);
-            Sounds.Add(TownOfUsReworked.GlitchWin);
-            Sounds.Add(TownOfUsReworked.HackSound);
-            Sounds.Add(TownOfUsReworked.TrollWin);
-            Sounds.Add(TownOfUsReworked.MedicIntro);
-            Sounds.Add(TownOfUsReworked.MineSound);
-            Sounds.Add(TownOfUsReworked.MorphSound);
-            Sounds.Add(TownOfUsReworked.PhantomWin);
-            Sounds.Add(TownOfUsReworked.PlaguebearerWin);
-            Sounds.Add(TownOfUsReworked.PoisonSound);
-            Sounds.Add(TownOfUsReworked.ProtectSound);
-            Sounds.Add(TownOfUsReworked.RememberSound);
-            Sounds.Add(TownOfUsReworked.ReviveSound);
-            Sounds.Add(TownOfUsReworked.RewindSound);
-            Sounds.Add(TownOfUsReworked.SampleSound);
-            Sounds.Add(TownOfUsReworked.RevealSound);
-            Sounds.Add(TownOfUsReworked.ShieldSound);
-            Sounds.Add(TownOfUsReworked.VestSound);
-            Sounds.Add(TownOfUsReworked.TrackSound);
-            Sounds.Add(TownOfUsReworked.TransportSound);
-            Sounds.Add(TownOfUsReworked.WerewolfWin);
-            Sounds.Add(TownOfUsReworked.NeutralsWin);
-            Sounds.Add(TownOfUsReworked.CrewmateIntro);
-            Sounds.Add(TownOfUsReworked.ImpostorIntro);
-            Sounds.Add(TownOfUsReworked.IntruderWin);
-            Sounds.Add(TownOfUsReworked.CrewWin);
-            Sounds.Add(TownOfUsReworked.MorphlingIntro);
-            Sounds.Add(TownOfUsReworked.AgentIntro);
-            Sounds.Add(TownOfUsReworked.AmnesiacIntro);
-            Sounds.Add(TownOfUsReworked.BloodlustSound);
-            Sounds.Add(TownOfUsReworked.GlitchIntro);
-            Sounds.Add(TownOfUsReworked.WarperIntro);
-            Sounds.Add(TownOfUsReworked.GodfatherIntro);
-            Sounds.Add(TownOfUsReworked.CoronerIntro);
-            Sounds.Add(TownOfUsReworked.ShifterIntro);
-            Sounds.Add(TownOfUsReworked.StabSound);
-            Sounds.Add(TownOfUsReworked.IgniteSound);
-            Sounds.Add(TownOfUsReworked.InteractSound);
-            Sounds.Add(TownOfUsReworked.ShootingSound);
-            Sounds.Add(TownOfUsReworked.TimeFreezeSound);
-            Sounds.Add(TownOfUsReworked.VoteLockSound);
-            Sounds.Add(TownOfUsReworked.KillSFX);*/
         }
     }
 }

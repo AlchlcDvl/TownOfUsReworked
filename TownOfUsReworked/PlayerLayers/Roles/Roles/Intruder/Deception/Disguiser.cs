@@ -24,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float DisguiseTimeRemaining { get; private set; }
         public float TimeRemaining;
         public bool Disguised => TimeRemaining > 0f;
+        public DateTime LastKilled { get; set; }
 
         public Disguiser(PlayerControl player) : base(player)
         {
@@ -44,14 +45,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -61,8 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _disguiseButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

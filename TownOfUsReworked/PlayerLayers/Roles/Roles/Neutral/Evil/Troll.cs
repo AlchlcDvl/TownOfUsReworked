@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public bool Killed;
         public DateTime LastInteracted { get; set; }
-        public KillButton _interactbutton;
+        private KillButton _interactbutton;
         public PlayerControl ClosestPlayer;
         public bool TrollWins { get; set; }
 
@@ -85,8 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _interactbutton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
     }

@@ -23,6 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public List<PlayerControl> flashedPlayers = new List<PlayerControl>();
         public bool Flashed => TimeRemaining > 0f;
         private KillButton _killButton;
+        public DateTime LastKilled { get; set; }
 
         public Grenadier(PlayerControl player) : base(player)
         {
@@ -45,14 +46,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -62,8 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _flashButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

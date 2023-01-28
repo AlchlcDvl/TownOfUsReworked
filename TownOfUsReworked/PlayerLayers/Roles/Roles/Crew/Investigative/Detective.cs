@@ -41,8 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _examineButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

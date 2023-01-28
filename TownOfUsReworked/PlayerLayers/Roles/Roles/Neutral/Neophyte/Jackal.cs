@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl GoodRecruit = null;
         public PlayerControl BackupRecruit = null;
         public PlayerControl ClosestPlayer;
-        public KillButton _recruitButton;
+        private KillButton _recruitButton;
         public bool HasRecruited = false;
         public bool RecruitsDead => (EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) && (GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead);
         public DateTime LastRecruited { get; set; }
@@ -86,8 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _recruitButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

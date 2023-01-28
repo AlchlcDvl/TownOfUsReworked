@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -13,7 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool HasDeclared = false;
         public bool WasSidekick = false;
         public Role FormerRole = null;
-        public KillButton _declareButton;
+        private KillButton _declareButton;
+        public DateTime LastKilled { get; set; }
+        public DateTime LastDeclared;
         private KillButton _killButton;
 
         public Rebel(PlayerControl player) : base(player)
@@ -43,14 +46,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " When you die, the Sidekick will become the new Rebel and will inherit stronger variations of their former role.";
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -128,8 +143,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _declareButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
     }

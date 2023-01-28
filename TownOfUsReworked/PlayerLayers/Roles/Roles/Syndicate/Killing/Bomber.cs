@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastDetonated { get; set; }
         public bool HasPlaced;
         private KillButton _bombButton;
+        public DateTime LastKilled { get; set; }
         private KillButton _killButton;
 
         public Bomber(PlayerControl player) : base(player)
@@ -41,14 +42,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = SyKDescription;
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -58,8 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _bombButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

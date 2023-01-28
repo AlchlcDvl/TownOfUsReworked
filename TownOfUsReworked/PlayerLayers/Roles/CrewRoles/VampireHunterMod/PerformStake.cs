@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (!Utils.ButtonUsable(__instance))
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
             if (__instance == role.StakeButton)
             {
-                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, null, role.ClosestPlayer.Is(SubFaction.Undead));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), role.ClosestPlayer.Is(SubFaction.Undead));
 
                 if (interact[3] == true && interact[0] == true)
                     role.LastStaked = DateTime.UtcNow;

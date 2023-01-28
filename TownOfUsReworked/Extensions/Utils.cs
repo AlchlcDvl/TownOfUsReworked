@@ -1354,14 +1354,14 @@ namespace TownOfUsReworked.Extensions
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
                     var glitch = Role.GetRole<Glitch>(killer);
-                    glitch.LastKill = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.GlitchKillCooldown);
+                    glitch.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * CustomGameOptions.DiseasedMultiplier);
                     return;
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Juggernaut))
                 {
                     var juggernaut = Role.GetRole<Juggernaut>(killer);
-                    juggernaut.LastKill = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * (CustomGameOptions.JuggKillCooldown -
+                    juggernaut.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * (CustomGameOptions.JuggKillCooldown -
                         CustomGameOptions.JuggKillBonus * juggernaut.JuggKills));
                     juggernaut.Player.SetKillTimer((CustomGameOptions.JuggKillCooldown + 5.0f - CustomGameOptions.JuggKillBonus * juggernaut.JuggKills) *
                         CustomGameOptions.DiseasedMultiplier);
@@ -1610,7 +1610,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastAlerted = DateTime.UtcNow;
 
             foreach (Operative role in Role.GetRoles(RoleEnum.Operative))
-                role.lastBugged = DateTime.UtcNow;
+                role.LastBugged = DateTime.UtcNow;
 
             foreach (Detective role in Role.GetRoles(RoleEnum.Detective))
                 role.LastExamined = DateTime.UtcNow;
@@ -1638,18 +1638,18 @@ namespace TownOfUsReworked.Extensions
             foreach (Glitch role in Role.GetRoles(RoleEnum.Glitch))
             {
                 role.LastHack = DateTime.UtcNow;
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
                 role.LastMimic = DateTime.UtcNow;
             }
 
             foreach (Juggernaut role in Role.GetRoles(RoleEnum.Juggernaut))
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
 
             foreach (Werewolf role in Role.GetRoles(RoleEnum.Werewolf))
                 role.LastMauled = DateTime.UtcNow;
 
             foreach (Murderer role in Role.GetRoles(RoleEnum.Murderer))
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
 
             foreach (SerialKiller role in Role.GetRoles(RoleEnum.SerialKiller))
             {
@@ -1664,7 +1664,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastInfected = DateTime.UtcNow;
 
             foreach (Pestilence role in Role.GetRoles(RoleEnum.Pestilence))
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
 
             foreach (Cannibal role in Role.GetRoles(RoleEnum.Cannibal))
                 role.LastEaten = DateTime.UtcNow;
@@ -1673,7 +1673,7 @@ namespace TownOfUsReworked.Extensions
                 role.LastBitten = DateTime.UtcNow;
 
             foreach (Dampyr role in Role.GetRoles(RoleEnum.Dampyr))
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
 
             foreach (Thief role in Role.GetRoles(RoleEnum.Thief))
                 role.LastKilled = DateTime.UtcNow;
@@ -1704,7 +1704,7 @@ namespace TownOfUsReworked.Extensions
             foreach (Consort role in Role.GetRoles(RoleEnum.Consort))
             {
                 role.LastBlock = DateTime.UtcNow;
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
             }
 
             foreach (Wraith role in Role.GetRoles(RoleEnum.Wraith))
@@ -1734,7 +1734,7 @@ namespace TownOfUsReworked.Extensions
 
             #region Syndicate Roles
             foreach (Anarchist role in Role.GetRoles(RoleEnum.Anarchist))
-                role.LastKill = DateTime.UtcNow;
+                role.LastKilled = DateTime.UtcNow;
 
             foreach (Concealer role in Role.GetRoles(RoleEnum.Concealer))
                 role.LastConcealed = DateTime.UtcNow;
@@ -1918,7 +1918,10 @@ namespace TownOfUsReworked.Extensions
         
 		public static IEnumerator Block(Role blocker, PlayerControl blockPlayer)
 		{
-			GameObject[] lockImg = { null, null, null, null, null };
+            if (IsBlockImmune(blockPlayer))
+                yield break;
+
+			GameObject[] lockImg = { null, null, null, null, null, null, null, null };
 
 			if (tickDictionary.ContainsKey(blockPlayer.PlayerId))
 			{
@@ -1991,23 +1994,34 @@ namespace TownOfUsReworked.Extensions
                     }
 
                     var role = Role.GetRole(blockPlayer);
+                    var newNum = 4;
 
                     if (role != null)
                     {
                         if (role.ExtraButtons.Count > 0)
                         {
-                            if (lockImg[3] == null)
-                            {
-                                lockImg[3] = new GameObject();
-                                var lockImgR = lockImg[3].AddComponent<SpriteRenderer>();
-                                lockImgR.sprite = TownOfUsReworked.Lock;
-                            }
+                            var j = 0;
 
-                            lockImg[3].transform.position = new Vector3(role.ExtraButtons[0].transform.position.x, role.ExtraButtons[0].transform.position.y, -50f);
-                            lockImg[3].layer = 5;
-                            role.ExtraButtons[0].enabled = false;
-                            role.ExtraButtons[0].graphic.color = Palette.DisabledClear;
-                            role.ExtraButtons[0].graphic.material.SetFloat("_Desat", 1f);
+                            for (var i = 3; i < role.ExtraButtons.Count; i++)
+                            {
+                                if (lockImg[i] == null)
+                                {
+                                    lockImg[i] = new GameObject();
+                                    var lockImgR = lockImg[i].AddComponent<SpriteRenderer>();
+                                    lockImgR.sprite = TownOfUsReworked.Lock;
+                                }
+
+                                var button = role.ExtraButtons[j].Value;
+
+                                lockImg[i].transform.position = new Vector3(button.transform.position.x, button.transform.position.y, -50f);
+                                lockImg[i].layer = 5;
+                                button.enabled = false;
+                                button.graphic.color = Palette.DisabledClear;
+                                button.graphic.material.SetFloat("_Desat", 1f);
+
+                                j++;
+                                newNum = i;
+                            }
                         }
                     }
 
@@ -2017,15 +2031,15 @@ namespace TownOfUsReworked.Extensions
                     {
                         if (obj.ExtraButtons.Count > 0)
                         {
-                            if (lockImg[4] == null)
+                            if (lockImg[newNum] == null)
                             {
-                                lockImg[4] = new GameObject();
-                                var lockImgR = lockImg[4].AddComponent<SpriteRenderer>();
+                                lockImg[newNum] = new GameObject();
+                                var lockImgR = lockImg[newNum].AddComponent<SpriteRenderer>();
                                 lockImgR.sprite = TownOfUsReworked.Lock;
                             }
 
-                            lockImg[4].transform.position = new Vector3(obj.ExtraButtons[0].transform.position.x, obj.ExtraButtons[0].transform.position.y, -50f);
-                            lockImg[4].layer = 5;
+                            lockImg[newNum].transform.position = new Vector3(obj.ExtraButtons[0].transform.position.x, obj.ExtraButtons[0].transform.position.y, -50f);
+                            lockImg[newNum].layer = 5;
                             obj.ExtraButtons[0].enabled = false;
                             obj.ExtraButtons[0].graphic.color = Palette.DisabledClear;
                             obj.ExtraButtons[0].graphic.material.SetFloat("_Desat", 1f);
@@ -2080,9 +2094,14 @@ namespace TownOfUsReworked.Extensions
                         {
                             if (role.ExtraButtons.Count > 0)
                             {
-                                role.ExtraButtons[0].enabled = true;
-                                role.ExtraButtons[0].graphic.color = Palette.EnabledColor;
-                                role.ExtraButtons[0].graphic.material.SetFloat("_Desat", 0f);
+                                for (var i = 0; i < role.ExtraButtons.Count; i++)
+                                {
+                                    var button = role.ExtraButtons[i].Value;
+
+                                    button.enabled = true;
+                                    button.graphic.color = Palette.EnabledColor;
+                                    button.graphic.material.SetFloat("_Desat", 0f);
+                                }
                             }
                         }
 
@@ -2124,8 +2143,6 @@ namespace TownOfUsReworked.Extensions
                 
             if (playerRole == null)
                 mainflag = player.Data.IsImpostor();
-            else if (playerRole.IsBlocked)
-                mainflag = false;
             else if (player.IsRecruit())
                 mainflag = CustomGameOptions.RecruitVent;
             else if (player.Is(Faction.Syndicate))
@@ -2204,7 +2221,7 @@ namespace TownOfUsReworked.Extensions
             return mainflag;
         }
         
-        public static List<bool> Interact(PlayerControl player, PlayerControl target, Role cautious = null, bool toKill = false, bool toConvert = false)
+        public static List<bool> Interact(PlayerControl player, PlayerControl target, Role cautious = null, bool toKill = false, bool toConvert = false, Role cautious2 = null)
         {
             bool fullCooldownReset = false;
             bool gaReset = false;
@@ -2213,46 +2230,49 @@ namespace TownOfUsReworked.Extensions
 
             Spread(player, target);
 
-            if (target.Is(RoleEnum.Pestilence))
+            if (cautious != null)
             {
-                if (player.IsShielded() || player.IsProtected())
+                if (cautious.Player == target)
                 {
-                    if (player.IsShielded())
+                    if (player.IsShielded() || player.IsProtected())
                     {
-                        var medic = player.GetMedic().Player.PlayerId;
+                        if (player.IsShielded())
+                        {
+                            var medic = player.GetMedic().Player.PlayerId;
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
+                            writer.Write(medic);
+                            writer.Write(player.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                            if (CustomGameOptions.ShieldBreaks)
+                                fullCooldownReset = true;
+
+                            StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                        }
+                        else if (player.IsProtected())
+                            gaReset = true;
+                    }
+                    else
+                        RpcMurderPlayer(target, player);
+                    
+                    if (target.IsShielded() && (toKill || toConvert))
+                    {
+                        var medic = target.GetMedic().Player.PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
                         writer.Write(medic);
-                        writer.Write(player.PlayerId);
+                        writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.ShieldBreaks)
                             fullCooldownReset = true;
 
-                        StopKill.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                        StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
-                    else if (player.IsProtected())
-                        gaReset = true;
-                }
-                else
-                    RpcMurderPlayer(target, player);
-                
-                if (target.IsShielded() && toKill)
-                {
-                    var medic = target.GetMedic().Player.PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer.Write(medic);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        fullCooldownReset = true;
-
-                    StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
-            else if (cautious != null)
+            else if (cautious2 != null)
             {
-                if (cautious.Player == target)
+                if (cautious2.Player == target)
                 {
                     if (player.IsShielded() || player.IsProtected())
                     {
@@ -2360,65 +2380,7 @@ namespace TownOfUsReworked.Extensions
                 fullCooldownReset = true;
             else if (toKill)
             {
-                if (player.Is(RoleEnum.Glitch))
-                {
-                    var glitch = Role.GetRole<Glitch>(player);
-                    glitch.LastKill = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.Juggernaut))
-                {
-                    var jugg = Role.GetRole<Juggernaut>(player);
-                    jugg.JuggKills += 1;
-                    jugg.LastKill = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.Pestilence))
-                {
-                    var pest = Role.GetRole<Pestilence>(player);
-                    pest.LastKill = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.Werewolf))
-                {
-                    var ww = Role.GetRole<Werewolf>(player);
-                    ww.LastMauled = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.SerialKiller))
-                {
-                    var sk = Role.GetRole<SerialKiller>(player);
-                    sk.LastKilled = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.Murderer))
-                {
-                    var murd = Role.GetRole<Murderer>(player);
-                    murd.LastKill = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.Vigilante))
-                {
-                    var vig = Role.GetRole<Vigilante>(player);
-                    vig.LastKilled = DateTime.UtcNow;
-                }
-                else if (player.Is(RoleEnum.VampireHunter))
-                {
-                    var vh = Role.GetRole<VampireHunter>(player);
-                    vh.LastStaked = DateTime.UtcNow;
-                }
-                else if (player.Is(ObjectifierEnum.Corrupted))
-                {
-                    var corr = Objectifier.GetObjectifier<Corrupted>(player);
-                    corr.LastKilled = DateTime.UtcNow;
-                }
-
                 RpcMurderPlayer(player, target);
-                abilityUsed = true;
-                fullCooldownReset = true;
-            }
-            else if (toConvert)
-            {
-                if (player.Is(RoleEnum.Dracula))
-                {
-                    var drac = Role.GetRole<Dracula>(player);
-                    drac.LastBitten = DateTime.UtcNow;
-                }
-
                 abilityUsed = true;
                 fullCooldownReset = true;
             }
@@ -2531,6 +2493,12 @@ namespace TownOfUsReworked.Extensions
         public static bool SeemsGood(PlayerControl player)
         {
             return !SeemsEvil(player);
+        }
+
+        public static bool IsBlockImmune(PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+            return role.RoleBlockImmune;
         }
 
         public static void Spread(PlayerControl interacter, PlayerControl target)

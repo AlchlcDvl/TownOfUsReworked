@@ -47,8 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _trackButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

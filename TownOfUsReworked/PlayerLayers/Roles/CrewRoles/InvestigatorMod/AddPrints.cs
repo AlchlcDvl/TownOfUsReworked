@@ -27,13 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
                 return;
             
             var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
-
-            if (investigator.IsBlocked)
-            {
-                Footprint.DestroyAll(investigator);
-                return;
-            }
-
             _time += Time.deltaTime;
 
             if (_time >= Interval)

@@ -40,8 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _fixButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

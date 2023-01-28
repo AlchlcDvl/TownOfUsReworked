@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
             foreach (var player in array)
                 player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
 
-            foreach (var player in array)
-                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
-
             __instance.BackgroundBar.material.color = Colors.Neutral;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "Neutrals Win!";

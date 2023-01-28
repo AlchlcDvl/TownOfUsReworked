@@ -17,6 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastConcealed { get; set; }
         public float TimeRemaining;
         public bool Concealed => TimeRemaining > 0f;
+        public PlayerControl ClosestPlayer = null;
+        public DateTime LastKilled { get; set; }
 
         public Concealer(PlayerControl player) : base(player)
         {
@@ -44,8 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -55,9 +56,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _concealButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
+        }
+
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
         public void Conceal()

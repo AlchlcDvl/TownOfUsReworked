@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool ConsWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastBlock { get; set; }
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         public float TimeRemaining;
         private KillButton _blockButton;
         private KillButton _killButton;
@@ -53,8 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -92,8 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _blockButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -113,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.IntKillCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 

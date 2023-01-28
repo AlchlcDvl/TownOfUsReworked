@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
             var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (!Utils.ButtonUsable(__instance))
@@ -35,13 +35,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsRecruit() || role.ClosestPlayer.IsFramed() ||
                     PlayerControl.LocalPlayer.IsTurnedTraitor() || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll) ||
                     role.ClosestPlayer.IsTurnedTraitor() || role.ClosestPlayer.IsResurrected()/* || role.ClosestPlayer.IsTurnedFanatic()*/;
-                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, null, flag4);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), flag4);
 
                 if (interact[3] == true && interact[0] == true)
                 {                
                     if (flag4)
                     {
                         role.KilledInno = false;
+                        role.LastKilled = DateTime.UtcNow;
                         return false;
                     }
                     else

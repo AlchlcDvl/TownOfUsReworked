@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -12,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Role FormerRole = null;
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Godfather)).Count() == 0;
         private KillButton _killButton;
+        public DateTime LastKilled { get; set; }
 
         public Mafioso(PlayerControl player) : base(player)
         {
@@ -36,14 +38,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " Godfather and will inherit stronger variations of your former role.";
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

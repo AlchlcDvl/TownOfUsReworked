@@ -24,8 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             if (__instance == role.BugButton)
             {
                 role.UsesLeft--;
-                role.lastBugged = System.DateTime.UtcNow;
-                role.bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
+                role.LastBugged = System.DateTime.UtcNow;
+                role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
 

@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public abstract class Role
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
-        public List<KillButton> ExtraButtons = new List<KillButton>();
+        public List<KeyValuePair<byte, KillButton>> ExtraButtons = new List<KeyValuePair<byte, KillButton>>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
@@ -99,14 +99,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsSynAlly { get; set; } = false;
         protected internal bool IsSynFanatic { get; set; } = false;
         protected internal bool IsCrewAlly { get; set; } = false;
-        
-        protected internal bool IsBlocked { get; set; } = false;
-
-        protected internal int Kills { get; set; } = 0;
-        protected internal int CorrectKills { get; set; } = 0;
-        protected internal int IncorrectKills { get; set; } = 0;
-        protected internal int CorrectAssassinKills { get; set; } = 0;
-        protected internal int IncorrectAssassinKills { get; set; } = 0;
 
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill: <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
             "<color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
@@ -236,6 +228,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override int GetHashCode()
         {
             return HashCode.Combine(Player, (int)RoleType);
+        }
+
+        public void AddToExtraButtons(KillButton button)
+        {
+            ExtraButtons.Add(KeyValuePair.Create(_player.PlayerId, button));
         }
 
         protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}

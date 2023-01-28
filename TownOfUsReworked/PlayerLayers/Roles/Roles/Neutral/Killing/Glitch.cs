@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastMimic { get; set; }
         public DateTime LastHack { get; set; }
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         private KillButton _hackButton { get; set; }
         private KillButton _mimicButton { get; set; }
         private KillButton _killButton { get; set; }
@@ -262,7 +262,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.GlitchKillCooldown * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
@@ -349,8 +349,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _mimicButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -360,8 +359,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _hackButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -371,8 +369,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 		public void Mimic()

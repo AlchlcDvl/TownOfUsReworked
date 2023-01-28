@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Dampyr : Role
     {
         public PlayerControl ClosestPlayer;
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         private KillButton _killButton;
 
         public Dampyr(PlayerControl player) : base(player)
@@ -48,8 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -75,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.DampBiteCd * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 

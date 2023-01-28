@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (!Utils.ButtonUsable(__instance))
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             if (__instance == role.BlockButton)
             {
-                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true && interact[0] == true)
                 {

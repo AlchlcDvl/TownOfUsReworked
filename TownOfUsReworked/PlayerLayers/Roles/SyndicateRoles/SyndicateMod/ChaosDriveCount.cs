@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             {
                 Role.ChaosDriveMeetingTimerCount += 1;
 
-                if (Role.ChaosDriveMeetingTimerCount >= CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive && !Role.SyndicateHasChaosDrive)
+                if (Role.ChaosDriveMeetingTimerCount >= CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive)
                     Role.SyndicateHasChaosDrive = true;
             }
         }

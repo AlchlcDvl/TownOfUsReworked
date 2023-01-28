@@ -2176,13 +2176,13 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.Remember:
                                 var amnesiac = Utils.PlayerById(reader.ReadByte());
                                 var other = Utils.PlayerById(reader.ReadByte());
-                                PerformKillButton.Remember(Role.GetRole<Amnesiac>(amnesiac), other);
+                                PerformRemember.Remember(Role.GetRole<Amnesiac>(amnesiac), other);
                                 break;
 
                             case ActionsRPC.Steal:
                                 var thief = Utils.PlayerById(reader.ReadByte());
                                 var other4 = Utils.PlayerById(reader.ReadByte());
-                                PerformStealButton.Steal(Role.GetRole<Thief>(thief), other4);
+                                PerformSteal.Steal(Role.GetRole<Thief>(thief), other4);
                                 break;
 
                             case ActionsRPC.Declare:
@@ -2190,7 +2190,7 @@ namespace TownOfUsReworked.Patches
                                 readByte2 = reader.ReadByte();
                                 var gf = Utils.PlayerById(readByte1);
                                 var maf = Utils.PlayerById(readByte2);
-                                PerformDeclareButton.Declare(Role.GetRole<Godfather>(gf), maf);
+                                PerformDeclare.Declare(Role.GetRole<Godfather>(gf), maf);
                                 break;
 
                             case ActionsRPC.Sidekick:
@@ -2198,7 +2198,7 @@ namespace TownOfUsReworked.Patches
                                 readByte2 = reader.ReadByte();
                                 var reb = Utils.PlayerById(readByte1);
                                 var side = Utils.PlayerById(readByte2);
-                                PerformSidekickButton.Sidekick(Role.GetRole<Rebel>(reb), side);
+                                PerformSidekick.Sidekick(Role.GetRole<Rebel>(reb), side);
                                 break;
 
                             case ActionsRPC.Shift:
@@ -2206,13 +2206,13 @@ namespace TownOfUsReworked.Patches
                                 readByte2 = reader.ReadByte();
                                 var shifter = Utils.PlayerById(readByte1);
                                 var other2 = Utils.PlayerById(readByte2);
-                                PerformShiftButton.Shift(Role.GetRole<Shifter>(shifter), other2);
+                                PerformShift.Shift(Role.GetRole<Shifter>(shifter), other2);
                                 break;
 
                             case ActionsRPC.Convert:
                                 var drac = Utils.PlayerById(reader.ReadByte());
                                 var other3 = Utils.PlayerById(reader.ReadByte());
-                                PerformConvertButton.Convert(Role.GetRole<Dracula>(drac), other3);
+                                PerformConvert.Convert(Role.GetRole<Dracula>(drac), other3);
                                 break;
 
                             case ActionsRPC.Teleport:

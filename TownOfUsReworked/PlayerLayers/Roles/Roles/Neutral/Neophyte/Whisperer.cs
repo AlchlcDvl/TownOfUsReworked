@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Whisperer : Role
     {
 
-        public KillButton _whisperButton;
+        private KillButton _whisperButton;
         public DateTime LastWhispered;
         public int WhisperCount;
         public int ConversionCount;
@@ -37,8 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _whisperButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.ShieldBreaks)
-                            role.LastKill = DateTime.UtcNow;
+                            role.LastKilled = DateTime.UtcNow;
 
                         StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.ShieldBreaks)
-                            role.LastKill = DateTime.UtcNow;
+                            role.LastKilled = DateTime.UtcNow;
 
                         StopKill.BreakShield(medic, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
@@ -84,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (CustomGameOptions.ShieldBreaks)
-                        role.LastKill = DateTime.UtcNow;
+                        role.LastKilled = DateTime.UtcNow;
 
                     StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
                     return false;
@@ -94,18 +94,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 {
                     if (role.ClosestPlayer.IsVesting())
                     {
-                        role.LastKill.AddSeconds(CustomGameOptions.VestKCReset);
+                        role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
                         return false;
                     }
                     else if (role.ClosestPlayer.IsProtected())
                     {
-                        role.LastKill.AddSeconds(CustomGameOptions.ProtectKCReset);
+                        role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                         return false;
                     }
                     else
                     {
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
-                        role.LastKill = DateTime.UtcNow;
+                        role.LastKilled = DateTime.UtcNow;
                         return false;
                     }
                 }

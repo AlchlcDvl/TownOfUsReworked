@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool VotedOut;
         public List<byte> ToHaunt = new List<byte>();
         public bool HasHaunted = false;
-        public KillButton _hauntButton;
+        private KillButton _hauntButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastHaunted;
 
@@ -73,8 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _hauntButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

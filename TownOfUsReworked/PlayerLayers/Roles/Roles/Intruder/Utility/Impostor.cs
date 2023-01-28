@@ -3,12 +3,15 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
+using System;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Impostor : Role
     {
         private KillButton _killButton;
+        public DateTime LastKilled { get; set; }
 
         public Impostor(PlayerControl player) : base(player)
         {
@@ -30,14 +33,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
         public KillButton KillButton
         {
             get => _killButton;
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

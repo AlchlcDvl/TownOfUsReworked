@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
     public class ButtonBarry : Ability
     {
-        public KillButton _buttonButton;
+        private KillButton _buttonButton;
         public bool ButtonUsed;
         public DateTime LastButtoned { get; set; }
 

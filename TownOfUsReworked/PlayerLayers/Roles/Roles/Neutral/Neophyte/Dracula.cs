@@ -103,8 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _biteButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
     }

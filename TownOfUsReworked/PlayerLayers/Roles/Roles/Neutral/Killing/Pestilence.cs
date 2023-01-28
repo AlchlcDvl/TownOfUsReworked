@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Pestilence : Role
     {
         public PlayerControl ClosestPlayer;
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         public bool PestilenceWins { get; set; }
         private KillButton _obliterateButton;
 
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "The Horseman Of The Apocalypse Has Arrived!";
             AbilitiesText = "Kill everyone with your unstoppable abilities!\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
-            LastKill = DateTime.UtcNow;
+            LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Pestilence;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -37,8 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _obliterateButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -129,7 +128,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.PestKillCd * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 

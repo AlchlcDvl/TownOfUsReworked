@@ -50,8 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _protectButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

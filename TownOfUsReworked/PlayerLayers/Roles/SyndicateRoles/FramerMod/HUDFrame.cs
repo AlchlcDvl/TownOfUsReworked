@@ -15,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Framer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer))
                 return;
 
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
@@ -33,16 +24,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             {
                 role.FrameButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.FrameButton.graphic.enabled = true;
-                role.FrameButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.FrameButton.graphic.sprite = FrameSprite;
                 role.FrameButton.gameObject.SetActive(false);
             }
 
-            role.FrameButton.GetComponent<AspectPosition>().Update();
-            role.FrameButton.graphic.sprite = FrameSprite;
             role.FrameButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
-            var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId)).ToList();
+            var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.FrameButton, notFramed);
             role.FrameButton.SetCoolDown(role.FrameTimer(), CustomGameOptions.FrameCooldown);
+
+            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
+            var renderer = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+
+            var renderer2 = role.FrameButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.FrameButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

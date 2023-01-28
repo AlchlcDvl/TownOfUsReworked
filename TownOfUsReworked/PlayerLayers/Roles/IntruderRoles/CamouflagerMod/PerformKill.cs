@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                     Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
 
                     if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
-                        role.LastKill = DateTime.UtcNow;
+                        role.LastKilled = DateTime.UtcNow;
                         
                     return false;
                 }

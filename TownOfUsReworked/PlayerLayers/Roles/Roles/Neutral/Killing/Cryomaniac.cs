@@ -45,8 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _douseButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
@@ -56,8 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _freezeButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 

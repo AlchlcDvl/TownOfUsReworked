@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(PlayerControl.LocalPlayer, role.ClosestPlayer))
+            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (!Utils.ButtonUsable(__instance))
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             if (__instance == role.InspectButton)
             {
-                var interact = Utils.Interact(PlayerControl.LocalPlayer, role.ClosestPlayer);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true && interact[0] == true)
                 {

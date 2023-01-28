@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Anarchist : Role
     {
         public PlayerControl ClosestPlayer = null;
-        public DateTime LastKill { get; set; }
+        public DateTime LastKilled { get; set; }
         private KillButton _killButton;
 
         public Anarchist(PlayerControl player) : base(player)
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKill;
+            var timeSpan = utcNow - LastKilled;
             var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
@@ -52,8 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                AddToExtraButtons(value);
             }
         }
 
