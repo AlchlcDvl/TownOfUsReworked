@@ -21,9 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        private static Sprite CycleBackSprite => TownOfUsReworked.CycleBackSprite;
-        private static Sprite CycleForwardSprite => TownOfUsReworked.CycleForwardSprite;
-        private static Sprite GuessSprite => TownOfUsReworked.GuessSprite;
+        public static Sprite CycleBackSprite => TownOfUsReworked.CycleBackSprite;
+        public static Sprite CycleForwardSprite => TownOfUsReworked.CycleForwardSprite;
+        public static Sprite GuessSprite => TownOfUsReworked.GuessSprite;
 
         private static bool IsExempt(PlayerVoteArea voteArea)
         {

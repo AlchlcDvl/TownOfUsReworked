@@ -21,6 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastWarped { get; set; }
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        public PlayerControl ClosestPlayer = null;
 
         public Warper(PlayerControl player) : base(player)
         {

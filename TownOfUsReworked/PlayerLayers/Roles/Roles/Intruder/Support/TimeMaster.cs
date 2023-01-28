@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastFrozen { get; set; }
         public bool Frozen => TimeRemaining > 0f;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public TimeMaster(PlayerControl player) : base(player)
         {

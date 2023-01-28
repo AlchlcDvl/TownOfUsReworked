@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
     public class HUDConceal
     {
         public static Sprite Conceal => TownOfUsReworked.Placeholder;
-        private static Sprite Kill => TownOfUsReworked.SyndicateKill;
+        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
@@ -37,11 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && Role.SyndicateHasChaosDrive);
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
-            role.ConcealButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.ConcealButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
                 role.ConcealButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.ConcealDuration);

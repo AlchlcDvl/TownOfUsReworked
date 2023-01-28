@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastCleaned;
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Janitor(PlayerControl player) : base(player)
         {

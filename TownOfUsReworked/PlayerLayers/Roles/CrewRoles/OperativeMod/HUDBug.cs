@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDBug
     {
-        private static Sprite Bug => TownOfUsReworked.BugSprite;
+        public static Sprite Bug => TownOfUsReworked.BugSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
 
-            role.BugButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
-            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.BugButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
 
             if (role.ButtonUsable)
                 role.BugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);

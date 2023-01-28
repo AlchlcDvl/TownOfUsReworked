@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDTrack
     {
-        private static Sprite Track => TownOfUsReworked.TrackSprite;
+        public static Sprite Track => TownOfUsReworked.TrackSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -42,8 +42,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
 
-            role.TrackButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
-            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.TrackButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
             role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
             var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);

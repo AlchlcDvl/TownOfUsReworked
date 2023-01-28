@@ -35,16 +35,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             {
                 role.DeclareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.DeclareButton.graphic.enabled = true;
-                role.DeclareButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.DeclareButton.graphic.sprite = Promote;
                 role.DeclareButton.gameObject.SetActive(false);
             }
 
-            role.DeclareButton.GetComponent<AspectPosition>().Update();
-            role.DeclareButton.graphic.sprite = Promote;
             role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.WasSidekick && !role.HasDeclared);
-
-            if (role.ClosestSyndicate.Is(Faction.Syndicate))
-                Utils.SetTarget(ref role.ClosestSyndicate, role.DeclareButton);
+            Utils.SetTarget(ref role.ClosestPlayer, role.DeclareButton);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDAlert
     {
-        private static Sprite Alert => TownOfUsReworked.AlertSprite;
+        public static Sprite Alert => TownOfUsReworked.AlertSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
 
-            role.AlertButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
-            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.AlertButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
 
             if (role.ButtonUsable)
             {

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDSwoop
     {
-        private static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
                 role.SwoopButton.gameObject.SetActive(false);
             }
 
-            role.SwoopButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.SwoopButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.IsSwooped)
                 role.SwoopButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.SwoopDuration);

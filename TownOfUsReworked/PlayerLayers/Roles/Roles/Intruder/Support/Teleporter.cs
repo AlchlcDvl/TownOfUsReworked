@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastTeleport;
         public Vector3 TeleportPoint;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Teleporter(PlayerControl player) : base(player)
         {

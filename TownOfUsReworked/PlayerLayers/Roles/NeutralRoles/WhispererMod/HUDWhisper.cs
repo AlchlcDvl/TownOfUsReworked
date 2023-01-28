@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 role.WhisperButton.gameObject.SetActive(false);
             }
 
-            role.WhisperButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.WhisperButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             role.WhisperButton.SetCoolDown(role.WhisperTimer(), CustomGameOptions.WhisperCooldown + (CustomGameOptions.WhisperCooldownIncrease * role.WhisperCount));
 

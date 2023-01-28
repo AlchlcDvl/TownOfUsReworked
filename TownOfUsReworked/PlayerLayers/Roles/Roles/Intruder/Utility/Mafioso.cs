@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Godfather)).Count() == 0;
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Mafioso(PlayerControl player) : base(player)
         {

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDInterrogate
     {
-        private static Sprite Interrogate => TownOfUsReworked.SeerSprite;
+        public static Sprite Interrogate => TownOfUsReworked.SeerSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 role.InterrogateButton.gameObject.SetActive(false);
             }
 
-            role.InterrogateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.InterrogateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);

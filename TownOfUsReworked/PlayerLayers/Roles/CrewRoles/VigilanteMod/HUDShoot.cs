@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDShoot
     {
-        private static Sprite Shoot => TownOfUsReworked.ShootSprite;
+        public static Sprite Shoot => TownOfUsReworked.ShootSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 role.ShootButton.gameObject.SetActive(false);
             }
 
-            role.ShootButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.KilledInno);
+            role.ShootButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.KilledInno);
             role.ShootButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShootButton);
             var renderer = role.ShootButton.graphic;

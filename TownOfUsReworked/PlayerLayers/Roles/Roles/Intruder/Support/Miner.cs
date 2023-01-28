@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Vector2 VentSize { get; set; }
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Miner(PlayerControl player) : base(player)
         {

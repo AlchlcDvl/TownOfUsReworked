@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDExamine
     {
-        private static Sprite Examine => TownOfUsReworked.ExamineSprite;
+        public static Sprite Examine => TownOfUsReworked.ExamineSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                 role.ExamineButton.gameObject.SetActive(false);
             }
 
-            role.ExamineButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.ExamineButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.ExamineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ExamineButton);
             var renderer = role.ExamineButton.graphic;

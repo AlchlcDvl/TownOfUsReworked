@@ -41,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     role.Interrogated.Add(role.ClosestPlayer.PlayerId);
                     role.LastInterrogated = DateTime.UtcNow;
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);
-                    return false;
                 }
                 else if (interact[1] == true)
                     role.LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);

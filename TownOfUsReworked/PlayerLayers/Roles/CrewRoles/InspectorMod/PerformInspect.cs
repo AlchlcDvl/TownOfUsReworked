@@ -39,7 +39,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
                     } catch {}
-                    return false;
                 }
                 else if (interact[1] == true)
                     role.LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);

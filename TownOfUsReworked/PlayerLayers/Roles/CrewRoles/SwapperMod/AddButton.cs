@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        private static Sprite ActiveSprite => TownOfUsReworked.SwapperSwitch;
+        public static Sprite ActiveSprite => TownOfUsReworked.SwapperSwitch;
         public static Sprite DisabledSprite => TownOfUsReworked.SwapperSwitchDisabled;
 
         public static void GenButton(Swapper role, int index, bool noButton)

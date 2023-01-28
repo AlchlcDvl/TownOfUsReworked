@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDTransport
     {
-        private static Sprite Transport => TownOfUsReworked.TransportSprite;
+        public static Sprite Transport => TownOfUsReworked.TransportSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
 
-            role.TransportButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
-            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.TransportButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
 
             if (role.ButtonUsable)
                 role.TransportButton.SetCoolDown(role.TransportTimer(), CustomGameOptions.TransportCooldown);

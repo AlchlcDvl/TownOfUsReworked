@@ -1,48 +1,34 @@
 using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
+using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
+using TownOfUsReworked.Lobby.CustomOption;
 using System.Linq;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDWarp
+    public static class HUDKillOrPromote
     {
-        public static Sprite Warp => TownOfUsReworked.WarpSprite;
         public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Warper))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sidekick))
                 return;
+            
+            var role = Role.GetRole<Sidekick>(PlayerControl.LocalPlayer);
 
-            var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
-
-            if (role.WarpButton == null)
+            if (role.CanPromote && !role.Player.Data.IsDead)
             {
-                role.WarpButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.WarpButton.graphic.enabled = true;
-                role.WarpButton.graphic.sprite = Warp;
-                role.WarpButton.gameObject.SetActive(false);
-            }
-
-            role.WarpButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.WarpButton.SetCoolDown(role.WarpTimer(), CustomGameOptions.WarpCooldown);
-
-            var renderer2 = role.WarpButton.graphic;
-
-            if (!role.WarpButton.isCoolingDown)
-            {
-                renderer2.color = Palette.EnabledColor;
-                renderer2.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer2.color = Palette.DisabledClear;
-                renderer2.material.SetFloat("_Desat", 1f);
+                role.TurnRebel();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                writer.Write((byte)TurnRPC.TurnRebel);
+                writer.Write(role.Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                return;
             }
 
             if (role.KillButton == null)
@@ -53,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);

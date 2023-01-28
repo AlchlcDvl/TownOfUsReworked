@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Impostor(PlayerControl player) : base(player)
         {

@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
     public class HUDFramer
     {
         public static Sprite FrameSprite => TownOfUsReworked.Placeholder;
+        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
@@ -28,12 +29,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                 role.FrameButton.gameObject.SetActive(false);
             }
 
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.graphic.sprite = Kill;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
             role.FrameButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.FrameButton, notFramed);
             role.FrameButton.SetCoolDown(role.FrameTimer(), CustomGameOptions.FrameCooldown);
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);

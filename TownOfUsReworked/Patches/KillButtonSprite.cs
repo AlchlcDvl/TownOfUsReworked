@@ -38,22 +38,22 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
-        private static Sprite Douse => TownOfUsReworked.DouseSprite;
-        private static Sprite Remember => TownOfUsReworked.RememberSprite;
-        private static Sprite Eat => TownOfUsReworked.CannibalEat;
-        private static Sprite Vest => TownOfUsReworked.VestSprite;
-        private static Sprite Protect => TownOfUsReworked.ProtectSprite;
-        private static Sprite Infect => TownOfUsReworked.InfectSprite;
-        private static Sprite Maul => TownOfUsReworked.MaulSprite;
-        private static Sprite Obliterate => TownOfUsReworked.ObliterateSprite;
-        private static Sprite Assault => TownOfUsReworked.AssaultSprite;
-        private static Sprite EraseData => TownOfUsReworked.EraseDataSprite;
-        private static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
-        private static Sprite Placeholder => TownOfUsReworked.Placeholder;
-        private static Sprite Clear => TownOfUsReworked.Clear;
-        private static Sprite Stab => TownOfUsReworked.StabSprite;
-        private static Sprite Bite => TownOfUsReworked.Placeholder;
-        private static Sprite Kill;
+        public static Sprite Douse => TownOfUsReworked.DouseSprite;
+        public static Sprite Remember => TownOfUsReworked.RememberSprite;
+        public static Sprite Eat => TownOfUsReworked.CannibalEat;
+        public static Sprite Vest => TownOfUsReworked.VestSprite;
+        public static Sprite Protect => TownOfUsReworked.ProtectSprite;
+        public static Sprite Infect => TownOfUsReworked.InfectSprite;
+        public static Sprite Maul => TownOfUsReworked.MaulSprite;
+        public static Sprite Obliterate => TownOfUsReworked.ObliterateSprite;
+        public static Sprite Assault => TownOfUsReworked.AssaultSprite;
+        public static Sprite EraseData => TownOfUsReworked.EraseDataSprite;
+        public static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
+        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        public static Sprite Clear => TownOfUsReworked.Clear;
+        public static Sprite Stab => TownOfUsReworked.StabSprite;
+        public static Sprite Bite => TownOfUsReworked.Placeholder;
+        public static Sprite Kill;
 
         public static void Postfix(HudManager __instance)
         {

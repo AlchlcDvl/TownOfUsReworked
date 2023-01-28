@@ -24,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool Flashed => TimeRemaining > 0f;
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Grenadier(PlayerControl player) : base(player)
         {

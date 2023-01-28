@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DeadBody CurrentlyDragging { get; set; }
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
+        public PlayerControl ClosestPlayer = null;
 
         public Undertaker(PlayerControl player) : base(player)
         {

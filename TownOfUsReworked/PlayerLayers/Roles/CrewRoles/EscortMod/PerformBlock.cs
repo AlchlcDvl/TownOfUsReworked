@@ -30,10 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true && interact[0] == true)
-                {
                     role.RPCSetBlocked(role.ClosestPlayer);
-                    return false;
-                }
                 else if (interact[1] == true)
                     role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
 

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.InsiderMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        private static Sprite ActiveSprite => TownOfUsReworked.VoteCount;
+        public static Sprite ActiveSprite => TownOfUsReworked.VoteCount;
         public static Sprite DisabledSprite => TownOfUsReworked.VoteCountDisabled;
 
         public static void GenButton(Insider role, int index, bool isDead)

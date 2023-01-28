@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool Shapeshifted => TimeRemaining > 0f;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        public PlayerControl ClosestPlayer = null;
 
         public Shapeshifter(PlayerControl player) : base(player)
         {

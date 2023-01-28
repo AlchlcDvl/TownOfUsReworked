@@ -25,7 +25,6 @@ using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
 using InnerNet;
-using TownOfUsReworked.MultiClientInstancing;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
@@ -2378,14 +2377,11 @@ namespace TownOfUsReworked.Extensions
                 gaReset = true;
             else if (player.IsOtherRival(target) && (toKill || toConvert))
                 fullCooldownReset = true;
-            else if (toKill)
-            {
-                RpcMurderPlayer(player, target);
-                abilityUsed = true;
-                fullCooldownReset = true;
-            }
             else
             {
+                if (toKill)
+                    RpcMurderPlayer(player, target);
+
                 abilityUsed = true;
                 fullCooldownReset = true;
             }

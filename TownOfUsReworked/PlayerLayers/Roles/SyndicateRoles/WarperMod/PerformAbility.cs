@@ -1,48 +1,45 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using System;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using Hazel;
+using System;
+using TownOfUsReworked.Lobby.CustomOption;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformAbility
+    public class PerformKill
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer, true))
-                return false;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Warper))
+                return true;
 
-            var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
-
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
+            var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
             if (!Utils.ButtonUsable(__instance))
                 return false;
 
-            if (__instance == role.FrameButton)
+            if (__instance == role.WarpButton)
             {
-                if (role.FrameTimer() != 0f)
+                if (role.WarpTimer() != 0)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                if (interact[3] == true && interact[0] == true)
-                {
-                    role.Framed.Add(role.ClosestPlayer.PlayerId);
-                    role.LastFramed = DateTime.UtcNow;
-                }
-                else if (interact[1] == true)
-                    role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
-
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Warp);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.Warp();
+                role.LastWarped = DateTime.UtcNow;
                 return false;
             }
             else if (__instance == role.KillButton)
             {
                 if (role.KillTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
@@ -53,10 +50,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-                
+
                 return false;
             }
-            
+
             return false;
         }
     }

@@ -40,7 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Shift(role, role.ClosestPlayer);
                     role.LastShifted = DateTime.UtcNow;
-                    return false;
                 }
                 else if (interact[1] == true)
                     role.LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
@@ -57,6 +56,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             var roleType = role.RoleType;
             var shifter = shifterRole.Player;
             Role newRole;
+
+            if (!other.Is(Faction.Crew))
+            {
+                Utils.RpcMurderPlayer(shifter, shifter);
+                return;
+            }
 
             switch (roleType)
             {

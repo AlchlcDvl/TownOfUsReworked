@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Rebel)).Count() == 0;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        public PlayerControl ClosestPlayer = null;
 
         public Sidekick(PlayerControl player) : base(player)
         {

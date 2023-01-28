@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDProtect
     {
-        private static Sprite Medic => TownOfUsReworked.MedicSprite;
+        public static Sprite Medic => TownOfUsReworked.MedicSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 role.ShieldButton.gameObject.SetActive(false);
             }
 
-            role.ShieldButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.UsedAbility);
+            role.ShieldButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedAbility);
             role.ShieldButton.SetCoolDown(0f, 1f);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
             var renderer = role.ShieldButton.graphic;

@@ -37,6 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 {
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
                 } catch {}
+
+                return false;
             }
             
             return false;

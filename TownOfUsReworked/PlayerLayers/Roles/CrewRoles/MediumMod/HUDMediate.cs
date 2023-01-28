@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDMediate
     {
-        private static Sprite Mediate => TownOfUsReworked.MediateSprite;
+        public static Sprite Mediate => TownOfUsReworked.MediateSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                     role.MediateButton.gameObject.SetActive(false);
                 }
 
-                role.MediateButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+                role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {

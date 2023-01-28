@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDExamine
     {
-        private static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 role.InspectButton.gameObject.SetActive(false);
             }
 
-            role.InspectButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.InspectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
             var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);

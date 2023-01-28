@@ -49,7 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                         
                     role.LastExamined = DateTime.UtcNow;
-                    return false;
                 }
                 else if (interact[1] == true)
                     role.LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);

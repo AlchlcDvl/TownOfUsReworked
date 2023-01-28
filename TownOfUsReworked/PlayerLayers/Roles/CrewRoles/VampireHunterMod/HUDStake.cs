@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDStake
     {
-        private static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 role.StakeButton.gameObject.SetActive(false);
             }
 
-            role.StakeButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.VampsDead);
+            role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
             role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
 

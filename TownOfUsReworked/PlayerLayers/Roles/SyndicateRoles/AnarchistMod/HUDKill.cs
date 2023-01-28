@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDKill
     {
-        private static Sprite Kill => TownOfUsReworked.SyndicateKill;
+        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDFix
     {
-        private static Sprite Fix => TownOfUsReworked.EngineerFix;
+        public static Sprite Fix => TownOfUsReworked.EngineerFix;
         
         public static void Postfix(HudManager __instance)
         {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             }
             
             role.FixButton.SetCoolDown(0f, 10f);
-            role.FixButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.UsedThisRound);
+            role.FixButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedThisRound);
 
             if (!ShipStatus.Instance)
                 return;

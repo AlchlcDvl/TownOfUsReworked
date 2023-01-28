@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Rebel : Role
     {
-        public PlayerControl ClosestSyndicate;
+        public PlayerControl ClosestPlayer = null;
         public bool HasDeclared = false;
         public bool WasSidekick = false;
         public Role FormerRole = null;

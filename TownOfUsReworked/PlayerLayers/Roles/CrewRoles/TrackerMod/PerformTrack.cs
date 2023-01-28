@@ -65,8 +65,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
                     } catch {}
-
-                    return false;
                 }
                 else if (interact[1] == true)
                     role.LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);

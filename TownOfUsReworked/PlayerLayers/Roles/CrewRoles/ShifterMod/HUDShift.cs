@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDShift
     {
-        private static Sprite Shift => TownOfUsReworked.Shift;
+        public static Sprite Shift => TownOfUsReworked.Shift;
 
         public static void Postfix(HudManager __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 role.ShiftButton.gameObject.SetActive(false);
             }
 
-            role.ShiftButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.ShiftButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.ShiftButton.SetCoolDown(role.ShiftTimer(), CustomGameOptions.ShifterCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShiftButton);
             var renderer = role.ShiftButton.graphic;

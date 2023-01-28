@@ -1,12 +1,9 @@
 using System;
 using HarmonyLib;
-using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
 {
@@ -34,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
                 if (interact[3] == true && interact[0] == true)
-                    return false;
+                    role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)

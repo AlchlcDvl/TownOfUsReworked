@@ -20,6 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private KillButton _bombButton;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        public PlayerControl ClosestPlayer = null;
 
         public Bomber(PlayerControl player) : base(player)
         {

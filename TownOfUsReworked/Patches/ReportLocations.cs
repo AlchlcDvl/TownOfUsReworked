@@ -1,10 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.Enums;
-using System.Linq;
 
 namespace TownOfUsReworked.Patches
 {

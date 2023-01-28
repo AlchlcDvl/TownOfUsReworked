@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
                 role.ButtonButton.graphic.sprite = Button;
             }
 
-            role.ButtonButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && !role.ButtonUsed && PlayerControl.LocalPlayer.RemainingEmergencies > 0);
+            role.ButtonButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.ButtonUsed && PlayerControl.LocalPlayer.RemainingEmergencies > 0);
             role.ButtonButton.SetCoolDown(role.StartTimer(), CustomGameOptions.ButtonCooldown);
             var renderer = role.ButtonButton.graphic;
 

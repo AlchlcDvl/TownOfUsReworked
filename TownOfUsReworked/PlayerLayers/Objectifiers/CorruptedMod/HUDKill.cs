@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.CorruptedKillCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
         }

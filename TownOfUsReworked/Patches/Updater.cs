@@ -17,8 +17,8 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public class ModUpdaterButton
     {
-        private static Sprite TOUUpdateSprite => TownOfUsReworked.UpdateTOUButton;
-        private static Sprite SubmergedUpdateSprite => TownOfUsReworked.UpdateSubmergedButton;
+        public static Sprite TOUUpdateSprite => TownOfUsReworked.UpdateTOUButton;
+        public static Sprite SubmergedUpdateSprite => TownOfUsReworked.UpdateSubmergedButton;
 
         private static void Prefix(MainMenuManager __instance)
         {

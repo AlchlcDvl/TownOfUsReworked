@@ -40,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 1f);
                     } catch {}
-
-                    return false;
                 }
 
                 return false;

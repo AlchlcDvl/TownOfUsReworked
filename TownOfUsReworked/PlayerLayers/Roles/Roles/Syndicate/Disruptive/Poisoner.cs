@@ -25,15 +25,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Poisoner";
             StartText = "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
             AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
-            Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Intruder;
+            Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Syndicate;
             LastPoisoned = DateTime.UtcNow;
             RoleType = RoleEnum.Poisoner;
-            Faction = Faction.Intruder;
+            Faction = Faction.Syndicate;
             PoisonedPlayer = null;
-            FactionName = "Intruder";
-            FactionColor = Colors.Intruder;
-            RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = "Intruder (Deception)";
+            FactionName = "Syndicate";
+            FactionColor = Colors.Syndicate;
+            RoleAlignment = RoleAlignment.SyndicateKill;
+            AlignmentName = "Syndicate (Killing)";
             Results = InspResults.GrenFramMedicPois;
         }
 

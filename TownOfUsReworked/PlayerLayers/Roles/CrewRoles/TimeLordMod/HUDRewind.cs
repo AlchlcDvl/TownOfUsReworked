@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDRewind
     {
-        private static Sprite Rewind => TownOfUsReworked.Rewind;
+        public static Sprite Rewind => TownOfUsReworked.Rewind;
 
         public static void Postfix(HudManager __instance)
         {
@@ -40,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
 
-            role.UsesText.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
-            role.RewindButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance) && role.ButtonUsable);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.RewindButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
 
             if (role.ButtonUsable)
                 role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());

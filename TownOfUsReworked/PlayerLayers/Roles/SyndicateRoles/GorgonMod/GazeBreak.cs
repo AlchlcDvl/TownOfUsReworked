@@ -14,14 +14,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
     {
         public static void Postfix(PlayerControl __instance)
         {
+            if (LobbyBehaviour.Instance || MeetingHud.Instance)
+                return;
+
             if (!__instance.Is(RoleEnum.Gorgon))
                 return;
             
             var role = Role.GetRole<Gorgon>(__instance);
-
-            if (LobbyBehaviour.Instance || MeetingHud.Instance)
-                return;
-
             var breakList = new Queue<byte>();
 
             foreach (var stoned in role.gazeList)
@@ -30,8 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                     continue;
                     
                 PlayerControl closestPlayer = null;
-                System.Collections.Generic.List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().ToList().FindAll(x =>
-                    x.PlayerId != role.Player.PlayerId && x.PlayerId != stoned.Key);
+                System.Collections.Generic.List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().ToList().FindAll(x => x.PlayerId != role.Player.PlayerId &&
+                    x.PlayerId != stoned.Key);
 
                 if (Utils.SetClosestPlayerToPlayer(GameData.Instance.GetPlayerById(stoned.Key)._object, ref closestPlayer, 0.8f, targets))
                     breakList.Enqueue(stoned.Key);

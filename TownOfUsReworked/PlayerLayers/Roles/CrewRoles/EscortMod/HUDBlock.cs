@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDBlock
     {
-        private static Sprite Placeholder => TownOfUsReworked.Placeholder;
+        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                 role.BlockButton.gameObject.SetActive(false);
             }
 
-            role.BlockButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer, __instance));
+            role.BlockButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             Utils.SetTarget(ref role.ClosestPlayer, role.BlockButton);
 
             if (role.Enabled)

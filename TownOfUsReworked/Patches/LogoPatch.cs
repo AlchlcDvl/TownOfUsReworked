@@ -9,7 +9,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public static class LogoPatch
     {
-        private static Sprite Sprite => TownOfUsReworked.ToUBanner;
+        public static Sprite Sprite => TownOfUsReworked.ToUBanner;
 
         static void Postfix(PingTracker __instance)
         {

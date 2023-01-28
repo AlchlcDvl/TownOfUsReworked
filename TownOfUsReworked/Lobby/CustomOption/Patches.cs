@@ -208,7 +208,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 } catch {}
             }
 
-            private static Sprite GetSettingSprite(int index)
+            public static Sprite GetSettingSprite(int index)
             {
                 switch (index)
                 {
