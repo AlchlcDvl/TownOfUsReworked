@@ -13,13 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer, true))
                 return false;
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
-
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance) || (__instance != role.KillButton && __instance != role.CamouflageButton))
-                return false;
 
             if (__instance == role.CamouflageButton)
             {
@@ -27,16 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                     return false;
 
                 Utils.Spread(role.Player, role.ClosestPlayer);
-
-                if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
-                {
-                    Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
-
-                    if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
-                        role.LastKilled = DateTime.UtcNow;
-                        
-                    return false;
-                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                 writer.Write((byte)ActionsRPC.Camouflage);

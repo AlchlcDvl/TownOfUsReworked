@@ -10,7 +10,7 @@ using AmongUs.GameOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestSyndicate == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             if (!__instance.enabled)
@@ -30,24 +30,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Vector2.Distance(role.ClosestSyndicate.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
 
-            if (role.ClosestSyndicate == null)
+            if (role.ClosestPlayer == null)
                 return false;
 
-            if (role.ClosestSyndicate.IsInfected())
+            if (role.ClosestPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestSyndicate, role.Player);
+                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.Sidekick);
             writer.Write(role.Player.PlayerId);
-            writer.Write(role.ClosestSyndicate.PlayerId);
+            writer.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Sidekick(role, role.ClosestSyndicate);
+            Sidekick(role, role.ClosestPlayer);
             return false;
         }
 

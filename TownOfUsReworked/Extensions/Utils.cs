@@ -2233,7 +2233,7 @@ namespace TownOfUsReworked.Extensions
             {
                 if (cautious.Player == target)
                 {
-                    if (player.IsShielded() || player.IsProtected())
+                    if ((player.IsShielded() || player.IsProtected()) && !target.Is(AbilityEnum.Ruthless))
                     {
                         if (player.IsShielded())
                         {
@@ -2273,7 +2273,7 @@ namespace TownOfUsReworked.Extensions
             {
                 if (cautious2.Player == target)
                 {
-                    if (player.IsShielded() || player.IsProtected())
+                    if ((player.IsShielded() || player.IsProtected()) && !target.Is(AbilityEnum.Ruthless))
                     {
                         if (player.IsShielded())
                         {
@@ -2326,8 +2326,10 @@ namespace TownOfUsReworked.Extensions
 
                         StopKill.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
+                    else if (target.IsProtected())
+                        gaReset = true;
                 }
-                else if (player.IsShielded())
+                else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
                 {
                     var medic = player.GetMedic().Player.PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);

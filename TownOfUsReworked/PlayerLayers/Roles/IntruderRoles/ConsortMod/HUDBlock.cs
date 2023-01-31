@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
                 return;
                 
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
@@ -38,11 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             if (role.IsRecruit)
                 notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.BlockButton.graphic.sprite = Roleblock;
             role.BlockButton.GetComponent<AspectPosition>().Update();
-            role.BlockButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.BlockButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
                 role.BlockButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.ConsRoleblockDuration);

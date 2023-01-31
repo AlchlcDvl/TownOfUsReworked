@@ -5,17 +5,17 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
+namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformObliterate
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dampyr, true))
-                return false;
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
+                return true;
 
-            var role = Role.GetRole<Dampyr>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Pestilence>(PlayerControl.LocalPlayer);
 
             if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
@@ -23,23 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
             if (!Utils.ButtonUsable(__instance))
                 return false;
 
-            if (role.KillTimer() != 0f && __instance == role.KillButton)
+            if (role.KillTimer() != 0f && __instance == role.ObliterateButton)
                 return false;
 
-            if (__instance == role.KillButton)
+            if (__instance == role.ObliterateButton)
             {
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true, false, Role.GetRoleValue(RoleEnum.VampireHunter));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, null, true);
 
                 if (interact[3] == true && interact[0] == true)
-                {
                     role.LastKilled = DateTime.UtcNow;
-
-                    foreach (var drac in Role.GetRoles(RoleEnum.Dracula))
-                    {
-                        var dracula = (Dracula)drac;
-                        dracula.LastBitten = DateTime.UtcNow;
-                    }
-                }
                 else if (interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -49,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
 
                 return false;
             }
-            
+
             return false;
         }
     }

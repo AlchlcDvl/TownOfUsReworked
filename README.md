@@ -26,140 +26,47 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Roles**](#roles)
 
-[**Crew Roles**](#crew-roles)
-- [Agent](#agent)
-- [Altruist](#altruist)
-- [Chameleon](#chameleon)
-- [Coroner](#coroner)
-- [Crewmate](#crewmate)
-- [Detective](#detective)
-- [Escort](#escort)
-- [Engineer](#engineer)
-- [Inspector](#inspector)
-- [Investigator](#investigator)
-- [Mayor](#mayor)
-- [Medic](#medic)
-- [Medium](#medium)
-- [Mystic](#mystic)
-- [Operative](#operative)
-- [Retributionist](#retributionist)
-- [Revealer](#revealer)
-- [Seer](#seer)
-- [Shifter](#shifter)
-- [Sheriff](#sheriff)
-- [Swapper](#swapper)
-- [Time Lord](#time-lord)
-- [Tracker](#tracker)
-- [Transporter](#transporter)
-- [Vampire Hunter](#vampire-hunter)
-- [Veteran](#veteran)
-- [Vigilante](#vigilante)
-
-[**Neutral Roles**](#neutral-roles)
-- [Amnesiac](#amnesiac)
-- [Arsonist](#arsonist)
-- [Cannibal](#cannibal)
-- [Cryomaniac](#cryomaniac)
-- [Dampyr](#dampyr)
-- [Dracula](#dracula)
-- [Executioner](#executioner)
-- [Glitch](#glitch)
-- [Guardian Angel](#guardian-angel)
-- [Guesser](#guesser)
-- [Jackal](#jackal)
-- [Jester](#jester)
-- [Juggernaut](#juggernaut)
-- [Murderer](#murderer)
-- [Necromancer](#necromancer)
-- [Pestilence](#pestilence)
-- [Phantom](#phantom)
-- [Plaguebearer](#plaguebearer)
-- [Serial Killer](#serial-killer)
-- [Survivor](#survivor)
-- [Thief](#thief)
-- [Vampire](#vampire)
-- [Werewolf](#werewolf)
-- [Whisperer](#whisperer)
-
-[**Intruder Roles**](#intruder-roles)
-- [Blackmailer](#blackmailer)
-- [Camouflager](#camouflager)
-- [Consigliere](#consigliere)
-- [Consort](#consort)
-- [Disguiser](#disguiser)
-- [Godfather](#godfather)
-- [Grenadier](#grenadier)
-- [Impostor](#impostor)
-- [Janitor](#janitor)
-- [Mafioso](#mafioso)
-- [Miner](#miner)
-- [Morphling](#morphling)
-- [Teleporter](#teleporter)
-- [Time Master](#time-master)
-- [Undertaker](#undertaker)
-- [Wraith](#wraith)
-
-[**Syndicate Roles**](#syndicate-roles)
-- [Anarchist](#anarchist)
-- [Beamer](#beamer)
-- [Bomber](#bomber)
-- [Concealer](#concealer)
-- [Drunkard](#drunkard)
-- [Framer](#framer)
-- [Gorgon](#gorgon)
-- [Poisoner](#poisoner)
-- [Rebel](#rebel)
-- [Shapeshifter](#shapeshifter)
-- [Sidekick](#sidekick)
-- [Warper](#warper)
-
-[**Modifiers**](#modifiers)
-- [Bait](#bait)
-- [Coward](#coward)
-- [Diseased](#diseased)
-- [Drunk](#drunk)
-- [Dwarf](#dwarf)
-- [Flincher](#flincher)
-- [Giant](#giant)
-- [Professional](#professional)
-- [Shy](#shy)
-- [VIP](#vip)
-- [Volatile](#volatile)
-
-[**Abilities**](#abilities)
-- [Assassin](#assassin)
-- [Button Barry](#button-barry)
-- [Insider](#insider)
-- [Lighter](#lighter)
-- [Multitasker](#multitasker)
-- [Radar](#radar)
-- [Ruthless](#ruthless)
-- [Snitch](#snitch)
-- [Tiebreaker](#tiebreaker)
-- [Torch](#torch)
-- [Tunneler](#tunneler)
-- [Underdog](#underdog)
-
-[**Objectifiers**](#objectifiers)
-- [Allied](#allied)
-- [Corrupted](#corrupted)
-- [Fanatic](#fanatic)
-- [Lovers](#lovers)
-- [Overlord](#overlord)
-- [Rivals](#rivals)
-- [Taskmaster](#taskmaster)
-- [Traitor](#traitor)
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
+|----------|-------------|-----------------|----------------|
+| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Amnesiac](#amnesiac) | [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
+| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Arsonist](#arsonist) | [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
+| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Cannibal](#cannibal) | [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
+| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cryomaniac](#cryomaniac) | [Drunk](#drunk) | [Lighter](#lighter) | [Lovers](#lovers) |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Dampyr](#dampyr) | [Dwarf](#dwarf) | [Multitasker](#multitasker) | [Overlord](#overlord) |
+| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dracula](#dracula) | [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) | [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Glitch](#glitch) | [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Guardian Angel](#guardian-angel) | [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guesser](#guesser) | [Shy](#shy) | [Torch](#torch) |  |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Jackal](#jackal) | [VIP](#vip) | [Tunneler](#tunneler) |  |
+| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jester](#jester) | [Volatile](#volatile) | [Underdog](#underdog) |  |
+| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Juggernaut](#juggernaut) |  |  |  |
+| [Time Master](#time-master) |  | [Operative](#operative) | [Murderer](#murderer) |  |  |  |
+| [Undertaker](#undertaker) |  | [Operative](#operative) | [Necromancer](#necromancer) |  |  |  |
+| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Pestilence](#pestilence) |  |  |  |
+|  |  | [Revealer](#revealer) | [Phantom](#phantom) |  |  |  |
+|  |  | [Seer](#seer) | [Plaguebearer](#plaguebearer) |  |  |  |
+|  |  | [Shifter](#shifter) | [Serial Killer](#serial-killer) |  |  |  |
+|  |  | [Sheriff](#sheriff) | [Survivor](#survivor) |  |  |  |
+|  |  | [Swapper](#swapper) | [Thief](#thief) |  |  |  |
+|  |  | [Time Lord](#time-lord) | [Vampire](#vampire) |  |  |  |
+|  |  | [Tracker](#tracker) | [Werewolf](#werewolf) |  |  |  |
+|  |  | [Transporter](#transporter) | [Whisperer](#whisperer) |  |  |  |
+|  |  | [Vampire Hunter](#vampire-hunter) |  |  |  |  |
+|  |  | [Veteran](#veteran) |  |  |  |  |
+|  |  | [Vigilante](#vigilante) |  |  |  |  |
 
 [**Custom Game Settings**](#custom-game-settings)
+- [Global Settings](#global-settings)
 - [Game Mode Settings](#game-mode-settings)
 - [All Any Mode Settings](#all-any-mode-settings)
 - [Killing Only Mode Settings](#killing-only-mode-settings)
-- [Custom Mode Settings](#custom-mode-settings)
-- [Map Settings](#map-settings)
-- [Better Polus Settings](#better-polus-settings)
 - [Game Modifiers](#game-modifiers)
-- [QoL Options](#qol-options)
 - [Quality Changes](#quality-changes)
+- [Map Settings](#map-settings)
+- [Better Skeld Settings](#better-skeld-settings)
+- [Better Polus Settings](#better-polus-settings)
+- [Better Airship Settings](#better-airship-settings)
 
 [**Game Info**](#game-info)
 - [Colors](#colors)
@@ -176,7 +83,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version| Mod Version | Link |
 |----------|-------------|-----------------|
-| 2022.10.25 (s & e) | Base Mod (v3.4.0) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v3.4.0/ToU.v3.4.0.zip) |
+| 2022.12.14 (s & e) | Base Mod (v4.0.1) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.1/ToU.v4.0.1.zip) |
 
 <details>
   <summary> Change Log </summary>
@@ -276,7 +183,7 @@ Delete these files and you're good to go!
 ## Agent
 ### **Alignment: Crew (Investigative)**
 
-The Agent gains more information when on Admin Table. On Admin Table, the Agent can see the colors of every person on the map.
+The Agent gains more information when on Admin Table and on Vitals. On Admin Table, the Agent can see the colors of every person on the map. When on Vitals, the Agent is shown how long someone has been dead for.
 
 ### Game Options
 
@@ -284,11 +191,12 @@ The Agent gains more information when on Admin Table. On Admin Table, the Agent 
 |----------|:-------------:|:------:|:------:|
 | Agent | The percentage probability of the Agent appearing | Percentage | 0% |
 | Agent Count | How many Agents should spawn in Custom Mode | Number | 1 |
+| Agent Is Unique In All Any | Self descriptive | Toggle | False |
 
 ## Altruist
 ### **Alignment: Crew (Protective)**
 
-The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, risking sacrificing themselves for the revival of another player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted.
+The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, sacrificing themselves for the revival of the dead player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted. Once revived all evil players will be notified of the revival and will have an arrow pointing towards the revived player.
 
 ### Game Options
 
@@ -296,8 +204,24 @@ The Altruist is capable of reviving dead players. Upon finding a dead body, the 
 |----------|:-------------:|:------:|:------:|
 | Altruist | The percentage probability of the Altruist appearing | Percentage | 0% |
 | Altruist Count | How many Altruists should spawn in Custom Mode | Number | 1 |
+| Altruist Is Unique In All Any | Self descriptive | Toggle | False |
 | Altruist Revive Duration | The time it takes for the Altruist to revive a dead body | Time | 10s |
 | Target Body Disappears On Beginning Of Revive | Whether the dead body of the player the Altruist is reviving disappears upon revival | Toggle | False |
+
+## Chameleon
+### **Alignment: Crew (Support)**
+
+The Chameleon is capable of going invisible to stalk players.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Chameleon | The percentage probability of the Chameleon appearing | Percentage | 0% |
+| Chameleon Count | How many Chameleons should spawn in Custom Mode | Number | 1 |
+| Chameleon Is Unique In All Any | Self descriptive | Toggle | False |
+| Swoop Cooldown | The cooldown on the Chameleon's Swoop button | Time | 25s |
+| Swoop Duration | The duration of the Chameleon's Swoop | Time | 10s |
 
 ## Coroner
 ### **Alignment: Crew (Investigative)**
@@ -310,9 +234,11 @@ The Coroner gets an alert when someone dies. On top of this, the Coroner briefly
 |----------|:-------------:|:------:|:------:|
 | Coroner | The percentage probability of the Coroner appearing | Percentage | 0% |
 | Coroner Count | How many Coroners should spawn in Custom Mode | Number | 1 |
+| Coroner Is Unique In All Any | Self descriptive | Toggle | False |
 | Arrow Duration | The duration of the arrows pointing to the bodies | Time | 0.1s |
 | Coroner Gets Roles | This dictates whether the Coroner gets the killer's and body's role, otherwise only their factions are revealed | Toggle | False |
 | Coroner Gets Killer's Name | This dictates whether the Coroner gets the killer's name from the report | Toggle | False |
+| Coroner Gets Killer's Name Under | This dictates how old must a body be for the Coroner to get the killer's name | Time | 1s |
 
 ## Crewmate
 ### **Alignment: Crew (Utility)**
@@ -337,8 +263,8 @@ The Detective can examine other players for suspicious behavior. If the examined
 |----------|:-------------:|:------:|:------:|
 | Detective | The percentage probability of the Detective appearing | Percentage | 0% |
 | Detective Count | How many Detectives should spawn in Custom Mode | Number | 1 |
-| Initial Examine Cooldown | The initial cooldown of the Detective's Examine button | Time | 25s |
-| Examine Cooldown | The cooldown of the Detective's Examine button | Time | 10s |
+| Detective Is Unique In All Any | Self descriptive | Toggle | False |
+| Examine Cooldown | The cooldown on the Detective's Examine button | Time | 10s |
 | Bloody Duration | How long players remain bloody after a kill | Time | 25s |
 
 ## Engineer
@@ -352,7 +278,8 @@ The Engineer can fix sabotages from anywhere on the map. They can also use vents
 |----------|:-------------:|:------:|:------:|
 | Engineer | The percentage probability of the Engineer appearing | Percentage | 0% |
 | Engineer Count | How many Engineers should spawn in Custom Mode | Number | 1 |
-| Engineer Fix Per | Whether the Engineer can fix 1 sabotage per round or per game | Round / Game | Round |
+| Engineer Is Unique In All Any | Self descriptive | Toggle | False |
+| Engineer Fix Per | Whether the Engineer can fix 1 sabotage per round or per game | String | Round |
 
 ## Escort
 ### **Alignment: Crew (Support)**
@@ -365,8 +292,9 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 |----------|:-------------:|:------:|:------:|
 | Escort | The percentage probability of the Escort appearing | Percentage | 0% |
 | Escort Count | How many Escorts should spawn in Custom Mode | Number | 1 |
-| Roleblock Cooldown | The cooldown of the Escort's roleblock button | Time | 25s |
-| Roleblock Duration | The duration of the Escort's roleblock | Time | 10s |
+| Escort Is Unique In All Any | Self descriptive | Toggle | False |
+| Roleblock Cooldown | The cooldown on the Escort's Roleblock button | Time | 25s |
+| Roleblock Duration | The duration of the Escort's Roleblock | Time | 10s |
 
 ## Inspector
 ### **Alignment: Crew (Investigative)**
@@ -379,7 +307,8 @@ The Inspector can check players for their roles. Upon being checked, the targets
 |----------|:-------------:|:------:|:------:|
 | Inspector | The percentage probability of the Inspector appearing | Percentage | 0% |
 | Inspector Count | How many Inspectors should spawn in Custom Mode | Number | 1 |
-| Inspect Cooldown | The cooldown on the Inspector's inspect button. | Time | 5s |
+| Inspector Is Unique In All Any | Self descriptive | Toggle | False |
+| Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 5s |
 
 ## Investigator
 ### **Alignment: Crew (Investigative)**
@@ -392,6 +321,7 @@ The Investigator can see the footprints of players. All footprints disappear aft
 |----------|:-------------:|:------:|:------:|
 | Investigator | The percentage probability of the Investigator appearing | Percentage | 0% |
 | Investigator Count | How many Investigators should spawn in Custom Mode | Number | 1 |
+| Investigator Is Unique In All Any | Self descriptive | Toggle | False |
 | Footprint Size | The size of the footprint on a scale of 1 to 10 | Number | 4 |
 | Footprint Interval | The time interval between two footprints | Time | 0.1s |
 | Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
@@ -409,8 +339,10 @@ The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the numbe
 |----------|:-------------:|:------:|:------:|
 | Mayor | The percentage probability of the Mayor appearing | Percentage | 0% |
 | Mayor Count | How many Mayors should spawn in Custom Mode | Number | 1 |
+| Mayor Is Unique In All Any | Self descriptive | Toggle | False |
 | Initial Mayor Vote Bank | The number of votes in the Vote Bank at the start of a game | Number | 1 |
 | Anonymous Mayor Votes | Whether the Mayor's extra votes will show up anonymously | Toggle | False |
+| Mayor Can Button | Whether the Mayor can press the emergency button | Toggle | True |
 
 ## Medic
 ### **Alignment: Crew (Protective)**
@@ -423,8 +355,9 @@ The Medic can give any player a shield that will make them immortal until the Me
 |----------|:-------------:|:------:|:------:|
 | Medic | The percentage probability of the Medic appearing | Percentage | 0% |
 | Medic Count | How many Medics should spawn in Custom Mode | Number | 1 |
-| Show Shielded Player | Who should be able to see who is Shielded | Self / Medic / Self + Medic / Everyone | Self |
-| Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | Medic / Shielded / Everyone / Nobody | Medic |
+| Medic Is Unique In All Any | Self descriptive | Toggle | False |
+| Show Shielded Player | Who should be able to see who is Shielded | String | Self |
+| Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | String | Medic |
 | Shield Breaks On Murder Attempt | Whether the Shield breaks when someone attempts to Kill them | Toggle | False |
 
 ## Medium
@@ -438,10 +371,26 @@ The Medium can see ghosts. During each round the Medium has an ability called Me
 |----------|:-------------:|:------:|:------:|
 | Medium | The percentage probability of the Medium appearing | Percentage | 0% |
 | Medium Count | How many Mediums should spawn in Custom Mode | Number | 1 |
-| Mediate Cooldown | The cooldown of the Medium's Mediate button | Time | 10s |
+| Medium Is Unique In All Any | Self descriptive | Toggle | False |
+| Mediate Cooldown | The cooldown on the Medium's Mediate button | Time | 10s |
+| Mediate Duration | The duration of the Medium's Mediate | Time | 10s |
 | Reveal Appearance Of Mediate Target | Whether the Ghosts will show as themselves, or camouflaged | Toggle | True |
 | Reveal The Medium To The Mediate Target | Whether the ghosts can see that the Medium is the Medium | Toggle | True |
 | Who Is Revealed | Which players are revealed to the Medium | Oldest Dead / Newest Dead / All Dead | Oldest Dead |
+
+## Mystic
+### **Alignment: Crew (Investigative)**
+
+The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Mystic | The percentage probability of the Mystic appearing | Percentage | 0% |
+| Mystic Count | How many Mystics should spawn in Custom Mode | Number | 1 |
+| Mystic Is Unique In All Any | Self descriptive | Toggle | False |
+| Investigate Cooldown | The cooldown on the Medium's Investigate button | Time | 10s |
 
 ## Operative
 ### **Alignment: Crew (Investigative)**
@@ -454,12 +403,56 @@ The Operative can place bugs around the map. When players enter the range of the
 |----------|:-------------:|:------:|:------:|
 | Operative | The percentage probability of the Operative appearing | Percentage | 0% |
 | Operative Count | How many Operatives should spawn in Custom Mode | Number | 1 |
+| Operative Is Unique In All Any | Self descriptive | Toggle | False |
 | Minimum Amount Of Time Required For Bug To Trigger | How long a player must stay in the bug for it to trigger | Time | 1s |
-| Bug Cooldown | The cooldown on the operative's bug button | Time | 25s |
+| Bug Cooldown | The cooldown on the Operative's Bug button | Time | 25s |
 | Bugs Removed Each Round | Whether the Operative's bugs are removed after each meeting | Toggle | True |
 | Maximum Number Of Bugs Per Game | The number of bgus they can place in a game | Number | 5 |
 | Bug Range | The size of each trap | Factor | 1x |
 | Minimum Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 3 |
+
+## Retributionist
+### **Alignment: Crew (Support)**
+
+The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to ressurect and use for the following round from the dead. They can choose to use each dead players as many times as they wish. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role.
+
+### Game Options
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Retributionist | The percentage probability of the Retributionist appearing | Percentage | 0% |
+| Retributionist Count | How many Retributionists should spawn in Custom Mode | Number | 1 |
+| Retributionist Is Unique In All Any | Self descriptive | Toggle | False |
+
+## Revealer
+### **Alignment: Crew (Utility)**
+
+The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Revealer | The percentage probability of the Revealer appearing | Percentage | 0% |
+| When Revealer Can Be Clicked | The amount of tasks remaining when the Revealer Can Be Clicked | Number | 5 |
+| Revealer Alert | The amount of tasks remaining when the Impostors are alerted that the Revealer is nearly finished | Number | 1 |
+| Revealer Reveals Neutral Roles | Whether the Revealer also Reveals Neutral Roles | Toggle | False |
+| Revealer Reveals Crew Roles | Whether the Revealer also Reveals Crew Roles | Toggle | False |
+| Revealer Reveals Exact Roles | Whether the Revealer also Reveals all Roles | Toggle | False |
+| Who can Click Revealer | Whether even other Crewmates can click the Revealer | String | All |
+
+## Seer
+### **Alignment: Crew (Investigative)**
+
+The Seer only spawns if there are roles capable of changing their initial roles. The Seer can investigate players to see if their role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, does not work on those whose subfactions have changed so those who flashed  green might still be evil.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Seer | The percentage probability of the Seer appearing | Percentage | 0% |
+| Seer Count | How many Sheriffs should spawn in Custom Mode | Number | 1 |
+| Seer Is Unique In All Any | Self descriptive | Toggle | False |
+| Ivestigate Cooldown | The cooldown on the Seer's Ivestigate button | Time | 25s |
 
 ## Sheriff
 ### **Alignment: Crew (Investigative)**
@@ -472,12 +465,10 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 |----------|:-------------:|:------:|:------:|
 | Sheriff | The percentage probability of the Sheriff appearing | Percentage | 0% |
 | Sheriff Count | How many Sheriffs should spawn in Custom Mode | Number | 1 |
-| Interrogate Cooldown | The Cooldown of the Sheriff's interrogate button | Time | 25s |
+| Sheriff Is Unique In All Any | Self descriptive | Toggle | False |
+| Interrogate Cooldown | The cooldown on the Sheriff's Interrogate button | Time | 25s |
 | Neutral Evils Show Up As Evil | Neutral Evil roles show up as Red | Toggle | False |
 | Neutral Killing Show Up As Evil | Neutral Killing roles show up as Red | Toggle | False |
-| Traitor Does Not Swap Colours | The Traitor remains their original colour | Toggle | False |
-| Interrogate Once Per | Decides whether the Sheriff can only reveal once the entire game, or once per round | Round / Game | Round |
-| Sheriff Accuracy | How accurate the Sheriff results will be | Toggle | False |
 
 ## Shifter
 ### **Alignment: Crew (Support)**
@@ -490,8 +481,9 @@ The Shifter can swap roles with someone, as long as they are Crew. If the shift 
 |----------|:-------------:|:------:|:------:|
 | Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
 | Shifter Count | How many Shifters should spawn in Custom Mode | Number | 1 |
-| Shift Cooldown | The cooldown on the Shifter's shift button | Time | 25s |
-| Shifted Becomes | Dictates what the shift target becomes after getting shifted | Shifter / Crewmate | Shifter |
+| Shifter Is Unique In All Any | Self descriptive | Toggle | False |
+| Shift Cooldown | The cooldown on the Shifter's Shift button | Time | 25s |
+| Shifted Becomes | Dictates what the shift target becomes after getting shifted | String | Shifter |
 
 ## Swapper
 ### **Alignment: Crew (Sovereign)**
@@ -504,7 +496,10 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 |----------|:-------------:|:------:|:------:|
 | Swapper | The percentage probability of the Swapper appearing | Percentage | 0% |
 | Swapper Count | How many Swappers should spawn in Custom Mode | Number | 1 |
-| Swapper Can Button | Whether the Swapper Can Press the Button | Toggle | True |
+| Swapper Is Unique In All Any | Self descriptive | Toggle | False |
+| Swapper Can Button | Whether the Swapper can press the emergency button | Toggle | True |
+| Swapper Can Swap After Voting | Whether the Swapper Can Press the Button | Toggle | True |
+| Swapper Can Swap Themself | Whether the Swapper Can Press the Button | Toggle | True |
 
 ## Time Lord
 ### **Alignment: Crew (Protective)**
@@ -517,10 +512,11 @@ The Time Lord can rewind time and reverse the positions of all players. If enabl
 |----------|:-------------:|:------:|:------:|
 | Time Lord | The percentage probability of the Time Lord appearing | Percentage | 0% |
 | Time Lord Count | How many Time Lords should spawn in Custom Mode | Number | 1 |
+| Time Lord Is Unique In All Any | Self descriptive | Toggle | False |
 | Revive During Rewind | Whether the Time Lord revives dead players when rewinding | Toggle | False |
-| Time Lord Immunity | Whether the Time Lord is immune to their own rewind and the Time Master's time freeze | Toggle | False |
+| Time Lord Immunity To Freeze And Rewind | Whether the Time Lord is immune to their own rewind and the Time Master's time freeze | Toggle | False |
 | Rewind Duration | How far the rewind goes back in time | Time | 2s |
-| Rewind Cooldown | The cooldown of the Time Lord's Rewind button | Time | 25s |
+| Rewind Cooldown | The cooldown on the Time Lord's Rewind button | Time | 25s |
 | Max Uses | The amount of times the Rewind ability can be used | Number | 5 |
 
 ## Tracker
@@ -534,8 +530,9 @@ The Tracker can track other during a round. Once they track someone, an arrow is
 |----------|:-------------:|:------:|:------:|
 | Tracker | The percentage probability of the Tracker appearing | Percentage | 0% |
 | Tracker Count | How many Trackers should spawn in Custom Mode | Number | 1 |
+| Tracker Is Unique In All Any | Self descriptive | Toggle | False |
 | Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
-| Track Cooldown | The cooldown on the Tracker's track button | Time | 25s |
+| Track Cooldown | The cooldown on the Tracker's Track button | Time | 25s |
 | Tracker Arrows Reset Each Round | Whether Tracker Arrows are removed after each meeting | Toggle | False |
 | Maximum Number of Tracks Per Round | The number of new people they can track each round | Number | 3 |
 
@@ -550,13 +547,14 @@ The Transporter can swap the locations of two players at will. Players who have 
 |----------|:-------------:|:------:|:------:|
 | Transporter | The percentage probability of the Transporter appearing | Percentage | 0% |
 | Transporter Count | How many Transporters should spawn in Custom Mode | Number | 1 |
-| Transport Cooldown | The cooldown of the Transporter's transport ability | Time | 25s |
+| Transporter Is Unique In All Any | Self descriptive | Toggle | False |
+| Transport Cooldown | The cooldown on the Transporter's Transport ability | Time | 25s |
 | Max Uses | The amount of times the Transport ability can be used | Number | 5 |
 
 ## Vampire Hunter
 ### **Alignment: Crew (Killing)**
 
-The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.
+The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.
 
 ### Game Options
 
@@ -564,7 +562,8 @@ The Vampire Hunter only spawns if there are Vampires in the game. They can check
 |----------|:-------------:|:------:|:------:|
 | Vampire Hunter | The percentage probability of the Vampire Hunter appearing | Percentage | 0% |
 | Vampire Hunter Count | How many Vampire Hunters should spawn in Custom Mode | Number | 1 |
-| Stake Cooldown | The cooldown on the Vampire Hunter's stake button. | Time | 5s |
+| Vampire Hunter Is Unique In All Any | Self descriptive | Toggle | False |
+| Stake Cooldown | The cooldown on the Vampire Hunter's Stake button. | Time | 5s |
 
 ## Veteran
 ### **Alignment: Crew (Killing)**
@@ -577,8 +576,9 @@ The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew,
 |----------|:-------------:|:------:|:------:|
 | Veteran | The percentage probability of the Veteran appearing | Percentage | 0% |
 | Veteran Count | How many Veterans should spawn in Custom Mode | Number | 1 |
-| Alert Cooldown | The cooldown on the Veteran's alert button. | Time | 5s |
-| Alert Duration | The duration of the alert | Time | 25s |
+| Veteran Is Unique In All Any | Self descriptive | Toggle | False |
+| Alert Cooldown | The cooldown on the Veteran's Alert button. | Time | 5s |
+| Alert Duration | The duration of the Veteran's Alert | Time | 25s |
 | Maximum Number Of Alerts | The number of times the Veteran can alert throughout the game | Number | 3 |
 
 ## Vigilante
@@ -592,10 +592,12 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 |----------|:-------------:|:------:|:------:|
 | Vigilante | The percentage probability of the Vigilante appearing | Percentage | 0% |
 | Vigilante Count | How many Vigilantes should spawn in Custom Mode | Number | 1 |
-| Vigilante Miskill Kills Crewmate | Whether the other player is killed if the Vigilante misfires | Toggle | False |
-| How Does Vigilante Die | Dictates how does the Vigilante die, should they kill someone they shouldn't | Immediately / Pre-Meeting / Post-Meeting | Immediately |
-| Vigilante Knows Their Target Was Innocent | Whether the Vigilante, upon shooting someone they shouldn't have, realising that they killed someone who was innocent | Toggle | False |
-| Vigilante Kill Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
+| Vigilante Is Unique In All Any | Self descriptive | Toggle | False |
+| Vigilante Misfire Kills The Innocent Target | Whether the target is killed if the Vigilante misfires | Toggle | False |
+| How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
+| Vigilante Can Kill Again If Target Was Innocent | Whether the Vigilante can continue shooting even after getting a shot wrong | Toggle | False |
+| How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
+| Shoot Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
 
 -----------------------
 
@@ -605,7 +607,7 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 ### **Alignment: Neutral (Benign)**
 ### Win Condition: Find a dead body, take their role and then win as that role.
 
-The Amnesiac is essentially roleless and cannot win without remembering a role.
+The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player.
 
 ### Game Options
 
@@ -613,14 +615,16 @@ The Amnesiac is essentially roleless and cannot win without remembering a role.
 |----------|:-------------:|:------:|:------:|
 | Amnesiac | The percentage probability of the Amnesiac appearing | Percentage | 0% |
 | Amnesiac Count | How many Amnesiacs should spawn in Custom Mode | Number | 1 |
+| Amnesiac Is Unique In All Any | Self descriptive | Toggle | False |
 | Amnesiac Gets Arrows | Whether the Amnesiac has arrows pointing to dead bodies | Toggle | False |
 | Arrow Appear Delay | The delay of the arrows appearing after the person died | Time | 5s |
-| Amnesiac Can Vent | Decides whether the Amnesiac can vent | Toggle | False |
+| Amnesiac Can Become Assassin | Decides if the Amnesiac can get the Assassin ability of their remember target was also an Assassin | Toggle | True |
+| Amnesiac Can Hide In Vents | Decides whether the Amnesiac can vent | Toggle | False |
 | Amnesiac Can Switch Vents | Decides whether the Amnesiac can switch while in vents | Toggle | True |
 
 ## Arsonist
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Ignite all non-Neutral Benign roles.
 
 The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.
 
@@ -630,9 +634,11 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 |----------|:-------------:|:------:|:------:|
 | Arsonist | The percentage probability of the Arsonist appearing | Percentage | 0% |
 | Arsonist Count | How many Arsonists should spawn in Custom Mode | Number | 1 |
+| Arsonist Is Unique In All Any | Self descriptive | Toggle | False |
 | Douse Cooldown | The cooldown of the Arsonist's douse button | Time | 25s |
 | Ignite Cooldown | The cooldown of the Arsonist's ignite button | Time | 25s |
-| Maximum Alive Players Doused | The maximum amount of players that the Arsonist can have doused | Number | 5 |
+| Ignite Cooldown Removed When Arsonist Is Last Killer | Decides whether the Arsonist's Ignite cooldown is reduced to 0s if they happen to be the last killer alive | Toggle | True |
+| Arsonist Douse And Ignite Cooldowns Are Linked | Decides whether the Arsonist's cooldowns are linked so that dousing resets ignition and vice versa | Toggle | True |
 | Arsonist Can Vent | Decides whether the Arsonist can vent | Toggle | True |
 
 ## Cannibal
@@ -647,16 +653,19 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 |----------|:-------------:|:------:|:------:|
 | Cannibal | The percentage probability of the Cannibal appearing | Percentage | 0% |
 | Cannibal Count | How many Cannibals should spawn in Custom Mode | Number | 1 |
+| Cannibal Is Unique In All Any | Self descriptive | Toggle | False |
 | Eat Cooldown | The cooldown of the Cannibal's eat button | Time | 25s |
 | Bodies Needed To Win | How many bodies must the Cannibal consume to win | Number | 5 (or changes to half the lobby size if not enough players) |
 | Cannibal Can Vent | Decides whether the Cannibal can vent | Toggle | False |
+| Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
+| Time After Death Arrow Appears | The delay of the arrows appearing after the person died | Time | 5s |
 | Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
 
 ## Cryomaniac
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Douse everyone and freeze them all.
+### Win Condition: Freeze all non-Neutral Benign roles.
 
-The Cryomaniac can douse players in coolant like the Arsonist. However, the Cryomaniac can only use their freeze once. Freezing players doesn not immediately kill them, instead when the next meeting is called, all currently doused players will die.
+The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's douseing in gasoline and ignite. Freezing players doesn not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill.
 
 ### Game Options
 
@@ -664,22 +673,22 @@ The Cryomaniac can douse players in coolant like the Arsonist. However, the Cryo
 |----------|:-------------:|:------:|:------:|
 | Cryomaniac | The percentage probability of the Cryomaniac appearing | Percentage | 0% |
 | Cryomaniac Count | How many Cryomaniacs should spawn in Custom Mode | Number | 1 |
+| Cryomaniac Is Unique In All Any | Self descriptive | Toggle | False |
 | Douse Cooldown | The cooldown of the Cryomaniac's douse button | Time | 25s |
 | Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
-| Vigilante Kills Cryomaniac | Whether the Vigilante is able to kill the Cryomaniac | Toggle | False |
 
 ## Dampyr
 ### **Alignment: Neutral (Proselyte)**
-### Win Condition: Kill off others to help the Vampires gain a majority.
+### Win Condition: Kill off others to help the Undead gain a majority.
 
-The Dampyr appears only when a player with the ability to kill gets bitten by the Dracula. The Dampyr has no special abilities aside from being able to kill like normal.
+The Dampyr appears only when a player with the ability to kill gets bitten by the Dracula. The Dampyr has no special abilities aside from being able to kill like normal. However, if the Dampyr kills someone, the Dracula's bite cooldown is reset and if the Dracula bites, the Dampyr's bite cooldown is reset.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
 | Bite Cooldown | The cooldown of the Dampyr's bite button | Time | 25s |
-| Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
+| Dampyr Can Vent | Decides whether the Dampyr can vent | Toggle | False |
 
 ## Dracula
 ### **Alignment: Neutral (Neophyte)**
@@ -693,15 +702,17 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 |----------|:-------------:|:------:|:------:|
 | Dracula | The percentage probability of the Dracula appearing | Percentage | 0% |
 | Dracula Count | How many Draculas should spawn in Custom Mode | Number | 1 |
+| Dracula Is Unique In All Any | Self descriptive | Toggle | False |
 | Bite Cooldown | The cooldown of the Dracula's bite button | Time | 25s |
 | Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
 | Dracula Can Convert Neutrals | Whether the Dracula is able to convert Neutrals | Toggle | False |
+| Alive Undead Count | Limits the number of Undead that can be alive, attempting to convert player after this limit has been reached will kill the target player | Number | 3 |
 
 ## Executioner
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Eject their target.
+### Win Condition: Eject your target.
 
-The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected.
+The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. If their target dies before ejected, the Executioner turns into a Jester. The Executioner's target, by default, is always non-Crew Sovereign Crew.
 
 ### Game Options
 
@@ -709,19 +720,25 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 |----------|:-------------:|:------:|:------:|
 | Executioner | The percentage probability of the Executioner appearing | Percentage | 0% |
 | Executioner Count | How many Executioners should spawn in Custom Mode | Number | 1 |
-| Executioner becomes on Target Dead | Which role the Executioner becomes when their target dies | Crewmate / Amnesiac / Survivor / Jester | Crewmate |
-| Executioner Can Button | Whether the Executioner Can Press the Button | Toggle | True |
-| Executioner Knows Target's Role | Whether the Executioner knows their target's role like the Guardian Angel | Toggle | False |
+| Executioner Is Unique In All Any | Self descriptive | Toggle | False |
+| Executioner Becomes On Target Dead | Which role the Executioner becomes when their target dies | String | Crewmate |
+| Executioner Can Button | Whether the Executioner Can Press the emergency Button | Toggle | True |
+| Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
 | Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
-| Executioner Can Vent | Whether the Executioner Can Vent | Toggle | False |
+| Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
+| Executioner Can Have Intruder Targets | Decides if the Executioner can have an Intruder as a target | Toggle | False |
+| Executioner Can Have Syndicate Targets | Decides if the Executioner can have a Syndicate as a target | Toggle | False |
+| Executioner Can Have Neutral Targets | Decides if the Executioner can have a Neutral as a target | Toggle | False |
+| Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
+| Executioner Can Hide In Vents | Whether the Executioner Can Vent | Toggle | False |
 | Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
 | Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
 
 ## Glitch
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Erase the data of all non-Neutral Benign roles.
 
-The Glitch has 2 abilities. The Glitch can hack players, resulting in them being unable to do anything. The Glitch can also mimic someone, which results in them looking exactly like the other person.
+The Glitch has 2 abilities. The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, which results in them looking exactly like the other person. The Glitch can kill normally.
 
 ### Game Options
 
@@ -729,6 +746,7 @@ The Glitch has 2 abilities. The Glitch can hack players, resulting in them being
 |----------|:-------------:|:------:|:------:|
 | Glitch | The percentage probability of Glitch appearing | Percentage | 0% |
 | Glitch Count | How many Glitches should spawn in Custom Mode | Number | 1 |
+| Glitch Is Unique In All Any | Self descriptive | Toggle | False |
 | Mimic Cooldown | The cooldown of Glitch's Mimic button | Time | 30s |
 | Mimic Duration | How long Glitch can Mimic a player | Time | 10s |
 | Hack Cooldown | The cooldown of Glitch's Hack button | Time | 30s |
@@ -738,9 +756,9 @@ The Glitch has 2 abilities. The Glitch can hack players, resulting in them being
 
 ## Guardian Angel
 ### **Alignment: Neutral (Benign)**
-### WIn Condition: Have their target live to see the end of the game.
+### WIn Condition: Have your target live to see the end of the game.
 
-The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses (like in case of a Cannibal Win).
+The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor.
 
 ### Game Options
 
@@ -748,22 +766,66 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 |----------|:-------------:|:------:|:------:|
 | Guardian Angel | The percentage probability of the Guardian Angel appearing | Percentage | 0% |
 | Guardian Angel Count | How many Guardian Angels should spawn in Custom Mode | Number | 1 |
+| Guardian Angel Is Unique In All Any | Self descriptive | Toggle | False |
 | Protect Cooldown | The cooldown of the Guardian Angel's Protect button | Time | 25s |
 | Protect Duration | How long The Guardian Angel's Protect lasts | Time | 10s |
 | Kill Cooldown Reset on Attack | The attackers kill cooldown after they attacked the protected target | Time | 2.5s |
-| Max Uses | The amount of times the Protect ability can be used | Number | 5 |
-| Show Protected Player | Who should be able to see who is Protected | Self / GA / Self + GA / Everyone | Self |
-| Guardian Angel becomes on Target Dead | Which role the Guardian Angel becomes when their target dies | Crewmate / Amnesiac / Survivor / Jester | Crewmate |
+| Max Number Of Protects | The amount of times the Protect ability can be used | Number | 5 |
+| Show Protected Player | Who should be able to see who is Protected | String | Self |
+| Guardian AngelCan Protect After Death | Whether the Guardian Angel can continue to protect their target if they happen to die | Toggle | False |
+| Guardian Angel Knows Target's Role | Whether the Guardian Angel knows their target's role | Toggle | False |
 | Target Knows Guardian Angel Exists | Whether the Guardian Angel's Target knows they have a Guardian Angel | Toggle | False |
-| Guardian Angel Can Vent | Whether the Guardian Angel Can Vent | Toggle | False |
+| Guardian Angel Can Hide In Vents | Whether the Guardian Angel Can Vent | Toggle | False |
 | Guardian Angel Can Switch Vents | Whether the Guardian Angel Can Switch while in Vents | Toggle | False |
-| Guardian Angel Knows Targets Role | Whether the Guardian Angel knows their target's role | Toggle | False |
+
+## Guesser
+### **Alignment: Neutral (Evil)**
+### Win Condition: Guess your target's role.
+
+The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Executioner | The percentage probability of the Executioner appearing | Percentage | 0% |
+| Executioner Count | How many Executioners should spawn in Custom Mode | Number | 1 |
+| Executioner Is Unique In All Any | Self descriptive | Toggle | False |
+| Executioner Becomes On Target Dead | Which role the Executioner becomes when their target dies | String | Crewmate |
+| Executioner Can Button | Whether the Executioner Can Press the emergency Button | Toggle | True |
+| Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
+| Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
+| Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
+| Executioner Can Have Intruder Targets | Decides if the Executioner can have an Intruder as a target | Toggle | False |
+| Executioner Can Have Syndicate Targets | Decides if the Executioner can have a Syndicate as a target | Toggle | False |
+| Executioner Can Have Neutral Targets | Decides if the Executioner can have a Neutral as a target | Toggle | False |
+| Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
+| Executioner Can Hide In Vents | Whether the Executioner Can Vent | Toggle | False |
+| Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
+| Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
+
+## Jackal
+### **Alignment: Neutral (Neophyte)**
+### Win Condition: Bribe the crew into joining your side and eliminate any threats.
+
+The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they can be either Crew or Neutral (Evil). The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can then recruit another player to join the Cabal. They become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead and the Jackal will still lose their ability to recruit.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|----------|:-------------:|:------:|:------:|
+| Jackal | The percentage probability of the Jackal appearing | Percentage | 0% |
+| Jackal Count | How many Jesters should spawn in Custom Mode | Number | 1 |
+| Jackal Is Unique In All Any | Self descriptive | Toggle | False |
+| Recruit Cooldown | The cooldown of the Jackal's Recruit button | Time | 25s |
+| Jackal Can Vent | Whether the Jackal Can Vent | Toggle | False |
+| Recruits Can Vent | Whether the Jackal's recruits Can Vent, overriding their role's vent settings | Toggle | False |
 
 ## Jester
 ### **Alignment: Neutral (Evil)**
 ### Win Condition: Get ejected.
 
-The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected.
+The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the Jester can haunt those who voted for them, killing them from beyond the grave.
 
 ### Game Options
 
@@ -771,9 +833,11 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 |----------|:-------------:|:------:|:------:|
 | Jester | The percentage probability of the Jester appearing | Percentage | 0% |
 | Jester Count | How many Jesters should spawn in Custom Mode | Number | 1 |
-| Jester Can Button | Whether the Jester Can Press the Button | Toggle | True |
-| Jester Can Vent | Whether the Jester Can Vent | Toggle | False |
+| Jester Is Unique In All Any | Self descriptive | Toggle | False |
+| Jester Can Button | Whether the Jester Can Press the emergency Button | Toggle | True |
+| Jester Can Hide In Vents | Whether the Jester Can Vent | Toggle | False |
 | Jester Can Switch Vents | Whether the Jester Can Switch while in Vents | Toggle | False |
+| Ejection Reveals Existence Of Jester | Decides if the Jester is ejected, it will reveal the fact that they were a Jester | Toggle | False |
 | Vigilante Kills Jester | Whether the Vigilante is able to kill the Jester | Toggle | False |
 
 ## Juggernaut
@@ -788,7 +852,8 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 |----------|:-------------:|:------:|:------:|
 | Juggernaut | The percentage probability of the Juggernaut appearing | Percentage | 0% |
 | Juggernaut Count | How many Juggernauts should spawn in Custom Mode | Number | 1 |
-| Juggernaut Kill Cooldown | The cooldown on the Juggernaut's initial kill cooldown | Time | 25s |
+| Juggernaut Is Unique In All Any | Self descriptive | Toggle | False |
+| Juggernaut Kill Cooldown | The initial cooldown on the Juggernaut's Kill button | Time | 25s |
 | Kill Bonus | By how much the Juggernaut's kill cooldown decrease | Time | 5s |
 | Juggernaut Can Vent | Toggle's the Juggernaut's ability to vent | Toggle | False|
 
@@ -869,7 +934,7 @@ The Survivor wins by simply surviving. They can vest which makes them immune to 
 | Vest Duration | How long The Survivor's Vest lasts | Time | 10s |
 | Kill Cooldown Reset on Attack | The attackers kill cooldown after they attack a vested Survivor | Time | 2.5s |
 | Max Uses | The amount of times the Vest ability can be used | Number | 5 |
-| Survivor Can Vent | Whether the Survivor Can Vent | Toggle | False |
+| Survivor Can Hide In Vents | Whether the Survivor Can Vent | Toggle | False |
 | Survivor Can Switch Vents | Whether the Survivor Can Switch while in Vents | Toggle | False |
 
 ## Thief
@@ -913,7 +978,6 @@ The Vampire has no special abilities and just exists to be additional voting pow
 
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Alive Vampires Count | Limits the number of Vampires that can be alive, attempting to convert player after this limit has been reached will kill the target player | Number | 3 |
 | Vampire Can Vent | Whether Vampire Can Vent | Toggle | False |
 
 ## Werewolf
@@ -1462,22 +1526,6 @@ If they guess wrong, they die instead.
 | Assassin Can Guess Lovers | Whether the Assassin can Guess Lovers | Toggle | False |
 | Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
 
-## Revealer
-
-The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crewmates after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Revealer | The percentage probability of the Revealer appearing | Percentage | 0% |
-| When Revealer Can Be Clicked | The amount of tasks remaining when the Revealer Can Be Clicked | Number | 5 |
-| Revealer Alert | The amount of tasks remaining when the Impostors are alerted that the Revealer is nearly finished | Number | 1 |
-| Revealer Reveals Neutral Roles | Whether the Revealer also Reveals Neutral Roles | Toggle | False |
-| Revealer Reveals Crew Roles | Whether the Revealer also Reveals Crew Roles | Toggle | False |
-| Revealer Reveals Exact Roles | Whether the Revealer also Reveals all Roles | Toggle | False |
-| Who can Click Revealer | Whether even other Crewmates can click the Revealer | All / Non-Crew / Imps Only | All |
-
 ## Snitch
 
 The Snitch is a Crewmate that can get arrows pointing towards the Impostors, once all their tasks are finished.
@@ -1525,6 +1573,7 @@ Once this player has turned into the Traitor their alliance sits with the Intrud
 | Traitor | The percentage probability of the Traitor appearing | Percentage | 0% |
 | Latest Spawn | The minimum number of people alive when a Traitor can spawn | Number | 5 |
 | Traitor Won't Spawn if Neutral Killing are Alive | Whether the Traitor won't spawn if any Neutral Killing roles are alive | Toggle | False |
+| Traitor Does Not Swap Colours | The Traitor remains their original colour | Toggle | False |
 
 ## Underdog
 ### **Alignment: Intruder (Killing)**
@@ -1567,45 +1616,46 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 - Watermelon - Darker
 - Chocolate - Darker
 - Sky Blue - Lighter
-- Beige - Darker
+- Beige - Lighter
 - Hot Pink - Lighter
 - Turquoise - Lighter
 - Lilac - Lighter
 - Olive - Darker
 - Azure - Lighter
-- Tomato - Lighter
-- Backrooms - Darker
-- Gold - Lighter
-- Space - Darker
-- Ice - Lighter
+- Plum - Darker
+- Jungle - Darker
 - Mint - Lighter
-- BTS - Darker
-- Forest Green - Darker
-- Donation - Lighter
-- Cherry - Darker
-- Toy - Lighter
-- Pizzeria - Lighter
-- Starlight - Lighter
-- Softball - Lighter
-- Dark Jester - Darker
-- Fresh - Darker
-- Goner - Darker
-- Psychic Friend - Lighter
-- Frost - Lighter
-- Abyss Green - Darker
-- Midnight - Darker
-- <3 - Darker
-- Heat From Fire - Lighter
-- Fire From Heat - Lighter
-- Determination - Lighter
-- Patience - Patience
-- Bravery - Darker
-- Integrity - Darker
-- Perseverance - Darker
-- Kindness - Darker
-- Bravery - Lighter
-- Purple Plumber - Darker
+- Chartreuse - Lighter
+- Macau - Darker
+- Tawny - Darker
+- Gold - Lighter
 - Rainbow - Lighter
+
+## Colors
+
+**Crew**
+- Each member has a special ability which determines who’s who and can help weed out the evils
+- The main theme of this faction is deduction and goodwill
+- This faction is an uninformed majority meaning they make up most of the crew and don't who the other members are
+- The Crew can do tasks which sort of act like a timer for non-Crew roles
+
+**Intruders**
+- Each member of this faction has the ability to kill alongside an ability pertaining to their role
+- The main theme of this faction is destruction and raw power
+- This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are
+- The Intruders can sabotage to distract the Crew from their tasks
+
+**Syndicate**
+- Each member of this faction has a special ability and then after a certain number of meetings, can also kill
+- The main theme of this faction is chaos
+- This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are
+- After a certain number of meetings, the Syndicate can retreive the "Chaos Drive" which gives all members the ability to kill while also enhancing their existing abilities
+
+**Neutrals**
+- Each member of this faction has their own unique way to win, seperate from the other roles in the same faction
+- The main theme of this faction is free for all
+- This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the other members are
+- Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing
 
 -----------------------
 
@@ -1614,12 +1664,12 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 ## Game Mode Settings
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Game Mode | What game mode the next game will be | Classic / All Any / Killing Only | Classic |
+| Game Mode | What game mode the next game will be | Classic / All Any / Killing Only / Custom | Classic |
 
 ## All Any Mode Settings
 | Name | Description | Type | Default |
 |----------|:-------------:|:------:|:------:|
-| Random Number of Impostors | Whether there are a random number of Impostors | Toggle | True |
+| Enable Uniques | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
 
 ## Killing Only Mode Settings
 | Name | Description | Type | Default |
@@ -1629,14 +1679,6 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 | Vigilante Count | How many Vigilantes will spawn | Number | 1 |
 | Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
 | Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
-
-## Classic And Custom Mode Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Min Neutral Non-Killing Roles | The minimum number of Neutral non-killing roles a game can have | Number | 1 |
-| Max Neutral Non-Killing Roles | The maximum number of Neutral non-killing roles a game can have | Number | 1 |
-| Min Neutral Killing Roles | The minimum number of Neutral killing roles a game can have | Number | 1 |
-| Max Neutral Killing Roles | The maximum number of Neutral killing roles a game can have | Number | 1 |
 
 ## Map Settings
 | Name | Description | Type | Default |
@@ -1692,13 +1734,6 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 | Enable Custom Modifier Colors | Whether all Modifier will have their colors unique or not | Toggle | True |
 | Enable Sound Effect | Whether all sound effects will play when certain interactions / victories happen | Toggle | True |
 
-## Task Tracking Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| See Tasks During Round | Whether people see their tasks update in game | Toggle | False |
-| See Tasks During Meetings | Whether people see their task count during meetings | Toggle | False |
-| See Tasks When Dead | Whether people see everyone's tasks when they're dead | Toggle | False |
-
 -----------------------
 
 # Extras
@@ -1730,18 +1765,18 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility and the Trapper role\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles, partially for Tracker role, bug fixes, integration of CrowdedMod and addition of sound effects\
+[Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles, partially for Tracker role, bug fixes and integration of CrowdedMod\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
-[Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth, and porting v2.5.0 to the new Among Us version (v2021.12.15)\
+[Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
 [Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects\
 [TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code I'm using in the mod plus some chat commands
-
-[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For created custom game options\
-v1.0.0 has Essentials embedded and can be found [here](https://github.com/slushiegoose/Town-Of-Us/tree/master/source/Patches/CustomOption)
+[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod\
+[CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit which is now embedded into the mod
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

@@ -15,13 +15,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
     public class HUDEat
     {
         public static Sprite Arrow => TownOfUsReworked.Arrow;
+        public static Sprite Eat => TownOfUsReworked.CannibalEat;
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cannibal))
                 return;
 
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
@@ -30,12 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             {
                 role.EatButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.EatButton.graphic.enabled = true;
+                role.EatButton.graphic.sprite = Eat;
                 role.EatButton.gameObject.SetActive(false);
             }
-
-            role.EatButton.GetComponent<AspectPosition>().Update();
-            role.EatButton.graphic.sprite = TownOfUsReworked.CannibalEat;
-            role.EatButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
@@ -44,7 +39,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) &&
                 PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
-            var killButton = role.EatButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
 
@@ -66,10 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                 closestBody = component;
                 closestDistance = distance;
             }
-
-            KillButtonTarget.SetTarget(killButton, closestBody, role);
-            killButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            role.EatButton.SetCoolDown(role.EatTimer(), CustomGameOptions.CannibalCd);
 
             if (CustomGameOptions.EatArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -107,6 +97,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                     role.BodyArrows.Clear();
                 }
             }
+
+            KillButtonTarget.SetTarget(role.EatButton, closestBody, role);
+            role.EatButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.EatNeed > 0);
+            role.EatButton.SetCoolDown(role.EatTimer(), CustomGameOptions.CannibalCd);
         }
     }
 }

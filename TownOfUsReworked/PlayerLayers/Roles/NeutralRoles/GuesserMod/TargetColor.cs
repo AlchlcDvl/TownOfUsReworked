@@ -24,8 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || PlayerControl.LocalPlayer.Data.IsDead ||
-                !PlayerControl.LocalPlayer.Is(RoleEnum.Guesser))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Guesser))
                 return;
 
             var role = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
@@ -39,7 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             role.TargetPlayer.nameText().color = role.Color;
             role.TargetPlayer.nameText().text += " π";
 
-            if ((!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected && role.RemainingGuesses > 0) || role.TargetGuessed)
+            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected && role.RemainingGuesses > 0)
+                return;
+
+            if (role.TargetGuessed)
                 return;
             
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);

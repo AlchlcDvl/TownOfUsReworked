@@ -35,9 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
                 writer.Write(message);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                if (Role.SyndicateHasChaosDrive)
-                    messageSent = true;
+                messageSent = Role.SyndicateHasChaosDrive;
             }
         }
     }

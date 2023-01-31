@@ -4,12 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Swaps = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 

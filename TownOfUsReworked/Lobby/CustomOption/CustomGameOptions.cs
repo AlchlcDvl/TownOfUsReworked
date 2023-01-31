@@ -352,7 +352,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static VigiOptions VigiOptions => (VigiOptions)Generate.VigiOptions.Get();
         public static int VigilanteCount => (int)Generate.VigilanteCount.Get();
         public static float VigiKillCd => Generate.VigiKillCd.Get();
-        public static bool VigiKnowsInno => Generate.VigiKnowsInno.Get();
         public static bool UniqueVigilante => Generate.UniqueVigilante.Get();
         public static bool MisfireKillsInno => Generate.MisfireKillsInno.Get();
         public static bool VigiKillAgain => Generate.VigiKillAgain.Get();
@@ -558,6 +557,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float IgniteCd => Generate.IgniteCooldown.Get();
         public static int ArsonistCount => (int)Generate.ArsonistCount.Get();
         public static bool UniqueArsonist => Generate.UniqueArsonist.Get();
+        public static bool ArsoCooldownsLinked => Generate.ArsoCooldownsLinked.Get();
 
         //Murderer Settings
         public static float MurdKCD => Generate.MurdKillCooldownOption.Get();
@@ -635,6 +635,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int JanitorCount => (int)Generate.JanitorCount.Get();
         public static bool SoloBoost => Generate.SoloBoost.Get();
         public static bool UniqueJanitor => Generate.UniqueJanitor.Get();
+        public static bool JaniCooldownsLinked => Generate.JaniCooldownsLinked.Get();
 
         //Blackmailer Settings
         public static float BlackmailCd => Generate.BlackmailCooldown.Get();

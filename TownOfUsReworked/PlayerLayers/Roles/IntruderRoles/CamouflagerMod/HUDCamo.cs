@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
                 return;
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
@@ -39,11 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             if (role.IsRecruit)
                 notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.CamouflageButton.graphic.sprite = Camouflage;
             role.CamouflageButton.GetComponent<AspectPosition>().Update();
-            role.CamouflageButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.CamouflageButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
                 role.CamouflageButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.CamouflagerDuration);

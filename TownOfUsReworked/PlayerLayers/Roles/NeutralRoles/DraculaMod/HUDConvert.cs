@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             Utils.SetTarget(ref role.ClosestPlayer, role.BiteButton, notVamp);
             var renderer = role.BiteButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.BiteButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

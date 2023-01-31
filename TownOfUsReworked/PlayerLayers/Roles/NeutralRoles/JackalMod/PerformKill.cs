@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                     ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
-            if (Utils.CheckInteractionSesitive(role.ClosestPlayer))
+            if (role.ClosestPlayer.IsOnAlert())
             {
                 if (role.Player.IsShielded())
                 {

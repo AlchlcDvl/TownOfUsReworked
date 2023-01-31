@@ -307,6 +307,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniqueMayor;
         public static CustomNumberOption MayorVoteBank;
         public static CustomToggleOption MayorAnonymous;
+        public static CustomToggleOption MayorButton;
 
         //Swapper Options
         public static CustomHeaderOption Swapper;
@@ -338,7 +339,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniqueVigilante;
         public static CustomStringOption VigiOptions;
         public static CustomStringOption VigiNotifOptions;
-        public static CustomToggleOption VigiKnowsInno;
         public static CustomToggleOption MisfireKillsInno;
         public static CustomToggleOption VigiKillAgain;
         public static CustomNumberOption VigiKillCd;
@@ -544,6 +544,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption JanitorCount;
         public static CustomToggleOption UniqueJanitor;
         public static CustomNumberOption JanitorCleanCd;
+        public static CustomToggleOption JaniCooldownsLinked;
         public static CustomToggleOption SoloBoost;
 
         //Blackmailer Options
@@ -948,6 +949,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption IgniteCooldown;
         public static CustomToggleOption ArsoVent;
         public static CustomToggleOption ArsoLastKillerBoost;
+        public static CustomToggleOption ArsoCooldownsLinked;
         public static CustomToggleOption UniqueArsonist;
 
         //Murderer Options
@@ -1516,6 +1518,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
             AgentCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Count", 1, 1, 14, 1);
             UniqueAgent = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Is Unique In All Any", false);
 
+            Coroner = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
+            CoronerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
+            UniqueCoroner = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
+            CoronerArrowDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Dead Body Arrow Duration", 0.1f, 0f, 2f, 0.05f, CooldownFormat);
+            CoronerReportRole = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Role", false);
+            CoronerReportName = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
+            CoronerKillerNameTime = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Get Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
+
             Detective = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>");
             DetectiveCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Count", 1, 1, 14, 1);
             UniqueDetective = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Is Unique In All Any", false);
@@ -1545,21 +1555,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ShowMediumToDead = new CustomToggleOption(true, num++, MultiMenu.crew, "Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target", true);
             DeadRevealed = new CustomStringOption(true, num++, MultiMenu.crew, "Who Is Revealed With Mediate", new[] {"Oldest Dead", "Newest Dead", "All Dead"});
 
-            Coroner = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
-            CoronerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
-            UniqueCoroner = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
-            CoronerArrowDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Dead Body Arrow Duration", 0.1f, 0f, 2f, 0.05f, CooldownFormat);
-            CoronerReportRole = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Role", false);
-            CoronerReportName = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
-            CoronerKillerNameTime = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Get Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
-
             Sheriff = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>");
             SheriffCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Count", 1, 1, 14, 1);
             UniqueSheriff = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Is Unique In All Any", false);
             InterrogateCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Interrogate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             NeutEvilRed = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> Show Evil", false);
             NeutKillingRed = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color> Show Evil", false);
-            InterrogatePer = new CustomStringOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Reveals Per", new[] {"Round", "Game"});
 
             Tracker = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color>");
             TrackerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Count", 1, 1, 14, 1);
@@ -1595,10 +1596,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UniqueVigilante = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Is Unique In All Any", false);
             MisfireKillsInno = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Misfire Kills The Innocent Target", true);
             VigiKillAgain = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent", true);
-            VigiKnowsInno = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Knows Target Was Innocent", true);
             VigiNotifOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] {"Never", "Flash", "Message"});
             VigiOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] {"Immediately", "Pre-Meeting", "Post-Meeting"});
-            VigiKillCd = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            VigiKillCd = new CustomNumberOption(true, num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             CrewProtectiveSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings");
             CPMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> Roles", 1, 1, 14, 1);
@@ -1614,7 +1614,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             MedicCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Count", 1, 1, 14, 1);
             UniqueMedic = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Is Unique In All Any", false);
             ShowShielded = new CustomStringOption(true, num++, MultiMenu.crew, "Show Shielded Player", new[] {"Self", "Medic", "Self+Medic", "Everyone"});
-            WhoGetsNotification = new CustomStringOption(true, num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] {"Medic", "Shielded", "Everyone", "Nobody"});
+            WhoGetsNotification = new CustomStringOption(true, num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] {"Medic", "Self", "Self+Medic", "Everyone", "Nobody"});
             ShieldBreaks = new CustomToggleOption(true, num++, MultiMenu.crew, "Shield Breaks On Murder Attempt", false);
 
             TimeLord = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color>");
@@ -1635,6 +1635,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UniqueMayor = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Is Unique In All Any", false);
             MayorVoteBank = new CustomNumberOption(true, num++, MultiMenu.crew, "Initial <color=#704FA8FF>Mayor</color> Vote Bank", 2, 0, 10, 1);
             MayorAnonymous = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous <color=#704FA8FF>Mayor</color> Votes", false);
+            MayorButton = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Can Button", true);
 
             Swapper = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color>");
             SwapperCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Count", 1, 1, 14, 1);
@@ -1665,8 +1666,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             EscRoleblockDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Roleblock Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             Revealer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>");
-            RevealerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Count", 1, 1, 14, 1);
-            RevealerKnows = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Knows Who They Are On Game Start", true);
             RevealerTasksRemainingClicked = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
             RevealerTasksRemainingAlert = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When Revealed", 1, 1, 5, 1);
             RevealerRevealsNeutrals = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
@@ -1711,7 +1710,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             RememberArrowDelay = new CustomNumberOption(true, num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, CooldownFormat);
             AmneVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Hide In Vents", false);
             AmneSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Switch Vents", false);
-            AmneTurnAssassin = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Gets <color=#073763FF>Assassin</color> Ability", false);
+            AmneTurnAssassin = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Become <color=#073763FF>Assassin</color>", false);
 
             GuardianAngel = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color>");
             GuardianAngelCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Count", 1, 1, 14, 1);
@@ -1721,10 +1720,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ProtectKCReset = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Reset When Protected", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
             MaxProtects = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maximum Number Of Protects", 5, 1, 15, 1);
             ShowProtect = new CustomStringOption(true, num++, MultiMenu.neutral, "Show Protected Player", new[] {"Self", "Guardian Angel", "Self+GA", "Everyone"});
-            GaOnTargetDeath = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Becomes On Target Dead", new[]{"Crewmate", "Amnesiac", "Survivor", "Jester"});
             GATargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#FFFFFFFF>Guardian Angel</color> Exists", false);
             ProtectBeyondTheGrave = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Protect After Death", false);
-            GAKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Knows Target's <color=#FFD700FF>Roles</color>", false);
+            GAKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Knows Target's <color=#FFD700FF>Role</color>", false);
             GAVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Hide In Vents", false);
             GASwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Switch Vents", false);
 
@@ -1762,13 +1760,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Executioner = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>");
             ExecutionerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Count", 1, 1, 14, 1);
             UniqueExecutioner = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Is Unique In All Any", false);
-            OnTargetDead = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Becomes On Target Dead", new[] {"Crewmate", "Amnesiac", "Survivor", "Jester"});
             ExecutionerButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Button", true);
             ExeVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Hide In Vents", false);
             ExeSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Switch Vents", false);
             ExeTargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#CCCCCCFF>Executioner</color> Exists", false);
-            ExeKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Knows Target's <color=#FFD700FF>Roles</color>", false);
-            ExeEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>", false);
+            ExeKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Knows Target's <color=#FFD700FF>Role</color>", false);
+            ExeEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>", false);
             ExeCanHaveIntruderTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#FF0000FF>Intruder</color> Targets", false);
             ExeCanHaveSyndicateTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#008000FF>Syndicate</color> Targets", false);
             ExeCanHaveNeutralTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#B3B3B3FF>Neutral</color> Targets", false);
@@ -1778,7 +1775,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Guesser = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>");
             GuesserCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Count", 1, 1, 14, 1);
             UniqueGuesser = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Is Unique In All Any", false);
-            OnTargetGone = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Becomes On Target Dead", new[] {"Crewmate", "Amnesiac", "Survivor", "Jester"});
             GuesserButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Button", true);
             GuessVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Hide In Vents", false);
             GuessSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Switch Vents", false);
@@ -1820,13 +1816,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ArsonistCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Count", 1, 1, 14, 1);
             UniqueArsonist = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Is Unique In All Any", false);
             DouseCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            IgniteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Ignite Cooldown", 25f, 0f, 60f, 2.5f, CooldownFormat);
+            IgniteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Ignite Cooldown", 25f, 5f, 60f, 2.5f, CooldownFormat);
             ArsoLastKillerBoost = new CustomToggleOption(true, num++, MultiMenu.neutral, "Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer", false);
+            ArsoCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Douse And Ignite Cooldowns Are Linked", false);
             ArsoVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Can Vent", false);
 
             Cryomaniac = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>");
             CryomaniacCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Count", 1, 1, 14, 1);
-            UniqueCryomaniac = new CustomToggleOption(true, num++, MultiMenu.neutral, "Role Is Unique In All Any", false);
+            UniqueCryomaniac = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Is Unique In All Any", false);
             CryoDouseCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             CryoVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Can Vent", false);
 
@@ -1894,8 +1891,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             
             Jackal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>");
             JackalCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Count", 1, 1, 14, 1);
-            RecruitCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Recruit Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             UniqueJackal = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Is Unique In All Any", false);
+            RecruitCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Recruit Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             JackalVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Can Vent", false);
             RecruitVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Recruits Can Vent", false);
 
@@ -1949,6 +1946,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JanitorCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Count", 1, 1, 14, 1);
             UniqueJanitor = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Is Unique In All Any", false);
             JanitorCleanCd = new CustomNumberOption (true, num++, MultiMenu.intruder, "Clean Cooldown", 25f, 0f, 40f, 2.5f, CooldownFormat);
+            JaniCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Kill And Clean Cooldowns Are Linked", false);
             SoloBoost = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Has Lower Cooldown When Solo", false);
 
             Undertaker = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color>");

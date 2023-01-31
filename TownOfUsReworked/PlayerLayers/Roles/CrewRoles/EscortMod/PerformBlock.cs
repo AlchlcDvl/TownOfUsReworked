@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 {
@@ -31,6 +32,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
                 if (interact[3] == true && interact[0] == true)
                     role.RPCSetBlocked(role.ClosestPlayer);
+
+                if (interact[3] == true)
+                    role.LastBlock = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
 

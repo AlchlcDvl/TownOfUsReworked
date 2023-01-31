@@ -16,28 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer, true))
                 return false;
 
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
-
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance) || (__instance != role.KillButton && __instance != role.BlackmailButton))
-                return false;
-
-            if ((role.BlackmailTimer() == 0f && __instance == role.BlackmailButton) || (role.KillTimer() == 0f && __instance == role.KillButton))
-            {
-                Utils.Spread(role.Player, role.ClosestPlayer);
-
-                if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
-                {
-                    Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
-
-                    if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
-                        role.LastKilled = DateTime.UtcNow;
-                        
-                    return false;
-                }
-            }
 
             if (__instance == role.BlackmailButton)
             {

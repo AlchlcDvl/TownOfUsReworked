@@ -8,12 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.SetTarget))]
     public class KillButtonTarget
     {
+        public static byte DontRevive = byte.MaxValue;
+
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
-                return true;
-
-            return __instance == DestroyableSingleton<HudManager>.Instance.KillButton;
+            return !PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal);
         }
 
         public static void SetTarget(KillButton __instance, DeadBody target, Cannibal role)
@@ -21,9 +20,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (role.CurrentTarget && role.CurrentTarget != target)
                 role.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
 
+            if (target != null && target.ParentId == DontRevive)
+                target = null;
+
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget != null)
+            if (role.CurrentTarget != null && __instance.enabled)
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

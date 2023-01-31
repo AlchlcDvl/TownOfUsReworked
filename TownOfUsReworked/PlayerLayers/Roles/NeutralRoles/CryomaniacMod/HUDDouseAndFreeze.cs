@@ -11,11 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDDouseAndFreeze
     {
-        public static Sprite IgniteSprite => TownOfUsReworked.Placeholder;
+        public static Sprite Freeze => TownOfUsReworked.Placeholder;
+        public static Sprite Douse => TownOfUsReworked.DouseSprite;
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cryomaniac))
                 return;
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
@@ -36,31 +37,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             {
                 role.FreezeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.FreezeButton.graphic.enabled = true;
-                role.FreezeButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.FreezeButton.graphic.sprite = Freeze;
                 role.FreezeButton.gameObject.SetActive(false);
             }
 
-            role.FreezeButton.GetComponent<AspectPosition>().Update();
-            role.FreezeButton.graphic.sprite = IgniteSprite;
-
-            role.FreezeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            role.FreezeButton.SetCoolDown(0f, 1f);
-            __instance.KillButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
-
-            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
-
-            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, notDoused);
-
-            if (!role.FreezeButton.isCoolingDown && role.FreezeButton.isActiveAndEnabled && !role.FreezeUsed)
+            if (role.DouseButton == null)
             {
-                role.FreezeButton.graphic.color = Palette.EnabledColor;
-                role.FreezeButton.graphic.material.SetFloat("_Desat", 0f);
+                role.DouseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.DouseButton.graphic.enabled = true;
+                role.DouseButton.graphic.sprite = Douse;
+                role.DouseButton.gameObject.SetActive(false);
+            }
+
+            role.FreezeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.FreezeUsed && role.DousedAlive > 0);
+            role.DouseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.FreezeButton.SetCoolDown(0f, 1f);
+            role.DouseButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.CryoDouseCooldown);
+            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.DouseButton, notDoused);
+            var renderer2 = role.FreezeButton.graphic;
+
+            if (!role.FreezeButton.isCoolingDown && role.FreezeButton.isActiveAndEnabled && !role.FreezeUsed && role.DousedAlive > 0)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
             }
             else
             {
-                role.FreezeButton.graphic.color = Palette.DisabledClear;
-                role.FreezeButton.graphic.material.SetFloat("_Desat", 1f);
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
+
+            var renderer = role.DouseButton.graphic;
+
+            if (!role.DouseButton.isCoolingDown && role.DouseButton.isActiveAndEnabled && role.ClosestPlayer != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

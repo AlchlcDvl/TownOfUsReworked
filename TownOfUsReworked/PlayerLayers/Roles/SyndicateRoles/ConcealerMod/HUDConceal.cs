@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
                 renderer2.material.SetFloat("_Desat", 1f);
             }
             
-            if (!role.ConcealButton.isCoolingDown)
+            if (!role.ConcealButton.isCoolingDown && !role.Concealed)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

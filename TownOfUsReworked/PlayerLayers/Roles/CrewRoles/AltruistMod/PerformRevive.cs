@@ -22,8 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             if (__instance == role.ReviveButton)
             {
+                if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                    return false;
+
                 var playerId = role.CurrentTarget.ParentId;
                 var player = Utils.PlayerById(playerId);
+                Utils.Spread(role.Player, player);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                 writer.Write((byte)ActionsRPC.AltruistRevive);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

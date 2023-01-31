@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using System.Linq;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
 

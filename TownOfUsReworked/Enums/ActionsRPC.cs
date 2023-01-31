@@ -68,10 +68,11 @@ namespace TownOfUsReworked.Enums
         Ressurect,
         Pursuade,
         ChameleonSwoop,
-        Imitate,
+        RetributionistRevive,
         StartImitate,
         Detonate,
         UnMimic,
-        NecromancerResurrect
+        NecromancerResurrect,
+        WhisperConvert
     }
 }

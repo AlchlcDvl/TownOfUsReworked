@@ -47,27 +47,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
             var renderer = role.KillButton.graphic;
+            var renderer2 = role.FrameButton.graphic;
             
-            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            if (role.ClosestPlayer != null)
             {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
+                if (!role.KillButton.isCoolingDown)
+                {
+                    renderer.color = Palette.EnabledColor;
+                    renderer.material.SetFloat("_Desat", 0f);
+                }
+
+                if (!role.FrameButton.isCoolingDown)
+                {
+                    renderer2.color = Palette.EnabledColor;
+                    renderer2.material.SetFloat("_Desat", 0f);
+                }
             }
             else
             {
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
-            }
-
-            var renderer2 = role.FrameButton.graphic;
-            
-            if (role.ClosestPlayer != null && !role.FrameButton.isCoolingDown)
-            {
-                renderer2.color = Palette.EnabledColor;
-                renderer2.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
                 renderer2.color = Palette.DisabledClear;
                 renderer2.material.SetFloat("_Desat", 1f);
             }

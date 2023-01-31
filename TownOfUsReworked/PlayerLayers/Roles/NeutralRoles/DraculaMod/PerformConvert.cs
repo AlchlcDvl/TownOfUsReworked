@@ -21,16 +21,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
             if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
                 return false;
-            
-            var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
 
             if (__instance == role.BiteButton)
             {
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
+
                 if (interact[3] == true && interact[0] == true)
                 {
                     var vampCount = PlayerControl.AllPlayerControls.ToArray().ToList().Count(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
@@ -38,15 +41,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     if (vampCount == CustomGameOptions.AliveVampCount)
                     {
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
-                        return false;
+                        role.LastBitten = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        writer3.Write((byte)ActionsRPC.Convert);
+                        writer3.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer3.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer3);
+                        Convert(role, role.ClosestPlayer);
                     }
 
-                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                    writer3.Write((byte)ActionsRPC.Convert);
-                    writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer3.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer3);
-                    Convert(role, role.ClosestPlayer);
                     return false;
                 }
                 else if (interact[1] == true)
@@ -135,20 +141,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     break;
             }
 
-            if (role == dracRole)
-            {
-                var drac2 = (Dracula)role;
-                dracRole.Converted.Add(other);
-                dracRole.Converted.AddRange(drac2.Converted);
-            }
-
             if (alreadyVamp)
             {
                 dracRole.Converted.Add(other);
-                return;
-            }
+                dracRole.LastBitten = DateTime.UtcNow;
 
-            if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
+                if (role == dracRole)
+                {
+                    var drac2 = (Dracula)role;
+                    dracRole.Converted.AddRange(drac2.Converted);
+                    return;
+                }
+            }
+            else if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
             {
                 Role newRole;
                 dracRole.Converted.Add(other);
@@ -224,6 +229,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             }
             else if (!other.Is(SubFaction.Undead))
                 Utils.RpcMurderPlayer(drac, other);
+
+            dracRole.LastBitten = DateTime.UtcNow;
 
             foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
             {

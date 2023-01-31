@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             {
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[0] == true)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Shift);
@@ -39,8 +39,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Shift(role, role.ClosestPlayer);
-                    role.LastShifted = DateTime.UtcNow;
                 }
+                
+                if (interact[3] == true)
+                    role.LastShifted = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
                 

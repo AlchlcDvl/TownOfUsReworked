@@ -9,52 +9,47 @@ using TownOfUsReworked.Lobby.CustomOption;
 using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKillButton
+    public class PerformRemember
     {
         public static Sprite Sprite => TownOfUsReworked.Arrow;
         
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton || !PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac) || !PlayerControl.LocalPlayer.CanMove ||
-                PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac, true))
                 return false;
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
-            if (__instance.isCoolingDown || !__instance.enabled || role == null || role.CurrentTarget == null)
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (Utils.GetDistBetweenPlayers(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId)) > maxDistance)
-                return false;
-
-            var playerId = role.CurrentTarget.ParentId;
-            var player = Utils.PlayerById(playerId);
-
-            if (player.IsInfected() || role.Player.IsInfected())
+            if (__instance == role.RememberButton)
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(player, role.Player);
+                if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                    return false;
+
+                var playerId = role.CurrentTarget.ParentId;
+                var player = Utils.PlayerById(playerId);
+                Utils.Spread(role.Player, player);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Remember);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(playerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                
+                try
+                {
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
+                } catch {}
+
+                Remember(role, player);
+                return false;
             }
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer.Write((byte)ActionsRPC.Remember);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            
-            try
-            {
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
-            } catch {}
-
-            Remember(role, player);
             return false;
         }
 

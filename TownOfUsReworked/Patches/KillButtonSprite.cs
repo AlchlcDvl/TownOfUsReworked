@@ -38,20 +38,13 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
-        public static Sprite Douse => TownOfUsReworked.DouseSprite;
-        public static Sprite Remember => TownOfUsReworked.RememberSprite;
-        public static Sprite Eat => TownOfUsReworked.CannibalEat;
         public static Sprite Vest => TownOfUsReworked.VestSprite;
         public static Sprite Protect => TownOfUsReworked.ProtectSprite;
-        public static Sprite Infect => TownOfUsReworked.InfectSprite;
         public static Sprite Maul => TownOfUsReworked.MaulSprite;
-        public static Sprite Obliterate => TownOfUsReworked.ObliterateSprite;
-        public static Sprite Assault => TownOfUsReworked.AssaultSprite;
         public static Sprite EraseData => TownOfUsReworked.EraseDataSprite;
         public static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
         public static Sprite Placeholder => TownOfUsReworked.Placeholder;
         public static Sprite Clear => TownOfUsReworked.Clear;
-        public static Sprite Stab => TownOfUsReworked.StabSprite;
         public static Sprite Bite => TownOfUsReworked.Placeholder;
         public static Sprite Kill;
 
@@ -65,17 +58,7 @@ namespace TownOfUsReworked.Patches
 
             var flag = false;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
-            {
-                __instance.KillButton.graphic.sprite = Douse;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac))
-            {
-                __instance.KillButton.graphic.sprite = Remember;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
             {
                 __instance.KillButton.graphic.sprite = Vest;
                 flag = true;
@@ -85,51 +68,13 @@ namespace TownOfUsReworked.Patches
                 __instance.KillButton.graphic.sprite = Protect;
                 flag = true;
             }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
-            {
-                __instance.KillButton.graphic.sprite = Infect;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
-            {
-                var sk = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
-                __instance.KillButton.gameObject.SetActive(sk.Lusted);
-                __instance.KillButton.graphic.sprite = Stab;
-
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
-            {
-                __instance.KillButton.graphic.sprite = Obliterate;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut))
-            {
-                __instance.KillButton.graphic.sprite = Assault;
-                flag = true;
-            }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
             {
                 var glitch = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
                 glitch.KillButton.graphic.sprite = EraseData;
                 flag = true;
             }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
-            {
-                __instance.KillButton.graphic.sprite = Eat;
-                flag = true;
-            }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
-            {
-                __instance.KillButton.graphic.sprite = Placeholder;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
-            {
-                __instance.KillButton.graphic.sprite = Placeholder;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac))
             {
                 __instance.KillButton.graphic.sprite = Placeholder;
                 flag = true;

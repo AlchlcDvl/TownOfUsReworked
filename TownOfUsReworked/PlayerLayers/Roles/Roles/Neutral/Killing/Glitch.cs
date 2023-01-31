@@ -8,6 +8,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Utilities;
+using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -246,6 +247,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        {
+            if (Player != PlayerControl.LocalPlayer)
+                return;
+                
+            var team = new List<PlayerControl>();
+
+            team.Add(PlayerControl.LocalPlayer);
+
+            if (IsRecruit)
+            {
+                var jackal = Player.GetJackal();
+
+                team.Add(jackal.Player);
+                team.Add(jackal.GoodRecruit);
+            }
+
+            __instance.teamToShow = team;
+        }
+
         public float MimicTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -275,26 +296,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         /*public void Update(HudManager __instance)
         {
             FixedUpdate(__instance);
-        }
-
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new List<PlayerControl>();
-
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.GoodRecruit);
-            }
-
-            __instance.teamToShow = team;
         }
 
         public void FixedUpdate(HudManager __instance)

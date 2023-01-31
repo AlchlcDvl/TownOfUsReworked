@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             {
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[0] == true)
                 {
                     var target = role.ClosestPlayer;
                     var gameObj = new GameObject();
@@ -59,13 +59,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     arrow.target = target.transform.position;
                     role.TrackerArrows.Add(target.PlayerId, arrow);
                     role.UsesLeft--;
-                    role.LastTracked = DateTime.UtcNow;
                     
                     try
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
                     } catch {}
                 }
+                
+                if (interact[3] == true)
+                    role.LastTracked = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
 

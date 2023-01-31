@@ -15,23 +15,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
     public class HUDRemember
     {
         public static Sprite Arrow => TownOfUsReworked.Arrow;
+        public static Sprite Remember => TownOfUsReworked.RememberSprite;
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null ||!PlayerControl.LocalPlayer.Is(RoleEnum.Amnesiac))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac))
                 return;
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
-
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
-            var killButton = __instance.KillButton;
+            var flag = (CustomGameOptions.GhostTasksCountToWin || !isDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
             var allBodies = Object.FindObjectsOfType<DeadBody>();
+
+            if (role.RememberButton == null)
+            {
+                role.RememberButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                role.RememberButton.graphic.enabled = true;
+                role.RememberButton.graphic.sprite = Remember;
+                role.RememberButton.gameObject.SetActive(false);
+            }
 
             foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
             {
@@ -81,9 +88,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 }
             }
 
-            killButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
-            KillButtonTarget.SetTarget(killButton, closestBody, role);
-            __instance.KillButton.SetCoolDown(0f, 1f);
+            role.RememberButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            KillButtonTarget.SetTarget(role.RememberButton, closestBody, role);
+            role.RememberButton.SetCoolDown(0f, 1f);
         }
     }
 }

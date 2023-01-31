@@ -14,28 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consort, true))
                 return false;
 
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
-
-            if (Utils.CannotUseButton(role.Player, RoleEnum.Consort, role.ClosestPlayer, __instance) || (__instance != role.KillButton && __instance != role.BlockButton))
-                return false;
-
-            if ((role.RoleblockTimer() == 0f && __instance == role.BlockButton) || (role.KillTimer() == 0f && __instance == role.KillButton))
-            {
-                Utils.Spread(role.Player, role.ClosestPlayer);
-
-                if (Utils.CheckInteractionSesitive(role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller)))
-                {
-                    Utils.AlertKill(role.Player, role.ClosestPlayer, __instance == role.KillButton);
-
-                    if (CustomGameOptions.ShieldBreaks && __instance == role.KillButton)
-                        role.LastKilled = DateTime.UtcNow;
-                        
-                    return false;
-                }
-            }
 
             if (__instance == role.BlockButton)
             {
@@ -48,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                 writer.Write(role.ClosestPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
-                role.Block();
             }
             else if (__instance == role.KillButton)
             {

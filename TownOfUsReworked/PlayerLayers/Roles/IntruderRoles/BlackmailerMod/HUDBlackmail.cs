@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.CannotUseButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
                 return;
 
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
@@ -42,8 +42,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             role.BlackmailButton.GetComponent<AspectPosition>().Update();
             role.BlackmailButton.graphic.sprite = Blackmail;
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);
-            role.BlackmailButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
-            role.KillButton.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.BlackmailButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.Blackmailed?.PlayerId != player.PlayerId).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.BlackmailButton, notBlackmailed);

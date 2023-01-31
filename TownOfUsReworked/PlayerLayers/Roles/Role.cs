@@ -262,7 +262,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(18, "darker"); //Watermelon
             LightDarkColors.Add(19, "darker"); //Chocolate
             LightDarkColors.Add(20, "lighter"); //Sky Blue
-            LightDarkColors.Add(21, "darker"); //Biege
+            LightDarkColors.Add(21, "lighter"); //Biege
             LightDarkColors.Add(22, "lighter"); //Hot Pink
             LightDarkColors.Add(23, "lighter"); //Turquoise
             LightDarkColors.Add(24, "lighter"); //Lilac

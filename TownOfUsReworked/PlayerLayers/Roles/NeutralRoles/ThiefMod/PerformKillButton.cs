@@ -8,14 +8,13 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using Il2CppSystem.Collections.Generic;
 using System;
 using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKillButton
+    public class PerformSteal
     {
         public static Sprite Sprite => TownOfUsReworked.Arrow;
         

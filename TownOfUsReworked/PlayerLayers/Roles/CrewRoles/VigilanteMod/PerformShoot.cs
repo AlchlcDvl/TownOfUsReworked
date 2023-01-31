@@ -50,13 +50,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                         if (CustomGameOptions.MisfireKillsInno)
                             Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
                         
-                        if (CustomGameOptions.VigiKnowsInno)
-                        {
-                            if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
-                                Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                            else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
-                                role.InnoMessage = true;
-                        }
+                        if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
+                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                        else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
+                            role.InnoMessage = true;
 
                         if (CustomGameOptions.VigiKillAgain)
                         {

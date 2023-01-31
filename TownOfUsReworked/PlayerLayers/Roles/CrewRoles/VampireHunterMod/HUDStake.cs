@@ -31,6 +31,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
             role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
+            var renderer = role.StakeButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.StakeButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
 
             if (role.VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {

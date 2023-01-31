@@ -30,16 +30,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             {
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[0] == true)
                 {
                     role.Inspected.Add(role.ClosestPlayer);
-                    role.LastInspected = DateTime.UtcNow;
             
                     try
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
                     } catch {}
                 }
+                
+                if (interact[3] == true)
+                    role.LastInspected = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
 

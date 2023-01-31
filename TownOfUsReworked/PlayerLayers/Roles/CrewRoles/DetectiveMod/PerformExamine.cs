@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             {
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[0] == true)
                 {
                     var hasKilled = false;
 
@@ -47,9 +47,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                         Coroutines.Start(Utils.FlashCoroutine(Color.red));
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                        
-                    role.LastExamined = DateTime.UtcNow;
                 }
+                
+                if (interact[3] == true)
+                    role.LastExamined = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
 

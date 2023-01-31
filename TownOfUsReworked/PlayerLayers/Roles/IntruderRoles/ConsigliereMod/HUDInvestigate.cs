@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             role.InvestigateButton.graphic.sprite = RevealSprite;
             role.InvestigateButton.gameObject.SetActive(false);*/
             /*role.InvestigateButton2.GetComponent<AspectPosition>().Update();
-            role.InvestigateButton2.gameObject.SetActive(Utils.SetActive(PlayerControl.LocalPlayer));
+            role.InvestigateButton2.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             //role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton2, PlayerControl.LocalPlayer, notInvestigated);

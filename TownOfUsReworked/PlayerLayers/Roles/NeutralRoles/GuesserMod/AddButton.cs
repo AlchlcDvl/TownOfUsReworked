@@ -1,20 +1,13 @@
 ﻿using System;
 using HarmonyLib;
-using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
@@ -159,11 +152,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 var toDie = flag ? playerRole.Player : role.Player;
                 role.TargetGuessed = flag;
 
-                GuesserKill.RpcMurderPlayer(role, toDie, currentGuess);
-                ShowHideGuessButtons.HideSingle(role, targetId);
-
                 if (role.TargetGuessed)
                     role.Wins();
+
+                GuesserKill.RpcMurderPlayer(role, toDie, currentGuess);
+                ShowHideGuessButtons.HideSingle(role, targetId);
             }
 
             return Listener;

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
         
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Arsonist))
                 return;
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
@@ -33,36 +33,63 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 player.nameText().color = Color.black;
             }
 
+            if (role.DouseButton == null)
+            {
+                role.DouseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.DouseButton.graphic.enabled = true;
+                role.DouseButton.graphic.sprite = DouseSprite;
+                role.DouseButton.gameObject.SetActive(false);
+            }
+
             if (role.IgniteButton == null)
             {
                 role.IgniteButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.IgniteButton.graphic.enabled = true;
-                role.IgniteButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.IgniteButton.graphic.sprite = IgniteSprite;
                 role.IgniteButton.gameObject.SetActive(false);
             }
-            
-            role.IgniteButton.GetComponent<AspectPosition>().Update();
-            role.IgniteButton.graphic.sprite = IgniteSprite;
 
-            role.IgniteButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            
+            role.IgniteButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.DousedAlive > 0);
+            role.DouseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+
             if (!role.LastKiller && !CustomGameOptions.ArsoLastKillerBoost)
                 role.IgniteButton.SetCoolDown(role.IgniteTimer(), CustomGameOptions.IgniteCd);
             else
                 role.IgniteButton.SetCoolDown(0f, CustomGameOptions.IgniteCd);
 
-            __instance.KillButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
-
+            role.DouseButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.DouseCd);
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
             var doused = PlayerControl.AllPlayerControls.ToArray().Where(player => role.DousedPlayers.Contains(player.PlayerId)).ToList();
-
-            Utils.SetTarget(ref role.ClosestPlayerDouse, __instance.KillButton, notDoused);
+            Utils.SetTarget(ref role.ClosestPlayerDouse, role.DouseButton, notDoused);
 
             if (role.DousedAlive > 0)
                 Utils.SetTarget(ref role.ClosestPlayerIgnite, role.IgniteButton, doused);
 
-            return;
+            var renderer = role.DouseButton.graphic;
+
+            if (!role.DouseButton.isCoolingDown && role.DouseButton.isActiveAndEnabled && role.ClosestPlayerDouse != null)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+
+            var renderer2 = role.IgniteButton.graphic;
+            
+            if (!role.IgniteButton.isCoolingDown && role.IgniteButton.isActiveAndEnabled && role.ClosestPlayerIgnite != null)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

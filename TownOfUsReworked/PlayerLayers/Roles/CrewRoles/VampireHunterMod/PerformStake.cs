@@ -33,6 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
                 if (interact[3] == true && interact[0] == true)
                     role.LastStaked = DateTime.UtcNow;
+                else if (interact[3] == true)
+                    role.LastStaked = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
 

@@ -12,47 +12,56 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDInfect
     {
+        public static Sprite Infect => TownOfUsReworked.InfectSprite;
+
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Plaguebearer))
                 return;
 
-            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-            var infectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
             var role = Role.GetRole<Plaguebearer>(PlayerControl.LocalPlayer);
+            var isDead = role.Player.Data.IsDead;
 
             foreach (var playerId in role.InfectedPlayers)
             {
                 var player = Utils.PlayerById(playerId);
                 var data = player?.Data;
 
-                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead || playerId == PlayerControl.LocalPlayer.PlayerId)
+                if (data == null || data.Disconnected || data.IsDead || isDead || playerId == role.Player.PlayerId)
                     continue;
 
                 player.myRend().material.SetColor("_VisorColor", role.Color);
                 player.nameText().color = Color.black;
             }
 
-            infectButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
-            infectButton.SetCoolDown(role.InfectTimer(), CustomGameOptions.InfectCd);
+            if (role.InfectButton == null)
+            {
+                role.InfectButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.InfectButton.graphic.enabled = true;
+                role.InfectButton.graphic.sprite = Infect;
+                role.InfectButton.gameObject.SetActive(false);
+            }
+
+            role.InfectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.CanTransform);
+            role.InfectButton.SetCoolDown(role.InfectTimer(), CustomGameOptions.InfectCd);
             var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.InfectedPlayers.Contains(player.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton, notInfected);
+            Utils.SetTarget(ref role.ClosestPlayer, role.InfectButton, notInfected);
+            var renderer = role.InfectButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.InfectButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
 
             if (role.CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !isDead)
             {
-                var transform = CustomGameOptions.PestSpawn;
-                var alives = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
-
-                if (alives.Count == 2)
-                {
-                    foreach (var player in alives)
-                    {
-                        if (player.Is(Faction.Intruder) || player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralKill) || player.Is(Faction.Syndicate))
-                            transform = true;
-                    }
-                }
-                else
-                    transform = true;
+                var transform = CustomGameOptions.PestSpawn || role.CanTransform;
                 
                 if (transform)
                 {
