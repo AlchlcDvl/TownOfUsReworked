@@ -53,20 +53,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
         public static void GuessToAct(PlayerControl player)
         {
-            var exe = Role.GetRole<Guesser>(player);
-            Role newRole;
-
-            if (CustomGameOptions.OnTargetGone == OnTargetGone.Jester)
-                newRole = new Jester(player);
-            else if (CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac)
-                newRole = new Amnesiac(player);
-            else if (CustomGameOptions.OnTargetGone == OnTargetGone.Survivor)
-                newRole = new Survivor(player);
-            else
-                newRole = new Crewmate(player);
-
-            newRole.RoleHistory.Add(exe);
-            newRole.RoleHistory.AddRange(exe.RoleHistory);
+            var guess = Role.GetRole<Guesser>(player);
+            Role newRole  = new Jester(player);
+            newRole.RoleHistory.Add(guess);
+            newRole.RoleHistory.AddRange(guess.RoleHistory);
             
             if (newRole.Player == PlayerControl.LocalPlayer)
                 newRole.RegenTask();

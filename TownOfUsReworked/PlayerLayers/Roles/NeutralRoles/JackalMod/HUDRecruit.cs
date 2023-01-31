@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Jackal))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jackal))
                 return;
 
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
@@ -27,12 +27,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             {
                 role.RecruitButton = Object.Instantiate(__instance.KillButton, __instance.UseButton.transform.parent);
                 role.RecruitButton.graphic.enabled = true;
+                role.RecruitButton.graphic.sprite = Recruit;
                 role.RecruitButton.gameObject.SetActive(false);
             }
 
-            role.RecruitButton.GetComponent<AspectPosition>().Update();
-            role.RecruitButton.graphic.sprite = Recruit;
-            role.RecruitButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !role.HasRecruited && !LobbyBehaviour.Instance && role.RecruitsDead);
+            role.RecruitButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RecruitsDead);
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, notRecruited);
             role.RecruitButton.SetCoolDown(role.RecruitTimer(), CustomGameOptions.RecruitCooldown);

@@ -131,6 +131,7 @@ namespace TownOfUsReworked.Enums
         Dwarf,
         Flincher,
         Giant,
+        Indomitable,
         Professional,
         Shy,
         VIP,

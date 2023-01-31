@@ -24,35 +24,35 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Uninstallation**](#uninstallation)
 
-[**Roles**](#roles)
+[**Player Layers**](#player-layers)
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
 |------------------------------|-------------------------------|---------------------|---------------------------|
-| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Amnesiac](#amnesiac) |
-| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Arsonist](#arsonist) |
-| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Cannibal](#cannibal) |
-| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cryomaniac](#cryomaniac) |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Dampyr](#dampyr) |
-| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dracula](#dracula) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Glitch](#glitch) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Guardian Angel](#guardian-angel) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guesser](#guesser) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Jackal](#jackal) |
-| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jester](#jester) |
-| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Juggernaut](#juggernaut) |
-| [Time Master](#time-master) |  | [Operative](#operative) | [Murderer](#murderer) |
-| [Undertaker](#undertaker) |  | [Operative](#operative) | [Necromancer](#necromancer) |
-| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Pestilence](#pestilence) |
-|  |  | [Revealer](#revealer) | [Phantom](#phantom) |
-|  |  | [Seer](#seer) | [Plaguebearer](#plaguebearer) |
-|  |  | [Shifter](#shifter) | [Serial Killer](#serial-killer) |
-|  |  | [Sheriff](#sheriff) | [Survivor](#survivor) |
-|  |  | [Swapper](#swapper) | [Thief](#thief) |
-|  |  | [Time Lord](#time-lord) | [Vampire](#vampire) |
-|  |  | [Tracker](#tracker) | [Werewolf](#werewolf) |
-|  |  | [Transporter](#transporter) | [Whisperer](#whisperer) |
-|  |  | [Vampire Hunter](#vampire-hunter) |  |
+| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
+| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
+| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
+| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cannibal](#cannibal) |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Cryomaniac](#cryomaniac) |
+| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dampyr](#dampyr) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Dracula](#dracula) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Executioner](#executioner) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Glitch](#glitch) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | Guardian Angel](#guardian-angel) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Guesser](#guesser) |
+| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jackal](#jackal) |
+| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jester](#jester) |
+| [Time Master](#time-master) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |
+| [Undertaker](#undertaker) |  | [Operative](#operative) | [Murderer](#murderer) |
+| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Necromancer](#necromancer) |
+|  |  | [Revealer](#revealer) | [Pestilence](#pestilence) |
+|  |  | [Seer](#seer) | [Phantom](#phantom) |
+|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |
+|  |  | [Sheriff](#sheriff) | [Serial Killer](#serial-killer) |
+|  |  | [Swapper](#swapper) | [Survivor](#survivor) |
+|  |  | [Time Lord](#time-lord) | [Thief](#thief) |
+|  |  | [Tracker](#tracker) | [Vampire](#vampire) |
+|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |
 |  |  | [Veteran](#veteran) |  |
 |  |  | [Vigilante](#vigilante) |  |
 

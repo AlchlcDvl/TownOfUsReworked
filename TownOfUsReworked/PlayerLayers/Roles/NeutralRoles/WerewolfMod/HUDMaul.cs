@@ -3,30 +3,45 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDMaul
     {
+        public static Sprite Maul => TownOfUsReworked.MaulSprite;
+
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Werewolf))
                 return;
 
             var role = Role.GetRole<Werewolf>(PlayerControl.LocalPlayer);
-            __instance.KillButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            __instance.KillButton.SetCoolDown(role.MaulTimer(), CustomGameOptions.MaulCooldown);
-            Utils.SetTarget(ref role.ClosestPlayer, __instance.KillButton);
+
+            if (role.MaulButton == null)
+            {
+                role.MaulButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.MaulButton.graphic.enabled = true;
+                role.MaulButton.graphic.sprite = Maul;
+                role.MaulButton.gameObject.SetActive(false);
+            }
+
+            role.MaulButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.MaulButton.SetCoolDown(role.MaulTimer(), CustomGameOptions.MaulCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.MaulButton);
+            var renderer = role.MaulButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.MaulButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

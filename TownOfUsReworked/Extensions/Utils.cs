@@ -2449,7 +2449,7 @@ namespace TownOfUsReworked.Extensions
         {
             var buttonFlag = hud.UseButton.isActiveAndEnabled || hud.PetButton.isActiveAndEnabled;
             var meetingFlag = !MeetingHud.Instance;
-            return !target.Data.IsDead && Patches.GameStates.IsInGame && meetingFlag && buttonFlag;
+            return !target.Data.IsDead && GameStates.IsInGame && meetingFlag && buttonFlag;
         }
 
         public static bool NoButton(PlayerControl target, RoleEnum role, bool clicked = false)

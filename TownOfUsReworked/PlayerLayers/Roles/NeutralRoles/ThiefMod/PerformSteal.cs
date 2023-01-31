@@ -9,7 +9,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using System;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {
@@ -20,49 +19,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
         
         public static bool Prefix(KillButton __instance)
         {
-            if (__instance != DestroyableSingleton<HudManager>.Instance.KillButton || !PlayerControl.LocalPlayer.Is(RoleEnum.Thief))
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Thief, true))
                 return false;
 
             var role = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
 
-            if (__instance.isCoolingDown || !__instance.enabled)
+            if (!Utils.ButtonUsable(__instance))
                 return false;
-
-            var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-            if (role == null)
-                return false;
-
-            if (role.ClosestPlayer.IsInfected() || role.Player.IsInfected())
-            {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
-            }
-            else if (role.Player.IsOtherRival(role.ClosestPlayer))
-            {
-                role.LastKilled = DateTime.UtcNow;
-                return false;
-            }
-            else if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(SubFaction.Cabal) ||
-                role.ClosestPlayer.Is(SubFaction.Undead) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
-            {
-                Utils.RpcMurderPlayer(role.Player, role.Player);
-                return false;
-            }
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
-            writer.Write((byte)ActionsRPC.Steal);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
-            writer.Write(role.ClosestPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             
-            //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
+            if (__instance == role.StealButton)
+            {
+                if (role.KillTimer() != 0f)
+                    return false;
 
-            Steal(role, role.ClosestPlayer);
-            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);
+
+                if (interact[3] == true && interact[0] == true)
+                {
+                    if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
+                        role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
+                        Utils.RpcMurderPlayer(role.Player, role.Player);
+                    else
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.Steal);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
+                        Steal(role, role.ClosestPlayer);
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                    }
+                }
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+
+                return false;
+            }
+
             return false;
         }
 
@@ -261,7 +259,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 newRole2.RoleHistory.AddRange(role.RoleHistory);
 
                 if (PlayerControl.LocalPlayer == other && other.Is(Faction.Intruder))
+                {
                     DestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(false);
+                    other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
+                }
                 
                 if (other.IsRecruit())
                     newRole2.IsRecruit = true;

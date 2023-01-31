@@ -1,6 +1,6 @@
 using AmongUs.GameOptions;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Extensions
 {
     //Thanks to Town Of Host for this code
     public static class GameStates

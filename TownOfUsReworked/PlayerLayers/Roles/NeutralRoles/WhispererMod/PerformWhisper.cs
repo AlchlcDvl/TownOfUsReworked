@@ -48,6 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                     if (!player.Data.IsDead)
                         role.PlayerConversion.Add((player, stats));
                 }
+
                 role.WhisperCount += 1;
                 role.LastWhispered = DateTime.UtcNow;
                 CheckConversion(role);

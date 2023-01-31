@@ -1,5 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {

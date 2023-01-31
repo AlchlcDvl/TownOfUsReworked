@@ -38,10 +38,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
-        public static Sprite Vest => TownOfUsReworked.VestSprite;
-        public static Sprite Protect => TownOfUsReworked.ProtectSprite;
-        public static Sprite Maul => TownOfUsReworked.MaulSprite;
-        public static Sprite EraseData => TownOfUsReworked.EraseDataSprite;
         public static Sprite Disguise => TownOfUsReworked.DisguiseSprite;
         public static Sprite Placeholder => TownOfUsReworked.Placeholder;
         public static Sprite Clear => TownOfUsReworked.Clear;
@@ -58,30 +54,9 @@ namespace TownOfUsReworked.Patches
 
             var flag = false;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
-            {
-                __instance.KillButton.graphic.sprite = Vest;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
-            {
-                __instance.KillButton.graphic.sprite = Protect;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
-            {
-                var glitch = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
-                glitch.KillButton.graphic.sprite = EraseData;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Dracula))
             {
                 __instance.KillButton.graphic.sprite = Placeholder;
-                flag = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
-            {
-                __instance.KillButton.graphic.sprite = Maul;
                 flag = true;
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Troll))

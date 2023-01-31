@@ -8,32 +8,29 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKillButton
+    public class PerformVest
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Survivor))
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove || PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Survivor, true))
                 return false;
 
             var role = Role.GetRole<Survivor>(PlayerControl.LocalPlayer);
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (!role.ButtonUsable)
                 return false;
 
-            var vestButton = DestroyableSingleton<HudManager>.Instance.KillButton;
-
-            if (__instance == vestButton)
+            if (__instance == role.VestButton)
             {
-                if (__instance.isCoolingDown || !__instance.isActiveAndEnabled || role.VestTimer() != 0)
+                if (role.VestTimer() != 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.VestDuration;
                 role.UsesLeft--;
                 role.Vest();
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                 writer.Write((byte)ActionsRPC.Vest);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

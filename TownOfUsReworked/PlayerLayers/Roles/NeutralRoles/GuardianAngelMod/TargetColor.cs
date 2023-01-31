@@ -28,19 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
-                return;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.GuardianAngel))
                 return;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
@@ -57,34 +45,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (role.TargetPlayer == null)
                 return;
 
-            if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
+            if (role.TargetAlive)
                 return;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
             writer.Write((byte)TurnRPC.GAToSurv);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-
             Object.Destroy(role.UsesText);
-            DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-
             GAToSurv(PlayerControl.LocalPlayer);
         }
 
         public static void GAToSurv(PlayerControl player)
         {
             var ga = Role.GetRole<GuardianAngel>(player);
-            Role newRole;
-
-            if (CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester)
-                newRole = new Jester(player);
-            else if (CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac)
-                newRole = new Amnesiac(player);
-            else if (CustomGameOptions.GaOnTargetDeath == BecomeOptions.Survivor)
-                newRole = new Survivor(player);
-            else
-                newRole = new Crewmate(player);
-
+            Role newRole = new Survivor(player);
             newRole.RoleHistory.Add(ga);
             newRole.RoleHistory.AddRange(ga.RoleHistory);
             

@@ -21,12 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public bool GuessedThisMeeting { get; set; } = false;
         public int RemainingKills { get; set; }
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
-        private bool AmneFlag => (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac) || (CustomGameOptions.GuardianAngelOn > 0 &&
-            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Amnesiac) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
-        private bool SurvFlag => (CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Survivor) || (CustomGameOptions.GuardianAngelOn > 0 &&
-            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Survivor) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
-        private bool JestFlag => CustomGameOptions.ExecutionerOn > 0 && CustomGameOptions.OnTargetDead == OnTargetDead.Jester || (CustomGameOptions.GuardianAngelOn > 0 &&
-            CustomGameOptions.GaOnTargetDeath == BecomeOptions.Jester) || (CustomGameOptions.GuesserOn > 0 && CustomGameOptions.OnTargetGone == OnTargetGone.Amnesiac);
 
         public Assassin(PlayerControl player) : base(player)
         {
@@ -254,13 +248,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             //Add certain Neutral roles if enabled
             if (CustomGameOptions.AssassinGuessNeutralBenign)
             {
-                if (CustomGameOptions.AmnesiacOn > 0 || AmneFlag)
+                if (CustomGameOptions.AmnesiacOn > 0)
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
-                if (CustomGameOptions.SurvivorOn > 0 || SurvFlag)
+                if (CustomGameOptions.SurvivorOn > 0)
                         ColorMapping.Add("Survivor", Colors.Survivor);
 
-                if (CustomGameOptions.GuardianAngelOn > 0)
+                if (CustomGameOptions.GuardianAngelOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
                     ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
 
                 if (CustomGameOptions.ThiefOn > 0)
@@ -281,7 +275,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.TrollOn > 0)
                     ColorMapping.Add("Troll", Colors.Troll);
 
-                if (CustomGameOptions.JesterOn > 0 || JestFlag)
+                if (CustomGameOptions.JesterOn > 0 || CustomGameOptions.ExecutionerOn > 0)
                     ColorMapping.Add("Jester", Colors.Jester);
             }
 

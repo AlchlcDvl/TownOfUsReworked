@@ -118,6 +118,7 @@ namespace TownOfUsReworked.Patches
         public readonly static Color32 VIP = new Color32(220, 238, 133, 255); //#DCEE85FF
         public readonly static Color32 Shy = new Color32(16, 2, 197, 255); //#1002C5FF
         public readonly static Color32 Professional = new Color32(134, 11, 122, 255); //#860B7AFF
+        public readonly static Color32 Indomitable = new Color32(45, 229, 190, 255); //#2DE5BEFF
 
         //Ability Colors
         public readonly static Color32 Assassin = new Color32(7, 55, 99, 255); //#073763FF
@@ -162,7 +163,7 @@ namespace TownOfUsReworked.Patches
         //#1abc9c #2ecc71 #1f8b4c #3498db #206694 #71368a #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
         //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7
         //#EC1C45 #EC62A5 #00EEFF #204D42 #78c689 #e1c849 #a7c596 #b51e39 #fccc52 #6b2d2a #aab43e
-        //#0028F5 #FC0303 #FCBA03 #ff351f #F8CD46 #2DE5BE #FF4D00 #7EFBC2 #8637C2 #00ACC2
+        //#0028F5 #FC0303 #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #8637C2 #00ACC2
         //#3769FE #1E300B #4d4d4d #8ff731
 
         //Symbol Storage For Objectifiers I Will Make Later

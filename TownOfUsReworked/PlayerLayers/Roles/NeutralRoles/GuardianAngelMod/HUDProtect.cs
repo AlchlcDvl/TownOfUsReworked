@@ -10,29 +10,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HudManagerUpdate
     {
-        public static void Postfix(PlayerControl __instance)
+        public static Sprite Protect => TownOfUsReworked.ProtectSprite;
+
+        public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.GuardianAngel))
                 return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
-                return;
-
-            var data = PlayerControl.LocalPlayer.Data;
-            var isDead = data.IsDead;
-            var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
+            if (role.ProtectButton == null)
+            {
+                role.ProtectButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.ProtectButton.graphic.enabled = true;
+                role.ProtectButton.graphic.sprite = Protect;
+                role.ProtectButton.gameObject.SetActive(false);
+            }
+
             if (role.UsesText == null && role.UsesLeft > 0)
             {
-                role.UsesText = Object.Instantiate(protectButton.cooldownTimerText, protectButton.transform);
+                role.UsesText = Object.Instantiate(__instance.KillButton.cooldownTimerText, __instance.KillButton.transform);
                 role.UsesText.gameObject.SetActive(true);
                 role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
                     role.UsesText.transform.localPosition.z);
@@ -43,26 +40,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             if (role.UsesText != null)
                 role.UsesText.text = $"{role.UsesLeft}";
-
-            if (isDead)
-                protectButton.gameObject.SetActive(CustomGameOptions.ProtectBeyondTheGrave && role.TargetAlive);
+            
+            if (!role.Player.Data.IsDead)
+                role.ProtectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            else
+                role.ProtectButton.gameObject.SetActive(CustomGameOptions.ProtectBeyondTheGrave && role.TargetAlive && !MeetingHud.Instance && GameStates.IsInGame);
             
             if (role.Protecting)
-            {
-                protectButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.ProtectDuration);
-                return;
-            }
-            else
-            {
-                protectButton.gameObject.SetActive(!MeetingHud.Instance && role.TargetAlive && !LobbyBehaviour.Instance && role.ButtonUsable);
+                role.ProtectButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.ProtectDuration);
+            else if (role.ButtonUsable)
+                role.ProtectButton.SetCoolDown(role.ProtectTimer(), CustomGameOptions.ProtectCd);
 
-                if (role.ButtonUsable)
-                    protectButton.SetCoolDown(role.ProtectTimer(), CustomGameOptions.ProtectCd);
-            }
+            var renderer = role.ProtectButton.graphic;
 
-            var renderer = protectButton.graphic;
-
-            if (role.Protecting || (!protectButton.isCoolingDown && role.ButtonUsable))
+            if (!role.Protecting && !role.ProtectButton.isCoolingDown && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

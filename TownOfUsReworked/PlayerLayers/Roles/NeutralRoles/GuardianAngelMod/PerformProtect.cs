@@ -8,13 +8,11 @@ using TownOfUsReworked.Lobby.CustomOption;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class Protect
+    public class PerformProtect
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel);
-
-            if (!flag)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
                 return true;
 
             if (!PlayerControl.LocalPlayer.CanMove)
@@ -25,19 +23,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (!role.ButtonUsable)
                 return false;
 
-            var protectButton = DestroyableSingleton<HudManager>.Instance.KillButton;
-
-            if (__instance == protectButton)
+            if (__instance == role.ProtectButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.ProtectTimer() != 0)
                     return false;
 

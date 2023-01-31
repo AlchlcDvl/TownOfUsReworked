@@ -1,4 +1,4 @@
-using HarmonyLib;
+/*using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
@@ -48,4 +48,4 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             }
         }
     }
-}
+}*/

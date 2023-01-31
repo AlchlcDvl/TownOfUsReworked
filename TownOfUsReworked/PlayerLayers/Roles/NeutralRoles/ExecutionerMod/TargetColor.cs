@@ -57,17 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
         public static void ExeToJest(PlayerControl player)
         {
             var exe = Role.GetRole<Executioner>(player);
-            Role newRole;
-
-            if (CustomGameOptions.OnTargetDead == OnTargetDead.Jester)
-                newRole = new Jester(player);
-            else if (CustomGameOptions.OnTargetDead == OnTargetDead.Amnesiac)
-                newRole = new Amnesiac(player);
-            else if (CustomGameOptions.OnTargetDead == OnTargetDead.Survivor)
-                newRole = new Survivor(player);
-            else
-                newRole = new Crewmate(player);
-
+            Role newRole = new Jester(player);
             newRole.RoleHistory.Add(exe);
             newRole.RoleHistory.AddRange(exe.RoleHistory);
             
