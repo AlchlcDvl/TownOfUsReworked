@@ -56,37 +56,20 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 |  |  | [Veteran](#veteran) |  |
 |  |  | [Vigilante](#vigilante) |  |
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
-|:----------:|:-------------:|:-----------------:|:----------------:|
-| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Amnesiac](#amnesiac) | [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
-| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Arsonist](#arsonist) | [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
-| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Cannibal](#cannibal) | [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
-| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cryomaniac](#cryomaniac) | [Drunk](#drunk) | [Lighter](#lighter) | [Lovers](#lovers) |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Dampyr](#dampyr) | [Dwarf](#dwarf) | [Multitasker](#multitasker) | [Overlord](#overlord) |
-| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dracula](#dracula) | [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) | [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Glitch](#glitch) | [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Guardian Angel](#guardian-angel) | [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guesser](#guesser) | [Shy](#shy) | [Torch](#torch) |  |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Jackal](#jackal) | [VIP](#vip) | [Tunneler](#tunneler) |  |
-| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jester](#jester) | [Volatile](#volatile) | [Underdog](#underdog) |  |
-| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Juggernaut](#juggernaut) |  |  |  |
-| [Time Master](#time-master) |  | [Operative](#operative) | [Murderer](#murderer) |  |  |  |
-| [Undertaker](#undertaker) |  | [Operative](#operative) | [Necromancer](#necromancer) |  |  |  |
-| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Pestilence](#pestilence) |  |  |  |
-|  |  | [Revealer](#revealer) | [Phantom](#phantom) |  |  |  |
-|  |  | [Seer](#seer) | [Plaguebearer](#plaguebearer) |  |  |  |
-|  |  | [Shifter](#shifter) | [Serial Killer](#serial-killer) |  |  |  |
-|  |  | [Sheriff](#sheriff) | [Survivor](#survivor) |  |  |  |
-|  |  | [Swapper](#swapper) | [Thief](#thief) |  |  |  |
-|  |  | [Time Lord](#time-lord) | [Vampire](#vampire) |  |  |  |
-|  |  | [Tracker](#tracker) | [Werewolf](#werewolf) |  |  |  |
-|  |  | [Transporter](#transporter) | [Whisperer](#whisperer) |  |  |  |
-|  |  | [Vampire Hunter](#vampire-hunter) |  |  |  |  |
-|  |  | [Veteran](#veteran) |  |  |  |  |
-|  |  | [Vigilante](#vigilante) |  |  |  | 
-
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
+|-------------------------|-------------------------|-------------------------------|
+| [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
+| [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
+| [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
+| [Drunk](#drunk) | [Lighter](#lighter) | [Lovers](#lovers) |
+| [Dwarf](#dwarf) | [Multitasker](#multitasker) | [Overlord](#overlord) |
+| [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
+| [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
+| [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
+| [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
+| [Shy](#shy) | [Torch](#torch) |  |
+| [VIP](#vip) | [Tunneler](#tunneler) |  |
+| [Volatile](#volatile) | [Underdog](#underdog) |  |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
