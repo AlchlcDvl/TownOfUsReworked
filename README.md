@@ -26,9 +26,9 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Roles**](#roles)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
-|----------|-------------|-----------------|
-| 2022.12.14 (s & e) | Base Mod (v4.0.1) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.1/ToU.v4.0.1.zip) |
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
+|------------------------------|-------------------------------|---------------------|---------------------------|
+| a | b | c | d |
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |:----------:|:-------------:|:-----------------:|:----------------:|
@@ -58,7 +58,9 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 |  |  | [Transporter](#transporter) | [Whisperer](#whisperer) |  |  |  |
 |  |  | [Vampire Hunter](#vampire-hunter) |  |  |  |  |
 |  |  | [Veteran](#veteran) |  |  |  |  |
-|  |  | [Vigilante](#vigilante) |  |  |  |  |
+|  |  | [Vigilante](#vigilante) |  |  |  | 
+
+| [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
