@@ -41,7 +41,20 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Jackal](#jackal) |
 | [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jester](#jester) |
 | [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Juggernaut](#juggernaut) |
-
+| [Time Master](#time-master) |  | [Operative](#operative) | [Murderer](#murderer) |
+| [Undertaker](#undertaker) |  | [Operative](#operative) | [Necromancer](#necromancer) |
+| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Pestilence](#pestilence) |
+|  |  | [Revealer](#revealer) | [Phantom](#phantom) |
+|  |  | [Seer](#seer) | [Plaguebearer](#plaguebearer) |
+|  |  | [Shifter](#shifter) | [Serial Killer](#serial-killer) |
+|  |  | [Sheriff](#sheriff) | [Survivor](#survivor) |
+|  |  | [Swapper](#swapper) | [Thief](#thief) |
+|  |  | [Time Lord](#time-lord) | [Vampire](#vampire) |
+|  |  | [Tracker](#tracker) | [Werewolf](#werewolf) |
+|  |  | [Transporter](#transporter) | [Whisperer](#whisperer) |
+|  |  | [Vampire Hunter](#vampire-hunter) |  |
+|  |  | [Veteran](#veteran) |  |
+|  |  | [Vigilante](#vigilante) |  |
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |:----------:|:-------------:|:-----------------:|:----------------:|
