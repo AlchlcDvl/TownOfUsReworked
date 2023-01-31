@@ -28,7 +28,20 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
 |------------------------------|-------------------------------|---------------------|---------------------------|
-| a | b | c | d |
+| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Amnesiac](#amnesiac) |
+| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Arsonist](#arsonist) |
+| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Cannibal](#cannibal) |
+| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cryomaniac](#cryomaniac) |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Dampyr](#dampyr) |
+| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dracula](#dracula) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Glitch](#glitch) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guesser](#guesser) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Jackal](#jackal) |
+| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jester](#jester) |
+| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Juggernaut](#juggernaut) |
+
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |:----------:|:-------------:|:-----------------:|:----------------:|
