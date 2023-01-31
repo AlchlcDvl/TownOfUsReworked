@@ -27,6 +27,10 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 [**Roles**](#roles)
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
+|----------|-------------|-----------------|
+| 2022.12.14 (s & e) | Base Mod (v4.0.1) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.1/ToU.v4.0.1.zip) |
+
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |:----------:|:-------------:|:-----------------:|:----------------:|
 | [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Amnesiac](#amnesiac) | [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
 | [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Arsonist](#arsonist) | [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
