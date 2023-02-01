@@ -12,19 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (PlayerControl.LocalPlayer != SetRevealer.WillBeRevealer)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || PlayerControl.LocalPlayer !=
+                SetRevealer.WillBeRevealer || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();

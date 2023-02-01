@@ -1,3 +1,5 @@
+using TownOfUsReworked.Enums;
+
 namespace TownOfUsReworked.Lobby.CustomOption
 {
     public class CustomToggleOption : CustomOption

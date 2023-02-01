@@ -14,6 +14,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
@@ -46,6 +47,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         {
             var hudManager = DestroyableSingleton<HudManager>.Instance;
             var assassinPlayer = assassin.Player;
+
+            if (player != assassinPlayer && player == PlayerControl.LocalPlayer && player.Is(ModifierEnum.Indomitable))
+            {
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));
+                return;
+            }
 
             if (checkLover)
             {

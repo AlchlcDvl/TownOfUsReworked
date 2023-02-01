@@ -12,22 +12,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Troll, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Troll))
                 return false;
 
             var role = Role.GetRole<Troll>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
             if (__instance == role.InteractButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.InteractTimer() != 0)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true || interact[0] == true)
                     role.LastInteracted = DateTime.UtcNow;
                 else if (interact[0] == true)
                     role.LastInteracted = DateTime.UtcNow;

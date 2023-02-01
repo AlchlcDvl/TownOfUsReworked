@@ -13,16 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Arsonist, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Arsonist))
                 return false;
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.IgniteButton && role.DousedAlive > 0)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerIgnite))
                     return false;
                 
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayerIgnite, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     role.LastIgnited = DateTime.UtcNow;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
@@ -47,6 +47,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.IgniteSound, false, 1f);
                     } catch {}
+
+                    if (CustomGameOptions.ArsoCooldownsLinked)
+                        role.LastDoused = DateTime.UtcNow;
+                }
+
+                if (interact[0])
+                {
+                    role.LastIgnited = DateTime.UtcNow;
 
                     if (CustomGameOptions.ArsoCooldownsLinked)
                         role.LastDoused = DateTime.UtcNow;
@@ -70,6 +78,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             }
             else if (__instance == role.DouseButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerDouse))
                     return false;
                 
@@ -81,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayerIgnite, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer2.Write((byte)ActionsRPC.Douse);
@@ -89,6 +100,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     writer2.Write(role.ClosestPlayerDouse.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     role.DousedPlayers.Add(role.ClosestPlayerDouse.PlayerId);
+                }
+
+                if (interact[0])
+                {
                     role.LastDoused = DateTime.UtcNow;
 
                     if (CustomGameOptions.ArsoCooldownsLinked)

@@ -13,16 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shapeshifter, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shapeshifter))
                 return false;
 
             var role = Role.GetRole<Shapeshifter>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.ShapeshiftButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.ShapeshiftTimer() != 0)
                     return false;
 
@@ -36,6 +36,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
                     return false;
 

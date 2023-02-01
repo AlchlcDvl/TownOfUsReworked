@@ -4,10 +4,7 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
@@ -16,17 +13,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cannibal))
                 return false;
 
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.EatButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                    return false;
+                
+                if (role.EatTimer() != 0f)
                     return false;
 
                 Utils.Spread(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId));

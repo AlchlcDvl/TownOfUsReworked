@@ -13,16 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Warper))
-                return true;
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Warper))
+                return false;
 
             var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.WarpButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.WarpTimer() != 0)
                     return false;
 
@@ -36,6 +36,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
                     return false;
 

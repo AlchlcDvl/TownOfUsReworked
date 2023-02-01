@@ -9,6 +9,7 @@ using Reactor.Utilities.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
@@ -28,8 +29,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             var options = new List<OptionBehaviour>();
 
             var togglePrefab = Object.FindObjectOfType<ToggleOption>();
-            var numberPrefab = Object.FindObjectOfType<NumberOption>();
-            var stringPrefab = Object.FindObjectOfType<StringOption>();
 
             foreach (var button in SlotButtons)
             {

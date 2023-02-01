@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
@@ -10,9 +11,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public readonly MultiMenu Menu;
         public Func<object, string> Format;
         public string Name;
+        protected internal object Value { get; set; }
+        protected internal OptionBehaviour Setting { get; set; }
+        protected internal CustomOptionType Type { get; set; }
+        public object DefaultValue { get; set; }
+        public static bool LobbyTextScroller { get; set; } = true;
+        protected internal bool Indent { get; set; }
         
-        protected internal CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string>
-            format = null)
+        protected internal CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
         {
             ID = id;
             Menu = menu;
@@ -27,13 +33,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             AllOptions.Add(this);
             Set(Value);
         }
-
-        protected internal object Value { get; set; }
-        protected internal OptionBehaviour Setting { get; set; }
-        protected internal CustomOptionType Type { get; set; }
-        public object DefaultValue { get; set; }
-        public static bool LobbyTextScroller { get; set; } = true;
-        protected internal bool Indent { get; set; }
 
         public override string ToString()
         {

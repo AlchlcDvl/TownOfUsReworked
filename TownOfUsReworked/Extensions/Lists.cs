@@ -4,7 +4,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using UnityEngine;
 using HarmonyLib;
 
 namespace TownOfUsReworked.Extensions

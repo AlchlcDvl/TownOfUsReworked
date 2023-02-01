@@ -12,22 +12,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Pestilence))
                 return true;
 
             var role = Role.GetRole<Pestilence>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.KillTimer() != 0f && __instance == role.ObliterateButton)
-                return false;
-
             if (__instance == role.ObliterateButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.KillTimer() != 0f)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, null, true);
 
                 if (interact[3] == true && interact[0] == true)

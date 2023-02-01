@@ -15,10 +15,13 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(PlayerControl __instance)
         {
+            if (__instance == null)
+                return;
+ 
             if (MeetingHud.Instance)
                 return;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (!PlayerControl.LocalPlayer.CanDoTasks())
                 return;
 
             var taskinfos = __instance.Data.Tasks.ToArray();

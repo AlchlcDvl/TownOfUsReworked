@@ -109,10 +109,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             {
                 var player = Utils.PlayerById(__instance.playerStates[i].TargetPlayerId);
                 var dead = player.Data.IsDead;
-                var disconnected = player.Data.Disconnected;
                 var swap = player == PlayerControl.LocalPlayer && !CustomGameOptions.SwapSelf && player.Is(RoleEnum.Swapper);
                 var voteswap = player == PlayerControl.LocalPlayer && __instance.playerStates[i].DidVote && player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapAfterVoting;
-                GenButton(swapperrole, i, dead || disconnected || swap || voteswap);
+                GenButton(swapperrole, i, dead || swap || voteswap);
             }
         }
     }

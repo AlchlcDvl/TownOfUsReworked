@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Lobby.CustomOption
+namespace TownOfUsReworked.Enums
 {
     public enum CustomOptionType
     {
@@ -7,7 +7,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         Number,
         String,
         Button,
-        Menu
+        Menu,
+        Tab
     }
     
     public enum MultiMenu
@@ -78,8 +79,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         Skeld,
         MiraHQ,
         Polus,
-        Airship = 4,
-        Submerged = 5
+        Airship,
+        Submerged
     }
 
     public enum TaskBarMode

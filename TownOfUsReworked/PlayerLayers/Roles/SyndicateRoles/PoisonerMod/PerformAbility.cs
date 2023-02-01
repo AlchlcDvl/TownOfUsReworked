@@ -17,23 +17,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
 
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Poisoner, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Poisoner))
                 return false;
 
             var role = Role.GetRole<Poisoner>(PlayerControl.LocalPlayer);
-
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
             
             if (__instance == role.PoisonButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.PoisonTimer() != 0f)
                     return false;
                 
                 if (role.PoisonButton.graphic.sprite == PoisonedSprite)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
@@ -63,7 +63,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);

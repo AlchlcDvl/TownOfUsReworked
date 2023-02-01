@@ -41,7 +41,7 @@ namespace TownOfUsReworked.Patches
             if (otherString.Length != 0)
                 String += "\n" + otherString;
 
-            __instance.FilterText.text = "<size=50%>" + String + "</size>";
+            __instance.FilterText.text = "<size=75%>" + String + "</size>";
             return false;
         }
     }

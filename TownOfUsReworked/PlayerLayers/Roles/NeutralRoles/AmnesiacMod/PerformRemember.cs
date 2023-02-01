@@ -6,7 +6,6 @@ using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
@@ -19,16 +18,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
         
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac))
                 return false;
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.RememberButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 

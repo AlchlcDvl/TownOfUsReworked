@@ -12,22 +12,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Murderer, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Murderer))
                 return false;
 
             var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.KillTimer() != 0f && __instance == role.MurderButton)
-                return false;
-
             if (__instance == role.MurderButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.KillTimer() != 0f)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
                 if (interact[3] == true && interact[0] == true)

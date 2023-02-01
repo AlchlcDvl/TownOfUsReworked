@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Enums
         Intruder,
         Neutral,
         Syndicate,
-        
+
         None
     }
 
@@ -37,9 +37,9 @@ namespace TownOfUsReworked.Enums
         SyndicateDisruption,
         SyndicatePower,
         SyndicateUtil,
-        
+
         Other,
-        
+
         None
     }
 

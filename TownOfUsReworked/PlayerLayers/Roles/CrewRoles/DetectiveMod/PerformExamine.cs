@@ -15,25 +15,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Detective, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Detective))
                 return false;
 
             var role = Role.GetRole<Detective>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.ExamineTimer() != 0f && __instance == role.ExamineButton)
-                return false;
-
             if (__instance == role.ExamineButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.ExamineTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+                
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     var hasKilled = false;
 
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastExamined = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);

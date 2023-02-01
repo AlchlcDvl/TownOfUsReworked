@@ -1403,7 +1403,7 @@ namespace TownOfUsReworked.Patches
 
                         if (guessTargets.Count > 0)
                         {
-                            while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player)
+                            while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player || guess.TargetPlayer.Is(ModifierEnum.Indomitable))
                             {
                                 guessTargets.Shuffle();
                                 var guessNum = Random.RandomRangeInt(0, guessTargets.Count - 1);
@@ -1767,6 +1767,9 @@ namespace TownOfUsReworked.Patches
                                 break;
                             case 10:
                                 new Professional(player2);
+                                break;
+                            case 11:
+                                new Indomitable(player2);
                                 break;
                         }
 
@@ -2183,6 +2186,13 @@ namespace TownOfUsReworked.Patches
                                 var thief = Utils.PlayerById(reader.ReadByte());
                                 var other4 = Utils.PlayerById(reader.ReadByte());
                                 PerformSteal.Steal(Role.GetRole<Thief>(thief), other4);
+                                break;
+
+                            case ActionsRPC.WhisperConvert:
+                                var persuaded = Utils.PlayerById(reader.ReadByte());
+                                var persuadedRole = Role.GetRole(persuaded);
+                                persuadedRole.SubFaction = SubFaction.Sect;
+                                persuadedRole.IsPersuaded = true;
                                 break;
 
                             case ActionsRPC.Declare:
@@ -4098,6 +4108,19 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Volatile Done");
                     }
 
+                    if (CustomGameOptions.IndomitableOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.IndomitableCount : 1;
+                        
+                        while (num > 0)
+                        {
+                            GlobalModifiers.Add((typeof(Indomitable), CustomGameOptions.IndomitableOn, 11));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Indomitable Done");
+                    }
+
                     if (CustomGameOptions.ProfessionalOn > 0)
                     {
                         num = IsCustom ? CustomGameOptions.ProfessionalCount : 1;
@@ -4213,6 +4236,19 @@ namespace TownOfUsReworked.Patches
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Radar Done");
+                    }
+
+                    if (CustomGameOptions.RuthlessOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.RuthlessCount : 1;
+                        
+                        while (num > 0)
+                        {
+                            GlobalAbilityGet.Add((typeof(Ruthless), CustomGameOptions.RuthlessOn, 11));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Ruthless Done");
                     }
 
                     if (CustomGameOptions.TiebreakerOn > 0)

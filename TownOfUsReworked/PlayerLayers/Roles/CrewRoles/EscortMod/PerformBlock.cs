@@ -12,28 +12,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Escort, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Escort))
                 return false;
 
             var role = Role.GetRole<Escort>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.RoleblockTimer() != 0f && __instance == role.BlockButton)
-                return false;
-
             if (__instance == role.BlockButton)
             {
+                if (role.RoleblockTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                     role.RPCSetBlocked(role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastBlock = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);

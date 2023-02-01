@@ -12,17 +12,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Altruist, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Altruist))
+                return false;
+            
+            if (!PlayerControl.LocalPlayer.CanMove)
                 return false;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.ReviveButton)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                    return false;
+                
+                if (!__instance.isActiveAndEnabled)
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;

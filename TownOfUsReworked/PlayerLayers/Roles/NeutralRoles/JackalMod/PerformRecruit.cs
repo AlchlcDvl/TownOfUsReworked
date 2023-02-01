@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -14,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jackal, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jackal))
                 return false;
 
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
@@ -22,17 +21,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                 return false;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.RecruitButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.RecruitTimer() != 0f)
                     return false;
                 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     role.BackupRecruit = role.ClosestPlayer;
                     role.HasRecruited = true;
@@ -52,8 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                     role.LastRecruited = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastRecruited.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
             }

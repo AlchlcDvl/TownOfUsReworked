@@ -4,6 +4,7 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
@@ -172,8 +173,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         sliderInner.GetComponent<GameOptionsMenu>().name = $"ToU-Rew{Menus[index]}OptionsMenu";
 
                     var ourSettingsButton = Object.Instantiate(obj.gameObject, obj.transform.parent);
-                    ourSettingsButton.transform.localPosition = new Vector3(obj.localPosition.x + (0.8f * (index + 1)), obj.localPosition.y,
-                        obj.localPosition.z);
+                    ourSettingsButton.transform.localPosition = new Vector3(obj.localPosition.x + (0.8f * (index + 1)), obj.localPosition.y, obj.localPosition.z);
                     ourSettingsButton.name = $"ToU-Rew{Menus[index]}Tab";
                     var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
                     var hatIcon = hatButton.GetChild(0);
@@ -502,7 +502,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix()
             {
-                if (PlayerControl.AllPlayerControls.Count < 2 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
+                if (PlayerControl.AllPlayerControls.Count < 1 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
                     return;
 
                 Rpc.SendRpc();
@@ -514,7 +514,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         {
             public static void Postfix()
             {
-                if (PlayerControl.AllPlayerControls.Count < 2 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
+                if (PlayerControl.AllPlayerControls.Count < 1 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
                     return;
 
                 Rpc.SendRpc();

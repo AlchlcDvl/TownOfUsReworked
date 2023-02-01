@@ -97,6 +97,7 @@ Modifiers:-
 - Coward = 8
 - Volatile = 9
 - Professional = 10
+- Indomitable = 11
 
 Abilities:-
 - Assassin = 0
@@ -109,6 +110,7 @@ Abilities:-
 - Torch = 7
 - Underdog = 8
 - Tunneler = 9
+- Ruthless = 10
 
 Objectifiers:-
 - Lovers = 0

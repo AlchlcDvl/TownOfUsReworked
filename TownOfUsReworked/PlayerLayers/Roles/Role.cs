@@ -53,9 +53,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public virtual void Wins() {}
-		public virtual void AddCustomButtons() {}
-        public virtual void PlayerNameplateOverlay(MeetingHud instance) {}
-		public virtual void SetTarget() {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
@@ -68,6 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
+        protected internal KeyCode Keybind { get; set; } = KeyCode.None;
 
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
@@ -282,39 +280,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             return true;
         }
-        
-        /*protected void RegisterCustomButton(CustomButton button)
-		{
-			button.OwnerId = Player.PlayerId;
-			OtherButtons.Add(button);
-		}*/
-
-        internal virtual bool DeadCriteria()
-        {
-            return PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything && !(PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) ||
-                PlayerControl.LocalPlayer.Is(RoleEnum.Phantom));
-        }
-
-        internal virtual bool FactionCriteria()
-        {
-            var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
-            var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
-            var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
-            var sectFlag = ((SubFaction == SubFaction.Sect || IsPersuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPersuaded()));
-            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsResurrected) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsResurrected()));
-            var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
-
-            var mainFlag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
-            return mainFlag;
-        }
 
         internal virtual bool Criteria()
         {
-            if (Player == null)
-                return false;
-
-            Player.nameText().transform.localPosition = new Vector3(0f, Player.Data.DefaultOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
-            return (DeadCriteria() || FactionCriteria() || SelfCriteria() || RoleCriteria() || TargetCriteria() || Local || LoverRivalRoleCriteria()) && !LobbyBehaviour.Instance;
+            return (SelfCriteria() || RoleCriteria() || TargetCriteria() || LoverRivalRoleCriteria() || Local) && GameStates.IsInGame;
         }
 
         internal virtual bool RoleCriteria()
@@ -322,7 +291,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var coronerFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Contains(Player.PlayerId);
             var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId) &&
                 CustomGameOptions.ConsigInfo == ConsigInfo.Role;
-            return coronerFlag || consigFlag;
+            var deadFlag = PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything && !(PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) ||
+                PlayerControl.LocalPlayer.Is(RoleEnum.Phantom));
+            var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
+            var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
+            var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
+            var sectFlag = ((SubFaction == SubFaction.Sect || IsPersuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPersuaded()));
+            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsResurrected) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsResurrected()));
+            var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
+            var flag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
+            return coronerFlag || consigFlag || deadFlag || flag;
         }
 
         internal virtual bool SelfCriteria()
@@ -332,12 +310,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (role == null)
                 return false;
 
-            return role == this;
+            return role == this && Local;
         }
 
         internal virtual bool ColorCriteria()
         {
-            return (SelfCriteria() || DeadCriteria() || FactionCriteria() || RoleCriteria() || TargetCriteria() || LoverRivalRoleCriteria()) && !LobbyBehaviour.Instance;
+            return (SelfCriteria() || RoleCriteria() || TargetCriteria() || LoverRivalRoleCriteria() || Local) && GameStates.IsInGame;
         }
         
         internal virtual bool TargetCriteria()
@@ -366,12 +344,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers))
             {
+                if (Local)
+                    return true;
+
                 var role = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer);
                 PlayerControl otherlover = role.OtherLover;
                 flag = otherlover != null && CustomGameOptions.LoversRoles && Player == otherlover;
             }
             else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals))
             {
+                if (Local)
+                    return true;
+
                 var role = Objectifier.GetObjectifier<Rivals>(PlayerControl.LocalPlayer);
                 PlayerControl otherrival = role.OtherRival;
                 flag = otherrival != null && CustomGameOptions.RivalsRoles && Player == otherrival;
@@ -469,7 +453,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!revealRole)
                 return PlayerName;
 
-            Player.nameText().transform.localPosition = new Vector3(0f, Player.CurrentOutfit.HatId == "hat_NoHat" ? 1.5f : 2.0f, -0.5f);
+            Player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
             return PlayerName + "\n" + Name;
         }
 
@@ -620,9 +604,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || 
-                            (CustomGameOptions.CustomIntColors && PlayerControl.LocalPlayer.Is(Faction.Intruder)) ||
-                            (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
+                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
+                            PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
                             (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
 
                         if (flag)
@@ -740,9 +723,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             } catch {}
                         }
 
-                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || 
-                            (CustomGameOptions.CustomIntColors && PlayerControl.LocalPlayer.Is(Faction.Intruder)) ||
-                            (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
+                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
+                            PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
                             (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
 
                         if (flag)
@@ -1050,16 +1032,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (role != null && role.Criteria())
                     {
                         bool selfFlag = role.SelfCriteria();
-                        bool deadFlag = role.DeadCriteria();
-                        bool factionFlag = role.FactionCriteria();
                         bool targetFlag = role.TargetCriteria();
                         bool roleFlag = role.RoleCriteria();
-                        bool localFlag = role.Local;
                         bool loverrivalFlag1 = role.LoverRivalCriteria();
                         bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
 
-                        player.NameText.text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag ||
-                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1, player);
+                        player.NameText.text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1,
+                            player);
 
                         if (role.ColorCriteria())
                             player.NameText.color = role.Color;
@@ -1091,8 +1070,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data != null && ((player.Is(Faction.Intruder) && PlayerControl.LocalPlayer.Is(Faction.Intruder)) ||
-                        (player.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(Faction.Syndicate)))))
+                    if (!(player.Data != null && ((player.Is(Faction.Intruder) && PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (player.Is(Faction.Syndicate) &&
+                        PlayerControl.LocalPlayer.Is(Faction.Syndicate)))))
                     {
                         player.nameText().text = player.name;
                         player.nameText().color = new Color32(255, 255, 255, 255);
@@ -1103,18 +1082,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (role != null && role.Criteria())
                     {
                         bool selfFlag = role.SelfCriteria();
-                        bool deadFlag = role.DeadCriteria();
-                        bool factionFlag = role.FactionCriteria();
                         bool targetFlag = role.TargetCriteria();
                         bool roleFlag = role.RoleCriteria();
-                        bool localFlag = role.Local;
                         bool loverrivalFlag1 = role.LoverRivalCriteria();
                         bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
 
-                        player.nameText().text = role.NameText(selfFlag || roleFlag || deadFlag || localFlag, selfFlag || deadFlag || roleFlag || factionFlag || targetFlag ||
-                            loverrivalFlag2, selfFlag || deadFlag || loverrivalFlag1);
+                        player.nameText().text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1);
 
-                        if (role.ColorCriteria() && !LobbyBehaviour.Instance)
+                        if (role.ColorCriteria())
                             player.nameText().color = role.Color;
                     }
                 }

@@ -2,6 +2,7 @@ using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Lobby.CustomOption;
 using AmongUs.GameOptions;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {

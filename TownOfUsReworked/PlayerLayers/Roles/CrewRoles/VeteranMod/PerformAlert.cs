@@ -12,22 +12,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Veteran, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Veteran))
                 return false;
 
             var role = Role.GetRole<Veteran>(PlayerControl.LocalPlayer);
 
-            if (!role.ButtonUsable)
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.AlertTimer() != 0f && __instance == role.AlertButton)
-                return false;
-
             if (__instance == role.AlertButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (!role.ButtonUsable)
+                    return false;
+
+                if (role.AlertTimer() != 0f)
+                    return false;
+
                 role.TimeRemaining = CustomGameOptions.AlertDuration;
                 role.UsesLeft--;
                 role.Alert();

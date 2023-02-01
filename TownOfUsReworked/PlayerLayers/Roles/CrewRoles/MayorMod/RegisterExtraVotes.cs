@@ -38,6 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         public static Dictionary<byte, int> CalculateAllVotes(MeetingHud __instance)
         {
             var dictionary = new Dictionary<byte, int>();
+            
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
                 var playerVoteArea = __instance.playerStates[i];

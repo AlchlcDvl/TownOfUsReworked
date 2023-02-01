@@ -13,16 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Concealer, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Concealer))
                 return false;
 
             var role = Role.GetRole<Concealer>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.ConcealButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.ConcealTimer() != 0)
                     return false;
 
@@ -36,6 +36,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
                     return false;
 

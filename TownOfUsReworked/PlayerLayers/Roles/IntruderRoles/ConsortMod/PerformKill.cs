@@ -14,14 +14,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consort, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
                 return false;
 
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
             if (__instance == role.BlockButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.RoleblockTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
@@ -33,7 +39,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 if (role.ClosestPlayer.IsShielded())

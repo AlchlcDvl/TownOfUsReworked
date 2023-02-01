@@ -21,17 +21,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
 		public static void Postfix(MeetingHud __instance)
         {
-			foreach (var role in Role.GetRoles(RoleEnum.Agent))
-            {
-				var agent = (Agent)role;
-				agent.PlayerNumbers.Clear();
-			}
-
 			if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
 			if (!PlayerControl.LocalPlayer.Is(RoleEnum.Agent))
                 return;
+
+			foreach (var role in Role.GetRoles(RoleEnum.Agent))
+            {
+				var agent = (Agent)role;
+				agent.PlayerNumbers.Clear();
+			}
 
 			var spyRole = Role.GetRole<Agent>(PlayerControl.LocalPlayer);
 

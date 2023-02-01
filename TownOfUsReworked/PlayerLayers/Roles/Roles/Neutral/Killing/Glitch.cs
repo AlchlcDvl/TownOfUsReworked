@@ -71,15 +71,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 				PlayerControl.LocalPlayer.moveable = true;
 		}
 
-		public override void SetTarget()
-		{
-			if (Player == null || Player != PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Data.IsDead)
-				return;
-
-			ClosestPlayer = GetTarget(GetUntargetables(), null);
-			SetPlayerOutline(ClosestPlayer, Color);
-		}
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)

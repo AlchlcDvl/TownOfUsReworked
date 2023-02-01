@@ -1,20 +1,21 @@
 using System;
 using UnityEngine;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Lobby.CustomOption
 {
     public class CustomNumberOption : CustomOption
     {
-        protected internal CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment,
-            Func<object, string> format = null) : base(id, menu, name, CustomOptionType.Number, defaultValue, format)
+        protected internal CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) :
+            base(id, menu, name, CustomOptionType.Number, defaultValue, format)
         {
             Min = min;
             Max = max;
             Increment = increment;
         }
 
-        protected internal CustomNumberOption(bool indent, int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment,
-            Func<object, string> format = null) : this(id, menu, name, defaultValue, min, max, increment, format)
+        protected internal CustomNumberOption(bool indent, int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format =
+            null) : this(id, menu, name, defaultValue, min, max, increment, format)
         {
             Indent = indent;
         }

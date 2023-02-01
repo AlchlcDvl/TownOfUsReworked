@@ -13,10 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
     {
         public static void Postfix(MeetingHud __instance)
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Operative))
+            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.Is(RoleEnum.Operative))
                 return;
 
             var opRole = Role.GetRole<Operative>(PlayerControl.LocalPlayer);

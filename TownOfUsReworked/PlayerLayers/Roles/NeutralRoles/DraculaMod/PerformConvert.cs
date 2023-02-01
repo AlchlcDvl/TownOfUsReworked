@@ -21,17 +21,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
-                return false;
-
             if (__instance == role.BiteButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.ConvertTimer() != 0f && __instance == role.BiteButton)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true && interact[0] == true)

@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Reactor.Utilities.Extensions;
-using System.Reflection;
-using TMPro;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
-using UnityEngine;
 using TownOfUsReworked.Extensions;
 using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -21,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int ConversionCount;
         public List<(PlayerControl, int)> PlayerConversion = new List<(PlayerControl, int)>();
         public float WhisperConversion = CustomGameOptions.InitialWhisperRate;
-
+        public List<PlayerControl> SectMembers => PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(SubFaction.Sect)).ToList();
 
         public Whisperer(PlayerControl player) : base(player)
         {
@@ -29,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = Colors.Whisperer;
             LastWhispered = DateTime.UtcNow;
             RoleType = RoleEnum.Whisperer;
+            SubFaction = SubFaction.Sect;
+            Faction = Faction.Neutral;
+            RoleAlignment = RoleAlignment.NeutralNeo;
         }
 
         public KillButton WhisperButton
@@ -101,7 +101,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             var playerList = new List<(PlayerControl, int)>();
 
             foreach (var player in PlayerControl.AllPlayerControls)
-                playerList.Add((player, 100));
+            {
+                if (Player != player)
+                    playerList.Add((player, 100));
+            }
 
             return playerList;
         }

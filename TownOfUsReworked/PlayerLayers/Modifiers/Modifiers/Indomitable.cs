@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
         public Indomitable(PlayerControl player) : base(player)
         {
             Name = "Indomitable";
-            TaskText = "EEEK";
+            TaskText = "You're unguessable";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Indomitable : Colors.Modifier;
             ModifierType = ModifierEnum.Indomitable;
         }

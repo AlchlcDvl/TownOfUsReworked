@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
         public static void Reset()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Investigator))
-                ((Investigator) role).AllPrints.Clear();
+                ((Investigator)role).AllPrints.Clear();
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]

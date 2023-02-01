@@ -12,19 +12,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Survivor, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Survivor))
                 return false;
 
             var role = Role.GetRole<Survivor>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (!role.ButtonUsable)
-                return false;
-
             if (__instance == role.VestButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (!role.ButtonUsable)
+                    return false;
+
                 if (role.VestTimer() != 0f)
                     return false;
 

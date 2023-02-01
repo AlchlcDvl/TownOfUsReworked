@@ -13,25 +13,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sheriff))
                 return false;
 
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.InterrogateTimer() != 0f && __instance == role.InterrogateButton)
-                return false;
-            
             if (__instance == role.InterrogateButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.InterrogateTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+            
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Interrogate);
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastInterrogated = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);

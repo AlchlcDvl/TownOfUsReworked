@@ -19,39 +19,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
         
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Thief, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Thief))
                 return false;
 
             var role = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
             
             if (__instance == role.StealButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+                
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
                 if (role.KillTimer() != 0f)
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
                         role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
                         Utils.RpcMurderPlayer(role.Player, role.Player);
                     else
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                         writer.Write((byte)ActionsRPC.Steal);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(role.ClosestPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
-                        Steal(role, role.ClosestPlayer);
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                        Steal(role, role.ClosestPlayer);
                     }
                 }
-                else if (interact[0] == true)
+                
+                if (interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);

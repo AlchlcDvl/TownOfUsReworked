@@ -168,6 +168,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
         {
+            if (InfectedPlayers.Contains(source.PlayerId) && InfectedPlayers.Contains(target.PlayerId))
+                return;
+
             new WaitForSeconds(1f);
 
             if (InfectedPlayers.Contains(source.PlayerId))

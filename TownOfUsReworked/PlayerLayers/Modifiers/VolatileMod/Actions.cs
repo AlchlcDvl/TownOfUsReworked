@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extentions;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {

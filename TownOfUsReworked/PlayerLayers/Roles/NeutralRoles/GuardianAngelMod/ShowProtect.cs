@@ -8,14 +8,6 @@ using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
-    public enum ProtectOptions
-    {
-        Self,
-        GA,
-        SelfAndGA,
-        Everyone
-    }
-
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class ShowProtect
     {

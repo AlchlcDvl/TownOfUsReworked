@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
                 return false;
 
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);

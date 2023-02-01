@@ -15,7 +15,7 @@ namespace TownOfUsReworked.Patches
             PlayerControl playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
             currentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
-            if (CustomGameOptions.AppearanceAnimation)
+            if (!CustomGameOptions.AppearanceAnimation)
                 playerControl.CurrentOutfitType = PlayerOutfitType.Default;
         }
         

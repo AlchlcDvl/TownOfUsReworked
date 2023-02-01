@@ -12,25 +12,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
                 return false;
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.InspectTimer() != 0f && __instance == role.InspectButton)
-                return false;
-
             if (__instance == role.InspectButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.InspectTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     role.Inspected.Add(role.ClosestPlayer);
             
@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                     } catch {}
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastInspected = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);

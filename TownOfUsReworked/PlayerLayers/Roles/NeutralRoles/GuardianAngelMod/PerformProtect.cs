@@ -23,14 +23,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (!role.ButtonUsable)
-                return false;
-
             if (__instance == role.ProtectButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (!role.ButtonUsable)
+                    return false;
+
                 if (role.ProtectTimer() != 0)
                     return false;
 

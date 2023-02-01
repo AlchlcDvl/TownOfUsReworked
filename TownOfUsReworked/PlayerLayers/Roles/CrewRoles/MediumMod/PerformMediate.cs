@@ -18,19 +18,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
                 return false;
 
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.MediateTimer() != 0f && __instance == role.MediateButton)
-                return false;
-
             if (__instance == role.MediateButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.MediateTimer() != 0f)
+                    return false;
+
                 role.LastMediated = DateTime.UtcNow;
                 List<DeadPlayer> PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
 
@@ -68,9 +68,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                         writer.Write(dead.PlayerId);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                        if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
-                            return false;
                     }
                 }
 

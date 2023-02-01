@@ -2,11 +2,9 @@ using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Patches;
@@ -118,40 +116,5 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 }
             }
         }
-
-        /*public static void AddCollider(Revealer role)
-        {
-            var player = role.Player;
-            var collider2d = player.gameObject.AddComponent<BoxCollider2D>();
-            collider2d.isTrigger = true;
-            var button = player.gameObject.AddComponent<PassiveButton>();
-            button.OnClick = new Button.ButtonClickedEvent();
-            button.OnMouseOut = new Button.ButtonClickedEvent();
-            button.OnMouseOver = new Button.ButtonClickedEvent();
-
-            button.OnClick.AddListener((Action) (() =>
-            {
-                if (MeetingHud.Instance)
-                    return;
-
-                if (PlayerControl.LocalPlayer.Data.IsDead)
-                    return;
-
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.ImpsOnly && !PlayerControl.LocalPlayer.Data.IsImpostor())
-                    return;
-
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Data.IsImpostor() ||
-                    PlayerControl.LocalPlayer.Is(Faction.Neutral)))
-                    return;
-
-                if (role.TasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
-                {
-                    role.Caught = true;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchRevealer, SendOption.Reliable, -1);
-                    writer.Write(role.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-            }));
-        }*/
     }
 }

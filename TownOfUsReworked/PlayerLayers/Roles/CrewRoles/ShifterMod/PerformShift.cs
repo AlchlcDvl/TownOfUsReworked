@@ -13,25 +13,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shifter, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shifter))
                 return false;
 
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.ShiftTimer() != 0f && __instance == role.ShiftButton)
-                return false;
-
             if (__instance == role.ShiftButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.ShiftTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Shift);
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     Shift(role, role.ClosestPlayer);
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastShifted = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);

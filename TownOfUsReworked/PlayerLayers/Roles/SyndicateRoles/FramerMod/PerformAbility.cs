@@ -12,20 +12,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer))
                 return false;
 
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.FrameButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.FrameTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
@@ -42,7 +42,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             }
             else if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.KillTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);

@@ -4,7 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 
 //Thanks to The Other Roles for this code
-namespace TownOfUsReworked.Extentions
+namespace TownOfUsReworked.Extensions
 {
     //Class to preload all audio/sound effects that are contained in the embedded resources.
     //The effects are made available through the soundEffects Dict / the get and the play methods.

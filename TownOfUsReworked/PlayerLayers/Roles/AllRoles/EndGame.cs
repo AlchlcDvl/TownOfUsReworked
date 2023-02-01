@@ -2,6 +2,8 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -12,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             foreach (var role in Role.GetRoles(Faction.Syndicate))
             {
-                if (!Role.SyndicateWin)
+                if (!Role.SyndicateWin && role.SubFaction == SubFaction.None)
                 {
                     role.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -24,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Arsonist arso in Role.GetRoles(RoleEnum.Arsonist))
             {
-                if (!Role.AllNeutralsWin && !arso.ArsonistWins && !Role.NKWins)
+                if (!arso.ArsonistWins && arso.SubFaction == SubFaction.None)
                 {
                     arso.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -36,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(Faction.Crew))
             {
-                if (!Role.CrewWin)
+                if (!Role.CrewWin && role.SubFaction == SubFaction.None)
                 {
                     role.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -72,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Cannibal cann in Role.GetRoles(RoleEnum.Cannibal))
             {
-                if (!Role.AllNeutralsWin && cann.EatNeed > 0)
+                if (cann.EatNeed > 0 && cann.SubFaction == SubFaction.None)
                 {
                     cann.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -84,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Cryomaniac cryo in Role.GetRoles(RoleEnum.Cryomaniac))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !cryo.CryoWins)
+                if (!cryo.CryoWins && cryo.SubFaction == SubFaction.None)
                 {
                     cryo.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -96,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Glitch gli in Role.GetRoles(RoleEnum.Glitch))
             {
-                if (!Role.AllNeutralsWin && !gli.GlitchWins && !Role.NKWins)
+                if (!gli.GlitchWins && gli.SubFaction == SubFaction.None)
                 {
                     gli.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -108,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Guesser guess in Role.GetRoles(RoleEnum.Guesser))
             {
-                if (!Role.AllNeutralsWin && !guess.GuesserWins)
+                if (!guess.GuesserWins && guess.SubFaction == SubFaction.None)
                 {
                     guess.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -120,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Jester jest in Role.GetRoles(RoleEnum.Jester))
             {
-                if (!jest.VotedOut && !Role.AllNeutralsWin)
+                if (!jest.VotedOut && jest.SubFaction == SubFaction.None)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.JesterLose);
@@ -132,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Juggernaut jugg in Role.GetRoles(RoleEnum.Juggernaut))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !jugg.JuggernautWins)
+                if (!jugg.JuggernautWins && jugg.SubFaction == SubFaction.None)
                 {
                     jugg.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -144,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Murderer murd in Role.GetRoles(RoleEnum.Murderer))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !murd.MurdWins)
+                if (!murd.MurdWins && murd.SubFaction == SubFaction.None)
                 {
                     murd.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -156,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Pestilence pest in Role.GetRoles(RoleEnum.Pestilence))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !pest.PestilenceWins)
+                if (!pest.PestilenceWins && pest.SubFaction == SubFaction.None)
                 {
                     pest.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -168,7 +170,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Phantom phan in Role.GetRoles(RoleEnum.Phantom))
             {
-                if (!Role.AllNeutralsWin && !phan.CompletedTasks)
+                if (!phan.CompletedTasks)
                 {
                     phan.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -180,7 +182,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Plaguebearer pb in Role.GetRoles(RoleEnum.Plaguebearer))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !pb.PlaguebearerWins)
+                if (!pb.PlaguebearerWins && pb.SubFaction == SubFaction.None)
                 {
                     pb.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -216,7 +218,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (SerialKiller sk in Role.GetRoles(RoleEnum.SerialKiller))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !sk.SerialKillerWins)
+                if (!sk.SerialKillerWins && sk.SubFaction == SubFaction.None)
                 {
                     sk.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -231,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (ga.TargetPlayer == null)
                     continue;
                     
-                if (ga.TargetAlive || Role.AllNeutralsWin)
+                if (ga.TargetAlive)
                 {
                     ga.Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -251,7 +253,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
             {
-                if (!exe.TargetVotedOut && !Role.AllNeutralsWin)
+                if (!exe.TargetVotedOut)
                 {
                     exe.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -263,7 +265,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
             {
-                if (surv.Alive || Role.AllNeutralsWin)
+                if (surv.Alive)
                 {
                     surv.Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -295,7 +297,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Troll troll in Role.GetRoles(RoleEnum.Troll))
             {
-                if (!troll.Killed && !Role.AllNeutralsWin)
+                if (!troll.Killed)
                 {
                     troll.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -319,7 +321,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Werewolf ww in Role.GetRoles(RoleEnum.Werewolf))
             {
-                if (!Role.AllNeutralsWin && !Role.NKWins && !ww.WWWins)
+                if (!ww.WWWins)
                 {
                     ww.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -336,6 +338,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     role.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.IntruderLose);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+
+            foreach (var role in Role.GetRoles(Faction.Neutral))
+            {
+                if (!Role.AllNeutralsWin && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                {
+                    role.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsLose);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+
+            foreach (var role in Role.GetRoles(RoleAlignment.NeutralKill))
+            {
+                if (!Role.NKWins && CustomGameOptions.NoSolo == NoSolo.AllNKs)
+                {
+                    role.Loses();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsLose);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

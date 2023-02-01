@@ -13,16 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Glitch, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Glitch))
                 return false;
 
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.KillButton || __instance == role.HackButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
@@ -60,6 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             }
             else if (__instance == role.MimicButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 role.MimicList = null;
                 role.OpenMimicList();
                 return false;

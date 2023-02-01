@@ -1,12 +1,9 @@
-using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using HarmonyLib;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
 using AmongUs.GameOptions;
+using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Lobby.CustomOption
 {
     [HarmonyPatch]
     public static class GameSettings
@@ -25,7 +22,7 @@ namespace TownOfUsReworked.Patches
 
                 foreach (var option in CustomOption.AllOptions)
                 {
-                    if (option.Type == CustomOptionType.Button || option.ID == -1)
+                    if (option.Type == CustomOptionType.Button || option.Type == CustomOptionType.Tab || option.ID == -1)
                         continue;
                     else if (option.Type == CustomOptionType.Header)
                         builder.AppendLine($"\n{option.Name}");
@@ -37,11 +34,6 @@ namespace TownOfUsReworked.Patches
 
                 __result = builder.ToString();
                 __result = $"<size=1.25>{__result}</size>";
-            }
-
-            public static IEnumerable<MethodBase> TargetMethods()
-            {
-                return typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
             }
         }
 

@@ -32,24 +32,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             var coronerReport = $"{br.Body.Data.PlayerName}'s Report:\n";
             var killerRole = Role.GetRole(br.Killer);
             var bodyRole = Role.GetRole(br.Body);
+            var selfFlag = br.Body == br.Killer;
 
-            if (br.Body == br.Killer)
+            if (selfFlag)
                 coronerReport += "There are evident marks of self-harm!\n";
             
             coronerReport += $"They were a {bodyRole.Name}!\n";
 
-            if (CustomGameOptions.CoronerReportRole)
-                coronerReport += $"They were killed by a {killerRole.Name}!\n";
-            else
+            if (!selfFlag)
             {
-                if (br.Killer.Is(Faction.Crew))
-                    coronerReport += "The killer is from the Crew!\n";
-                else if (br.Killer.Is(Faction.Neutral))
-                    coronerReport += "The killer is a Neutral!\n";
-                else if (br.Killer.Is(Faction.Intruder))
-                    coronerReport += "The killer is an Intruder!\n";
-                else if (br.Killer.Is(Faction.Syndicate))
-                    coronerReport += "The killer is from the Syndicate!\n";
+                if (CustomGameOptions.CoronerReportRole)
+                    coronerReport += $"They were killed by a {killerRole.Name}!\n";
+                else
+                {
+                    if (br.Killer.Is(Faction.Crew))
+                        coronerReport += "The killer is from the Crew!\n";
+                    else if (br.Killer.Is(Faction.Neutral))
+                        coronerReport += "The killer is a Neutral!\n";
+                    else if (br.Killer.Is(Faction.Intruder))
+                        coronerReport += "The killer is an Intruder!\n";
+                    else if (br.Killer.Is(Faction.Syndicate))
+                        coronerReport += "The killer is from the Syndicate!\n";
+                }
             }
 
             coronerReport += $"They died approximately {Math.Round(br.KillAge / 1000)}s ago!\n";
@@ -93,9 +97,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                 {34, "lighter"},// rainbow
             };
 
-            coronerReport += $"The killer is a {colors[br.Killer.CurrentOutfit.ColorId]} color!\n";
+            if (!selfFlag)
+                coronerReport += $"The killer is a {colors[br.Killer.CurrentOutfit.ColorId]} color!\n";
             
-            if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000)) 
+            if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000) && !selfFlag) 
                 coronerReport += $"They were killed by {br.Killer.Data.PlayerName}!";
                 
             return coronerReport;

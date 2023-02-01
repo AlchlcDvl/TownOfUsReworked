@@ -12,22 +12,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DampyrMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dampyr, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dampyr))
                 return false;
 
             var role = Role.GetRole<Dampyr>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.KillTimer() != 0f && __instance == role.KillButton)
-                return false;
-
             if (__instance == role.KillButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.KillTimer() != 0f)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true, false, Role.GetRoleValue(RoleEnum.VampireHunter));
 
                 if (interact[3] == true && interact[0] == true)

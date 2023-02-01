@@ -17,25 +17,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return false;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
-            if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
-            if (role.TrackerTimer() != 0f && __instance == role.TrackButton)
-                return false;
-
             if (__instance == role.TrackButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.TrackerTimer() != 0f)
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     var target = role.ClosestPlayer;
                     var gameObj = new GameObject();
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     } catch {}
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastTracked = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);

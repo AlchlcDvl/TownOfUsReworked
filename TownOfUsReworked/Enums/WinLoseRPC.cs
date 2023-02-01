@@ -48,6 +48,7 @@ namespace TownOfUsReworked.Enums
         SyndicateWin,
         SyndicateLose,
         AllNeutralsWin,
+        AllNeutralsLose,
 
         UndeadWin,
         UndeadLose,

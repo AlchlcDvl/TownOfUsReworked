@@ -15,21 +15,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Whisperer, true))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Whisperer))
                 return false;
 
             var role = Role.GetRole<Whisperer>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.WhisperButton)
             {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
                 if (role.WhisperTimer() != 0)
                     return false;
 
                 Vector2 truePosition = role.Player.GetTruePosition();
                 var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
+                closestPlayers.Remove(role.Player);
 
                 if (role.PlayerConversion.Count == 0)
                     role.PlayerConversion = role.GetPlayers();
@@ -55,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 return false;
             }
 
-            return true;
+            return false;
         }
 
         public static void CheckConversion(Whisperer role)
@@ -67,16 +68,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 if (playerConversion.Item2 <= 0)
                 {
                     role.ConversionCount += 1;
-                    role.WhisperConversion -= CustomGameOptions.WhisperRateDecrease;
 
-                    if (role.WhisperConversion < 5)
-                        role.WhisperConversion = 5;
+                    if (CustomGameOptions.WhisperRateDecreases)
+                        role.WhisperConversion -= CustomGameOptions.WhisperRateDecrease;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                    writer.Write((byte)ActionsRPC.WhisperConvert);
-                    writer.Write(playerConversion.Item1.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    removals.Add(playerConversion);
+                    if (role.WhisperConversion < 2.5f)
+                        role.WhisperConversion = 2.5f;
+
+                    if (playerConversion.Item1.Is(SubFaction.None))
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.WhisperConvert);
+                        writer.Write(playerConversion.Item1.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        removals.Add(playerConversion);
+                        var targetRole = Role.GetRole(playerConversion.Item1);
+                        targetRole.SubFaction = SubFaction.Sect;
+                        targetRole.IsPersuaded = true;
+                    }
+                    else if (!playerConversion.Item1.Is(SubFaction.Sect))
+                        Utils.RpcMurderPlayer(role.Player, playerConversion.Item1);
                 }
             }
             
