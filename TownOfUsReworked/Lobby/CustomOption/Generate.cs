@@ -79,6 +79,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption SurvivorOn;
         public static CustomNumberOption ThiefOn;
 
+        //NP Role Spawn
+        public static CustomHeaderOption NeutralProselyteRoles;
+        public static CustomNumberOption PhantomOn;
+
         //NN Role Spawn
         public static CustomHeaderOption NeutralNeophyteRoles;
         public static CustomNumberOption DraculaOn;
@@ -93,7 +97,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption JesterOn;
         public static CustomNumberOption CannibalOn;
         public static CustomNumberOption TrollOn;
-        public static CustomNumberOption PhantomOn;
         public static CustomNumberOption GuesserOn;
 
         //NK Role Spawn
@@ -119,7 +122,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption IntruderDeceptionRoles;
         public static CustomNumberOption MorphlingOn;
         public static CustomNumberOption DisguiserOn;
-        public static CustomNumberOption PoisonerOn;
         public static CustomNumberOption WraithOn;
 
         //IK Role Spawn
@@ -143,11 +145,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption WarperOn;
         public static CustomNumberOption RebelOn;
         public static CustomNumberOption ConcealerOn;
+        public static CustomNumberOption BeamerOn;
 
         //SD Role Spawn
         public static CustomHeaderOption SyndicateDisruptionRoles;
         public static CustomNumberOption FramerOn;
         public static CustomNumberOption ShapeshifterOn;
+        public static CustomNumberOption PoisonerOn;
+        public static CustomNumberOption DrunkardOn;
 
         //SyK Role Spawn
         public static CustomHeaderOption SyndicateKillingRoles;
@@ -331,7 +336,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniqueVampireHunter;
         public static CustomNumberOption VampireHunterCount;
         public static CustomNumberOption StakeCooldown;
-        public static CustomTabOption VampireHunterOptions;
+        //public static CustomTabOption VampireHunterOptions;
         
         //CK Options
         public static CustomHeaderOption CrewKillingSettings;
@@ -1363,8 +1368,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             AgentOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>", 0, 0, 100, 10, PercentFormat);
             CoronerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
             DetectiveOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
-            InvestigatorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color>", 0, 0, 100, 10, PercentFormat);
             InspectorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
+            InvestigatorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color>", 0, 0, 100, 10, PercentFormat);
             MediumOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>", 0, 0, 100, 10, PercentFormat);
             OperativeOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", 0, 0, 100, 10, PercentFormat);
             SeerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#71368AFF>Seer</color>", 0, 0, 100, 10, PercentFormat);
@@ -1408,7 +1413,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ExecutionerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0, 0, 100, 10, PercentFormat);
             GuesserOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>", 0, 0, 100, 10, PercentFormat);
             JesterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0, 0, 100, 10, PercentFormat);
-            PhantomOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
             TrollOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralKillingRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
@@ -1426,6 +1430,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JackalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>", 0, 0, 100, 10, PercentFormat);
             NecromancerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color>", 0, 0, 100, 10, PercentFormat);
             WhispererOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>", 0, 0, 100, 10, PercentFormat);
+
+            NeutralNeophyteRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> <color=#FFD700FF>Roles</color>");
+            PhantomOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderConcealingRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>");
             BlackmailerOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color>", 0, 0, 100, 10, PercentFormat);
@@ -1453,6 +1460,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ImpostorOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateDisruptionRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>");
+            DrunkardOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>", 0, 0, 100, 10, PercentFormat);
             FramerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>", 0, 0, 100, 10, PercentFormat);
             PoisonerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>", 0, 0, 100, 10, PercentFormat);
             ShapeshifterOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>", 0, 0, 100, 10, PercentFormat);
@@ -1462,6 +1470,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             GorgonOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateSupportRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
+            BeamerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>", 0, 0, 100, 10, PercentFormat);
             ConcealerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0, 0, 100, 10, PercentFormat);
             RebelOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>", 0, 0, 100, 10, PercentFormat);
             WarperOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>", 0, 0, 100, 10, PercentFormat);

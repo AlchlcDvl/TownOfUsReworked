@@ -3,16 +3,17 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
+using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Wraith);
+            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Grenadier);
 
             if (!flag)
                 return true;
@@ -23,9 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var role = Role.GetRole<Wraith>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Grenadier>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.InvisButton)
+            if (__instance == role.FlashButton)
             {
                 if (__instance.isCoolingDown)
                     return false;
@@ -33,18 +34,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.InvisTimer() != 0)
+                var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+                var specials = system.specials.ToArray();
+                var dummyActive = system.dummy.IsActive;
+                var sabActive = specials.Any(s => s.IsActive);
+
+                if (sabActive)
                     return false;
-                
+
+                if (role.FlashTimer() != 0)
+                    return false;
+
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                writer.Write((byte)ActionsRPC.Invis);
-                var position = PlayerControl.LocalPlayer.transform.position;
+                writer.Write((byte)ActionsRPC.FlashGrenade);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                role.TimeRemaining = CustomGameOptions.InvisDuration;
-                role.Invis();
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.InvisSound, false, 0.4f);
+                role.TimeRemaining = CustomGameOptions.GrenadeDuration;
+                
+                try
+                {
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 1f);
+                } catch {}
 
+                role.Flash();
                 return false;
             }
 

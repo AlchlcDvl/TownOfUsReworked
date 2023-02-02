@@ -43,6 +43,7 @@ using PerformDeclare = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.Godfath
 using PerformSidekick = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformAbility;
 using PerformShift = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShift;
 using PerformConvert = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvert;
+using Mine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod.PerformAbility;
 
 namespace TownOfUsReworked.Patches
 {
@@ -2331,7 +2332,7 @@ namespace TownOfUsReworked.Patches
                                 var minerRole = Role.GetRole<Miner>(miner);
                                 var pos = reader.ReadVector2();
                                 var zAxis = reader.ReadSingle();
-                                PlayerLayers.Roles.IntruderRoles.MinerMod.PerformKill.SpawnVent(ventId, minerRole, pos, zAxis);
+                                Mine.SpawnVent(ventId, minerRole, pos, zAxis);
                                 break;
 
                             case ActionsRPC.TimeFreeze:

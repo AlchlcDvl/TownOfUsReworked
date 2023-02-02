@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
-
+using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
@@ -16,16 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Disguiser))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Disguiser))
                 return;
 
             var role = Role.GetRole<Disguiser>(PlayerControl.LocalPlayer);
@@ -35,36 +26,68 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 role.DisguiseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.DisguiseButton.graphic.enabled = true;
                 role.DisguiseButton.graphic.sprite = MeasureSprite;
-                role.DisguiseButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.DisguiseButton.gameObject.SetActive(false);
 
+                if (role.DisguiseButton.graphic.sprite != MeasureSprite && role.DisguiseButton.graphic.sprite != DisguiseSprite)
+                    role.DisguiseButton.graphic.sprite = MeasureSprite;
             }
 
-            role.DisguiseButton.GetComponent<AspectPosition>().Update();
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
 
-            if (role.DisguiseButton.graphic.sprite != MeasureSprite && role.DisguiseButton.graphic.sprite != DisguiseSprite)
-                role.DisguiseButton.graphic.sprite = MeasureSprite;
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
 
-            role.DisguiseButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            if (CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders)
+                targets = targets.Where(x => x.Is(Faction.Intruder)).ToList();
+            else if (CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders)
+                targets = targets.Where(x => !x.Is(Faction.Intruder)).ToList();
+
+            if (role.IsRecruit)
+                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
+
+            role.DisguiseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, targets);
 
             if (role.DisguiseButton.graphic.sprite == MeasureSprite)
-            {
                 role.DisguiseButton.SetCoolDown(0f, 1f);
-                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton);
-            }
             else
             {
                 if (role.Disguised)
-                {
                     role.DisguiseButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.DisguiseDuration);
-                    return;
-                }
                 else
                     role.DisguiseButton.SetCoolDown(role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown);
+            }
 
-                Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton);
-                role.DisguiseButton.graphic.color = Palette.EnabledColor;
-                role.DisguiseButton.graphic.material.SetFloat("_Desat", 0f);
+            var renderer = role.DisguiseButton.graphic;
+            var renderer2 = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.DisguiseButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
             }
         }
     }

@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             if (role.CamouflageButton == null)
             {
                 role.CamouflageButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.CamouflageButton.graphic.sprite = Camouflage;
                 role.CamouflageButton.graphic.enabled = true;
-                role.CamouflageButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.CamouflageButton.gameObject.SetActive(false);
             }
 
@@ -32,6 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
             }
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
@@ -41,8 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
-            role.CamouflageButton.graphic.sprite = Camouflage;
-            role.CamouflageButton.GetComponent<AspectPosition>().Update();
             role.CamouflageButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
@@ -51,13 +50,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 role.CamouflageButton.SetCoolDown(role.CamouflageTimer(), CustomGameOptions.CamouflagerCd);
 
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
-                
-            role.CamouflageButton.graphic.color = Palette.EnabledColor;
-            role.CamouflageButton.graphic.material.SetFloat("_Desat", 0f);
-
-            var renderer = role.KillButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            var renderer2 = role.CamouflageButton.graphic;
+            var renderer = role.KillButton.graphic;
+
+            if (!role.Camouflaged && !role.CamouflageButton.isCoolingDown)
+            {
+                role.CamouflageButton.graphic.color = Palette.EnabledColor;
+                role.CamouflageButton.graphic.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

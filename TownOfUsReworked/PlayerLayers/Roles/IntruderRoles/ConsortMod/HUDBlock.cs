@@ -22,15 +22,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
             if (role.BlockButton == null)
             {
-                role.BlockButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.BlockButton = Object.Instantiate(__instance.KillButton, __instance.UseButton.transform.parent);
                 role.BlockButton.graphic.enabled = true;
-                role.BlockButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.BlockButton.graphic.sprite = Roleblock;
+                role.BlockButton.gameObject.SetActive(false);
             }
 
             if (role.KillButton == null)
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
             }
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
@@ -41,7 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.BlockButton.graphic.sprite = Roleblock;
-            role.BlockButton.GetComponent<AspectPosition>().Update();
             role.BlockButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
@@ -55,17 +56,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             var renderer = role.BlockButton.graphic;
             var renderer2 = role.KillButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.BlockButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
-                renderer2.color = Palette.EnabledColor;
-                renderer2.material.SetFloat("_Desat", 0f);
             }
             else
             {
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
+            }
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
                 renderer2.color = Palette.DisabledClear;
                 renderer2.material.SetFloat("_Desat", 1f);
             }

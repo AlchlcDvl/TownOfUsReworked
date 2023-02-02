@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
             {
-                Disguiser disguiser = (Disguiser) role;
+                Disguiser disguiser = (Disguiser)role;
                 disguiser.DisguiseTick();
             }
         }

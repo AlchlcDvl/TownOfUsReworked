@@ -1,11 +1,10 @@
-﻿/*using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
@@ -16,47 +15,63 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consigliere))
                 return;
 
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
-            /*if (role.InvestigateButton == null)
+            if (role.InvestigateButton == null)
             {
                 role.InvestigateButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.InvestigateButton.graphic.enabled = true;
-                role.InvestigateButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.InvestigateButton.graphic.sprite = RevealSprite;
                 role.InvestigateButton.gameObject.SetActive(false);
-            }*/
-
-            /*if (role.InvestigateButton2 == null)
-            {
-                role.InvestigateButton2 = new CustomAbilityButton();
-                role.InvestigateButton2.graphic.enabled = true;
-                role.InvestigateButton2.graphic.sprite = RevealSprite;
-                role.InvestigateButton2.position = TownOfUsReworked.BelowVentPosition;
-                role.InvestigateButton2.gameObject.SetActive(false);
             }
 
-            /*role.InvestigateButton.GetComponent<AspectPosition>().Update();
-            role.InvestigateButton.graphic.sprite = RevealSprite;
-            role.InvestigateButton.gameObject.SetActive(false);*/
-            /*role.InvestigateButton2.GetComponent<AspectPosition>().Update();
-            role.InvestigateButton2.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            //role.InvestigateButton.gameObject.SetActive(!MeetingHud.Instance && !PlayerControl.LocalPlayer.Data.IsDead && !LobbyBehaviour.Instance);
-            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.InvestigateButton2, PlayerControl.LocalPlayer, notInvestigated);
-            //role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
-            role.InvestigateButton2.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+
+            if (role.IsRecruit)
+                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
+
+            role.InvestigateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId) || (x.Is(Faction.Intruder) &&
+                !CustomGameOptions.FactionSeeRoles)).ToList();
+            role.InvestigateButton.SetCoolDown(role.ConsigliereTimer(), CustomGameOptions.ConsigCd);
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
+
+            var renderer = role.InvestigateButton.graphic;
+            var renderer2 = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.InvestigateButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
         }
     }
-}*/
+}

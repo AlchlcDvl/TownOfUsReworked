@@ -13,7 +13,7 @@ using AmongUs.GameOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKillButton
+    public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {

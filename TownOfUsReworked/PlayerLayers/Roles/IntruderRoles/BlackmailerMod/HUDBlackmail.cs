@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             {
                 role.BlackmailButton = Object.Instantiate(__instance.KillButton, __instance.UseButton.transform.parent);
                 role.BlackmailButton.graphic.enabled = true;
-                role.BlackmailButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.BlackmailButton.graphic.sprite = Blackmail;
                 role.BlackmailButton.gameObject.SetActive(false);
             }
 
@@ -32,6 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
             }
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
@@ -39,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             if (role.IsRecruit)
                 notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
 
-            role.BlackmailButton.GetComponent<AspectPosition>().Update();
-            role.BlackmailButton.graphic.sprite = Blackmail;
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);
             role.BlackmailButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
@@ -69,6 +68,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                     imp.nameText().color = Color.clear;
                 else if (imp.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && imp.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && imp.nameText().color == Color.clear)
                     imp.nameText().color = role.Color;
+            }
+
+            var renderer = role.BlackmailButton.graphic;
+            var renderer2 = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.BlackmailButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
             }
         }
     }

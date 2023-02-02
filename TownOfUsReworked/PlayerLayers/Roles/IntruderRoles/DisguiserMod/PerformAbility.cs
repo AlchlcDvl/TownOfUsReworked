@@ -7,17 +7,17 @@ using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformAbility
     {
-        public static Sprite SampleSprite => TownOfUsReworked.SampleSprite;
-        public static Sprite MorphSprite => TownOfUsReworked.MorphSprite;
+        public static Sprite MeasureSprite => TownOfUsReworked.MeasureSprite;
+        public static Sprite DisguiseSprite => TownOfUsReworked.DisguiseSprite;
 
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Morphling);
+            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Disguiser);
 
             if (!flag)
                 return true;
@@ -28,26 +28,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return false;
 
-            var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Disguiser>(PlayerControl.LocalPlayer);
             var target = role.ClosestPlayer;
 
-            if (__instance == role.MorphButton)
+            if (__instance == role.DisguiseButton)
             {
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.MorphButton.graphic.sprite == SampleSprite)
+                if (role.DisguiseButton.graphic.sprite == MeasureSprite)
                 {
                     if (target == null)
                         return false;
 
-                    role.SampledPlayer = target;
-                    role.MorphButton.graphic.sprite = MorphSprite;
-                    role.MorphButton.SetTarget(null);
+                    role.MeasuredPlayer = target;
+                    role.DisguiseButton.graphic.sprite = DisguiseSprite;
+                    role.DisguiseButton.SetTarget(null);
                     DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
 
-                    if (role.MorphTimer() < 5f)
-                        role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
+                    if (role.DisguiseTimer() < 5f)
+                        role.LastDisguised = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.DisguiseCooldown);
                         
                     try
                     {
@@ -58,18 +58,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                 {
                     if (__instance.isCoolingDown)
                         return false;
-                        
-                    if (role.MorphTimer() != 0)
+
+                    if (role.DisguiseTimer() != 0)
                         return false;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                    writer.Write((byte)ActionsRPC.Morph);
+                    writer.Write((byte)ActionsRPC.Disguise);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.SampledPlayer.PlayerId);
+                    writer.Write(role.MeasuredPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.TimeRemaining = CustomGameOptions.MorphlingDuration;
-                    role.MorphedPlayer = role.SampledPlayer;
-                    Utils.Morph(role.Player, role.SampledPlayer);
+                    role.TimeRemaining = CustomGameOptions.DisguiseDuration;
+                    role.DisguisedPlayer = role.MeasuredPlayer;
+                    Utils.Morph(role.Player, role.MeasuredPlayer);
                     
                     try
                     {

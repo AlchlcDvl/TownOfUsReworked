@@ -11,7 +11,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformAbility
     {
         public static Sprite MarkSprite => TownOfUsReworked.MarkSprite;
         public static Sprite TeleportSprite => TownOfUsReworked.TeleportSprite;

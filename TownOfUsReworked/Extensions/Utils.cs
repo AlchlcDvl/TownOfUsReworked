@@ -2124,18 +2124,17 @@ namespace TownOfUsReworked.Extensions
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
                 return false;
 
-            bool mainflag = false;
-
-            if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone ||
+            if (player == null || playerInfo == null || playerInfo.IsDead || playerInfo.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone ||
                 LobbyBehaviour.Instance || MeetingHud.Instance)
                 return false;
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
                 return true;
 
+            bool mainflag = false;
             var playerRole = Role.GetRole(player);
                 
             if (playerRole == null)
-                mainflag = player.Data.IsImpostor();
+                mainflag = playerInfo.IsImpostor();
             else if (player.IsRecruit())
                 mainflag = CustomGameOptions.RecruitVent;
             else if (player.Is(Faction.Syndicate))
@@ -2217,6 +2216,9 @@ namespace TownOfUsReworked.Extensions
         
         public static List<bool> Interact(PlayerControl player, PlayerControl target, Role cautious = null, bool toKill = false, bool toConvert = false, Role cautious2 = null)
         {
+            if (!CanInteract(player))
+                return null;
+
             bool fullCooldownReset = false;
             bool gaReset = false;
             bool survReset = false;
@@ -2477,7 +2479,7 @@ namespace TownOfUsReworked.Extensions
         public static bool IsBlockImmune(PlayerControl player)
         {
             var role = Role.GetRole(player);
-            return role.RoleBlockImmune;
+            return (bool)role?.RoleBlockImmune;
         }
 
         public static void Spread(PlayerControl interacter, PlayerControl target)
@@ -2499,6 +2501,16 @@ namespace TownOfUsReworked.Extensions
                 foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
                     ((Cryomaniac)cryo).RpcSpreadDouse(target, interacter);
             }
+        }
+
+        public static bool CanInteract(PlayerControl player)
+        {
+            var flag = player != null && !MeetingHud.Instance && (player.Is(RoleAlignment.NeutralKill) || player.Is(RoleEnum.Thief) || player.Is(Faction.Intruder) ||
+                player.Is(RoleEnum.Sheriff) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Cannibal) || player.Is(RoleEnum.Detective) ||
+                player.Is(RoleEnum.Dracula) || player.Is(RoleEnum.Dampyr) || player.Is(RoleEnum.VampireHunter) || player.Is(RoleEnum.Medic) || player.Is(RoleEnum.Shifter) ||
+                player.Is(RoleEnum.Tracker) || player.Is(RoleEnum.Vigilante) || player.Is(Faction.Syndicate) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Escort) ||
+                player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jackal) || player.Is(RoleEnum.Mystic) || player.Is(RoleEnum.Seer) || player.Is(RoleEnum.Jester));
+            return flag;
         }
     }
 }

@@ -1,33 +1,24 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
 {
     //Vent and kill shit
+    //Yes thank you Discussions - AD
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ToggleHighlight))]
     class ToggleHighlightPatch
     {
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] bool active, [HarmonyArgument(1)] RoleTeamTypes team)
         {
             var player = PlayerControl.LocalPlayer;
-            bool isActive = player != null  && !MeetingHud.Instance && (player.Is(RoleAlignment.NeutralKill) || player.Is(RoleEnum.Thief) ||
-                player.Is(Faction.Intruder) || player.Is(RoleEnum.Sheriff) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) ||
-                player.Is(RoleEnum.Cannibal) || player.Is(RoleEnum.Detective) || player.Is(RoleEnum.Dracula) || player.Is(RoleEnum.Dampyr) ||
-                player.Is(RoleEnum.VampireHunter) || player.Is(RoleEnum.Medic) || player.Is(RoleEnum.Shifter) || player.Is(RoleEnum.Tracker) ||
-                player.Is(RoleEnum.Vigilante) || player.Is(Faction.Syndicate) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Escort) ||
-                player.Is(RoleEnum.Troll));
+            bool isActive = Utils.CanInteract(player);
 
             if (isActive)
             {
                 var role = Role.GetRole(player); 
-                var color = new Color32(255, 255, 255, 255);
-
-                if (role != null)
-                    color = role.Color;
-
+                var color = role != null ? role.Color : new Color32(255, 255, 255, 255);
                 ((Renderer)__instance.cosmetics.currentBodySprite.BodySprite).material.SetColor("_OutlineColor", color);
             }
         }
@@ -44,11 +35,7 @@ namespace TownOfUsReworked.Patches
             if (active)
             {
                 var role = Role.GetRole(player); 
-                var color = new Color32(255, 255, 255, 255);
-
-                if (role != null)
-                    color = role.Color;
-                    
+                var color = role != null ? role.Color : new Color32(255, 255, 255, 255);
                 ((Renderer)__instance.myRend).material.SetColor("_OutlineColor", color);
                 ((Renderer)__instance.myRend).material.SetColor("_AddColor", mainTarget ? color : Color.clear);
             }

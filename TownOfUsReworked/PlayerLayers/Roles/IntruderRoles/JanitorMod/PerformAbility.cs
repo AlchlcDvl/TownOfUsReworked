@@ -11,7 +11,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKillButton
+    public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {
