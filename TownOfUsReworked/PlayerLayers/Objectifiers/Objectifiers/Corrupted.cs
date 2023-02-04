@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using System;
 using TownOfUsReworked.Extensions;
 using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
@@ -29,8 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             set
             {
                 _killButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                var role = Role.GetRole(Player);
+                role?.AddToAbilityButtons(value, role);
             }
         }
 

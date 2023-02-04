@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _vestButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

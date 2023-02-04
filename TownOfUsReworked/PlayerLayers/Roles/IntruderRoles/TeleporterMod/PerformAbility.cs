@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                     if (__instance.isCoolingDown)
                         return false;
 
-                    if (role.TeleportTimer() != 0)
+                    if (role.TeleportTimer() > 0f)
                         return false;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);

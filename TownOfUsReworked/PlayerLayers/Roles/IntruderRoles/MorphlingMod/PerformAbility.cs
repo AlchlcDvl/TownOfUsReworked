@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                     if (__instance.isCoolingDown)
                         return false;
                         
-                    if (role.MorphTimer() != 0)
+                    if (role.MorphTimer() > 0f)
                         return false;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);

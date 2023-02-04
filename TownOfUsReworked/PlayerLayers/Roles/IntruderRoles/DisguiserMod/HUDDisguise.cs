@@ -68,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             var renderer = role.DisguiseButton.graphic;
             var renderer2 = role.KillButton.graphic;
             
-            if (role.ClosestPlayer != null && !role.DisguiseButton.isCoolingDown)
+            if (role.ClosestPlayer != null && !role.DisguiseButton.isCoolingDown && !role.Disguised)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

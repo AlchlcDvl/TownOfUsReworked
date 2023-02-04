@@ -3,7 +3,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
-using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
@@ -47,7 +46,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                     continue;
 
                 var role = Role.GetRole(player);
-                player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
                 player.nameText().color = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? role.Color : role.FactionColor;
                 player.nameText().text = NameText(player, CustomGameOptions.ConsigInfo == ConsigInfo.Role ? $"\n ({role.Name})" : $"\n ({role.FactionName})", true);
             }

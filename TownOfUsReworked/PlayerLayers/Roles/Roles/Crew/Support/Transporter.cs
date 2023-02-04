@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _transportButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _igniteButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _douseButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

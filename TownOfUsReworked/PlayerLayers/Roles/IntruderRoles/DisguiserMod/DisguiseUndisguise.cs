@@ -11,12 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
             {
-                var disguiser = (Disguiser) role;
+                var disguiser = (Disguiser)role;
 
                 if (disguiser.Disguised)
                     disguiser.Disguise();
-                else if (disguiser.DisguisedPlayer)
-                    disguiser.Undisguise();
+                else if (disguiser.Enabled)
+                    disguiser.UnDisguise();
             }
         }
     }

@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
         public static Sprite Arrow => TownOfUsReworked.Arrow;
         private KillButton _mediateButton;
-        private KillButton _seanceButton;
         
         public Medium(PlayerControl player) : base(player)
         {
@@ -46,17 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _mediateButton = value;
-                AddToExtraButtons(value);
-            }
-        }
-
-        public KillButton SeanceButton
-        {
-            get => _seanceButton;
-            set
-            {
-                _seanceButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

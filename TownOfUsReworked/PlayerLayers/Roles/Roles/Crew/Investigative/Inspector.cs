@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _inspectButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

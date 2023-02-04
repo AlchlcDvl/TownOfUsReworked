@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.InspectTimer() != 0f)
+                if (role.InspectTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

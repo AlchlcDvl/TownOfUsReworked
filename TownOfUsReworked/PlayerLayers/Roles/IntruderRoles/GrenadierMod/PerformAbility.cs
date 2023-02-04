@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                 if (sabActive)
                     return false;
 
-                if (role.FlashTimer() != 0)
+                if (role.FlashTimer() > 0f)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);

@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _maulButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

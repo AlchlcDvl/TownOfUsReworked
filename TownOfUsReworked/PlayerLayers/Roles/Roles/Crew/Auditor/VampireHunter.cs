@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _stakeButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 if (!role.CanPlace)
                     return false;
 
-                if (role.MineTimer() != 0)
+                if (role.MineTimer() > 0f)
                     return false;
 
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)

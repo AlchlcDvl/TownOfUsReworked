@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             if (__instance == role.FixButton)
             {
-                if (role.UsedThisRound)
+                if (!role.ButtonUsable)
                     return false;
 
                 if (!__instance.isActiveAndEnabled)
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                 if (!sabActive || dummyActive)
                     return false;
 
-                role.UsedThisRound = true;
+                role.UsesLeft--;
 
                 var camouflager = Role.GetRoleValue(RoleEnum.Camouflager);
                 var camo = (Camouflager)camouflager;

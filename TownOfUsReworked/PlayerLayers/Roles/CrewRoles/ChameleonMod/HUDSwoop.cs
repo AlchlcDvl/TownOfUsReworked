@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
@@ -19,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
                 return;
 
             var role = Role.GetRole<Chameleon>(PlayerControl.LocalPlayer);
-            var swoopButton = role.SwoopButton;
 
             if (role.SwoopButton == null)
             {

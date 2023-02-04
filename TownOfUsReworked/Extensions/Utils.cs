@@ -1991,11 +1991,11 @@ namespace TownOfUsReworked.Extensions
 
                     if (role != null)
                     {
-                        if (role.ExtraButtons.Count > 0)
+                        if (role.AbilityButtons.Count > 0)
                         {
                             var j = 0;
 
-                            for (var i = 3; i < role.ExtraButtons.Count; i++)
+                            for (var i = 3; i < role.AbilityButtons.Count + 3; i++)
                             {
                                 if (lockImg[i] == null)
                                 {
@@ -2004,38 +2004,15 @@ namespace TownOfUsReworked.Extensions
                                     lockImgR.sprite = TownOfUsReworked.Lock;
                                 }
 
-                                var button = role.ExtraButtons[j].Value;
-
+                                var button = role.AbilityButtons[j];
                                 lockImg[i].transform.position = new Vector3(button.transform.position.x, button.transform.position.y, -50f);
                                 lockImg[i].layer = 5;
                                 button.enabled = false;
                                 button.graphic.color = Palette.DisabledClear;
                                 button.graphic.material.SetFloat("_Desat", 1f);
-
                                 j++;
                                 newNum = i;
                             }
-                        }
-                    }
-
-                    var obj = Objectifier.GetObjectifier(blockPlayer);
-
-                    if (obj != null)
-                    {
-                        if (obj.ExtraButtons.Count > 0)
-                        {
-                            if (lockImg[newNum] == null)
-                            {
-                                lockImg[newNum] = new GameObject();
-                                var lockImgR = lockImg[newNum].AddComponent<SpriteRenderer>();
-                                lockImgR.sprite = TownOfUsReworked.Lock;
-                            }
-
-                            lockImg[newNum].transform.position = new Vector3(obj.ExtraButtons[0].transform.position.x, obj.ExtraButtons[0].transform.position.y, -50f);
-                            lockImg[newNum].layer = 5;
-                            obj.ExtraButtons[0].enabled = false;
-                            obj.ExtraButtons[0].graphic.color = Palette.DisabledClear;
-                            obj.ExtraButtons[0].graphic.material.SetFloat("_Desat", 1f);
                         }
                     }
 
@@ -2056,7 +2033,8 @@ namespace TownOfUsReworked.Extensions
                 
                 if (MeetingHud.Instance || (totalHacktime > CustomGameOptions.HackDuration && blocker.RoleType == RoleEnum.Glitch) || (totalHacktime >
                     CustomGameOptions.EscRoleblockDuration && blocker.RoleType == RoleEnum.Escort) || (totalHacktime > CustomGameOptions.ConsRoleblockDuration &&
-                    blocker.RoleType == RoleEnum.Consort) || blockPlayer == null || blockPlayer.Data.IsDead)
+                    blocker.RoleType == RoleEnum.Consort) || blockPlayer == null || blockPlayer.Data.IsDead || blocker.Player.Data.IsDead || blockPlayer.Data.Disconnected ||
+                    blocker.Player.Data.Disconnected || LobbyBehaviour.Instance)
                 {
                     foreach (var obj in lockImg)
                     {
@@ -2085,28 +2063,18 @@ namespace TownOfUsReworked.Extensions
 
                         if (role != null)
                         {
-                            if (role.ExtraButtons.Count > 0)
+                            if (role.AbilityButtons.Count > 0)
                             {
-                                for (var i = 0; i < role.ExtraButtons.Count; i++)
-                                {
-                                    var button = role.ExtraButtons[i].Value;
+                                var j = 0;
 
+                                for (var i = 0; i < role.AbilityButtons.Count; i++)
+                                {
+                                    var button = role.AbilityButtons[j];
                                     button.enabled = true;
                                     button.graphic.color = Palette.EnabledColor;
                                     button.graphic.material.SetFloat("_Desat", 0f);
+                                    j++;
                                 }
-                            }
-                        }
-
-                        var obj = Objectifier.GetObjectifier(blockPlayer);
-
-                        if (obj != null)
-                        {
-                            if (obj.ExtraButtons.Count > 0)
-                            {
-                                obj.ExtraButtons[0].enabled = true;
-                                obj.ExtraButtons[0].graphic.color = Palette.EnabledColor;
-                                obj.ExtraButtons[0].graphic.material.SetFloat("_Desat", 0f);
                             }
                         }
                     }
@@ -2124,8 +2092,8 @@ namespace TownOfUsReworked.Extensions
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
                 return false;
 
-            if (player == null || playerInfo == null || playerInfo.IsDead || playerInfo.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone ||
-                LobbyBehaviour.Instance || MeetingHud.Instance)
+            if (player == null || playerInfo == null || playerInfo.IsDead || playerInfo.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone || LobbyBehaviour.Instance
+                || MeetingHud.Instance || player.inMovingPlat)
                 return false;
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone)
                 return true;
@@ -2139,14 +2107,13 @@ namespace TownOfUsReworked.Extensions
                 mainflag = CustomGameOptions.RecruitVent;
             else if (player.Is(Faction.Syndicate))
                 mainflag = (Role.SyndicateHasChaosDrive && CustomGameOptions.SyndicateVent == SyndicateVentOptions.ChaosDrive) || CustomGameOptions.SyndicateVent ==
-                    SyndicateVentOptions.ChaosDrive;
+                    SyndicateVentOptions.Always;
             else if (player.Is(Faction.Intruder))
             {
                 if (CustomGameOptions.IntrudersVent)
                 {
                     var flag = (player.Is(RoleEnum.Morphling) && CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && CustomGameOptions.WraithVent) ||
-                        (player.Is(RoleEnum.Grenadier) && CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && CustomGameOptions.TeleVent) ||
-                        (player.Is(RoleEnum.Poisoner) && CustomGameOptions.PoisonerVent);
+                        (player.Is(RoleEnum.Grenadier) && CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && CustomGameOptions.TeleVent);
 
                     if (flag)
                         mainflag = true;

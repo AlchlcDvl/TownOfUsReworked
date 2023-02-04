@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _shieldButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

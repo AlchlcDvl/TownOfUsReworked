@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
                 if (!role.ButtonUsable)
                     return false;
 
-                if (role.AlertTimer() != 0f)
+                if (role.AlertTimer() > 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.AlertDuration;

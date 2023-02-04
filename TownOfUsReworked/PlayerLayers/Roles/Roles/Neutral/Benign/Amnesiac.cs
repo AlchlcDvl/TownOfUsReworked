@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _rememberButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

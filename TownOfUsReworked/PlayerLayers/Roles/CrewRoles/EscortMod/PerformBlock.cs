@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
             if (__instance == role.BlockButton)
             {
-                if (role.RoleblockTimer() != 0f)
+                if (role.RoleblockTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

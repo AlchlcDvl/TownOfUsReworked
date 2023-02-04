@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.CamouflageTimer() != 0)
+                if (role.CamouflageTimer() > 0f)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

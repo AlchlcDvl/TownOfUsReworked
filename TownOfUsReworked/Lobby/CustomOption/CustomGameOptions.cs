@@ -1,5 +1,4 @@
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
@@ -357,6 +356,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool UniqueVigilante => Generate.UniqueVigilante.Get();
         public static bool MisfireKillsInno => Generate.MisfireKillsInno.Get();
         public static bool VigiKillAgain => Generate.VigiKillAgain.Get();
+        public static bool RoundOneNoShot => Generate.RoundOneNoShot.Get();
         public static VigiNotif VigiNotifOptions => (VigiNotif)Generate.VigiNotifOptions.Get();
 
         //Altruist Settings
@@ -397,8 +397,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Engineer Settings
         public static int EngineerCount => (int)Generate.EngineerCount.Get();
+        public static int MaxFixes => (int)Generate.MaxFixes.Get();
         public static bool UniqueEngineer => Generate.UniqueEngineer.Get();
-        public static EngineerFixPer EngineerFixPer => (EngineerFixPer)Generate.EngineerPer.Get();
 
         //Escort Settings
         public static int EscortCount => (int)Generate.EscortCount.Get();
@@ -682,7 +682,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool UniqueWraith => Generate.UniqueWraith.Get();
 
         //Poisoner Settings
-        public static bool PoisonerVent => Generate.PoisonerVent.Get();
         public static float PoisonCd => Generate.PoisonCooldown.Get();
         public static float PoisonDuration => Generate.PoisonDuration.Get();
         public static int PoisonerCount => (int)Generate.PoisonerCount.Get();
@@ -895,7 +894,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Phantom Settings
         public static int PhantomCount => (int)Generate.PhantomCount.Get();
-        public static bool PhantomKnows => Generate.PhantomKnows.Get();
         public static int PhantomTasksRemaining => (int)Generate.PhantomTasksRemaining.Get();
 
         //Taskmaster Settings

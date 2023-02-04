@@ -7,9 +7,9 @@ using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
-    public class CultistMystic : Role
+    public class Mystic : Role
     {
-        public CultistMystic(PlayerControl player) : base(player)
+        public Mystic(PlayerControl player) : base(player)
         {
             Name = "Mystic";
             RoleType = RoleEnum.Mystic;

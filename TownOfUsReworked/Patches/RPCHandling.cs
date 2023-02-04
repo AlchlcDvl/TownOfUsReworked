@@ -31,6 +31,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using Reactor.Networking.Extensions;
 using AmongUs.GameOptions;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 using Coroutine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod.Coroutine;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
@@ -716,6 +717,17 @@ namespace TownOfUsReworked.Patches
                         CrewRoles.Shuffle();
                         
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Classic/Custom Role Sort Done");
+                    }
+
+                    if (!NeutralRoles.Contains((typeof(Dracula), CustomGameOptions.DraculaOn, 39, CustomGameOptions.UniqueDracula)))
+                    {
+                        while (CrewRoles.Contains((typeof(VampireHunter), CustomGameOptions.VampireHunterOn, 21, CustomGameOptions.UniqueVampireHunter)))
+                        {
+                            CrewRoles.Remove((typeof(VampireHunter), CustomGameOptions.VampireHunterOn, 21, CustomGameOptions.UniqueVampireHunter));
+                            CrewRoles.Add((typeof(Vigilante), CustomGameOptions.VampireHunterOn, 3, CustomGameOptions.UniqueVampireHunter));
+                        }
+
+                        CrewRoles.Shuffle();
                     }
                 }
                 else if (IsAA)
@@ -1922,6 +1934,7 @@ namespace TownOfUsReworked.Patches
                         Role.RoleDictionary.Remove(revealer.PlayerId);
                         var revealerRole = new Revealer(revealer);
                         revealerRole.RegenTask();
+                        revealerRole.FormerRole = former;
                         revealerRole.RoleHistory.Add(former);
                         revealerRole.RoleHistory.AddRange(former.RoleHistory);
                         revealer.gameObject.layer = LayerMask.NameToLayer("Players");
@@ -2151,7 +2164,6 @@ namespace TownOfUsReworked.Patches
 
                             case ActionsRPC.EngineerFix:
                                 var engineer = Utils.PlayerById(reader.ReadByte());
-                                Role.GetRole<Engineer>(engineer).UsedThisRound = true;
                                 break;
 
                             case ActionsRPC.FixLights:
@@ -2194,6 +2206,36 @@ namespace TownOfUsReworked.Patches
                                 var persuadedRole = Role.GetRole(persuaded);
                                 persuadedRole.SubFaction = SubFaction.Sect;
                                 persuadedRole.IsPersuaded = true;
+                                break;
+                            
+                            case ActionsRPC.RetributionistAction:
+                                var retId = reader.ReadByte();
+
+                                switch ((RetributionistActionsRPC)retId)
+                                {
+                                    case RetributionistActionsRPC.RetributionistReviveSet:
+                                        var ret = Utils.PlayerById(reader.ReadByte());
+                                        var id8 = reader.ReadByte();
+
+                                        if (id8 == sbyte.MaxValue)
+                                            break;
+
+                                        var revived = Utils.PlayerById(reader.ReadByte());
+                                        var retRole = Role.GetRole<Retributionist>(ret);
+
+                                        if (revived != null)
+                                            retRole.Revived = revived;
+
+                                        break;
+
+                                    case RetributionistActionsRPC.RetributionistRevive:
+                                        var ret2 = Utils.PlayerById(reader.ReadByte());
+                                        var revived2 = Utils.PlayerById(reader.ReadByte());
+                                        var retRole2 = Role.GetRole<Retributionist>(ret2);
+                                        StartRevive.Revive(retRole2, revived2);
+                                        break;
+                                }
+
                                 break;
 
                             case ActionsRPC.Declare:
@@ -2303,15 +2345,18 @@ namespace TownOfUsReworked.Patches
                                 var morphRole = Role.GetRole<Morphling>(morphling);
                                 morphRole.TimeRemaining = CustomGameOptions.MorphlingDuration;
                                 morphRole.MorphedPlayer = morphTarget;
+                                morphRole.Morph();
                                 break;
 
                             case ActionsRPC.Disguise:
                                 var disguiser = Utils.PlayerById(reader.ReadByte());
                                 var disguiseTarget = Utils.PlayerById(reader.ReadByte());
+                                var disguiserForm = Utils.PlayerById(reader.ReadByte());
                                 var disguiseRole = Role.GetRole<Disguiser>(disguiser);
                                 disguiseRole.TimeRemaining = CustomGameOptions.DisguiseDuration;
-                                disguiseRole.DisguisedPlayer = disguiseTarget;
-                                disguiseRole.LastDisguised = DateTime.UtcNow;
+                                disguiseRole.MeasuredPlayer = disguiseTarget;
+                                disguiseRole.ClosestPlayer = disguiserForm;
+                                disguiseRole.Disguise();
                                 break;
 
                             case ActionsRPC.Poison:
@@ -3061,8 +3106,6 @@ namespace TownOfUsReworked.Patches
                 Role.Buttons.Clear();
                 Role.SetColors();
 
-                Lists.DefinedLists();
-
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cleared Lists");
                 
                 ExileControllerPatch.lastExiled = null;
@@ -3645,9 +3688,9 @@ namespace TownOfUsReworked.Patches
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Whisperer Done");
                     }
 
-                    if (CustomGameOptions.TrollOn > 0 && CustomGameOptions.GameMode != GameMode.Classic)
+                    if (CustomGameOptions.TrollOn > 0 && IsCustom)
                     {
-                        num = IsCustom ? CustomGameOptions.TrollCount : 1;
+                        num = CustomGameOptions.TrollCount;
 
                         while (num > 0)
                         {
@@ -4417,6 +4460,8 @@ namespace TownOfUsReworked.Patches
                 RoleGen(infected.ToList());
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Gen Done");
+
+                Lists.DefinedLists();
             }
         }
     }

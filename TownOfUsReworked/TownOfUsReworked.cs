@@ -33,7 +33,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "1.0.0.10";
+        public const string VersionString = "1.0.0.11";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -107,6 +107,7 @@ namespace TownOfUsReworked
         public static Sprite TeleportSprite;
         public static Sprite MarkSprite;
         public static Sprite Placeholder;
+        public static Sprite MeetingPlaceholder;
         public static Sprite VoteCount;
         public static Sprite VoteCountDisabled;
         public static Sprite StabSprite;
@@ -115,10 +116,12 @@ namespace TownOfUsReworked
         public static Sprite DetonateSprite;
         public static Sprite RessurectSprite;
         public static Sprite WhisperSprite;
-        public static Sprite ImitateSelectSprite;
-        public static Sprite ImitateDeselectSprite;
         public static Sprite Lock;
         public static Sprite Clear;
+        public static Sprite CrewVent;
+        public static Sprite IntruderVent;
+        public static Sprite SyndicateVent;
+        public static Sprite NeutralVent;
 
         public static Sprite SettingsButtonSprite;
         public static Sprite CrewSettingsButtonSprite;
@@ -233,15 +236,18 @@ namespace TownOfUsReworked
             MarkSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Mark.png");
             WarpSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Warp.png");
             Placeholder = CreateSprite("TownOfUsReworked.Resources.Buttons.Placeholder.png");
+            MeetingPlaceholder = CreateSprite("TownOfUsReworked.Resources.Buttons.MeetingPlaceholder.png");
             SyndicateKill = CreateSprite("TownOfUsReworked.Resources.Buttons.SyndicateKill.png");
             VoteCount = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCount.png");
             VoteCountDisabled = CreateSprite("TownOfUsReworked.Resources.Misc.VoteCountDisabled.png");
             Lock = CreateSprite("TownOfUsReworked.Resources.Misc.Lock.png");
             RessurectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Ressurect.png");
             WhisperSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.Whisper.png");
-            ImitateSelectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.ImitateSelect.png");
-            ImitateDeselectSprite = CreateSprite("TownOfUsReworked.Resources.Buttons.ImitateDeselect.png");
             Clear = CreateSprite("TownOfUsReworked.Resources.Buttons.Clear.png");
+            CrewVent = CreateSprite("TownOfUsReworked.Resources.Buttons.CrewVent.png");
+            IntruderVent = CreateSprite("TownOfUsReworked.Resources.Buttons.IntruderVent.png");
+            SyndicateVent = CreateSprite("TownOfUsReworked.Resources.Buttons.SyndicateVent.png");
+            NeutralVent = CreateSprite("TownOfUsReworked.Resources.Buttons.NeutralVent.png");
 
             //Settings buttons
             SettingsButtonSprite = CreateSprite("TownOfUsReworked.Resources.Misc.SettingsButton.png");

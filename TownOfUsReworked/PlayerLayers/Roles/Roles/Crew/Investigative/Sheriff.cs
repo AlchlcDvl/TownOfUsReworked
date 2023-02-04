@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _interrogateButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

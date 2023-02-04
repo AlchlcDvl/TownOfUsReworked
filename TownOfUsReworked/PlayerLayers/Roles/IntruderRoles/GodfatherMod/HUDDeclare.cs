@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -13,21 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Godfather))
-                return;
-
-            var isDead = PlayerControl.LocalPlayer.Data.IsDead;
-
-            if (isDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Godfather))
                 return;
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
@@ -36,16 +23,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 role.DeclareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.DeclareButton.graphic.enabled = true;
-                role.DeclareButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.DeclareButton.graphic.sprite = Promote;
                 role.DeclareButton.gameObject.SetActive(false);
             }
 
-            role.DeclareButton.GetComponent<AspectPosition>().Update();
-            role.DeclareButton.graphic.sprite = Promote;
-            role.DeclareButton.gameObject.SetActive(!isDead && !MeetingHud.Instance && !LobbyBehaviour.Instance && !role.HasDeclared && !role.WasMafioso);
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
 
-            if (role.ClosestIntruder.Is(Faction.Intruder))
-                Utils.SetTarget(ref role.ClosestIntruder, role.DeclareButton);
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)).ToList();
+
+            role.DeclareButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.HasDeclared && !role.WasMafioso);
+            Utils.SetTarget(ref role.ClosestPlayer, role.DeclareButton, Imp);
         }
     }
 }

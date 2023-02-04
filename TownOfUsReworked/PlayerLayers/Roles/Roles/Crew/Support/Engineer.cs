@@ -4,13 +4,16 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
+using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Engineer : Role
     {
-        public bool UsedThisRound = false;
         private KillButton _fixButton;
+        public int UsesLeft;
+        public TextMeshPro UsesText;
+        public bool ButtonUsable => UsesLeft != 0;
 
         public Engineer(PlayerControl player) : base(player)
         {
@@ -32,6 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
                 " the systems you spent blood, sweat and tears to make. Make them pay.";
             AlignmentDescription = CSDescription;
+            UsesLeft = CustomGameOptions.MaxFixes;
         }
 
         public KillButton FixButton
@@ -40,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _fixButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.InvisTimer() != 0)
+                if (role.InvisTimer() > 0f)
                     return false;
                 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);

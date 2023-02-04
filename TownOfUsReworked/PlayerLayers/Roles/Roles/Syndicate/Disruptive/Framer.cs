@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _frameButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

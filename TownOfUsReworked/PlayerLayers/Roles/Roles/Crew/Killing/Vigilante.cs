@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool PostMeetingDie = false;
         public bool InnoMessage = false;
         private KillButton _shootButton;
-        public bool FirstRound { get; set; } = false;
+        public bool FirstRound { get; set; } = CustomGameOptions.RoundOneNoShot;
 
         public Vigilante(PlayerControl player) : base(player)
         {
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _shootButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

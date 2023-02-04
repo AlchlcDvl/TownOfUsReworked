@@ -17,65 +17,86 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Disguiser);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Disguiser))
                 return false;
 
             var role = Role.GetRole<Disguiser>(PlayerControl.LocalPlayer);
-            var target = role.ClosestPlayer;
 
             if (__instance == role.DisguiseButton)
             {
                 if (!__instance.isActiveAndEnabled)
                     return false;
+                
+                if (role.DisguiseTimer() > 0f)
+                    return false;
 
-                if (role.DisguiseButton.graphic.sprite == MeasureSprite)
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+                
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                
+                if (interact[3] == true)
                 {
-                    if (target == null)
+                    if (role.DisguiseButton.graphic.sprite == MeasureSprite)
+                    {
+                        role.MeasuredPlayer = role.ClosestPlayer;
+                        role.DisguiseButton.graphic.sprite = DisguiseSprite;
+
+                        if (role.DisguiseTimer() < 5f)
+                            role.LastDisguised = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.DisguiseCooldown);
+                            
+                        try
+                        {
+                            //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
+                        } catch {}
+
                         return false;
-
-                    role.MeasuredPlayer = target;
-                    role.DisguiseButton.graphic.sprite = DisguiseSprite;
-                    role.DisguiseButton.SetTarget(null);
-                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
-
-                    if (role.DisguiseTimer() < 5f)
-                        role.LastDisguised = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.DisguiseCooldown);
+                    }
+                    else if (role.DisguiseButton.graphic.sprite == DisguiseSprite)
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.Disguise);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                        writer.Write(role.MeasuredPlayer.PlayerId);
+                        writer.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        role.TimeRemaining = CustomGameOptions.DisguiseDuration;
+                        role.Disguise();
                         
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
-                    } catch {}
-                }
-                else
-                {
-                    if (__instance.isCoolingDown)
-                        return false;
+                        try
+                        {
+                            //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
+                        } catch {}
 
-                    if (role.DisguiseTimer() != 0)
                         return false;
-
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                    writer.Write((byte)ActionsRPC.Disguise);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.MeasuredPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.TimeRemaining = CustomGameOptions.DisguiseDuration;
-                    role.DisguisedPlayer = role.MeasuredPlayer;
-                    Utils.Morph(role.Player, role.MeasuredPlayer);
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
-                    } catch {}
+                    }
                 }
+                else if (interact[1] == true)
+                    role.LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                return false;
+            }
+            else if (__instance == role.KillButton)
+            {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.KillTimer() > 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+
+                if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
             }

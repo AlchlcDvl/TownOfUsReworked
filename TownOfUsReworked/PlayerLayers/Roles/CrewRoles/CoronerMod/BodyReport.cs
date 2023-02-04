@@ -25,14 +25,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             if (killer == null)
                 return;
 
-            var isUserCor = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner);
-
-            if (!isUserCor)
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Coroner))
                 return;
 
-            var isCorDead = Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Player.Data.IsDead;
-
-            if (isCorDead)
+            if (Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Player.Data.IsDead)
                 return;
                 
             var br = new BodyReport

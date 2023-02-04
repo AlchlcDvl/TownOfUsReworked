@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestIntruder == null)
+            if (!PlayerControl.LocalPlayer.CanMove || role.ClosestPlayer == null)
                 return false;
 
             if (!__instance.enabled)
@@ -30,24 +30,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
 
-            if (Vector2.Distance(role.ClosestIntruder.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+            if (Vector2.Distance(role.ClosestPlayer.GetTruePosition(), PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
                 return false;
 
-            if (role.ClosestIntruder == null)
+            if (role.ClosestPlayer == null)
                 return false;
 
-            if (role.ClosestIntruder.IsInfected())
+            if (role.ClosestPlayer.IsInfected())
             {
                 foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestIntruder, role.Player);
+                    ((Plaguebearer)pb).RpcSpreadInfection(role.ClosestPlayer, role.Player);
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.Declare);
             writer.Write(role.Player.PlayerId);
-            writer.Write(role.ClosestIntruder.PlayerId);
+            writer.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Declare(role, role.ClosestIntruder);
+            Declare(role, role.ClosestPlayer);
             return false;
         }
 

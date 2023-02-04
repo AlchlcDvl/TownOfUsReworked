@@ -6,6 +6,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {
@@ -36,11 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 
                             if (role != null)
                             {
-                                if (role.ExtraButtons.Count != 0)
+                                if (role.AbilityButtons.Count > 0)
                                 {
-                                    otherNumber = Random.RandomRangeInt(0, role.ExtraButtons.Count);
-                                    var button = role.ExtraButtons[otherNumber].Value;
-                                    
+                                    otherNumber = Random.RandomRangeInt(0, role.AbilityButtons.Count);
+                                    var button = role.AbilityButtons[otherNumber];
                                     button.DoClick();
                                 }
                             }
@@ -50,7 +50,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                             //Flashes
                             otherNumber = Random.RandomRangeInt(0, Lists.AllRoles.Count);
                             var role2 = Lists.AllRoles[otherNumber];
-
                             Coroutines.Start(Utils.FlashCoroutine(role2.Color));
                         }
                         else if (randomNumber == 2)
@@ -58,7 +57,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                             //Fake someone killing you
                             otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
                             var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
-
                             DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
                         }
                         else if (randomNumber == 3)

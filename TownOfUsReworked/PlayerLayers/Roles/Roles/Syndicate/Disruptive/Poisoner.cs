@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool Enabled = false;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        public bool Poisoned => TimeRemaining > 0f;
 
         public Poisoner(PlayerControl player) : base(player)
         {
@@ -56,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _poisonButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
         
@@ -66,11 +67,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
-
-        public bool Poisoned => TimeRemaining > 0f;
         
         public void Poison()
         {

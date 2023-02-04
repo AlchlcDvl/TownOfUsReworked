@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _infectButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

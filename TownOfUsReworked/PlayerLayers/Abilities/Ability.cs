@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     public abstract class Ability
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
-        public List<KillButton> ExtraButtons = new List<KillButton>();
 
         protected Ability(PlayerControl player)
         {

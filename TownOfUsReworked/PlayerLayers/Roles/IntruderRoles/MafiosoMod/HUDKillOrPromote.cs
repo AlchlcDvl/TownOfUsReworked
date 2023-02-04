@@ -16,16 +16,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sidekick))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mafioso))
                 return;
             
-            var role = Role.GetRole<Sidekick>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Mafioso>(PlayerControl.LocalPlayer);
 
             if (role.CanPromote && !role.Player.Data.IsDead)
             {
-                role.TurnRebel();
+                role.TurnGodfather();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
-                writer.Write((byte)TurnRPC.TurnRebel);
+                writer.Write((byte)TurnRPC.TurnGodfather);
                 writer.Write(role.Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return;
@@ -40,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
             }
 
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
-            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
             var renderer = role.KillButton.graphic;
             

@@ -49,20 +49,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
 
                 if (role.PoisonedPlayer && role.PoisonedPlayer != PlayerControl.LocalPlayer)
                     role.PoisonKill();
-                        
-                if (role.ClosestPlayer != null && !role.PoisonButton.isCoolingDown)
-                {
-                    role.PoisonButton.graphic.color = Palette.EnabledColor;
-                    role.PoisonButton.graphic.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    role.PoisonButton.graphic.color = Palette.DisabledClear;
-                    role.PoisonButton.graphic.material.SetFloat("_Desat", 1f);
-                }
 
                 role.PoisonButton.SetCoolDown(role.PoisonTimer(), CustomGameOptions.PoisonCd);
                 role.PoisonedPlayer = PlayerControl.LocalPlayer; //Only do this to stop repeatedly trying to re-kill poisoned player. null didn't work for some reason
+            }
+                        
+            if (role.ClosestPlayer != null && !role.PoisonButton.isCoolingDown && !role.Poisoned)
+            {
+                role.PoisonButton.graphic.color = Palette.EnabledColor;
+                role.PoisonButton.graphic.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                role.PoisonButton.graphic.color = Palette.DisabledClear;
+                role.PoisonButton.graphic.material.SetFloat("_Desat", 1f);
             }
 
             if (role.KillButton == null)

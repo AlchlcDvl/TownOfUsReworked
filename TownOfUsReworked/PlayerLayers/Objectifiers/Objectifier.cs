@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
         public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
-        public List<KillButton> ExtraButtons = new List<KillButton>();
 
         protected Objectifier(PlayerControl player)
         {

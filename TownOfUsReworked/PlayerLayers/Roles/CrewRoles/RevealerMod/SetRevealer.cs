@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     public class SetRevealer
     {
         public static PlayerControl WillBeRevealer;
-        public static Vector2 StartPosition;
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
@@ -46,6 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 var role = new Revealer(PlayerControl.LocalPlayer);
                 role.RegenTask();
                 role.RoleHistory.AddRange(former.RoleHistory);
+                role.FormerRole = former;
 
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();

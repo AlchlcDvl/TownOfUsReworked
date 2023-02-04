@@ -41,6 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (arrow.Value != null)
                 GameObject.Destroy(arrow.Value);
+
             if (arrow.Value.gameObject != null)
                 GameObject.Destroy(arrow.Value.gameObject);
                 

@@ -31,14 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 role2.LastExamined = DateTime.UtcNow;
             }
 
-            foreach (var role in Role.GetRoles(RoleEnum.Engineer))
-            {
-                var role2 = (Engineer)role;
-                
-                if (CustomGameOptions.EngineerFixPer == EngineerFixPer.Round)
-                    role2.UsedThisRound = false;
-            }
-
             foreach (var role in Role.GetRoles(RoleEnum.Escort))
             {
                 var role2 = (Escort)role;
@@ -123,6 +115,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Vigilante))
             {
                 var role2 = (Vigilante)role;
+                role2.FirstRound = false;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
@@ -288,6 +281,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Poisoner)role;
                 role2.LastPoisoned = DateTime.UtcNow;
+                role2.PoisonButton.graphic.sprite = TownOfUsReworked.PoisonSprite;
 
                 if (Role.SyndicateHasChaosDrive)
                     role2.LastKilled = DateTime.UtcNow;

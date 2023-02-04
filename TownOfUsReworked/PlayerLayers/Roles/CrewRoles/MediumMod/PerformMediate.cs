@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.MediateTimer() != 0f)
+                if (role.MediateTimer() > 0f)
                     return false;
 
                 role.LastMediated = DateTime.UtcNow;

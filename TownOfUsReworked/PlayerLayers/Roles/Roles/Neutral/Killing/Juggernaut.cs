@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _assaultButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

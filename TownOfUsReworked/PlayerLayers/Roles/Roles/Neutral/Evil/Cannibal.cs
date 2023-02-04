@@ -126,7 +126,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _eatButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

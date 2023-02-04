@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.FreezeTimer() != 0)
+                if (role.FreezeTimer() > 0f)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);

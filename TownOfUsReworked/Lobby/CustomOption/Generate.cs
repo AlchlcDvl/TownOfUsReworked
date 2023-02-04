@@ -351,6 +351,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomStringOption VigiNotifOptions;
         public static CustomToggleOption MisfireKillsInno;
         public static CustomToggleOption VigiKillAgain;
+        public static CustomToggleOption RoundOneNoShot;
         public static CustomNumberOption VigiKillCd;
 
         //Veteran Options
@@ -369,8 +370,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Engineer Options
         public static CustomHeaderOption Engineer;
         public static CustomNumberOption EngineerCount;
+        public static CustomNumberOption MaxFixes;
         public static CustomToggleOption UniqueEngineer;
-        public static CustomStringOption EngineerPer;
 
         //Transporter Options
         public static CustomHeaderOption Transporter;
@@ -626,7 +627,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniquePoisoner;
         public static CustomNumberOption PoisonCooldown;
         public static CustomNumberOption PoisonDuration;
-        public static CustomToggleOption PoisonerVent;
 
         //IS Options
         public static CustomHeaderOption IntruderSupportSettings;
@@ -895,7 +895,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Phantom;
         public static CustomNumberOption PhantomCount;
         public static CustomNumberOption PhantomTasksRemaining;
-        public static CustomToggleOption PhantomKnows;
 
         //Guesser Options
         public static CustomHeaderOption Guesser;
@@ -1624,6 +1623,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UniqueVigilante = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Is Unique In All Any", false);
             MisfireKillsInno = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Misfire Kills The Innocent Target", true);
             VigiKillAgain = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent", true);
+            RoundOneNoShot = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round", true);
             VigiNotifOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] {"Never", "Flash", "Message"});
             VigiOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] {"Immediately", "Pre-Meeting", "Post-Meeting"});
             VigiKillCd = new CustomNumberOption(true, num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
@@ -1685,7 +1685,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Engineer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>");
             EngineerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Count", 1, 1, 14, 1);
             UniqueEngineer = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Is Unique In All Any", false);
-            EngineerPer = new CustomStringOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Fixes Once Per", new[] {"Round", "Game"});
+            MaxFixes = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Fix Count", 1, 1, 14, 1);
 
             Escort = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color>");
             EscortCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Count", 1, 1, 14, 1);
@@ -1822,11 +1822,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JestEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
             VigiKillsJester = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false);
 
-            Phantom = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
-            PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
-            PhantomKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Knows Who They Are On Game Start", false);
-            PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
-
             Troll = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>");
             TrollCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Count", 1, 1, 14, 1);
             UniqueTroll = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Is Unique In All Any", false);
@@ -1942,12 +1937,16 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             NeutralProselyteSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> Settings");
             
-            Vampire = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color>");
-            VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color> Can Vent", false);
-            
             Dampyr = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#DF7AE8FF>Dampyr</color>");
             DampBiteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             DampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#DF7AE8FF>Dampyr</color> Can Vent", false);
+
+            Phantom = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
+            PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
+            PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
+            
+            Vampire = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color>");
+            VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color> Can Vent", false);
 
             Pestilence = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color>");
             PestSpawn = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false);
@@ -2109,7 +2108,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UniquePoisoner = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Is Unique In All Any", false);
             PoisonCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Poison Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
             PoisonDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Poison Kill Delay", 5f, 1f, 15f, 1f, CooldownFormat);
-            PoisonerVent = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Can Vent", false);
 
             Shapeshifter = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>");
             ShapeshifterCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color> Count", 1, 1, 14, 1);

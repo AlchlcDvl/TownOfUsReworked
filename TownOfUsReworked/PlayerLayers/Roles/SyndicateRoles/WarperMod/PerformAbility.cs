@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.WarpTimer() != 0)
+                if (role.WarpTimer() > 0f)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

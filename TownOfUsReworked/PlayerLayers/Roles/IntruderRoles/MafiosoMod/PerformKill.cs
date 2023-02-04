@@ -12,10 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sidekick))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mafioso))
                 return false;
 
-            var role = Role.GetRole<Sidekick>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Mafioso>(PlayerControl.LocalPlayer);
 
             if (__instance == role.KillButton)
             {
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);

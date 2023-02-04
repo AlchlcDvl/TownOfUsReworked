@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public abstract class Role
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
-        public List<KeyValuePair<byte, KillButton>> ExtraButtons = new List<KeyValuePair<byte, KillButton>>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
 
@@ -65,7 +64,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
-        protected internal KeyCode Keybind { get; set; } = KeyCode.None;
+        protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
+        //protected internal Dictionary<byte, TMP_Text> PlayerNumbers = new Dictionary<byte, TMP_Text>();
 
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
@@ -228,9 +228,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return HashCode.Combine(Player, (int)RoleType);
         }
 
-        public void AddToExtraButtons(KillButton button)
+        public void AddToAbilityButtons(KillButton button, Role role)
         {
-            ExtraButtons.Add(KeyValuePair.Create(_player.PlayerId, button));
+            if (!role.AbilityButtons.Contains(button))
+                role.AbilityButtons.Add(button);
         }
 
         protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}

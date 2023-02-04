@@ -97,37 +97,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 transporter.LastTransported = DateTime.UtcNow;
                 transporter.LastTransported = transporter.LastTransported.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
             }
-
-            var VampsExist = false;
-
-            foreach (var player in PlayerControl.AllPlayerControls)
+            
+            foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
             {
-                if (player.Is(SubFaction.Undead))
-                {
-                    VampsExist = true;
-                    break;
-                }
-            }
-
-            if (!VampsExist)
-            {
-                foreach (VampireHunter vh in Role.GetRoles(RoleEnum.VampireHunter))
-                {
-                    vh.TurnVigilante();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
-                    writer.Write((byte)TurnRPC.TurnVigilante);
-                    writer.Write(vh.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-            }
-            else
-            {
-                foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
-                {
-                    var vampireHunter = (VampireHunter)role;
-                    vampireHunter.LastStaked = DateTime.UtcNow;
-                    vampireHunter.LastStaked = vampireHunter.LastStaked.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCooldown);
-                }
+                var vampireHunter = (VampireHunter)role;
+                vampireHunter.LastStaked = DateTime.UtcNow;
+                vampireHunter.LastStaked = vampireHunter.LastStaked.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCooldown);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Veteran))
@@ -140,8 +115,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Vigilante))
             {
                 var vigilante = (Vigilante)role;
-                vigilante.LastKilled = DateTime.UtcNow;
-                vigilante.LastKilled = vigilante.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
+                
+                if (CustomGameOptions.RoundOneNoShot)
+                    vigilante.FirstRound = true;
+                else
+                {
+                    vigilante.LastKilled = DateTime.UtcNow;
+                    vigilante.LastKilled = vigilante.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
+                }
             }
 
             //Intruder starting cooldowns

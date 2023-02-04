@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _bugButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Godfather : Role
     {
-        public PlayerControl ClosestIntruder;
+        public PlayerControl ClosestPlayer;
         public bool HasDeclared = false;
         public bool WasMafioso = false;
         public Role FormerRole = null;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
@@ -139,7 +139,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _declareButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
     }

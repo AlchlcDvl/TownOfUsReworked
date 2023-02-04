@@ -86,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _recruitButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

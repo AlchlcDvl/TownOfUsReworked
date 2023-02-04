@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _trackButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
@@ -75,6 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (arrow.Value != null)
                 Object.Destroy(arrow.Value);
+
             if (arrow.Value.gameObject != null)
                 Object.Destroy(arrow.Value.gameObject);
 

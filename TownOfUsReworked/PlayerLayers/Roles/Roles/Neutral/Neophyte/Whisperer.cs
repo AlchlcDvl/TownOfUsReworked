@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _whisperButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

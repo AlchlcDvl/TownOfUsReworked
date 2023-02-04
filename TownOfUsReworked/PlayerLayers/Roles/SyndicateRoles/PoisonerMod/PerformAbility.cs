@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.PoisonTimer() != 0f)
+                if (role.PoisonTimer() > 0f)
                     return false;
                 
                 if (role.PoisonButton.graphic.sprite == PoisonedSprite)
@@ -48,6 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(role.PoisonedPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                    role.Poison();
                     
                     try
                     {
@@ -66,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 if (!role.ButtonUsable)
                     return false;
 
-                if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
+                if (role.TimeLordRewindTimer() > 0f && !RecordRewind.rewinding)
                     return false;
 
                 role.UsesLeft--;

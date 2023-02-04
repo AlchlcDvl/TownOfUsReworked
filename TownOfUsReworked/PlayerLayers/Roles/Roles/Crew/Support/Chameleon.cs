@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _swoopButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

@@ -16,15 +16,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private KillButton _killButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastDisguised;
-        public PlayerControl DisguisedPlayer;
         public PlayerControl MeasuredPlayer;
-        public PlayerControl TargetPlayer;
-        public PlayerControl disguised { get; private set; }
-        public float TimeBeforeDisguised { get; private set; }
-        public float DisguiseTimeRemaining { get; private set; }
+        public float TimeBeforeDisguised { get; set; }
+        public float DisguiseTimeRemaining { get; set; }
         public float TimeRemaining;
         public bool Disguised => TimeRemaining > 0f;
         public DateTime LastKilled { get; set; }
+        public bool Enabled = false;
+        public Sprite MeasureSprite => TownOfUsReworked.MeasureSprite;
 
         public Disguiser(PlayerControl player) : base(player)
         {
@@ -64,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _killButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
@@ -74,24 +73,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _disguiseButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
         public void Disguise()
         {
+            if (ClosestPlayer == null || MeasuredPlayer == null)
+                return;
+
             TimeRemaining -= Time.deltaTime;
-            Utils.Morph(DisguisedPlayer, Player);
+            Utils.Morph(MeasuredPlayer, ClosestPlayer);
 
             if (Player.Data.IsDead)
                 TimeRemaining = 0f;
         }
 
-        public void Undisguise()
+        public void UnDisguise()
         {
-            DisguisedPlayer = null;
-            Utils.DefaultOutfit(DisguisedPlayer);
+            Utils.DefaultOutfit(MeasuredPlayer);
+            MeasuredPlayer = null;
             LastDisguised = DateTime.UtcNow;
+            DisguiseButton.graphic.sprite = MeasureSprite;
         }
 
         public float DisguiseTimer()
@@ -111,8 +114,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (Disguised)
             {
-                appearance = DisguisedPlayer.GetDefaultAppearance();
-                var modifier = Modifier.GetModifier(DisguisedPlayer);
+                appearance = MeasuredPlayer.GetDefaultAppearance();
+                var modifier = Modifier.GetModifier(MeasuredPlayer);
 
                 if (modifier is IVisualAlteration alteration)
                     alteration.TryGetModifiedAppearance(out appearance);
@@ -122,33 +125,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             appearance = Player.GetDefaultAppearance();
             return false;
-        }
-
-        public void StartDisguise(PlayerControl target)
-        {
-            disguised = target;
-            TimeBeforeDisguised = CustomGameOptions.TimeToDisguise;
-        }
-
-        public void DisguiseTick()
-        {
-            if (disguised == null)
-                return;
-
-            if (TimeBeforeDisguised > 0)
-            {
-                TimeBeforeDisguised = Math.Clamp(TimeBeforeDisguised - Time.deltaTime, 0, TimeBeforeDisguised);
-                
-                if (TimeBeforeDisguised <= 0f)
-                    DisguiseTimeRemaining = CustomGameOptions.DisguiseDuration;
-            }
-            else if (DisguiseTimeRemaining > 0)
-            {
-                DisguiseTimeRemaining -= Time.deltaTime;
-                Disguise();
-            }
-            else
-                Undisguise();
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

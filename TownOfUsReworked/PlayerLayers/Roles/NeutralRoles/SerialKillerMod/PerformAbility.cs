@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.LustTimer() != 0)
+                if (role.LustTimer() > 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.BloodlustDuration;
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
                 if (!role.Lusted)
                     return false;
                 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
                 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

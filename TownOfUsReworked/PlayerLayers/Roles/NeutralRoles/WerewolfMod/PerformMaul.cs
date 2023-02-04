@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.MaulTimer() != 0)
+                if (role.MaulTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

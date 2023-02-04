@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.BlackmailTimer() != 0f)
+                if (role.BlackmailTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -63,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (role.KillTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

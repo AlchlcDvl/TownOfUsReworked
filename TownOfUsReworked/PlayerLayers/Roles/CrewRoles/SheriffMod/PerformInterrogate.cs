@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.InterrogateTimer() != 0f)
+                if (role.InterrogateTimer() > 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

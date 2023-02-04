@@ -26,9 +26,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                 role.FixButton.graphic.sprite = Fix;
                 role.FixButton.gameObject.SetActive(false);
             }
+
+            if (role.UsesText == null && role.UsesLeft > 0)
+            {
+                role.UsesText = Object.Instantiate(__instance.KillButton.cooldownTimerText, __instance.KillButton.transform);
+                role.UsesText.gameObject.SetActive(false);
+                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
+                    role.UsesText.transform.localPosition.z);
+                role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
+                role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
+                role.UsesText.fontStyle = TMPro.FontStyles.Bold;
+            }
+
+            if (role.UsesText != null)
+                role.UsesText.text = $"{role.UsesLeft}";
             
             role.FixButton.SetCoolDown(0f, 10f);
-            role.FixButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedThisRound);
+            role.FixButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
 
             if (!ShipStatus.Instance)
                 return;
@@ -47,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
             var renderer = role.FixButton.graphic;
             
-            if (active && !dummyActive && !role.UsedThisRound)
+            if (active && !dummyActive && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

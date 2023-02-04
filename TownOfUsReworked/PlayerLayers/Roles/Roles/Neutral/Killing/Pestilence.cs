@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _obliterateButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

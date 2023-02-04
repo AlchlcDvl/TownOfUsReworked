@@ -2,15 +2,12 @@ using System;
 using HarmonyLib;
 using Hazel;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -24,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     public class SetPhantom
     {
         public static PlayerControl WillBePhantom;
-        public static Vector2 StartPosition;
 
         public static void ExileControllerPostfix(ExileController __instance)
         {

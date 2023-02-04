@@ -2,6 +2,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using System;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
@@ -25,8 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             set
             {
                 _buttonButton = value;
-                ExtraButtons.Clear();
-                ExtraButtons.Add(value);
+                var role = Role.GetRole(Player);
+                role?.AddToAbilityButtons(value, role);
             }
         }
         

@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
                 if (!role.ButtonUsable)
                     return false;
 
-                if (role.VestTimer() != 0f)
+                if (role.VestTimer() > 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.VestDuration;

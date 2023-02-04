@@ -108,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _murderButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 

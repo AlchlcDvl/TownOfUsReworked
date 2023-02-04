@@ -27,7 +27,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 [**Player Layers**](#player-layers)
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
-|------------------------------|-------------------------------|---------------------|---------------------------|
+|------------------------------|-------------------------------|---------------------|----------------------------|
 | [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
 | [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
 | [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
@@ -37,7 +37,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Dracula](#dracula) |
 | [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Executioner](#executioner) |
 | [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Glitch](#glitch) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guardian Angel](#guardian-angel) |
 | [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Guesser](#guesser) |
 | [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jackal](#jackal) |
 | [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jester](#jester) |
@@ -83,12 +83,15 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Better Polus Settings](#better-polus-settings)
 - [Better Airship Settings](#better-airship-settings)
 
+[**Extras**](#extras)
+- [New Colors](#new-colors)
+- [Rainbow Color](#rainbow-color)
+- [Custom Hats](#custom-hats)
+- [Bug Reports & Suggestions](#bug--suggestions)
+
 [**Game Info**](#game-info)
 - [Colors](#colors)
 - [Factions](#factions)
-
-[**Extras**](#extras)
-- [Bug Reports & Suggestions](#bug--suggestions)
 
 [**Credits & Resources**](#credits--resources)
 
@@ -98,7 +101,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |----------|-------------|-----------------|
-| 2022.12.14 (s & e) | Base Mod (v4.0.1) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.1/ToU.v4.0.1.zip) |
+| 2022.12.14 (s & e) | Base Mod (v4.0.2) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.2/ToU.v4.0.2.zip) |
 
 <details>
   <summary> Change Log </summary>
@@ -203,7 +206,7 @@ The Agent gains more information when on Admin Table and on Vitals. On Admin Tab
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Agent | The percentage probability of the Agent appearing | Percentage | 0% |
 | Agent Count | How many Agents should spawn in Custom Mode | Number | 1 |
 | Agent Is Unique In All Any | Self descriptive | Toggle | False |
@@ -216,7 +219,7 @@ The Altruist is capable of reviving dead players. Upon finding a dead body, the 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Altruist | The percentage probability of the Altruist appearing | Percentage | 0% |
 | Altruist Count | How many Altruists should spawn in Custom Mode | Number | 1 |
 | Altruist Is Unique In All Any | Self descriptive | Toggle | False |
@@ -231,7 +234,7 @@ The Chameleon is capable of going invisible to stalk players.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Chameleon | The percentage probability of the Chameleon appearing | Percentage | 0% |
 | Chameleon Count | How many Chameleons should spawn in Custom Mode | Number | 1 |
 | Chameleon Is Unique In All Any | Self descriptive | Toggle | False |
@@ -246,7 +249,7 @@ The Coroner gets an alert when someone dies. On top of this, the Coroner briefly
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Coroner | The percentage probability of the Coroner appearing | Percentage | 0% |
 | Coroner Count | How many Coroners should spawn in Custom Mode | Number | 1 |
 | Coroner Is Unique In All Any | Self descriptive | Toggle | False |
@@ -263,7 +266,7 @@ Just a plain Crew with no abilities and only spawns if all the other roles are t
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Crewmate | The percentage probability of the Crewmate appearing | Percentage | 0% |
 | Crewmate Count | How many Crewmates should spawn in Custom Mode | Number | 1 |
 
@@ -275,7 +278,7 @@ The Detective can examine other players for suspicious behavior. If the examined
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Detective | The percentage probability of the Detective appearing | Percentage | 0% |
 | Detective Count | How many Detectives should spawn in Custom Mode | Number | 1 |
 | Detective Is Unique In All Any | Self descriptive | Toggle | False |
@@ -290,7 +293,7 @@ The Engineer can fix sabotages from anywhere on the map. They can also use vents
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Engineer | The percentage probability of the Engineer appearing | Percentage | 0% |
 | Engineer Count | How many Engineers should spawn in Custom Mode | Number | 1 |
 | Engineer Is Unique In All Any | Self descriptive | Toggle | False |
@@ -304,7 +307,7 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Escort | The percentage probability of the Escort appearing | Percentage | 0% |
 | Escort Count | How many Escorts should spawn in Custom Mode | Number | 1 |
 | Escort Is Unique In All Any | Self descriptive | Toggle | False |
@@ -319,7 +322,7 @@ The Inspector can check players for their roles. Upon being checked, the targets
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Inspector | The percentage probability of the Inspector appearing | Percentage | 0% |
 | Inspector Count | How many Inspectors should spawn in Custom Mode | Number | 1 |
 | Inspector Is Unique In All Any | Self descriptive | Toggle | False |
@@ -333,7 +336,7 @@ The Investigator can see the footprints of players. All footprints disappear aft
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Investigator | The percentage probability of the Investigator appearing | Percentage | 0% |
 | Investigator Count | How many Investigators should spawn in Custom Mode | Number | 1 |
 | Investigator Is Unique In All Any | Self descriptive | Toggle | False |
@@ -351,7 +354,7 @@ The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the numbe
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Mayor | The percentage probability of the Mayor appearing | Percentage | 0% |
 | Mayor Count | How many Mayors should spawn in Custom Mode | Number | 1 |
 | Mayor Is Unique In All Any | Self descriptive | Toggle | False |
@@ -367,7 +370,7 @@ The Medic can give any player a shield that will make them immortal until the Me
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Medic | The percentage probability of the Medic appearing | Percentage | 0% |
 | Medic Count | How many Medics should spawn in Custom Mode | Number | 1 |
 | Medic Is Unique In All Any | Self descriptive | Toggle | False |
@@ -383,7 +386,7 @@ The Medium can see ghosts. During each round the Medium has an ability called Me
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Medium | The percentage probability of the Medium appearing | Percentage | 0% |
 | Medium Count | How many Mediums should spawn in Custom Mode | Number | 1 |
 | Medium Is Unique In All Any | Self descriptive | Toggle | False |
@@ -401,7 +404,7 @@ The Mystic only spawns when there is at least one Neutral (Neophyte) role presen
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Mystic | The percentage probability of the Mystic appearing | Percentage | 0% |
 | Mystic Count | How many Mystics should spawn in Custom Mode | Number | 1 |
 | Mystic Is Unique In All Any | Self descriptive | Toggle | False |
@@ -415,7 +418,7 @@ The Operative can place bugs around the map. When players enter the range of the
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Operative | The percentage probability of the Operative appearing | Percentage | 0% |
 | Operative Count | How many Operatives should spawn in Custom Mode | Number | 1 |
 | Operative Is Unique In All Any | Self descriptive | Toggle | False |
@@ -433,7 +436,7 @@ The Retributionist can mimic dead crewamtes. During meetings, the Retributionist
 
 ### Game Options
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|----------|---------------|--------|--------|
 | Retributionist | The percentage probability of the Retributionist appearing | Percentage | 0% |
 | Retributionist Count | How many Retributionists should spawn in Custom Mode | Number | 1 |
 | Retributionist Is Unique In All Any | Self descriptive | Toggle | False |
@@ -446,7 +449,7 @@ The Revealer is a dead Crewmate that can reveal Intruders if they finish all the
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Revealer | The percentage probability of the Revealer appearing | Percentage | 0% |
 | When Revealer Can Be Clicked | The amount of tasks remaining when the Revealer Can Be Clicked | Number | 5 |
 | Revealer Alert | The amount of tasks remaining when the Impostors are alerted that the Revealer is nearly finished | Number | 1 |
@@ -463,7 +466,7 @@ The Seer only spawns if there are roles capable of changing their initial roles.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Seer | The percentage probability of the Seer appearing | Percentage | 0% |
 | Seer Count | How many Sheriffs should spawn in Custom Mode | Number | 1 |
 | Seer Is Unique In All Any | Self descriptive | Toggle | False |
@@ -477,7 +480,7 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Sheriff | The percentage probability of the Sheriff appearing | Percentage | 0% |
 | Sheriff Count | How many Sheriffs should spawn in Custom Mode | Number | 1 |
 | Sheriff Is Unique In All Any | Self descriptive | Toggle | False |
@@ -493,7 +496,7 @@ The Shifter can swap roles with someone, as long as they are Crew. If the shift 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Shifter | The percentage probability of the Shifter appearing | Percentage | 0% |
 | Shifter Count | How many Shifters should spawn in Custom Mode | Number | 1 |
 | Shifter Is Unique In All Any | Self descriptive | Toggle | False |
@@ -508,7 +511,7 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Swapper | The percentage probability of the Swapper appearing | Percentage | 0% |
 | Swapper Count | How many Swappers should spawn in Custom Mode | Number | 1 |
 | Swapper Is Unique In All Any | Self descriptive | Toggle | False |
@@ -524,7 +527,7 @@ The Time Lord can rewind time and reverse the positions of all players. If enabl
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Time Lord | The percentage probability of the Time Lord appearing | Percentage | 0% |
 | Time Lord Count | How many Time Lords should spawn in Custom Mode | Number | 1 |
 | Time Lord Is Unique In All Any | Self descriptive | Toggle | False |
@@ -542,7 +545,7 @@ The Tracker can track other during a round. Once they track someone, an arrow is
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Tracker | The percentage probability of the Tracker appearing | Percentage | 0% |
 | Tracker Count | How many Trackers should spawn in Custom Mode | Number | 1 |
 | Tracker Is Unique In All Any | Self descriptive | Toggle | False |
@@ -559,7 +562,7 @@ The Transporter can swap the locations of two players at will. Players who have 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Transporter | The percentage probability of the Transporter appearing | Percentage | 0% |
 | Transporter Count | How many Transporters should spawn in Custom Mode | Number | 1 |
 | Transporter Is Unique In All Any | Self descriptive | Toggle | False |
@@ -574,7 +577,7 @@ The Vampire Hunter only spawns if there are Undead in the game. They can check p
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Vampire Hunter | The percentage probability of the Vampire Hunter appearing | Percentage | 0% |
 | Vampire Hunter Count | How many Vampire Hunters should spawn in Custom Mode | Number | 1 |
 | Vampire Hunter Is Unique In All Any | Self descriptive | Toggle | False |
@@ -588,7 +591,7 @@ The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew,
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Veteran | The percentage probability of the Veteran appearing | Percentage | 0% |
 | Veteran Count | How many Veterans should spawn in Custom Mode | Number | 1 |
 | Veteran Is Unique In All Any | Self descriptive | Toggle | False |
@@ -604,7 +607,7 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Vigilante | The percentage probability of the Vigilante appearing | Percentage | 0% |
 | Vigilante Count | How many Vigilantes should spawn in Custom Mode | Number | 1 |
 | Vigilante Is Unique In All Any | Self descriptive | Toggle | False |
@@ -618,6 +621,23 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 
 # Neutral Roles
 
+## Actor
+### **Alignment: Neutral (Evil)**
+### Win Condition: Get guessed as your target role.
+
+The Actor can mimic the abilities of any role with a button. There are some exceptions to which role the Actor can mimic.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Actor | The percentage probability of the Actor appearing | Percentage | 0% |
+| Actor Count | How many Amnesiacs should spawn in Custom Mode | Number | 1 |
+| Actor Is Unique In All Any | Self descriptive | Toggle | False |
+| Actor Can Mimic Intruder Roles | Decides if the Actor can pretend to be an Intruder role | Toggle | True |
+| Actor Can Mimic Syndicate Roles | Decides if the Actor can pretend to be a Syndicate role | Toggle | True |
+| Actor Can Mimic Other Neutral Roles | Decides if the Actor can pretend to be a different Neutral role | Toggle | True |
+
 ## Amnesiac
 ### **Alignment: Neutral (Benign)**
 ### Win Condition: Find a dead body, take their role and then win as that role.
@@ -627,7 +647,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Amnesiac | The percentage probability of the Amnesiac appearing | Percentage | 0% |
 | Amnesiac Count | How many Amnesiacs should spawn in Custom Mode | Number | 1 |
 | Amnesiac Is Unique In All Any | Self descriptive | Toggle | False |
@@ -646,7 +666,7 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Arsonist | The percentage probability of the Arsonist appearing | Percentage | 0% |
 | Arsonist Count | How many Arsonists should spawn in Custom Mode | Number | 1 |
 | Arsonist Is Unique In All Any | Self descriptive | Toggle | False |
@@ -665,7 +685,7 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Cannibal | The percentage probability of the Cannibal appearing | Percentage | 0% |
 | Cannibal Count | How many Cannibals should spawn in Custom Mode | Number | 1 |
 | Cannibal Is Unique In All Any | Self descriptive | Toggle | False |
@@ -685,7 +705,7 @@ The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Cryomaniac | The percentage probability of the Cryomaniac appearing | Percentage | 0% |
 | Cryomaniac Count | How many Cryomaniacs should spawn in Custom Mode | Number | 1 |
 | Cryomaniac Is Unique In All Any | Self descriptive | Toggle | False |
@@ -701,7 +721,7 @@ The Dampyr appears only when a player with the ability to kill gets bitten by th
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Bite Cooldown | The cooldown of the Dampyr's bite button | Time | 25s |
 | Dampyr Can Vent | Decides whether the Dampyr can vent | Toggle | False |
 
@@ -714,7 +734,7 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Dracula | The percentage probability of the Dracula appearing | Percentage | 0% |
 | Dracula Count | How many Draculas should spawn in Custom Mode | Number | 1 |
 | Dracula Is Unique In All Any | Self descriptive | Toggle | False |
@@ -732,7 +752,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Executioner | The percentage probability of the Executioner appearing | Percentage | 0% |
 | Executioner Count | How many Executioners should spawn in Custom Mode | Number | 1 |
 | Executioner Is Unique In All Any | Self descriptive | Toggle | False |
@@ -758,7 +778,7 @@ The Glitch has 2 abilities. The Glitch can hack players, resulting in them being
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Glitch | The percentage probability of Glitch appearing | Percentage | 0% |
 | Glitch Count | How many Glitches should spawn in Custom Mode | Number | 1 |
 | Glitch Is Unique In All Any | Self descriptive | Toggle | False |
@@ -778,7 +798,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Guardian Angel | The percentage probability of the Guardian Angel appearing | Percentage | 0% |
 | Guardian Angel Count | How many Guardian Angels should spawn in Custom Mode | Number | 1 |
 | Guardian Angel Is Unique In All Any | Self descriptive | Toggle | False |
@@ -802,22 +822,15 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Executioner | The percentage probability of the Executioner appearing | Percentage | 0% |
-| Executioner Count | How many Executioners should spawn in Custom Mode | Number | 1 |
-| Executioner Is Unique In All Any | Self descriptive | Toggle | False |
-| Executioner Becomes On Target Dead | Which role the Executioner becomes when their target dies | String | Crewmate |
-| Executioner Can Button | Whether the Executioner Can Press the emergency Button | Toggle | True |
-| Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
-| Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
-| Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
-| Executioner Can Have Intruder Targets | Decides if the Executioner can have an Intruder as a target | Toggle | False |
-| Executioner Can Have Syndicate Targets | Decides if the Executioner can have a Syndicate as a target | Toggle | False |
-| Executioner Can Have Neutral Targets | Decides if the Executioner can have a Neutral as a target | Toggle | False |
-| Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
-| Executioner Can Hide In Vents | Whether the Executioner Can Vent | Toggle | False |
-| Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
-| Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
+|------|-------------|------|---------|
+| Guesser | The percentage probability of the Guesser appearing | Percentage | 0% |
+| Guesser Count | How many Executioners should spawn in Custom Mode | Number | 1 |
+| Guesser Is Unique In All Any | Self descriptive | Toggle | False |
+| Guesser Can Button | Whether the Guesser Can Press the emergency Button | Toggle | True |
+| Target Knows Guesser Exists | Whether the Guesser's target knows that they have a Guesser for them | Toggle | False |
+| Guesser Can Hide In Vents | Whether the Guesser Can Vent | Toggle | False |
+| Guesser Can Switch Vents | Whether the Guesser Can Switch while in Vents | Toggle | False |
+| Vigilante Kills Guesser | Whether the Vigilante is able to kill the Guesser | Toggle | False |
 
 ## Jackal
 ### **Alignment: Neutral (Neophyte)**
@@ -828,7 +841,7 @@ The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the star
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Jackal | The percentage probability of the Jackal appearing | Percentage | 0% |
 | Jackal Count | How many Jesters should spawn in Custom Mode | Number | 1 |
 | Jackal Is Unique In All Any | Self descriptive | Toggle | False |
@@ -845,7 +858,7 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Jester | The percentage probability of the Jester appearing | Percentage | 0% |
 | Jester Count | How many Jesters should spawn in Custom Mode | Number | 1 |
 | Jester Is Unique In All Any | Self descriptive | Toggle | False |
@@ -864,7 +877,7 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Juggernaut | The percentage probability of the Juggernaut appearing | Percentage | 0% |
 | Juggernaut Count | How many Juggernauts should spawn in Custom Mode | Number | 1 |
 | Juggernaut Is Unique In All Any | Self descriptive | Toggle | False |
@@ -881,11 +894,34 @@ The Murderer is a simple Neutral Killer with no special abilities.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Murderer | The percentage probability of the Murderer appearing | Percentage | 0% |
 | Murderer Count | How many Murderers should spawn in Custom Mode | Number | 1 |
-| Murderer Kill Cooldown | The cooldown on the Murderer's kill cooldown | Time | 25s |
+| Murderer Is Unique In All Any | Self descriptive | Toggle | False |
+| Murderer Kill Cooldown | The cooldown on the Murderer's kill button | Time | 25s |
 | Murderer Can Vent | Toggles the Murderer's ability to vent | Toggle | False|
+
+## Necromancer
+### **Alignment: Neutral (Neophyte)**
+### Win Condition: Bring the undead to your side.
+
+The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's team. There is a limit to how many times can the Necromancer kill and revive players.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Necromancer | The percentage probability of the Necromancer appearing | Percentage | 0% |
+| Necromancer Count | How many Necromancers should spawn in Custom Mode | Number | 1 |
+| Necromancer Is Unique In All Any | Self descriptive | Toggle | False |
+| Necromancer Kill Cooldown | The cooldown on the Necromancer's kill button | Time | 25s |
+| Necromancer Kill Cooldown Increase | The increase on the Necromancer's kill cooldown with each use | Time | 5s |
+| Necromancer Kill Count | The number of times the Necromancer can kill | Number | 3 |
+| Necromancer Resurrect Cooldown | The cooldown on the Necromancer's Resurrect button | Time | 25s |
+| Necromancer Resurrect Count | The number of times the Necromancer can Resurrect | Number | 3 |
+| Necromancer Resurrect Cooldown Increase | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
+| Necromancer Can Vent | Toggles the Necromancer's ability to vent | Toggle | False|
+| Reanimated Can Vent | Whether the Necromancer's reanimated Can Vent, overriding their role's vent settings | Toggle | False |
 
 ## Pestilence
 ### **Alignment: Neutral (Proselyte)**
@@ -896,11 +932,24 @@ Pestilence is always on permanent alert, where anyone who tries to interact with
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Pestilence Can Spawn Directly | Dictates whether Pestilence can appear even if no one is infected | Toggle | False |
 | Pestilence Transform Alerts Everyone | Dictates whether everyone is alerted when the Plaguebearer turns into Pestilence | Toggle | False |
 | Pestilence Kill Cooldown | The cooldown on Pestilence's kill cooldown | Timer | 25s |
 | Pestilence Can Vent | Whether Pestilence Can Vent | Toggle | False |
+
+## Phantom
+### **Alignment: Neutral (Proselyte)**
+### Win Condition: Finish your tasks without getting clicked or having the game end.
+
+The Phantom spawns when a Neutral player dies. They become half-invisible when they die and has to complete all their tasks without getting caught.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
+| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 
 ## Plaguebearer
 ### **Alignment: Neutral (Killing)**
@@ -911,9 +960,10 @@ The Plaguebearer can infect other players. Once infected, the infected player ca
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Plaguebearer | The percentage probability of the Plaguebearer appearing | Percentage | 0% |
 | Plaguebearer Count | How many Plaguebearers should spawn in Custom Mode | Number | 1 |
+| Plaguebearer Is Unique In All Any | Self descriptive | Toggle | False |
 | Infect Cooldown | The cooldown of the Plaguebearer's Infect button | Time | 25s |
 | Plaguebearer can Vent | Whether the Plaguebearer can Vent | Toggle | False |
 
@@ -926,9 +976,10 @@ Although the Serial Killer has a kill button, they can't use it unless they are 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Serial Killer | The percentage probability of the Serial Killer appearing | Percentage | 0% |
 | Serial Killer Count | How many Serial Killers should spawn in Custom Mode | Number | 1 |
+| Serial Killer Is Unique In All Any | Self descriptive | Toggle | False |
 | Bloodlust Cooldown | The cooldown of the Serial Killer's bloodlust button | Time | 25s |
 | Bloodlust Duration | The duration of the Serial Killer's bloodlust | Time | 25s |
 | Stab Cooldown | The cooldown of the Serial Killer's Kill button | Time | 10s |
@@ -942,9 +993,10 @@ The Survivor wins by simply surviving. They can vest which makes them immune to 
 
 ### Game Options
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|----------|---------------|--------|--------|
 | Survivor | The percentage probability of the Survivor appearing | Percentage | 0% |
 | Survivor Count | How many Survivors should spawn in Custom Mode | Number | 1 |
+| Survivor Is Unique In All Any | Self descriptive | Toggle | False |
 | Vest Cooldown | The cooldown of the Survivor's Vest button | Time | 25s |
 | Vest Duration | How long The Survivor's Vest lasts | Time | 10s |
 | Kill Cooldown Reset on Attack | The attackers kill cooldown after they attack a vested Survivor | Time | 2.5s |
@@ -961,9 +1013,10 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Thief | The percentage probability of the Thief appearing | Percentage | 0% |
 | Thief Count | How many Thieves should spawn in Custom Mode | Number | 1 |
+| Thief Is Unique In All Any | Self descriptive | Toggle | False |
 | Thief Kill Cooldown | The cooldown of the Thief's kill button | Time | 25s |
 | Thief Can Vent | Whether Thief Can Vent | Toggle | False |
 
@@ -976,9 +1029,10 @@ The Troll just wants to be killed, but not ejected. The Troll can fake interact 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Troll | The percentage probability of the Troll appearing | Percentage | 0% |
 | Troll Count | How many Trolls should spawn in Custom Mode | Number | 1 |
+| Troll Is Unique In All Any | Self descriptive | Toggle | False |
 | Troll Can Interact | Toggles the Troll's ability to interact with players | Toggle | False |
 | Interaction Cooldown | The cooldown of the Troll's interact button | Time | 25s |
 | Troll Can Vent | Whether Troll Can Vent | Toggle | False |
@@ -992,7 +1046,7 @@ The Vampire has no special abilities and just exists to be additional voting pow
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Vampire Can Vent | Whether Vampire Can Vent | Toggle | False |
 
 ## Werewolf
@@ -1004,12 +1058,38 @@ The Werewolf can kill all players within a certain radius.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Werewolf | The percentage probability of the Werewolf appearing | Percentage | 0% |
 | Werewolf Count | How many Werewolves should spawn in Custom Mode | Number | 1 |
+| Werewolf Is Unique In All Any | Self descriptive | Toggle | False |
 | Maul Cooldown | The cooldown on the Werewolf's kill button | Time | 30s |
 | Maul Radius | How far must a player be to survive a Werewolf's attack | Factor | 1x |
 | Werewolf Can Vent | Toggles the Murderer's ability to vent | Toggle | False|
+
+## Whisperer
+### **Alignment: Neutral (Killing)**
+### Win Condition: Persuade others into joining the cult.
+
+The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Whisperer's side increases till they do convert.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Werewolf | The percentage probability of the Werewolf appearing | Percentage | 0% |
+| Werewolf Count | How many Werewolves should spawn in Custom Mode | Number | 1 |
+| Werewolf Is Unique In All Any | Self descriptive | Toggle | False |
+| Maul Cooldown | The cooldown on the Werewolf's kill button | Time | 30s |
+| Maul Radius | How far must a player be to survive a Werewolf's attack | Factor | 1x |ber | 1 |
+| Necromancer Is Unique In All Any | Self descriptive | Toggle | False |
+| Necromancer Kill Cooldown | The cooldown on the Necromancer's kill button | Time | 25s |
+| Necromancer Kill Cooldown Increase | The increase on the Necromancer's kill cooldown with each use | Time | 5s |
+| Necromancer Kill Count | The number of times the Necromancer can kill | Number | 3 |
+| Necromancer Resurrect Cooldown | The cooldown on the Necromancer's Resurrect button | Time | 25s |
+| Necromancer Resurrect Count | The number of times the Necromancer can Resurrect | Number | 3 |
+| Necromancer Resurrect Cooldown Increase | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
+| Necromancer Can Vent | Toggles the Necromancer's ability to vent | Toggle | False|
+| Reanimated Can Vent | Whether the Necromancer's reanimated Can Vent, overriding their role's vent settings | Toggle | False |
 
 -----------------------
 
@@ -1023,7 +1103,7 @@ The Blackmailer can silence people in meetings. During each round, the Blackmail
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Blackmailer | The percentage probability of the Blackmailer appearing | Percentage | 0% |
 | Blackmailer Count | How many Blackmailers should spawn in Custom Mode | Number | 1 |
 | Initial Blackmail Cooldown | The initial cooldown of the Blackmailer's Blackmail button | Time | 10s |
@@ -1036,7 +1116,7 @@ The Camouflager does the same thing as the Comms Sabotage, but their camouflage 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Camouflager | The percentage probability of the Camouflager appearing | Percentage | 0% |
 | Camouflager Count | How many Camouflagers should spawn in Custom Mode | Number | 1 |
 | Camouflage Cooldown | The cooldown of the Camouflager's Camouflage button | Time | 25s |
@@ -1052,7 +1132,7 @@ The Consigliere can reveal people's roles. They cannot get Assassin unless they 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Consigliere | The percentage probability of the Consigliere appearing | Percentage | 0% |
 | Consigliere Count | How many Consiglieres should spawn in Custom Mode | Number | 1 |
 | Reveal Cooldown | The initial cooldown of the Consigliere's reveal button | Time | 10s |
@@ -1066,7 +1146,7 @@ The Consort can roleblock players and prevent them from doing anything for a sho
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Consort | The percentage probability of the Consort appearing | Percentage | 0% |
 | Consort Count | How many Consorts should spawn in Custom Mode | Number | 1 |
 | Roleblock Cooldown | The cooldown of the Consort's roleblock button | Time | 25s |
@@ -1080,7 +1160,7 @@ The Disguiser can disguise into other players. At the beginning of the game and 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Disguiser | The percentage probability of the Disguiser appearing | Percentage | 0% |
 | Disguiser Count | How many Disguisers should spawn in Custom Mode | Number | 1 |
 | Disguise Cooldown | The cooldown of the Disguiser's disguise button | Time | 25s |
@@ -1095,7 +1175,7 @@ The Godfather can only spawn in 3+ Intruder games. They can choose to promote a 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Godfather | The percentage probability of the Godfather appearing | Percentage | 0% |
 | Godfather Count | How many Godfathers should spawn in Custom Mode | Number | 1 |
 | Initial Promotion Cooldown | The initial cooldown of the Godfather's promote button | Time | 10s |
@@ -1108,7 +1188,7 @@ The Grenadier can throw flash grenades which blinds nearby players. However, a s
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Grenadier | The percentage probability of the Grenadier appearing | Percentage | 0% |
 | Grenadier Count | How many Godfathers should spawn in Custom Mode | Number | 1 |
 | Flash Grenade Cooldown | The cooldown of the Grenadier's Flash button | Time | 25s |
@@ -1125,7 +1205,7 @@ Just a plain Intruder with no abilities and only spawns if all the other roles a
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Impostor | The percentage probability of the Impostor appearing | Percentage | 0% |
 | Impostor Count | How many Impostors should spawn in Custom Mode | Number | 1 |
 
@@ -1137,7 +1217,7 @@ The Janitor can clean up bodies. Both their Kill and Clean ability have a shared
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Janitor | The percentage probability of the Janitor appearing | Percentage | 0% |
 | Janitor Count | How many Janitors should spawn in Custom Mode | Number | 1 |
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
@@ -1151,7 +1231,7 @@ The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso b
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Cooldown Multiplier | How much do the cooldowns decrease by upon promotion | Factor | x0.75 |
 
 ## Miner
@@ -1162,7 +1242,7 @@ The Miner can create new vents. These vents only connect to each other, forming 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Miner | The percentage probability of the Miner appearing | Percentage | 0% |
 | Miner Count | How many Miners should spawn in Custom Mode | Number | 1 |
 | Mine Cooldown | The cooldown of the Miner's Mine button | Time | 25s |
@@ -1175,7 +1255,7 @@ The Morphling can morph into another player. At the beginning of the game and af
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Morphling | The percentage probability of the Morphling appearing | Percentage | 0% |
 | Morphling Count | How many Morphlings should spawn in Custom Mode | Number | 1 |
 | Morph Cooldown | The cooldown of the Morphling's Morph button | Time | 25s |
@@ -1190,7 +1270,7 @@ The Poisoner can poison another player instead of killing. When they poison a pl
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Poisoner | The percentage probability of the Poisoner appearing | Percentage | 0% |
 | Poisoner Count | How many Poisoners should spawn in Custom Mode | Number | 1 |
 | Poison Cooldown | The cooldown of the Poisoner's Poison button | Time | 25s |
@@ -1204,7 +1284,7 @@ The Teleporter can teleport to a marked positions. Once per round, the Teleporte
 
 ### Game Options
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|----------|---------------|--------|--------|
 | Teleporter | The percentage probability of the Teleporter appearing | Percentage | 0% |
 | Teleporter Count | How many Teleporters should spawn in Custom Mode | Number | 1 |
 | Recall Cooldown | The cooldown of the Teleporter's teleport button | Time | 25s |
@@ -1218,7 +1298,7 @@ The Time Master can freeze time, causing all non-Intruders (and the Time Lord if
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Time Master | The percentage probability of the Time Master appearing | Percentage | 0% |
 | Time Master Count | How many Time Masters should spawn in Custom Mode | Number | 1 |
 | Freeze Cooldown | The cooldown of the Time Master's freeze button | Time | 25s |
@@ -1232,7 +1312,7 @@ The Undertaker can drag, drop bodies and hide them in vents.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Undertaker | The percentage probability of the Undertaker appearing | Percentage | 0% |
 | Undertaker Count | How many Undertakers should spawn in Custom Mode | Number | 1 |
 | Undertaker Drag Cooldown | The cooldown of the Undertaker Drag ability | Time | 25s |
@@ -1247,7 +1327,7 @@ The Wraith can temporarily turn invisible.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Wraith | The percentage probability of the Wraith appearing | Percentage | 0% |
 | Wraith Count | How many Wraiths should spawn in Custom Mode | Number | 1 |
 | Wraith Cooldown | The cooldown of the Wraith's Swoop button | Time | 25s |
@@ -1266,7 +1346,7 @@ Just a plain Syndicate with no abilities and only spawns if all the other roles 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Anarchist | The percentage probability of the Anarchist appearing | Percentage | 0% |
 | Anarchist Count | How many Anarchists should spawn in Custom Mode | Number | 1 |
 
@@ -1278,7 +1358,7 @@ The Concealer can make everyone invisible for a short while, allowing sneaky kil
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Concealer | The percentage probability of the Concealer appearing | Percentage | 0% |
 | Concealer Count | How many Concealers should spawn in Custom Mode | Number | 1 |
 | Conceal Cooldown | The cooldown on the Concealer's conceal button | Time | 25s |
@@ -1292,7 +1372,7 @@ The Gorgon can stone gaze people to freeze them in place. Upon getting stoned, i
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Gorgon | The percentage probability of the Gorgon appearing | Percentage | 0% |
 | Gorgon Count | How many Gorgons should spawn in Custom Mode | Number | 1 |
 | Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
@@ -1306,7 +1386,7 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Rebel | The percentage probability of the Rebel appearing | Percentage | 0% |
 | Rebel Count | How many Rebels should spawn in Custom Mode | Number | 1 |
 | Initial Promotion Cooldown | The initial cooldown of the Rebel's promote button | Time | 10s |
@@ -1319,7 +1399,7 @@ The Shapeshifter can randomise everyone's appearances for a short while.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Shapeshifter | The percentage probability of the Shapeshifter appearing | Percentage | 0% |
 | Shapeshifter Count | How many Shapeshifters should spawn in Custom Mode | Number | 1 |
 | Shapeshift Cooldown | The cooldown on the Shapeshifter's shapeshift button | Time | 25s |
@@ -1333,7 +1413,7 @@ The Sidekick is promoted from a random non-Rebel Intruder role. The Sidekick by 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Cooldown Multiplier | How much do the cooldowns decrease by upon promotion | Factor | x0.75 |
 
 ## Warper
@@ -1344,7 +1424,7 @@ The Warper can teleport everyone to a random vent every now and then.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Warper | The percentage probability of the Warper appearing | Percentage | 0% |
 | Warper Count | How many Warpers should spawn in Custom Mode | Number | 1 |
 | Warp Cooldown | The cooldown on the Warper's warp button | Time | 25s |
@@ -1363,25 +1443,11 @@ The Lovers are two players who are linked together. They gain the primary object
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Lovers | The percentage probability of the Lovers appearing | Percentage | 0% |
 | Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
 | Loving Impostor Probability | The chances of one lover being an Impostor | Percentage | 20% |
 | Neutral Roles Can Be Lovers | Whether a Lover can be a Neutral Role | Toggle | True |
-
-## Phantom
-### Applied To: Neutrals
-### Win Condition: Finish your tasks without getting clicked or having the game end.
-
-The Phantom spawns when a Neutral dies.
-They become half-invisible when they die and has to complete all their tasks without getting caught.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Phantom | The percentage probability of the Phantom appearing | Percentage | 0% |
-| When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 
 -----------------------
 
@@ -1396,7 +1462,7 @@ Killing the Bait makes the killer auto self-report.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Bait | The percentage probability of the Bait appearing | Percentage | 0% |
 | Bait Minimum Delay | The minimum time the killer of the Bait reports the body | Time | 0s |
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
@@ -1410,7 +1476,7 @@ They have the same amount of meetings as a regular player.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Button Barry | The percentage probability of Button Barry appearing | Percentage | 0% |
 
 ## Coward
@@ -1422,7 +1488,7 @@ The Coward's report button does not light up.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Coward | The percentage probability of Coward appearing | Percentage | 0% |
 
 ## Diseased
@@ -1434,7 +1500,7 @@ Killing the Diseased increases the killer's Kill cooldown.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Diseased | The percentage probability of the Diseased appearing | Percentage | 0% |
 | Kill Multiplier | How much the Kill Cooldown of the killer is increased by | Factor | 3x |
 
@@ -1446,7 +1512,7 @@ The Drunk player's controls are inverted.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Drunk | The percentage probability of the Drunk appearing | Percentage | 0% |
 
 ## Dwarf
@@ -1458,7 +1524,7 @@ The Dwarf travels at increased speed and has a much smaller body.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Dwarf | The percentage probability of the Dwarf appearing | Percentage | 0% |
 | Dwarf Speed | How fast the Dwarf moves in comparison to normal | Factor | 1.3x |
 | Dwarf Scale | How small the Dwarf is in comparison to normal | Factor | 0.5x |
@@ -1472,7 +1538,7 @@ The Giant is a gigantic player that has a decreased walk speed.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Giant | The percentage probability of the Giant appearing | Percentage | 0% |
 | Giant Speed | How slow the Giant moves in comparison to normal | Factor | 0.75x |
 | Giant Scale | How big the Giant is in comparison to normal | Factor | 1.5x |
@@ -1488,7 +1554,7 @@ If the Tiebreaker is the Mayor, it applies to the Mayor's __first__ vote.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Tiebreaker | The percentage probability of the Tiebreaker appearing | Percentage | 0% |
 
 ## Torch
@@ -1500,7 +1566,7 @@ The Torch's vision doesn't get reduced when the lights are sabotaged.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Torch | The percentage probability of the Torch appearing | Percentage | 0% |
 
 ## Volatile
@@ -1512,7 +1578,7 @@ You see and hear things and might lash out on others.
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Volatile | The percentage probability of the Volatile appearing | Percentage | 0% |
 
 ## Assassin
@@ -1525,7 +1591,7 @@ If they guess wrong, they die instead.
 
 ### Game Options
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|----------|---------------|--------|--------|
 | Number of Impostor Assassins | How many Impostors can Assassinate | Number | 1 |
 | Number of Neutral Killing Assassins | How many Neutral Killers can Assassinate | Number | 1 |
 | Number of Crew Assassins | How many Crewmates can Assassinate | Number | 1 |
@@ -1551,7 +1617,7 @@ However, when they only have a single task left, the Impostors get an arrow poin
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Snitch | The percentage probability of the Snitch appearing | Percentage | 0% |
 | Snitch Sees Neutral Roles | Whether the Snitch also Reveals Neutral Roles | Toggle | False |
 | Snitch Sees Crew Roles | Whether the Snitch also Reveals Crew Roles | Toggle | False |
@@ -1568,7 +1634,7 @@ The Taskmaster is basically a Neutral Snitch. When a certain number of tasks are
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Taskmaster | The percentage probability of the Taskmaster appearing | Percentage | 0% |
 | Taskmaster Count | How many Taskmasters should spawn in Custom Mode | Number | 1 |
 | Taskmaster Can Vent | Whether Taskmaster Can Vent | Toggle | False |
@@ -1584,7 +1650,7 @@ Once this player has turned into the Traitor their alliance sits with the Intrud
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Traitor | The percentage probability of the Traitor appearing | Percentage | 0% |
 | Latest Spawn | The minimum number of people alive when a Traitor can spawn | Number | 5 |
 | Traitor Won't Spawn if Neutral Killing are Alive | Whether the Traitor won't spawn if any Neutral Killing roles are alive | Toggle | False |
@@ -1599,10 +1665,102 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
+|------|-------------|------|---------|
 | Underdog | The percentage probability of the Underdog appearing | Percentage | 0% |
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
 | Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when 2+ Imps are alive | Toggle | True |
+
+-----------------------
+
+# Custom Game Settings
+
+## Game Mode Settings
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Game Mode | What game mode the next game will be | Classic / All Any / Killing Only / Custom | Classic |
+
+## All Any Mode Settings
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Enable Uniques | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
+
+## Killing Only Mode Settings
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Neutral Roles | How many neutrals roles will spawn | Number | 1 |
+| Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
+| Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
+| Add Cryomaniac | Whether Cryomaniac will be added to the role list | Toggle | True |
+
+## Map Settings
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Choose Random Map | Whether the Map is randomly picked at the start of the game | Toggle | False |
+| Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
+| Mira HQ Chance | The percentage probability of the Mira HQ map being chosen | Percentage | 0% |
+| Polus Chance | The percentage probability of the Polus map being chosen | Percentage | 0% |
+| Airship Chance | The percentage probability of the Airship map being chosen | Percentage | 0% |
+| Submerged Chance | The percentage probability of the Submerged map being chosen | Percentage | 0% |
+| Auto Adjust Settings | Whether the Settings of the game are auto adjusted depending on the map | Toggle | False |
+| Half Vision on Skeld/Mira HQ | Whether the Vision is automatically halved on Skeld/Mira HQ | Toggle | False |
+| Mira HQ Decreased Cooldowns | How much less time the cooldowns are set to for Mira HQ | Time | 0s |
+| Airship/Submerged Increased Cooldowns | How much more time the cooldowns are set to for Airship/Submerged | Time | 0s |
+| Skeld/Mira HQ Increased Short Tasks | How many extra short tasks when the map is Skeld/Mira HQ | Number | 0 |
+| Skeld/Mira HQ Increased Long Tasks | How many extra long tasks when the map is Skeld/Mira HQ | Number | 0 |
+| Airship/Submerged Decreased Short Tasks | How many less short tasks when the map is Airship/Submerged | Number | 0 |
+| Airship/Submerged Decreased Long Tasks | How many less long tasks when the map is Airship/Submerged | Number | 0 |
+
+## Better Polus Settings
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Better Polus Vent Layout | Optimizes Vent Layout on Polus | Toggle | False |
+| Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
+| Cole Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
+| Reboot Wifi and Chart Course Swapped | Whether the Reboot Wifi and Chart Course swap locations | Toggle | False |
+
+## Game Modifiers
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | False |
+| Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
+| Serial Venters | Whether everyone, no one or the default roles can vent | Default / Everyone / No One | Default |
+| All Crew Must Die | Win conditions for killing roles become more sophisticated and specific | Toggle | False |
+
+## Custom Game Options
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Game Start Cooldowns | The cooldown for all roles at the start of the game | Time | 10s |
+
+## Quality Changes
+| Name | Description | Type | Default |
+|----------|---------------|--------|--------|
+| Impostors can see the roles of their team | Whether Impostors are able to see which Impostor roles their teammates have | Toggle | False |
+| Dead can see everyone's roles and Votes | Whether dead players are able to see the roles and votes of everyone else | Toggle | False |
+| Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
+| Disable Meeting Skip Button | Whether the meeting button is disabled | No / Emergency / Always | No |
+| Disable Level Icons | Whether all level icons are removed in meetings | Toggle | False |
+| Disable Player Nameplates | Whether all decorative nameplates are disabled in meetings | Toggle | False |
+| Enable Custom Crew Colors | Whether all Crew roles will have their colors unique or not | Toggle | True |
+| Enable Custom Intruder Colors | Whether all Intruder roles will have their colors unique or not | Toggle | True |
+| Enable Custom Neutral Colors | Whether all Neutral roles will have their colors unique or not | Toggle | False |
+| Enable Custom Modifier Colors | Whether all Modifier will have their colors unique or not | Toggle | True |
+| Enable Sound Effect | Whether all sound effects will play when certain interactions / victories happen | Toggle | True |
+
+-----------------------
+
+# Extras
+
+## New Colors!
+New colors are added for crewmates to pick from.
+
+## Rainbow Color!
+A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
+
+## Custom Hats!
+Custom hats have been added, made by some very talented artists. These are mostly hats for streamers.
+
+## Bug / Suggestions
+If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/ugyc4EVUYZ) or create a ticket on GitHub.
 
 -----------------------
 
@@ -1646,7 +1804,7 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 - Gold - Lighter
 - Rainbow - Lighter
 
-## Colors
+## Factions
 
 **Crew**
 - Each member has a special ability which determines who’s who and can help weed out the evils
@@ -1674,99 +1832,6 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 
 -----------------------
 
-# Custom Game Settings
-
-## Game Mode Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Game Mode | What game mode the next game will be | Classic / All Any / Killing Only / Custom | Classic |
-
-## All Any Mode Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Enable Uniques | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
-
-## Killing Only Mode Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Neutral Roles | How many neutrals roles will spawn | Number | 1 |
-| Veteran Count | How many Veterans will spawn | Number | 1 |
-| Vigilante Count | How many Vigilantes will spawn | Number | 1 |
-| Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
-| Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
-
-## Map Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Choose Random Map | Whether the Map is randomly picked at the start of the game | Toggle | False |
-| Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
-| Mira HQ Chance | The percentage probability of the Mira HQ map being chosen | Percentage | 0% |
-| Polus Chance | The percentage probability of the Polus map being chosen | Percentage | 0% |
-| Airship Chance | The percentage probability of the Airship map being chosen | Percentage | 0% |
-| Submerged Chance | The percentage probability of the Submerged map being chosen | Percentage | 0% |
-| Auto Adjust Settings | Whether the Settings of the game are auto adjusted depending on the map | Toggle | False |
-| Half Vision on Skeld/Mira HQ | Whether the Vision is automatically halved on Skeld/Mira HQ | Toggle | False |
-| Mira HQ Decreased Cooldowns | How much less time the cooldowns are set to for Mira HQ | Time | 0s |
-| Airship/Submerged Increased Cooldowns | How much more time the cooldowns are set to for Airship/Submerged | Time | 0s |
-| Skeld/Mira HQ Increased Short Tasks | How many extra short tasks when the map is Skeld/Mira HQ | Number | 0 |
-| Skeld/Mira HQ Increased Long Tasks | How many extra long tasks when the map is Skeld/Mira HQ | Number | 0 |
-| Airship/Submerged Decreased Short Tasks | How many less short tasks when the map is Airship/Submerged | Number | 0 |
-| Airship/Submerged Decreased Long Tasks | How many less long tasks when the map is Airship/Submerged | Number | 0 |
-
-## Better Polus Settings
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Better Polus Vent Layout | Optimizes Vent Layout on Polus | Toggle | False |
-| Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
-| Cole Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
-| Reboot Wifi and Chart Course Swapped | Whether the Reboot Wifi and Chart Course swap locations | Toggle | False |
-
-## Game Modifiers
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | False |
-| Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
-| Serial Venters | Whether everyone, no one or the default roles can vent | Default / Everyone / No One | Default |
-| All Crew Must Die | Win conditions for killing roles become more sophisticated and specific | Toggle | False |
-
-## Custom Game Options
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Game Start Cooldowns | The cooldown for all roles at the start of the game | Time | 10s |
-
-## Quality Changes
-| Name | Description | Type | Default |
-|----------|:-------------:|:------:|:------:|
-| Impostors can see the roles of their team | Whether Impostors are able to see which Impostor roles their teammates have | Toggle | False |
-| Dead can see everyone's roles and Votes | Whether dead players are able to see the roles and votes of everyone else | Toggle | False |
-| Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
-| Disable Meeting Skip Button | Whether the meeting button is disabled | No / Emergency / Always | No |
-| Disable Level Icons | Whether all level icons are removed in meetings | Toggle | False |
-| Disable Player Nameplates | Whether all decorative nameplates are disabled in meetings | Toggle | False |
-| Enable Custom Crew Colors | Whether all Crew roles will have their colors unique or not | Toggle | True |
-| Enable Custom Intruder Colors | Whether all Intruder roles will have their colors unique or not | Toggle | True |
-| Enable Custom Neutral Colors | Whether all Neutral roles will have their colors unique or not | Toggle | False |
-| Enable Custom Modifier Colors | Whether all Modifier will have their colors unique or not | Toggle | True |
-| Enable Sound Effect | Whether all sound effects will play when certain interactions / victories happen | Toggle | True |
-
------------------------
-
-# Extras
-
-## New Colors!
-New colors are added for crewmates to pick from.
-
-## Rainbow Color!
-A rainbow color has also been added. Anyone who equips this color will constantly switch between the colors of the rainbow.
-
-## Custom Hats!
-Custom hats have been added, made by some very talented artists. These are mostly hats for streamers.
-
-## Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/ugyc4EVUYZ) or create a ticket on GitHub.
-
------------------------
-
 # Credits & Resources
 
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
@@ -1775,6 +1840,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers objectifier\
 [ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - For the Engineer & Medic roles\
 [TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
+[Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod\
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier\
@@ -1789,10 +1855,11 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
 [Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects\
-[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code I'm using in the mod plus some chat commands
+[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas\
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod\
+[VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
+[Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit which is now embedded into the mod
-
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>
 <p align="center">© Innersloth LLC.</p>

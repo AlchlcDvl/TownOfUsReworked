@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
         public List<PlayerControl> RevealerTargets = new List<PlayerControl>();
         public List<ArrowBehaviour> RevealerArrows = new List<ArrowBehaviour>();
+        public Role FormerRole;
 
         public Revealer(PlayerControl player) : base(player)
         {

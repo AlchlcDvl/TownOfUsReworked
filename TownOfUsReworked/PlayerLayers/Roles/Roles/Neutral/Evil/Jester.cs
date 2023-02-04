@@ -73,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             set
             {
                 _hauntButton = value;
-                AddToExtraButtons(value);
+                AddToAbilityButtons(value, this);
             }
         }
 
