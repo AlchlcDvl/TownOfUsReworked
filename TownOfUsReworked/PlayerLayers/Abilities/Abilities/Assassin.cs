@@ -6,9 +6,6 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 {
@@ -21,6 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public bool GuessedThisMeeting { get; set; } = false;
         public int RemainingKills { get; set; }
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
+        private bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
+            CustomGameOptions.NeutralAssassinOn > 0;
 
         public Assassin(PlayerControl player) : base(player)
         {
@@ -323,7 +322,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             //Add Abilities if enabled
             if (CustomGameOptions.AssassinGuessAbilities)
             {
-                if (CustomGameOptions.AssassinOn > 0)
+                if (AssassinOn)
                     ColorMapping.Add("Assassin", Colors.Assassin);
 
                 if (CustomGameOptions.TorchOn > 0)

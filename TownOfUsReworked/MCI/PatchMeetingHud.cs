@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.MCI
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
     class SameVoteAll

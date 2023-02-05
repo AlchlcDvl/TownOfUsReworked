@@ -24,6 +24,7 @@ Roles:-
   - Crewmate = 20
   - Vampire Hunter = 21
   - Chameleon = 65
+  - Retributionist = 68
 
 Neutral:-
   - Jester = 22
@@ -47,7 +48,6 @@ Neutral:-
   - Troll = 40
   - Guesser = 66
   - Whisperer = 67
-  - Necromancer = 68
 
 Intruders:-
   - Undertaker = 41
@@ -86,38 +86,41 @@ Syndicate:-
   - Phantom
 
 Modifiers:-
-- Diseased = 0
-- Bait = 1
-- Dwarf = 2
-- VIP = 3
-- Shy = 4
-- Giant = 5
-- Drunk = 6
-- Flincher = 7
-- Coward = 8
-- Volatile = 9
-- Professional = 10
-- Indomitable = 11
+- Diseased = 0 - D
+- Bait = 1 - B
+- Dwarf = 2 - G
+- VIP = 3 - G
+- Shy = 4 - G
+- Giant = 5 - G
+- Drunk = 6 - G
+- Flincher = 7 - G
+- Coward = 8 - G
+- Volatile = 9 - G
+- Professional = 10 - P
+- Indomitable = 11 - G
 
 Abilities:-
-- Assassin = 0
-- Snitch = 1
-- Insider = 2
-- Lighter = 3
-- Multitasker = 4
-- Radar = 5
-- Tiebreaker = 6
-- Torch = 7
-- Underdog = 8
-- Tunneler = 9
-- Ruthless = 10
+- Crew Assassin = 0 - C
+- Snitch = 1 - Sn
+- Insider = 2 - T
+- Lighter = 3 - C
+- Multitasker = 4 - T
+- Radar = 5 - G
+- Tiebreaker = 6 - G
+- Torch = 7 - Ne
+- Underdog = 8 - E
+- Tunneler = 9 - Tu
+- Ruthless = 10 - K
+- Intruder Assassin = 11 - I
+- Syndicate Assassin = 12 - S
+- Neutral Assassin = 13 - N
 
 Objectifiers:-
-- Lovers = 0
-- Rivals = 1
-- Fanatic = 2
-- Corrupted = 3
-- Overlord = 4
-- Allied = 5
-- Traitor = 6
-- Taskmaster = 7
+- Lovers = 0 - LR
+- Rivals = 1 - LR
+- Fanatic = 2 - C
+- Corrupted = 3 - C
+- Overlord = 4 - N
+- Allied = 5 - N
+- Traitor = 6 - C
+- Taskmaster = 7 - N

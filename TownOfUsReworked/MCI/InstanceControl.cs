@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.MCI
 {
     public static class InstanceControl
     {
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Patches
 
             DestroyableSingleton<HudManager>.Instance.SetHudActive(true);
 
-            //Hacky "fix" for twix and Det
+            //Hacky "fix" for twix and det
             DestroyableSingleton<HudManager>.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
@@ -56,10 +56,10 @@ namespace TownOfUsReworked.Patches
                     Object.Destroy(x.gameObject);
             });
 
-            PlayerControl.LocalPlayer.gameObject.SetActive(true);
             PlayerControl.LocalPlayer.lightSource = UnityEngine.Object.Instantiate<LightSource>(PlayerControl.LocalPlayer.LightPrefab);
             PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
             PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
+            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.GetTruePosition());
             Camera.main.GetComponent<FollowerCamera>().SetTarget(PlayerControl.LocalPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);

@@ -54,9 +54,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 writer.Write(id);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(position);
-                writer.Write(0.01f);
+                writer.Write(position.z + 0.01f);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                SpawnVent(id, role, position, 0.01f);
+                SpawnVent(id, role, position, position.z + 0.01f);
 
                 try
                 {

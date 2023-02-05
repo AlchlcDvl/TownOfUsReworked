@@ -48,6 +48,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             var hudManager = DestroyableSingleton<HudManager>.Instance;
             var assassinPlayer = assassin.Player;
 
+            if (player != assassinPlayer && player.Is(ModifierEnum.Indomitable) && !player.Is(RoleEnum.Actor))
+            {
+                if (player == PlayerControl.LocalPlayer)
+                    Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));
+                
+                return;
+            }
+
             if (player != assassinPlayer && player == PlayerControl.LocalPlayer && player.Is(ModifierEnum.Indomitable))
             {
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));

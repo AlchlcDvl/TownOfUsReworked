@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Patches
         {
             SpriteRenderer spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
 
-            if (CustomGameOptions.AnonymousFootPrint && (!CustomGameOptions.DeadSeeEverything || !PlayerControl.LocalPlayer.Data.IsDead))
+            if (CustomGameOptions.AnonymousVoting && !(CustomGameOptions.DeadSeeEverything  && PlayerControl.LocalPlayer.Data.IsDead))
                 PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
             else
                 PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);

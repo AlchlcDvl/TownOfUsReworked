@@ -76,32 +76,31 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, int, int, bool)> SyndicateSupportRoles = new List<(Type, int, int, bool)>();
         private static readonly List<(Type, int, int, bool)> SyndicateRoles = new List<(Type, int, int, bool)>();
 
-        private static readonly List<(Type, int, int)> GlobalModifiers = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> ProfessionalModifiers = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> BaitModifiers = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> DiseasedModifiers = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> AllModifiers = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int, bool)> GlobalModifiers = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> ProfessionalModifiers = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> BaitModifiers = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> DiseasedModifiers = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> AllModifiers = new List<(Type, int, int, bool)>();
 
-        private static readonly List<(Type, int, int)> GlobalAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> IntruderAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> CrewAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> TunnelerAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> NonEvilAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> TaskedAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> SnitchAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> NonVentingAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> EvilAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> SyndicateAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> NeutralAbilityGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> AllAbilities = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int, bool)> GlobalAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> IntruderAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> CrewAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> TunnelerAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> NonEvilAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> TaskedAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> SnitchAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> EvilAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> SyndicateAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> NeutralAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> KillingAbilityGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> AllAbilities = new List<(Type, int, int, bool)>();
 
-        private static readonly List<(Type, int, int)> CrewObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> CorruptedObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> NeutralObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> OverlordObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> LoverRivalObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> GlobalObjectifierGet = new List<(Type, int, int)>();
-        private static readonly List<(Type, int, int)> AllObjectifiers = new List<(Type, int, int)>();
+        private static readonly List<(Type, int, int, bool)> CrewObjectifierGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> CorruptedObjectifierGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> NeutralObjectifierGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> OverlordObjectifierGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> LoverRivalObjectifierGet = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> AllObjectifiers = new List<(Type, int, int, bool)>();
 
         private static readonly bool IsAA = CustomGameOptions.GameMode == GameMode.AllAny;
         private static readonly bool IsCustom = CustomGameOptions.GameMode == GameMode.Custom;
@@ -137,6 +136,7 @@ namespace TownOfUsReworked.Patches
             }
 
             list.RemoveAt(0);
+            list.Shuffle();
             return item;
         }
 
@@ -159,79 +159,9 @@ namespace TownOfUsReworked.Patches
 
             if (items.Count < max)
                 max = items.Count;
-
-            var amount = Random.RandomRangeInt(min, max + 1);
-
-            if (amount < 0)
-                amount = 0;
-
-            items.Sort((a, b) =>
-            {
-                var a_ = a.Item2 == 100 ? 0 : 100;
-                var b_ = b.Item2 == 100 ? 0 : 100;
-                return a_.CompareTo(b_);
-            });
-
-            var certainItems = 0;
-            var odds = 0;
-
-            foreach (var role in items)
-            {
-                if (role.Item2 == 100)
-                    certainItems += 1;
-                else
-                    odds += role.Item2;
-            }
-
-            while (certainItems < amount)
-            {
-                var num = certainItems;
-                var random = Random.RandomRangeInt(0, odds);
-                var rolePicked = false;
-
-                while (num < items.Count && rolePicked == false)
-                {
-                    random -= items[num].Item2;
-
-                    if (random < 0)
-                    {
-                        odds -= items[num].Item2;
-                        var role = items[num];
-                        items.Remove(role);
-                        items.Insert(0, role);
-                        certainItems += 1;
-                        rolePicked = true;
-                    }
-
-                    num += 1;
-                }
-            }
-
-            while (items.Count > amount && amount > 0)
-                items.RemoveAt(items.Count - 1);
             
-            items.Shuffle();
-        }
-
-        private static void SortThings(List<(Type, int, int)> items, int max, int min)
-        {
-            if (items.Count == 0)
-                return;
-                
-            items.Shuffle();
-
-            if (items.Count < max)
-                max = items.Count;
-
-            if (min > max)
-            {
-                var temp = min;
-                min = max;
-                max = temp;
-            }
-
-            if (items.Count < max)
-                max = items.Count;
+            if (min < 0)
+                min = 0;
 
             var amount = Random.RandomRangeInt(min, max + 1);
 
@@ -302,6 +232,7 @@ namespace TownOfUsReworked.Patches
         {
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
+            var allCount = crewmates.Count + impostors.Count;
 
             crewmates.Shuffle();
             impostors.Shuffle();
@@ -715,8 +646,6 @@ namespace TownOfUsReworked.Patches
                             CrewRoles.Add((typeof(Crewmate), 100, 20, false));
                         
                         CrewRoles.Shuffle();
-                        
-                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Classic/Custom Role Sort Done");
                     }
 
                     if (!NeutralRoles.Contains((typeof(Dracula), CustomGameOptions.DraculaOn, 39, CustomGameOptions.UniqueDracula)))
@@ -729,6 +658,73 @@ namespace TownOfUsReworked.Patches
 
                         CrewRoles.Shuffle();
                     }
+
+                    var crewCount = CrewRoles.Count;
+                    var neutralCount = NeutralRoles.Count;
+                    var intruderCount = CustomGameOptions.AltImps ? 0 : IntruderRoles.Count;
+                    var syndicateCount = SyndicateRoles.Count;
+
+                    SortThings(GlobalModifiers, allCount, allCount);
+                    SortThings(ProfessionalModifiers, allCount, allCount);
+                    SortThings(DiseasedModifiers, allCount, allCount);
+                    SortThings(BaitModifiers, allCount, allCount);
+
+                    SortThings(IntruderAbilityGet, intruderCount, intruderCount);
+                    SortThings(CrewAbilityGet, crewCount, crewCount);
+                    SortThings(SnitchAbilityGet, crewCount, crewCount);
+                    SortThings(TunnelerAbilityGet, crewCount, crewCount);
+                    SortThings(TaskedAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+                    SortThings(NeutralAbilityGet, neutralCount, neutralCount);
+                    SortThings(SyndicateAbilityGet, syndicateCount, syndicateCount);
+                    SortThings(KillingAbilityGet, allCount, allCount);
+                    
+                    SortThings(CrewObjectifierGet, crewCount, crewCount);
+                    SortThings(CorruptedObjectifierGet, crewCount, crewCount);
+                    SortThings(NeutralObjectifierGet, neutralCount, neutralCount);
+                    SortThings(OverlordObjectifierGet, neutralCount, neutralCount);
+                    SortThings(LoverRivalObjectifierGet, allCount, allCount);
+                    SortThings(EvilAbilityGet, intruderCount + syndicateCount, intruderCount + syndicateCount);
+                    SortThings(NonEvilAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+
+                    AllModifiers.AddRange(GlobalModifiers);
+                    AllModifiers.AddRange(ProfessionalModifiers);
+                    AllModifiers.AddRange(BaitModifiers);
+                    AllModifiers.AddRange(DiseasedModifiers);
+
+                    var maxMod = CustomGameOptions.MaxAbilities;
+                    var minMod = CustomGameOptions.MinAbilities;
+
+                    SortThings(AllModifiers, maxMod, minMod);
+
+                    AllAbilities.AddRange(GlobalAbilityGet);
+                    AllAbilities.AddRange(IntruderAbilityGet);
+                    AllAbilities.AddRange(CrewAbilityGet);
+                    AllAbilities.AddRange(TunnelerAbilityGet);
+                    AllAbilities.AddRange(NonEvilAbilityGet);
+                    AllAbilities.AddRange(TaskedAbilityGet);
+                    AllAbilities.AddRange(SnitchAbilityGet);
+                    AllAbilities.AddRange(KillingAbilityGet);
+                    AllAbilities.AddRange(EvilAbilityGet);
+                    AllAbilities.AddRange(SyndicateAbilityGet);
+                    AllAbilities.AddRange(NeutralAbilityGet);
+
+                    var maxAb = CustomGameOptions.MaxAbilities;
+                    var minAb = CustomGameOptions.MinAbilities;
+
+                    SortThings(AllAbilities, maxAb, minAb);
+
+                    AllObjectifiers.AddRange(CrewObjectifierGet);
+                    AllObjectifiers.AddRange(CorruptedObjectifierGet);
+                    AllObjectifiers.AddRange(NeutralObjectifierGet);
+                    AllObjectifiers.AddRange(OverlordObjectifierGet);
+                    AllObjectifiers.AddRange(LoverRivalObjectifierGet);
+
+                    var maxObj = CustomGameOptions.MaxAbilities;
+                    var minObj = CustomGameOptions.MinAbilities;
+
+                    SortThings(AllObjectifiers, maxObj, minObj);
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Classic/Custom Sorting Done");
                 }
                 else if (IsAA)
                 {
@@ -779,19 +775,22 @@ namespace TownOfUsReworked.Patches
                     AllAbilities.AddRange(NonEvilAbilityGet);
                     AllAbilities.AddRange(TaskedAbilityGet);
                     AllAbilities.AddRange(SnitchAbilityGet);
-                    AllAbilities.AddRange(NonVentingAbilityGet);
+                    AllAbilities.AddRange(KillingAbilityGet);
                     AllAbilities.AddRange(EvilAbilityGet);
                     AllAbilities.AddRange(SyndicateAbilityGet);
                     AllAbilities.AddRange(NeutralAbilityGet);
-                    
+
                     AllObjectifiers.AddRange(CrewObjectifierGet);
                     AllObjectifiers.AddRange(CorruptedObjectifierGet);
                     AllObjectifiers.AddRange(NeutralObjectifierGet);
                     AllObjectifiers.AddRange(OverlordObjectifierGet);
-                    AllObjectifiers.AddRange(GlobalObjectifierGet);
                     AllObjectifiers.AddRange(LoverRivalObjectifierGet);
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Role Sort Done");
+                    AllModifiers.Shuffle();
+                    AllAbilities.Shuffle();
+                    AllObjectifiers.Shuffle();
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Sorting Done");
                 }
 
                 var NonIntruderRoles = new List<(Type, int, int, bool)>();
@@ -819,9 +818,11 @@ namespace TownOfUsReworked.Patches
 
                         if (NonIntruderRoles[0].Item4 == true && CustomGameOptions.EnableUniques)
                             NonIntruderRoles.Remove(NonIntruderRoles[0]);
+
+                        nonIntruderRoles.Shuffle();
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Role List 1 Done");
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 1 Done");
 
                     while (impRoles.Count <= impostors.Count && IntruderRoles.Count > 0)
                     {
@@ -830,9 +831,11 @@ namespace TownOfUsReworked.Patches
 
                         if (IntruderRoles[0].Item4 == true && CustomGameOptions.EnableUniques)
                             IntruderRoles.Remove(IntruderRoles[0]);
+
+                        impRoles.Shuffle();
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Role List 2 Done");
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 2 Done");
                 }
 
                 nonIntruderRoles.Shuffle();
@@ -1004,86 +1007,132 @@ namespace TownOfUsReworked.Patches
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Killing Role Spawn 2 Done");
+
+                var crewCount = CrewRoles.Count;
+                var neutralCount = NeutralRoles.Count;
+                var intruderCount = CustomGameOptions.AltImps ? 0 : IntruderRoles.Count;
+                var syndicateCount = SyndicateRoles.Count;
+
+                SortThings(GlobalModifiers, allCount, allCount);
+                SortThings(ProfessionalModifiers, allCount, allCount);
+                SortThings(DiseasedModifiers, allCount, allCount);
+                SortThings(BaitModifiers, allCount, allCount);
+
+                SortThings(IntruderAbilityGet, intruderCount, intruderCount);
+                SortThings(CrewAbilityGet, crewCount, crewCount);
+                SortThings(SnitchAbilityGet, crewCount, crewCount);
+                SortThings(TunnelerAbilityGet, crewCount, crewCount);
+                SortThings(TaskedAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+                SortThings(NeutralAbilityGet, neutralCount, neutralCount);
+                SortThings(SyndicateAbilityGet, syndicateCount, syndicateCount);
+                SortThings(KillingAbilityGet, allCount, allCount);
+                
+                SortThings(CrewObjectifierGet, crewCount, crewCount);
+                SortThings(CorruptedObjectifierGet, crewCount, crewCount);
+                SortThings(NeutralObjectifierGet, neutralCount, neutralCount);
+                SortThings(OverlordObjectifierGet, neutralCount, neutralCount);
+                SortThings(LoverRivalObjectifierGet, allCount, allCount);
+                SortThings(EvilAbilityGet, intruderCount + syndicateCount, intruderCount + syndicateCount);
+                SortThings(NonEvilAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
+
+                AllModifiers.AddRange(GlobalModifiers);
+                AllModifiers.AddRange(ProfessionalModifiers);
+                AllModifiers.AddRange(BaitModifiers);
+                AllModifiers.AddRange(DiseasedModifiers);
+
+                var maxMod = CustomGameOptions.MaxAbilities;
+                var minMod = CustomGameOptions.MinAbilities;
+
+                SortThings(AllModifiers, maxMod, minMod);
+
+                AllAbilities.AddRange(GlobalAbilityGet);
+                AllAbilities.AddRange(IntruderAbilityGet);
+                AllAbilities.AddRange(CrewAbilityGet);
+                AllAbilities.AddRange(TunnelerAbilityGet);
+                AllAbilities.AddRange(NonEvilAbilityGet);
+                AllAbilities.AddRange(TaskedAbilityGet);
+                AllAbilities.AddRange(SnitchAbilityGet);
+                AllAbilities.AddRange(KillingAbilityGet);
+                AllAbilities.AddRange(EvilAbilityGet);
+                AllAbilities.AddRange(SyndicateAbilityGet);
+                AllAbilities.AddRange(NeutralAbilityGet);
+
+                var maxAb = CustomGameOptions.MaxAbilities;
+                var minAb = CustomGameOptions.MinAbilities;
+
+                SortThings(AllAbilities, maxAb, minAb);
+
+                AllObjectifiers.AddRange(CrewObjectifierGet);
+                AllObjectifiers.AddRange(CorruptedObjectifierGet);
+                AllObjectifiers.AddRange(NeutralObjectifierGet);
+                AllObjectifiers.AddRange(OverlordObjectifierGet);
+                AllObjectifiers.AddRange(LoverRivalObjectifierGet);
+
+                var maxObj = CustomGameOptions.MaxAbilities;
+                var minObj = CustomGameOptions.MinAbilities;
+
+                SortThings(AllObjectifiers, maxObj, minObj);
             }
-
-            var crewCount = CrewRoles.Count;
-            var neutralCount = NeutralRoles.Count;
-            var intruderCount = CustomGameOptions.AltImps ? 0 : IntruderRoles.Count;
-            var syndicateCount = SyndicateRoles.Count;
-            var allCount = crewmates.Count + impostors.Count;
-
-            SortThings(GlobalModifiers, allCount, allCount);
-            SortThings(ProfessionalModifiers, allCount, allCount);
-            SortThings(DiseasedModifiers, allCount, allCount);
-            SortThings(BaitModifiers, allCount, allCount);
-
-            SortThings(IntruderAbilityGet, intruderCount, intruderCount);
-            SortThings(CrewAbilityGet, crewCount, crewCount);
-            SortThings(SnitchAbilityGet, crewCount, crewCount);
-            SortThings(TunnelerAbilityGet, crewCount, crewCount);
-            SortThings(TaskedAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
-            SortThings(NeutralAbilityGet, neutralCount, neutralCount);
-            SortThings(SyndicateAbilityGet, syndicateCount, syndicateCount);
-            
-            SortThings(CrewObjectifierGet, crewCount, crewCount);
-            SortThings(CorruptedObjectifierGet, crewCount, crewCount);
-            SortThings(NeutralObjectifierGet, neutralCount, neutralCount);
-            SortThings(OverlordObjectifierGet, neutralCount, neutralCount);
-            SortThings(GlobalObjectifierGet, allCount, allCount);
-            SortThings(LoverRivalObjectifierGet, allCount, allCount);
-            SortThings(EvilAbilityGet, intruderCount + syndicateCount, intruderCount + syndicateCount);
-            SortThings(NonEvilAbilityGet, crewCount + neutralCount, crewCount + neutralCount);
 
             PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Layers Sorted");
 
             if (CustomGameOptions.EnableObjectifiers)
             {
                 var canHaveLoverorRival = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveObjectifier2 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveObjectifier3 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveNeutralObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveCrewObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
 
                 canHaveLoverorRival.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Shifter));
                 canHaveLoverorRival.Shuffle();
 
-                canHaveObjectifier.RemoveAll(player => !player.Is(Faction.Neutral));
-                canHaveObjectifier.Shuffle();
+                canHaveNeutralObjectifier.RemoveAll(player => !player.Is(Faction.Neutral));
+                canHaveNeutralObjectifier.Shuffle();
 
-                canHaveObjectifier2.RemoveAll(player => !player.Is(Faction.Crew));
-                canHaveObjectifier2.Shuffle();
+                canHaveCrewObjectifier.RemoveAll(player => !player.Is(Faction.Crew));
+                canHaveCrewObjectifier.Shuffle();
                 
-                if (!IsAA)
+                var obj = new List<(Type, int, int, bool)>();
+                var spawnList = AllObjectifiers;
+                
+                if (IsAA)
                 {
-                    while ((canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0) || (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0) || (canHaveObjectifier3.Count >
-                        0 && GlobalObjectifierGet.Count > 0) || (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0))
+                    while (obj.Count <= allCount && AllObjectifiers.Count > 0)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
+                        AllObjectifiers.Shuffle();                            
+                        obj.Add(AllObjectifiers[0]);
 
-                        if (canHaveObjectifier.Count > 0 && NeutralObjectifierGet.Count > 0 && random == 0)
-                        {
-                            var (type, _, id) = NeutralObjectifierGet.TakeFirst();
-                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier.TakeFirst(), id);
-                        }
-                        else if (canHaveObjectifier2.Count > 0 && CrewObjectifierGet.Count > 0 && random == 1)
-                        {
-                            var (type, _, id) = CrewObjectifierGet.TakeFirst();
-                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier2.TakeFirst(), id);
-                        }
-                        else if (canHaveObjectifier3.Count > 0 && GlobalObjectifierGet.Count > 0 && random == 2)
-                        {
-                            var (type, _, id) = GlobalObjectifierGet.TakeFirst();
-                            Objectifier.GenObjectifier<Objectifier>(type, canHaveObjectifier3.TakeFirst(), id);  
-                        }
-                        else if (canHaveLoverorRival.Count > 4 && LoverRivalObjectifierGet.Count > 0 && random == 3)
-                        {
-                            var (type, _, id) = LoverRivalObjectifierGet.TakeFirst();
+                        if (AllObjectifiers[0].Item4 == true && CustomGameOptions.EnableUniques)
+                            AllObjectifiers.Remove(AllObjectifiers[0]);
 
-                            if (id == 0)
-                                Lovers.Gen(canHaveLoverorRival);
-                            else if (id == 1)
-                                Rivals.Gen(canHaveLoverorRival);
-                        }
+                        obj.Shuffle();
                     }
+
+                    spawnList = obj;
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 3 Done");
+                }
+
+                while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 4)
+                {
+                    if (spawnList.Count <= 0)
+                        break;
+
+                    var (type, _, id, unique) = spawnList.TakeFirst();
+                    int[] LoverRival = { 0, 1 };
+                    int[] Crew = { 2, 3, 6 };
+                    int[] Neutral = { 4, 5, 7 };
+                    var random = Random.RandomRangeInt(0, 3);
+
+                    if (LoverRival.Contains(id) && random == 0 && canHaveLoverorRival.Count > 4)
+                    {
+                        if (id == 0)
+                            Lovers.Gen(canHaveLoverorRival);
+                        else if (id == 1)
+                            Rivals.Gen(canHaveLoverorRival);
+                    }
+                    else if (Crew.Contains(id) && random == 1 && canHaveCrewObjectifier.Count > 0)
+                        Objectifier.GenObjectifier<Objectifier>(type, canHaveCrewObjectifier.TakeFirst(), id);
+                    else if (Neutral.Contains(id) && random == 2 && canHaveNeutralObjectifier.Count > 0)
+                        Objectifier.GenObjectifier<Objectifier>(type, canHaveNeutralObjectifier.TakeFirst(), id);
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Objectifiers Done");
@@ -1091,109 +1140,112 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.EnableAbilities)
             {
+                var canHaveIntruderAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveNeutralAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveCrewAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveSyndicateAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveTunnelerAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveSnitch = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveTaskedAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveNonEvilAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveEvilAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveKillingAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
                 var canHaveAbility = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility2 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility3 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility4 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility5 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility6 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility7 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility8 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility9 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility10 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveAbility11 = PlayerControl.AllPlayerControls.ToArray().ToList();
 
-                canHaveAbility.RemoveAll(player => !player.Is(Faction.Intruder) || (player.Is(RoleEnum.Consigliere) && CustomGameOptions.ConsigInfo == ConsigInfo.Role));
-                canHaveAbility.Shuffle();
+                canHaveIntruderAbility.RemoveAll(player => !player.Is(Faction.Intruder) || (player.Is(RoleEnum.Consigliere) && CustomGameOptions.ConsigInfo == ConsigInfo.Role));
+                canHaveIntruderAbility.Shuffle();
 
-                canHaveAbility2.RemoveAll(player => !(player.Is(RoleAlignment.NeutralNeo) || player.Is(RoleAlignment.NeutralKill) || player.Is(RoleAlignment.NeutralPros)));
-                canHaveAbility2.Shuffle();
+                canHaveNeutralAbility.RemoveAll(player => !(player.Is(RoleAlignment.NeutralNeo) || player.Is(RoleAlignment.NeutralKill) || player.Is(RoleAlignment.NeutralPros)));
+                canHaveNeutralAbility.Shuffle();
 
-                canHaveAbility3.RemoveAll(player => !player.Is(Faction.Crew));
-                canHaveAbility3.Shuffle();
+                canHaveCrewAbility.RemoveAll(player => !player.Is(Faction.Crew));
+                canHaveCrewAbility.Shuffle();
 
-                canHaveAbility4.RemoveAll(player => !player.Is(Faction.Syndicate));
-                canHaveAbility4.Shuffle();
+                canHaveSyndicateAbility.RemoveAll(player => !player.Is(Faction.Syndicate));
+                canHaveSyndicateAbility.Shuffle();
 
-                canHaveAbility5.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(RoleEnum.Engineer));
-                canHaveAbility5.Shuffle();
+                canHaveTunnelerAbility.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(RoleEnum.Engineer));
+                canHaveTunnelerAbility.Shuffle();
 
-                canHaveAbility6.RemoveAll(player => !player.Is(Faction.Neutral));
-                canHaveAbility6.Shuffle();
+                canHaveSnitch.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(ObjectifierEnum.Traitor));
+                canHaveSnitch.Shuffle();
 
-                canHaveAbility7.RemoveAll(player => !player.Is(Faction.Crew) || player.Is(ObjectifierEnum.Traitor));
-                canHaveAbility7.Shuffle();
+                canHaveTaskedAbility.RemoveAll(player => !player.CanDoTasks());
+                canHaveTaskedAbility.Shuffle();
 
-                canHaveAbility8.RemoveAll(player => !player.CanDoTasks());
-                canHaveAbility8.Shuffle();
+                canHaveNonEvilAbility.RemoveAll(player => !(player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralBen) || player.Is(RoleAlignment.NeutralEvil)));
+                canHaveNonEvilAbility.Shuffle();
 
-                canHaveAbility9.RemoveAll(player => !(player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralBen) || player.Is(RoleAlignment.NeutralEvil)));
-                canHaveAbility9.Shuffle();
+                canHaveEvilAbility.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
+                canHaveEvilAbility.Shuffle();
 
-                canHaveAbility10.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
-                canHaveAbility10.Shuffle();
+                canHaveKillingAbility.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(RoleAlignment.NeutralNeo) ||
+                    player.Is(RoleAlignment.NeutralKill)));
+                canHaveKillingAbility.Shuffle();
                 
-                if (!IsAA)
+                var ab = new List<(Type, int, int, bool)>();
+                var spawnList = AllAbilities;
+                
+                if (IsAA)
                 {
-                    while ((canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0) || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 &&
-                        TunnelerAbilityGet.Count > 0) || (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0) || (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0) ||
-                        (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0) || (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0) || (canHaveAbility.Count > 0 &&
-                        IntruderAbilityGet.Count > 0) || (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0) || (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0) ||
-                        (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0))
+                    while (ab.Count <= allCount && AllAbilities.Count > 0)
                     {
-                        var random = Random.RandomRangeInt(0, 10);
+                        AllAbilities.Shuffle();                            
+                        ab.Add(AllAbilities[0]);
 
-                        if (canHaveAbility7.Count > 0 && SnitchAbilityGet.Count > 0 && random == 0)
-                        {
-                            var (type, _, id) = SnitchAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility7.TakeFirst(), id);
-                        }
-                        else if (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveAbility5.Count > 0 && TunnelerAbilityGet.Count > 0 && random == 1)
-                        {
-                            var (type, _, id) = TunnelerAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility5.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility9.Count > 0 && NonEvilAbilityGet.Count > 0 && random == 2)
-                        {
-                            var (type, _, id) = NonEvilAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility9.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility10.Count > 0 && EvilAbilityGet.Count > 0 && random == 3)
-                        {
-                            var (type, _, id) = EvilAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility10.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility8.Count > 0 && TaskedAbilityGet.Count > 0 && random == 4)
-                        {
-                            var (type, _, id) = TaskedAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility8.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility3.Count > 0 && CrewAbilityGet.Count > 0 && random == 5)
-                        {
-                            var (type, _, id) = CrewAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility3.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility.Count > 0 && IntruderAbilityGet.Count > 0 && random == 6)
-                        {
-                            var (type, _, id) = IntruderAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility2.Count > 0 && NeutralAbilityGet.Count > 0 && random == 7)
-                        {
-                            var (type, _, id) = NeutralAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility2.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility4.Count > 0 && SyndicateAbilityGet.Count > 0 && random == 8)
-                        {
-                            var (type, _, id) = SyndicateAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility4.TakeFirst(), id);
-                        }
-                        else if (canHaveAbility11.Count > 0 && GlobalAbilityGet.Count > 0 && random == 9)
-                        {
-                            var (type, _, id) = GlobalAbilityGet.TakeFirst();
-                            Ability.GenAbility<Ability>(type, canHaveAbility11.TakeFirst(), id);
-                        }
+                        if (AllAbilities[0].Item4 == true && CustomGameOptions.EnableUniques)
+                            AllAbilities.Remove(AllAbilities[0]);
+
+                        ab.Shuffle();
                     }
+
+                    spawnList = ab;
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 4 Done");
+                }
+
+                while (canHaveSnitch.Count > 0 || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Count > 0) || canHaveIntruderAbility.Count > 0 ||
+                    canHaveNeutralAbility.Count > 0 || canHaveCrewAbility.Count > 0 || canHaveSyndicateAbility.Count > 0 || canHaveAbility.Count > 0 || canHaveEvilAbility.Count > 0 ||
+                    canHaveTaskedAbility.Count > 0 || canHaveNonEvilAbility.Count > 0 || canHaveKillingAbility.Count > 0)
+                {
+                    if (spawnList.Count <= 0)
+                        break;
+
+                    var (type, _, id, unique) = spawnList.TakeFirst();
+                    int[] Snitch = { 1 };
+                    int[] Syndicate = { 12 };
+                    int[] Crew = { 0, 3 };
+                    int[] Neutral = { 13 };
+                    int[] Intruder = { 11 };
+                    int[] Killing = { 10 };
+                    int[] NonEvil = { 7 };
+                    int[] Evil = { 8 };
+                    int[] Tasked = { 2, 4 };
+                    int[] Global = { 5, 6 };
+                    int[] Tunneler = { 9 };
+                    var random = Random.RandomRangeInt(0, 11);
+
+                    if (canHaveSnitch.Count > 0 && random == 0 && Snitch.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveSnitch.TakeFirst(), id);
+                    else if (canHaveSyndicateAbility.Count > 0 && random == 1 && Syndicate.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveSyndicateAbility.TakeFirst(), id);
+                    else if (canHaveCrewAbility.Count > 0 && random == 2 && Crew.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveCrewAbility.TakeFirst(), id);
+                    else if (canHaveNeutralAbility.Count > 0 && random == 3 && Neutral.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveNeutralAbility.TakeFirst(), id);
+                    else if (canHaveIntruderAbility.Count > 0 && random == 4 && Intruder.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveIntruderAbility.TakeFirst(), id);
+                    else if (canHaveKillingAbility.Count > 0 && random == 5 && Killing.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveKillingAbility.TakeFirst(), id);
+                    else if (canHaveNonEvilAbility.Count > 0 && random == 6 && NonEvil.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveNonEvilAbility.TakeFirst(), id);
+                    else if (canHaveEvilAbility.Count > 0 && random == 7 && Evil.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveEvilAbility.TakeFirst(), id);
+                    else if (canHaveTaskedAbility.Count > 0 && random == 8 && Tasked.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveTaskedAbility.TakeFirst(), id);
+                    else if (canHaveAbility.Count > 0 && random == 9 && Global.Contains(id))
+                        Ability.GenAbility<Ability>(type, canHaveAbility.TakeFirst(), id);
+                    else if (canHaveTunnelerAbility.Count > 0 && random == 10 && Tunneler.Contains(id) && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
+                        Ability.GenAbility<Ability>(type, canHaveTunnelerAbility.TakeFirst(), id);
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Abilities Done");
@@ -1201,48 +1253,60 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.EnableModifiers)
             {
-                var canHaveModifier1 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveModifier2 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveModifier3 = PlayerControl.AllPlayerControls.ToArray().ToList();
-                var canHaveModifier4 = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveBait = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveDiseased = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveProfessional = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveModifier = PlayerControl.AllPlayerControls.ToArray().ToList();
 
-                canHaveModifier1.RemoveAll(player => player.Is(RoleEnum.Vigilante) || player.Is(RoleEnum.Shifter) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
-                canHaveModifier1.Shuffle();
+                canHaveBait.RemoveAll(player => player.Is(RoleEnum.Vigilante) || player.Is(RoleEnum.Shifter) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
+                canHaveBait.Shuffle();
 
-                canHaveModifier2.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
-                canHaveModifier2.Shuffle();
+                canHaveDiseased.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
+                canHaveDiseased.Shuffle();
 
-                canHaveModifier3.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
-                canHaveModifier3.Shuffle();
+                canHaveProfessional.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
+                canHaveProfessional.Shuffle();
                 
-                if (!IsAA)
+                var mod = new List<(Type, int, int, bool)>();
+                var spawnList = AllAbilities;
+                
+                if (IsAA)
                 {
-                    while ((canHaveModifier1.Count > 0 && BaitModifiers.Count > 0) || (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0) || (canHaveModifier3.Count > 0 &&
-                        ProfessionalModifiers.Count > 0) || (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0))
+                    while (mod.Count <= allCount && AllModifiers.Count > 0)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
+                        AllModifiers.Shuffle();                            
+                        mod.Add(AllModifiers[0]);
 
-                        if (canHaveModifier1.Count > 0 && BaitModifiers.Count > 0 && random == 0)
-                        {
-                            var (type, _, id) = BaitModifiers.TakeFirst();
-                            Modifier.GenModifier<Modifier>(type, canHaveModifier1.TakeFirst(), id);
-                        }
-                        else if (canHaveModifier2.Count > 0 && DiseasedModifiers.Count > 0 && random == 1)
-                        {
-                            var (type, _, id) = DiseasedModifiers.TakeFirst();
-                            Modifier.GenModifier<Modifier>(type, canHaveModifier2.TakeFirst(), id);
-                        }
-                        else if (canHaveModifier3.Count > 0 && ProfessionalModifiers.Count > 0 && random == 2)
-                        {
-                            var (type, _, id) = ProfessionalModifiers.TakeFirst();
-                            Modifier.GenModifier<Modifier>(type, canHaveModifier3.TakeFirst(), id);
-                        }
-                        else if (canHaveModifier4.Count > 0 && GlobalModifiers.Count > 0 && random == 3)
-                        {
-                            var (type, _, id) = GlobalModifiers.TakeFirst();
-                            Modifier.GenModifier<Modifier>(type, canHaveModifier4.TakeFirst(), id);
-                        }
+                        if (AllModifiers[0].Item4 == true && CustomGameOptions.EnableUniques)
+                            AllModifiers.Remove(AllModifiers[0]);
+
+                        mod.Shuffle();
                     }
+
+                    spawnList = mod;
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 5 Done");
+                }
+
+                while (canHaveBait.Count > 0 || canHaveDiseased.Count > 0 || canHaveProfessional.Count > 0 || canHaveModifier.Count > 0)
+                {
+                    if (spawnList.Count <= 0)
+                        break;
+
+                    var (type, _, id, unique) = spawnList.TakeFirst();
+                    int[] Bait = { 1 };
+                    int[] Diseased = { 0 };
+                    int[] Professional = { 10 };
+                    int[] Global = { 2, 3, 4, 5, 6, 7, 8, 9, 11 };
+                    var random = Random.RandomRangeInt(0, 4);
+
+                    if (canHaveBait.Count > 0 && random == 0 && Bait.Contains(id))
+                        Modifier.GenModifier<Modifier>(type, canHaveBait.TakeFirst(), id);
+                    else if (canHaveDiseased.Count > 0 && random == 1 && Diseased.Contains(id))
+                        Modifier.GenModifier<Modifier>(type, canHaveDiseased.TakeFirst(), id);
+                    else if (canHaveProfessional.Count > 0 && random == 2 && Professional.Contains(id))
+                        Modifier.GenModifier<Modifier>(type, canHaveProfessional.TakeFirst(), id);
+                    else if (canHaveModifier.Count > 0 && random == 3 && Global.Contains(id))
+                        Modifier.GenModifier<Modifier>(type, canHaveModifier.TakeFirst(), id);
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Modifiers Done");
@@ -1342,6 +1406,8 @@ namespace TownOfUsReworked.Patches
                             
                         if (!player.Is(RoleAlignment.CrewSov) && !player.Is(ObjectifierEnum.Traitor))
                             exeTargets.Add(player);
+
+                        guessTargets.Add(player);
                     }
                     else if (player.Is(Faction.Neutral))
                     {
@@ -1363,6 +1429,9 @@ namespace TownOfUsReworked.Patches
 
                         if (CustomGameOptions.ExeCanHaveNeutralTargets)
                             exeTargets.Add(player);
+                        
+                        if (!player.Is(RoleEnum.Actor))
+                            guessTargets.Add(player);
                     }
                     else if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                     {
@@ -1373,9 +1442,9 @@ namespace TownOfUsReworked.Patches
 
                         if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
                             exeTargets.Add(player);
-                    }
 
-                    guessTargets.Add(player);
+                        guessTargets.Add(player);
+                    }
                 }
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Targets Set");
@@ -1738,6 +1807,9 @@ namespace TownOfUsReworked.Patches
                             case 67:
                                 new Whisperer(player);
                                 break;
+                            case 68:
+                                new Retributionist(player);
+                                break;
                         }
 
                         break;
@@ -1795,6 +1867,9 @@ namespace TownOfUsReworked.Patches
                         switch (id3)
                         {
                             case 0:
+                            case 11:
+                            case 12:
+                            case 13:
                                 new Assassin(player3);
                                 break;
                             case 1:
@@ -1823,6 +1898,9 @@ namespace TownOfUsReworked.Patches
                                 break;
                             case 9:
                                 new Tunneler(player3);
+                                break;
+                            case 10:
+                                new Ruthless(player3);
                                 break;
                         }
 
@@ -3088,7 +3166,7 @@ namespace TownOfUsReworked.Patches
                 NonEvilAbilityGet.Clear();
                 TaskedAbilityGet.Clear();
                 SnitchAbilityGet.Clear();
-                NonVentingAbilityGet.Clear();
+                KillingAbilityGet.Clear();
                 EvilAbilityGet.Clear();
                 SyndicateAbilityGet.Clear();
                 NeutralAbilityGet.Clear();
@@ -3097,8 +3175,11 @@ namespace TownOfUsReworked.Patches
                 NeutralObjectifierGet.Clear();
                 CorruptedObjectifierGet.Clear();
                 OverlordObjectifierGet.Clear();
-                GlobalObjectifierGet.Clear();
                 LoverRivalObjectifierGet.Clear();
+
+                AllModifiers.Clear();
+                AllAbilities.Clear();
+                AllObjectifiers.Clear();
 
                 RecordRewind.points.Clear();
                 Murder.KilledPlayers.Clear();
@@ -3398,6 +3479,19 @@ namespace TownOfUsReworked.Patches
                         while (num > 0)
                         {
                             CrewSupportRoles.Add((typeof(Chameleon), CustomGameOptions.ChameleonOn, 65, CustomGameOptions.UniqueChameleon));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Chameleon Done");
+                    }
+
+                    if (CustomGameOptions.RetributionistOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.RetributionistCount : 1;
+
+                        while (num > 0)
+                        {
+                            CrewSupportRoles.Add((typeof(Retributionist), CustomGameOptions.RetributionistOn, 68, CustomGameOptions.UniqueRetributionist));
                             num--;
                         }
 
@@ -4028,7 +4122,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            DiseasedModifiers.Add((typeof(Diseased), CustomGameOptions.DiseasedOn, 0));
+                            DiseasedModifiers.Add((typeof(Diseased), CustomGameOptions.DiseasedOn, 0, CustomGameOptions.UniqueDiseased));
                             num--;
                         }
 
@@ -4041,7 +4135,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            BaitModifiers.Add((typeof(Bait), CustomGameOptions.BaitOn, 1));
+                            BaitModifiers.Add((typeof(Bait), CustomGameOptions.BaitOn, 1, CustomGameOptions.UniqueBait));
                             num--;
                         }
 
@@ -4054,7 +4148,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Dwarf), CustomGameOptions.DwarfOn, 2));
+                            GlobalModifiers.Add((typeof(Dwarf), CustomGameOptions.DwarfOn, 2, CustomGameOptions.UniqueDwarf));
                             num--;
                         }
 
@@ -4067,7 +4161,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(VIP), CustomGameOptions.VIPOn, 3));
+                            GlobalModifiers.Add((typeof(VIP), CustomGameOptions.VIPOn, 3, CustomGameOptions.UniqueVIP));
                             num--;
                         }
 
@@ -4080,7 +4174,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Shy), CustomGameOptions.ShyOn, 4));
+                            GlobalModifiers.Add((typeof(Shy), CustomGameOptions.ShyOn, 4, CustomGameOptions.UniqueShy));
                             num--;
                         }
 
@@ -4093,7 +4187,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Giant), CustomGameOptions.GiantOn, 5));
+                            GlobalModifiers.Add((typeof(Giant), CustomGameOptions.GiantOn, 5, CustomGameOptions.UniqueGiant));
                             num--;
                         }
 
@@ -4106,7 +4200,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Drunk), CustomGameOptions.DrunkOn, 6));
+                            GlobalModifiers.Add((typeof(Drunk), CustomGameOptions.DrunkOn, 6, CustomGameOptions.UniqueDrunk));
                             num--;
                         }
 
@@ -4119,7 +4213,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Flincher), CustomGameOptions.FlincherOn, 7));
+                            GlobalModifiers.Add((typeof(Flincher), CustomGameOptions.FlincherOn, 7, CustomGameOptions.UniqueFlincher));
                             num--;
                         }
 
@@ -4132,7 +4226,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Coward), CustomGameOptions.CowardOn, 8));
+                            GlobalModifiers.Add((typeof(Coward), CustomGameOptions.CowardOn, 8, CustomGameOptions.UniqueCoward));
                             num--;
                         }
 
@@ -4145,7 +4239,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Volatile), CustomGameOptions.VolatileOn, 9));
+                            GlobalModifiers.Add((typeof(Volatile), CustomGameOptions.VolatileOn, 9, CustomGameOptions.UniqueVolatile));
                             num--;
                         }
 
@@ -4158,7 +4252,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalModifiers.Add((typeof(Indomitable), CustomGameOptions.IndomitableOn, 11));
+                            GlobalModifiers.Add((typeof(Indomitable), CustomGameOptions.IndomitableOn, 11, CustomGameOptions.UniqueIndomitable));
                             num--;
                         }
 
@@ -4171,7 +4265,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            ProfessionalModifiers.Add((typeof(Professional), CustomGameOptions.ProfessionalOn, 10));
+                            ProfessionalModifiers.Add((typeof(Professional), CustomGameOptions.ProfessionalOn, 10, CustomGameOptions.UniqueProfessional));
                             num--;
                         }
 
@@ -4180,41 +4274,69 @@ namespace TownOfUsReworked.Patches
                     #endregion
 
                     #region Abilities
-                    if (CustomGameOptions.AssassinOn > 0)
+                    if (CustomGameOptions.CrewAssassinOn > 0)
                     {
-                       num = CustomGameOptions.NumberOfSyndicateAssassins;
-
-                        while (num > 0)
-                        {
-                            SyndicateAbilityGet.Add((typeof(Assassin), CustomGameOptions.AssassinOn, 0));
-                            num--;
-                        }
-
-                        num = CustomGameOptions.NumberOfNeutralAssassins;
-
-                        while (num > 0)
-                        {
-                            NeutralAbilityGet.Add((typeof(Assassin), CustomGameOptions.AssassinOn, 0));
-                            num--;
-                        }
-
                         num = CustomGameOptions.NumberOfCrewAssassins;
 
                         while (num > 0)
                         {
-                            CrewAbilityGet.Add((typeof(Assassin), CustomGameOptions.AssassinOn, 0));
+                            CrewAbilityGet.Add((typeof(Assassin), CustomGameOptions.CrewAssassinOn, 0, CustomGameOptions.UniqueAssassin));
                             num--;
                         }
 
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Crew Assassin Done");
+                    }
+
+                    if (CustomGameOptions.SyndicateAssassinOn > 0)
+                    {
+                        num = CustomGameOptions.NumberOfSyndicateAssassins;
+
+                        while (num > 0)
+                        {
+                            SyndicateAbilityGet.Add((typeof(Assassin), CustomGameOptions.SyndicateAssassinOn, 12, CustomGameOptions.UniqueAssassin));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Syndicate Assassin Done");
+                    }
+
+                    if (CustomGameOptions.IntruderAssassinOn > 0)
+                    {
                         num = CustomGameOptions.NumberOfImpostorAssassins;
 
                         while (num > 0)
                         {
-                            IntruderAbilityGet.Add((typeof(Assassin), CustomGameOptions.AssassinOn, 0));
+                            IntruderAbilityGet.Add((typeof(Assassin), CustomGameOptions.IntruderAssassinOn, 11, CustomGameOptions.UniqueAssassin));
                             num--;
                         }
 
-                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Assassin Done");
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Intruder Assassin Done");
+                    }
+
+                    if (CustomGameOptions.NeutralAssassinOn > 0)
+                    {
+                        num = CustomGameOptions.NumberOfNeutralAssassins;
+
+                        while (num > 0)
+                        {
+                            NeutralAbilityGet.Add((typeof(Assassin), CustomGameOptions.NeutralAssassinOn, 14, CustomGameOptions.UniqueAssassin));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Neutral Assassin Done");
+                    }
+
+                    if (CustomGameOptions.RuthlessOn > 0)
+                    {
+                        num = IsCustom ? CustomGameOptions.RuthlessCount : 1;
+                        
+                        while (num > 0)
+                        {
+                            KillingAbilityGet.Add((typeof(Ruthless), CustomGameOptions.RuthlessOn, 10, CustomGameOptions.UniqueRuthless));
+                            num--;
+                        }
+
+                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Ruthless Done");
                     }
 
                     if (CustomGameOptions.SnitchOn > 0)
@@ -4223,7 +4345,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            SnitchAbilityGet.Add((typeof(Snitch), CustomGameOptions.SnitchOn, 1));
+                            SnitchAbilityGet.Add((typeof(Snitch), CustomGameOptions.SnitchOn, 1, CustomGameOptions.UniqueSnitch));
                             num--;
                         }
 
@@ -4236,7 +4358,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            TaskedAbilityGet.Add((typeof(Insider), CustomGameOptions.InsiderOn, 2));
+                            TaskedAbilityGet.Add((typeof(Insider), CustomGameOptions.InsiderOn, 2, CustomGameOptions.UniqueInsider));
                             num--;
                         }
 
@@ -4249,7 +4371,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            CrewAbilityGet.Add((typeof(Lighter), CustomGameOptions.LighterOn, 3));
+                            CrewAbilityGet.Add((typeof(Lighter), CustomGameOptions.LighterOn, 3, CustomGameOptions.UniqueLighter));
                             num--;
                         }
 
@@ -4262,7 +4384,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            TaskedAbilityGet.Add((typeof(Multitasker), CustomGameOptions.MultitaskerOn, 4));
+                            TaskedAbilityGet.Add((typeof(Multitasker), CustomGameOptions.MultitaskerOn, 4, CustomGameOptions.UniqueMultitasker));
                             num--;
                         }
 
@@ -4275,24 +4397,11 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalAbilityGet.Add((typeof(Radar), CustomGameOptions.RadarOn, 5));
+                            GlobalAbilityGet.Add((typeof(Radar), CustomGameOptions.RadarOn, 5, CustomGameOptions.UniqueRadar));
                             num--;
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Radar Done");
-                    }
-
-                    if (CustomGameOptions.RuthlessOn > 0)
-                    {
-                        num = IsCustom ? CustomGameOptions.RuthlessCount : 1;
-                        
-                        while (num > 0)
-                        {
-                            GlobalAbilityGet.Add((typeof(Ruthless), CustomGameOptions.RuthlessOn, 11));
-                            num--;
-                        }
-
-                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Ruthless Done");
                     }
 
                     if (CustomGameOptions.TiebreakerOn > 0)
@@ -4301,7 +4410,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            GlobalAbilityGet.Add((typeof(Tiebreaker), CustomGameOptions.TiebreakerOn, 6));
+                            GlobalAbilityGet.Add((typeof(Tiebreaker), CustomGameOptions.TiebreakerOn, 6, CustomGameOptions.UniqueTiebreaker));
                             num--;
                         }
 
@@ -4314,7 +4423,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            NonEvilAbilityGet.Add((typeof(Torch), CustomGameOptions.TorchOn, 7));
+                            NonEvilAbilityGet.Add((typeof(Torch), CustomGameOptions.TorchOn, 7, CustomGameOptions.UniqueTorch));
                             num--;
                         }
 
@@ -4327,7 +4436,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            EvilAbilityGet.Add((typeof(Underdog), CustomGameOptions.UnderdogOn, 8));
+                            EvilAbilityGet.Add((typeof(Underdog), CustomGameOptions.UnderdogOn, 8, CustomGameOptions.UniqueUnderdog));
                             num--;
                         }
 
@@ -4340,7 +4449,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            TunnelerAbilityGet.Add((typeof(Tunneler), CustomGameOptions.TunnelerOn, 9));
+                            TunnelerAbilityGet.Add((typeof(Tunneler), CustomGameOptions.TunnelerOn, 9, CustomGameOptions.UniqueTunneler));
                             num--;
                         }
 
@@ -4355,7 +4464,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            LoverRivalObjectifierGet.Add((typeof(Lovers), CustomGameOptions.LoversOn, 0));
+                            LoverRivalObjectifierGet.Add((typeof(Lovers), CustomGameOptions.LoversOn, 0, CustomGameOptions.UniqueLovers));
                             num--;
                         }
 
@@ -4368,7 +4477,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            LoverRivalObjectifierGet.Add((typeof(Rivals), CustomGameOptions.RivalsOn, 1));
+                            LoverRivalObjectifierGet.Add((typeof(Rivals), CustomGameOptions.RivalsOn, 1, CustomGameOptions.UniqueRivals));
                             num--;
                         }
 
@@ -4381,7 +4490,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            CrewObjectifierGet.Add((typeof(Fanatic), CustomGameOptions.FanaticOn, 2));
+                            CrewObjectifierGet.Add((typeof(Fanatic), CustomGameOptions.FanaticOn, 2, CustomGameOptions.UniqueFanatic));
                             num--;
                         }
 
@@ -4394,7 +4503,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            CrewObjectifierGet.Add((typeof(Corrupted), CustomGameOptions.CorruptedOn, 3));
+                            CrewObjectifierGet.Add((typeof(Corrupted), CustomGameOptions.CorruptedOn, 3, CustomGameOptions.UniqueCorrupted));
                             num--;
                         }
 
@@ -4407,7 +4516,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            NeutralObjectifierGet.Add((typeof(Overlord), CustomGameOptions.OverlordOn, 4));
+                            NeutralObjectifierGet.Add((typeof(Overlord), CustomGameOptions.OverlordOn, 4, CustomGameOptions.UniqueOverlord));
                             num--;
                         }
 
@@ -4420,7 +4529,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            NeutralObjectifierGet.Add((typeof(Allied), CustomGameOptions.AlliedOn, 5));
+                            NeutralObjectifierGet.Add((typeof(Allied), CustomGameOptions.AlliedOn, 5, CustomGameOptions.UniqueAllied));
                             num--;
                         }
 
@@ -4433,7 +4542,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            CrewObjectifierGet.Add((typeof(Traitor), CustomGameOptions.TraitorOn, 6));
+                            CrewObjectifierGet.Add((typeof(Traitor), CustomGameOptions.TraitorOn, 6, CustomGameOptions.UniqueTraitor));
                             num--;
                         }
 
@@ -4446,7 +4555,7 @@ namespace TownOfUsReworked.Patches
                         
                         while (num > 0)
                         {
-                            NeutralObjectifierGet.Add((typeof(Taskmaster), CustomGameOptions.TaskmasterOn, 7));
+                            NeutralObjectifierGet.Add((typeof(Taskmaster), CustomGameOptions.TaskmasterOn, 7, CustomGameOptions.UniqueTaskmaster));
                             num--;
                         }
 

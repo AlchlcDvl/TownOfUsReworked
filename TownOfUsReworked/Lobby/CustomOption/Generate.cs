@@ -180,7 +180,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Ability Spawn
         public static CustomHeaderOption Abilities;
-        public static CustomNumberOption AssassinOn;
+        public static CustomNumberOption CrewAssassinOn;
+        public static CustomNumberOption IntruderAssassinOn;
+        public static CustomNumberOption SyndicateAssassinOn;
+        public static CustomNumberOption NeutralAssassinOn;
         public static CustomNumberOption TorchOn;
         public static CustomNumberOption LighterOn;
         public static CustomNumberOption ButtonBarryOn;
@@ -379,6 +382,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniqueTransporter;
         public static CustomNumberOption TransportCooldown;
         public static CustomNumberOption TransportMaxUses;
+
+        //Retributionist Options
+        public static CustomHeaderOption Retributionist;
+        public static CustomToggleOption UniqueRetributionist;
+        public static CustomNumberOption RetributionistCount;
 
         //Escort Options
         public static CustomHeaderOption Escort;
@@ -1054,6 +1062,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Ability Options
         public static CustomHeaderOption AbilitySettings;
         public static CustomToggleOption CustomAbilityColors;
+        public static CustomNumberOption MaxAbilities;
+        public static CustomNumberOption MinAbilities;
 
         //Snitch Options
         public static CustomHeaderOption Snitch;
@@ -1065,6 +1075,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption SnitchSeesImpInMeeting;
         public static CustomToggleOption SnitchSeesTraitor;
         public static CustomToggleOption SnitchKnows;
+        public static CustomToggleOption UniqueSnitch;
 
         //Assassin Options
         public static CustomHeaderOption Assassin;
@@ -1081,58 +1092,71 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption AssassinGuessObjectifiers;
         public static CustomToggleOption AssassinGuessAbilities;
         public static CustomToggleOption AssassinateAfterVoting;
+        public static CustomToggleOption UniqueAssassin;
 
         //Underdog Options
         public static CustomHeaderOption Underdog;
         public static CustomNumberOption UnderdogCount;
+        public static CustomToggleOption UniqueUnderdog;
         public static CustomToggleOption UnderdogKnows;
         public static CustomNumberOption UnderdogKillBonus;
         public static CustomToggleOption UnderdogIncreasedKC;
 
         //Multitasker Options
         public static CustomHeaderOption Multitasker;
+        public static CustomToggleOption UniqueMultitasker;
         public static CustomNumberOption MultitaskerCount;
         public static CustomNumberOption Transparancy;
 
         //Button Barry Options
         public static CustomHeaderOption ButtonBarry;
+        public static CustomToggleOption UniqueButtonBarry;
         public static CustomNumberOption ButtonBarryCount;
         public static CustomNumberOption ButtonCooldown;
 
         //Tiebreaker Options
         public static CustomHeaderOption Tiebreaker;
+        public static CustomToggleOption UniqueTiebreaker;
         public static CustomToggleOption TiebreakerKnows;
         public static CustomNumberOption TiebreakerCount;
 
         //Torch Options
         public static CustomHeaderOption Torch;
         public static CustomNumberOption TorchCount;
+        public static CustomToggleOption UniqueTorch;
 
         //Tunneler Options
         public static CustomHeaderOption Tunneler;
         public static CustomToggleOption TunnelerKnows;
         public static CustomNumberOption TunnelerCount;
+        public static CustomToggleOption UniqueTunneler;
 
         //Radar Options
         public static CustomHeaderOption Radar;
         public static CustomNumberOption RadarCount;
+        public static CustomToggleOption UniqueRadar;
 
         //Lighter Options
         public static CustomHeaderOption Lighter;
         public static CustomNumberOption LighterCount;
+        public static CustomToggleOption UniqueLighter;
 
         //Insider Options
         public static CustomHeaderOption Insider;
         public static CustomToggleOption InsiderKnows;
         public static CustomNumberOption InsiderCount;
+        public static CustomToggleOption UniqueInsider;
         
         //Objectifier Options
         public static CustomHeaderOption ObjectifierSettings;
         public static CustomToggleOption CustomObjectifierColors;
+        public static CustomNumberOption MaxObjectifiers;
+        public static CustomNumberOption MinObjectifiers;
 
         //Traitor Options
         public static CustomHeaderOption Traitor;
         public static CustomNumberOption TraitorCount;
+        public static CustomToggleOption UniqueTraitor;
         public static CustomToggleOption TraitorKnows;
         public static CustomToggleOption TraitorCanAssassin;
         public static CustomToggleOption TraitorColourSwap;
@@ -1142,21 +1166,25 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption FanaticCount;
         public static CustomToggleOption FanaticKnows;
         public static CustomToggleOption FanaticCanAssassin;
+        public static CustomToggleOption UniqueFanatic;
 
         //Fanatic Options
         public static CustomHeaderOption Allied;
         public static CustomNumberOption AlliedCount;
         public static CustomStringOption AlliedFaction;
+        public static CustomToggleOption UniqueAllied;
 
         //Corrupted Options
         public static CustomHeaderOption Corrupted;
         public static CustomNumberOption CorruptedCount;
         public static CustomNumberOption CorruptedKillCooldown;
+        public static CustomToggleOption UniqueCorrupted;
 
         //Corrupted Options
         public static CustomHeaderOption Overlord;
         public static CustomNumberOption OverlordCount;
         public static CustomNumberOption OverlordMeetingWinCount;
+        public static CustomToggleOption UniqueOverlord;
 
         //Lovers Options
         public static CustomHeaderOption Lovers;
@@ -1165,6 +1193,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption LoversChat;
         public static CustomToggleOption LoversFaction;
         public static CustomToggleOption LoversRoles;
+        public static CustomToggleOption UniqueLovers;
 
         //Rivals Options
         public static CustomHeaderOption Rivals;
@@ -1172,18 +1201,23 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption RivalsChat;
         public static CustomToggleOption RivalsFaction;
         public static CustomToggleOption RivalsRoles;
+        public static CustomToggleOption UniqueRivals;
 
         //Taskmaster Options
         public static CustomHeaderOption Taskmaster;
         public static CustomNumberOption TaskmasterCount;
         public static CustomNumberOption TMTasksRemaining;
+        public static CustomToggleOption UniqueTaskmaster;
 
         //Modifier Options
         public static CustomHeaderOption ModifierSettings;
         public static CustomToggleOption CustomModifierColors;
+        public static CustomNumberOption MaxModifiers;
+        public static CustomNumberOption MinModifiers;
 
         //Giant Options
         public static CustomHeaderOption Giant;
+        public static CustomToggleOption UniqueGiant;
         public static CustomNumberOption GiantCount;
         public static CustomNumberOption GiantSpeed;
         public static CustomNumberOption GiantScale;
@@ -1193,12 +1227,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption DwarfCount;
         public static CustomNumberOption DwarfSpeed;
         public static CustomNumberOption DwarfScale;
+        public static CustomToggleOption UniqueDwarf;
 
         //Diseased Options
         public static CustomHeaderOption Diseased;
         public static CustomNumberOption DiseasedCount;
         public static CustomNumberOption DiseasedKillMultiplier;
         public static CustomToggleOption DiseasedKnows;
+        public static CustomToggleOption UniqueDiseased;
 
         //Bait Options
         public static CustomHeaderOption Bait;
@@ -1206,36 +1242,44 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption BaitMinDelay;
         public static CustomNumberOption BaitMaxDelay;
         public static CustomToggleOption BaitKnows;
+        public static CustomToggleOption UniqueBait;
 
         //Drunk Options
         public static CustomHeaderOption Drunk;
         public static CustomNumberOption DrunkCount;
         public static CustomToggleOption DrunkControlsSwap;
         public static CustomNumberOption DrunkInterval;
+        public static CustomToggleOption UniqueDrunk;
 
         //Coward Options
         public static CustomHeaderOption Coward;
         public static CustomNumberOption CowardCount;
+        public static CustomToggleOption UniqueCoward;
 
         //Ruthless Options
         public static CustomHeaderOption Ruthless;
         public static CustomNumberOption RuthlessCount;
+        public static CustomToggleOption UniqueRuthless;
 
         //Professional Options
         public static CustomHeaderOption Professional;
         public static CustomToggleOption ProfessionalKnows;
         public static CustomNumberOption ProfessionalCount;
+        public static CustomToggleOption UniqueProfessional;
 
         //Shy Options
         public static CustomHeaderOption Shy;
         public static CustomNumberOption ShyCount;
+        public static CustomToggleOption UniqueShy;
 
         //Indomitable Options
         public static CustomHeaderOption Indomitable;
         public static CustomNumberOption IndomitableCount;
+        public static CustomToggleOption UniqueIndomitable;
 
         //VIP Options
         public static CustomHeaderOption VIP;
+        public static CustomToggleOption UniqueVIP;
         public static CustomNumberOption VIPCount;
         public static CustomToggleOption VIPKnows;
 
@@ -1243,12 +1287,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Flincher;
         public static CustomNumberOption FlincherCount;
         public static CustomNumberOption FlinchInterval;
+        public static CustomToggleOption UniqueFlincher;
 
         //Volatile Options
         public static CustomHeaderOption Volatile;
         public static CustomNumberOption VolatileCount;
         public static CustomNumberOption VolatileInterval;
         public static CustomToggleOption VolatileKnows;
+        public static CustomToggleOption UniqueVolatile;
 
         public static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
         public static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
@@ -1286,7 +1332,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             AddPlaguebearer = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
 
             AllAnySettings = new CustomHeaderOption(num++, MultiMenu.main, "All Any Mode Settings");
-            EnableUniques = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Unique <color=#FFD700FF>Roles</color>", false);
+            EnableUniques = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Uniques", false);
 
             GameModifiers = new CustomHeaderOption(num++, MultiMenu.main, "Game Modifiers");
             ColourblindComms = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Comms", true);
@@ -1488,14 +1534,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
             TraitorOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>", 0, 0, 100, 10, PercentFormat);
 
             Abilities = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Abilities</color>");
-            AssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             ButtonBarryOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>", 0, 0, 100, 10, PercentFormat);
+            CrewAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             InsiderOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>", 0, 0, 100, 10, PercentFormat);
+            IntruderAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             LighterOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#1AFF74FF>Lighter</color>", 0, 0, 100, 10, PercentFormat);
             MultitaskerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>", 0, 0, 100, 10, PercentFormat);
+            NeutralAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             RadarOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>", 0, 0, 100, 10, PercentFormat);
             RuthlessOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>", 0, 0, 100, 10, PercentFormat);
             SnitchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>", 0, 0, 100, 10, PercentFormat);
+            SyndicateAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             TiebreakerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>", 0, 0, 100, 10, PercentFormat);
             TorchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>", 0, 0, 100, 10, PercentFormat);
             TunnelerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>", 0, 0, 100, 10, PercentFormat);
@@ -2161,65 +2210,81 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             ModifierSettings = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings");
             CustomModifierColors = new CustomToggleOption(true, num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors", true);
+            MaxModifiers = new CustomNumberOption(true, num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifier</color>", 1, 1, 14, 1);
+            MinModifiers = new CustomNumberOption(true, num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifier</color>", 1, 1, 14, 1);
 
             Bait = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>");
             BaitCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Count", 1, 1, 14, 1);
+            UniqueBait = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Is Unique In All Any", false);
             BaitKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are On Game Start", true);
             BaitMinDelay = new CustomNumberOption(true, num++, MultiMenu.modifier, "Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report", 0f, 0f, 15f, 0.5f, CooldownFormat);
             BaitMaxDelay = new CustomNumberOption(true, num++, MultiMenu.modifier, "Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report", 1f, 0f, 15f, 0.5f, CooldownFormat);
 
             Coward = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color>");
             CowardCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color> Count", 1, 1, 14, 1);
+            UniqueCoward = new CustomToggleOption(true, num++, MultiMenu.modifier, "Modifier Is Unique In All Any", false);
 
             Diseased = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>");
             DiseasedCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Count", 1, 1, 14, 1);
+            UniqueDiseased = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Is Unique In All Any", false);
             DiseasedKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Knows Who They Are On Game Start", true);
             DiseasedKillMultiplier = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Kill Multiplier", 3f, 1.5f, 5f, 0.5f, MultiplierFormat);
 
             Dwarf = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>");
             DwarfCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Count", 1, 1, 14, 1);
+            UniqueDwarf = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Is Unique In All Any", false);
             DwarfSpeed = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Speed", 1.5f, 1.0f, 2f, 0.05f, MultiplierFormat);
             DwarfScale = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Scale", 0.5f, 0.3f, 0.6f, 0.025f, MultiplierFormat);
 
             Giant = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>");
             GiantCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Count", 1, 1, 14, 1);
+            UniqueGiant = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Is Unique In All Any", false);
             GiantSpeed = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Speed", 0.75f, 0.5f, 1f, 0.05f, MultiplierFormat);
             GiantScale = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Scale", 1.5f, 1.5f, 3.0f, 0.025f, MultiplierFormat);
             
             Drunk = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color>");
             DrunkCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Count", 1, 1, 14, 1);
+            UniqueDrunk = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Is Unique In All Any", false);
             DrunkControlsSwap = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Controls Reverse Over Time", false);
             DrunkInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "Reversed Controls Interval", 1f, 1f, 20f, 1f, CooldownFormat);
 
             Flincher = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>");
             FlincherCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Count", 1, 1, 14, 1);
+            UniqueFlincher = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Is Unique In All Any", false);
             FlinchInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "Flinch Interval", 1f, 1f, 20f, 1f, CooldownFormat);
 
             Professional = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color>");
             ProfessionalCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Count", 1, 1, 14, 1);
+            UniqueProfessional = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Is Unique In All Any", false);
             ProfessionalKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Knows Who They Are On Game Start", true);
 
             Shy = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color>");
             ShyCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Count", 1, 1, 14, 1);
+            UniqueShy = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Is Unique In All Any", false);
 
             VIP = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>");
             VIPCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Count", 1, 1, 14, 1);
+            UniqueVIP = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Is Unique In All Any", false);
             VIPKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Knows Who They Are On Game Start", true);
 
             Volatile = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>");
             VolatileCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Count", 1, 1, 14, 1);
+            UniqueVolatile = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Is Unique In All Any", false);
             VolatileInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Interval", 15f, 10f, 30f, 1f, CooldownFormat);
             VolatileKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Knows Who They Are On Game Start", true);
 
             AbilitySettings = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Ability</color> Settings");
             CustomAbilityColors = new CustomToggleOption(true, num++, MultiMenu.ability, "Enable Custom <color=#FF9900FF>Ability</color> Colors", true);
+            MaxAbilities = new CustomNumberOption(true, num++, MultiMenu.ability, "Max <color=#FF9900FF>Ability</color>", 1, 1, 14, 1);
+            MinAbilities = new CustomNumberOption(true, num++, MultiMenu.ability, "Min <color=#FF9900FF>Ability</color>", 1, 1, 14, 1);
 
-            Assassin = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Settings");
-            NumberOfImpostorAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "Number Of <color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color>", 1, 0, 14, 1);
-            NumberOfCrewAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "Number Of <color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color>", 1, 0, 14, 1);
-            NumberOfNeutralAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "Number Of <color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color>", 1, 0, 14, 1);
-            NumberOfSyndicateAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "Number Of <color=#008000FF>Syndicate</color> <color=#073763FF>Assassins</color>", 1, 0, 14, 1);
-            AssassinKills = new CustomNumberOption(true, num++, MultiMenu.ability, "Number Of <color=#073763FF>Assassin</color> Kills", 1, 1, 15, 1);
+            Assassin = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color>");
+            NumberOfImpostorAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfCrewAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfNeutralAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfSyndicateAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            UniqueAssassin = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Is Unique In All Any", false);
+            AssassinKills = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Guess Limit", 1, 1, 15, 1);
             AssassinMultiKill = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Kill More Than Once Per Meeting", false);
             AssassinGuessNeutralBenign = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false);
             AssassinGuessNeutralEvil = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>", false);
@@ -2231,23 +2296,29 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             ButtonBarry = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>");
             ButtonBarryCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Count", 1, 1, 14, 1);
+            UniqueButtonBarry = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Is Unique In All Any", false);
 
             Insider = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>");
             InsiderCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Count", 1, 1, 14, 1);
+            UniqueInsider = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Is Unique In All Any", false);
             InsiderKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Knows Who They Are On Game Start", true);
 
             Lighter = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#1AFF74FF>Lighter</color>");
             LighterCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#1AFF74FF>Lighter</color> Count", 1, 1, 14, 1);
+            UniqueLighter = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#1AFF74FF>Lighter</color> Is Unique In All Any", false);
 
             Multitasker = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>");
             MultitaskerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Count", 1, 1, 14, 1);
+            UniqueMultitasker = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Is Unique In All Any", false);
             Transparancy = new CustomNumberOption(true, num++, MultiMenu.ability, "Task Transparancy", 50f, 10f, 80f, 5f, PercentFormat);
 
             Radar = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>");
             RadarCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
+            UniqueRadar = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Is Unique In All Any", false);
 
             Snitch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>");
             SnitchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);
+            UniqueSnitch = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Is Unique In All Any", false);
             SnitchKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start", true);
             SnitchSeesNeutrals = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>", false);
             SnitchSeesCrew = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8BFDFDFF>Crew</color>", false);
@@ -2257,39 +2328,49 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Tiebreaker = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>");
             TiebreakerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Count", 1, 1, 14, 1);
+            UniqueTiebreaker = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Is Unique In All Any", false);
             TiebreakerKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Knows Who They Are On Game Start", true);
 
             Torch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>");
             TorchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Count", 1, 1, 14, 1);
+            UniqueTorch = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Is Unique In All Any", false);
 
             Tunneler = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>");
             TunnelerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Count", 1, 1, 14, 1);
+            UniqueTunneler = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Is Unique In All Any", false);
             TunnelerKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Knows Who They Are On Game Start", true);
 
             Underdog = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>");
             UnderdogCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Count", 1, 1, 14, 1);
+            UniqueUnderdog = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Is Unique In All Any", false);
             UnderdogKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are On Game Start", true);
             UnderdogKillBonus = new CustomNumberOption(true, num++, MultiMenu.ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
             UnderdogIncreasedKC = new CustomToggleOption(true, num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates", true);
 
             ObjectifierSettings = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifier</color> Settings");
             CustomObjectifierColors = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors", true);
+            MaxObjectifiers = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Max <color=#DD585BFF>Objectifier</color>", 1, 1, 14, 1);
+            MinObjectifiers = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Min <color=#DD585BFF>Objectifier</color>", 1, 1, 14, 1);
 
             Allied = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>");
             AlliedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Count", 1, 1, 14, 1);
+            UniqueAllied = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Is Unique In All Any", false);
             AlliedFaction = new CustomStringOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Faction", new[] {"Intruder", "Syndicate", "Crew", "Random"});
 
             Corrupted = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>");
             CorruptedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Count", 1, 1, 14, 1);
+            UniqueCorrupted = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#4545FFFF>Corrupted</color> Is Unique In All Any", false);
             CorruptedKillCooldown = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Kill Cooldown", 1f, 1f, 20f, 1f, CooldownFormat);
 
             Fanatic = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>");
             FanaticCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Count", 1, 1, 14, 1);
+            UniqueFanatic = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Is Unique In All Any", false);
             FanaticKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Knows Who They Are On Game Start", true);
             FanaticCanAssassin = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Gets <color=#073763FF>Assassin</color>", false);
 
             Lovers = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>");
             LoversCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Count", 1, 1, 14, 1);
+            UniqueLovers = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Is Unique In All Any", false);
             BothLoversDie = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Both <color=#FF66CCFF>Lovers</color> Die", true);
             LoversChat = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable <color=#FF66CCFF>Lovers</color> Chat", true);
             LoversFaction = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction", true);
@@ -2297,20 +2378,24 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Overlord = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>");
             OverlordCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Count", 1, 1, 14, 1);
+            UniqueOverlord = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Is Unique In All Any", false);
             OverlordMeetingWinCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Meeting Timer", 2f, 1f, 20f, 1f);
 
             Rivals = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>");
             RivalsCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Count", 1, 1, 14, 1);
+            UniqueRivals = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Is Unique In All Any", false);
             RivalsChat = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable <color=#3D2D2CFF>Rivals</color> Chat", true);
             RivalsFaction = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction", true);
             RivalsRoles = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Know Each Other's Roles", true);
 
             Taskmaster = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>");
             TaskmasterCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Count", 1, 1, 14, 1);
+            UniqueTaskmaster = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Is Unique In All Any", false);
             TMTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Tasks Remaining When Revealed", 1, 1, 5, 1);
 
             Traitor = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>");
             TraitorCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Count", 1, 1, 14, 1);
+            UniqueTraitor = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Is Unique In All Any", false);
             TraitorKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Knows Who They Are On Game Start", false);
             TraitorCanAssassin = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#FF0000FF>Traitor</color> Gets <color=#073763FF>Assassin</color>", false);
             SnitchSeesTraitor = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees <color=#370D43FF>Traitor</color>", true);

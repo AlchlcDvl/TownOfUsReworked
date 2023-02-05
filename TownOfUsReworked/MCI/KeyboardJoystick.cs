@@ -3,7 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.MCI
 {
     [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
     class Keyboard_Joystick
@@ -25,8 +25,8 @@ namespace TownOfUsReworked.Patches
                 if (PlayerControl.AllPlayerControls.Count == 15)
                     return; //Remove this if your willing to suffer with the consequences. 
 
-                Utils.CleanUpLoad();
-                Utils.CreatePlayerInstance("Robot");
+                MCIUtils.CleanUpLoad();
+                MCIUtils.CreatePlayerInstance("Robot");
             }
 
             if (Input.GetKeyDown(KeyCode.F9))
