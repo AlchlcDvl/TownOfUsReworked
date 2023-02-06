@@ -28,6 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
         public static List<GameObject> Buttons = new List<GameObject>();
         public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
+        public readonly List<Footprint> AllPrints = new List<Footprint>();
 
         public static bool NobodyWins;
         

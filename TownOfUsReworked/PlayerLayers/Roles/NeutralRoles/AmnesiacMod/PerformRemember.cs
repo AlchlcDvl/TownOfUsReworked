@@ -190,10 +190,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     newRole = new Inspector(amnesiac);
                     break;
                     
-                case RoleEnum.Investigator:
-                    newRole = new Investigator(amnesiac);
-                    break;
-                    
                 case RoleEnum.Jackal:
                     newRole = new Jackal(amnesiac);
                     break;

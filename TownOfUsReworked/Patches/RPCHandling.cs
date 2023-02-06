@@ -1621,9 +1621,6 @@ namespace TownOfUsReworked.Patches
                             case 5:
                                 new Swapper(player);
                                 break;
-                            case 6:
-                                new Investigator(player);
-                                break;
                             case 7:
                                 new TimeLord(player);
                                 break;
@@ -3288,19 +3285,6 @@ namespace TownOfUsReworked.Patches
                         }
 
                         PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Swapper Done");
-                    }
-
-                    if (CustomGameOptions.InvestigatorOn > 0)
-                    {
-                        num = IsCustom ? CustomGameOptions.InvestigatorCount : 1;
-
-                        while (num > 0)
-                        {
-                            CrewInvestigativeRoles.Add((typeof(Investigator), CustomGameOptions.InvestigatorOn, 6, CustomGameOptions.UniqueInvestigator));
-                            num--;
-                        }
-
-                        PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Investigator Done");
                     }
 
                     if (CustomGameOptions.TimeLordOn > 0)

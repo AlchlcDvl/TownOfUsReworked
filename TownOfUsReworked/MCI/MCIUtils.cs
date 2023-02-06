@@ -26,7 +26,7 @@ namespace TownOfUsReworked.MCI
                 sampleId = InstanceControl.availableId();
 
             var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
-            PlayerControl playerControl = UnityEngine.Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);
+            PlayerControl playerControl = Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);
             playerControl.PlayerId = (byte)GameData.Instance.GetAvailableId();
             playerControl.FriendCode = sampleC.FriendCode;
             playerControl.Puid = sampleC.ProductUserId;

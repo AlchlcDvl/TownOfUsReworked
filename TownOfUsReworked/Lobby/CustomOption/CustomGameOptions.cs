@@ -126,7 +126,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int SwapperOn => (int)Generate.SwapperOn.Get();
         public static int ShifterOn => (int)Generate.ShifterOn.Get();
         public static int AmnesiacOn => (int)Generate.AmnesiacOn.Get();
-        public static int InvestigatorOn => (int)Generate.InvestigatorOn.Get();
+        //public static int InvestigatorOn => (int)Generate.InvestigatorOn.Get();
         public static int ConcealerOn => (int)Generate.ConcealerOn.Get();
         public static int TimeLordOn => (int)Generate.TimeLordOn.Get();
         public static int MedicOn => (int)Generate.MedicOn.Get();
@@ -287,22 +287,16 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float ExamineCd => Generate.ExamineCooldown.Get();
         public static bool UniqueDetective => Generate.UniqueDetective.Get();
         public static float RecentKill => Generate.RecentKill.Get();
-        public static float DetectiveRoleDuration => Generate.DetectiveRoleDuration.Get();
-        public static float DetectiveFactionDuration => Generate.DetectiveFactionDuration.Get();
-
-        //Inspector Settings
-        public static int InspectorCount => (int)Generate.InspectorCount.Get();
-        public static float InspectCooldown => Generate.InspectCooldown.Get();
-        public static bool UniqueInspector => Generate.UniqueInspector.Get();
-
-        //Investigator Settings
-        public static int InvestigatorCount => (int)Generate.InvestigatorCount.Get();
         public static float FootprintSize => Generate.FootprintSize.Get();
         public static float FootprintInterval => Generate.FootprintInterval.Get();
         public static float FootprintDuration => Generate.FootprintDuration.Get();
         public static bool AnonymousFootPrint => Generate.AnonymousFootPrint.Get();
         public static bool VentFootprintVisible => Generate.VentFootprintVisible.Get();
-        public static bool UniqueInvestigator => Generate.UniqueInvestigator.Get();
+
+        //Inspector Settings
+        public static int InspectorCount => (int)Generate.InspectorCount.Get();
+        public static float InspectCooldown => Generate.InspectCooldown.Get();
+        public static bool UniqueInspector => Generate.UniqueInspector.Get();
 
         //Medium Settings
         public static int MediumCount => (int)Generate.MediumCount.Get();

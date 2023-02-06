@@ -1,12 +1,11 @@
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
+namespace TownOfUsReworked.Extensions
 {
     public class Footprint
     {
@@ -17,11 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
         private readonly Vector2 _velocity;
         public Color Color;
         public Vector3 Position;
-        public Investigator Role;
+        public Role Role;
         public static float Duration => CustomGameOptions.FootprintDuration;
         public static bool Grey => CustomGameOptions.AnonymousFootPrint || CamouflageUnCamouflage.IsCamoed;
 
-        public Footprint(PlayerControl player, Investigator role)
+        public Footprint(PlayerControl player, Role role)
         {
             Role = role;
             Position = player.transform.position;
@@ -35,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
             role.AllPrints.Add(this);
         }
 
-        public static void DestroyAll(Investigator role)
+        public static void DestroyAll(Role role)
         {
             while (role.AllPrints.Count != 0)
                 role.AllPrints[0].Destroy();

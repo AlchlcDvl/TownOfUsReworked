@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
 using Reactor.Utilities.Extensions;
@@ -184,8 +183,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        //Investigator Stuff
-        public readonly List<Footprint> AllPrints = new List<Footprint>();
+        public float InspectTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastInspected;
+            var num = CustomGameOptions.InspectCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+                
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
 
         //Medium Stuff
         public DateTime LastMediated { get; set; }

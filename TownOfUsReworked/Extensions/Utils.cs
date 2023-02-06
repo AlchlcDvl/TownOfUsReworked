@@ -24,13 +24,11 @@ using Object = UnityEngine.Object;
 using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
-using InnerNet;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using AmongUs.GameOptions;
-using TownOfUsReworked.MCI;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -417,11 +415,6 @@ namespace TownOfUsReworked.Extensions
             return flag;
         }
 
-        /*public static bool SetActive(this KillButton button, bool otherBool)
-        {
-            return !(target.Data.IsDead || target.Data.Disconnected || LobbyBehaviour.Instance || MeetingHud.Instance || (Role.GetRole(target)).IsBlocked);
-        }*/
-
         public static Jackal GetJackal(this PlayerControl player)
         {
             if (player == null)
@@ -490,21 +483,6 @@ namespace TownOfUsReworked.Extensions
             }
 
             return null;
-        }
-
-        public static byte ToInt(this string num)
-        {
-            var numResult = -1;
-
-            while (numResult <= PlayerControl.AllPlayerControls.Count)
-            {
-                if ($"{numResult}" == num)
-                    return (byte)numResult;
-
-                numResult++;
-            }
-            
-            return 100;
         }
 
         public static bool IsShielded(this PlayerControl player)
@@ -1382,21 +1360,6 @@ namespace TownOfUsReworked.Extensions
                     return;
                 }
             }
-        }
-
-        public static string GetRoleList(PlayerControl inspector, PlayerControl target)
-        {
-            var insp = Role.GetRole<Inspector>(inspector);
-            var role = Role.GetRole(target);
-            var yes = "";
-
-            switch (role.Results)
-            {
-                case InspResults.SherConsigInspBm:
-                    break;
-            }
-
-            return yes;
         }
 
         public static string GetEndGameName(this string playerName)

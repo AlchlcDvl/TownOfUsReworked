@@ -10,12 +10,11 @@ namespace TownOfUsReworked.MCI
     {
         public static Dictionary<int, ClientData> clients = new Dictionary<int, ClientData>();
         public static Dictionary<byte, int> PlayerIdClientId = new Dictionary<byte, int>();
-        public const int MaxID = 100;
         public static PlayerControl CurrentPlayerInPower { get; private set; }
 
         public static int availableId()
         {
-            for (int i = 2; i < MaxID; i++)
+            for (int i = 2; i < 15; i++)
             {
                 if (!clients.ContainsKey(i)) 
                 {
@@ -43,7 +42,7 @@ namespace TownOfUsReworked.MCI
 
             DestroyableSingleton<HudManager>.Instance.SetHudActive(true);
 
-            //Hacky "fix" for twix and det
+            //Hacky "fix" for twix and Det
             DestroyableSingleton<HudManager>.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
@@ -59,7 +58,7 @@ namespace TownOfUsReworked.MCI
             PlayerControl.LocalPlayer.lightSource = UnityEngine.Object.Instantiate<LightSource>(PlayerControl.LocalPlayer.LightPrefab);
             PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
             PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
-            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.GetTruePosition());
+            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.lightSource.transform.localPosition);
             Camera.main.GetComponent<FollowerCamera>().SetTarget(PlayerControl.LocalPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);

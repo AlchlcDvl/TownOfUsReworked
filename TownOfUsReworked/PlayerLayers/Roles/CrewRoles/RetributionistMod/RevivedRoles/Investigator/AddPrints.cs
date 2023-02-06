@@ -6,7 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Investigator
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public static class AddPrints
@@ -22,10 +22,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (!GameStates.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Investigator) || LobbyBehaviour.Instance || MeetingHud.Instance)
+            if (!GameStates.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist) || LobbyBehaviour.Instance || MeetingHud.Instance)
                 return;
             
-            var investigator = Role.GetRole<Investigator>(PlayerControl.LocalPlayer);
+            var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
+
+            if (ret.RevivedRole?.RoleType != RoleEnum.Investigator)
+                return;
+
             _time += Time.deltaTime;
 
             if (_time >= Interval)
@@ -37,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
                     if (player == null || player.Data.IsDead || player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                         continue;
 
-                    var canPlace = !investigator.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
+                    var canPlace = !ret.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
                         player.PlayerId);
 
                     if (Vent && ShipStatus.Instance != null)
@@ -47,14 +51,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod
                     }
 
                     if (canPlace)
-                        new Footprint(player, investigator);
+                        new Footprint(player, ret);
                 }
 
-                for (var i = 0; i < investigator.AllPrints.Count; i++)
+                for (var i = 0; i < ret.AllPrints.Count; i++)
                 {
                     try
                     {
-                        var footprint = investigator.AllPrints[i];
+                        var footprint = ret.AllPrints[i];
 
                         if (footprint.Update())
                             i--;

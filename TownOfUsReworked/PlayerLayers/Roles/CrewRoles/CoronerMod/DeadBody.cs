@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             coronerReport += $"They were a {bodyRole.Name}!\n";
 
             if (selfFlag)
-                coronerReport += "There are evident marks of self-harm!\n";
+                coronerReport += "There is evidence of self-harm!\n";
             else if (!selfFlag)
             {
                 if (CustomGameOptions.CoronerReportRole)

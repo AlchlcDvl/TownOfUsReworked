@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InvestigatorMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
@@ -190,12 +189,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                 if (!convertCK)
                 {
-                    if (role.RoleType == RoleEnum.Investigator)
-                    {
-                        var invRole = Role.GetRole<Investigator>(other);
-                        Footprint.DestroyAll(invRole);
-                    }
-                    else if (role.RoleType == RoleEnum.Tracker)
+                    if (role.RoleType == RoleEnum.Tracker)
                     {
                         var trackerRole = Role.GetRole<Tracker>(other);
                         trackerRole.TrackerArrows.Values.DestroyAll();

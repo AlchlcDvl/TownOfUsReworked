@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Coroner
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Revive
             coronerReport += $"They were a {bodyRole.Name}!\n";
 
             if (selfFlag)
-                coronerReport += "There are evident marks of self-harm!\n";
+                coronerReport += "There is evidence of self-harm!\n";
             else if (!selfFlag)
             {
                 if (CustomGameOptions.CoronerReportRole)

@@ -4,37 +4,23 @@ using TownOfUsReworked.Enums;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Inspector
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class Update
     {
-        private static void UpdateMeeting(MeetingHud __instance, Inspector inspector)
-        {
-            foreach (var player in inspector.Inspected)
-            {
-                foreach (var state in __instance.playerStates)
-                {
-                    if (player.PlayerId != state.TargetPlayerId) 
-                        continue;
-
-                    var playerName = state.NameText.text;
-                    player.nameText().color = new Color32(255, 255, 255, 255);
-
-                    player.nameText().text = playerName;
-                }
-            }
-        }
-
         [HarmonyPriority(Priority.Last)]
         private static void Postfix(HudManager __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
                 return;
 
-            var inspector = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            foreach (var player in inspector.Inspected)
+            if (role.RevivedRole?.RoleType != RoleEnum.Inspector)
+                return;
+
+            foreach (var player in role.Inspected)
             {
                 player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
                 player.nameText().color = new Color32(255, 255, 255, 255);

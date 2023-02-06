@@ -55,6 +55,15 @@ namespace TownOfUsReworked.MCI
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 82);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 16);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Laboratory, 16);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 0);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 1);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
+                ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
+                Utils.DefaultOutfitAll();
             }
             
             if (Input.GetKeyDown(KeyCode.F2))

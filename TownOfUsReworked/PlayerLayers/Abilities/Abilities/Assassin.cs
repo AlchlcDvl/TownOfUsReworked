@@ -46,9 +46,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.SwapperOn > 0)
                     ColorMapping.Add("Swapper", Colors.Swapper);
 
-                if (CustomGameOptions.InvestigatorOn > 0)
-                    ColorMapping.Add("Investigator", Colors.Investigator);
-
                 if (CustomGameOptions.TimeLordOn > 0)
                     ColorMapping.Add("Time Lord", Colors.TimeLord);
 

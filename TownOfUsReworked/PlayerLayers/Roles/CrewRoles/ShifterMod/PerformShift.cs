@@ -99,10 +99,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     newRole = new Inspector(shifter);
                     break;
                     
-                case RoleEnum.Investigator:
-                    newRole = new Investigator(shifter);
-                    break;
-                    
                 case RoleEnum.Sheriff:
                     newRole = new Sheriff(shifter);
                     break;

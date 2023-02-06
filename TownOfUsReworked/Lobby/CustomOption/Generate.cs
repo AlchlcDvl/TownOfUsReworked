@@ -27,7 +27,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //CI Role Spawn
         public static CustomHeaderOption CrewInvestigativeRoles;
         public static CustomNumberOption DetectiveOn;
-        public static CustomNumberOption InvestigatorOn;
+        //public static CustomNumberOption InvestigatorOn;
         public static CustomNumberOption CoronerOn;
         public static CustomNumberOption SheriffOn;
         public static CustomNumberOption MediumOn;
@@ -414,16 +414,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption CIMax;
         public static CustomNumberOption CIMin;
 
-        //Investigator Options
-        public static CustomHeaderOption Investigator;
-        public static CustomNumberOption InvestigatorCount;
-        public static CustomToggleOption UniqueInvestigator;
-        public static CustomNumberOption FootprintSize;
-        public static CustomNumberOption FootprintInterval;
-        public static CustomNumberOption FootprintDuration;
-        public static CustomToggleOption AnonymousFootPrint;
-        public static CustomToggleOption VentFootprintVisible;
-
         //Tracker Options
         public static CustomHeaderOption Tracker;
         public static CustomNumberOption TrackerCount;
@@ -450,8 +440,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption UniqueDetective;
         public static CustomNumberOption ExamineCooldown;
         public static CustomNumberOption RecentKill;
-        public static CustomNumberOption DetectiveRoleDuration;
-        public static CustomNumberOption DetectiveFactionDuration;
+        public static CustomNumberOption FootprintSize;
+        public static CustomNumberOption FootprintInterval;
+        public static CustomNumberOption FootprintDuration;
+        public static CustomToggleOption AnonymousFootPrint;
+        public static CustomToggleOption VentFootprintVisible;
 
         //Coroner Options
         public static CustomHeaderOption Coroner;
@@ -1414,7 +1407,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             CoronerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
             DetectiveOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
             InspectorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
-            InvestigatorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color>", 0, 0, 100, 10, PercentFormat);
+            //InvestigatorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color>", 0, 0, 100, 10, PercentFormat);
             MediumOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>", 0, 0, 100, 10, PercentFormat);
             OperativeOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", 0, 0, 100, 10, PercentFormat);
             SeerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#71368AFF>Seer</color>", 0, 0, 100, 10, PercentFormat);
@@ -1607,20 +1600,16 @@ namespace TownOfUsReworked.Lobby.CustomOption
             UniqueDetective = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Is Unique In All Any", false);
             ExamineCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Examine Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
             RecentKill = new CustomNumberOption(true, num++, MultiMenu.crew, "Bloody Player Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            FootprintSize = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Size", 4f, 1f, 10f, 1f);
+            FootprintInterval = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat);
+            FootprintDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Duration", 10f, 0.5f, 10f, 0.5f, CooldownFormat);
+            AnonymousFootPrint = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous Footprint", false);
+            VentFootprintVisible = new CustomToggleOption(true, num++, MultiMenu.crew, "Footprints Are Visible Near Vents", false);
 
             Inspector = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>");
             InspectorCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Count", 1, 1, 14, 1);
             UniqueInspector = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Is Unique In All Any", false);
             InspectCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Inspect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-
-            Investigator = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color>");
-            InvestigatorCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color> Count", 1, 1, 14, 1);
-            UniqueInvestigator = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#00B3B3FF>Investigator</color> Is Unique In All Any", false);
-            FootprintSize = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Size", 4f, 1f, 10f, 1f);
-            FootprintInterval = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat);
-            FootprintDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Duration", 10f, 0.5f, 10f, 0.5f, CooldownFormat);
-            AnonymousFootPrint = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous Footprint", false);
-            VentFootprintVisible = new CustomToggleOption(true, num++, MultiMenu.crew, "Footprint Vent Visible", false);
 
             Medium = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>");
             MediumCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Count", 1, 1, 14, 1);
