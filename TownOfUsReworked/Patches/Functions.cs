@@ -1,6 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches

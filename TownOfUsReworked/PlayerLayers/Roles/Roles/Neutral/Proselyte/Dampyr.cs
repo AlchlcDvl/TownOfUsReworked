@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
 using Hazel;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {

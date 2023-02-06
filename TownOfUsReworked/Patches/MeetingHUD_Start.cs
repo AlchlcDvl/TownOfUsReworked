@@ -2,7 +2,7 @@ using HarmonyLib;
 using Object = UnityEngine.Object;
 using Hazel;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches

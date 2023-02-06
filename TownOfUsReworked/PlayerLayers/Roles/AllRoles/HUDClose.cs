@@ -5,7 +5,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles

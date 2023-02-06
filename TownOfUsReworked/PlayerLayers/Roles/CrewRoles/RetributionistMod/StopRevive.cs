@@ -1,12 +1,11 @@
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using System;
 using System.Linq;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Coroner;
 using TownOfUsReworked.PlayerLayers.Roles.AllRoles;
 using Random = UnityEngine.Random;
 
@@ -22,7 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            if (ret.RevivedRole?.RoleType == RoleEnum.Operative)
+            if (ret.RevivedRole == null)
+                return;
+
+            if (ret.RevivedRole.RoleType == RoleEnum.Operative)
             {
                 if (ret.BuggedPlayers.Count == 0)
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
@@ -42,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
                 }
             }
-            else if (ret.RevivedRole?.RoleType == RoleEnum.Coroner)
+            else if (ret.RevivedRole.RoleType == RoleEnum.Coroner)
             {
                 var matches = Murder.KilledPlayers.ToArray();
                 DeadPlayer killer = null;
@@ -62,7 +64,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var br = new BodyReport
                 {
                     Killer = Utils.PlayerById(killer.KillerId),
-                    Reporter = PlayerControl.LocalPlayer,
                     Body = Utils.PlayerById(killer.PlayerId),
                     KillAge = (float) (DateTime.UtcNow - killer.KillTime).TotalMilliseconds
                 };
@@ -78,6 +79,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
+            else if (ret.RevivedRole.RoleType == RoleEnum.Inspector)
+                ret.Inspected.Clear();
+            else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
+                ret.Interrogated.Clear();
 
             ret.RevivedRole = null;
         }

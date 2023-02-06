@@ -4,7 +4,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;

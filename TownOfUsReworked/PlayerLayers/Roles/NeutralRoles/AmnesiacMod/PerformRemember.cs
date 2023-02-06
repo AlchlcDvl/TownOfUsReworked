@@ -1,6 +1,6 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;

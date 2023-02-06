@@ -2,7 +2,7 @@
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;

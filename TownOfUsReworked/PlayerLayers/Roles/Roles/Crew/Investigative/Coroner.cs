@@ -4,7 +4,7 @@ using GameObject = UnityEngine.Object;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

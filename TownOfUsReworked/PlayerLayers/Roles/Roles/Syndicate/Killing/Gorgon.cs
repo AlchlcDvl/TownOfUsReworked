@@ -1,7 +1,7 @@
 using TownOfUsReworked.Enums;
 using System.Collections.Generic;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;

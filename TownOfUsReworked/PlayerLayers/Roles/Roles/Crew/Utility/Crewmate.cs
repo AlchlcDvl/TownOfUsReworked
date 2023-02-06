@@ -1,7 +1,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

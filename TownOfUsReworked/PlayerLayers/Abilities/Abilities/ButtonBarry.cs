@@ -1,6 +1,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles;
 

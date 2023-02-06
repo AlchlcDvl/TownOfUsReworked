@@ -4,6 +4,7 @@ using System;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using AmongUs.GameOptions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {

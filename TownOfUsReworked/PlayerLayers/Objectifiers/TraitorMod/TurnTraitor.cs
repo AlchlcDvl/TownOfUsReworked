@@ -5,7 +5,7 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.Lobby.CustomOption;

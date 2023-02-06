@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
 
@@ -32,15 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                    writer.Write((byte)ActionsRPC.Interrogate);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.ClosestPlayer);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.Interrogated.Add(role.ClosestPlayer.PlayerId);
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.InterrogateSound, false, 0.4f);
-                }
                 
                 if (interact[0] == true)
                     role.LastInterrogated = DateTime.UtcNow;

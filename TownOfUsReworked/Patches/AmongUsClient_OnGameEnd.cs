@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {

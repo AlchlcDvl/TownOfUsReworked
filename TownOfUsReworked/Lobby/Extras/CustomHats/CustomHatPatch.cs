@@ -4,7 +4,7 @@ using System.Linq;
 using AmongUs.Data;
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -75,7 +75,6 @@ namespace TownOfUsReworked.Lobby.Extras.CustomHats
 
             __instance.scroller.ContentYBounds.max = -(__instance.YStart - (hatIdx + 1) / __instance.NumPerRow * __instance.YOffset) - 3f;
             __instance.currentHatIsEquipped = true;
-
             return false;
         }
     }

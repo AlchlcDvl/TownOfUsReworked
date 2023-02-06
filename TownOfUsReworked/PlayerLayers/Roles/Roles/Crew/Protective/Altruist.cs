@@ -2,7 +2,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

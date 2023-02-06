@@ -1,8 +1,6 @@
 using HarmonyLib;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
-using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
@@ -43,8 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             foreach (var player2 in sheriff.Interrogated)
             {
                 var player = Utils.PlayerById(player2);
-
-                player.nameText().transform.localPosition = new Vector3(0f, 2f, -0.5f);
 
                 if (Utils.SeemsEvil(player))
                     player.nameText().color = Colors.Intruder;

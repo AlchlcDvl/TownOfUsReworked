@@ -5,7 +5,7 @@ using HarmonyLib;
 using Hazel;
 using InnerNet;
 using Reactor.Utilities;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;

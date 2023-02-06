@@ -4,7 +4,7 @@ using Reactor.Utilities;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
 

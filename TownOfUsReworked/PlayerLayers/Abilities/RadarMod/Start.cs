@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod

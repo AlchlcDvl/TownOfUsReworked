@@ -3,7 +3,7 @@ using Reactor.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using Object = UnityEngine.Object;

@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using Reactor.Utilities;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;

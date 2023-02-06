@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod;

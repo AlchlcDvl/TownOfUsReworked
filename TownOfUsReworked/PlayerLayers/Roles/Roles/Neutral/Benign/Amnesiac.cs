@@ -3,7 +3,7 @@ using System.Linq;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {

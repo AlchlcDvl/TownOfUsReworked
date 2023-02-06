@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {

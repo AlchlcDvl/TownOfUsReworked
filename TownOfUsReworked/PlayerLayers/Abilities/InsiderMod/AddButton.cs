@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Object = UnityEngine.Object;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.InsiderMod

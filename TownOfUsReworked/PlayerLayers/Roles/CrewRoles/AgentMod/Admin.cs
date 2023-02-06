@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod

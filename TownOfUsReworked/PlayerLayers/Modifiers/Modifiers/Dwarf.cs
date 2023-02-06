@@ -1,6 +1,5 @@
-using TownOfUsReworked.Extensions;
 using UnityEngine;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 

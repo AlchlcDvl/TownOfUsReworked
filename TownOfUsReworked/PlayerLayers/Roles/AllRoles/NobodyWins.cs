@@ -1,6 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {

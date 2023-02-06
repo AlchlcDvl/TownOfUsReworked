@@ -2,7 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {

@@ -3,7 +3,7 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 using Reactor.Networking.Extensions;

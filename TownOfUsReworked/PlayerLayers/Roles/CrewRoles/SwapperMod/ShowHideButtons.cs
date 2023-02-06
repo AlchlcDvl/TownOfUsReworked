@@ -5,7 +5,7 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;

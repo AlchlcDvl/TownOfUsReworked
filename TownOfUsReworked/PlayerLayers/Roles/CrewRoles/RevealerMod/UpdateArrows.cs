@@ -2,7 +2,7 @@ using System.Linq;
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod

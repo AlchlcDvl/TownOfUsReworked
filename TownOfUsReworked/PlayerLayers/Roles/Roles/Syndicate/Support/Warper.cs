@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using System;
 using Random = UnityEngine.Random;

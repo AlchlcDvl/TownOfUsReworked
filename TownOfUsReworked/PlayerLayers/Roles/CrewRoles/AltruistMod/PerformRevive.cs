@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod

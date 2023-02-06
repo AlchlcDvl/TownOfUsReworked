@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;

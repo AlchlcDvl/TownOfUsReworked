@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.MCI
 {

@@ -8,7 +8,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

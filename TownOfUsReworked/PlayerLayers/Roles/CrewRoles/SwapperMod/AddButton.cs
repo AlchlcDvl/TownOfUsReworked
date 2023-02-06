@@ -3,7 +3,7 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;

@@ -11,6 +11,7 @@ using System.Text.Json;
 using Twitch;
 using Reactor.Utilities;
 using System.Text.Json.Serialization;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {

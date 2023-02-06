@@ -272,7 +272,7 @@ Just a plain Crew with no abilities and only spawns if all the other roles are t
 ## Detective
 ### **Alignment: Crew (Investigative)**
 
-The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it. The Detect can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.
+The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it. The Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.
 
 ### Game Options
 

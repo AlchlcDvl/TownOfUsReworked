@@ -1,7 +1,7 @@
 using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using Reactor.Utilities.Extensions;

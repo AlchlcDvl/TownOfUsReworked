@@ -5,7 +5,7 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 

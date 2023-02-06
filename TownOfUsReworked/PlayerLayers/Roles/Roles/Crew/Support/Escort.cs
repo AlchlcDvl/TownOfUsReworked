@@ -3,7 +3,7 @@ using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
 using System;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using Hazel;
 using Reactor.Utilities;

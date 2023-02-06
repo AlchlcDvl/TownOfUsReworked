@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;

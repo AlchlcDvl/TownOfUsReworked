@@ -2,8 +2,7 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
@@ -50,31 +49,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
 
                         if (comms2.IsActive)
-                            return FixMiraComms();
+                            return FixFunctions.FixMiraComms();
 
                         var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
                         if (reactor2.IsActive)
-                            return FixReactor(SystemTypes.Reactor);
+                            return FixFunctions.FixReactor(SystemTypes.Reactor);
 
                         var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
                         if (oxygen2.IsActive)
-                            return FixOxygen();
+                            return FixFunctions.FixOxygen();
 
                         var lights2 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
                         if (lights2.IsActive)
-                            return FixLights(lights2);
+                            return FixFunctions.FixLights(lights2);
 
                         if (camo.Camouflaged)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (conc.Concealed)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (ss.Shapeshifted)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -82,26 +81,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         var comms3 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                         if (comms3.IsActive)
-                            return FixComms();
+                            return FixFunctions.FixComms();
 
                         var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
                         if (seismic.IsActive)
-                            return FixReactor(SystemTypes.Laboratory);
+                            return FixFunctions.FixReactor(SystemTypes.Laboratory);
 
                         var lights3 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
                         if (lights3.IsActive)
-                            return FixLights(lights3);
+                            return FixFunctions.FixLights(lights3);
 
                         if (camo.Camouflaged)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (conc.Concealed)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (ss.Shapeshifted)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -109,31 +108,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                         if (comms1.IsActive)
-                            return FixComms();
+                            return FixFunctions.FixComms();
 
                         var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
                         if (reactor1.IsActive)
-                            return FixReactor(SystemTypes.Reactor);
+                            return FixFunctions.FixReactor(SystemTypes.Reactor);
 
                         var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
                         if (oxygen1.IsActive)
-                            return FixOxygen();
+                            return FixFunctions.FixOxygen();
 
                         var lights1 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
                         if (lights1.IsActive)
-                            return FixLights(lights1);
+                            return FixFunctions.FixLights(lights1);
 
                         if (camo.Camouflaged)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (conc.Concealed)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (ss.Shapeshifted)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -141,59 +140,62 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         var comms4 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                         if (comms4.IsActive)
-                            return FixComms();
+                            return FixFunctions.FixComms();
 
                         var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
 
                         if (reactor.IsActive)
-                            return FixAirshipReactor();
+                            return FixFunctions.FixAirshipReactor();
 
                         var lights4 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
                         if (lights4.IsActive)
-                            return FixLights(lights4);
+                            return FixFunctions.FixLights(lights4);
 
                         if (camo.Camouflaged)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (conc.Concealed)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (ss.Shapeshifted)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         break;
 
                     case 5:
+                        if (!SubmergedCompatibility.Loaded)
+                            break;
+
                         var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
                         if (reactor5.IsActive)
-                            return FixReactor(SystemTypes.Reactor);
+                            return FixFunctions.FixReactor(SystemTypes.Reactor);
 
                         var lights5 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
                         if (lights5.IsActive)
-                            return FixLights(lights5);
+                            return FixFunctions.FixLights(lights5);
 
                         var comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                         if (comms5.IsActive)
-                            return FixComms();
+                            return FixFunctions.FixComms();
 
                         foreach (PlayerTask i in PlayerControl.LocalPlayer.myTasks)
                         {
                             if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
-                                return FixSubOxygen();
+                                return FixFunctions.FixSubOxygen();
                         }
 
                         if (camo.Camouflaged)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (conc.Concealed)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         if (ss.Shapeshifted)
-                            return FixCamo();
+                            return FixFunctions.FixCamo();
 
                         break;
                 }
@@ -211,74 +213,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                 return false;
             }
 
-            return false;
-        }
-
-        private static bool FixComms()
-        {
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
-            return false;
-        }
-
-        private static bool FixMiraComms()
-        {
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
-            return false;
-        }
-
-        private static bool FixAirshipReactor()
-        {
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 0);
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 1);
-            return false;
-        }
-
-        private static bool FixReactor(SystemTypes system)
-        {
-            ShipStatus.Instance.RpcRepairSystem(system, 16);
-            return false;
-        }
-
-        private static bool FixOxygen()
-        {
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 16);
-            return false;
-        }
-
-        private static bool FixCamo()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
-        private static bool FixConceal()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
-        private static bool FixShapeshift()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
-        private static bool FixSubOxygen()
-        {
-            SubmergedCompatibility.RepairOxygen();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable, -1);
-            writer.Write(PlayerControl.LocalPlayer.NetId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return false;
-        }
-
-        private static bool FixLights(SwitchSystem lights)
-        {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer.Write((byte)ActionsRPC.FixLights);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            lights.ActualSwitches = lights.ExpectedSwitches;
             return false;
         }
     }

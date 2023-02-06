@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 

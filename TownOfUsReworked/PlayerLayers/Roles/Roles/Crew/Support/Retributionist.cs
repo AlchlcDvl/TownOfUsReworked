@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Hazel;
 using System;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 using Reactor.Utilities.Extensions;
 using System.Reflection;
 using TMPro;

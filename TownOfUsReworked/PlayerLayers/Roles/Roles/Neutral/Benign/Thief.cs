@@ -1,6 +1,6 @@
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
 

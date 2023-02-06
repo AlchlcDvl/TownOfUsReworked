@@ -9,7 +9,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Classes;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.Patches
