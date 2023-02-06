@@ -7,7 +7,6 @@ Roles:-
   - Vigilante = 3
   - Engineer = 4
   - Swapper = 5
-  - Investigator = 6
   - Time Lord = 7
   - Medic = 8
   - Agent = 9
@@ -84,6 +83,8 @@ Syndicate:-
   - Mafioso
   - Revealer
   - Phantom
+
+Missing IDs - 6
 
 Modifiers:-
 - Diseased = 0 - D

@@ -48,9 +48,11 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         else if (randomNumber == 1)
                         {
                             //Flashes
-                            otherNumber = Random.RandomRangeInt(0, Lists.AllRoles.Count);
-                            var role2 = Lists.AllRoles[otherNumber];
-                            Coroutines.Start(Utils.FlashCoroutine(role2.Color));
+                            otherNumber = Random.RandomRangeInt(0, 256);
+                            var otherNumber2 = Random.RandomRangeInt(0, 256);
+                            var otherNumber3 = Random.RandomRangeInt(0, 256);
+                            var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
+                            Coroutines.Start(Utils.FlashCoroutine(flashColor));
                         }
                         else if (randomNumber == 2)
                         {

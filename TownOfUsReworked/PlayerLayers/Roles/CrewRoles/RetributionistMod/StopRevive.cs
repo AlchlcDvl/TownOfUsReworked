@@ -76,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (DestroyableSingleton<HudManager>.Instance)
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
             }
-            else if (ret.RevivedRole.RoleType == RoleEnum.Investigator)
+            else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
 
             ret.RevivedRole = null;

@@ -2059,7 +2059,6 @@ namespace TownOfUsReworked.Patches
                         Murder.KilledPlayers.Clear();
                         Role.Buttons.Clear();
                         Role.SetColors();
-                        Lists.DefinedLists();
                         Alt.DontRevive = byte.MaxValue;
                         break;
 
@@ -4553,8 +4552,6 @@ namespace TownOfUsReworked.Patches
                 RoleGen(infected.ToList());
 
                 PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Gen Done");
-
-                Lists.DefinedLists();
             }
         }
     }

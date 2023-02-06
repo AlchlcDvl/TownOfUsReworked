@@ -43,7 +43,6 @@ namespace TownOfUsReworked.Enums
         Engineer,
         Escort,
         Inspector,
-        Investigator,
         Mayor,
         Medic,
         Medium,

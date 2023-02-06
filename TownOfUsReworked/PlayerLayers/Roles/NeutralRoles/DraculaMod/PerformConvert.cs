@@ -89,7 +89,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Engineer:
                 case RoleEnum.Mayor:
                 case RoleEnum.Swapper:
-                case RoleEnum.Investigator:
                 case RoleEnum.TimeLord:
                 case RoleEnum.Medic:
                 case RoleEnum.Agent:

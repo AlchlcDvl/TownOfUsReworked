@@ -58,7 +58,7 @@ namespace TownOfUsReworked.MCI
             PlayerControl.LocalPlayer.lightSource = UnityEngine.Object.Instantiate<LightSource>(PlayerControl.LocalPlayer.LightPrefab);
             PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
             PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
-            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.lightSource.transform.localPosition);
+            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.transform.localPosition);
             Camera.main.GetComponent<FollowerCamera>().SetTarget(PlayerControl.LocalPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);

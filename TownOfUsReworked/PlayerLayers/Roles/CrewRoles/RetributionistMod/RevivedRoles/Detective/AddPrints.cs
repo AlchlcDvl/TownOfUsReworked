@@ -6,7 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Investigator
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Detective
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     public static class AddPrints
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Revive
             
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            if (ret.RevivedRole?.RoleType != RoleEnum.Investigator)
+            if (ret.RevivedRole?.RoleType != RoleEnum.Detective)
                 return;
 
             _time += Time.deltaTime;

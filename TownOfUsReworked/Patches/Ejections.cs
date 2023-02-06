@@ -21,9 +21,9 @@ namespace TownOfUsReworked.Patches
             var player = exiled.Object;
             var role = Role.GetRole(player);
 
-            var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Agent) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) ||
-                player.Is(RoleEnum.Engineer) || player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) ||
-                player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Investigator) || player.Is(RoleEnum.Operative) || player.Is(RoleEnum.Undertaker);
+            var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Agent) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Engineer) ||
+                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative) ||
+                player.Is(RoleEnum.Undertaker);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 

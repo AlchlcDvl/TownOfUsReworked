@@ -34,26 +34,25 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cannibal](#cannibal) |
 | [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Cryomaniac](#cryomaniac) |
 | [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dampyr](#dampyr) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Dracula](#dracula) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Engineer](#engineer) | [Executioner](#executioner) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Engineer](#engineer) | [Dracula](#dracula) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Escort](#escort) | [Executioner](#executioner) |
 | [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Glitch](#glitch) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Investigator](#investigator) | [Guardian Angel](#guardian-angel) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Mayor](#mayor) | [Guesser](#guesser) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Medic](#medic) | [Guesser](#guesser) |
 | [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jackal](#jackal) |
 | [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jester](#jester) |
 | [Time Master](#time-master) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |
-| [Undertaker](#undertaker) |  | [Operative](#operative) | [Murderer](#murderer) |
-| [Wraith](#wraith) |  | [Retributionist](#retributionist) | [Necromancer](#necromancer) |
-|  |  | [Revealer](#revealer) | [Pestilence](#pestilence) |
-|  |  | [Seer](#seer) | [Phantom](#phantom) |
+| [Undertaker](#undertaker) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |
+| [Wraith](#wraith) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |
+|  |  | [Seer](#seer) | [Pestilence](#pestilence) |
+|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |
 |  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |
-|  |  | [Sheriff](#sheriff) | [Serial Killer](#serial-killer) |
-|  |  | [Swapper](#swapper) | [Survivor](#survivor) |
-|  |  | [Time Lord](#time-lord) | [Thief](#thief) |
-|  |  | [Tracker](#tracker) | [Vampire](#vampire) |
-|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |
-|  |  | [Veteran](#veteran) |  |
+|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |
+|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |
+|  |  | [Tracker](#tracker) | [Thief](#thief) |
+|  |  | [Transporter](#transporter) | [Vampire](#vampire) |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf) |
+|  |  | [Veteran](#veteran) | [Whisperer](#whisperer) |
 |  |  | [Vigilante](#vigilante) |  |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
@@ -273,7 +272,7 @@ Just a plain Crew with no abilities and only spawns if all the other roles are t
 ## Detective
 ### **Alignment: Crew (Investigative)**
 
-The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it.
+The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it. The Detect can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.
 
 ### Game Options
 
@@ -284,6 +283,11 @@ The Detective can examine other players for suspicious behavior. If the examined
 | Detective Is Unique In All Any | Self descriptive | Toggle | False |
 | Examine Cooldown | The cooldown on the Detective's Examine button | Time | 10s |
 | Bloody Duration | How long players remain bloody after a kill | Time | 25s |
+| Footprint Size | The size of the footprint on a scale of 1 to 10 | Number | 4 |
+| Footprint Interval | The time interval between two footprints | Time | 0.1s |
+| Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
+| Anonymous Footprint | When enabled, all footprints are grey instead of the player's colors | Toggle | False |
+| Footprint Vent Visible | Whether footprints near vents are shown | Toggle | False |
 
 ## Engineer
 ### **Alignment: Crew (Support)**
@@ -327,24 +331,6 @@ The Inspector can check players for their roles. Upon being checked, the targets
 | Inspector Count | How many Inspectors should spawn in Custom Mode | Number | 1 |
 | Inspector Is Unique In All Any | Self descriptive | Toggle | False |
 | Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 5s |
-
-## Investigator
-### **Alignment: Crew (Investigative)**
-
-The Investigator can see the footprints of players. All footprints disappear after a set amount of time and only the Investigator can see them.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Investigator | The percentage probability of the Investigator appearing | Percentage | 0% |
-| Investigator Count | How many Investigators should spawn in Custom Mode | Number | 1 |
-| Investigator Is Unique In All Any | Self descriptive | Toggle | False |
-| Footprint Size | The size of the footprint on a scale of 1 to 10 | Number | 4 |
-| Footprint Interval | The time interval between two footprints | Time | 0.1s |
-| Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
-| Anonymous Footprint | When enabled, all footprints are grey instead of the player's colors | Toggle | False |
-| Footprint Vent Visible | Whether footprints near vents are shown | Toggle | False |
 
 ## Mayor
 ### **Alignment: Crew (Sovereign)**

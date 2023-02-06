@@ -100,7 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                             revivedRole = haunter.FormerRole.RoleType;
                         }
 
-                        if (player.Data.IsDead && !player.Data.Disconnected && (revivedRole == RoleEnum.Detective || revivedRole == RoleEnum.Investigator || revivedRole == RoleEnum.Seer ||
+                        if (player.Data.IsDead && !player.Data.Disconnected && (revivedRole == RoleEnum.Detective || revivedRole == RoleEnum.Seer ||
                             revivedRole == RoleEnum.Mystic || revivedRole == RoleEnum.Agent || revivedRole == RoleEnum.Tracker || revivedRole == RoleEnum.Medic ||
                             revivedRole == RoleEnum.Sheriff || revivedRole == RoleEnum.Veteran || revivedRole == RoleEnum.Altruist || revivedRole == RoleEnum.Engineer ||
                             revivedRole == RoleEnum.Medium || revivedRole == RoleEnum.Operative || revivedRole == RoleEnum.Inspector || revivedRole == RoleEnum.Chameleon ||
