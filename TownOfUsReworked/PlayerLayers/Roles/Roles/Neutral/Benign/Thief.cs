@@ -28,6 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.ThiefAmneTrackInvest;
         }
 
+        public override void Loses()
+        {
+            LostByRPC = true;
+        }
+
         public KillButton StealButton
         {
             get => _stealButton;

@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -29,6 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Protective)";
             Results = InspResults.GrenFramMedicPois;
             //IntroSound = TownOfUsReworked.MedicIntro;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton ShieldButton

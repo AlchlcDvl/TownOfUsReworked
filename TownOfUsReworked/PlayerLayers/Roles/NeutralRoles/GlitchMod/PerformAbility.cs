@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 
                 if (__instance == role.HackButton)
                 {
-                    if (role.HackTimer() > 0f)
+                    if (role.HackTimer() != 0f)
                         return false;
 
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 }
                 else if (__instance == role.KillButton)
                 {
-                    if (role.KillTimer() > 0f)
+                    if (role.KillTimer() != 0f)
                         return false;
 
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);

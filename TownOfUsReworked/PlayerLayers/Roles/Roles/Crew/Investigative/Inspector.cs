@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
 using System;
@@ -34,6 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "list, they are not Crew.";
             Objectives = CrewWinCon;
             LastInspected = DateTime.UtcNow;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton InspectButton

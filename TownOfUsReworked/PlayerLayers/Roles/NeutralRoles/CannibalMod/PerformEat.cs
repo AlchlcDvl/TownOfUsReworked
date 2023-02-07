@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
                 
-                if (role.EatTimer() > 0f)
+                if (role.EatTimer() != 0f)
                     return false;
 
                 Utils.Spread(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId));

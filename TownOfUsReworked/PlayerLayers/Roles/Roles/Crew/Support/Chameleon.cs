@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
@@ -24,6 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastSwooped = DateTime.UtcNow;
             RoleType = RoleEnum.Chameleon;
             Faction = Faction.Crew;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float SwoopTimer()

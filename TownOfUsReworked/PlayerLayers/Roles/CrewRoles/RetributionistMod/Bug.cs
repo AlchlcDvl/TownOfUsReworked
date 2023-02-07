@@ -68,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     }
 
     [HarmonyPatch]
-    public static class BugExtentions
+    public static class BugExtentions2
     {
         public static void ClearBugs(this List<Bug> obj)
         {

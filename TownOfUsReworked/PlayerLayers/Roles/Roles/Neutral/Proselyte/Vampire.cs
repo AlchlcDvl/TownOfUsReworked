@@ -1,9 +1,7 @@
-using Il2CppSystem.Collections.Generic;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -23,6 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = "Neutral (Proselyte)";
             Results = InspResults.EngiMineBombVampWW;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public override void Wins()

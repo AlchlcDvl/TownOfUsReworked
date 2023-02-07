@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
@@ -33,6 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
             Objectives = CrewWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

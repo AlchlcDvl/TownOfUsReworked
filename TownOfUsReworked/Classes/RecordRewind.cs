@@ -6,7 +6,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -69,7 +68,7 @@ namespace TownOfUsReworked.Classes
                 points.RemoveAt(0);
                 points.RemoveAt(0);
 
-                if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer.Data.Disconnected || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) ||
+                if (PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || PlayerControl.LocalPlayer.inMovingPlat ||
                     (PlayerControl.LocalPlayer.Is(RoleEnum.TimeMaster) && CustomGameOptions.TMImmunity))
                     return;
 

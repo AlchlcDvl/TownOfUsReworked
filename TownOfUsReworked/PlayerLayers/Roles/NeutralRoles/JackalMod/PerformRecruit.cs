@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.RecruitTimer() > 0f)
+                if (role.RecruitTimer() != 0f)
                     return false;
                 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);

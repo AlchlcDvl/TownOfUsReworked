@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
@@ -51,6 +50,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
 
             __instance.teamToShow = team;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public override void Wins()

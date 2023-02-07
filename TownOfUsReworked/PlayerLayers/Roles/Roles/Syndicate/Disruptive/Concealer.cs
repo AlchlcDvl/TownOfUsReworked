@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -38,6 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = SSuDescription;
             FactionDescription = SyndicateFactionDescription;
             Objectives = SyndicateWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton KillButton

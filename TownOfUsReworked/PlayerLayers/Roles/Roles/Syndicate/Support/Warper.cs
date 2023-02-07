@@ -6,7 +6,6 @@ using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -36,6 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Disruptive)";
             Results = InspResults.TeleWarpTransWraith;
             //IntroSound = TownOfUsReworked.WarperIntro;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

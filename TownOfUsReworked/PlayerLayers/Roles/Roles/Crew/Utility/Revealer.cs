@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -24,6 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
             RoleType = RoleEnum.Revealer;
             Faction = Faction.Crew;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public void Fade()

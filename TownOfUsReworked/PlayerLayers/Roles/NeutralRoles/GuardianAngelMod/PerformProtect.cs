@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                 if (!role.ButtonUsable)
                     return false;
 
-                if (role.ProtectTimer() > 0f)
+                if (role.ProtectTimer() != 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.ProtectDuration;

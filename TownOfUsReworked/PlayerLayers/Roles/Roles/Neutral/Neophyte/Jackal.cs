@@ -2,7 +2,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using System;
 using Il2CppSystem.Collections.Generic;
 
@@ -41,6 +40,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = NeutralFactionDescription;
             RoleDescription = "You are a Jackal! You are a greedy double agent sent from a rival company! Use your recruits to your advantage and take over the mission!";
             SubFactionName = "Cabal";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public override void Wins()

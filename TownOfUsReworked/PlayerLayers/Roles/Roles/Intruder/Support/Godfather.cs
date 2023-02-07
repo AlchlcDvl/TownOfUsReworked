@@ -2,7 +2,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using System;
 
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = ISDescription;
             RoleDescription = "You are the Godfather! You are the leader of the Intruders. You can promote a fellow Intruder into becoming your Mafioso." +
                 " When you die, the Mafioso will become the new Godfather and will inherit stronger variations of their former role!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

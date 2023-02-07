@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() > 0f)
+                if (role.KillTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

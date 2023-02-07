@@ -20,17 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
         public static void Postfix(PlayerControl __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Tracker))
-            return;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 

@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.WhisperTimer() > 0f)
+                if (role.WhisperTimer() != 0f)
                     return false;
 
                 Vector2 truePosition = role.Player.GetTruePosition();

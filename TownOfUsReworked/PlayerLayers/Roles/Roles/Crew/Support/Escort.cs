@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
 using System;
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = CrewWinCon;
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
             RoleBlockImmune = true;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton BlockButton

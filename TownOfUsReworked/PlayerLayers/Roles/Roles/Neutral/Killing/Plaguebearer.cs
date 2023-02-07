@@ -6,7 +6,6 @@ using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -36,6 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
             Results = InspResults.ArsoPBCryoVet;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton InfectButton

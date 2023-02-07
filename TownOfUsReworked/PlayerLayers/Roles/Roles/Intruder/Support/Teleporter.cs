@@ -5,7 +5,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -29,6 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Intruder;
             Results = InspResults.TeleWarpTransWraith;
             FactionName = "Intruder";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

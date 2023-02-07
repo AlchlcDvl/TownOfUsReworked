@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -29,6 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Support)";
             Results = InspResults.ShiftSwapSKDrac;
             //IntroSound = TownOfUsReworked.ShifterIntro;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton ShiftButton

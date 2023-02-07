@@ -65,6 +65,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
         }
 
+        public override void Loses()
+        {
+            LostByRPC = true;
+        }
+
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -391,6 +396,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         //Vampire Hunter Stuff
         public DateTime LastStaked { get; set; }
         private KillButton _stakeButton;
+        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && x.Is(SubFaction.Undead)) == 0;
 
         public KillButton StakeButton
         {

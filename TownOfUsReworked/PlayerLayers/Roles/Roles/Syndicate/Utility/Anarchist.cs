@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using System;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -31,6 +30,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SUDescription;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

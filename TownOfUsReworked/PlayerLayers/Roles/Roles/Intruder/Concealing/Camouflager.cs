@@ -3,7 +3,6 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
 
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Camouflager! You can choose to disrupt everyone's vision, causing them to be unable to recognise others. Use this to your " +
                 "advantage and kill while unsuspected in front of everyone!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton CamouflageButton

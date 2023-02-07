@@ -39,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Results = InspResults.VigVHSurvGorg;
         }
 
+        public override void Loses()
+        {
+            LostByRPC = true;
+        }
+
         public KillButton VestButton
         {
             get => _vestButton;

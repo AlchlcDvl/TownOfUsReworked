@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
                 
-                if (role.DisguiseTimer() > 0f)
+                if (role.DisguiseTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -81,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() > 0f)
+                if (role.KillTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

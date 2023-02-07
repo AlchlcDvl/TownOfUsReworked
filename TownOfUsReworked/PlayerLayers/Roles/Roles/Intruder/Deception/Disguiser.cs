@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
@@ -42,6 +41,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
             AlignmentDescription = IDDescription;
             RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

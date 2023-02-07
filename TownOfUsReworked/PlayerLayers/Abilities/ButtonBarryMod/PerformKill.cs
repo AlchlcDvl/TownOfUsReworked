@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
                 if (role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies > 0)
                     return false;
                 
-                if (role.StartTimer() > 0f)
+                if (role.StartTimer() != 0f)
                     return false;
 
                 role.ButtonUsed = true;

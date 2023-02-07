@@ -1,4 +1,3 @@
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -25,6 +24,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
             Results = InspResults.None;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public void Fade()

@@ -46,11 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
 
-        public virtual void Loses()
-        {
-            LostByRPC = true;
-        }
-
+        public virtual void Loses() {}
         public virtual void Wins() {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;

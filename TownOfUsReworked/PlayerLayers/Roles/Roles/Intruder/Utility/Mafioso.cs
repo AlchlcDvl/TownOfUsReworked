@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -37,6 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Mafioso! You are the successor to the leader of the Intruders. When the Godfather dies, you will become the new" +
                 " Godfather and will inherit stronger variations of your former role.";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

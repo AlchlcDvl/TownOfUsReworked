@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod;
 using Il2CppSystem.Collections.Generic;
 
@@ -35,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
             Results = InspResults.TLAltTMCann;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

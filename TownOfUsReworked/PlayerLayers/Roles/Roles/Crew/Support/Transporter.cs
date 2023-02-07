@@ -7,7 +7,6 @@ using System.Linq;
 using TMPro;
 using Reactor.Utilities.Extensions;
 using System.Collections.Generic;
-using TownOfUsReworked.Patches;
 using System.Collections;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -52,6 +51,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TeleWarpTransWraith;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton TransportButton

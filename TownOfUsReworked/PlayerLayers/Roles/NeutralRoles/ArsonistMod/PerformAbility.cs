@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerIgnite))
                     return false;
                 
-                if (role.IgniteTimer() > 0f)
+                if (role.IgniteTimer() != 0f)
                     return false;
 
                 if (!role.DousedPlayers.Contains(role.ClosestPlayerIgnite.PlayerId))
@@ -84,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerDouse))
                     return false;
                 
-                if (role.DouseTimer() > 0f)
+                if (role.DouseTimer() != 0f)
                     return false;
 
                 if (role.DousedPlayers.Contains(role.ClosestPlayerDouse.PlayerId))

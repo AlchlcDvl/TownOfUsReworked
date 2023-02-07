@@ -1,6 +1,5 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using System;
@@ -35,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
             AlignmentDescription = ICDescription;
             RoleDescription = "You are a Janitor! You are a sanitation expert who got swept up with the wrong company. Clean up everyone's messes to ensure nothing goes wrong!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -11,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Whisperer : Role
     {
-
         private KillButton _whisperButton;
         public DateTime LastWhispered;
         public int WhisperCount;
@@ -29,6 +27,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Sect;
             Faction = Faction.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton WhisperButton

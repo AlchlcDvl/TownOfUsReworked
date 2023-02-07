@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Il2CppSystem.Collections.Generic;
@@ -37,6 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Deception)";
             Results = InspResults.MorphGliEscCons;
             //IntroSound = TownOfUsReworked.MorphlingIntro;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

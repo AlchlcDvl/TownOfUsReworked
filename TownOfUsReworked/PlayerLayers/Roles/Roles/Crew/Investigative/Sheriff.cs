@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -32,6 +31,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionDescription = CrewFactionDescription;
             AlignmentDescription = CIDescription;
             Objectives = CrewWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton InterrogateButton

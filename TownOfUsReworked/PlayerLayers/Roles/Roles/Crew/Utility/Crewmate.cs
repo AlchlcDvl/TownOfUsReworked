@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -26,6 +25,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = CUDescription;
             FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

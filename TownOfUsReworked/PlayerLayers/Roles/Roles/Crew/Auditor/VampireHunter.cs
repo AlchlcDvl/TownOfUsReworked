@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 _stakeButton = value;
                 AddToAbilityButtons(value, this);
             }
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float StakeTimer()

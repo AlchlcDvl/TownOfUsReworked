@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                if (role.InfectTimer() > 0f)
+                if (role.InfectTimer() != 0f)
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);

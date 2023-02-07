@@ -1,7 +1,6 @@
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using Hazel;
 using TownOfUsReworked.Classes;
 
@@ -35,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " and avoid losing the Dracula or else you're done for!";
             SubFactionColor = Colors.Undead;
             SubFactionName = "Undead";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public override void Wins()

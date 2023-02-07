@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TMPro;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -35,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Killing)";
             Results = InspResults.ArsoPBCryoVet;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton AlertButton

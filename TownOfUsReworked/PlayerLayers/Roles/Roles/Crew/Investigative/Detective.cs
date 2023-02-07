@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -33,6 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = CrewWinCon;
             AlignmentDescription = CIDescription;
             RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers in the act!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton ExamineButton

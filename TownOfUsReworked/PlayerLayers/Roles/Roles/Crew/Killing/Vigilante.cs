@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TMPro;
 using TownOfUsReworked.Classes;
@@ -35,6 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Killing)";
             Results = InspResults.VigVHSurvGorg;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton ShootButton

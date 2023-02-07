@@ -3,10 +3,10 @@ using HarmonyLib;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -117,6 +117,72 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 var role2 = (Vigilante)role;
                 role2.FirstRound = false;
                 role2.LastKilled = DateTime.UtcNow;
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
+            {
+                var role2 = (Retributionist)role;
+
+                if (role2.RevivedRole == null)
+                    continue;
+
+                switch (role2.RevivedRole.RoleType)
+                {
+                    case RoleEnum.Chameleon:
+                        role2.LastSwooped = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.Detective:
+                        role2.LastExamined = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.Vigilante:
+                        role2.LastKilled = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.VampireHunter:
+                        role2.LastStaked = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.Veteran:
+                        role2.LastAlerted = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.Tracker:
+                        role2.LastTracked = DateTime.UtcNow;
+
+                        if (CustomGameOptions.ResetOnNewRound)
+                        {
+                            role2.TrackUsesLeft = CustomGameOptions.MaxTracks;
+                            role2.TrackerArrows.Values.DestroyAll();
+                            role2.TrackerArrows.Clear();
+                        }
+
+                        break;
+                    case RoleEnum.Sheriff:
+                        role2.LastInterrogated = DateTime.UtcNow;
+                        break;
+                    case RoleEnum.TimeLord:
+                        role2.FinishRewind = DateTime.UtcNow;
+                        role2.StartRewind = DateTime.UtcNow;
+                        role2.StartRewind = role2.StartRewind.AddSeconds(-10.0f);
+                        break;
+                    case RoleEnum.Medium:
+                        role2.LastMediated = DateTime.UtcNow;
+                        role2.MediatedPlayers.Values.DestroyAll();
+                        role2.MediatedPlayers.Clear();
+                        break;
+                    case RoleEnum.Operative:
+                        role2.LastBugged = DateTime.UtcNow;
+                        role2.BuggedPlayers.Clear();
+                        
+                        if (CustomGameOptions.BugsRemoveOnNewRound)
+                            BugExtentions2.ClearBugs(role2.Bugs);
+
+                        break;
+                    case RoleEnum.Inspector:
+                        role2.LastInspected = DateTime.UtcNow;
+                        break;
+                    
+                    default:
+                        role2.RevivedRole = null;
+                        break;
+                }
             }
 
             //Intruder cooldowns

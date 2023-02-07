@@ -53,6 +53,7 @@ namespace TownOfUsReworked.Enums
         DoorSyncToilet,
         SyncPlateform,
 
-        SetColor
+        SetColor,
+        VersionHandshake
     }
 }

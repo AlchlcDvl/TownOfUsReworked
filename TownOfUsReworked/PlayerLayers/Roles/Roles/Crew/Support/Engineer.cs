@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -36,6 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " the systems you spent blood, sweat and tears to make. Make them pay.";
             AlignmentDescription = CSDescription;
             UsesLeft = CustomGameOptions.MaxFixes;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton FixButton

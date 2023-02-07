@@ -1,8 +1,6 @@
 using System;
 using TMPro;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -35,6 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             Results = InspResults.TLAltTMCann;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton RewindButton

@@ -2,7 +2,6 @@ using Reactor.Utilities.Extensions;
 using System;
 using System.Reflection;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.Classes;
@@ -41,6 +40,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " though, as any unfortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations are key to victory!";
             FactionDescription = SyndicateFactionDescription;
             AlignmentDescription = SyKDescription;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

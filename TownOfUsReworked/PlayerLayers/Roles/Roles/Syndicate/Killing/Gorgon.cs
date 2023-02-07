@@ -1,6 +1,5 @@
 using TownOfUsReworked.Enums;
 using System.Collections.Generic;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System;
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = SyndicateWinCon;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
             AlignmentDescription = SyKDescription;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

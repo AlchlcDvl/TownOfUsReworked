@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.ConsigliereTimer() > 0f)
+                if (role.ConsigliereTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.KillTimer() > 0f)
+                if (role.KillTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

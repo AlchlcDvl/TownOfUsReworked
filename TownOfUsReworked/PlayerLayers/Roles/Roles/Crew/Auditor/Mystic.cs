@@ -1,5 +1,4 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
@@ -46,6 +45,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 SyndicateWin = true;
             else
                 CrewWin = true;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)

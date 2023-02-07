@@ -4,7 +4,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using System.Linq;
 
@@ -41,6 +40,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NKDescription;
             RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
             Objectives = NKWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton DouseButton

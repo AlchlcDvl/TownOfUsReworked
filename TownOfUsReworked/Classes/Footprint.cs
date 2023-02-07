@@ -3,7 +3,6 @@ using UnityEngine;
 using TownOfUsReworked.Lobby.Extras.RainbowMod;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Classes
 {

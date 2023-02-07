@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -30,6 +29,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = "Crew (Sovereign)";
             Results = InspResults.GFMayorRebelPest;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
-                if (role.DouseTimer() > 0f)
+                if (role.DouseTimer() != 0f)
                     return false;
 
                 if (role.DousedPlayers.Contains(role.ClosestPlayer.PlayerId))

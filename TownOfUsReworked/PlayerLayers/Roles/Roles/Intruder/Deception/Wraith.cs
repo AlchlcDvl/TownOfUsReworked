@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
 
@@ -34,6 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
             Results = InspResults.TeleWarpTransWraith;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

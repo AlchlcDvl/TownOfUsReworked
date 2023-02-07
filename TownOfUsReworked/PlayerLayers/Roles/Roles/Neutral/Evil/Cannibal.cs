@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using System.Linq;
 using Object = UnityEngine.Object;
 
@@ -39,6 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NEDescription;
             FactionDescription = NeutralFactionDescription;
             Objectives = $"- Eat {EatNeed} {body}.";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
         
         internal override bool GameEnd(LogicGameFlowNormal __instance)

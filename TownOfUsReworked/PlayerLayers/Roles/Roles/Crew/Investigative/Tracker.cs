@@ -4,7 +4,6 @@ using System.Linq;
 using Object = UnityEngine.Object;
 using TMPro;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -39,6 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = CIDescription;
             Objectives = CrewWinCon;
             Results = InspResults.ThiefAmneTrackInvest;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton TrackButton

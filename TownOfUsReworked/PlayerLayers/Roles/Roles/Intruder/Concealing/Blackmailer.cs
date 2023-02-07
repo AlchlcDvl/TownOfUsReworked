@@ -1,7 +1,6 @@
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 $"careful though, as you cannot blackmail yourself so the others will get wise to your identity pretty quickly. Currently {Blackmailed.name} is blackmailed." :
                 "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be careful though, as you cannot" +
                 " blackmail yourself so the others will get wise to your identity pretty quickly.";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton KillButton

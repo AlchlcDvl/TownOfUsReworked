@@ -320,7 +320,7 @@ namespace TownOfUsReworked
             var pixelsPerUnit = 100f;
             var pivot = new Vector2(0.5f, 0.5f);
             var assembly = Assembly.GetExecutingAssembly();
-            var tex = AmongUsExtensions.CreateEmptyTexture();
+            var tex = Utils.CreateEmptyTexture();
             var imageStream = assembly.GetManifestResourceStream(name);
             var img = imageStream.ReadFully();
             LoadImage(tex, img, true);

@@ -1,7 +1,6 @@
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System.Collections.Generic;
@@ -43,6 +42,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " by revealing players for who they really are!";
             AlignmentDescription = ISDescription;
             Objectives = IntrudersWinCon;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float KillTimer()

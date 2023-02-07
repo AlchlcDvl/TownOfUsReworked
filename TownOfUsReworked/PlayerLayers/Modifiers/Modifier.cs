@@ -6,7 +6,6 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using Hazel;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
@@ -46,6 +45,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = CIDescription;
             Objectives = CrewWinCon;
             RoleDescription = "You are an Operative! You can place bugs all around the map and you will be told the roles of whoever triggers them! Use this to find everyone's identities!";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton BugButton

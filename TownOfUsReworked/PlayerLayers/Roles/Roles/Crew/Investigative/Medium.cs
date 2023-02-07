@@ -3,7 +3,6 @@ using UnityEngine;
 using Reactor.Utilities;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
@@ -37,6 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = CrewWinCon;
             RoleDescription = "You are a Medium! You can mediate the dead, which reveals the spirits of the dead to you! Use their movements and information to find the evils!";
             LastMediated = DateTime.UtcNow;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public KillButton MediateButton

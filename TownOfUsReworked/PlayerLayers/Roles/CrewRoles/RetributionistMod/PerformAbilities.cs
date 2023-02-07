@@ -12,6 +12,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
+using TownOfUsReworked.Lobby.Extras.RainbowMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
@@ -19,6 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformAbilities
     {
+        public static Sprite Sprite => TownOfUsReworked.Arrow;
+
         public static bool Prefix(KillButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
@@ -79,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.InspectButton && revivedRole == RoleEnum.Inspector)
             {
-                if (role.InspectTimer() > 0f)
+                if (role.InspectTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -296,7 +300,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.ExamineButton && revivedRole == RoleEnum.Detective)
             {
-                if (role.ExamineTimer() > 0f)
+                if (role.ExamineTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -329,7 +333,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.SwoopButton && revivedRole == RoleEnum.Chameleon)
             {
-                if (role.SwoopTimer() > 0f)
+                if (role.SwoopTimer() != 0f)
                     return false;
 
                 role.SwoopTimeRemaining = CustomGameOptions.SwoopDuration;
@@ -347,7 +351,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.MediateTimer() > 0f)
+                if (role.MediateTimer() != 0f)
                     return false;
 
                 role.LastMediated = DateTime.UtcNow;
@@ -396,7 +400,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.InterrogateButton && revivedRole == RoleEnum.Sheriff)
             {
-                if (role.InterrogateTimer() > 0f)
+                if (role.InterrogateTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -416,20 +420,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.BugButton && revivedRole == RoleEnum.Operative)
             {
-                if (role.BugTimer() > 0f && __instance == role.BugButton)
+                if (role.BugTimer() != 0f && __instance == role.BugButton)
                     return false;
 
                 role.BugUsesLeft--;
                 role.LastBugged = System.DateTime.UtcNow;
-                role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
+                role.Bugs.Add(BugExtentions2.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
-            else if (__instance == role.RewindButton)
+            else if (__instance == role.RewindButton && revivedRole == RoleEnum.TimeLord)
             {
                 if (!role.RewindButtonUsable)
                     return false;
 
-                if (role.TimeLordRewindTimer() > 0f && !RecordRewind.rewinding)
+                if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
                     return false;
 
                 role.RewindUsesLeft--;
@@ -443,6 +447,96 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
                 } catch {}
 
+                return false;
+            }
+            else if (__instance == role.TrackButton && revivedRole == RoleEnum.Tracker)
+            {
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.TrackerTimer() != 0f)
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                if (interact[3] == true)
+                {
+                    var target = role.ClosestPlayer;
+                    var gameObj = new GameObject();
+                    var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                    gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                    var renderer = gameObj.AddComponent<SpriteRenderer>();
+                    renderer.sprite = Sprite;
+
+                    if (!CamouflageUnCamouflage.IsCamoed)
+                    {
+                        if (RainbowUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
+                            renderer.color = RainbowUtils.Rainbow;
+                        else
+                            renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
+                    }
+                    else
+                        renderer.color = Color.gray;
+
+                    arrow.image = renderer;
+                    gameObj.layer = 5;
+                    arrow.target = target.transform.position;
+                    role.TrackerArrows.Add(target.PlayerId, arrow);
+                    role.TrackUsesLeft--;
+                    
+                    try
+                    {
+                        //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
+                    } catch {}
+                }
+                
+                if (interact[0] == true)
+                    role.LastTracked = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                return false;
+            }
+            else if (__instance == role.StakeButton && revivedRole == RoleEnum.VampireHunter)
+            {
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                if (role.StakeTimer() != 0f && __instance == role.StakeButton)
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), role.ClosestPlayer.Is(SubFaction.Undead));
+
+                if (interact[3] == true && interact[0] == true)
+                    role.LastStaked = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastStaked = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                return false;
+            }
+            else if (__instance == role.AlertButton && revivedRole == RoleEnum.Veteran)
+            {
+                if (!role.AlertButtonUsable)
+                    return false;
+
+                if (role.AlertTimer() != 0f)
+                    return false;
+
+                role.AlertTimeRemaining = CustomGameOptions.AlertDuration;
+                role.AlertUsesLeft--;
+                role.Alert();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Alert);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                
+                try
+                {
+                    //SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
+                } catch {}
+                
                 return false;
             }
 

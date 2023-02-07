@@ -1,7 +1,6 @@
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using System;
 
@@ -34,6 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Jester! You are a suicidal lunatic who wants to be thrown out of the airlock. Get yourself ejected at all costs!";
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NEDescription;
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

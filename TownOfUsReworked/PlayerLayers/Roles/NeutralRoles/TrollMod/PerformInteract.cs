@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.InteractTimer() > 0f)
+                if (role.InteractTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

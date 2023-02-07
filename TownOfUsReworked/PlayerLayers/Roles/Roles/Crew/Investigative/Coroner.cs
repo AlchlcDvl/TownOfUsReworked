@@ -3,7 +3,6 @@ using System.Linq;
 using GameObject = UnityEngine.Object;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 
@@ -33,6 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = CIDescription;
             RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies and are so skilled to the point you even know when someone dies!" +
                 " Your strong skill makes you a very tempting target for evils so be careful when revealing information.";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public void DestroyArrow(byte targetPlayerId)

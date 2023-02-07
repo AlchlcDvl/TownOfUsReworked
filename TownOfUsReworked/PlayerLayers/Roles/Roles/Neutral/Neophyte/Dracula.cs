@@ -4,7 +4,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -40,6 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = UndeadWinCon;
             SubFactionColor = Colors.Undead;
             SubFactionName = "Undead";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
         public float ConvertTimer()

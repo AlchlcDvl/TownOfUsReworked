@@ -3,7 +3,6 @@ using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -60,6 +59,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             MenuClick = false;
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
+        }
+
+        public override void Loses()
+        {
+            LostByRPC = true;
         }
 
 		public void MimicListUpdate()
