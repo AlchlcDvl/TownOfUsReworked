@@ -640,6 +640,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Phantom Settings
         public static int PhantomCount => (int)Generate.PhantomCount.Get();
         public static int PhantomTasksRemaining => (int)Generate.PhantomTasksRemaining.Get();
+        public static bool PhantomPlayersAlerted => Generate.PhantomPlayersAlerted.Get();
 
         //Pestilence Settings
         public static float PestKillCd => Generate.PestKillCooldown.Get();
@@ -732,6 +733,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Godfather Settings
         public static int GodfatherCount => (int)Generate.GodfatherCount.Get();
         public static bool UniqueGodfather => Generate.UniqueGodfather.Get();
+        public static bool PromotedMafiosoCanPromote => Generate.PromotedMafiosoCanPromote.Get();
+        public static float MafiosoAbilityCooldownDecrease => Generate.MafiosoAbilityCooldownDecrease.Get();
 
         //Miner Settings
         public static float MineCd => Generate.MineCooldown.Get();
@@ -743,14 +746,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Anarchist Settings
         public static int AnarchistCount => (int)Generate.AnarchistCount.Get();
-
-        //Mafioso Settings
-        public static bool PromotedMafiosoCanPromote => Generate.PromotedMafiosoCanPromote.Get();
-        public static float MafiosoAbilityCooldownDecrease => Generate.MafiosoAbilityCooldownDecrease.Get();
-
-        //Sidekick Settings
-        public static bool PromotedSidekickCanPromote => Generate.PromotedSidekickCanPromote.Get();
-        public static float SidekickAbilityCooldownDecrease => Generate.SidekickAbilityCooldownDecrease.Get();
 
         //Framer Settings
         public static int FramerCount => (int)Generate.FramerCount.Get();
@@ -792,6 +787,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Rebel Settings
         public static int RebelCount => (int)Generate.RebelCount.Get();
         public static bool UniqueRebel => Generate.UniqueRebel.Get();
+        public static bool PromotedSidekickCanPromote => Generate.PromotedSidekickCanPromote.Get();
+        public static float SidekickAbilityCooldownDecrease => Generate.SidekickAbilityCooldownDecrease.Get();
 
         //Warper Settings
         public static float WarpCooldown => Generate.WarpCooldown.Get();

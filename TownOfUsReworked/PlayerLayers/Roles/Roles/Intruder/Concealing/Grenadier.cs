@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Grenadier : Role
     {
         private KillButton _flashButton;
-        public bool Enabled;
+        public bool Enabled = false;
         public DateTime LastFlashed;
         public float TimeRemaining;
         public static List<PlayerControl> closestPlayers = null;
@@ -134,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
                             DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(normalVision, dimVision, fade);
 
-                            if (PlayerControl.LocalPlayer.Data.IsImpostor() && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
+                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
                                 MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
                         }
                         else
@@ -158,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
                             DestroyableSingleton<HudManager>.Instance.FullScreen.color = dimVision;
 
-                            if (PlayerControl.LocalPlayer.Data.IsImpostor() && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
+                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
                                 MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
                         }
                         else
@@ -184,7 +184,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                             ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
                             DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(dimVision, normalVision, fade2);
 
-                            if (PlayerControl.LocalPlayer.Data.IsImpostor() && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
+                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
                                 MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
                         }
                         else
@@ -206,19 +206,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (TimeRemaining > 0.5f)
             {
-                if (PlayerControl.LocalPlayer.Data.IsImpostor() && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
+                if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
                     MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
             }
         }
 
         private static bool ShouldPlayerBeDimmed(PlayerControl player)
         {
-            return (player.Data.IsImpostor() || player.Data.IsDead) && !MeetingHud.Instance;
+            return (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
         }
 
         private static bool ShouldPlayerBeBlinded(PlayerControl player)
         {
-            return !player.Data.IsImpostor() && !player.Data.IsDead && !MeetingHud.Instance;
+            return !player.Is(Faction.Intruder) && !player.Data.IsDead && !MeetingHud.Instance;
         }
 
         public void UnFlash()

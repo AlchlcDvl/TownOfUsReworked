@@ -15,13 +15,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(PlayerControl __instance)
         {
-            if (__instance == null)
-                return;
- 
-            if (MeetingHud.Instance)
-                return;
-
-            if (!PlayerControl.LocalPlayer.CanDoTasks())
+            if (__instance == null || MeetingHud.Instance || !PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var taskinfos = __instance.Data.Tasks.ToArray();
@@ -56,8 +50,6 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
-
-            return;
         }
     }
 }

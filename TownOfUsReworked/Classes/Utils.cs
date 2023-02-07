@@ -10,7 +10,6 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using UD = TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles;
@@ -20,9 +19,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Reactor.Utilities;
-using Random = UnityEngine.Random;
 using Il2CppInterop.Runtime.InteropTypes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
@@ -31,13 +28,15 @@ using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers;
 using InnerNet;
+using UD = TownOfUsReworked.PlayerLayers.Abilities.UnderdogMod;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
     public static class Utils
     {
-        private static GameData.PlayerInfo voteTarget = null;
         public static Dictionary<PlayerControl, Color> oldColors = new Dictionary<PlayerControl, Color>();
         public static List<WinningPlayerData> potentialWinners = new List<WinningPlayerData>();
 		public static Dictionary<byte, DateTime> tickDictionary = new Dictionary<byte, DateTime>();
@@ -1467,14 +1466,12 @@ namespace TownOfUsReworked.Classes
                     var sk = Role.GetRole<SerialKiller>(killer);
                     sk.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.LustKillCd);
                     sk.Player.SetKillTimer(CustomGameOptions.LustKillCd * CustomGameOptions.DiseasedMultiplier);
-                    return;
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Glitch))
                 {
                     var glitch = Role.GetRole<Glitch>(killer);
                     glitch.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.GlitchKillCooldown);
                     glitch.Player.SetKillTimer(CustomGameOptions.GlitchKillCooldown * CustomGameOptions.DiseasedMultiplier);
-                    return;
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Juggernaut))
                 {
@@ -1483,28 +1480,96 @@ namespace TownOfUsReworked.Classes
                         CustomGameOptions.JuggKillBonus * juggernaut.JuggKills));
                     juggernaut.Player.SetKillTimer((CustomGameOptions.JuggKillCooldown + 5.0f - CustomGameOptions.JuggKillBonus * juggernaut.JuggKills) *
                         CustomGameOptions.DiseasedMultiplier);
-                    return;
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
                 {
-                    var lowerKC = (CustomGameOptions.IntKillCooldown - CustomGameOptions.UnderdogKillBonus) *
-                        CustomGameOptions.DiseasedMultiplier;
-                    var normalKC = CustomGameOptions.IntKillCooldown * CustomGameOptions.DiseasedMultiplier;
-                    var upperKC = (CustomGameOptions.IntKillCooldown + CustomGameOptions.UnderdogKillBonus) *
-                        CustomGameOptions.DiseasedMultiplier;
-                    killer.SetKillTimer(LastImp() ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
-                    return;
+                    var cooldown = killer.Is(Faction.Intruder) ? CustomGameOptions.IntKillCooldown : CustomGameOptions.ChaosDriveKillCooldown;
+                    var last = killer.Is(Faction.Intruder) ? LastImp() : LastSyn();
+                    var lowerKC = (cooldown - CustomGameOptions.UnderdogKillBonus) * CustomGameOptions.DiseasedMultiplier;
+                    var normalKC = cooldown * CustomGameOptions.DiseasedMultiplier;
+                    var upperKC = (cooldown + CustomGameOptions.UnderdogKillBonus) * CustomGameOptions.DiseasedMultiplier;
+                    var role = Role.GetRole(killer);
+
+                    switch (role.Faction)
+                    {  
+                        case Faction.Syndicate:
+                            switch (role.RoleType)
+                            {
+                                case RoleEnum.Anarchist:
+                                    var role2 = (Anarchist)role;
+                                    role2.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Concealer:
+                                    var role3 = (Concealer)role;
+                                    role3.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Framer:
+                                    var role4 = (Framer)role;
+                                    role4.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Poisoner:
+                                    var role5 = (Poisoner)role;
+                                    role5.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Shapeshifter:
+                                    var role6 = (Shapeshifter)role;
+                                    role6.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Bomber:
+                                    var role7 = (Bomber)role;
+                                    role7.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Gorgon:
+                                    var role8 = (Gorgon)role;
+                                    role8.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Rebel:
+                                    var role10 = (Rebel)role;
+                                    role10.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Warper:
+                                    var role11 = (Warper)role;
+                                    role11.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                                case RoleEnum.Sidekick:
+                                    var role12 = (Sidekick)role;
+                                    role12.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.ChaosDriveKillCooldown);
+                                    break;
+                            }
+
+                            break;
+                    }
+
+                    killer.SetKillTimer(last ? lowerKC : (UD.PerformKill.IncreasedKC() ? normalKC : upperKC));
+                }
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Werewolf))
+                {
+                    var pest = Role.GetRole<Pestilence>(killer);
+                    pest.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.PestKillCd);
+                    pest.Player.SetKillTimer(CustomGameOptions.PestKillCd * CustomGameOptions.DiseasedMultiplier);
+                }
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Murderer))
+                {
+                    var pest = Role.GetRole<Pestilence>(killer);
+                    pest.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.PestKillCd);
+                    pest.Player.SetKillTimer(CustomGameOptions.PestKillCd * CustomGameOptions.DiseasedMultiplier);
+                }
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Vigilante))
+                {
+                    var pest = Role.GetRole<Pestilence>(killer);
+                    pest.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.PestKillCd);
+                    pest.Player.SetKillTimer(CustomGameOptions.PestKillCd * CustomGameOptions.DiseasedMultiplier);
+                }
+                else if (target.Is(ModifierEnum.Diseased) && killer.Is(RoleEnum.Dampyr))
+                {
+                    var pest = Role.GetRole<Pestilence>(killer);
+                    pest.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * CustomGameOptions.PestKillCd);
+                    pest.Player.SetKillTimer(CustomGameOptions.PestKillCd * CustomGameOptions.DiseasedMultiplier);
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(Faction.Intruder))
-                {
                     killer.SetKillTimer(CustomGameOptions.IntKillCooldown * CustomGameOptions.DiseasedMultiplier);
-                    return;
-                }
                 else if (target.Is(ModifierEnum.Bait))
-                {
                     BaitReport(killer, target);
-                    return;
-                }
             }
         }
 
@@ -1631,40 +1696,6 @@ namespace TownOfUsReworked.Classes
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false)
         {
             GameManager.Instance.RpcEndGame(reason, showAds);
-        }
-
-        [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
-        class MedScanMinigameFixedUpdatePatch
-        {
-            static void Prefix(MedScanMinigame __instance)
-            {
-                if (CustomGameOptions.ParallelMedScans)
-                {
-                    //Allows multiple medbay scans at once
-                    __instance.medscan.CurrentUser = PlayerControl.LocalPlayer.PlayerId;
-                    __instance.medscan.UsersList.Clear();
-                }
-            }
-        }
-      
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
-        class StartMeetingPatch
-        {
-            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget)
-            {
-                voteTarget = meetingTarget;
-            }
-        }
-
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        class MeetingHudUpdatePatch
-        {
-            static void Postfix(MeetingHud __instance)
-            {
-                //Deactivate skip Button if skipping on emergency meetings is disabled 
-                if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) || (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always))
-                    __instance.SkipVoteButton.gameObject.SetActive(false);
-            }
         }
 
         //Submerged utils

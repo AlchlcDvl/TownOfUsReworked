@@ -4,14 +4,12 @@ using TownOfUsReworked.Lobby.CustomOption;
 using System;
 using TownOfUsReworked.Classes;
 using Hazel;
-using UnityEngine;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Consort : Role
     {
-        public bool ConsWin;
         public PlayerControl ClosestPlayer;
         public DateTime LastBlock { get; set; }
         public DateTime LastKilled { get; set; }
@@ -21,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl BlockTarget;
         public bool Enabled = false;
         public bool Blocking => TimeRemaining > 0f;
-        public Sprite Roleblock => TownOfUsReworked.Placeholder;
 
         public Consort(PlayerControl player) : base(player)
         {

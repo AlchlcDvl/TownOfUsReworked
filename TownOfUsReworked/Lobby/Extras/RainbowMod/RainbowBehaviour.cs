@@ -23,6 +23,6 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
                 RainbowUtils.SetRainbow(Renderer);
         }
 
-        public RainbowBehaviour(IntPtr ptr) : base(ptr) { }
+        public RainbowBehaviour(IntPtr ptr) : base(ptr) {}
     }
 }

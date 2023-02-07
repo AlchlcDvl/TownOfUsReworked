@@ -18,7 +18,6 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
         public static Color Fire => new HSBColor(PP(0f, 0.17f, 0.4f), 1, 1).ToColor();
         public static Color FireShadow => Shadow(Fire);
 
-
         public static float PP(float min, float max, float mul)
         {
             return min + Mathf.PingPong(Time.time * mul, max - min);
@@ -38,6 +37,9 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
 
         public static bool IsRainbow(int id)
         {
+            if (id < 0 || id >= Palette.ColorNames.Count)
+                return false;
+
             return (int)Palette.ColorNames[id] == 999999;
         }
     }

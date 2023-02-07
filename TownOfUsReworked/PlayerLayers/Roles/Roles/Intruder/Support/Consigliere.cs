@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "See Players For Who They Really Are";
             AbilitiesText = $"- You can reveal a player's {role}.";
             AttributesText = $"- {CanAssassinate}.";
-            Color = IsRecruit ? Colors.Cabal : (CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder);
+            Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             Faction = Faction.Intruder;
             FactionName = "Intruder";

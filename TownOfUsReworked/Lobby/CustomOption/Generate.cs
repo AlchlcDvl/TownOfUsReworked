@@ -668,6 +668,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Godfather;
         public static CustomNumberOption GodfatherCount;
         public static CustomToggleOption UniqueGodfather;
+        public static CustomNumberOption MafiosoAbilityCooldownDecrease;
+        public static CustomToggleOption PromotedMafiosoCanPromote;
 
         //Miner Options
         public static CustomHeaderOption Miner;
@@ -686,11 +688,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Impostor Options
         public static CustomHeaderOption Impostor;
         public static CustomNumberOption ImpCount;
-
-        //Mafioso Options
-        public static CustomHeaderOption Mafioso;
-        public static CustomNumberOption MafiosoAbilityCooldownDecrease;
-        public static CustomToggleOption PromotedMafiosoCanPromote;
 
         //Syndicate Options
         public static CustomHeaderOption SyndicateSettings;
@@ -757,6 +754,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Rebel;
         public static CustomNumberOption RebelCount;
         public static CustomToggleOption UniqueRebel;
+        public static CustomNumberOption SidekickAbilityCooldownDecrease;
+        public static CustomToggleOption PromotedSidekickCanPromote;
 
         //Warper Options
         public static CustomHeaderOption Warper;
@@ -766,11 +765,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //SU Options
         public static CustomHeaderOption SyndicateUtilitySettings;
-
-        //Sidekick Options
-        public static CustomHeaderOption Sidekick;
-        public static CustomNumberOption SidekickAbilityCooldownDecrease;
-        public static CustomToggleOption PromotedSidekickCanPromote;
 
         //Anarchist Options
         public static CustomHeaderOption Anarchist;
@@ -896,6 +890,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Phantom;
         public static CustomNumberOption PhantomCount;
         public static CustomNumberOption PhantomTasksRemaining;
+        public static CustomToggleOption PhantomPlayersAlerted;
 
         //Guesser Options
         public static CustomHeaderOption Guesser;
@@ -1982,6 +1977,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Phantom = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
             PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
             PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
+            PhantomPlayersAlerted = new CustomToggleOption(true, num++, MultiMenu.neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false);
             
             Vampire = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color>");
             VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color> Can Vent", false);
@@ -2092,6 +2088,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Godfather = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color>");
             GodfatherCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Count", 1, 1, 14, 1);
             UniqueGodfather = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Is Unique In All Any", false);
+            MafiosoAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            PromotedMafiosoCanPromote = new CustomToggleOption(true, num++, MultiMenu.intruder, "Promoted <color=#404C08FF>Godfather</color> Can Declare Others", false);
 
             Miner = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color>");
             MinerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color> Count", 1, 1, 14, 1);
@@ -2116,10 +2114,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Impostor = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>");
             ImpCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> Count", 1, 1, 14, 1);
-
-            Mafioso = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#6400FFFF>Mafioso</color>");
-            MafiosoAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            PromotedMafiosoCanPromote = new CustomToggleOption(true, num++, MultiMenu.intruder, "Promoted <color=#6400FFFF>Mafioso</color> Can Declare Others", false);
 
             SyndicateSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Settings");
             CustomSynColors = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors", true);
@@ -2182,6 +2176,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Rebel = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>");
             RebelCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Count", 1, 1, 14, 1);
             UniqueRebel = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique In All Any", false);
+            SidekickAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            PromotedSidekickCanPromote = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others", false);
 
             Warper = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>");
             WarperCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Count", 1, 1, 14, 1);
@@ -2192,10 +2188,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Anarchist = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color>");
             AnarchistCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color> Count", 1, 1, 14, 1);
-
-            Sidekick = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#979C9FFF>Sidekick</color>");
-            SidekickAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            PromotedSidekickCanPromote = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Promoted <color=#979C9FFF>Sidekick</color> Can Sidekick Others", false);
 
             ModifierSettings = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings");
             CustomModifierColors = new CustomToggleOption(true, num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors", true);

@@ -51,5 +51,19 @@ namespace TownOfUsReworked.Patches
 				__instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
 			}
 		}
+
+        [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
+        class MedScanMinigameFixedUpdatePatch
+        {
+            static void Prefix(MedScanMinigame __instance)
+            {
+                if (CustomGameOptions.ParallelMedScans)
+                {
+                    //Allows multiple medbay scans at once
+                    __instance.medscan.CurrentUser = PlayerControl.LocalPlayer.PlayerId;
+                    __instance.medscan.UsersList.Clear();
+                }
+            }
+        }
 	}
 }

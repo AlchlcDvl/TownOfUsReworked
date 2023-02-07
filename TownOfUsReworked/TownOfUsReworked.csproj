@@ -2,9 +2,7 @@
 	<PropertyGroup>
 		<RootNamespace>TownOfUsReworked</RootNamespace>
 		<TargetFramework>net6.0</TargetFramework>
-		<Version>1.0.0.10</Version>
-        <VersionSuffix>dev11_test</VersionSuffix>
-        <VersionPrefix>v</VersionPrefix>
+		<Version>1.0.0.11</Version>
 		<DebugType>embedded</DebugType>
 		<Description>Town of Us but even better! (hopefully)</Description>
 		<LangVersion>latest</LangVersion>

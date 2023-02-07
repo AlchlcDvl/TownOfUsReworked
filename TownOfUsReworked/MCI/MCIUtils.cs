@@ -23,7 +23,7 @@ namespace TownOfUsReworked.MCI
             int sampleId = id;
 
             if (sampleId == -1)
-                sampleId = InstanceControl.availableId();
+                sampleId = InstanceControl.AvailableId();
 
             var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
             PlayerControl playerControl = Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);

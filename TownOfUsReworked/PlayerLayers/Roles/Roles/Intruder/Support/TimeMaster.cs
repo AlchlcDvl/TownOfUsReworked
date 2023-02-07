@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         private KillButton _freezeButton;
         private KillButton _killButton;
-        public bool Enabled;
+        public bool Enabled = false;
         public float TimeRemaining;
         public DateTime LastFrozen { get; set; }
         public bool Frozen => TimeRemaining > 0f;
@@ -78,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFrozen;
-            var num = CustomGameOptions.FreezeDuration * 1000f;
+            var num = CustomGameOptions.FreezeCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -91,14 +91,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Freeze.PlayerPhysics_FixedUpdate.FreezeAll();
+            Freeze.FreezeFunctions.FreezeAll();
         }
 
         public void Unfreeze()
         {
             Enabled = false;
             LastFrozen = DateTime.UtcNow;
-            Freeze.PlayerPhysics_FixedUpdate.UnfreezeAll();
+            Freeze.FreezeFunctions.UnfreezeAll();
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
