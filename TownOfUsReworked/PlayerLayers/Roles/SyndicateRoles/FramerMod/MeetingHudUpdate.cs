@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
     public static class MeetingHudUpdate
@@ -12,10 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
         {
             var localPlayer = PlayerControl.LocalPlayer;
 
-            if (!localPlayer.Is(RoleEnum.Arsonist) || localPlayer.Data.IsDead)
+            if (!localPlayer.Is(RoleEnum.Framer) || localPlayer.Data.IsDead)
                 return;
 
-            var role = Role.GetRole<Arsonist>(localPlayer);
+            var role = Role.GetRole<Framer>(localPlayer);
 
             foreach (var state in __instance.playerStates)
             {
@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 var playerData = Utils.PlayerById(targetId)?.Data;
 
                 if (playerData == null || playerData.Disconnected)
-                    role.DousedPlayers.Remove(targetId);
-                else if (role.DousedPlayers.Contains(targetId))
+                    role.Framed.Remove(targetId);
+                else if (role.Framed.Contains(targetId))
                     state.NameText.color = role.Color;
             }
         }

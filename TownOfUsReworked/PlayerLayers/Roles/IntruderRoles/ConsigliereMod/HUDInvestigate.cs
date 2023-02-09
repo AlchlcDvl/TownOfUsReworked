@@ -37,9 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
 
-            if (role.IsRecruit)
-                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
-
             role.InvestigateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId) || (x.Is(Faction.Intruder) &&
                 !CustomGameOptions.FactionSeeRoles)).ToList();

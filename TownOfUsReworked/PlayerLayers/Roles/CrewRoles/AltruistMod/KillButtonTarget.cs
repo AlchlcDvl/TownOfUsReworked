@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget && __instance.enabled)
+            if (role.CurrentTarget != null && __instance.enabled && !role.ReviveButton.isCoolingDown && !role.ReviveUsed)
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

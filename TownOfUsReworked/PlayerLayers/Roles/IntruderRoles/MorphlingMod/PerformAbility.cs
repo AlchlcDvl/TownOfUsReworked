@@ -17,19 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Morphling);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Morphling))
                 return false;
 
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
-            var target = role.ClosestPlayer;
 
             if (__instance == role.MorphButton)
             {
@@ -38,16 +29,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
                 if (role.MorphButton.graphic.sprite == SampleSprite)
                 {
-                    if (target == null)
+                    if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                         return false;
+                
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                    role.SampledPlayer = target;
-                    role.MorphButton.graphic.sprite = MorphSprite;
-                    role.MorphButton.SetTarget(null);
-                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
+                    if (interact[3] == true)
+                    {
+                        role.SampledPlayer = role.ClosestPlayer;
+                        role.MorphButton.graphic.sprite = MorphSprite;
+                        role.MorphButton.SetTarget(null);
 
-                    if (role.MorphTimer() < 5f)
-                        role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
+                        if (role.MorphTimer() < 5f)
+                            role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
+                    }
+                    else if (interact[1] == true)
+                        role.LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
                         
                     try
                     {
@@ -56,9 +53,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                 }
                 else
                 {
-                    if (__instance.isCoolingDown)
-                        return false;
-                        
                     if (role.MorphTimer() != 0f)
                         return false;
 
@@ -69,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.TimeRemaining = CustomGameOptions.MorphlingDuration;
                     role.MorphedPlayer = role.SampledPlayer;
-                    Utils.Morph(role.Player, role.SampledPlayer);
+                    role.Morph();
                     
                     try
                     {

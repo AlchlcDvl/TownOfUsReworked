@@ -15,16 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Grenadier))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Grenadier))
                 return;
 
             var role = Role.GetRole<Grenadier>(PlayerControl.LocalPlayer);
@@ -33,8 +24,55 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
             {
                 role.FlashButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.FlashButton.graphic.enabled = true;
-                role.FlashButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
+                role.FlashButton.graphic.sprite = FlashSprite;
                 role.FlashButton.gameObject.SetActive(false);
+            }
+
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            role.FlashButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
+
+            if (role.Flashed)
+                role.FlashButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.GrenadeDuration);
+            else 
+                role.FlashButton.SetCoolDown(role.FlashTimer(), CustomGameOptions.GrenadeCd);
+
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var specials = system.specials.ToArray();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = specials.Any(s => s.IsActive);
+            var renderer = role.FlashButton.graphic;
+            var renderer2 = role.KillButton.graphic;
+
+            if (sabActive && !dummyActive && !role.FlashButton.isCoolingDown)
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+            else
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
             }
 
             if (CustomGameOptions.GrenadierIndicators)
@@ -62,33 +100,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                     }
                 }
             }
-
-            role.FlashButton.GetComponent<AspectPosition>().Update();
-            role.FlashButton.graphic.sprite = FlashSprite;
-            role.FlashButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-
-            if (role.Flashed)
-            {
-                role.FlashButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.GrenadeDuration);
-                return;
-            }
-            else 
-                role.FlashButton.SetCoolDown(role.FlashTimer(), CustomGameOptions.GrenadeCd);
-
-            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-            var specials = system.specials.ToArray();
-            var dummyActive = system.dummy.IsActive;
-            var sabActive = specials.Any(s => s.IsActive);
-
-            if (sabActive && !dummyActive)
-            {
-                role.FlashButton.graphic.color = Palette.DisabledClear;
-                role.FlashButton.graphic.material.SetFloat("_Desat", 1f);
-                return;
-            }
-
-            role.FlashButton.graphic.color = Palette.EnabledColor;
-            role.FlashButton.graphic.material.SetFloat("_Desat", 0f);
         }
     }
 }

@@ -87,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var num = (WasMafioso ? (CustomGameOptions.IntKillCooldown - CustomGameOptions.MafiosoAbilityCooldownDecrease) : CustomGameOptions.IntKillCooldown) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

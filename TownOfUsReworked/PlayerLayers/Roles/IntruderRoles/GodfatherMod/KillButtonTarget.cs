@@ -3,21 +3,27 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.SetTarget))]
     public class KillButtonTarget
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor))
+            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Godfather))
                 return true;
 
             return __instance == DestroyableSingleton<HudManager>.Instance.KillButton;
         }
 
-        public static void SetTarget(KillButton __instance, DeadBody target, Janitor role)
+        public static void SetTarget(KillButton __instance, DeadBody target, Godfather role)
         {
+            if (role.FormerRole == null)
+                return;
+            
+            if (role.FormerRole.RoleType != RoleEnum.Janitor)
+                return;
+
             if (role.CurrentTarget && role.CurrentTarget != target)
                 role.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
 

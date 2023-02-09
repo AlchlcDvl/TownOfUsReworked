@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {
@@ -13,16 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
     {
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Janitor))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Janitor))
                 return;
 
             var role = Role.GetRole<Janitor>(PlayerControl.LocalPlayer);
@@ -31,12 +23,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             {
                 role.CleanButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.CleanButton.graphic.enabled = true;
-                role.CleanButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.CleanButton.gameObject.SetActive(false);
             }
 
-            role.CleanButton.GetComponent<AspectPosition>().Update();
-            role.CleanButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            role.CleanButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.CleanButton.graphic.sprite = TownOfUsReworked.JanitorClean;
 
             var data = PlayerControl.LocalPlayer.Data;
@@ -70,6 +67,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 
             KillButtonTarget.SetTarget(killButton, closestBody, role);
             role.CleanButton.SetCoolDown(role.CleanTimer(), CustomGameOptions.JanitorCleanCd);
+
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
+            var renderer = role.CleanButton.graphic;
+            var renderer2 = role.KillButton.graphic;
+
+            if (role.CurrentTarget != null && !role.CleanButton.isCoolingDown)
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
+            else
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

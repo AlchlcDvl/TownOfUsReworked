@@ -37,9 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
 
-            if (role.IsRecruit)
-                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
-
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.CamouflageButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
@@ -56,8 +53,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
             if (!role.Camouflaged && !role.CamouflageButton.isCoolingDown)
             {
-                role.CamouflageButton.graphic.color = Palette.EnabledColor;
-                role.CamouflageButton.graphic.material.SetFloat("_Desat", 0f);
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
             }
             else
             {

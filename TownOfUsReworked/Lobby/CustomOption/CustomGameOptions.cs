@@ -186,7 +186,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int RetributionistOn => (int)Generate.RetributionistOn.Get();
         public static int NecromancerOn => (int)Generate.NecromancerOn.Get();
         public static int WhispererOn => (int)Generate.WhispererOn.Get();
-        //public static int SeerOn => (int)Generate.SeerOn.Get();
+        public static int SeerOn => (int)Generate.SeerOn.Get();
         public static int MysticOn => (int)Generate.MysticOn.Get();
         public static int ChameleonOn => (int)Generate.ChameleonOn.Get();
         public static int GuesserOn => (int)Generate.GuesserOn.Get();

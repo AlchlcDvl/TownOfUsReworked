@@ -439,7 +439,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.RewindUsesLeft--;
                 StartStop.StartRewind(role);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
-                writer.Write((byte)ActionsRPC.Rewind);
+                writer.Write((byte)ActionsRPC.RetributionistAction);
+                writer.Write((byte)RetributionistActionsRPC.Rewind);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
         
                 try
@@ -528,7 +529,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.AlertUsesLeft--;
                 role.Alert();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                writer.Write((byte)ActionsRPC.Alert);
+                writer.Write((byte)ActionsRPC.RetributionistAction);
+                writer.Write((byte)RetributionistActionsRPC.Alert);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 

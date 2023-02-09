@@ -37,9 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
 
-            if (role.IsRecruit)
-                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
-
             role.BlackmailButton.SetCoolDown(role.BlackmailTimer(), CustomGameOptions.BlackmailCd);
             role.BlackmailButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
@@ -83,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
             }
-            
+
             if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
             {
                 renderer2.color = Palette.EnabledColor;

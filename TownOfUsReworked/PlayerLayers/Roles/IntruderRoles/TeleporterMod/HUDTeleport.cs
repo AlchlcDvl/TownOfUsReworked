@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 {
@@ -15,16 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Teleporter))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Teleporter))
                 return;
 
             var role = Role.GetRole<Teleporter>(PlayerControl.LocalPlayer);
@@ -40,14 +32,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
             if (role.TeleportButton.graphic.sprite != MarkSprite && role.TeleportButton.graphic.sprite != TeleportSprite)
                 role.TeleportButton.graphic.sprite = MarkSprite;
 
-            role.TeleportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
-            role.TeleportButton.graphic.color = Palette.EnabledColor;
-            role.TeleportButton.graphic.material.SetFloat("_Desat", 0f);
+            role.TeleportButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.TeleportButton.graphic.sprite == MarkSprite)
                 role.TeleportButton.SetCoolDown(0f, 1f);
             else
                 role.TeleportButton.SetCoolDown(role.TeleportTimer(), CustomGameOptions.TeleportCd);
+    
+            var renderer2 = role.TeleportButton.graphic;
+            
+            if (!role.TeleportButton.isCoolingDown)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
+
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
+            var renderer = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

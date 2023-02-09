@@ -1831,9 +1831,9 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod\
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and sound effects code\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Trapper role\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Puppeteer, Poisoner and Cannibal roles, partially for Tracker role, bug fixes and integration of CrowdedMod\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Poisoner and Cannibal roles, partially for Tracker role and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
 [Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\

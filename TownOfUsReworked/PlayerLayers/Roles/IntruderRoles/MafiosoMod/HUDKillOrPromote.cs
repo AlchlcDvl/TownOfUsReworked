@@ -12,8 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDKillOrPromote
     {
-        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mafioso))
@@ -21,21 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
             
             var role = Role.GetRole<Mafioso>(PlayerControl.LocalPlayer);
 
-            if (role.CanPromote && !role.Player.Data.IsDead)
-            {
-                role.TurnGodfather();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
-                writer.Write((byte)TurnRPC.TurnGodfather);
-                writer.Write(role.Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                return;
-            }
-
             if (role.KillButton == null)
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
-                role.KillButton.graphic.sprite = Kill;
                 role.KillButton.gameObject.SetActive(false);
             }
 
@@ -54,6 +41,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
             {
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
+            }
+
+            if (role.CanPromote && !role.Player.Data.IsDead)
+            {
+                role.TurnGodfather();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                writer.Write((byte)TurnRPC.TurnGodfather);
+                writer.Write(role.Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                return;
             }
         }
     }

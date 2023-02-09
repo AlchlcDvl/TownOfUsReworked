@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
-using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
@@ -110,6 +109,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 var veteran = (Veteran)role;
                 veteran.LastAlerted = DateTime.UtcNow;
                 veteran.LastAlerted = veteran.LastAlerted.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AlertCd);
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
+            {
+                var retributionist = (Retributionist)role;
+                retributionist.RevivedRole = null;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Vigilante))

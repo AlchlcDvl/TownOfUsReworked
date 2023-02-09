@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 {
@@ -15,16 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Morphling))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Morphling))
                 return;
 
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
@@ -34,16 +26,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                 role.MorphButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.MorphButton.graphic.enabled = true;
                 role.MorphButton.graphic.sprite = SampleSprite;
-                role.MorphButton.GetComponent<AspectPosition>().DistanceFromEdge = TownOfUsReworked.BelowVentPosition;
                 role.MorphButton.gameObject.SetActive(false);
             }
-
-            role.MorphButton.GetComponent<AspectPosition>().Update();
 
             if (role.MorphButton.graphic.sprite != SampleSprite && role.MorphButton.graphic.sprite != MorphSprite)
                 role.MorphButton.graphic.sprite = SampleSprite;
 
-            role.MorphButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
+            role.MorphButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             
             if (role.MorphButton.graphic.sprite == SampleSprite)
             {
@@ -53,15 +42,47 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             else
             {
                 if (role.Morphed)
-                {
                     role.MorphButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.MorphlingDuration);
-                    return;
-                }
                 else 
                     role.MorphButton.SetCoolDown(role.MorphTimer(), CustomGameOptions.MorphlingCd);
 
-                role.MorphButton.graphic.color = Palette.EnabledColor;
-                role.MorphButton.graphic.material.SetFloat("_Desat", 0f);
+                var renderer2 = role.MorphButton.graphic;
+                role.MorphButton.SetTarget(null);
+
+                if (!role.Morphed && !role.MorphButton.isCoolingDown)
+                {
+                    renderer2.color = Palette.EnabledColor;
+                    renderer2.material.SetFloat("_Desat", 0f);
+                }
+                else
+                {
+                    renderer2.color = Palette.DisabledClear;
+                    renderer2.material.SetFloat("_Desat", 1f);
+                }
+            }
+
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
+            var renderer = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

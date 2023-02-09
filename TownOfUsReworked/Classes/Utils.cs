@@ -651,11 +651,19 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsOnAlert(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Veteran).Any(role =>
+            var vetFlag = Role.GetRoles(RoleEnum.Veteran).Any(role =>
             {
                 var veteran = (Veteran)role;
                 return veteran != null && veteran.OnAlert && player == veteran.Player;
             });
+
+            var retFlag = Role.GetRoles(RoleEnum.Retributionist).Any(role =>
+            {
+                var retributionist = (Retributionist)role;
+                return retributionist != null && retributionist.OnAlert && player == retributionist.Player;
+            });
+
+            return vetFlag || retFlag;
         }
 
         public static bool IsVesting(this PlayerControl player)
@@ -2375,7 +2383,7 @@ namespace TownOfUsReworked.Classes
             {
                 if (player.Is(RoleEnum.Pestilence))
                 {
-                    if (target.IsShielded())
+                    if (target.IsShielded() && (toKill || toConvert))
                     {
                         var medic = target.GetMedic().Player.PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
@@ -2391,7 +2399,7 @@ namespace TownOfUsReworked.Classes
                     else if (target.IsProtected())
                         gaReset = true;
                 }
-                else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
+                else if (player.IsShielded() && (toKill || toConvert) && !target.Is(AbilityEnum.Ruthless))
                 {
                     var medic = player.GetMedic().Player.PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable, -1);
@@ -2524,7 +2532,7 @@ namespace TownOfUsReworked.Classes
             return PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.Is(ability);
         }
 
-        public static bool SeemsEvil(PlayerControl player)
+        public static bool SeemsEvil(this PlayerControl player)
         {
             var intruderFlag = player.Is(Faction.Intruder) && !player.Is(ObjectifierEnum.Traitor);
             var syndicateFlag = player.Is(Faction.Syndicate) && !player.Is(ObjectifierEnum.Traitor);
@@ -2536,7 +2544,7 @@ namespace TownOfUsReworked.Classes
             return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag;
         }
 
-        public static bool SeemsGood(PlayerControl player)
+        public static bool SeemsGood(this PlayerControl player)
         {
             return !SeemsEvil(player);
         }

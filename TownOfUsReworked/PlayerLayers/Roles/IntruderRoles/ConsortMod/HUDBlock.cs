@@ -37,9 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
 
-            if (role.IsRecruit)
-                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
-
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.BlockButton.graphic.sprite = Roleblock;

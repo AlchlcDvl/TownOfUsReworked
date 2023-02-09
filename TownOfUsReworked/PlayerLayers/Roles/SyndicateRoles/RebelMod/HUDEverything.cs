@@ -7,7 +7,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDSidekick
+    public class HUDEverything
     {
         public static Sprite Promote => TownOfUsReworked.Placeholder;
 

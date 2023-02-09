@@ -43,7 +43,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer.Write((byte)ActionsRPC.Sidekick);
+            writer.Write((byte)ActionsRPC.RebelAction);
+            writer.Write((byte)RebelActionsRPC.Sidekick);
             writer.Write(role.Player.PlayerId);
             writer.Write(role.ClosestPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

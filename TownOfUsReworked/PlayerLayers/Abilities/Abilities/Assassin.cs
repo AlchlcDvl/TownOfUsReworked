@@ -97,8 +97,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.ChameleonOn > 0)
                     ColorMapping.Add("Chameleon", Colors.Chameleon);
 
-                /*if (CustomGameOptions.SeerOn > 0)
-                    ColorMapping.Add("Seer", Colors.Seer);*/
+                if (CustomGameOptions.SeerOn > 0)
+                    ColorMapping.Add("Seer", Colors.Seer);
 
                 if (CustomGameOptions.MysticOn > 0)
                     ColorMapping.Add("Mystic", Colors.Mystic);
@@ -232,7 +232,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
             {
                 ColorMapping.Add("Necromancer", Colors.Necromancer);
-                ColorMapping.Add("Ressurected", Colors.Reanimated);
+                ColorMapping.Add("Resurrected", Colors.Reanimated);
             }
             
             if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
@@ -247,10 +247,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.AmnesiacOn > 0)
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
-                if (CustomGameOptions.SurvivorOn > 0)
+                if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
                         ColorMapping.Add("Survivor", Colors.Survivor);
 
-                if (CustomGameOptions.GuardianAngelOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
+                if (CustomGameOptions.GuardianAngelOn > 0)
                     ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
 
                 if (CustomGameOptions.ThiefOn > 0)

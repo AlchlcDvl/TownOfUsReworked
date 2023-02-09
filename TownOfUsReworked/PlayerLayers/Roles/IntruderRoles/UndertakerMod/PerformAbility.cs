@@ -2,7 +2,6 @@ using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -15,38 +14,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformAbility
     {
+        public static Sprite Drag => TownOfUsReworked.DragSprite;
+
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Undertaker);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Undertaker))
                 return false;
 
             var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
 
             if (__instance == role.DragDropButton)
             {
-                if (role.DragDropButton.graphic.sprite == TownOfUsReworked.DragSprite)
+                if (role.DragDropButton.graphic.sprite == Drag)
                 {
                     if (__instance.isCoolingDown)
                         return false;
 
-                    if (!__instance.enabled)
+                    if (!__instance.isActiveAndEnabled)
                         return false;
 
-                    var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-                    if (Vector2.Distance(role.CurrentTarget.TruePosition, PlayerControl.LocalPlayer.GetTruePosition()) > maxDistance)
+                    if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                         return false;
 
                     var playerId = role.CurrentTarget.ParentId;
-
+                    var player = Utils.PlayerById(playerId);
+                    Utils.Spread(role.Player, player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Drag);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -54,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.CurrentlyDragging = role.CurrentTarget;
                     KillButtonTarget.SetTarget(__instance, null, role);
-                    __instance.graphic.sprite = TownOfUsReworked.DropSprite;
+                    role.DragDropButton.graphic.sprite = TownOfUsReworked.DropSprite;
                     return false;
                 }
                 else
@@ -87,8 +79,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     return false;
                 }
             }
+            else if (__instance == role.KillButton)
+            {
+                if (role.KillTimer() != 0f)
+                    return false;
 
-            return true;
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+
+                if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+
+                return false;
+            }
+
+            return false;
         }
     }
 }

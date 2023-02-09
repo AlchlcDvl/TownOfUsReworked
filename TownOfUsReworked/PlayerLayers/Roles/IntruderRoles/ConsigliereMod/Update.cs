@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class Update
     {
-        public static string NameText(PlayerControl player, string str = "")
+        public static string NameText(PlayerControl player, string str)
         {
             if (CamouflageUnCamouflage.IsCamoed)
             {

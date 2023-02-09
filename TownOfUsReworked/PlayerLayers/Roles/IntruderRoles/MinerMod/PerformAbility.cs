@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 {
@@ -17,24 +17,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Miner);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Miner))
                 return false;
 
             var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
 
             if (__instance == role.MineButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
@@ -65,8 +54,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 
                 return false;
             }
+            else if (__instance == role.KillButton)
+            {
+                if (role.KillTimer() != 0f)
+                    return false;
 
-            return true;
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+                
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+
+                if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+
+                return false;
+            }
+
+            return false;
         }
 
         public static void SpawnVent(int ventId, Miner role, Vector2 position, float zAxis)

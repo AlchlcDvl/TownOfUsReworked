@@ -2088,7 +2088,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Godfather = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color>");
             GodfatherCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Count", 1, 1, 14, 1);
             UniqueGodfather = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Is Unique In All Any", false);
-            MafiosoAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            MafiosoAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
             PromotedMafiosoCanPromote = new CustomToggleOption(true, num++, MultiMenu.intruder, "Promoted <color=#404C08FF>Godfather</color> Can Declare Others", false);
 
             Miner = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color>");
@@ -2176,7 +2176,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Rebel = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>");
             RebelCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Count", 1, 1, 14, 1);
             UniqueRebel = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique In All Any", false);
-            SidekickAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            SidekickAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
             PromotedSidekickCanPromote = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others", false);
 
             Warper = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>");

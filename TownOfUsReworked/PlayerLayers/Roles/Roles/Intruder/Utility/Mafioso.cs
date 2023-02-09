@@ -4,13 +4,15 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Mafioso : Role
     {
         public Role FormerRole = null;
-        public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Godfather)).Count() == 0;
+        public Godfather Godfather;
+        public bool CanPromote => Godfather.Player.Data.IsDead || Godfather.Player.Data.Disconnected;
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
         public PlayerControl ClosestPlayer = null;
@@ -120,7 +122,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player == PlayerControl.LocalPlayer)
+                {
                     role.RegenTask();
+                    Coroutines.Start(Utils.FlashCoroutine(Color));
+                }
             }
         }
     }

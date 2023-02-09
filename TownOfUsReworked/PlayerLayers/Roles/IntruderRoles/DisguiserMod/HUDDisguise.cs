@@ -47,13 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             else if (CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders)
                 targets = targets.Where(x => !x.Is(Faction.Intruder)).ToList();
 
-            if (role.IsRecruit)
-                notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction.Cabal)).ToList();
-
             role.DisguiseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.DisguiseButton, targets);
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notImp);
 
             if (role.DisguiseButton.graphic.sprite == MeasureSprite)
                 role.DisguiseButton.SetCoolDown(0f, 1f);
@@ -78,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
             }
-            
+
             if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
             {
                 renderer2.color = Palette.EnabledColor;

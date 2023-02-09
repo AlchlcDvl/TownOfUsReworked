@@ -6,7 +6,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {
@@ -59,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                             //Fake someone killing you
                             otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
                             var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
-                            DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
+                            __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
                         }
                         else if (randomNumber == 3)
                         {

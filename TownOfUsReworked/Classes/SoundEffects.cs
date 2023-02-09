@@ -41,9 +41,6 @@ namespace TownOfUsReworked.Classes
 
         public static void Play(string path)
         {
-            /*if (CustomGameOptions.EnableSFX)
-                return;*/
-
             AudioClip clipToPlay = Get(path);
             // if (false) clipToPlay = get("exampleClip"); for april fools?
             Stop(path);

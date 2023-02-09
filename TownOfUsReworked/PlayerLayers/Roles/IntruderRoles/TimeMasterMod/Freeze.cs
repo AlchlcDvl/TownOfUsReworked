@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in frozen)
                 {
-                    if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
+                    if (player.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
                     {
                         player.NetTransform.Halt();
                         player.moveable = false;
@@ -56,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
                 foreach (var player in frozen)
                 {
-                    if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && player == player.MyPhysics.myPlayer && !player.MyPhysics.myPlayer.Data.Disconnected)
+                    if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !player.Data.Disconnected)
                         player.moveable = true;
                 }
             }

@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 {
@@ -12,24 +13,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
     {
         public static bool Prefix(KillButton __instance)
         {
-            var flag = PlayerControl.LocalPlayer.Is(RoleEnum.Wraith);
-
-            if (!flag)
-                return true;
-
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Wraith))
                 return false;
 
             var role = Role.GetRole<Wraith>(PlayerControl.LocalPlayer);
 
             if (__instance == role.InvisButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
@@ -38,17 +28,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
                 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                 writer.Write((byte)ActionsRPC.Invis);
-                var position = PlayerControl.LocalPlayer.transform.position;
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.InvisDuration;
                 role.Invis();
                 //SoundManager.Instance.PlaySound(TownOfUsReworked.InvisSound, false, 0.4f);
+                return false;
+            }
+            else if (__instance == role.KillButton)
+            {
+                if (role.KillTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+
+                if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
             }
 
-            return true;
+            return false;
         }
     }
 }

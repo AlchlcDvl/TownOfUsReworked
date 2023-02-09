@@ -4724,16 +4724,16 @@
     "C:\\Users\\Guest User\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0.10",
+    "version": "1.0.0.11",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
-      "projectPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
+      "projectPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "packagesPath": "C:\\Users\\Guest User\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
+      "outputPath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "c:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
+        "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\NuGet.Config",
         "C:\\Users\\Guest User\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
