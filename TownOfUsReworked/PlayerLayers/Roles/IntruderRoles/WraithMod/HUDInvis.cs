@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             }
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
-
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
             role.InvisButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));

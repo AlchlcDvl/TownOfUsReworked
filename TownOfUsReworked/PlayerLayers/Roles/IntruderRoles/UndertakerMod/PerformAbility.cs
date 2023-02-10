@@ -7,7 +7,6 @@ using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {

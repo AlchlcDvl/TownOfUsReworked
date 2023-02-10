@@ -120,20 +120,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Vigilante))
             {
                 var vigilante = (Vigilante)role;
-                
-                if (CustomGameOptions.RoundOneNoShot)
-                    vigilante.FirstRound = true;
-                else
-                {
-                    vigilante.LastKilled = DateTime.UtcNow;
-                    vigilante.LastKilled = vigilante.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
-                }
+                vigilante.FirstRound = CustomGameOptions.RoundOneNoShot;
+                vigilante.LastKilled = DateTime.UtcNow;
+                vigilante.LastKilled = vigilante.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
             }
 
             //Intruder starting cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Blackmailer))
             {
-                var blackmailer = (Blackmailer) role;
+                var blackmailer = (Blackmailer)role;
                 blackmailer.LastBlackmailed = DateTime.UtcNow;
                 blackmailer.LastBlackmailed = blackmailer.LastBlackmailed.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BlackmailCd);
                 blackmailer.LastKilled = DateTime.UtcNow;
@@ -151,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Consigliere))
             {
-                var consig = (Consigliere) role;
+                var consig = (Consigliere)role;
                 consig.LastInvestigated = DateTime.UtcNow;
                 consig.LastInvestigated = consig.LastInvestigated.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsigCd);
                 consig.LastKilled = DateTime.UtcNow;
@@ -160,7 +155,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Consort))
             {
-                var consort = (Consort) role;
+                var consort = (Consort)role;
                 consort.LastBlock = DateTime.UtcNow;
                 consort.LastBlock = consort.LastBlock.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsRoleblockCooldown);
                 consort.LastKilled = DateTime.UtcNow;
@@ -169,14 +164,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Impostor))
             {
-                var impostor = (Impostor) role;
+                var impostor = (Impostor)role;
                 impostor.LastKilled = DateTime.UtcNow;
                 impostor.LastKilled = impostor.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCooldown);
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Godfather))
+            {
+                var godfather = (Godfather)role;
+                godfather.LastKilled = DateTime.UtcNow;
+                godfather.LastKilled = godfather.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCooldown);
+                godfather.FormerRole = null;
             }
             
             foreach (var role in Role.GetRoles(RoleEnum.Janitor))
             {
-                var janitor = (Janitor) role;
+                var janitor = (Janitor)role;
                 janitor.LastCleaned = DateTime.UtcNow;
                 janitor.LastCleaned = janitor.LastCleaned.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.JanitorCleanCd);
                 janitor.LastKilled = DateTime.UtcNow;
@@ -185,7 +188,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
             {
-                var disguiser = (Disguiser) role;
+                var disguiser = (Disguiser)role;
                 disguiser.LastDisguised = DateTime.UtcNow;
                 disguiser.LastDisguised = disguiser.LastDisguised.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DisguiseCooldown);
                 disguiser.LastKilled = DateTime.UtcNow;
@@ -194,7 +197,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Grenadier))
             {
-                var grenadier = (Grenadier) role;
+                var grenadier = (Grenadier)role;
                 grenadier.LastFlashed = DateTime.UtcNow;
                 grenadier.LastFlashed = grenadier.LastFlashed.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GrenadeCd);
                 grenadier.LastKilled = DateTime.UtcNow;
@@ -203,7 +206,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Miner))
             {
-                var miner = (Miner) role;
+                var miner = (Miner)role;
                 miner.LastMined = DateTime.UtcNow;
                 miner.LastMined = miner.LastMined.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MineCd);
                 var vents = Object.FindObjectsOfType<Vent>();
@@ -214,7 +217,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Morphling))
             {
-                var morphling = (Morphling) role;
+                var morphling = (Morphling)role;
                 morphling.LastMorphed = DateTime.UtcNow;
                 morphling.LastMorphed = morphling.LastMorphed.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MorphlingCd);
                 morphling.LastKilled = DateTime.UtcNow;
@@ -223,7 +226,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Teleporter))
             {
-                var teleporter = (Teleporter) role;
+                var teleporter = (Teleporter)role;
                 teleporter.LastTeleport = DateTime.UtcNow;
                 teleporter.LastTeleport = teleporter.LastTeleport.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleportCd);
                 teleporter.LastKilled = DateTime.UtcNow;
@@ -241,7 +244,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Undertaker))
             {
-                var undertaker = (Undertaker) role;
+                var undertaker = (Undertaker)role;
                 undertaker.LastDragged = DateTime.UtcNow;
                 undertaker.LastDragged = undertaker.LastDragged.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DragCd);
                 undertaker.LastKilled = DateTime.UtcNow;
@@ -250,7 +253,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Wraith))
             {
-                var wraith = (Wraith) role;
+                var wraith = (Wraith)role;
                 wraith.LastInvis = DateTime.UtcNow;
                 wraith.LastInvis = wraith.LastInvis.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InvisCd);
                 wraith.LastKilled = DateTime.UtcNow;
@@ -294,7 +297,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Poisoner))
             {
-                var poisoner = (Poisoner) role;
+                var poisoner = (Poisoner)role;
                 poisoner.LastPoisoned = DateTime.UtcNow;
                 poisoner.LastPoisoned = poisoner.LastPoisoned.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.PoisonCd);
                 poisoner.LastKilled = DateTime.UtcNow;
@@ -310,6 +313,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 ss.LastKilled = ss.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Rebel))
+            {
+                var rebel = (Rebel)role;
+                rebel.LastKilled = DateTime.UtcNow;
+                rebel.LastKilled = rebel.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
+                rebel.FormerRole = null;
+            }
+
             foreach (var role in Role.GetRoles(RoleEnum.Warper))
             {
                 var warper = (Warper)role;
@@ -322,7 +333,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             //Neutral starting cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Arsonist))
             {
-                var arsonist = (Arsonist) role;
+                var arsonist = (Arsonist)role;
                 arsonist.LastDoused = DateTime.UtcNow;
                 arsonist.LastDoused = arsonist.LastDoused.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DouseCd);
             }
@@ -336,14 +347,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Cryomaniac))
             {
-                var cryo = (Cryomaniac) role;
+                var cryo = (Cryomaniac)role;
                 cryo.LastDoused = DateTime.UtcNow;
                 cryo.LastDoused = cryo.LastDoused.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DouseCd);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Whisperer))
             {
-                var whisperer = (Whisperer) role;
+                var whisperer = (Whisperer)role;
                 whisperer.LastWhispered = DateTime.UtcNow;
                 whisperer.LastWhispered = whisperer.LastWhispered.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WhisperCooldown);
             }
@@ -364,7 +375,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Thief))
             {
-                var thief = (Thief) role;
+                var thief = (Thief)role;
                 thief.LastKilled = DateTime.UtcNow;
                 thief.LastKilled = thief.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ThiefKillCooldown);
             }
@@ -378,7 +389,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.SerialKiller))
             {
-                var sk = (SerialKiller) role;
+                var sk = (SerialKiller)role;
                 sk.LastLusted = DateTime.UtcNow;
                 sk.LastKilled = DateTime.UtcNow;
                 sk.LastLusted = sk.LastLusted.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BloodlustCd);
@@ -415,7 +426,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Jackal))
             {
-                var jack = (Jackal) role;
+                var jack = (Jackal)role;
                 jack.LastRecruited = DateTime.UtcNow;
                 jack.LastRecruited = jack.LastRecruited.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RecruitCooldown);
             }
@@ -440,7 +451,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
             {
-                var glitch = (Glitch) role;
+                var glitch = (Glitch)role;
                 glitch.LastHack = DateTime.UtcNow;
                 glitch.LastHack = glitch.LastHack.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCooldown);
                 glitch.LastMimic = DateTime.UtcNow;
@@ -451,7 +462,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Executioner))
             {
-                var exe = (Executioner) role;
+                var exe = (Executioner)role;
 
                 if (exe.TargetPlayer == null)
                 {
@@ -465,7 +476,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Dracula))
             {
-                var drac = (Dracula) role;
+                var drac = (Dracula)role;
                 drac.LastBitten = DateTime.UtcNow;
                 drac.LastBitten = drac.LastBitten.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BiteCd);
             }

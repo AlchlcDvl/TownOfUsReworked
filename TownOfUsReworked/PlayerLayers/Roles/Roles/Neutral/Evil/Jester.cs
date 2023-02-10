@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -29,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.JestMafiSideDamp;
             RoleDescription = "You are a Jester! You are a suicidal lunatic who wants to be thrown out of the airlock. Get yourself ejected at all costs!";
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NEDescription;
@@ -52,7 +52,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            VotedOut = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
 
         public void SetHaunted(MeetingHud __instance)

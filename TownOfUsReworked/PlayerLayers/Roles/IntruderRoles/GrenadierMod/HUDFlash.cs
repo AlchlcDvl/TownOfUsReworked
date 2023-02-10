@@ -79,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
             {
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player != PlayerControl.LocalPlayer && !player.Data.IsImpostor())
+                    if (player != PlayerControl.LocalPlayer && !player.Is(Faction.Intruder))
                     {
                         var tempColour = player.nameText().color;
                         var data = player?.Data;

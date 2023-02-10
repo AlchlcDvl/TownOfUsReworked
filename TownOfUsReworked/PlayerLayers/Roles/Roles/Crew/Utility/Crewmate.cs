@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = "Crew (Utility)";
-            Results = InspResults.CrewImpAnMurd;
             //IntroSound = TownOfUsReworked.CrewmateIntro;
             Base = true;
             AlignmentDescription = "You are a Crew (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
@@ -56,10 +55,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
-            else if (IsIntTraitor)
+            else if (IsIntTraitor || IsIntFanatic)
                 IntruderWin = true;
-            else if (IsSynTraitor)
+            else if (IsSynTraitor || IsSynFanatic)
                 SyndicateWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 CrewWin = true;
         }

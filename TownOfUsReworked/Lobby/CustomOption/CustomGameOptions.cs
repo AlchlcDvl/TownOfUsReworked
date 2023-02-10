@@ -761,6 +761,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Gorgon Settings
         public static float GazeCooldown => Generate.GazeCooldown.Get();
         public static float GazeTime => Generate.GazeTime.Get();
+        public static float GazeDelay => Generate.GazeDelay.Get();
         public static int GorgonCount => (int)Generate.GorgonCount.Get();
         public static bool UniqueGorgon => Generate.UniqueGorgon.Get();
 

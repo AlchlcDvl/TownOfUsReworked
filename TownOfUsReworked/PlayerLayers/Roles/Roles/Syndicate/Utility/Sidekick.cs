@@ -1,16 +1,17 @@
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Sidekick : Role
     {
         public Role FormerRole = null;
-        public bool CanPromote => PlayerControl.AllPlayerControls.ToArray().ToList().Where(x => x.Is(RoleEnum.Rebel)).Count() == 0;
+        public Rebel Rebel;
+        public bool CanPromote => Rebel.Player.Data.IsDead || Rebel.Player.Data.Disconnected;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
         public PlayerControl ClosestPlayer = null;
@@ -28,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            Results = InspResults.JestMafiSideDamp;
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
                 " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
                 "give you the ability to kill, if you didn't already.";
@@ -71,6 +71,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }
@@ -87,6 +91,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -121,7 +151,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player == PlayerControl.LocalPlayer)
+                {
                     role.RegenTask();
+                    Coroutines.Start(Utils.FlashCoroutine(Color));
+                }
             }
         }
     }

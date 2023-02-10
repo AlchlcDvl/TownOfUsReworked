@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             if (role.RoleType == RoleEnum.Jester)
             {
                 var jest = (Jester)role;
-                jest.Wins();
+                jest.VotedOut = true;
                 jest.SetHaunted(MeetingHud.Instance);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                 writer.Write((byte)WinLoseRPC.JesterWin);

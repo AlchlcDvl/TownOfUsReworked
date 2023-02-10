@@ -7,6 +7,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Utilities;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
@@ -51,7 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.MorphGliEscCons;
             //IntroSound = TownOfUsReworked.GlitchIntro;
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NKDescription;
@@ -93,6 +93,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     return false;
                 }
             }
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+            {
+                if (Utils.AllNeutralsWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
+            {
+                if (Utils.AllNKsWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
             else if (IsCrewAlly)
             {
                 if (Utils.CrewWins())
@@ -113,6 +139,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.IntruderWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -156,78 +208,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 SyndicateWin = true;
             else if (IsCrewAlly)
                 CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
+                NKWins = true;
             else
                 GlitchWins = true;
         }
-
-        /*public void MimicButtonPress()
-        {
-            if (MimicList == null)
-            {
-                MimicTarget = null;
-                DestroyableSingleton<HudManager>.Instance.Chat.SetVisible(false);
-                MimicList = Object.Instantiate(HudManager.Instance.Chat);
-                MimicList.transform.SetParent(Camera.main.transform);
-                MimicList.SetVisible(true);
-                MimicList.Toggle();
-                MimicList.TextBubble.enabled = false;
-                MimicList.TextBubble.gameObject.SetActive(false);
-                MimicList.TextArea.enabled = false;
-                MimicList.TextArea.gameObject.SetActive(false);
-                MimicList.BanButton.enabled = false;
-                MimicList.BanButton.gameObject.SetActive(false);
-                MimicList.CharCount.enabled = false;
-                MimicList.CharCount.gameObject.SetActive(false);
-                MimicList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                MimicList.OpenKeyboardButton.Destroy();
-                MimicList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                MimicList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-                MimicList.BackgroundImage.enabled = false;
-
-                foreach (var rend in MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
-                {
-                    if (rend.name == "SendButton" || rend.name == "QuickChatButton")
-                    {
-                        rend.enabled = false;
-                        rend.gameObject.SetActive(false);
-                    }
-                }
-
-                foreach (var bubble in MimicList.chatBubPool.activeChildren)
-                {
-                    bubble.enabled = false;
-                    bubble.gameObject.SetActive(false);
-                }
-
-                MimicList.chatBubPool.activeChildren.Clear();
-
-                foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x != null && x.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
-                {
-                    if (!player.Data.IsDead)
-                        MimicList.AddChat(player, "Click here");
-                    else
-                    {
-                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
-
-                        foreach (var body in deadBodies)
-                        {
-                            if (body.ParentId == player.PlayerId)
-                            {
-                                player.Data.IsDead = false;
-                                MimicList.AddChat(player, "Click here");
-                                player.Data.IsDead = true;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MimicList.Toggle();
-                MimicList.SetVisible(false);
-                MimicList = null;
-            }
-        }*/
 
         public float HackTimer()
         {
@@ -287,57 +278,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
-
-        /*public void Update(HudManager __instance)
-        {
-            FixedUpdate(__instance);
-        }
-
-        public void FixedUpdate(HudManager __instance)
-        {
-            if (MimicList != null)
-            {
-                if (Minigame.Instance)
-                    Minigame.Instance.Close();
-
-                if (!MimicList.IsOpen || MeetingHud.Instance)
-                {
-                    MimicList.Toggle();
-                    MimicList.SetVisible(false);
-                    MimicList = null;
-                }
-                else
-                {
-                    foreach (var bubble in MimicList.chatBubPool.activeChildren)
-                    {
-                        if (!IsUsingMimic && MimicList != null)
-                        {
-                            Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
-                            Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
-
-                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
-                            {
-                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
-                                {
-                                    if (!Input.GetMouseButtonDown(0) && LastMouse)
-                                    {
-                                        LastMouse = false;
-                                        MimicList.Toggle();
-                                        MimicList.SetVisible(false);
-                                        MimicList = null;
-                                        MimicTarget = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text).FirstOrDefault();
-                                        Mimic();
-                                        break;
-                                    }
-
-                                    LastMouse = Input.GetMouseButtonDown(0);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
 
         public KillButton MimicButton
         {

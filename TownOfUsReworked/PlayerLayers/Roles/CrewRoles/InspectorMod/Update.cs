@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
                     var playerName = state.NameText.text;
                     player.nameText().color = new Color32(255, 255, 255, 255);
-
                     player.nameText().text = playerName;
                 }
             }

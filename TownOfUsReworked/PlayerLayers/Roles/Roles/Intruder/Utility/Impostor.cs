@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            Results = InspResults.CrewImpAnMurd;
             //IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;
             AlignmentDescription = IUDescription;
@@ -93,6 +92,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 IntruderWin = true;
         }

@@ -54,12 +54,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         public static void GuessToAct(PlayerControl player)
         {
             var guess = Role.GetRole<Guesser>(player);
-            Role newRole  = new Jester(player);
+            /*var newRole  = new Actor(player);
             newRole.RoleHistory.Add(guess);
             newRole.RoleHistory.AddRange(guess.RoleHistory);
             
             if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+                newRole.RegenTask();*/
         }
     }
 }

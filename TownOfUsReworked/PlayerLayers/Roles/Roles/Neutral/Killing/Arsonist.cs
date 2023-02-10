@@ -6,6 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -35,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.ArsoPBCryoVet;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +
                 " and igniting them later for mass murder. Be careful though, as you need be next to someone to ignite and if anyone sees you ignite," +
@@ -88,6 +88,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     return false;
                 }
             }
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+            {
+                if (Utils.AllNeutralsWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
+            {
+                if (Utils.AllNKsWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
             else if (IsCrewAlly)
             {
                 if (Utils.CrewWins())
@@ -127,6 +153,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     return false;
                 }
             }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
             else if (Utils.NKWins(RoleType))
             {
                 Wins();
@@ -151,6 +203,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 SyndicateWin = true;
             else if (IsCrewAlly)
                 CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
+                NKWins = true;
             else
                 ArsonistWins = true;
         }

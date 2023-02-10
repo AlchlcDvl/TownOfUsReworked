@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            Results = InspResults.CrewImpAnMurd;
             Base = true;
             Objectives = SyndicateWinCon;
             RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
@@ -92,6 +91,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }

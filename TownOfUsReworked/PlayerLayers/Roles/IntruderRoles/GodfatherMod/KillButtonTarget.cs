@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             if (role.FormerRole == null)
                 return;
             
-            if (role.FormerRole.RoleType != RoleEnum.Janitor)
+            if (role.FormerRole.RoleType != RoleEnum.Janitor && role.FormerRole.RoleType != RoleEnum.Undertaker)
                 return;
 
             if (role.CurrentTarget && role.CurrentTarget != target)
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget != null && __instance.enabled && !role.CleanButton.isCoolingDown)
+            if (role.CurrentTarget != null && __instance.enabled && !__instance.isCoolingDown)
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

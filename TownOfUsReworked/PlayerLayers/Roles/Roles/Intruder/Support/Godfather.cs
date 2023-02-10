@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            Results = InspResults.GFMayorRebelPest;
             FactionDescription = IntruderFactionDescription;
             Objectives = IntrudersWinCon;
             AlignmentDescription = ISDescription;
@@ -87,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = (WasMafioso ? (CustomGameOptions.IntKillCooldown - CustomGameOptions.MafiosoAbilityCooldownDecrease) : CustomGameOptions.IntKillCooldown) * 1000f;
+            var num = (WasMafioso ? (CustomGameOptions.IntKillCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) : CustomGameOptions.IntKillCooldown) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -110,6 +109,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 IntruderWin = true;
         }
@@ -126,6 +129,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -204,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastBlackmailed;
-            var num = (CustomGameOptions.BlackmailCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.BlackmailCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -248,7 +277,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastCamouflaged;
-            var num = (CustomGameOptions.CamouflagerCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.CamouflagerCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -283,7 +312,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFlashed;
-            var num = (CustomGameOptions.GrenadeCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.GrenadeCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -472,7 +501,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDragged;
-            var num = (CustomGameOptions.DragCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.DragCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -526,7 +555,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDisguised;
-            var num = (CustomGameOptions.DisguiseCooldown - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.DisguiseCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -542,6 +571,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl SampledPlayer;
         public float MorphTimeRemaining;
         public bool Morphed => MorphTimeRemaining > 0f;
+        public bool MorphEnabled;
 
         public KillButton MorphButton
         {
@@ -555,6 +585,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void Morph()
         {
+            MorphEnabled = true;
             MorphTimeRemaining -= Time.deltaTime;
             Utils.Morph(Player, MorphedPlayer);
 
@@ -564,6 +595,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void Unmorph()
         {
+            MorphEnabled = false;
             MorphedPlayer = null;
             Utils.DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
@@ -573,7 +605,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMorphed;
-            var num = (CustomGameOptions.MorphlingCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.MorphlingCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -603,7 +635,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInvis;
-            var num = (CustomGameOptions.InvisCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.InvisCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -663,7 +695,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInvestigated;
-            var num = (CustomGameOptions.ConsigCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.ConsigCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -703,7 +735,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMined;
-            var num = (CustomGameOptions.MineCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.MineCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -731,7 +763,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastTeleport;
-            var num = (CustomGameOptions.TeleportCd - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.TeleportCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -790,7 +822,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFrozen;
-            var num = (CustomGameOptions.FreezeCooldown - CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = (CustomGameOptions.FreezeCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

@@ -7,7 +7,7 @@ using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformButton
     {
         public static bool Prefix(KillButton __instance)
         {

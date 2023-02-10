@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using System.Linq;
 using Object = UnityEngine.Object;
 
@@ -32,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.TLAltTMCann;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             AlignmentDescription = NEDescription;
@@ -62,6 +62,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Utils.EndGame();
                     return false;
                 }
+
+                return false;
             }
             else if (EatNeed <= 0)
             {
@@ -87,8 +89,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 SyndicateWin = true;
             else if (IsCrewAlly)
                 CrewWin = true;
-            else
-                CannibalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

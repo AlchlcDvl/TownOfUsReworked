@@ -40,13 +40,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.GrenadeDuration;
+                role.Flash();
                 
                 try
                 {
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 1f);
                 } catch {}
 
-                role.Flash();
                 return false;
             }
             else if (__instance == role.KillButton)

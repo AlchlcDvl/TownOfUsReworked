@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.Lobby.CustomOption;
 using Hazel;
 
@@ -267,8 +268,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (Player.Data.IsDead || Player.Data.Disconnected || TargetPlayer == null)
                 return;
-                
-            GuesserWins = true;
+
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
+            else 
+                GuesserWins = true;
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)

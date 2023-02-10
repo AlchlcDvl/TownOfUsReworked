@@ -28,8 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                     role.DousedPlayers.Clear();
                     role.FreezeUsed = false;
                 }
-                
-                return;
             }
         }
     }

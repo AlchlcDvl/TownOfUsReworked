@@ -255,18 +255,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
             {
-                if (ga.TargetPlayer == null)
-                    continue;
-                    
-                if (ga.TargetAlive)
-                {
-                    ga.Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
-                    writer.Write((byte)WinLoseRPC.GuardianAngelWin);
-                    writer.Write(ga.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-                else
+                if (!ga.TargetAlive)
                 {
                     ga.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
@@ -290,15 +279,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (Survivor surv in Role.GetRoles(RoleEnum.Survivor))
             {
-                if (surv.Alive)
-                {
-                    surv.Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
-                    writer.Write((byte)WinLoseRPC.SurvivorWin);
-                    writer.Write(surv.Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-                else
+                if (!surv.Alive)
                 {
                     surv.Loses();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);

@@ -55,7 +55,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal RoleEnum RoleType { get; set; } = RoleEnum.None;
         protected internal Faction Faction { get; set; } = Faction.None;
         protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
-        protected internal InspResults Results { get; set; } = InspResults.None;
         protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;

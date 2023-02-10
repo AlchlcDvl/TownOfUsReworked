@@ -4,6 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System;
 using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -28,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.DetJuggOpTroll;
         }
 
         public override void Loses()
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             if (Killed)
             {
-                Wins();
+                TrollWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                 writer.Write((byte)WinLoseRPC.TrollWin);
                 writer.Write(Player.PlayerId);
@@ -67,7 +67,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public override void Wins()
         {
-            TrollWins = true;
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
 
         public float InteractTimer()

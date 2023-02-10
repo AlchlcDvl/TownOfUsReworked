@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
@@ -13,20 +12,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
         {
             if (__instance == null)
                 return;
-                
-            var poisoners = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(RoleEnum.Poisoner)).ToList();
 
-            foreach (var poisoner in poisoners)
+            foreach (var role in Role.GetRoles(RoleEnum.Poisoner))
             {
-                var role = Role.GetRole<Poisoner>(poisoner);
+               var poisoner = (Poisoner)role;
 
-                if (poisoner != role.PoisonedPlayer && role.PoisonedPlayer != null)
+                if (poisoner.Player != poisoner.PoisonedPlayer && poisoner.PoisonedPlayer != null)
                 {
-                    if (!role.PoisonedPlayer.Data.IsDead && !role.PoisonedPlayer.Is(RoleEnum.Pestilence))
-                        Utils.MurderPlayer(poisoner, role.PoisonedPlayer);
+                    if (!poisoner.PoisonedPlayer.Data.IsDead && !poisoner.PoisonedPlayer.Is(RoleEnum.Pestilence))
+                        Utils.MurderPlayer(poisoner.Player, poisoner.PoisonedPlayer);
                 }
-                
-                return;
             }
         }
     }

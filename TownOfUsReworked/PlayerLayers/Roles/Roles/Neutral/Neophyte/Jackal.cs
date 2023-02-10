@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            Results = InspResults.GAExeJackAg;
             Objectives = JackalWinCon;
             AlignmentDescription = NNDescription;
             FactionDescription = NeutralFactionDescription;

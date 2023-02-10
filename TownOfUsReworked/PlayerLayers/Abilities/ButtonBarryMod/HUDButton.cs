@@ -8,7 +8,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class Update
+    public class HudButton
     {
         public static Sprite Button => TownOfUsReworked.ButtonSprite;
 

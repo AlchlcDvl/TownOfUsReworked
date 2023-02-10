@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
                 
                 if (morphling.Morphed)
                     morphling.Morph();
-                else if (morphling.MorphedPlayer)
+                else if (morphling.Enabled)
                     morphling.Unmorph();
             }
         }

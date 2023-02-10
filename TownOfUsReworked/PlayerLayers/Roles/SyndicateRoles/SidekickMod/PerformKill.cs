@@ -32,6 +32,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
 
                 if (interact[3] == true && interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)

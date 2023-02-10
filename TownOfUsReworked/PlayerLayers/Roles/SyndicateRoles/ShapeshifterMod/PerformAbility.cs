@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
                 writer.Write((byte)ActionsRPC.Shapeshift);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                role.TimeRemaining = CustomGameOptions.ConcealDuration;
+                role.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 role.Shapeshift();
                 return false;
             }
@@ -48,6 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
                 if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);

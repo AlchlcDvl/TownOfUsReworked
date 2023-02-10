@@ -1,4 +1,3 @@
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -30,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            Results = InspResults.JestMafiSideDamp;
             FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
                 " to ensure your victory over others.";
             Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
@@ -72,6 +70,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 IntruderWin = true;
         }
@@ -88,6 +90,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

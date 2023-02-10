@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
         public static void GAToSurv(PlayerControl player)
         {
             var ga = Role.GetRole<GuardianAngel>(player);
-            Role newRole = new Survivor(player);
+            var newRole = new Survivor(player);
             newRole.RoleHistory.Add(ga);
             newRole.RoleHistory.AddRange(ga.RoleHistory);
             

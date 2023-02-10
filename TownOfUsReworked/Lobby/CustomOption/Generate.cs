@@ -729,6 +729,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption GorgonCount;
         public static CustomToggleOption UniqueGorgon;
         public static CustomNumberOption GazeTime;
+        public static CustomNumberOption GazeDelay;
         public static CustomNumberOption GazeCooldown;
 
         //Bomber Options
@@ -2161,6 +2162,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             GorgonCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Count", 1, 1, 14, 1);
             UniqueGorgon = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Is Unique In All Any", false);
             GazeCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Gaze Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            GazeDelay = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Gaze Delay", 10f, 5f, 15f, 1f, CooldownFormat);
             GazeTime = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Gaze Time", 10f, 5f, 15f, 1f, CooldownFormat);
 
             SyndicateSupportSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings");

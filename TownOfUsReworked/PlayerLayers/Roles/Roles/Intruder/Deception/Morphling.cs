@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl MorphedPlayer;
         public PlayerControl SampledPlayer;
         public float TimeRemaining;
+        public bool Enabled;
         public bool Morphed => TimeRemaining > 0f;
         public DateTime LastKilled { get; set; }
 
@@ -34,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderDecep;
             FactionColor = Colors.Intruder;
             AlignmentName = "Intruder (Deception)";
-            Results = InspResults.MorphGliEscCons;
             //IntroSound = TownOfUsReworked.MorphlingIntro;
         }
 
@@ -80,6 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             TimeRemaining -= Time.deltaTime;
             Utils.Morph(Player, MorphedPlayer);
+            Enabled = true;
 
             if (Player.Data.IsDead)
                 TimeRemaining = 0f;
@@ -88,6 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public void Unmorph()
         {
             MorphedPlayer = null;
+            Enabled = false;
             Utils.DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
         }
@@ -154,6 +156,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 IntruderWin = true;
         }
@@ -170,6 +176,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

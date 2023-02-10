@@ -64,6 +64,7 @@ namespace TownOfUsReworked.Enums
         Actor,
         Amnesiac,
         Arsonist,
+        BountyHunter,
         Cannibal,
         Cryomaniac,
         Dampyr,

@@ -2,6 +2,7 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -22,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.GAExeJackAg;
             FactionDescription = NeutralFactionDescription;
             AlignmentDescription = NEDescription;
             RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
@@ -59,8 +59,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if ((Player.Data.IsDead && !CustomGameOptions.ExeCanWinBeyondDeath) || Player.Data.Disconnected || TargetPlayer == null)
                 return;
-                
-            TargetVotedOut = true;
+
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
     }
 }

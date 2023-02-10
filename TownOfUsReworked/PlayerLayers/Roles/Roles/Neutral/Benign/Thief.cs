@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using Il2CppSystem.Collections.Generic;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -25,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Results = InspResults.ThiefAmneTrackInvest;
         }
 
         public override void Loses()
@@ -64,6 +64,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);
             __instance.teamToShow = team;
+        }
+
+        public override void Wins()
+        {
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
     }
 }

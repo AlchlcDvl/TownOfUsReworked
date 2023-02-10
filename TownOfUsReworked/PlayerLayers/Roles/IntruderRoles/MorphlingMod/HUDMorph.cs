@@ -38,6 +38,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             {
                 role.MorphButton.SetCoolDown(0f, 1f);
                 Utils.SetTarget(ref role.ClosestPlayer, role.MorphButton);
+                var renderer2 = role.MorphButton.graphic;
+
+                if (role.ClosestPlayer != null && !role.MorphButton.isCoolingDown)
+                {
+                    renderer2.color = Palette.EnabledColor;
+                    renderer2.material.SetFloat("_Desat", 0f);
+                }
+                else
+                {
+                    renderer2.color = Palette.DisabledClear;
+                    renderer2.material.SetFloat("_Desat", 1f);
+                }
             }
             else
             {

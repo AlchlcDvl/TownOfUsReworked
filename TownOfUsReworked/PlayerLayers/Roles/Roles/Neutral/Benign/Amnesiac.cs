@@ -4,6 +4,8 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
+using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -25,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Results = InspResults.ThiefAmneTrackInvest;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             //IntroSound = TownOfUsReworked.AmnesiacIntro;
             RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
@@ -67,6 +68,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 Object.Destroy(arrow.Value.gameObject);
                 
             BodyArrows.Remove(arrow.Key);
+        }
+        
+        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        {
+            if (Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
+
+            if (IsRecruit)
+            {
+                if (Utils.CabalWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public override void Wins()
+        {
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
     }
 }

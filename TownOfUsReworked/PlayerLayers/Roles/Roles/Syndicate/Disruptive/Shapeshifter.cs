@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = "Syndicate (Disruption)";
-            Results = InspResults.DisgCamoSSConc;
         }
 
         public override void Loses()
@@ -76,7 +75,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Shapeshift();
+            var allPlayers = PlayerControl.AllPlayerControls;
+
+            foreach (var player in allPlayers)
+            {
+                var random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+
+                while (player == allPlayers[random])
+                    random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+
+                var otherPlayer = allPlayers[random];
+                Utils.Morph(player, otherPlayer);
+            }
         }
 
         public void UnShapeshift()
@@ -131,6 +141,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }
@@ -147,6 +161,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

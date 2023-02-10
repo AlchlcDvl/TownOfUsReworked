@@ -11,16 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
     {
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
                 return;
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);

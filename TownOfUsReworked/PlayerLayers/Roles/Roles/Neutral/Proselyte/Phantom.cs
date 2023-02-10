@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            Results = InspResults.None;
         }
 
         public override void Loses()

@@ -43,7 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                 var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
                 var flag = GameStates.IsInGame && !GameStates.IsMeeting && PlayerControl.LocalPlayer.CanMove;
                 var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
-                var killButton = role.DragDropButton;
                 DeadBody closestBody = null;
                 var closestDistance = float.MaxValue;
 
@@ -66,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     closestDistance = distance;
                 }
 
-                KillButtonTarget.SetTarget(killButton, closestBody, role);
+                KillButtonTarget.SetTarget(role.DragDropButton, closestBody, role);
             }
 
             if (role.DragDropButton.graphic.sprite == Drag)

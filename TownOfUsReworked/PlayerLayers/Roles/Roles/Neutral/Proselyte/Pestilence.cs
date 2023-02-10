@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            Results = InspResults.GFMayorRebelPest;
         }
 
         public override void Loses()

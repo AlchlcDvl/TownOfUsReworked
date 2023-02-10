@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformAbility
     {
-        public static Sprite PoisonSprite => TownOfUsReworked.PoisonSprite;
         public static Sprite PoisonedSprite => TownOfUsReworked.PoisonedSprite;
 
         public static bool Prefix(KillButton __instance)
@@ -42,7 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 {
                     role.PoisonedPlayer = role.ClosestPlayer;
                     role.TimeRemaining = CustomGameOptions.PoisonDuration;
-
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer2.Write((byte)ActionsRPC.Poison);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -76,6 +74,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
                 if (interact[3] == true && interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);

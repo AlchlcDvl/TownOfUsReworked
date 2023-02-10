@@ -35,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentDescription = NNDescription;
             RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
                 "gain a quick majority.";
-            Results = InspResults.ShiftSwapSKDrac;
             Objectives = UndeadWinCon;
             SubFactionColor = Colors.Undead;
             SubFactionName = "Undead";

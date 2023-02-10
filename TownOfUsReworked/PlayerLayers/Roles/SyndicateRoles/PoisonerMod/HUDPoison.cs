@@ -34,9 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != role.PoisonedPlayer).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.PoisonButton, notSyn);
 
-            if (role.ClosestPlayer != null)
-                role.ClosestPlayer.myRend().material.SetColor("_OutlineColor", role.Color);
-
             if (role.Poisoned)
             {
                 role.PoisonButton.graphic.sprite = PoisonedSprite;

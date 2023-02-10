@@ -11,20 +11,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class Gorgon : Role
     {
         private KillButton _gazeButton;
-        public Dictionary<byte, float> gazeList = new Dictionary<byte, float>();
+        public List<(PlayerControl, float, bool)> Gazed = new List<(PlayerControl, float, bool)>();
         public PlayerControl ClosestPlayer;
         public DateTime LastGazed;
-        public bool Enabled = false;
-        public float TimeRemaining;
-        public PlayerControl StonedPlayer;
-        public bool Stoned => TimeRemaining > 0f;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
 
         public Gorgon(PlayerControl player) : base(player)
         {
             Name = "Gorgon";
-            StartText = "Turn The <color=#8BFDFD>Crew</color> Into Sculptures";
+            StartText = "Turn The <color=#8BFDFDFF>Crew</color> Into Sculptures";
             AbilitiesText = "- You can stone gaze players, that forces them to stand still till a meeting is called.";
             AttributesText = "- Stoned players cannot move and will die when a meeting is called.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Gorgon : Colors.Syndicate;
@@ -32,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
-            Results = InspResults.VigVHSurvGorg;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
             FactionDescription = SyndicateFactionDescription;         
@@ -91,43 +86,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
-        
-        public void Freeze()
-        {
-            Enabled = true;
-            TimeRemaining -= Time.deltaTime;
-
-            if (MeetingHud.Instance)
-                TimeRemaining = 0;
-                
-            if (TimeRemaining <= 0)
-                GazeKill();
-        }
-
-        public void GazeKill()
-        {
-            if (!StonedPlayer.Is(RoleEnum.Pestilence))
-            {
-                Utils.RpcMurderPlayer(Player, StonedPlayer);
-
-                if (!StonedPlayer.Data.IsDead)
-                {
-                    try
-                    {
-                        SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
-                    } catch {}
-                }
-            }
-
-            StonedPlayer = null;
-            Enabled = false;
-            LastGazed = DateTime.UtcNow;
-        }
 
         public override void Wins()
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }
@@ -144,6 +111,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

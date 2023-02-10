@@ -12,6 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDClean
     {
+        public static Sprite Clean => TownOfUsReworked.JanitorClean;
+
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Janitor))
@@ -23,6 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             {
                 role.CleanButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.CleanButton.graphic.enabled = true;
+                role.CleanButton.graphic.sprite = Clean;
                 role.CleanButton.gameObject.SetActive(false);
             }
 
@@ -34,15 +37,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             }
 
             role.CleanButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.CleanButton.graphic.sprite = TownOfUsReworked.JanitorClean;
 
             var data = PlayerControl.LocalPlayer.Data;
             var isDead = data.IsDead;
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-            var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
+            var flag = GameStates.IsInGame && !GameStates.IsMeeting && PlayerControl.LocalPlayer.CanMove;
             var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
-            var killButton = role.CleanButton;
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
 
@@ -65,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 closestDistance = distance;
             }
 
-            KillButtonTarget.SetTarget(killButton, closestBody, role);
+            KillButtonTarget.SetTarget(role.CleanButton, closestBody, role);
             role.CleanButton.SetCoolDown(role.CleanTimer(), CustomGameOptions.JanitorCleanCd);
 
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();

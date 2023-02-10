@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -17,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected && !Player.Data.Disconnected) || TargetPlayer.Data.Disconnected ||
-            TargetPlayer == null) && !Player.Data.Disconnected;
+        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || TargetPlayer.Data.Disconnected || TargetPlayer == null) &&
+            !Player.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         private KillButton _protectButton;
 
@@ -36,7 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Protect Your Target With Your Life";
-            Results = InspResults.GAExeJackAg;
             AbilitiesText = "- You can protect your target from death for a short while.";
             RoleDescription = "You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep your target alive at all costs" +
                 " even if they lose!";
@@ -90,6 +90,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             gaTeam.Add(PlayerControl.LocalPlayer);
             gaTeam.Add(TargetPlayer);
             __instance.teamToShow = gaTeam;
+        }
+
+        public override void Wins()
+        {
+            if (IsRecruit)
+                CabalWin = true;
+            else if (IsIntAlly)
+                IntruderWin = true;
+            else if (IsSynAlly)
+                SyndicateWin = true;
+            else if (IsCrewAlly)
+                CrewWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
+            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+                AllNeutralsWin = true;
         }
     }
 }

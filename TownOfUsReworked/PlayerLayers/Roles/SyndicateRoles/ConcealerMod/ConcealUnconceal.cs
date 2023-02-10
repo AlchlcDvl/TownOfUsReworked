@@ -5,28 +5,20 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPriority(Priority.Last)]
     public class ConcealUnconceal
     {
-        public static bool ConcealEnabled;
-
+        [HarmonyPriority(Priority.Last)]
         public static void Postfix(HudManager __instance)
         {
-            ConcealEnabled = false;
-
             foreach (var role in Role.GetRoles(RoleEnum.Concealer))
             {
                 var concealer = (Concealer) role;
 
                 if (concealer.Concealed)
-                {
-                    ConcealEnabled = true;
                     concealer.Conceal();
-                }
                 else if (concealer.Enabled)
-                {
-                    ConcealEnabled = false;
                     concealer.UnConceal();
-                }
             }
         }
     }

@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
         public static void ExeToJest(PlayerControl player)
         {
             var exe = Role.GetRole<Executioner>(player);
-            Role newRole = new Jester(player);
+            var newRole = new Jester(player);
             newRole.RoleHistory.Add(exe);
             newRole.RoleHistory.AddRange(exe.RoleHistory);
             

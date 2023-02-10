@@ -185,64 +185,6 @@ namespace TownOfUsReworked.Classes
             return new Texture2D(width, height, TextureFormat.RGBA32, Texture.GenerateAllMips, false, IntPtr.Zero);
         }
 
-        public static void Invis(PlayerControl player)
-        {
-            var color = new Color32(0, 0, 0, 0);
-
-            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Data.IsDead)
-                color.a = 26;
-
-            if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-            {
-                player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                {
-                    ColorId = player.CurrentOutfit.ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = " "
-                });
-
-                player.myRend().color = color;
-                player.nameText().color = new Color32(0, 0, 0, 0);
-                player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
-        }
-
-        public static void Conceal()
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player != PlayerControl.LocalPlayer)
-                {
-                    var color = Colors.Clear;
-                    var playerName = " ";
-
-                    if ((player.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) || PlayerControl.LocalPlayer.Data.IsDead)
-                    {
-                        color.a = 26;
-                        playerName = player.name;
-                    }
-
-                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-                    {
-                        player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                        {
-                            ColorId = player.CurrentOutfit.ColorId,
-                            HatId = "",
-                            SkinId = "",
-                            VisorId = "",
-                            PlayerName = playerName
-                        });
-
-                        PlayerMaterial.SetColors(color, player.myRend());
-                        player.nameText().color = color;
-                        player.cosmetics.colorBlindText.color = color;
-                    }
-                }
-            }
-        }
-
         public static void Morph(PlayerControl player, PlayerControl MorphedPlayer)
         {
             if (CamouflageUnCamouflage.IsCamoed)
@@ -263,33 +205,11 @@ namespace TownOfUsReworked.Classes
             player.SetOutfit(CustomPlayerOutfitType.Default);
         }
 
-        public static void Shapeshift()
-        {
-            var allPlayers = PlayerControl.AllPlayerControls;
-
-            foreach (var player in allPlayers)
-            {
-                int random;
-
-                while (true)
-                {
-                    random = Random.RandomRangeInt(0, allPlayers.Count);
-
-                    if (player != allPlayers[random])
-                        break;
-                }
-
-                var otherPlayer = allPlayers[random];
-                Morph(player, otherPlayer);
-            }
-        }
-
         public static void Camouflage()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage &&
-                    player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
+                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis &&
                     player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
                 {
                     player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
@@ -300,6 +220,7 @@ namespace TownOfUsReworked.Classes
                         VisorId = "",
                         PlayerName = " "
                     });
+
                     PlayerMaterial.SetColors(Color.grey, player.myRend());
                     player.nameText().color = Color.clear;
                     player.cosmetics.colorBlindText.color = Color.clear;
@@ -316,7 +237,10 @@ namespace TownOfUsReworked.Classes
         public static void DefaultOutfitAll()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
+            {
                 DefaultOutfit(player);
+                player.myRend().color = new Color32(255, 255, 255, 255);
+            }
         }
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
@@ -353,11 +277,6 @@ namespace TownOfUsReworked.Classes
         public static bool Is(this PlayerControl player, AbilityEnum ability)
         {
             return Ability.GetAbility(player)?.AbilityType == ability;
-        }
-
-        public static bool Is(this PlayerControl player, InspResults results)
-        {
-            return Role.GetRole(player)?.Results == results;
         }
 
         public static bool Is(this PlayerControl player, Faction faction)
@@ -828,8 +747,8 @@ namespace TownOfUsReworked.Classes
         public static bool AllNKsWin()
         {
             var flag = (PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) ||
-                x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival() || !x.Is(SubFaction.None))) == 0)
-                && CustomGameOptions.NoSolo == NoSolo.AllNKs;
+                x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival())) == 0) &&
+                CustomGameOptions.NoSolo == NoSolo.AllNKs;
 
             return flag;
         }

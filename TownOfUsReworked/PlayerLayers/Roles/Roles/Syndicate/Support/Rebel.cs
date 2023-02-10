@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = "Syndicate (Support)";
-            Results = InspResults.GFMayorRebelPest;
             AlignmentDescription = "You are a Syndicate (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
                 "everyway possible.";
             FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
@@ -86,6 +85,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }
@@ -102,6 +105,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -171,7 +200,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             ConcealEnabled = true;
             ConcealTimeRemaining -= Time.deltaTime;
-            Utils.Conceal();
+            
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player != PlayerControl.LocalPlayer)
+                {
+                    var color = Colors.Clear;
+                    var playerName = " ";
+
+                    if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Data.IsDead)
+                    {
+                        color.a = 26;
+                        playerName = player.name;
+                    }
+
+                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
+                    {
+                        player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
+                        {
+                            ColorId = player.CurrentOutfit.ColorId,
+                            HatId = "",
+                            SkinId = "",
+                            VisorId = "",
+                            PlayerName = playerName
+                        });
+
+                        PlayerMaterial.SetColors(color, player.myRend());
+                        player.nameText().color = color;
+                        player.cosmetics.colorBlindText.color = color;
+                    }
+                }
+            }
         }
 
         public void UnConceal()
@@ -217,6 +276,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 _frameButton = value;
                 AddToAbilityButtons(value, this);
             }
+        }
+
+        public float FrameTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastFramed;
+            var num = CustomGameOptions.FrameCooldown * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Poisoner Stuff
@@ -303,7 +375,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             ShapeshiftEnabled = true;
             ShapeshiftTimeRemaining -= Time.deltaTime;
-            Utils.Shapeshift();
+            var allPlayers = PlayerControl.AllPlayerControls;
+
+            foreach (var player in allPlayers)
+            {
+                var random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+
+                while (player == allPlayers[random])
+                    random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+
+                var otherPlayer = allPlayers[random];
+                Utils.Morph(player, otherPlayer);
+            }
         }
 
         public void UnShapeshift()
@@ -367,12 +450,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         //Gorgon Stuff
         private KillButton _gazeButton;
-        public Dictionary<byte, float> gazeList = new Dictionary<byte, float>();
+        public List<(PlayerControl, float, bool)> Gazed = new List<(PlayerControl, float, bool)>();
         public DateTime LastGazed;
-        public bool GazeEnabled = false;
-        public float GazeTimeRemaining;
-        public PlayerControl StonedPlayer;
-        public bool Stoned => GazeTimeRemaining > 0f;
         
         public KillButton GazeButton
         {
@@ -395,38 +474,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-        
-        public void Freeze()
-        {
-            GazeEnabled = true;
-            GazeTimeRemaining -= Time.deltaTime;
-
-            if (MeetingHud.Instance)
-                GazeTimeRemaining = 0;
-                
-            if (GazeTimeRemaining <= 0)
-                GazeKill();
-        }
-
-        public void GazeKill()
-        {
-            if (!StonedPlayer.Is(RoleEnum.Pestilence))
-            {
-                Utils.RpcMurderPlayer(Player, StonedPlayer);
-
-                if (!StonedPlayer.Data.IsDead)
-                {
-                    try
-                    {
-                        SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
-                    } catch {}
-                }
-            }
-
-            StonedPlayer = null;
-            GazeEnabled = false;
-            LastGazed = DateTime.UtcNow;
         }
 
         //Warper Stuff

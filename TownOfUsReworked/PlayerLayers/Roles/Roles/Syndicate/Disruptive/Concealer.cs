@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = "Syndicate (Disruptive)";
-            Results = InspResults.DisgCamoSSConc;
             RoleDescription = "You are a Concealer! You can turn everyone invisible to everyone else but themselves by making them unable to see things properly. " +
                 "Use this to get away from crime scenes as fast as possible!";
             AlignmentDescription = SSuDescription;
@@ -81,7 +80,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Conceal();
+            
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player != PlayerControl.LocalPlayer)
+                {
+                    var color = Colors.Clear;
+                    var playerName = " ";
+
+                    if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Data.IsDead)
+                    {
+                        color.a = 26;
+                        playerName = player.name;
+                    }
+
+                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
+                    {
+                        player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
+                        {
+                            ColorId = player.CurrentOutfit.ColorId,
+                            HatId = "",
+                            SkinId = "",
+                            VisorId = "",
+                            PlayerName = playerName
+                        });
+
+                        PlayerMaterial.SetColors(color, player.myRend());
+                        player.nameText().color = color;
+                        player.cosmetics.colorBlindText.color = color;
+                    }
+                }
+            }
         }
 
         public void UnConceal()
@@ -136,6 +165,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (IsRecruit)
                 CabalWin = true;
+            else if (IsPersuaded)
+                SectWin = true;
+            else if (IsResurrected)
+                ReanimatedWin = true;
             else
                 SyndicateWin = true;
         }
@@ -152,6 +185,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();

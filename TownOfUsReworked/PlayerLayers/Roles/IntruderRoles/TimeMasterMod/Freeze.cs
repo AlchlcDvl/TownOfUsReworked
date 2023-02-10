@@ -12,23 +12,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         public static class FreezeFunctions
         {
+            private static List<PlayerControl> Frozen = new List<PlayerControl>();
+
             public static void FreezeAll()
             {
-                var frozen = new List<PlayerControl>();
-
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player == PlayerControl.LocalPlayer)
-                        Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
-
                     if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
                         CustomGameOptions.TMImmunity) || (player.Is(Faction.Intruder) && CustomGameOptions.IntruderImmunity))
                         continue;
                     
-                    frozen.Add(player);
+                    Frozen.Add(player);
                 }
 
-                foreach (var player in frozen)
+                foreach (var player in Frozen)
                 {
                     if (player.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
                     {
@@ -36,29 +33,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                         player.moveable = false;
                     }
                 }
+
+                Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
             }
 
             public static void UnfreezeAll()
             {
-                var frozen = new List<PlayerControl>();
-
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player == PlayerControl.LocalPlayer)
-                        Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
-
-                    if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
-                        CustomGameOptions.TMImmunity) || (player.Is(Faction.Intruder) && CustomGameOptions.IntruderImmunity))
-                        continue;
-                    
-                    frozen.Add(player);
-                }
-
-                foreach (var player in frozen)
+                foreach (var player in Frozen)
                 {
                     if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !player.Data.Disconnected)
                         player.moveable = true;
                 }
+
+                Frozen.Clear();
+                Coroutines.Start(Utils.FlashCoroutine(Colors.TimeMaster));
             }
         }
     }

@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
@@ -12,19 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
     public class HUDGaze
     {
         public static Sprite Gaze => TownOfUsReworked.Placeholder;
+        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Gorgon))
-                return;
-
-            if (PlayerControl.AllPlayerControls.Count <= 1)
-                return;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Gorgon))
                 return;
 
             var role = Role.GetRole<Gorgon>(PlayerControl.LocalPlayer);
@@ -34,21 +27,49 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                 role.GazeButton = Object.Instantiate(__instance.KillButton, HudManager.Instance.transform);
                 role.GazeButton.graphic.enabled = true;
                 role.GazeButton.graphic.sprite = Gaze;
+                role.GazeButton.gameObject.SetActive(false);
             }
 
             role.GazeButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !MeetingHud.Instance && !LobbyBehaviour.Instance);
             var notImpostor = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.GazeButton, notImpostor);
+            role.GazeButton.SetCoolDown(role.GazeTimer(), CustomGameOptions.GazeCooldown);
+            var renderer2 = role.GazeButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.GazeButton.isCoolingDown)
             {
-                role.GazeButton.graphic.color = Palette.EnabledColor;
-                role.GazeButton.graphic.material.SetFloat("_Desat", 0f);
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
             }
             else
             {
-                role.GazeButton.graphic.color = Palette.DisabledClear;
-                role.GazeButton.graphic.material.SetFloat("_Desat", 1.0f);
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1.0f);
+            }
+
+            if (role.KillButton == null)
+            {
+                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.KillButton.graphic.enabled = true;
+                role.KillButton.graphic.sprite = Kill;
+                role.KillButton.gameObject.SetActive(false);
+            }
+
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
+            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
+            var renderer = role.KillButton.graphic;
+            
+            if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)
+            {
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

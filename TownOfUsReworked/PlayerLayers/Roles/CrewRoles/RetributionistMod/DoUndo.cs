@@ -18,14 +18,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Revive
                 if (ret.RevivedRole == null)
                     continue;
 
-                if (ret.RevivedRole.RoleType == RoleEnum.Chameleon)
+                var revivedRole = ret.RevivedRole.RoleType;
+
+                if (revivedRole == RoleEnum.Chameleon)
                 {
                     if (ret.IsSwooped)
                         ret.Invis();
                     else if (ret.SwoopEnabled)
                         ret.Uninvis();
                 }
-                else if (ret.RevivedRole.RoleType == RoleEnum.Veteran)
+                else if (revivedRole == RoleEnum.Veteran)
                 {
                     if (ret.OnAlert)
                         ret.Alert();

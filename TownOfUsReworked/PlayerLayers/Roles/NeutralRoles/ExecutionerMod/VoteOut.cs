@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
                     writer.Write((byte)WinLoseRPC.ExecutionerWin);
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    exe.Wins();
+                    exe.TargetVotedOut = true;
                 }
             }        
         }

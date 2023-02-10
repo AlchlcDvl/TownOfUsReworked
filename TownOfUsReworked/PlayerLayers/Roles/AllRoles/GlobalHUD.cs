@@ -21,14 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             if (Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && GameStates.IsInGame)
             {
-                if ((role?.AbilityButtons?.Count == 0 || role?.AbilityButtons?.Count == 1) && !PlayerControl.LocalPlayer.Is(ObjectifierEnum.Corrupted) &&
-                    !PlayerControl.LocalPlayer.Is(AbilityEnum.ButtonBarry))
-                    __instance.ImpostorVentButton.transform.localPosition = __instance.AbilityButton.transform.localPosition;
-                else if ((role?.AbilityButtons?.Count == 2) && !PlayerControl.LocalPlayer.Is(ObjectifierEnum.Corrupted) && !PlayerControl.LocalPlayer.Is(AbilityEnum.ButtonBarry) &&
-                    !(PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage) && !(PlayerControl.LocalPlayer.Is(Faction.Syndicate) &&
-                    CustomGameOptions.AltImps))
-                    __instance.ImpostorVentButton.transform.localPosition = __instance.SabotageButton.transform.localPosition;
-
                 Sprite Vent;
 
                 if (PlayerControl.LocalPlayer.Is(Faction.Intruder))
