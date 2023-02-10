@@ -35,10 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 //Ensures only the Inspector sees this
                 if (DestroyableSingleton<HudManager>.Instance)
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
-                
-                role.InspectResults.Clear();
-                role.InspectedPlayers.Clear();
+
             }
+
+            role.InspectResults.Clear();
+            role.InspectedPlayers.Clear();
         }
     }
 }

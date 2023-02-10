@@ -101,10 +101,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     //Ensures only the Inspector sees this
                     if (DestroyableSingleton<HudManager>.Instance)
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
-                    
-                    ret.InspectResults.Clear();
-                    ret.InspectedPlayers.Clear();
                 }
+
+                ret.InspectResults.Clear();
+                ret.InspectedPlayers.Clear();
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
                 ret.Interrogated.Clear();

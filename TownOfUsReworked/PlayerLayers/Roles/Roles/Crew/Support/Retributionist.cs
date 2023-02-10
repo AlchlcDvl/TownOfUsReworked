@@ -201,7 +201,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        //Inspector Stuff\
+        //Inspector Stuff
         public DateTime LastInspected { get; set; }
         public List<PlayerControl> InspectedPlayers = new List<PlayerControl>();
         public Dictionary<PlayerControl, List<Role>> InspectResults = new Dictionary<PlayerControl, List<Role>>();
