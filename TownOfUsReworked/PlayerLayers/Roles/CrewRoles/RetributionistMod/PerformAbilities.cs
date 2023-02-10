@@ -93,7 +93,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (interact[3] == true)
                 {
-                    role.Inspected.Add(role.ClosestPlayer);
+                    role.InspectedPlayers.Add(role.ClosestPlayer);
+                    var results = new List<Role>();
+                    var targetRole = Role.GetRole(role.ClosestPlayer);
+                    results.Add(targetRole);
+
+                    var i = 0;
+
+                    while (i < 4)
+                    {
+                        var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
+                        var role2 = Role.AllRoles.ToList()[random];
+
+                        if (role2 != targetRole)
+                        {
+                            results.Add(role2);
+                            i++;
+                        }
+
+                        results.Shuffle();
+                    }
+
+                    role.InspectResults.Add(role.ClosestPlayer, results);
             
                     try
                     {

@@ -2218,5 +2218,17 @@ namespace TownOfUsReworked.Classes
             else
                 return 0f;
         }
+
+        public static bool Check(int probability)
+        {
+            if (probability == 0)
+                return false;
+
+            if (probability == 100)
+                return true;
+
+            var num = Random.RandomRangeInt(1, 101);
+            return num <= probability;
+        }
     }
 }

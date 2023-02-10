@@ -34,7 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             var br = new BodyReport
             {
                 Killer = Utils.PlayerById(killer.KillerId),
-                Reporter = __instance,
                 Body = Utils.PlayerById(killer.PlayerId),
                 KillAge = (float) (DateTime.UtcNow - killer.KillTime).TotalMilliseconds
             };

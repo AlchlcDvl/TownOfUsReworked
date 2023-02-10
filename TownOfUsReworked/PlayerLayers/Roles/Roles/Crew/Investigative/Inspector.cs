@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastInspected { get; set; }
-        public List<PlayerControl> Inspected = new List<PlayerControl>();
+        public List<PlayerControl> InspectedPlayers = new List<PlayerControl>();
+        public Dictionary<PlayerControl, List<Role>> InspectResults = new Dictionary<PlayerControl, List<Role>>();
         private KillButton _inspectButton;
 
         public Inspector(PlayerControl player) : base(player)

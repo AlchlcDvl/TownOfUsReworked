@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                     message += $" {role},";
 
                 message.Remove(message.Length - 1, 1);
-                
+
                 //Ensures only the Operative sees this
                 if (DestroyableSingleton<HudManager>.Instance)
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);

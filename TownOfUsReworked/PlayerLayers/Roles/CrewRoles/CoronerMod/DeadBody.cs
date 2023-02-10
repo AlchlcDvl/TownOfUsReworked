@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
     public class BodyReport
     {
         public PlayerControl Killer { get; set; }
-        public PlayerControl Reporter { get; set; }
         public PlayerControl Body { get; set; }
         public float KillAge { get; set; }
 

@@ -91,36 +91,6 @@ namespace TownOfUsReworked.Patches
         private static bool PhantomOn;
         private static bool RevealerOn;
 
-        public static void Shuffle<T>(this List<T> list)
-        {
-            var count = list.Count;
-            var last = count - 1;
-            
-            for (var i = 0; i <= last; ++i)
-            {
-                var r = Random.Range(i, count);
-                var tmp = list[i];
-                list[i] = list[r];
-                list[r] = tmp;
-            }
-        }
-
-        public static T TakeFirst<T>(this List<T> list)
-        {
-            list.Shuffle();
-            var item = list[0];
-
-            while (item == null)
-            {
-                list.Shuffle();
-                item = list[0];
-            }
-
-            list.RemoveAt(0);
-            list.Shuffle();
-            return item;
-        }
-
         private static void Sort(List<(Type, int, int, bool)> items, int max, int min)
         {
             if (items.Count == 0)
@@ -195,18 +165,6 @@ namespace TownOfUsReworked.Patches
                 items.RemoveAt(items.Count - 1);
             
             items.Shuffle();
-        }
-
-        internal static bool Check(int probability)
-        {
-            if (probability == 0)
-                return false;
-
-            if (probability == 100)
-                return true;
-
-            var num = Random.RandomRangeInt(1, 101);
-            return num <= probability;
         }
 
         private static void RoleGen(List<GameData.PlayerInfo> infected)
@@ -3288,8 +3246,8 @@ namespace TownOfUsReworked.Patches
 
                 if (!IsKilling)
                 {
-                    PhantomOn = Check(CustomGameOptions.PhantomOn);
-                    RevealerOn = Check(CustomGameOptions.RevealerOn);
+                    PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
+                    RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
                 }
 
                 #region Crew Roles

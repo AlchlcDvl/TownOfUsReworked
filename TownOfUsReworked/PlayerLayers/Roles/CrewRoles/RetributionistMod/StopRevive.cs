@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (ret.Player.Data.IsDead)
                     return;
-                    
+
                 var br = new BodyReport
                 {
                     Killer = Utils.PlayerById(killer.KillerId),
@@ -80,7 +80,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
             else if (ret.RevivedRole.RoleType == RoleEnum.Inspector)
-                ret.Inspected.Clear();
+            {
+                foreach (var (player, results) in ret.InspectResults)
+                {
+                    string roles = "";
+                    var position = 0;
+
+                    foreach (var result in results)
+                    {
+                        if (position < results.Count - 1)
+                            roles += $" {result.Name},";
+                        else if (position == results.Count - 1)
+                            roles += $" or {result.Name}.";
+                        
+                        position++;
+                    }
+                    
+                    string something = $"{player.name} could be" + roles;
+                    
+                    //Ensures only the Inspector sees this
+                    if (DestroyableSingleton<HudManager>.Instance)
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+                    
+                    ret.InspectResults.Clear();
+                    ret.InspectedPlayers.Clear();
+                }
+            }
             else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
                 ret.Interrogated.Clear();
 

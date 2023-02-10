@@ -4,6 +4,9 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
+using Il2CppSystem.Collections.Generic;
+using Random = UnityEngine.Random;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
@@ -32,8 +35,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
                 if (interact[3] == true)
                 {
-                    role.Inspected.Add(role.ClosestPlayer);
-            
+                    role.InspectedPlayers.Add(role.ClosestPlayer);
+                    var results = new List<Role>();
+                    var targetRole = Role.GetRole(role.ClosestPlayer);
+                    results.Add(targetRole);
+
+                    var i = 0;
+
+                    while (i < 4)
+                    {
+                        var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
+                        var role2 = Role.AllRoles.ToList()[random];
+
+                        if (role2 != targetRole)
+                        {
+                            results.Add(role2);
+                            i++;
+                        }
+
+                        results.Shuffle();
+                    }
+
+                    role.InspectResults.Add(role.ClosestPlayer, results);
+
                     try
                     {
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
