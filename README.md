@@ -31,29 +31,29 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
 | [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
 | [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
-| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Cannibal](#cannibal) |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Cryomaniac](#cryomaniac) |
-| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Dampyr](#dampyr) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Engineer](#engineer) | [Dracula](#dracula) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Escort](#escort) | [Executioner](#executioner) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Glitch](#glitch) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Medic](#medic) | [Guesser](#guesser) |
-| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Jackal](#jackal) |
-| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jester](#jester) |
-| [Time Master](#time-master) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |
-| [Undertaker](#undertaker) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |
-| [Wraith](#wraith) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |
-|  |  | [Seer](#seer) | [Pestilence](#pestilence) |
-|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |
-|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |
-|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |
-|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |
-|  |  | [Tracker](#tracker) | [Thief](#thief) |
-|  |  | [Transporter](#transporter) | [Vampire](#vampire) |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf) |
-|  |  | [Veteran](#veteran) | [Whisperer](#whisperer) |
-|  |  | [Vigilante](#vigilante) |  |
+| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |
+| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Engineer](#engineer) | [Dampyr](#dampyr) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Escort](#escort) | [Dracula](#dracula) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Executioner](#executioner) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Mayor](#mayor) | [Glitch](#glitch) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Medic](#medic) | [Guardian Angel](#guardian-angel) |
+| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Guesser](#guesser) |
+| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jackal](#jackal) |
+| [Time Master](#time-master) |  | [Operative](#operative) | [Jester](#jester) |
+| [Undertaker](#undertaker) |  | [Retributionist](#retributionist) | [Juggernaut](#juggernaut) |
+| [Wraith](#wraith) |  | [Revealer](#revealer) | [Murderer](#murderer) |
+|  |  | [Seer](#seer) | [Necromancer](#necromancer) |
+|  |  | [Sheriff](#sheriff) | [Pestilence](#pestilence) |
+|  |  | [Shifter](#shifter) | [Phantom](#phantom) |
+|  |  | [Swapper](#swapper) | [Plaguebearer](#plaguebearer) |
+|  |  | [Time Lord](#time-lord) | [Serial Killer](#serial-killer) |
+|  |  | [Tracker](#tracker) | [Survivor](#survivor) |
+|  |  | [Transporter](#transporter) | [Thief](#thief) |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Vampire](#vampire) |
+|  |  | [Veteran](#veteran) | [Werewolf](#werewolf) |
+|  |  | [Vigilante](#vigilante) | [Whisperer](#whisperer) |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |-------------------------|-------------------------|-------------------------------|

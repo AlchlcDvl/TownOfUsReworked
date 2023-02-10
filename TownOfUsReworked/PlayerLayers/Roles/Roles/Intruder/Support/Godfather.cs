@@ -86,7 +86,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = (WasMafioso ? (CustomGameOptions.IntKillCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) : CustomGameOptions.IntKillCooldown) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.IntKillCooldown, Utils.GetUnderdogChange(Player), WasMafioso ? CustomGameOptions.MafiosoAbilityCooldownDecrease :
+                1f) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -233,7 +234,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastBlackmailed;
-            var num = (CustomGameOptions.BlackmailCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BlackmailCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -277,7 +278,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastCamouflaged;
-            var num = (CustomGameOptions.CamouflagerCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.CamouflagerCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -312,7 +313,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFlashed;
-            var num = (CustomGameOptions.GrenadeCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.GrenadeCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -472,8 +473,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastCleaned;
-            var num = ((Utils.LastImp() ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) : CustomGameOptions.JanitorCleanCd) -
-                CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown((Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd), Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -501,7 +502,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDragged;
-            var num = (CustomGameOptions.DragCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.DragCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -555,7 +556,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDisguised;
-            var num = (CustomGameOptions.DisguiseCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -605,7 +606,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMorphed;
-            var num = (CustomGameOptions.MorphlingCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.MorphlingCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -635,7 +636,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInvis;
-            var num = (CustomGameOptions.InvisCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.InvisCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -695,7 +696,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInvestigated;
-            var num = (CustomGameOptions.ConsigCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ConsigCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -735,7 +736,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMined;
-            var num = (CustomGameOptions.MineCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.MineCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -763,7 +764,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastTeleport;
-            var num = (CustomGameOptions.TeleportCd * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.TeleportCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -822,7 +823,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFrozen;
-            var num = (CustomGameOptions.FreezeCooldown * CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

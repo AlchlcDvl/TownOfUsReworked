@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInterrogated;
-            var num = CustomGameOptions.InterrogateCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.InterrogateCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

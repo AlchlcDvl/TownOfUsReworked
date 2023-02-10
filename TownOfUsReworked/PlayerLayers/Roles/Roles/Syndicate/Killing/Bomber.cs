@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -83,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastPlaced;
-            var num = CustomGameOptions.BombCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BombCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -91,6 +91,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
+
+        /*public float DetonateTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastPlaced;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.DetonateCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }*/
 
         public static AssetBundle loadBundle()
         {

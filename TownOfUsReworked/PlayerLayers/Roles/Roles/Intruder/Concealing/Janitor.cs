@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.IntKillCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.IntKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -77,7 +77,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastCleaned;
-            var num = (Utils.LastImp() ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) : CustomGameOptions.JanitorCleanCd) * 1000f;
+            var num = Utils.GetModifiedCooldown((Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd), Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

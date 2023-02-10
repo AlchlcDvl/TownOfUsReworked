@@ -62,7 +62,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.ChaosDriveKillCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player), WasSidekick ? CustomGameOptions.SidekickAbilityCooldownDecrease :
+                1f) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -254,7 +255,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastConcealed;
-            var num = CustomGameOptions.ConcealCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ConcealCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -282,7 +283,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastFramed;
-            var num = CustomGameOptions.FrameCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.FrameCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -345,7 +346,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastPoisoned;
-            var num = CustomGameOptions.PoisonCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.PoisonCd, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -400,7 +401,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastShapeshifted;
-            var num = CustomGameOptions.ShapeshiftCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -431,7 +432,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastPlaced;
-            var num = CustomGameOptions.BombCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BombCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -467,7 +468,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastGazed;
-            var num = CustomGameOptions.GazeCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.GazeCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -741,7 +742,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastWarped;
-            var num = CustomGameOptions.WarpCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.WarpCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

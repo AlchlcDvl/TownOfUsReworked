@@ -920,314 +920,6 @@ namespace TownOfUsReworked.Classes
             return GetClosestPlayer(refplayer, PlayerControl.AllPlayerControls.ToArray().ToList());
         }
 
-        public static string GetRoleColor(this string roleName)
-        {
-            if (roleName == null || roleName.Length == 0)
-                return "";
-            
-            var color = new Color32(255, 255, 255, 255);
-
-            switch (roleName)
-            {
-                case "Agent":
-                    color = Colors.Agent;
-                    break;
-
-                case "Altruist":
-                    color = Colors.Altruist;
-                    break;
-
-                case "Amnesiac":
-                    color = Colors.Amnesiac;
-                    break;
-
-                case "Anarchist":
-                    color = Colors.Syndicate;
-                    break;
-
-                case "Arsonist":
-                    color = Colors.Arsonist;
-                    break;
-
-                case "Blackmailer":
-                    color = Colors.Blackmailer;
-                    break;
-
-                case "Bomber":
-                    color = Colors.Bomber;
-                    break;
-
-                case "Camouflager":
-                    color = Colors.Camouflager;
-                    break;
-
-                case "Cannibal":
-                    color = Colors.Cannibal;
-                    break;
-
-                case "Concealer":
-                    color = Colors.Concealer;
-                    break;
-
-                case "Consigliere":
-                    color = Colors.Consigliere;
-                    break;
-
-                case "Consort":
-                    color = Colors.Consort;
-                    break;
-
-                case "Coroner":
-                    color = Colors.Coroner;
-                    break;
-
-                case "Crewmate":
-                    color = Colors.Crew;
-                    break;
-
-                case "Cryomaniac":
-                    color = Colors.Cryomaniac;
-                    break;
-
-                case "Dampyr":
-                    color = Colors.Dampyr;
-                    break;
-
-                case "Detective":
-                    color = Colors.Detective;
-                    break;
-
-                case "Disguiser":
-                    color = Colors.Disguiser;
-                    break;
-
-                case "Dracula":
-                    color = Colors.Dracula;
-                    break;
-
-                case "Engineer":
-                    color = Colors.Engineer;
-                    break;
-
-                case "Escort":
-                    color = Colors.Escort;
-                    break;
-
-                case "Executioner":
-                    color = Colors.Executioner;
-                    break;
-
-                case "Framer":
-                    color = Colors.Framer;
-                    break;
-
-                case "Glitch":
-                    color = Colors.Glitch;
-                    break;
-
-                case "Godfather":
-                    color = Colors.Godfather;
-                    break;
-
-                case "Gorgon":
-                    color = Colors.Gorgon;
-                    break;
-
-                case "Grenadier":
-                    color = Colors.Grenadier;
-                    break;
-
-                case "Guardian Angel":
-                    color = Colors.GuardianAngel;
-                    break;
-
-                case "Impostor":
-                    color = Colors.Intruder;
-                    break;
-
-                case "Inspector":
-                    color = Colors.Inspector;
-                    break;
-
-                case "Investigator":
-                    color = Colors.Investigator;
-                    break;
-
-                case "Jackal":
-                    color = Colors.Jackal;
-                    break;
-
-                case "Janitor":
-                    color = Colors.Janitor;
-                    break;
-
-                case "Jester":
-                    color = Colors.Jester;
-                    break;
-
-                case "Juggernaut":
-                    color = Colors.Juggernaut;
-                    break;
-
-                case "Mafioso":
-                    color = Colors.Mafioso;
-                    break;
-
-                case "Mayor":
-                    color = Colors.Mayor;
-                    break;
-
-                case "Medic":
-                    color = Colors.Medic;
-                    break;
-
-                case "Medium":
-                    color = Colors.Medium;
-                    break;
-
-                case "Miner":
-                    color = Colors.Miner;
-                    break;
-
-                case "Morphling":
-                    color = Colors.Morphling;
-                    break;
-
-                case "Murderer":
-                    color = Colors.Murderer;
-                    break;
-
-                case "Operative":
-                    color = Colors.Operative;
-                    break;
-
-                case "Pestilence":
-                    color = Colors.Pestilence;
-                    break;
-
-                case "Plaguebearer":
-                    color = Colors.Plaguebearer;
-                    break;
-
-                case "Poisoner":
-                    color = Colors.Poisoner;
-                    break;
-
-                case "Rebel":
-                    color = Colors.Rebel;
-                    break;
-
-                case "Serial Killer":
-                    color = Colors.SerialKiller;
-                    break;
-
-                case "Shapeshifter":
-                    color = Colors.Shapeshifter;
-                    break;
-
-                case "Sheriff":
-                    color = Colors.Sheriff;
-                    break;
-
-                case "Shifter":
-                    color = Colors.Shifter;
-                    break;
-
-                case "Sidekick":
-                    color = Colors.Sidekick;
-                    break;
-
-                case "Survivor":
-                    color = Colors.Survivor;
-                    break;
-
-                case "Swapper":
-                    color = Colors.Swapper;
-                    break;
-
-                case "Teleporter":
-                    color = Colors.Teleporter;
-                    break;
-
-                case "Thief":
-                    color = Colors.Thief;
-                    break;
-
-                case "Time Lord":
-                    color = Colors.TimeLord;
-                    break;
-
-                case "Time Master":
-                    color = Colors.TimeMaster;
-                    break;
-
-                case "Tracker":
-                    color = Colors.Tracker;
-                    break;
-
-                case "Transporter":
-                    color = Colors.Transporter;
-                    break;
-
-                case "Troll":
-                    color = Colors.Troll;
-                    break;
-
-                case "Undertaker":
-                    color = Colors.Undertaker;
-                    break;
-
-                case "Vampire":
-                    color = Colors.Vampire;
-                    break;
-
-                case "Vampire Hunter":
-                    color = Colors.VampireHunter;
-                    break;
-
-                case "Veteran":
-                    color = Colors.Veteran;
-                    break;
-
-                case "Vigilante":
-                    color = Colors.Vigilante;
-                    break;
-
-                case "Warper":
-                    color = Colors.Warper;
-                    break;
-
-                case "Werewolf":
-                    color = Colors.Werewolf;
-                    break;
-
-                case "Wraith":
-                    color = Colors.Wraith;
-                    break;
-
-                default:
-                    color = new Color32(255, 255, 255, 255);
-                    break;
-            }
-
-            var role = Role.AllRoles.FirstOrDefault(x => x.Name == roleName);
-
-            if (role == null)
-                return "";
-
-            if (role.Faction == Faction.Intruder && !CustomGameOptions.CustomIntColors)
-                color = Colors.Intruder;
-            else if (role.Faction == Faction.Syndicate && !CustomGameOptions.CustomSynColors)
-                color = Colors.Syndicate;
-            else if (role.Faction == Faction.Neutral && !CustomGameOptions.CustomNeutColors)
-                color = Colors.Neutral;
-            else if (role.Faction == Faction.Crew && !CustomGameOptions.CustomCrewColors)
-                color = Colors.Crew;
-
-            var colorString = "<color=#" + color.ToHtmlStringRGBA() + ">";
-            return colorString;
-        }
-
         public static void SetTarget(ref PlayerControl closestPlayer, KillButton button, List<PlayerControl> targets = null)
         {
             if (!button.isActiveAndEnabled)
@@ -1405,8 +1097,7 @@ namespace TownOfUsReworked.Classes
                     var juggernaut = Role.GetRole<Juggernaut>(killer);
                     juggernaut.LastKilled = DateTime.UtcNow.AddSeconds((CustomGameOptions.DiseasedMultiplier - 1f) * (CustomGameOptions.JuggKillCooldown -
                         CustomGameOptions.JuggKillBonus * juggernaut.JuggKills));
-                    juggernaut.Player.SetKillTimer((CustomGameOptions.JuggKillCooldown + 5.0f - CustomGameOptions.JuggKillBonus * juggernaut.JuggKills) *
-                        CustomGameOptions.DiseasedMultiplier);
+                    juggernaut.Player.SetKillTimer((CustomGameOptions.JuggKillCooldown - CustomGameOptions.JuggKillBonus * juggernaut.JuggKills) * CustomGameOptions.DiseasedMultiplier);
                 }
                 else if (target.Is(ModifierEnum.Diseased) && killer.Is(AbilityEnum.Underdog))
                 {
@@ -2503,6 +2194,29 @@ namespace TownOfUsReworked.Classes
                 player.Is(RoleEnum.Tracker) || player.Is(RoleEnum.Vigilante) || player.Is(Faction.Syndicate) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Escort) ||
                 player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jackal) || player.Is(RoleEnum.Mystic) || player.Is(RoleEnum.Seer) || player.Is(RoleEnum.Jester));
             return flag;
+        }
+
+        public static float GetModifiedCooldown(float cooldown, float difference = 0f, float factor = 1f)
+        {
+            var newCooldown = (cooldown * factor) + difference;
+            return newCooldown;
+        }
+
+        public static float GetUnderdogChange(PlayerControl player)
+        {
+            if (!player.Is(AbilityEnum.Underdog))
+                return 0f;
+
+            var last = player.Is(Faction.Intruder) ? LastImp() : LastSyn();
+            var lowerKC = -CustomGameOptions.UnderdogKillBonus;
+            var upperKC = CustomGameOptions.UnderdogKillBonus;
+
+            if (CustomGameOptions.UnderdogIncreasedKC && !last)
+                return upperKC;
+            else if (last)
+                return lowerKC;
+            else
+                return 0f;
         }
     }
 }

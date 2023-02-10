@@ -63,13 +63,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             else
             {
                 timespan = utcNow - FinishRewind;
-                num = CustomGameOptions.RewindCooldown * 1000f;
+                num = Utils.GetModifiedCooldown(CustomGameOptions.RewindCooldown) * 1000f;
             }
 
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

@@ -192,7 +192,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastExamined;
-            var num = CustomGameOptions.ExamineCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ExamineCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -220,7 +220,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInspected;
-            var num = CustomGameOptions.InspectCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -249,7 +249,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMediated;
-            var num = CustomGameOptions.MediateCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -302,7 +302,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastBugged;
-            var num = CustomGameOptions.BugCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -338,7 +338,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastInterrogated;
-            var num = CustomGameOptions.InterrogateCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.InterrogateCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -369,7 +369,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastTracked;
-            var num = CustomGameOptions.TrackCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -414,7 +414,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.VigiKillCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.VigiKillCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -442,7 +442,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastStaked;
-            var num = CustomGameOptions.StakeCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -475,7 +475,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastAlerted;
-            var num = CustomGameOptions.AlertCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -560,7 +560,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             else
             {
                 timespan = utcNow - FinishRewind;
-                num = CustomGameOptions.RewindCooldown * 1000f;
+                num = Utils.GetModifiedCooldown(CustomGameOptions.RewindCooldown) * 1000f;
             }
 
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
@@ -587,7 +587,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastSwooped;
-            var num = CustomGameOptions.InvisCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
