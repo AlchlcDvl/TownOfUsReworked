@@ -126,7 +126,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int SwapperOn => (int)Generate.SwapperOn.Get();
         public static int ShifterOn => (int)Generate.ShifterOn.Get();
         public static int AmnesiacOn => (int)Generate.AmnesiacOn.Get();
-        //public static int InvestigatorOn => (int)Generate.InvestigatorOn.Get();
         public static int ConcealerOn => (int)Generate.ConcealerOn.Get();
         public static int TimeLordOn => (int)Generate.TimeLordOn.Get();
         public static int MedicOn => (int)Generate.MedicOn.Get();
@@ -190,6 +189,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int MysticOn => (int)Generate.MysticOn.Get();
         public static int ChameleonOn => (int)Generate.ChameleonOn.Get();
         public static int GuesserOn => (int)Generate.GuesserOn.Get();
+        public static int DrunkardOn => (int)Generate.DrunkardOn.Get();
+        public static int BountyHunterOn => (int)Generate.BountyHunterOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -757,6 +758,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float ShapeshiftCooldown => Generate.ShapeshiftCooldown.Get();
         public static float ShapeshiftDuration => Generate.ShapeshiftDuration.Get();
         public static bool UniqueShapeshifter => Generate.UniqueShapeshifter.Get();
+
+        //Drunkard Settings
+        public static int DrunkardCount => (int)Generate.DrunkardCount.Get();
+        public static float ConfuseCooldown => Generate.ConfuseCooldown.Get();
+        public static float ConfuseDuration => Generate.ConfuseDuration.Get();
+        public static bool UniqueDrunkard => Generate.UniqueDrunkard.Get();
+        public static bool SyndicateImmunity => Generate.SyndicateImmunity.Get();
 
         //Gorgon Settings
         public static float GazeCooldown => Generate.GazeCooldown.Get();

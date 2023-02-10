@@ -330,12 +330,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 warper.LastKilled = warper.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Drunkard))
+            {
+                var drunkard = (Drunkard)role;
+                drunkard.LastConfused = DateTime.UtcNow;
+                drunkard.LastConfused = drunkard.LastConfused.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConfuseCooldown);
+                drunkard.LastKilled = DateTime.UtcNow;
+                drunkard.LastKilled = drunkard.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
+            }
+
             //Neutral starting cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Arsonist))
             {
                 var arsonist = (Arsonist)role;
                 arsonist.LastDoused = DateTime.UtcNow;
                 arsonist.LastDoused = arsonist.LastDoused.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DouseCd);
+                arsonist.LastIgnited = DateTime.UtcNow;
+                arsonist.LastIgnited = arsonist.LastIgnited.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IgniteCd);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Cannibal))

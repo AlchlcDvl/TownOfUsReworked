@@ -96,6 +96,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption ActorOn;
         public static CustomNumberOption JesterOn;
         public static CustomNumberOption CannibalOn;
+        public static CustomNumberOption BountyHunterOn;
         public static CustomNumberOption TrollOn;
         public static CustomNumberOption GuesserOn;
 
@@ -713,6 +714,14 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption ShapeshiftCooldown;
         public static CustomNumberOption ShapeshiftDuration;
 
+        //Drunkard Options
+        public static CustomHeaderOption Drunkard;
+        public static CustomNumberOption DrunkardCount;
+        public static CustomToggleOption UniqueDrunkard;
+        public static CustomNumberOption ConfuseCooldown;
+        public static CustomNumberOption ConfuseDuration;
+        public static CustomToggleOption SyndicateImmunity;
+
         //Puppeteer Options
         public static CustomHeaderOption Framer;
         public static CustomNumberOption FrameCooldown;
@@ -737,6 +746,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption BomberCount;
         public static CustomToggleOption UniqueBomber;
         public static CustomNumberOption BombCooldown;
+        public static CustomNumberOption DetonateCooldown;
+        public static CustomToggleOption BombCooldownsLinked;
         public static CustomNumberOption BombRange;
 
         //SSu Options
@@ -1443,6 +1454,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             NeutralEvilRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>");
             ActorOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>", 0, 0, 100, 10, PercentFormat);
+            BountyHunterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color>", 0, 0, 100, 10, PercentFormat);
             CannibalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>", 0, 0, 100, 10, PercentFormat);
             ExecutionerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0, 0, 100, 10, PercentFormat);
             GuesserOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>", 0, 0, 100, 10, PercentFormat);
@@ -2106,8 +2118,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             TimeMaster = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color>");
             TimeMasterCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Count", 1, 1, 14, 1);
             UniqueTimeMaster = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Unique In All Any", false);
-            TMImmunity = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#0000A7FF>Time Master</color> Is Immune To Freeze And Rewind", false);
-            IntruderImmunity = new CustomToggleOption(true, num++, MultiMenu.crew, "Other <color=#FF0000FF>Intruders</color> Are Immune To Freeze", false);
+            TMImmunity = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Immune To Freeze And Rewind", false);
+            IntruderImmunity = new CustomToggleOption(true, num++, MultiMenu.intruder, "Other <color=#FF0000FF>Intruders</color> Are Immune To Freeze", false);
             FreezeCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Freeze Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
             FreezeDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Freeze Duration", 20.0f, 5f, 60f, 5f, CooldownFormat);
 
@@ -2130,6 +2142,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
             SyndicateDisruptionSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Settings");
             SDMax = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Roles", 1, 1, 14, 1);
             SDMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Roles", 1, 1, 14, 1);
+
+            Drunkard = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>");
+            DrunkardCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Count", 1, 1, 14, 1);
+            UniqueDrunkard = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Is Unique In All Any", false);
+            SyndicateImmunity = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Other <<color=#008000FF>Syndicate</color> Are Immune To Confuse", false);
+            ConfuseCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Confuse Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
+            ConfuseDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Confuse Duration", 20.0f, 5f, 60f, 5f, CooldownFormat);
 
             Framer = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>");
             FramerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Count", 1, 1, 14, 1);
@@ -2156,6 +2175,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             OperativeCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
             UniqueBomber = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Is Unique In All Any", false);
             BombCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            DetonateCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Detonation Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            BombCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Place, Detonate And Kill Cooldowns Are Linked", false);
             BombRange = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Range", 1f, 0.5f, 5f, 0.5f, MultiplierFormat);
 
             Gorgon = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>");

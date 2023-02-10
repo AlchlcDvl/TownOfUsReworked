@@ -1,42 +1,37 @@
-﻿using HarmonyLib;
+using HarmonyLib;
+using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using System;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Drunkard))
                 return false;
 
-            var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Drunkard>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.FrameButton)
+            if (__instance == role.ConfuseButton)
             {
                 if (!__instance.isActiveAndEnabled)
                     return false;
 
-                if (role.FrameTimer() != 0f)
+                if (role.DrunkTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                if (interact[3] == true && interact[0] == true)
-                {
-                    role.Framed.Add(role.ClosestPlayer.PlayerId);
-                    role.LastFramed = DateTime.UtcNow;
-                }
-                else if (interact[1] == true)
-                    role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Confuse);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                role.Confuse();
 
                 return false;
             }

@@ -75,6 +75,7 @@ Syndicate:-
   - Warper = 63
   - Bomber = 64
   - Poisoner = 51
+  - Drunkard = 6
 
   Roles that don't spawn:-
   - Dampyr
@@ -83,8 +84,6 @@ Syndicate:-
   - Mafioso
   - Revealer
   - Phantom
-
-Missing IDs - 6
 
 Modifiers:-
 - Diseased = 0 - D

@@ -224,6 +224,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 role.LastWarped = DateTime.UtcNow;
                 return false;
             }
+            else if (__instance == role.ConfuseButton && formerRole == RoleEnum.Drunkard)
+            {
+                if (!__instance.isActiveAndEnabled)
+                    return false;
+
+                if (role.DrunkTimer() != 0f)
+                    return false;
+
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.RebelAction);
+                writer.Write((byte)RebelActionsRPC.Confuse);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.ConfuseTimeRemaining = CustomGameOptions.ConfuseDuration;
+                role.Confuse();
+
+                return false;
+            }
 
             return false;
         }

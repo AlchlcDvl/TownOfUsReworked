@@ -1461,6 +1461,7 @@ namespace TownOfUsReworked.Patches
                                 new Swapper(player);
                                 break;
                             case 6:
+                                new Drunkard(player);
                                 break;
                             case 7:
                                 new TimeLord(player);
@@ -2428,6 +2429,13 @@ namespace TownOfUsReworked.Patches
                                         var rebRole4 = Role.GetRole<Rebel>(reb4);
                                         rebRole4.Gazed.Add((stoned2, 0, false));
                                         break;
+
+                                    case RebelActionsRPC.Confuse:
+                                        var reb5 = Utils.PlayerById(reader.ReadByte());
+                                        var rebRole5 = Role.GetRole<Rebel>(reb5);
+                                        rebRole5.ConfuseTimeRemaining = CustomGameOptions.ConfuseDuration;
+                                        rebRole5.Confuse();
+                                        break;
                                 }
 
                                 break;
@@ -2557,6 +2565,13 @@ namespace TownOfUsReworked.Patches
                                 var tmRole = Role.GetRole<TimeMaster>(tm);
                                 tmRole.TimeRemaining = CustomGameOptions.FreezeDuration;
                                 tmRole.TimeFreeze();
+                                break;
+
+                            case ActionsRPC.Confuse:
+                                var drunk = Utils.PlayerById(reader.ReadByte());
+                                var drunkRole = Role.GetRole<Drunkard>(drunk);
+                                drunkRole.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                                drunkRole.Confuse();
                                 break;
 
                             case ActionsRPC.Invis:
@@ -4138,6 +4153,19 @@ namespace TownOfUsReworked.Patches
                     }
 
                     PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bomber Done");
+                }
+
+                if (CustomGameOptions.DrunkardOn > 0)
+                {
+                    num = IsCustom ? CustomGameOptions.DrunkardCount : 1;
+
+                    while (num > 0)
+                    {
+                        SyndicateSupportRoles.Add((typeof(Drunkard), CustomGameOptions.DrunkardOn, 6, CustomGameOptions.UniqueDrunkard));
+                        num--;
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Drunkard Done");
                 }
                 #endregion
 

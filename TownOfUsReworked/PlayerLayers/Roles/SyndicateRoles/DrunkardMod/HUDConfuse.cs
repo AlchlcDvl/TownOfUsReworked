@@ -6,38 +6,39 @@ using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
+namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDFreeze
+    public class HUDConfuse
     {
-        public static Sprite Freeze => TownOfUsReworked.FreezeSprite;
+        public static Sprite Confuse => TownOfUsReworked.FreezeSprite;
+        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeMaster))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Drunkard))
                 return;
 
-            var role = Role.GetRole<TimeMaster>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Drunkard>(PlayerControl.LocalPlayer);
 
-            if (role.FreezeButton == null)
+            if (role.ConfuseButton == null)
             {
-                role.FreezeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.FreezeButton.graphic.enabled = true;
-                role.FreezeButton.graphic.sprite = Freeze;
-                role.FreezeButton.gameObject.SetActive(false);
+                role.ConfuseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.ConfuseButton.graphic.enabled = true;
+                role.ConfuseButton.graphic.sprite = Confuse;
+                role.ConfuseButton.gameObject.SetActive(false);
             }
 
-            role.FreezeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.ConfuseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
 
             if (role.Enabled)
-                role.FreezeButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.FreezeDuration);
+                role.ConfuseButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.ConfuseDuration);
             else
-                role.FreezeButton.SetCoolDown(role.FreezeTimer(), CustomGameOptions.FreezeCooldown);
-            
-            var renderer = role.FreezeButton.graphic;
+                role.ConfuseButton.SetCoolDown(role.DrunkTimer(), CustomGameOptions.ConfuseCooldown);
 
-            if (!role.Frozen && !role.FreezeButton.isCoolingDown)
+            var renderer = role.ConfuseButton.graphic;
+
+            if (!role.Confused && !role.ConfuseButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
@@ -52,12 +53,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             {
                 role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.KillButton.graphic.enabled = true;
+                role.KillButton.graphic.sprite = Kill;
                 role.KillButton.gameObject.SetActive(false);
             }
 
-            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.IntKillCooldown);
-            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
+            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
+            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
             var renderer2 = role.KillButton.graphic;
             

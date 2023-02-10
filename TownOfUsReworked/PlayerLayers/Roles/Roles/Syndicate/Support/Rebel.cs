@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Reactor.Utilities;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod;
 using Reactor.Networking.Extensions;
 using Random = UnityEngine.Random;
 
@@ -759,6 +760,50 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 _warpButton = value;
                 AddToAbilityButtons(value, this);
             }
+        }
+
+        //Drunkard Stuff
+        private KillButton _confuseButton;
+        public bool ConfuseEnabled = false;
+        public float ConfuseTimeRemaining;
+        public DateTime LastConfused { get; set; }
+        public bool Confused => ConfuseTimeRemaining > 0f;
+
+        public KillButton ConfuseButton
+        {
+            get => _confuseButton;
+            set
+            {
+                _confuseButton = value;
+                AddToAbilityButtons(value, this);
+            }
+        }
+        
+        public float DrunkTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastConfused;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Confuse()
+        {
+            ConfuseEnabled = true;
+            ConfuseTimeRemaining -= Time.deltaTime;
+            Reverse.ConfuseFunctions.ConfusedAll();
+        }
+
+        public void Unconfuse()
+        {
+            ConfuseEnabled = false;
+            LastConfused = DateTime.UtcNow;
+            Reverse.ConfuseFunctions.UnconfuseAll();
         }
     }
 }

@@ -443,6 +443,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     case RoleEnum.Warper:
                         role2.LastWarped = DateTime.UtcNow;
                         break;
+                    case RoleEnum.Drunkard:
+                        role2.LastConfused = DateTime.UtcNow;
+                        break;
                 }
             }
 

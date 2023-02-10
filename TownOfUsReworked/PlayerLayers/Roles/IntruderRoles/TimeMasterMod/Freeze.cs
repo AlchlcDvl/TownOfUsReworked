@@ -16,6 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
             public static void FreezeAll()
             {
+                Frozen.Clear();
+
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
@@ -41,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             {
                 foreach (var player in Frozen)
                 {
-                    if (player.MyPhysics.myPlayer.CanMove && !MeetingHud.Instance && !player.Data.Disconnected)
+                    if (player.CanMove && !MeetingHud.Instance && !player.Data.Disconnected)
                         player.moveable = true;
                 }
 
