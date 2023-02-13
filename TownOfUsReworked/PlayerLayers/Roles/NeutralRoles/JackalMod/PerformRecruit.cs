@@ -6,6 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
@@ -66,6 +67,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 role.SubFaction = SubFaction.Cabal;
                 role.IsRecruit = true;
                 jackRole.Recruited.Add(other.PlayerId);
+            }
+            else if (other.IsRecruit())
+                jackRole.Recruited.Add(other.PlayerId);
+            else if (other.Is(RoleEnum.Jackal))
+            {
+                var jackal = (Jackal)role;
+                jackRole.Recruited.AddRange(jackal.Recruited);
+                jackal.Recruited.AddRange(jackRole.Recruited);
             }
             else if (!other.Is(SubFaction.None))
                 Utils.RpcMurderPlayer(jack, other);

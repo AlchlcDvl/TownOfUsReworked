@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool HasMaj;
         private KillButton _biteButton;
         public PlayerControl ClosestPlayer;
-        public List<byte> Converted = new List<byte>();
+        public List<byte> Converted;
 
         public Dracula(PlayerControl player) : base(player)
         {
@@ -30,6 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
+            Converted = new List<byte>();
+            Converted.Add(Player.PlayerId);
             RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
                 "gain a quick majority.";
             SubFactionColor = Colors.Undead;

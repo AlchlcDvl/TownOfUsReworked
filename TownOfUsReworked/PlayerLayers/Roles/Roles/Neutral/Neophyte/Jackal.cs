@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System;
-using Il2CppSystem.Collections.Generic;
+using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool HasRecruited = false;
         public bool RecruitsDead => (EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) && (GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead);
         public DateTime LastRecruited { get; set; }
-        public List<byte> Recruited = new List<byte>();
+        public List<byte> Recruited;
 
         public Jackal(PlayerControl player) : base(player)
         {
@@ -36,6 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Neophyte)";
             RoleDescription = "You are a Jackal! You are a greedy double agent sent from a rival company! Use your recruits to your advantage and take over the mission!";
             SubFactionName = "Cabal";
+            Recruited = new List<byte>();
+            Recruited.Add(Player.PlayerId);
         }
 
         public override void Loses()
@@ -92,7 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
-            var jackTeam = new List<PlayerControl>();
+            var jackTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             jackTeam.Add(PlayerControl.LocalPlayer);
             jackTeam.Add(GoodRecruit);
             jackTeam.Add(EvilRecruit);

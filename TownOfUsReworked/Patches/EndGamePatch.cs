@@ -120,6 +120,15 @@ namespace TownOfUsReworked.Patches
                 if (playerControl.IsExeTarget())
                     summary += " <color=#CCCCCCFF>§</color>";
 
+                if (playerControl.IsBHTarget())
+                    summary += " <color=#B51E39FF>Θ</color>";
+
+                if (playerControl.IsGuessTarget())
+                    summary += " <color=#EEE5BEFF>π</color>";
+
+                if (playerControl.IsActTarget())
+                    summary += " <color=#00ACC2FF>Ӫ</color>";
+
                 if (playerControl.CanDoTasks())
                     summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
 

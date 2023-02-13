@@ -146,15 +146,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (alreadyVamp)
             {
-                dracRole.Converted.Add(other.PlayerId);
                 dracRole.LastBitten = DateTime.UtcNow;
 
-                if (role == dracRole)
+                if (role.RoleType == RoleEnum.Dracula && drac != other)
                 {
                     var drac2 = (Dracula)role;
                     dracRole.Converted.AddRange(drac2.Converted);
-                    return;
+                    drac2.Converted.AddRange(dracRole.Converted);
                 }
+
+                if (!dracRole.Converted.Contains(other.PlayerId))
+                    dracRole.Converted.Add(other.PlayerId);
             }
             else if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
             {

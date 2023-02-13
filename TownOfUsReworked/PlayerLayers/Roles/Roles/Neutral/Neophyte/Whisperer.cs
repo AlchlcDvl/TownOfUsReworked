@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int ConversionCount;
         public List<(PlayerControl, int)> PlayerConversion = new List<(PlayerControl, int)>();
         public float WhisperConversion = CustomGameOptions.InitialWhisperRate;
-        public List<byte> Persuaded = new List<byte>();
+        public List<byte> Persuaded;
 
         public Whisperer(PlayerControl player) : base(player)
         {
@@ -27,6 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Sect;
             SubFactionName = "Sect";
             SubFactionColor = Colors.Sect;
+            Persuaded = new List<byte>();
+            Persuaded.Add(Player.PlayerId);
         }
 
         public override void Loses()

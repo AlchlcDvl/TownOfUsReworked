@@ -495,6 +495,28 @@ namespace TownOfUsReworked.Classes
             return flag;
         }
 
+        public static bool IsActTarget(this PlayerControl player)
+        {
+            if (player == null)
+                return false;
+            
+            bool flag = false;
+                
+            foreach (Actor act in Role.GetRoles(RoleEnum.Actor))
+            {
+                if (act.PretendTarget == null)
+                    continue;
+
+                if (player.PlayerId == act.PretendTarget.PlayerId)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            return flag;
+        }
+
         public static bool CanDoTasks(this PlayerControl player)
         {
             if (player == null)

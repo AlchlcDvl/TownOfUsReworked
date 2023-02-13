@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DeadBody CurrentTarget = null;
         public PlayerControl ClosestPlayer;
         private KillButton _resurrectButton;
-        public List<byte> Resurrected = new List<byte>();
+        public List<byte> Resurrected;
         
         public Necromancer(PlayerControl player) : base(player)
         {
@@ -32,6 +32,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Reanimated;
             SubFactionName = "Reanimated";
             SubFactionColor = Colors.Reanimated;
+            Resurrected = new List<byte>();
+            Resurrected.Add(Player.PlayerId);
         }
 
         public override void Loses()

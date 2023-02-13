@@ -441,16 +441,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayerName += $" ({TotalTasks - TasksLeft}/{TotalTasks})";
 
             if (Local && CustomGameOptions.GATargetKnows && PlayerControl.LocalPlayer.IsGATarget())
-                PlayerName += " <color=#FFFFFFFF> ★</color>";
+                PlayerName += " <color=#FFFFFFFF>★</color>";
 
             if (Local && CustomGameOptions.ExeTargetKnows && PlayerControl.LocalPlayer.IsExeTarget())
-                PlayerName += " <color=#CCCCCCFF> §</color>";
+                PlayerName += " <color=#CCCCCCFF>§</color>";
+
+            if (Local && CustomGameOptions.GuesserTargetKnows && PlayerControl.LocalPlayer.IsGuessTarget())
+                PlayerName += " <color=#EEE5BEFF>π</color>";
 
             if (Local && PlayerControl.LocalPlayer.IsBHTarget())
-                PlayerName += " <color=#B51E39FF> Θ</color>";
+                PlayerName += " <color=#B51E39FF>Θ</color>";
+            
+            if (PlayerControl.LocalPlayer.IsRecruit())
+            {
+                var jackal = PlayerControl.LocalPlayer.GetJackal();
 
-            if ((Player.IsRecruit() || Player.Is(RoleEnum.Jackal)) && (PlayerControl.LocalPlayer.IsRecruit() || PlayerControl.LocalPlayer.Is(RoleEnum.Jackal)))
-                PlayerName += " <color=#575657FF> $</color>";
+                if (jackal.Recruited.Contains(PlayerControl.LocalPlayer.PlayerId) && jackal.Recruited.Contains(Player.PlayerId))
+                    PlayerName += " <color=#575657FF>$</color>";
+            }
 
             if (player != null && MeetingHud.Instance && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding || MeetingHud.Instance.state == MeetingHud.VoteStates.Results))
                 return PlayerName;
