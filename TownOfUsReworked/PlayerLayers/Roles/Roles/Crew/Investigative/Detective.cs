@@ -17,20 +17,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Detective";
             StartText = "Examine Players To Find Bloody Hands";
-            AbilitiesText = "- You can examine players to see if they have killed recently.";
-            AttributesText = $"- Your screen will flash red if your target has killed in the last {CustomGameOptions.RecentKill}s.";
+            AbilitiesText = "- You can examine players to see if they have killed recently.\n- Your screen will flash red if your target has killed in the " +
+                $"last {CustomGameOptions.RecentKill}s.\n- You can view everyone's footprints to see where they go or where they came from.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
-            LastExamined = DateTime.UtcNow;
             RoleType = RoleEnum.Detective;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
-            AlignmentDescription = CIDescription;
-            RoleDescription = "You are a Detective! You have a special skill in identifying blood on others. Use this to your advantage to catch killers in the act!";
+            RoleDescription = "You are a Detective! You have a special skill in identifying blood and tracking others. Use these skills to your advantage to catch killers in the act!";
         }
 
         public override void Loses()

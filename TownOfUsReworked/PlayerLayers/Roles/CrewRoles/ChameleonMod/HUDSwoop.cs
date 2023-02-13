@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             if (role.SwoopButton == null)
             {
-                role.SwoopButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                role.SwoopButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.SwoopButton.graphic.enabled = true;
                 role.SwoopButton.graphic.sprite = Placeholder;
                 role.SwoopButton.gameObject.SetActive(false);
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             var renderer = role.SwoopButton.graphic;
 
-            if (role.IsSwooped || !role.SwoopButton.isCoolingDown)
+            if (!role.IsSwooped && !role.SwoopButton.isCoolingDown)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 
             if (__instance == role.TransportButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.TransportTimer() != 0f)

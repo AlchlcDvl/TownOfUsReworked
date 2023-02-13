@@ -26,8 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "You Like To Play With Knives";
             AbilitiesText = "Engage in your bloodlust to kill everyone";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
-            LastLusted = DateTime.UtcNow;
-            LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.SerialKiller;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -232,7 +230,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastLusted;
-            var num = CustomGameOptions.BloodlustCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BloodlustCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -260,7 +258,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.LustKillCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.LustKillCd) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

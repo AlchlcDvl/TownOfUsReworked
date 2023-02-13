@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 
             if (__instance == role.FrameButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.FrameTimer() != 0f)
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

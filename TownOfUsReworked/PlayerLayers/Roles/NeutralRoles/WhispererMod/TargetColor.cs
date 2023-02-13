@@ -3,7 +3,6 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 {

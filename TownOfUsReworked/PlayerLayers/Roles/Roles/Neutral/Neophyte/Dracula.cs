@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool HasMaj;
         private KillButton _biteButton;
         public PlayerControl ClosestPlayer;
-        public List<PlayerControl> Converted = new List<PlayerControl>();
+        public List<byte> Converted = new List<byte>();
 
         public Dracula(PlayerControl player) : base(player)
         {
@@ -21,21 +21,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Neutral;
             RoleType = RoleEnum.Dracula;
             StartText = "Lead The <color=#7B8968FF>Undead</color> To Victory";
-            AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction.";
-            AttributesText = "- If the target is a killing role, they are converted to <color=#DF7AE8FF>Dampyr</color> otherwise they convert into a " +
-                "<color=#2BD29CFF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead.\n- There is a chance that there" +
-                " is a <color=#C0C0C0FF>Vampire Hunter</color>\non the loose. Attempting to convert them will make them kill you.";
+            AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction.\n- If the target is a killing role, they are converted to " +
+                "<color=#DF7AE8FF>Dampyr</color> otherwise they convert into a <color=#2BD29CFF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead." +
+                "\n- There is a chance that there is a <color=#C0C0C0FF>Vampire Hunter</color>\non the loose. Attempting to convert them will make them kill you.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
             SubFaction = SubFaction.Undead;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = "Neutral (Neophyte)";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NNDescription;
             RoleDescription = "You are a Dracula! You are the leader of the Undead who drain blood from their enemies. Convert people to your side and " +
                 "gain a quick majority.";
-            Objectives = UndeadWinCon;
             SubFactionColor = Colors.Undead;
             SubFactionName = "Undead";
         }

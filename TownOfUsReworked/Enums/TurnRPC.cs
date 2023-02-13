@@ -6,9 +6,11 @@ namespace TownOfUsReworked.Enums
         TurnVigilante,
         TurnGodfather,
         TurnRebel,
+        TurnTraitor,
+        TurnSeer,
         ExeToJest,
         GAToSurv,
-        TurnTraitor,
-        GuessToAct
+        GuessToAct,
+        BHToTroll
     }
 }

@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             
             if (__instance == role.PoisonButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.PoisonTimer() != 0f)
@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

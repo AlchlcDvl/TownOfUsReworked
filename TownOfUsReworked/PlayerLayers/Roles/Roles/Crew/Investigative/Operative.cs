@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public static AssetBundle Bundle = LoadBundle();
         public static Material BugMaterial = Bundle.LoadAsset<Material>("trap").DontUnload();
-        public List<Bug> Bugs = new List<Bug>();
+        public List<Bug> Bugs;
         public DateTime LastBugged { get; set; }
         public int UsesLeft;
         public TextMeshPro UsesText;
@@ -28,11 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Operative";
             StartText = "Detect Which Roles Are Here";
-            AbilitiesText = "- You can place bugs around the map.";
-            AttributesText = "- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
+            AbilitiesText = "- You can place bugs around the map.\n- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
-            LastBugged = DateTime.UtcNow;
             BuggedPlayers = new List<RoleEnum>();
             Faction = Faction.Crew;
             FactionName = "Crew";
@@ -40,8 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CIDescription;
+            Bugs = new List<Bug>();
             Objectives = CrewWinCon;
             RoleDescription = "You are an Operative! You can place bugs all around the map and you will be told the roles of whoever triggers them! Use this to find everyone's identities!";
         }

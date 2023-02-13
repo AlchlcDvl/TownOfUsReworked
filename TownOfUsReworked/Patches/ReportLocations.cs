@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Patches
                 else
                 {
                     string name = PlayerControl.LocalPlayer.name;
-                    location = $"a hallway/outside, {name} where is the body?";
+                    location = $"a hallway or somewhere outside, {name} where is the body?";
                 }
             }
         }

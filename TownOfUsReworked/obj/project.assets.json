@@ -91,10 +91,10 @@
           }
         }
       },
-      "GitInfo/2.0.20": {
+      "GitInfo/2.3.0": {
         "type": "package",
         "build": {
-          "build/GitInfo.targets": {}
+          "buildTransitive/GitInfo.targets": {}
         },
         "buildMultiTargeting": {
           "buildMultiTargeting/GitInfo.targets": {}
@@ -1628,23 +1628,27 @@
         "logo.png"
       ]
     },
-    "GitInfo/2.0.20": {
-      "sha512": "mCzyI02VtCPy/O/GGa7y9iiCVRkwklU6hhyjbDPF1nPM8+sIjLe84iZA5jRKZzhu0u5kLC0SMvPQztcr/I28DQ==",
+    "GitInfo/2.3.0": {
+      "sha512": "LdnsKNdwQvdDvpPYQuoGjXML75dY7NybKRe+qlkPPQaTY4dE5Fy8VCrD8YBhXO0fH/5xnmvKeSq4yztzg5KY0Q==",
       "type": "package",
-      "path": "gitinfo/2.0.20",
+      "path": "gitinfo/2.3.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "build/.gitignore",
         "build/GitInfo.cache.pp",
         "build/GitInfo.cs.pp",
+        "build/GitInfo.fs.pp",
         "build/GitInfo.targets",
         "build/GitInfo.vb.pp",
         "build/wslpath.cmd",
         "build/wslrun.cmd",
         "buildMultiTargeting/GitInfo.targets",
-        "gitinfo.2.0.20.nupkg.sha512",
+        "buildTransitive/GitInfo.targets",
+        "gitinfo.2.3.0.nupkg.sha512",
         "gitinfo.nuspec",
-        "readme.txt"
+        "icon.png",
+        "readme.md"
       ]
     },
     "HarmonyX/2.10.1": {
@@ -4715,7 +4719,7 @@
       "BepInEx.AutoPlugin >= 1.1.0",
       "BepInEx.IL2CPP.MSBuild >= 2.0.1",
       "BepInEx.Unity.IL2CPP >= 6.0.0-be.664",
-      "GitInfo >= 2.0.20",
+      "GitInfo >= 2.3.0",
       "Reactor >= 2.1.0",
       "System.Text.Json >= 6.0.3"
     ]
@@ -4724,7 +4728,7 @@
     "C:\\Users\\Guest User\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0.11",
+    "version": "1.0.0.12",
     "restore": {
       "projectUniqueName": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
       "projectName": "TownOfUsReworked",
@@ -4784,7 +4788,7 @@
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2.0.20, )"
+            "version": "[2.3.0, )"
           },
           "Reactor": {
             "target": "Package",

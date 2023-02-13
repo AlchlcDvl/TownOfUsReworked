@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
             if (__instance == role.KillButton || __instance == role.HackButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             }
             else if (__instance == role.MimicButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 role.MimicList = null;

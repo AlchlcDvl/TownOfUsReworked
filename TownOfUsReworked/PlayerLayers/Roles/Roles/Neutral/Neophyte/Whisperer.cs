@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -16,17 +15,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public int ConversionCount;
         public List<(PlayerControl, int)> PlayerConversion = new List<(PlayerControl, int)>();
         public float WhisperConversion = CustomGameOptions.InitialWhisperRate;
-        public List<PlayerControl> SectMembers => PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(SubFaction.Sect)).ToList();
+        public List<byte> Persuaded = new List<byte>();
 
         public Whisperer(PlayerControl player) : base(player)
         {
             Name = "Whisperer";
             Color = Colors.Whisperer;
-            LastWhispered = DateTime.UtcNow;
             RoleType = RoleEnum.Whisperer;
-            SubFaction = SubFaction.Sect;
             Faction = Faction.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
+            SubFaction = SubFaction.Sect;
+            SubFactionName = "Sect";
+            SubFactionColor = Colors.Sect;
         }
 
         public override void Loses()

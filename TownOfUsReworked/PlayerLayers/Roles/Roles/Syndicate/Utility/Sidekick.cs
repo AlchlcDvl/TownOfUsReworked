@@ -23,20 +23,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleType = RoleEnum.Sidekick;
             StartText = "Succeed The <color=#FFFCCEFF>Rebel</color>";
             AbilitiesText = "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former role.";
-            AttributesText = "- None.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = "Syndicate (Utility)";
-            FactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other factions" +
-                " and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
-                "give you the ability to kill, if you didn't already.";
             Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
-            AlignmentDescription = "You are a Syndicate (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
-            RoleDescription = "You have become a Sidekick! You are the successor to the leader of the Intruders. When the Rebel dies, you will become the new" +
-                " Rebel and will inherit stronger variations of your former role.";
         }
 
         public override void Loses()

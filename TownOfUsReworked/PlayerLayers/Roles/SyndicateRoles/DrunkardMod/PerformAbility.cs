@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
 
             if (__instance == role.ConfuseButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.DrunkTimer() != 0f)
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

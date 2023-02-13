@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget != null && __instance.enabled && !__instance.isCoolingDown)
+            if (role.CurrentTarget != null && Utils.ButtonUsable(__instance))
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

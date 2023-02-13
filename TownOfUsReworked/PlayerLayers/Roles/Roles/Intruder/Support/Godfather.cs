@@ -23,18 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Intruder;
             RoleType = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
-            AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor.";
-            AttributesText = "- Promoting an <color=#FF0000FF>Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>.\n- If you die, " +
-                "the <color=#6400FFFF>Mafioso</color> become the new <color=#404C08FF>Godfather</color>\nand inherits better abilities of their former" +
-                " role.";
+            AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor.\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
+                "into a <color=#6400FFFF>Mafioso</color>.\n- If you die, the <color=#6400FFFF>Mafioso</color> become the new <color=#404C08FF>Godfather</color>\nand inherits better " +
+                "abilities of their former role.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            FactionDescription = IntruderFactionDescription;
             Objectives = IntrudersWinCon;
-            AlignmentDescription = ISDescription;
             RoleDescription = "You are the Godfather! You are the leader of the Intruders. You can promote a fellow Intruder into becoming your Mafioso." +
                 " When you die, the Mafioso will become the new Godfather and will inherit stronger variations of their former role!";
         }

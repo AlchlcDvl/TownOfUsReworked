@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             role.BiteButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.BiteButton.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
-            var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player)).ToList();
+            var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.BiteButton, notVamp);
             var renderer = role.BiteButton.graphic;
             

@@ -9,7 +9,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public class HUDDisguise
     {
         public static Sprite MeasureSprite => TownOfUsReworked.MeasureSprite;
         public static Sprite DisguiseSprite => TownOfUsReworked.DisguiseSprite;

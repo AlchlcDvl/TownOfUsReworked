@@ -26,10 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             {
                 if (role.DragDropButton.graphic.sprite == Drag)
                 {
-                    if (__instance.isCoolingDown)
-                        return false;
-
-                    if (!__instance.isActiveAndEnabled)
+                    if (!Utils.ButtonUsable(__instance))
                         return false;
 
                     if (Utils.IsTooFar(role.Player, role.CurrentTarget))
@@ -50,9 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                 }
                 else
                 {
-                    if (!__instance.enabled)
-                        return false;
-
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Drop);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);

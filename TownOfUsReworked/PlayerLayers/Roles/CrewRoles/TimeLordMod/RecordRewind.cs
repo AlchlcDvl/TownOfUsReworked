@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 
             foreach (var role in Role.GetRoles(RoleEnum.TimeLord))
             {
-                var TimeLord = (TimeLord) role;
+                var TimeLord = (TimeLord)role;
 
                 if ((DateTime.UtcNow - TimeLord.StartRewind).TotalMilliseconds > CustomGameOptions.RewindDuration * 1000f && TimeLord.FinishRewind < TimeLord.StartRewind)
                     StartStop.StopRewind(TimeLord);

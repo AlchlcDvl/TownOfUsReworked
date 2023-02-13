@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
             if (__instance == role.ShieldButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.Protect);

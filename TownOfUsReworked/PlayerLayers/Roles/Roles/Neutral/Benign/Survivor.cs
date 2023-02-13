@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool Vesting => TimeRemaining > 0f;
         public bool Alive => !Player.Data.Disconnected && !Player.Data.IsDead;
         private KillButton _vestButton;
-        public bool SpawnedAs = true;
 
         public Survivor(PlayerControl player) : base(player)
         {
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = "Neutral (Benign)";
-            Objectives = SpawnedAs ? "Stay alive" : "Your target was killed. Now you just need to live!";
+            Objectives = "Stay alive";
         }
 
         public override void Loses()

@@ -28,8 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Arsonist";
             StartText = "Gasoline + Bean + Lighter = Bonfire";
-            AbilitiesText = "- You can douse players in gasoline.\n- Doused players can then be ignite to kill all doused players at once.";
-            AttributesText = "- People who interact with you will also get doused.";
+            AbilitiesText = "- You can douse players in gasoline.\n- Doused players can then be ignite to kill all doused players at once.\n- People who interact with you will also " +
+                "get doused.";
             RoleType = RoleEnum.Arsonist;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -40,9 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +
                 " and igniting them later for mass murder. Be careful though, as you need be next to someone to ignite and if anyone sees you ignite," +
                 $" you are done for. There are currently {DousedAlive} players doused.";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NKDescription;
-            Objectives = NKWinCon;
         }
 
         public override void Loses()
@@ -239,7 +236,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDoused;
-            var num = CustomGameOptions.DouseCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

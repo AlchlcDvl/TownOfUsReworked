@@ -7,6 +7,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -22,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (__instance == role.BiteButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -103,6 +104,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Shifter:
                 case RoleEnum.Inspector:
                 case RoleEnum.Escort:
+                case RoleEnum.Mystic:
+                case RoleEnum.Seer:
 
                     convert = true;
                     break;
@@ -120,6 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.Cannibal:
                 case RoleEnum.Executioner:
                 case RoleEnum.Troll:
+                case RoleEnum.Actor:
 
                     convertNeut = true;
                     break;
@@ -133,6 +137,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 case RoleEnum.SerialKiller:
                 case RoleEnum.Arsonist:
                 case RoleEnum.Guesser:
+                case RoleEnum.BountyHunter:
 
                     convertNK = true;
                     convertNeut = true;
@@ -141,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (alreadyVamp)
             {
-                dracRole.Converted.Add(other);
+                dracRole.Converted.Add(other.PlayerId);
                 dracRole.LastBitten = DateTime.UtcNow;
 
                 if (role == dracRole)
@@ -154,7 +159,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             else if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
             {
                 Role newRole;
-                dracRole.Converted.Add(other);
+                dracRole.Converted.Add(other.PlayerId);
                 
                 if (!convertNK)
                 {
@@ -184,7 +189,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             else if (convert)
             {
                 Role newRole;
-                dracRole.Converted.Add(other);
+                dracRole.Converted.Add(other.PlayerId);
 
                 if (!convertCK)
                 {
@@ -241,6 +246,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 if (vampire.Player == PlayerControl.LocalPlayer)
                     vampire.RegenTask();
             }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                Coroutines.Start(Utils.FlashCoroutine(dracRole.Color));
         }
     }
 }

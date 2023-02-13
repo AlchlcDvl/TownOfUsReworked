@@ -8,6 +8,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -482,6 +484,34 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     TargetColor.ExeToJest(exe.Player);
+                }
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Guesser))
+            {
+                var guess = (Guesser)role;
+
+                if (guess.TargetPlayer == null)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    writer.Write((byte)TurnRPC.GuessToAct);
+                    writer.Write(guess.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    GuessTargetColor.GuessToAct(guess.Player);
+                }
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.BountyHunter))
+            {
+                var bh = (BountyHunter)role;
+
+                if (bh.TargetPlayer == null)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    writer.Write((byte)TurnRPC.BHToTroll);
+                    writer.Write(bh.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    BHTargetColor.BHToTroll(bh.Player);
                 }
             }
 

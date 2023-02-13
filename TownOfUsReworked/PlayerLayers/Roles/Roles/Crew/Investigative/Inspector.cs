@@ -11,8 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastInspected { get; set; }
-        public List<PlayerControl> InspectedPlayers = new List<PlayerControl>();
-        public Dictionary<PlayerControl, List<Role>> InspectResults = new Dictionary<PlayerControl, List<Role>>();
+        public List<byte> InspectedPlayers;
+        public Dictionary<byte, List<Role>> InspectResults;
         private KillButton _inspectButton;
 
         public Inspector(PlayerControl player) : base(player)
@@ -27,12 +27,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CIDescription;
-            RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that " +
-                "list, they are not Crew.";
+            InspectedPlayers = new List<byte>();
+            InspectResults = new Dictionary<byte, List<Role>>();
+            RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that list, they are not Crew.";
             Objectives = CrewWinCon;
-            LastInspected = DateTime.UtcNow;
         }
 
         public override void Loses()

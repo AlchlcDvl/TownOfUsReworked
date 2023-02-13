@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                 if (role.Player.inVent)
                     return false;
 
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.TeleportButton.graphic.sprite == MarkSprite)
@@ -42,9 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                 }
                 else
                 {
-                    if (__instance.isCoolingDown)
-                        return false;
-
                     if (role.TeleportTimer() != 0f)
                         return false;
 

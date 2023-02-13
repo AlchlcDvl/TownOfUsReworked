@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)
@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             
             if (__instance == role.ConcealButton && formerRole == RoleEnum.Concealer)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ConcealTimer() != 0f)
@@ -92,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.FrameButton && formerRole == RoleEnum.Framer)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.FrameTimer() != 0f)
@@ -115,7 +115,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.GazeButton && formerRole == RoleEnum.Gorgon)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.GazeTimer() != 0f)
@@ -151,7 +151,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.PoisonButton && formerRole == RoleEnum.Poisoner)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.PoisonTimer() != 0f)
@@ -192,7 +192,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.ShapeshiftButton && formerRole == RoleEnum.Shapeshifter)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ShapeshiftTimer() != 0f)
@@ -209,7 +209,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.WarpButton && formerRole == RoleEnum.Warper)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.WarpTimer() != 0f)
@@ -226,7 +226,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.ConfuseButton && formerRole == RoleEnum.Drunkard)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.DrunkTimer() != 0f)

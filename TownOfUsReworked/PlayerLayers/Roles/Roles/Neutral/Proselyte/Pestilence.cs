@@ -25,8 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
-            RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = "Neutral (Killing)";
+            RoleAlignment = RoleAlignment.NeutralPros;
+            AlignmentName = "Neutral (Proselyte)";
         }
 
         public override void Loses()
@@ -132,33 +132,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.PestKillCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.PestKillCd) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new List<PlayerControl>();
-
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.GoodRecruit);
-            }
-
-            __instance.teamToShow = team;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Grenadier))
             {
-                var grenadier = (Grenadier) role;
+                var grenadier = (Grenadier)role;
                 
                 if (grenadier.Flashed)
                     grenadier.Flash();

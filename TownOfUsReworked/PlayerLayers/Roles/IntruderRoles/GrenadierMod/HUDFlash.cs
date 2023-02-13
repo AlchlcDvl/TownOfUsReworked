@@ -9,7 +9,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public class HUDFlash
     {
         public static Sprite FlashSprite => TownOfUsReworked.FlashSprite;
 

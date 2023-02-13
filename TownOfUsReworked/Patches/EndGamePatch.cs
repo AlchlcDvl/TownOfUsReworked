@@ -68,7 +68,7 @@ namespace TownOfUsReworked.Patches
                             summary += roleString;
                         }
                     }
-                    
+
                     colorString = role.ColorString;
                     roleName = role.Name;
                     roleString = colorString + roleName + endString;
@@ -78,6 +78,12 @@ namespace TownOfUsReworked.Patches
 
                 if (playerControl.IsRecruit())
                     summary += " <color=#575657FF>$</color>";
+
+                if (playerControl.IsPersuaded())
+                    summary += " <color=#F995FCFF>Λ</color>";
+
+                if (playerControl.IsResurrected())
+                    summary += " <color=#E6108AFF>Σ</color>";
 
                 var objectifier = Objectifier.GetObjectifier(playerControl);
 
@@ -107,16 +113,16 @@ namespace TownOfUsReworked.Patches
 
                     summary += abilityString;
                 }
-                
-                if (playerControl.CanDoTasks())
-                    summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
 
                 if (playerControl.IsGATarget())
                     summary += " <color=#FFFFFFFF>★</color>";
 
                 if (playerControl.IsExeTarget())
                     summary += " <color=#CCCCCCFF>§</color>";
-                
+
+                if (playerControl.CanDoTasks())
+                    summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
+
                 summary += " | " + playerControl.DeathReason();
 
                 AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName = playerControl.Data.PlayerName, Role = summary});

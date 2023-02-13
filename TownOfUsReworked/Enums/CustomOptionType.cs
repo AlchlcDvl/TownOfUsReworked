@@ -7,10 +7,9 @@ namespace TownOfUsReworked.Enums
         Number,
         String,
         Button,
-        Menu,
-        Tab
+        Menu
     }
-    
+
     public enum MultiMenu
     {
         main,
@@ -23,42 +22,42 @@ namespace TownOfUsReworked.Enums
         ability,
         external
     }
-    
+
     public enum WhoCanVentOptions
     {
         Default,
         Everyone,
         Noone
     }
-    
+
     public enum DisableSkipButtonMeetings
     {
         No,
         Emergency,
         Always
     }
-    
+
     public enum RoleFactionReports
     {
         Role,
         Faction,
         Neither
     }
-    
+
     public enum AirshipSpawnType
     {
         Normal,
         Fixed,
         RandomSynchronized
     }
-    
+
     public enum MoveAdmin
     {
         DontMove,
         Cockpit,
         MainHall
     }
-    
+
     public enum MoveElectrical
     {
         DontMove,
@@ -91,16 +90,16 @@ namespace TownOfUsReworked.Enums
     }
 
     public enum WhoCanSeeFirstKillShield
-	{
-		Everyone,
-		PlayerOnly,
-		NoOne
-	}
+    {
+        Everyone,
+        PlayerOnly,
+        NoOne
+    }
 
     public enum NKsKnow
-	{
-		Never,
-		SameRole,
-		AllNKs
-	}
+    {
+        Never,
+        SameRole,
+        AllNKs
+    }
 }

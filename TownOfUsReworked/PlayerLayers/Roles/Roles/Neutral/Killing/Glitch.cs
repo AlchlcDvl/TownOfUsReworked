@@ -44,18 +44,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             MimicList = null;
             RoleType = RoleEnum.Glitch;
             StartText = "foreach PlayerControl Glitch.MurderPlayer";
-            AbilitiesText = "- You can mimic players' appearances whenever you want to.\n- You can hack players to stop them from using their abilities.";
-            AttributesText = "- Hacking blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
-                "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
+            AbilitiesText = "- You can mimic players' appearances whenever you want to.\n- You can hack players to stop them from using their abilities.\n- Hacking blocks your target " +
+                "from being able to use their abilities for a short while.\n- You are immune to blocks.\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced " +
+                "to kill you.";
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
             //IntroSound = TownOfUsReworked.GlitchIntro;
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NKDescription;
-            Objectives = NKWinCon;
             MenuClick = false;
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
@@ -224,7 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastHack;
-            var num = CustomGameOptions.HackCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -257,7 +254,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMimic;
-            var num = CustomGameOptions.MimicCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -270,7 +267,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastKilled;
-            var num = CustomGameOptions.GlitchKillCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             if (__instance == role.InvestigateButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ConsigliereTimer() != 0f)
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Gorgon";
             StartText = "Turn The <color=#8BFDFDFF>Crew</color> Into Sculptures";
-            AbilitiesText = "- You can stone gaze players, that forces them to stand still till a meeting is called.";
-            AttributesText = "- Stoned players cannot move and will die when a meeting is called.";
+            AbilitiesText = "- You can stone gaze players, that slows them down and forces them to stand still till a meeting is called.\n- Stoned players cannot move and will die when " +
+                "a meeting is called.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Gorgon : Colors.Syndicate;
             RoleType = RoleEnum.Gorgon;
             Faction = Faction.Syndicate;
@@ -30,10 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
-            FactionDescription = SyndicateFactionDescription;         
             Objectives = SyndicateWinCon;
             RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
-            AlignmentDescription = SyKDescription;
         }
 
         public override void Loses()

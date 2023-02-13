@@ -20,9 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Framer";
             StartText = "Make Everyone Suspicious";
-            AbilitiesText = "- You can frame players in gasoline.";
-            AttributesText = "- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>.\n- Framed players will appear to have" +
-                " the wrong results to investigative roles till the Framer is dead.";
+            AbilitiesText = "- You can frame players.\n- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>.\n- Framed " +
+                "players will appear to have the wrong results to investigative roles till the Framer is dead.";
             RoleType = RoleEnum.Framer;
             Faction = Faction.Syndicate;
             FactionName = "Syndicate";
@@ -31,8 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Disruptive)";
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             RoleDescription = "You are a Framer! This means that you are unrivalled in the art of gaslighting. Framed players always appear to be evil, regardless of their role!";
-            FactionDescription = SyndicateFactionDescription;
-            AlignmentDescription = SDDescription;
             Objectives = SyndicateWinCon;
         }
 

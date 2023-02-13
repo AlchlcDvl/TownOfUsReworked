@@ -16,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Dampyr";
             StartText = "Kill Off The <color=#8BFDFDFF>Crew</color> To Gain A Majority";
-            AbilitiesText = "- You can bite players to kill them.";
-            AttributesText = "- You share a cooldown with the <color=#AC8A00FF>Dracula</color>, meaning if the <color=#AC8A00FF>Dracula</color> converts, your kill cooldown resets.";
+            AbilitiesText = "- You can bite players to kill them.\n- You share a cooldown with the <color=#AC8A00FF>Dracula</color>, meaning if the <color=#AC8A00FF>Dracula</color> " +
+                "converts, your kill cooldown resets.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dampyr : Colors.Neutral;
             SubFaction = SubFaction.Undead;
             RoleType = RoleEnum.Dampyr;
@@ -26,9 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = "Neutral (Proselyte)";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NPDescription;
-            Objectives = UndeadWinCon;
             RoleDescription = "You have become a Dampyr! Your new goal is the help the Dracula convert everyone. Kill anyone who does not submit to the Dracula" +
                 " and avoid losing the Dracula or else you're done for!";
             SubFactionColor = Colors.Undead;

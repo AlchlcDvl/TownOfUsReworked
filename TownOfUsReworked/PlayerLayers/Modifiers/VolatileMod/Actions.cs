@@ -16,61 +16,58 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
         public static int randomNumber = 0;
         public static int otherNumber = 0;
 
-        public class HudManagerUpdate
+        public static void Postfix(HudManager __instance)
         {
-            public static void Postfix(HudManager __instance)
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Volatile) && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove && !MeetingHud.Instance)
             {
-                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Volatile) && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove && !MeetingHud.Instance)
+                _time += Time.deltaTime;
+
+                if (_time >= CustomGameOptions.VolatileInterval)
                 {
-                    _time += Time.deltaTime;
+                    randomNumber = Random.RandomRangeInt(0, 4);
+                    _time -= CustomGameOptions.VolatileInterval;
 
-                    if (_time >= CustomGameOptions.VolatileInterval)
+                    if (randomNumber == 0)
                     {
-                        randomNumber = Random.RandomRangeInt(0, 4);
-                        _time -= CustomGameOptions.VolatileInterval;
+                        //Uses a random ability
+                        var role = Role.GetRole(PlayerControl.LocalPlayer);
 
-                        if (randomNumber == 0)
+                        if (role != null)
                         {
-                            //Uses a random ability
-                            var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                            if (role != null)
+                            if (role.AbilityButtons.Count > 0)
                             {
-                                if (role.AbilityButtons.Count > 0)
-                                {
-                                    otherNumber = Random.RandomRangeInt(0, role.AbilityButtons.Count);
-                                    var button = role.AbilityButtons[otherNumber];
-                                    button.DoClick();
-                                }
+                                otherNumber = Random.RandomRangeInt(0, role.AbilityButtons.Count);
+                                var button = role.AbilityButtons[otherNumber];
+                                button.DoClick();
                             }
                         }
-                        else if (randomNumber == 1)
-                        {
-                            //Flashes
-                            otherNumber = Random.RandomRangeInt(0, 256);
-                            var otherNumber2 = Random.RandomRangeInt(0, 256);
-                            var otherNumber3 = Random.RandomRangeInt(0, 256);
-                            var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
-                            Coroutines.Start(Utils.FlashCoroutine(flashColor));
-                        }
-                        else if (randomNumber == 2)
-                        {
-                            //Fake someone killing you
-                            otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
-                            var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
-                            __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
-                        }
-                        else if (randomNumber == 3)
-                        {
-                            //Fake role sound effects
-                            otherNumber = Random.RandomRangeInt(0, SoundEffects.Sounds.Count);
-                            AudioClip sound = SoundEffects.Sounds[otherNumber];
+                    }
+                    else if (randomNumber == 1)
+                    {
+                        //Flashes
+                        otherNumber = Random.RandomRangeInt(0, 256);
+                        var otherNumber2 = Random.RandomRangeInt(0, 256);
+                        var otherNumber3 = Random.RandomRangeInt(0, 256);
+                        var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
+                        Coroutines.Start(Utils.FlashCoroutine(flashColor));
+                    }
+                    else if (randomNumber == 2)
+                    {
+                        //Fake someone killing you
+                        otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
+                        var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
+                        __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
+                    }
+                    else if (randomNumber == 3)
+                    {
+                        //Fake role sound effects
+                        otherNumber = Random.RandomRangeInt(0, SoundEffects.Sounds.Count);
+                        AudioClip sound = SoundEffects.Sounds[otherNumber];
 
-                            try
-                            {
-                                SoundManager.Instance.PlaySound(sound, false, 1f);
-                            } catch {}
-                        }
+                        try
+                        {
+                            SoundManager.Instance.PlaySound(sound, false, 1f);
+                        } catch {}
                     }
                 }
             }

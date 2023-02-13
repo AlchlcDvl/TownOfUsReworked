@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Revealer))
             {
-                var haunter = (Revealer) role;
+                var haunter = (Revealer)role;
 
                 if (role.Player.Data.Disconnected)
                     return;

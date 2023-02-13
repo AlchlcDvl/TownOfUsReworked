@@ -27,19 +27,25 @@ namespace TownOfUsReworked.MCI
 
                 MCIUtils.CleanUpLoad();
                 MCIUtils.CreatePlayerInstance("Robot");
+
+                if (!InstanceControl.MCIActive)
+                    InstanceControl.MCIActive = true;
             }
+
+            if (!InstanceControl.MCIActive)
+                return;
 
             if (Input.GetKeyDown(KeyCode.F9))
             {
                 controllingFigure++;
-                controllingFigure = Mathf.Clamp(controllingFigure, 0, PlayerControl.AllPlayerControls.Count -1);
+                controllingFigure = Mathf.Clamp(controllingFigure, 0, PlayerControl.AllPlayerControls.Count - 1);
                 InstanceControl.SwitchTo((byte)controllingFigure);
             }
 
             if (Input.GetKeyDown(KeyCode.F10))
             {
                 controllingFigure--;
-                controllingFigure = Mathf.Clamp(controllingFigure, 0, PlayerControl.AllPlayerControls.Count -1);
+                controllingFigure = Mathf.Clamp(controllingFigure, 0, PlayerControl.AllPlayerControls.Count - 1);
                 InstanceControl.SwitchTo((byte)controllingFigure);
             }
             
@@ -74,6 +80,9 @@ namespace TownOfUsReworked.MCI
         
             if (Input.GetKeyDown(KeyCode.F12))
             {
+                if (GameStates.IsLobby)
+                    return;
+
                 HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
                 HudManager.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
             }

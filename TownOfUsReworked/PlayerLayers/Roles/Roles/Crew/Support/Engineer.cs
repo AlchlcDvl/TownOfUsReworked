@@ -18,8 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Engineer";
             StartText = "Just Fix It";
-            AbilitiesText = "- You can fix sabotages at any time during the game.";
-            AttributesText = "- You can vent.";
+            AbilitiesText = "- You can fix sabotages at any time during the game.\n- You can vent.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             Faction = Faction.Crew;
@@ -28,11 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
             //IntroSound = TownOfUsReworked.EngineerIntro;
-            FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
             RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
                 " the systems you spent blood, sweat and tears to make. Make them pay.";
-            AlignmentDescription = CSDescription;
             UsesLeft = CustomGameOptions.MaxFixes;
         }
 

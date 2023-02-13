@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Veteran))
             {
-                var veteran = (Veteran) role;
+                var veteran = (Veteran)role;
 
                 if (veteran.OnAlert)
                     veteran.Alert();

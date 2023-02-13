@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             if (__instance == role.InspectButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.InspectTimer() != 0f)
@@ -31,11 +31,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
+                if (role.InspectedPlayers.Contains(role.ClosestPlayer.PlayerId))
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true)
                 {
-                    role.InspectedPlayers.Add(role.ClosestPlayer);
+                    role.InspectedPlayers.Add(role.ClosestPlayer.PlayerId);
                     var results = new List<Role>();
                     var targetRole = Role.GetRole(role.ClosestPlayer);
                     results.Add(targetRole);
@@ -47,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                         var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
                         var role2 = Role.AllRoles.ToList()[random];
 
-                        if (role2 != targetRole)
+                        if (role2.RoleType != targetRole.RoleType)
                         {
                             results.Add(role2);
                             i++;
@@ -56,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                         results.Shuffle();
                     }
 
-                    role.InspectResults.Add(role.ClosestPlayer, results);
+                    role.InspectResults.Add(role.ClosestPlayer.PlayerId, results);
 
                     try
                     {

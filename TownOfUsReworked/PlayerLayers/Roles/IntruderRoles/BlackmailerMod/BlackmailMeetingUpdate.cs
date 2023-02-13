@@ -43,8 +43,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                         playerState.XMark.sprite = Letter;
                         playerState.XMark.transform.localScale = playerState.XMark.transform.localScale * 0.75f;
-                        playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset,
-                            playerState.XMark.transform.localPosition.y + LetterYOffset, playerState.XMark.transform.localPosition.z);
+                        playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
+                            LetterYOffset, playerState.XMark.transform.localPosition.z);
                     }
                 }
             }

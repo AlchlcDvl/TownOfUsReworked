@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Name = "Jester";
             StartText = "It Was Jest A Prank Bro";
             AbilitiesText = "- After you get ejected, you can haunt a player.";
-            AttributesText = "- Haunted players will die.";
             Objectives = "- Get ejected.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             RoleType = RoleEnum.Jester;
@@ -31,8 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
             RoleDescription = "You are a Jester! You are a suicidal lunatic who wants to be thrown out of the airlock. Get yourself ejected at all costs!";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NEDescription;
         }
 
         public override void Loses()

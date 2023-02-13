@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
 
             if (__instance == role.AssaultButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

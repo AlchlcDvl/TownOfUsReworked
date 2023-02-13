@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
             if (__instance == role.InterrogateButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.InterrogateTimer() != 0f)

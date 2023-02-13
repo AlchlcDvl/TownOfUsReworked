@@ -20,10 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 
             if (__instance == role.FreezeButton)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.FreezeTimer() != 0f)

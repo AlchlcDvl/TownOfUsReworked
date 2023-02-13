@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
             if (__instance == role.BugButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.BugTimer() != 0f && __instance == role.BugButton)

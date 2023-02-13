@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Morphling))
             {
-                var morphling = (Morphling) role;
+                var morphling = (Morphling)role;
                 
                 if (morphling.Morphed)
                     morphling.Morph();

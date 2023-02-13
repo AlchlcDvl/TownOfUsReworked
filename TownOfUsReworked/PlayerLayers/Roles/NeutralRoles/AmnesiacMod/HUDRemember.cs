@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             if (role.RememberButton == null)
             {
-                role.RememberButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                role.RememberButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.RememberButton.graphic.enabled = true;
                 role.RememberButton.graphic.sprite = Remember;
                 role.RememberButton.gameObject.SetActive(false);
@@ -88,9 +88,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 }
             }
 
-            role.RememberButton.gameObject.SetActive(!MeetingHud.Instance && !LobbyBehaviour.Instance && !isDead);
+            role.RememberButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             KillButtonTarget.SetTarget(role.RememberButton, closestBody, role);
             role.RememberButton.SetCoolDown(0f, 1f);
+
+            var renderer2 = role.RememberButton.graphic;
+
+            if (role.CurrentTarget != null)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer2.color = Palette.DisabledClear;
+                renderer2.material.SetFloat("_Desat", 1f);
+            }
         }
     }
 }

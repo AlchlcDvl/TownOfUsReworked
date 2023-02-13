@@ -8,7 +8,7 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HudManagerUpdate
+    public class HUDProtect
     {
         public static Sprite Protect => TownOfUsReworked.ProtectSprite;
 

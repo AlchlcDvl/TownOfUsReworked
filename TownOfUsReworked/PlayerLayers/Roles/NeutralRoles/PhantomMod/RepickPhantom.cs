@@ -4,7 +4,6 @@ using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -13,19 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     {
         private static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (PlayerControl.LocalPlayer != SetPhantom.WillBePhantom)
-                return;
-
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (PlayerControl.LocalPlayer != SetPhantom.WillBePhantom || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
@@ -41,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
             writer.Write(pc.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return;
         }
     }
 }

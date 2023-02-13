@@ -7,7 +7,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartMeetingPatch
     {
         public static void Prefix(PlayerControl __instance)
@@ -36,13 +36,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 
                 if (overlord3.OverlordMeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
                     ovmessage = "This is the last meeting to find and kill the Overlord. Should you fail, you will all lose!";
-                else
-                    ovmessage = "There seems to be an Overlord bent on dominating the mission! Kill them!";
+                else if (overlord3.OverlordMeetingCount < CustomGameOptions.OverlordMeetingWinCount - 1)
+                    ovmessage = "There seems to be an Overlord bent on dominating the mission! Kill them before they are successful!";
 
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, ovmessage);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
-                writer.Write(ovmessage);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                if (ovmessage != "")
+                {
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, ovmessage);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
+                    writer.Write(ovmessage);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
         }
     }

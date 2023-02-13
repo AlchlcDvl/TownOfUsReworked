@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Altruist";
             StartText = "Sacrifice Yourself To Save Another";
-            AbilitiesText = "- You can revive a dead body at the cost of your own life.";
-            AttributesText = "- Reviving someone takes time.\n- If a meeting is called during your revive, both you and\nyour target will be pronounced dead.";
+            AbilitiesText = "- You can revive a dead body at the cost of your own life.\n- Reviving someone takes time.\n- If a meeting is called during your revive, both " +
+                "you and\nyour target will be pronounced dead.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
             Faction = Faction.Crew;
@@ -26,8 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = "Crew (Protective)";
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CPDescription;
             RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
             Objectives = CrewWinCon;

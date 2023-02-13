@@ -88,8 +88,7 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
         {
             public static void Postfix(ref GameOptionsMenu __instance)
             {
-                __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title == StringNames.GameNumImpostors).
-                    ValidRange = new FloatRange(1, TownOfUsReworked.MaxImpostors);
+                __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title == StringNames.GameNumImpostors).ValidRange = new FloatRange(1, TownOfUsReworked.MaxImpostors);
             }
         }
     }

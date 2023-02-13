@@ -479,38 +479,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             //Neutral cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Arsonist))
             {
-                var role2 = (Arsonist) role;
+                var role2 = (Arsonist)role;
                 role2.LastDoused = DateTime.UtcNow;
                 role2.LastIgnited = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Cannibal))
             {
-                var role2 = (Cannibal) role;
+                var role2 = (Cannibal)role;
                 role2.LastEaten = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Cryomaniac))
             {
-                var role2 = (Cryomaniac) role;
+                var role2 = (Cryomaniac)role;
                 role2.LastDoused = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Dampyr))
             {
-                var role2 = (Dampyr) role;
+                var role2 = (Dampyr)role;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Dracula))
             {
-                var role2 = (Dracula) role;
+                var role2 = (Dracula)role;
                 role2.LastBitten = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
             {
-                var role2 = (Glitch) role;
+                var role2 = (Glitch)role;
                 role2.LastMimic = DateTime.UtcNow;
                 role2.LastHack = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
@@ -538,44 +538,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Juggernaut))
             {
-                var role2 = (Juggernaut) role;
+                var role2 = (Juggernaut)role;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Murderer))
             {
-                var role2 = (Murderer) role;
+                var role2 = (Murderer)role;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Pestilence))
             {
-                var role2 = (Pestilence) role;
+                var role2 = (Pestilence)role;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Plaguebearer))
             {
-                var role2 = (Plaguebearer) role;
+                var role2 = (Plaguebearer)role;
                 role2.LastInfected = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.SerialKiller))
             {
-                var role2 = (SerialKiller) role;
+                var role2 = (SerialKiller)role;
                 role2.LastLusted = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Survivor))
             {
-                var role2 = (Survivor) role;
+                var role2 = (Survivor)role;
                 role2.LastVested = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Thief))
             {
-                var role2 = (Thief) role;
+                var role2 = (Thief)role;
                 role2.LastKilled = DateTime.UtcNow;
             }
 
@@ -587,13 +587,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             foreach (var role in Role.GetRoles(RoleEnum.Werewolf))
             {
-                var role2 = (Werewolf) role;
+                var role2 = (Werewolf)role;
                 role2.LastMauled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Whisperer))
             {
-                var role2 = (Whisperer) role;
+                var role2 = (Whisperer)role;
                 role2.LastWhispered = DateTime.UtcNow;
             }
         }

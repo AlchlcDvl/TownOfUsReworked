@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.MCI
 {
@@ -7,10 +8,14 @@ namespace TownOfUsReworked.MCI
     {
         public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)
         {
+            if (!GameStates.IsLocalGame)
+                return;
+
+            if (!InstanceControl.MCIActive)
+                return;
+
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
                 __instance.CmdCastVote(player.PlayerId, suspectStateIdx);
-            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (!__instance.isActiveAndEnabled)
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             if (__instance == role.KillButton)
@@ -97,7 +97,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 return false;
             }
 
-            if (!role.WasMafioso || role.FormerRole == null)
+            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole.RoleType == RoleEnum.Impostor)
                 return false;
 
             var formerRole = role.FormerRole.RoleType;
@@ -174,7 +174,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.DisguiseButton && formerRole == RoleEnum.Disguiser)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
                 
                 if (role.DisguiseTimer() != 0f)
@@ -229,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.FlashButton && formerRole == RoleEnum.Grenadier)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
@@ -263,7 +263,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;
@@ -290,9 +290,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.MineButton && formerRole == RoleEnum.Miner)
             {
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (!role.CanPlace)
                     return false;
 
@@ -323,9 +320,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.MorphButton && formerRole == RoleEnum.Morphling)
             {
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.MorphButton.graphic.sprite == SampleSprite)
                 {
                     if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -378,9 +372,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.Player.inVent)
                     return false;
 
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.TeleportButton.graphic.sprite == MarkSprite)
                 {
                     role.TeleportPoint = PlayerControl.LocalPlayer.transform.position;
@@ -392,9 +383,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 }
                 else
                 {
-                    if (__instance.isCoolingDown)
-                        return false;
-
                     if (role.TeleportTimer() != 0f)
                         return false;
 
@@ -412,12 +400,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.FreezeButton && formerRole == RoleEnum.TimeMaster)
             {
-                if (__instance.isCoolingDown)
-                    return false;
-
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.FreezeTimer() != 0f)
                     return false;
 
@@ -434,12 +416,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 if (role.DragDropButton.graphic.sprite == Drag)
                 {
-                    if (__instance.isCoolingDown)
-                        return false;
-
-                    if (!__instance.isActiveAndEnabled)
-                        return false;
-
                     if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                         return false;
 
@@ -459,9 +435,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 }
                 else
                 {
-                    if (!__instance.enabled)
-                        return false;
-
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Drop);
@@ -490,9 +463,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             }
             else if (__instance == role.InvisButton && formerRole == RoleEnum.Wraith)
             {
-                if (!__instance.isActiveAndEnabled)
-                    return false;
-
                 if (role.InvisTimer() != 0f)
                     return false;
                 

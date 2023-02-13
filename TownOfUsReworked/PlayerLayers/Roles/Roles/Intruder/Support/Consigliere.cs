@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
         public Ability ability => PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer)
             : null;
-        public string CanAssassinate => ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "You cannot assassinate players you have revealed" : "None";
+        public string CanAssassinate => ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed." : "";
         private KillButton _killButton;
         public DateTime LastKilled { get; set; }
 
@@ -27,8 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Consigliere";
             StartText = "See Players For Who They Really Are";
-            AbilitiesText = $"- You can reveal a player's {role}.";
-            AttributesText = $"- {CanAssassinate}.";
+            AbilitiesText = $"- You can reveal a player's {role}.{CanAssassinate}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             Faction = Faction.Intruder;
@@ -36,10 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Consigliere! You are a corrupt Inspector who is so capable of finding someone's identity. Help your mate assassinate or prioritise others" +
                 " by revealing players for who they really are!";
-            AlignmentDescription = ISDescription;
             Objectives = IntrudersWinCon;
         }
 

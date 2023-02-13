@@ -29,8 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Grenadier";
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.";
-            AttributesText = "- Blinding players will fill their screen with white for a short while, making them unable to see anything.";
+            AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.\n- Blinding players will fill their screen with white for a short while, " +
+                "making them unable to see anything.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
             RoleType = RoleEnum.Grenadier;
@@ -39,9 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName ="Intruder (Concealing)";
-            AlignmentDescription = ICDescription;
             Objectives = IntrudersWinCon;
-            FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
         }
 

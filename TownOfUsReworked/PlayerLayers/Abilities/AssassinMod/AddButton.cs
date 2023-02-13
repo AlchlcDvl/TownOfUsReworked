@@ -5,6 +5,7 @@ using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -160,8 +161,24 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var abilityflag = playerAbility != null && playerAbility.Name == currentGuess && CustomGameOptions.AssassinGuessAbilities;
                 var objectifierflag = playerObjectifier != null && playerObjectifier.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers;
                 var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
+                var sectflag = targetPlayer.IsPersuaded() && currentGuess == "Persuaded";
+                var reanimatedflag = targetPlayer.IsResurrected() && currentGuess == "Resurrected";
 
-                var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag;
+                if (targetPlayer.Is(RoleEnum.Actor))
+                {
+                    if (currentGuess != "Actor")
+                    {
+                        var actor = Role.GetRole<Actor>(targetPlayer);
+                        
+                        if (actor.PretendRoles.Contains(Role.GetRoleFromName(currentGuess)))
+                        {
+                            actor.Guessed = true;
+                            return;
+                        }
+                    }
+                }
+
+                var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag;
                 var toDie = flag ? playerRole.Player : role.Player;
 
                 if (!toDie.Is(RoleEnum.Pestilence) || PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))

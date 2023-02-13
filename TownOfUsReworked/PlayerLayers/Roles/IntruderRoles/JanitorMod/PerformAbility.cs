@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;
@@ -56,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);

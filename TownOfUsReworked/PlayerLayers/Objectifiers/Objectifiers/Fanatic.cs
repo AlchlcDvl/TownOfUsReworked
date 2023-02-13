@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     public class Fanatic : Objectifier
     {
         public Role former;
-        public bool Turned;
+        public bool Turned = false;
         public string Side;
 
         public Fanatic(PlayerControl player) : base(player)
@@ -23,12 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             Hidden = !CustomGameOptions.FanaticKnows;
         }
 
-        public void TurnFanatic(PlayerControl fanatic, PlayerControl attacker)
+        public void TurnFanatic(PlayerControl fanatic, Faction faction)
         {
             var fanaticRole = Role.GetRole(fanatic);
-            var attackerRole = Role.GetRole(attacker);
-
-            fanaticRole.Faction = attackerRole.Faction;
+            fanaticRole.Faction = faction;
             Turned = true;
         }
     }

@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Sheriff : Role
     {
-        public List<byte> Interrogated = new List<byte>();
+        public List<byte> Interrogated;
         public PlayerControl ClosestPlayer;
         private KillButton _interrogateButton;
         public DateTime LastInterrogated { get; set; }
@@ -18,18 +18,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Sheriff";
             StartText = "Reveal The Alignment Of Other Players";
-            AbilitiesText = "Reveal alignments of other players to find the <color=#FF0000FF>Intruders</color>";
+            AbilitiesText = "- You can reveal alignments of other players relative to the <color=#8BFDFDFF>Crew</color>.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
-            LastInterrogated = DateTime.UtcNow;
             RoleType = RoleEnum.Sheriff;
+            Interrogated = new List<byte>();
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CIDescription;
             Objectives = CrewWinCon;
+            RoleDescription = "You are a Sheriff! You can investigate players to see if they are capable of harming the Crew or not!";
         }
 
         public override void Loses()

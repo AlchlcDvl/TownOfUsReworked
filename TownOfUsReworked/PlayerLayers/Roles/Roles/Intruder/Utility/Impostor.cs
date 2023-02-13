@@ -26,9 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Utility)";
             //IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;
-            AlignmentDescription = IUDescription;
             RoleDescription = "You are an Impostor! Your role is the base role for the Intruder faction. You have no special abilities and should probably just kill normally.";
-            FactionDescription = IntruderFactionDescription;
             Objectives = IntrudersWinCon;
         }
 

@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Medic))
             {
-                var medic = (Medic) role;
+                var medic = (Medic)role;
                 var exPlayer = medic.exShielded;
 
                 if (exPlayer != null)

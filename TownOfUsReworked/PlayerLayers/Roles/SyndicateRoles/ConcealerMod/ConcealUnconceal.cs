@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Concealer))
             {
-                var concealer = (Concealer) role;
+                var concealer = (Concealer)role;
 
                 if (concealer.Concealed)
                     concealer.Conceal();

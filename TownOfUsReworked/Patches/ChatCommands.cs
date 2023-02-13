@@ -11,6 +11,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {
@@ -1210,8 +1211,95 @@ namespace TownOfUsReworked.Patches
 
                         if (role != null)
                         {
-                            hudManager.AddChat(player, role.FactionDescription);
-                            hudManager.AddChat(player, role.AlignmentDescription);
+                            switch (role.Faction)
+                            {
+                                case Faction.Syndicate:
+                                    hudManager.AddChat(player, Role.SyndicateFactionDescription);
+                                    hudManager.AddChat(player, Role.SyndicateObjective);
+                                    break;
+                                case Faction.Intruder:
+                                    hudManager.AddChat(player, Role.IntrudersFactionDescription);
+                                    hudManager.AddChat(player, Role.IntrudersObjective);
+                                    break;
+                                case Faction.Crew:
+                                    hudManager.AddChat(player, Role.CrewFactionDescription);
+                                    hudManager.AddChat(player, Role.CrewObjective);
+                                    break;
+                                case Faction.Neutral:
+                                    hudManager.AddChat(player, Role.NeutralFactionDescription);
+                                    break;
+                            }
+
+                            switch (role.RoleAlignment)
+                            {
+                                case RoleAlignment.CrewSupport:
+                                    hudManager.AddChat(player, Role.CSDescription);
+                                    break;
+                                case RoleAlignment.CrewInvest:
+                                    hudManager.AddChat(player, Role.CIDescription);
+                                    break;
+                                case RoleAlignment.CrewKill:
+                                    hudManager.AddChat(player, Role.CKDescription);
+                                    break;
+                                case RoleAlignment.CrewProt:
+                                    hudManager.AddChat(player, Role.CPDescription);
+                                    break;
+                                case RoleAlignment.CrewSov:
+                                    hudManager.AddChat(player, Role.CSvDescription);
+                                    break;
+                                case RoleAlignment.CrewAudit:
+                                    hudManager.AddChat(player, Role.CADescription);
+                                    break;
+                                case RoleAlignment.CrewUtil:
+                                    hudManager.AddChat(player, Role.CUDescription);
+                                    break;
+                                case RoleAlignment.IntruderSupport:
+                                    hudManager.AddChat(player, Role.ISDescription);
+                                    break;
+                                case RoleAlignment.IntruderConceal:
+                                    hudManager.AddChat(player, Role.ICDescription);
+                                    break;
+                                case RoleAlignment.IntruderDecep:
+                                    hudManager.AddChat(player, Role.IDDescription);
+                                    break;
+                                case RoleAlignment.IntruderKill:
+                                    hudManager.AddChat(player, Role.IKDescription);
+                                    break;
+                                case RoleAlignment.IntruderUtil:
+                                    hudManager.AddChat(player, Role.IUDescription);
+                                    break;
+                                case RoleAlignment.NeutralKill:
+                                    hudManager.AddChat(player, Role.NKDescription);
+                                    break;
+                                case RoleAlignment.NeutralNeo:
+                                    hudManager.AddChat(player, Role.NNDescription);
+                                    break;
+                                case RoleAlignment.NeutralEvil:
+                                    hudManager.AddChat(player, Role.NEDescription);
+                                    break;
+                                case RoleAlignment.NeutralBen:
+                                    hudManager.AddChat(player, Role.NBDescription);
+                                    break;
+                                case RoleAlignment.NeutralPros:
+                                    hudManager.AddChat(player, Role.NPDescription);
+                                    break;
+                                case RoleAlignment.SyndicateKill:
+                                    hudManager.AddChat(player, Role.SyKDescription);
+                                    break;
+                                case RoleAlignment.SyndicateSupport:
+                                    hudManager.AddChat(player, Role.SSuDescription);
+                                    break;
+                                case RoleAlignment.SyndicateDisruption:
+                                    hudManager.AddChat(player, Role.SDDescription);
+                                    break;
+                                case RoleAlignment.SyndicatePower:
+                                    hudManager.AddChat(player, Role.SPDescription);
+                                    break;
+                                case RoleAlignment.SyndicateUtil:
+                                    hudManager.AddChat(player, Role.SUDescription);
+                                    break;
+                            }
+
                             hudManager.AddChat(player, role.RoleDescription);
                         }
                         

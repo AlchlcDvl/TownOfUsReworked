@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
             if (__instance == role.DisguiseButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
                 
                 if (role.DisguiseTimer() != 0f)
@@ -78,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

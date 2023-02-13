@@ -2,6 +2,6 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)system.text.json\6.0.3\build\System.Text.Json.targets" Condition="Exists('$(NuGetPackageRoot)system.text.json\6.0.3\build\System.Text.Json.targets')" />
-    <Import Project="$(NuGetPackageRoot)gitinfo\2.0.20\build\GitInfo.targets" Condition="Exists('$(NuGetPackageRoot)gitinfo\2.0.20\build\GitInfo.targets')" />
+    <Import Project="$(NuGetPackageRoot)gitinfo\2.3.0\buildTransitive\GitInfo.targets" Condition="Exists('$(NuGetPackageRoot)gitinfo\2.3.0\buildTransitive\GitInfo.targets')" />
   </ImportGroup>
 </Project>

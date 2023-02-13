@@ -23,17 +23,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleType = RoleEnum.Mafioso;
             StartText = "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role.";
-            AttributesText = "- None.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = "Intruder (Utility)";
-            FactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do anything" +
-                " to ensure your victory over others.";
             Objectives = "- Kill: <color=#008000FF>Syndicate</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.\n   or\n- Have a critical sabotage reach 0 seconds.";
-            AlignmentDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = "You have become a Mafioso! You are the successor to the leader of the Intruders. When the Godfather dies, you will become the new" +
                 " Godfather and will inherit stronger variations of your former role.";
         }

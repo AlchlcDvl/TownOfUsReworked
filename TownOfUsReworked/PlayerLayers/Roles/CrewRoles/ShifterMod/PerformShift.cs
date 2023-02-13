@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             if (__instance == role.ShiftButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ShiftTimer() != 0f)

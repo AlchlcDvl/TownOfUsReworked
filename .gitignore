@@ -38,6 +38,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+[Oo]bj/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -97,6 +98,9 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.assests
+*.nuget
+*.json
 
 # Chutzpah Test files
 _Chutzpah*

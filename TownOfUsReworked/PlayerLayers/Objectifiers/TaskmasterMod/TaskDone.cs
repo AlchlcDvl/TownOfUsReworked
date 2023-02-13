@@ -2,11 +2,9 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using System.Linq;
 using Reactor.Utilities;
 using UnityEngine;
-using Hazel;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod

@@ -5,6 +5,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
@@ -23,24 +24,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
             if (__instance == role.RecruitButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.RecruitTimer() != 0f)
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), !role.ClosestPlayer.Is(SubFaction.None),
+                    role.ClosestPlayer.Is(SubFaction.None));
 
                 if (interact[3] == true)
                 {
-                    role.BackupRecruit = role.ClosestPlayer;
-                    role.HasRecruited = true;
-                    var targetRole = Role.GetRole(role.ClosestPlayer);
-                    targetRole.SubFaction = SubFaction.Cabal;
-                    targetRole.IsRecruit = true;
-                    targetRole.Faction = Faction.Neutral;
-                    role.RecruitButton.gameObject.SetActive(false);
-
+                    Recruit(role, role.ClosestPlayer);
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable, -1);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(role.ClosestPlayer.PlayerId);
@@ -56,6 +51,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             }
 
             return false;
+        }
+
+        public static void Recruit(Jackal jackRole, PlayerControl other)
+        {
+            var role = Role.GetRole(other);
+            var jack = jackRole.Player;
+
+            var convert = other.Is(SubFaction.None);
+
+            if (convert)
+            {
+                jackRole.BackupRecruit = other;
+                role.SubFaction = SubFaction.Cabal;
+                role.IsRecruit = true;
+                jackRole.Recruited.Add(other.PlayerId);
+            }
+            else if (!other.Is(SubFaction.None))
+                Utils.RpcMurderPlayer(jack, other);
+
+            jackRole.HasRecruited = true;
+            jackRole.RecruitButton.gameObject.SetActive(false);
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                Coroutines.Start(Utils.FlashCoroutine(jackRole.Color));
         }
     }
 }

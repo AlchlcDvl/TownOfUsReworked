@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
             position.AdjustPosition();
 
             __instance.text.text = $"<color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color>\n<color=#0000FFFF>v{TownOfUsReworked.versionFinal}</color>\n" +
-                $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (!MeetingHud.Instance ? "<color=#FF00FFFF>Reworked By: Alcoholic Devil</color>" : "");
+                $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (!MeetingHud.Instance ? "<color=#FF00FFFF>Reworked By: AlchlcDvl</color>" : "");
         }
     }
 }

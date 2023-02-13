@@ -179,7 +179,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.
 
 ## Issues
-If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/ugyc4EVUYZ) to receive help.
+If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
 
 -----------------------
 
@@ -611,7 +611,7 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 ### **Alignment: Neutral (Evil)**
 ### Win Condition: Get guessed as your target role.
 
-The Actor can mimic the abilities of any role with a button. There are some exceptions to which role the Actor can mimic.
+The Actor gets a list of roles at the start of the game. The Actor must pretend to be and get guessed as one of the roles in order to win.
 
 ### Game Options
 
@@ -620,9 +620,10 @@ The Actor can mimic the abilities of any role with a button. There are some exce
 | Actor | The percentage probability of the Actor appearing | Percentage | 0% |
 | Actor Count | How many Amnesiacs should spawn in Custom Mode | Number | 1 |
 | Actor Is Unique In All Any | Self descriptive | Toggle | False |
-| Actor Can Mimic Intruder Roles | Decides if the Actor can pretend to be an Intruder role | Toggle | True |
-| Actor Can Mimic Syndicate Roles | Decides if the Actor can pretend to be a Syndicate role | Toggle | True |
-| Actor Can Mimic Other Neutral Roles | Decides if the Actor can pretend to be a different Neutral role | Toggle | True |
+| Actor Can Button | Whether the Actor Can Press the emergency Button | Toggle | True |
+| Actor Can Hide In Vents | Whether the Actor Can Vent | Toggle | False |
+| Actor Can Switch Vents | Whether the Actor Can Switch while in Vents | Toggle | False |
+| Vigilante Kills Actor | Whether the Vigilante is able to kill the Actor | Toggle | False |
 
 ## Amnesiac
 ### **Alignment: Neutral (Benign)**
@@ -661,6 +662,22 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 | Ignite Cooldown Removed When Arsonist Is Last Killer | Decides whether the Arsonist's Ignite cooldown is reduced to 0s if they happen to be the last killer alive | Toggle | True |
 | Arsonist Douse And Ignite Cooldowns Are Linked | Decides whether the Arsonist's cooldowns are linked so that dousing resets ignition and vice versa | Toggle | True |
 | Arsonist Can Vent | Decides whether the Arsonist can vent | Toggle | True |
+
+## Bounty Hunter
+### **Alignment: Neutral (Evil)**
+### Win Condition: Find and kill your target.
+
+The Bounty Hunter is assigned a target as the start of the game. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button after the next meeting. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Bounty Hunter | The percentage probability of the Bounty Hunter appearing | Percentage | 0% |
+| Bounty Hunter Count | How many Bounty Hunters should spawn in Custom Mode | Number | 1 |
+| Bounty Hunter Is Unique In All Any | Self descriptive | Toggle | False |
+| Bounty Hunter Can Vents | Whether the Bounty Hunter Can Vent | Toggle | False |
+| Vigilante Kills Bounty Hunter | Whether the Vigilante is able to kill the Bounty Hunter | Toggle | False |
 
 ## Cannibal
 ### **Alignment: Neutral (Evil)**
@@ -822,7 +839,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 ### **Alignment: Neutral (Neophyte)**
 ### Win Condition: Bribe the crew into joining your side and eliminate any threats.
 
-The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they can be either Crew or Neutral (Evil). The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can then recruit another player to join the Cabal. They become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead and the Jackal will still lose their ability to recruit.
+The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew. The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead and the Jackal will still lose their ability to recruit.
 
 ### Game Options
 
@@ -1010,7 +1027,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 ### **Alignment: Neutral (Evil)**
 ### Win Condition: Get killed.
 
-The Troll just wants to be killed, but not ejected. The Troll can fake interact with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Only spawns in Custom Mode.
+The Troll just wants to be killed, but not ejected. The Troll can fake interact with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence.
 
 ### Game Options
 
@@ -1746,7 +1763,7 @@ A rainbow color has also been added. Anyone who equips this color will constantl
 Custom hats have been added, made by some very talented artists. These are mostly hats for streamers.
 
 ## Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/ugyc4EVUYZ) or create a ticket on GitHub.
+If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/cd27aDQDY9) or create a ticket on GitHub.
 
 -----------------------
 

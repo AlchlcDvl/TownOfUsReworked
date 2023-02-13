@@ -5,9 +5,11 @@
 
 #if ADDMETADATA
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.IsDirty", ThisAssembly.Git.IsDirtyString)]
+[assembly: System.Reflection.AssemblyMetadata("GitInfo.RepositoryUrl", ThisAssembly.Git.RepositoryUrl)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.Branch", ThisAssembly.Git.Branch)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.Commit", ThisAssembly.Git.Commit)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.Sha", ThisAssembly.Git.Sha)]
+[assembly: System.Reflection.AssemblyMetadata("GitInfo.CommitDate", ThisAssembly.Git.CommitDate)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.BaseVersion.Major", ThisAssembly.Git.BaseVersion.Major)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.BaseVersion.Minor", ThisAssembly.Git.BaseVersion.Minor)]
 [assembly: System.Reflection.AssemblyMetadata("GitInfo.BaseVersion.Patch", ThisAssembly.Git.BaseVersion.Patch)]
@@ -36,59 +38,65 @@ namespace
       public const bool IsDirty = true;
 
       /// <summary>IsDirtyString: true</summary>
-      public const string IsDirtyString = "true";
+      public const string IsDirtyString = @"true";
+
+      /// <summary>Repository URL: https://github.com/AlchlcDvl/TownOfUsReworked.git</summary>
+      public const string RepositoryUrl = @"https://github.com/AlchlcDvl/TownOfUsReworked.git";
 
       /// <summary>Branch: master</summary>
-      public const string Branch = "master";
+      public const string Branch = @"master";
 
-      /// <summary>Commit: ff14aa5</summary>
-      public const string Commit = "ff14aa5";
+      /// <summary>Commit: 8e09dff</summary>
+      public const string Commit = @"8e09dff";
 
-      /// <summary>Sha: ff14aa5d60f4ff57a6d738af25ef0cedecd317fc</summary>
-      public const string Sha = "ff14aa5d60f4ff57a6d738af25ef0cedecd317fc";
+      /// <summary>Sha: 8e09dffdf4cc59be0e7adcf7cda55a6f1a4ef0a8</summary>
+      public const string Sha = @"8e09dffdf4cc59be0e7adcf7cda55a6f1a4ef0a8";
 
-      /// <summary>Commits on top of base version: 89</summary>
-      public const string Commits = "89";
+      /// <summary>Commit date: 2023-02-10T15:16:55-05:00</summary>
+      public const string CommitDate = @"2023-02-10T15:16:55-05:00";
+
+      /// <summary>Commits on top of base version: 90</summary>
+      public const string Commits = @"90";
 
       /// <summary>Tag: </summary>
-      public const string Tag = "";
+      public const string Tag = @"";
 
       /// <summary>Base tag: </summary>
-      public const string BaseTag = "";
+      public const string BaseTag = @"";
 
       /// <summary>Provides access to the base version information used to determine the <see cref="SemVer" />.</summary>      
       public partial class BaseVersion
       {
         /// <summary>Major: 0</summary>
-        public const string Major = "0";
+        public const string Major = @"0";
 
         /// <summary>Minor: 0</summary>
-        public const string Minor = "0";
+        public const string Minor = @"0";
 
         /// <summary>Patch: 0</summary>
-        public const string Patch = "0";
+        public const string Patch = @"0";
       }
 
       /// <summary>Provides access to SemVer information for the current assembly.</summary>
       public partial class SemVer
       {
         /// <summary>Major: 0</summary>
-        public const string Major = "0";
+        public const string Major = @"0";
 
         /// <summary>Minor: 0</summary>
-        public const string Minor = "0";
+        public const string Minor = @"0";
 
-        /// <summary>Patch: 89</summary>
-        public const string Patch = "89";
+        /// <summary>Patch: 90</summary>
+        public const string Patch = @"90";
 
         /// <summary>Label: </summary>
-        public const string Label = "";
+        public const string Label = @"";
 
         /// <summary>Label with dash prefix: </summary>
-        public const string DashLabel = "";
+        public const string DashLabel = @"";
 
         /// <summary>Source: Default</summary>
-        public const string Source = "Default";
+        public const string Source = @"Default";
       }
     }
   }

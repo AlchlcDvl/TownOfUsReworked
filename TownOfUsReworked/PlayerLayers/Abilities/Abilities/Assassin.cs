@@ -2,7 +2,6 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -30,130 +29,133 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             RemainingKills = CustomGameOptions.AssassinKills;
 
             //Adds all the roles that have a non-zero chance of being in the game
-            if (!PlayerControl.LocalPlayer.Is(Faction.Crew))
+            if (!(PlayerControl.LocalPlayer.Is(Faction.Crew) && PlayerControl.LocalPlayer.Is(SubFaction.None)))
             {
                 ColorMapping.Add("Crewmate", Colors.Crew);
 
-                if (CustomGameOptions.MayorOn > 0)
-                    ColorMapping.Add("Mayor", Colors.Mayor);
+                if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
+                {
+                    if (CustomGameOptions.MayorOn > 0)
+                        ColorMapping.Add("Mayor", Colors.Mayor);
 
-                if (CustomGameOptions.SheriffOn > 0)
-                    ColorMapping.Add("Sheriff", Colors.Sheriff);
+                    if (CustomGameOptions.SheriffOn > 0)
+                        ColorMapping.Add("Sheriff", Colors.Sheriff);
 
-                if (CustomGameOptions.EngineerOn > 0)
-                    ColorMapping.Add("Engineer", Colors.Engineer);
+                    if (CustomGameOptions.EngineerOn > 0)
+                        ColorMapping.Add("Engineer", Colors.Engineer);
 
-                if (CustomGameOptions.SwapperOn > 0)
-                    ColorMapping.Add("Swapper", Colors.Swapper);
+                    if (CustomGameOptions.SwapperOn > 0)
+                        ColorMapping.Add("Swapper", Colors.Swapper);
 
-                if (CustomGameOptions.TimeLordOn > 0)
-                    ColorMapping.Add("Time Lord", Colors.TimeLord);
+                    if (CustomGameOptions.TimeLordOn > 0)
+                        ColorMapping.Add("Time Lord", Colors.TimeLord);
 
-                if (CustomGameOptions.MedicOn > 0)
-                    ColorMapping.Add("Medic", Colors.Medic);
+                    if (CustomGameOptions.MedicOn > 0)
+                        ColorMapping.Add("Medic", Colors.Medic);
 
-                if (CustomGameOptions.AgentOn > 0)
-                    ColorMapping.Add("Agent", Colors.Agent);
+                    if (CustomGameOptions.AgentOn > 0)
+                        ColorMapping.Add("Agent", Colors.Agent);
 
-                if (CustomGameOptions.AltruistOn > 0)
-                    ColorMapping.Add("Altruist", Colors.Altruist);
+                    if (CustomGameOptions.AltruistOn > 0)
+                        ColorMapping.Add("Altruist", Colors.Altruist);
 
-                if (CustomGameOptions.VeteranOn > 0)
-                    ColorMapping.Add("Veteran", Colors.Veteran);
-                
-                if (CustomGameOptions.TrackerOn > 0)
-                    ColorMapping.Add("Tracker", Colors.Tracker);
+                    if (CustomGameOptions.VeteranOn > 0)
+                        ColorMapping.Add("Veteran", Colors.Veteran);
 
-                if (CustomGameOptions.OperativeOn > 0)
-                    ColorMapping.Add("Operative", Colors.Operative);
+                    if (CustomGameOptions.TrackerOn > 0)
+                        ColorMapping.Add("Tracker", Colors.Tracker);
 
-                if (CustomGameOptions.TransporterOn > 0)
-                    ColorMapping.Add("Transporter", Colors.Transporter);
+                    if (CustomGameOptions.OperativeOn > 0)
+                        ColorMapping.Add("Operative", Colors.Operative);
 
-                if (CustomGameOptions.MediumOn > 0)
-                    ColorMapping.Add("Medium", Colors.Medium);
+                    if (CustomGameOptions.TransporterOn > 0)
+                        ColorMapping.Add("Transporter", Colors.Transporter);
 
-                if (CustomGameOptions.CoronerOn > 0)
-                    ColorMapping.Add("Coroner", Colors.Coroner);
+                    if (CustomGameOptions.MediumOn > 0)
+                        ColorMapping.Add("Medium", Colors.Medium);
 
-                if (CustomGameOptions.DetectiveOn > 0)
-                    ColorMapping.Add("Detective", Colors.Detective);
+                    if (CustomGameOptions.CoronerOn > 0)
+                        ColorMapping.Add("Coroner", Colors.Coroner);
 
-                if (CustomGameOptions.ShifterOn > 0)
-                    ColorMapping.Add("Shifter", Colors.Shifter);
+                    if (CustomGameOptions.DetectiveOn > 0)
+                        ColorMapping.Add("Detective", Colors.Detective);
 
-                if (CustomGameOptions.InspectorOn > 0)
-                    ColorMapping.Add("Inspector", Colors.Inspector);
+                    if (CustomGameOptions.ShifterOn > 0)
+                        ColorMapping.Add("Shifter", Colors.Shifter);
 
-                if (CustomGameOptions.EscortOn > 0)
-                    ColorMapping.Add("Escort", Colors.Escort);
+                    if (CustomGameOptions.InspectorOn > 0)
+                        ColorMapping.Add("Inspector", Colors.Inspector);
 
-                if (CustomGameOptions.VigilanteOn > 0)
-                    ColorMapping.Add("Vigilante", Colors.Vigilante);
+                    if (CustomGameOptions.EscortOn > 0)
+                        ColorMapping.Add("Escort", Colors.Escort);
 
-                if (CustomGameOptions.RetributionistOn > 0)
-                    ColorMapping.Add("Retributionist", Colors.Retributionist);
+                    if (CustomGameOptions.VigilanteOn > 0)
+                        ColorMapping.Add("Vigilante", Colors.Vigilante);
 
-                if (CustomGameOptions.ChameleonOn > 0)
-                    ColorMapping.Add("Chameleon", Colors.Chameleon);
+                    if (CustomGameOptions.RetributionistOn > 0)
+                        ColorMapping.Add("Retributionist", Colors.Retributionist);
 
-                if (CustomGameOptions.SeerOn > 0)
-                    ColorMapping.Add("Seer", Colors.Seer);
+                    if (CustomGameOptions.ChameleonOn > 0)
+                        ColorMapping.Add("Chameleon", Colors.Chameleon);
 
-                if (CustomGameOptions.MysticOn > 0)
-                    ColorMapping.Add("Mystic", Colors.Mystic);
+                    if (CustomGameOptions.SeerOn > 0)
+                        ColorMapping.Add("Seer", Colors.Seer);
 
-                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
-                    ColorMapping.Add(("Vampire Hunter"), Colors.VampireHunter);
+                    if (CustomGameOptions.MysticOn > 0)
+                        ColorMapping.Add("Mystic", Colors.Mystic);
+
+                    if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
+                        ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
+                }
             }
 
             if (!PlayerControl.LocalPlayer.Is(Faction.Intruder) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 
-                if (CustomGameOptions.JanitorOn > 0)
-                    ColorMapping.Add("Janitor", Colors.Janitor);
-
-                if (CustomGameOptions.MorphlingOn > 0)
-                    ColorMapping.Add("Morphling", Colors.Morphling);
-
-                if (CustomGameOptions.MinerOn > 0)
-                    ColorMapping.Add("Miner", Colors.Miner);
-
-                if (CustomGameOptions.WraithOn > 0)
-                    ColorMapping.Add("Wraith", Colors.Wraith);
-
-                if (CustomGameOptions.UndertakerOn > 0)
-                    ColorMapping.Add("Undertaker", Colors.Undertaker);
-
-                if (CustomGameOptions.GrenadierOn > 0)
-                    ColorMapping.Add("Grenadier", Colors.Grenadier);
-
-                if (CustomGameOptions.PoisonerOn > 0)
-                    ColorMapping.Add("Poisoner", Colors.Poisoner);
-
-                if (CustomGameOptions.BlackmailerOn > 0)
-                    ColorMapping.Add("Blackmailer", Colors.Blackmailer);
-
-                if (CustomGameOptions.CamouflagerOn > 0)
-                    ColorMapping.Add("Camouflager", Colors.Camouflager);
-
-                if (CustomGameOptions.DisguiserOn > 0)
-                    ColorMapping.Add("Disguiser", Colors.Disguiser);
-
-                if (CustomGameOptions.TimeMasterOn > 0)
-                    ColorMapping.Add("Time Master", Colors.TimeMaster);
-
-                if (CustomGameOptions.DisguiserOn > 0)
-                    ColorMapping.Add("Consigliere", Colors.Consigliere);
-
-                if (CustomGameOptions.ConsortOn > 0)
-                    ColorMapping.Add("Consort", Colors.Consort);
-
-                if (CustomGameOptions.GodfatherOn > 0)
+                if (CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
                 {
-                    ColorMapping.Add("Godfather", Colors.Godfather);
-                    ColorMapping.Add("Mafioso", Colors.Mafioso);
+                    if (CustomGameOptions.JanitorOn > 0)
+                        ColorMapping.Add("Janitor", Colors.Janitor);
+
+                    if (CustomGameOptions.MorphlingOn > 0)
+                        ColorMapping.Add("Morphling", Colors.Morphling);
+
+                    if (CustomGameOptions.MinerOn > 0)
+                        ColorMapping.Add("Miner", Colors.Miner);
+
+                    if (CustomGameOptions.WraithOn > 0)
+                        ColorMapping.Add("Wraith", Colors.Wraith);
+
+                    if (CustomGameOptions.UndertakerOn > 0)
+                        ColorMapping.Add("Undertaker", Colors.Undertaker);
+
+                    if (CustomGameOptions.GrenadierOn > 0)
+                        ColorMapping.Add("Grenadier", Colors.Grenadier);
+
+                    if (CustomGameOptions.BlackmailerOn > 0)
+                        ColorMapping.Add("Blackmailer", Colors.Blackmailer);
+
+                    if (CustomGameOptions.CamouflagerOn > 0)
+                        ColorMapping.Add("Camouflager", Colors.Camouflager);
+
+                    if (CustomGameOptions.DisguiserOn > 0)
+                        ColorMapping.Add("Disguiser", Colors.Disguiser);
+
+                    if (CustomGameOptions.TimeMasterOn > 0)
+                        ColorMapping.Add("Time Master", Colors.TimeMaster);
+
+                    if (CustomGameOptions.DisguiserOn > 0)
+                        ColorMapping.Add("Consigliere", Colors.Consigliere);
+
+                    if (CustomGameOptions.ConsortOn > 0)
+                        ColorMapping.Add("Consort", Colors.Consort);
+
+                    if (CustomGameOptions.GodfatherOn > 0)
+                    {
+                        ColorMapping.Add("Godfather", Colors.Godfather);
+                        ColorMapping.Add("Mafioso", Colors.Mafioso);
+                    }
                 }
             }
 
@@ -161,118 +163,142 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 
-                if (CustomGameOptions.WarperOn > 0)
-                    ColorMapping.Add("Warper", Colors.Warper);
-
-                if (CustomGameOptions.ConcealerOn > 0)
-                    ColorMapping.Add("Concealer", Colors.Concealer);
-
-                if (CustomGameOptions.GorgonOn > 0)
-                    ColorMapping.Add("Gorgon", Colors.Gorgon);
-
-                if (CustomGameOptions.ShapeshifterOn > 0)
-                    ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
-
-                if (CustomGameOptions.FramerOn > 0)
-                    ColorMapping.Add("Framer", Colors.Framer);
-
-                if (CustomGameOptions.BomberOn > 0)
-                    ColorMapping.Add("Bomber", Colors.Bomber);
-
-                if (CustomGameOptions.RebelOn > 0)
+                if (CustomGameOptions.SyndicateMax > 0 && CustomGameOptions.SyndicateMin > 0)
                 {
-                    ColorMapping.Add("Rebel", Colors.Rebel);
-                    ColorMapping.Add("Sidekick", Colors.Sidekick);
+                    if (CustomGameOptions.WarperOn > 0)
+                        ColorMapping.Add("Warper", Colors.Warper);
+
+                    if (CustomGameOptions.ConcealerOn > 0)
+                        ColorMapping.Add("Concealer", Colors.Concealer);
+
+                    if (CustomGameOptions.GorgonOn > 0)
+                        ColorMapping.Add("Gorgon", Colors.Gorgon);
+
+                    if (CustomGameOptions.ShapeshifterOn > 0)
+                        ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
+
+                    if (CustomGameOptions.FramerOn > 0)
+                        ColorMapping.Add("Framer", Colors.Framer);
+
+                    if (CustomGameOptions.BomberOn > 0)
+                        ColorMapping.Add("Bomber", Colors.Bomber);
+
+                    if (CustomGameOptions.PoisonerOn > 0)
+                        ColorMapping.Add("Poisoner", Colors.Poisoner);
+
+                    if (CustomGameOptions.DrunkardOn > 0)
+                        ColorMapping.Add("Drunkard", Colors.Drunkard);
+
+                    if (CustomGameOptions.BeamerOn > 0)
+                        ColorMapping.Add("Beamer", Colors.Beamer);
+
+                    if (CustomGameOptions.PoisonerOn > 0)
+                        ColorMapping.Add("Poisoner", Colors.Poisoner);
+
+                    if (CustomGameOptions.RebelOn > 0)
+                    {
+                        ColorMapping.Add("Rebel", Colors.Rebel);
+                        ColorMapping.Add("Sidekick", Colors.Sidekick);
+                    }
                 }
             }
 
-            if (CustomGameOptions.ArsonistOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
-                ColorMapping.Add("Arsonist", Colors.Arsonist);
-
-            if (CustomGameOptions.GlitchOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
-                ColorMapping.Add("Glitch", Colors.Glitch);
-
-            if (CustomGameOptions.SerialKillerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
-                ColorMapping.Add("Serial Killer", Colors.SerialKiller);
-
-            if (CustomGameOptions.JuggernautOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut))
-                ColorMapping.Add("Juggernaut", Colors.Juggernaut);
-
-            if (CustomGameOptions.MurdererOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
-                ColorMapping.Add("Murderer", Colors.Murderer);
-
-            if (CustomGameOptions.CryomaniacOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
-                ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
-
-            if (CustomGameOptions.WerewolfOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
-                ColorMapping.Add("Werewolf", Colors.Werewolf);
-
-            if (CustomGameOptions.PlaguebearerOn > 0)
+            if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
             {
-                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
-                    ColorMapping.Add("Pestilence", Colors.Pestilence);
+                if (CustomGameOptions.ArsonistOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
+                    ColorMapping.Add("Arsonist", Colors.Arsonist);
+
+                if (CustomGameOptions.GlitchOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
+                    ColorMapping.Add("Glitch", Colors.Glitch);
+
+                if (CustomGameOptions.SerialKillerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
+                    ColorMapping.Add("Serial Killer", Colors.SerialKiller);
+
+                if (CustomGameOptions.JuggernautOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut))
+                    ColorMapping.Add("Juggernaut", Colors.Juggernaut);
+
+                if (CustomGameOptions.MurdererOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
+                    ColorMapping.Add("Murderer", Colors.Murderer);
+
+                if (CustomGameOptions.CryomaniacOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
+                    ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
+
+                if (CustomGameOptions.WerewolfOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
+                    ColorMapping.Add("Werewolf", Colors.Werewolf);
+
+                if (CustomGameOptions.PlaguebearerOn > 0)
+                {
+                    if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
+                        ColorMapping.Add("Pestilence", Colors.Pestilence);
+                    
+                    if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
+                        ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
+                }
                 
-                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
-                    ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
-            }
-            
-            if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
-            {
-                ColorMapping.Add("Dracula", Colors.Dracula);
-                ColorMapping.Add("Vampire", Colors.Vampire);
-                ColorMapping.Add("Dampyr", Colors.Dampyr);
-            }
-            
-            if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
-            {
-                ColorMapping.Add("Jackal", Colors.Jackal);
-                ColorMapping.Add("Recruit", Colors.Cabal);
-            }
-            
-            if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
-            {
-                ColorMapping.Add("Necromancer", Colors.Necromancer);
-                ColorMapping.Add("Resurrected", Colors.Reanimated);
-            }
-            
-            if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
-            {
-                ColorMapping.Add("Whisperer", Colors.Whisperer);
-                ColorMapping.Add("Persuaded", Colors.Sect);
-            }
+                if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
+                {
+                    ColorMapping.Add("Dracula", Colors.Dracula);
+                    ColorMapping.Add("Vampire", Colors.Vampire);
+                    ColorMapping.Add("Dampyr", Colors.Dampyr);
+                }
+                
+                if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
+                {
+                    ColorMapping.Add("Jackal", Colors.Jackal);
+                    ColorMapping.Add("Recruit", Colors.Cabal);
+                }
+                
+                if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
+                {
+                    ColorMapping.Add("Necromancer", Colors.Necromancer);
+                    ColorMapping.Add("Resurrected", Colors.Reanimated);
+                }
+                
+                if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
+                {
+                    ColorMapping.Add("Whisperer", Colors.Whisperer);
+                    ColorMapping.Add("Persuaded", Colors.Sect);
+                }
 
-            //Add certain Neutral roles if enabled
-            if (CustomGameOptions.AssassinGuessNeutralBenign)
-            {
-                if (CustomGameOptions.AmnesiacOn > 0)
-                    ColorMapping.Add("Amnesiac", Colors.Amnesiac);
+                //Add certain Neutral roles if enabled
+                if (CustomGameOptions.AssassinGuessNeutralBenign)
+                {
+                    if (CustomGameOptions.AmnesiacOn > 0)
+                        ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
-                if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
-                        ColorMapping.Add("Survivor", Colors.Survivor);
+                    if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
+                            ColorMapping.Add("Survivor", Colors.Survivor);
 
-                if (CustomGameOptions.GuardianAngelOn > 0)
-                    ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
+                    if (CustomGameOptions.GuardianAngelOn > 0)
+                        ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
 
-                if (CustomGameOptions.ThiefOn > 0)
-                    ColorMapping.Add("Thief", Colors.Thief);
-            }
+                    if (CustomGameOptions.ThiefOn > 0)
+                        ColorMapping.Add("Thief", Colors.Thief);
+                }
 
-            if (CustomGameOptions.AssassinGuessNeutralEvil)
-            {
-                if (CustomGameOptions.CannibalOn > 0)
-                    ColorMapping.Add("Cannibal", Colors.Cannibal);
+                if (CustomGameOptions.AssassinGuessNeutralEvil)
+                {
+                    if (CustomGameOptions.CannibalOn > 0)
+                        ColorMapping.Add("Cannibal", Colors.Cannibal);
 
-                if (CustomGameOptions.ExecutionerOn > 0)
-                    ColorMapping.Add("Executioner", Colors.Executioner);
+                    if (CustomGameOptions.ExecutionerOn > 0)
+                        ColorMapping.Add("Executioner", Colors.Executioner);
 
-                if (CustomGameOptions.GuesserOn > 0)
-                    ColorMapping.Add("Guesser", Colors.Guesser);
+                    if (CustomGameOptions.GuesserOn > 0)
+                        ColorMapping.Add("Guesser", Colors.Guesser);
 
-                if (CustomGameOptions.TrollOn > 0)
-                    ColorMapping.Add("Troll", Colors.Troll);
+                    if (CustomGameOptions.BountyHunterOn > 0)
+                        ColorMapping.Add("Bounty Hunter", Colors.BountyHunter);
 
-                if (CustomGameOptions.JesterOn > 0 || CustomGameOptions.ExecutionerOn > 0)
-                    ColorMapping.Add("Jester", Colors.Jester);
+                    if (CustomGameOptions.TrollOn > 0 || CustomGameOptions.BountyHunterOn > 0)
+                        ColorMapping.Add("Troll", Colors.Troll);
+
+                    if (CustomGameOptions.ActorOn > 0 || CustomGameOptions.GuesserOn > 0)
+                        ColorMapping.Add("Actor", Colors.Actor);
+
+                    if (CustomGameOptions.JesterOn > 0 || CustomGameOptions.ExecutionerOn > 0)
+                        ColorMapping.Add("Jester", Colors.Jester);
+                }
             }
 
             //Add Modifiers if enabled
@@ -314,6 +340,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
                 if (CustomGameOptions.OverlordOn > 0)
                     ColorMapping.Add("Overlord", Colors.Overlord);
+
+                if (CustomGameOptions.AlliedOn > 0)
+                    ColorMapping.Add("Allied", Colors.Allied);
             }
 
             //Add Abilities if enabled

@@ -23,7 +23,7 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Components
             base.Update();
 
             if (meetingHud.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding)
-                return; // TimerText does not update there
+                return; //TimerText does not update there
             
             meetingHud.TimerText.text += $" ({PageIndex + 1}/{MaxPageIndex + 1})";
         }
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Components
                     var relativeIndex = i % MaxPerPage;
                     var row = relativeIndex / 3;
                     var buttonTransform = button.transform;
-                    buttonTransform.localPosition = meetingHud.VoteOrigin + new Vector3(meetingHud.VoteButtonOffsets.x * (relativeIndex % 3),
-                        meetingHud.VoteButtonOffsets.y * row, buttonTransform.localPosition.z);
+                    buttonTransform.localPosition = meetingHud.VoteOrigin + new Vector3(meetingHud.VoteButtonOffsets.x * (relativeIndex % 3), meetingHud.VoteButtonOffsets.y *
+                        row, buttonTransform.localPosition.z);
                 }
                 else
                     button.gameObject.SetActive(false);

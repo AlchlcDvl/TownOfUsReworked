@@ -38,6 +38,8 @@ namespace TownOfUsReworked.Enums
         GuesserLose,
         ActorWin,
         ActorLose,
+        BountyHunterWin,
+        BountyHunterLose,
 
         CrewWin,
         CrewLose,

@@ -12,22 +12,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked { get; set; }
-        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && x.Is(SubFaction.Undead)) == 0;
+        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead)) == 0;
         private KillButton _stakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
             Name = "Vampire Hunter";
             StartText = "Stake The <color=#7B8968FF>Undead</color>";
-            AbilitiesText = "Stake the <color=#7B8968FF>Undead</color>";
+            AbilitiesText = "- You can investigate players to see if they have been turned.\n- You you investigate a turned person, or an <color=#7B8968FF>Undead</color>" +
+                " tries to interact with you, you will kill them.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
-            LastStaked = DateTime.UtcNow;
             RoleType = RoleEnum.VampireHunter;
             Faction = Faction.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = "Crew (Auditor)";
+            Objectives = CrewWinCon;
+            RoleDescription = "You are a Vampire Hunter! You are a vengeful priest on the hunt for the Undead! Use your expertise in tracking down the Undead!";
         }
 
         public KillButton StakeButton

@@ -11,7 +11,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformExamine
     {
         public static bool Prefix(KillButton __instance)
         {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
             if (__instance == role.ExamineButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ExamineTimer() != 0f)

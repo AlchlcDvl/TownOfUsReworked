@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.AnarchistMod
 
             if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

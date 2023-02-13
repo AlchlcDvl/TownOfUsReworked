@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Wraith))
             {
-                var wraith = (Wraith) role;
+                var wraith = (Wraith)role;
                 
                 if (wraith.IsInvis)
                     wraith.Invis();

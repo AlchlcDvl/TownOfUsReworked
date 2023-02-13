@@ -203,7 +203,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         //Inspector Stuff
         public DateTime LastInspected { get; set; }
-        public List<PlayerControl> InspectedPlayers = new List<PlayerControl>();
+        public List<byte> InspectedPlayers = new List<byte>();
         public Dictionary<PlayerControl, List<Role>> InspectResults = new Dictionary<PlayerControl, List<Role>>();
         private KillButton _inspectButton;
 

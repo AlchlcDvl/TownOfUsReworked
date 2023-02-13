@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
             if (__instance == role.MediateButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.MediateTimer() != 0f)

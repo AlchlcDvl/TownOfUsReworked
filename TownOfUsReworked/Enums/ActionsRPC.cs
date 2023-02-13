@@ -67,6 +67,7 @@ namespace TownOfUsReworked.Enums
         UnMimic,
         NecromancerResurrect,
         WhisperConvert,
-        Confuse
+        Confuse,
+        Beam
     }
 }

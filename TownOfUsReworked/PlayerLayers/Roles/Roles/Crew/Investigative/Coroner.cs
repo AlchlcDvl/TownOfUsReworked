@@ -10,15 +10,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Coroner : Role
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
-        public List<byte> Reported = new List<byte>();
+        public Dictionary<byte, ArrowBehaviour> BodyArrows;
+        public List<byte> Reported;
 
         public Coroner(PlayerControl player) : base(player)
         {
             Name = "Coroner";
             StartText = "Examine The Dead For Info";
-            AbilitiesText = "- You know when players die and for a brief period know where their body is.";
-            AttributesText = "- When reporting a body, you get all of the required info from it.";
+            AbilitiesText = "- You know when players die and will be notified to as to where their body is for a brief period of time.\n- When reporting a body, you get all of " +
+                "the required info from it.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             Faction = Faction.Crew;
@@ -26,9 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
-            AlignmentDescription = CIDescription;
+            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            Reported = new List<byte>();
             RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies and are so skilled to the point you even know when someone dies!" +
                 " Your strong skill makes you a very tempting target for evils so be careful when revealing information.";
         }

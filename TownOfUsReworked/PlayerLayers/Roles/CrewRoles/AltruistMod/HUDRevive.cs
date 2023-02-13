@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
 using AmongUs.GameOptions;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -24,34 +25,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
             var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
             var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
-            var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] {"Players", "Ghost"}));
             DeadBody closestBody = null;
             var closestDistance = float.MaxValue;
+            var allBodies = Object.FindObjectsOfType<DeadBody>();
 
             if (role.ReviveButton == null)
             {
-                role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.ReviveButton.graphic.enabled = true;
                 role.ReviveButton.graphic.sprite = Revive;
                 role.ReviveButton.gameObject.SetActive(false);
             }
 
-            foreach (var collider2D in allocs)
+            foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
             {
-                if (!flag || isDead || collider2D.tag != "DeadBody")
-                    continue;
-
-                var component = collider2D.GetComponent<DeadBody>();
-
-                if (!(Vector2.Distance(truePosition, component.TruePosition) <= maxDistance))
-                    continue;
-
-                var distance = Vector2.Distance(truePosition, component.TruePosition);
+                var distance = Vector2.Distance(truePosition, body.TruePosition);
 
                 if (!(distance < closestDistance))
                     continue;
 
-                closestBody = component;
+                closestBody = body;
                 closestDistance = distance;
             }
             

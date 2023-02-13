@@ -186,7 +186,7 @@ namespace TownOfUsReworked.Patches
 
         public static async Task<bool> checkForUpdate(string updateType = "TOU")
         {
-            //Checks the github api for Town Of Us tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version(on GitHub)
+            //Checks the github api for Town Of Us tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version (on GitHub)
             try
             {
                 string githubURI = "";

@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             if (__instance == role.BlackmailButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.BlackmailTimer() != 0f)
@@ -60,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
             if (__instance == role.ShootButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -34,7 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     (role.ClosestPlayer.Is(RoleEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) ||
                     role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsRecruit() || role.ClosestPlayer.IsFramed() ||
                     PlayerControl.LocalPlayer.IsTurnedTraitor() || role.Player.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll) || role.Player.IsTurnedTraitor() ||
-                    role.ClosestPlayer.IsTurnedTraitor() || role.ClosestPlayer.IsResurrected() || role.ClosestPlayer.IsTurnedFanatic() || role.Player.IsTurnedFanatic();
+                    role.ClosestPlayer.IsTurnedTraitor() || role.ClosestPlayer.IsResurrected() || role.ClosestPlayer.IsTurnedFanatic() || role.Player.IsTurnedFanatic() ||
+                    (role.ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor);
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), flag4);
 
                 if (interact[3] == true && interact[0] == true)

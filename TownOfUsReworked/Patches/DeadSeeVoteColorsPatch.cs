@@ -1,6 +1,9 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,8 +13,13 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)] int index, [HarmonyArgument(2)] Transform parent)
         {
             SpriteRenderer spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+            var insiderFlag = false;
+            var deadFlag = CustomGameOptions.DeadSeeEverything && PlayerControl.LocalPlayer.Data.IsDead;
 
-            if (CustomGameOptions.AnonymousVoting && !(CustomGameOptions.DeadSeeEverything  && PlayerControl.LocalPlayer.Data.IsDead))
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Insider))
+                insiderFlag = Role.GetRole(PlayerControl.LocalPlayer).TasksDone;
+
+            if (CustomGameOptions.AnonymousVoting && !(deadFlag || insiderFlag))
                 PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
             else
                 PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);

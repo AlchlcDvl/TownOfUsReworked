@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             role.CurrentTarget = target;
             
-            if (role.CurrentTarget != null && __instance.enabled)
+            if (role.CurrentTarget != null && Utils.ButtonUsable(__instance))
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

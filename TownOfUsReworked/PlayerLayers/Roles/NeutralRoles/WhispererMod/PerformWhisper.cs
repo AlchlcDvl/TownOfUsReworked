@@ -7,11 +7,12 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Lobby.CustomOption;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class Whisper
+    public class PerformWhisper
     {
         public static bool Prefix(KillButton __instance)
         {
@@ -22,52 +23,52 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 
             if (__instance == role.WhisperButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.WhisperTimer() != 0f)
                     return false;
 
-                Vector2 truePosition = role.Player.GetTruePosition();
-                var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
-                closestPlayers.Remove(role.Player);
-
-                if (role.PlayerConversion.Count == 0)
-                    role.PlayerConversion = role.GetPlayers();
-
-                var oldStats = role.PlayerConversion;
-                role.PlayerConversion = new List<(PlayerControl, int)>();
-
-                foreach (var conversionRate in oldStats)
-                {
-                    var player = conversionRate.Item1;
-                    var stats = conversionRate.Item2;
-
-                    if (closestPlayers.Contains(player))
-                        stats -= (int)role.WhisperConversion;
-
-                    if (!player.Data.IsDead)
-                        role.PlayerConversion.Add((player, stats));
-                }
-
-                role.WhisperCount += 1;
                 role.LastWhispered = DateTime.UtcNow;
-                CheckConversion(role);
+                Whisper(role);
                 return false;
             }
 
             return false;
         }
 
-        public static void CheckConversion(Whisperer role)
+        public static void Whisper(Whisperer role)
         {
+            Vector2 truePosition = role.Player.GetTruePosition();
+            var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
+            closestPlayers.Remove(role.Player);
+
+            if (role.PlayerConversion.Count == 0)
+                role.PlayerConversion = role.GetPlayers();
+
+            var oldStats = role.PlayerConversion;
+            role.PlayerConversion = new List<(PlayerControl, int)>();
+
+            foreach (var conversionRate in oldStats)
+            {
+                var player = conversionRate.Item1;
+                var stats = conversionRate.Item2;
+
+                if (closestPlayers.Contains(player))
+                    stats -= (int)role.WhisperConversion;
+
+                if (!player.Data.IsDead)
+                    role.PlayerConversion.Add((player, stats));
+            }
+
+            role.WhisperCount++;
             var removals = new List<(PlayerControl, int)>();
 
             foreach (var playerConversion in role.PlayerConversion)
             {
                 if (playerConversion.Item2 <= 0)
                 {
-                    role.ConversionCount += 1;
+                    role.ConversionCount++;
 
                     if (CustomGameOptions.WhisperRateDecreases)
                         role.WhisperConversion -= CustomGameOptions.WhisperRateDecrease;
@@ -85,6 +86,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                         var targetRole = Role.GetRole(playerConversion.Item1);
                         targetRole.SubFaction = SubFaction.Sect;
                         targetRole.IsPersuaded = true;
+                        role.Persuaded.Add(playerConversion.Item1.PlayerId);
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
                     }
                     else if (!playerConversion.Item1.Is(SubFaction.Sect))
                         Utils.RpcMurderPlayer(role.Player, playerConversion.Item1);
@@ -93,9 +98,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
             
             foreach (var removal in removals)
                 role.PlayerConversion.Remove(removal);
-
-            removals.Clear();
-            return;
         }
     }
 }

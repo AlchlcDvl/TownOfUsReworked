@@ -48,31 +48,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] { "Players", "Ghost" }));
                 DeadBody closestBody = null;
                 var closestDistance = float.MaxValue;
+                var allBodies = Object.FindObjectsOfType<DeadBody>();
 
                 if (role.ReviveButton == null)
                 {
-                    role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                    role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                     role.ReviveButton.graphic.enabled = true;
                     role.ReviveButton.graphic.sprite = Revive;
                     role.ReviveButton.gameObject.SetActive(false);
                 }
 
-                foreach (var collider2D in allocs)
+                foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
                 {
-                    if (!flag || isDead || collider2D.tag != "DeadBody")
-                        continue;
-
-                    var component = collider2D.GetComponent<DeadBody>();
-
-                    if (!(Vector2.Distance(truePosition, component.TruePosition) <= maxDistance))
-                        continue;
-
-                    var distance = Vector2.Distance(truePosition, component.TruePosition);
+                    var distance = Vector2.Distance(truePosition, body.TruePosition);
 
                     if (!(distance < closestDistance))
                         continue;
 
-                    closestBody = component;
+                    closestBody = body;
                     closestDistance = distance;
                 }
                 
@@ -140,7 +133,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             {
                 if (role.SwoopButton == null)
                 {
-                    role.SwoopButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform);
+                    role.SwoopButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                     role.SwoopButton.graphic.enabled = true;
                     role.SwoopButton.graphic.sprite = Placeholder;
                     role.SwoopButton.gameObject.SetActive(false);
@@ -326,7 +319,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.InspectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
                 role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
-                var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.InspectedPlayers.Contains(x)).ToList();
+                var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.InspectedPlayers.Contains(x.PlayerId)).ToList();
                 Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
                 var renderer = role.InspectButton.graphic;
                 

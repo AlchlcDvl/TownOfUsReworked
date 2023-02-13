@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
             {
-                var glitch = (Glitch) role;
+                var glitch = (Glitch)role;
 
                 if (glitch.IsUsingMimic)
                     glitch.Mimic();

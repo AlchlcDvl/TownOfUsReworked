@@ -23,8 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NEDescription;
             RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
         }
 
@@ -39,19 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return;
                 
             var team = new List<PlayerControl>();
-
             team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-            
             team.Add(TargetPlayer);
-
             __instance.teamToShow = team;
         }
 

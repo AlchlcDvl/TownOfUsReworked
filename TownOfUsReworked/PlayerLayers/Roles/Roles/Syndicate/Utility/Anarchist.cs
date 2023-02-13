@@ -27,8 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Base = true;
             Objectives = SyndicateWinCon;
             RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
-            FactionDescription = SyndicateFactionDescription;
-            AlignmentDescription = SUDescription;
         }
 
         public override void Loses()

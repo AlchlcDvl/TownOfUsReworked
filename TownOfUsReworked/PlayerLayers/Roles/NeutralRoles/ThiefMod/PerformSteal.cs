@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             
             if (__instance == role.StealButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
                 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

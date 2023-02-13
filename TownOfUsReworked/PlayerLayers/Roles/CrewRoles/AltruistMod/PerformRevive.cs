@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
                 
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;

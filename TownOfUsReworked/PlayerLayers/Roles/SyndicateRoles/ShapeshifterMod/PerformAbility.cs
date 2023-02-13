@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
 
             if (__instance == role.ShapeshiftButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ShapeshiftTimer() != 0f)
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

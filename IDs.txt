@@ -24,6 +24,8 @@ Roles:-
   - Vampire Hunter = 21
   - Chameleon = 65
   - Retributionist = 68
+  - Mystic = 71
+  - Seer = 72
 
 Neutral:-
   - Jester = 22
@@ -47,6 +49,9 @@ Neutral:-
   - Troll = 40
   - Guesser = 66
   - Whisperer = 67
+  - Actor = 69
+  - BountyHunter = 70
+  - Necromancer = 73
 
 Intruders:-
   - Undertaker = 41

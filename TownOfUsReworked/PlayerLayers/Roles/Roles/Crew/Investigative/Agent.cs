@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Agent : Role
     {
-        public System.Collections.Generic.Dictionary<byte, TMP_Text> PlayerNumbers = new System.Collections.Generic.Dictionary<byte, TMP_Text>();
+        public System.Collections.Generic.Dictionary<byte, TMP_Text> PlayerNumbers;
 
         public Agent(PlayerControl player) : base(player)
         {
@@ -23,9 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
+            PlayerNumbers = new System.Collections.Generic.Dictionary<byte, TMP_Text>();
             //IntroSound = TownOfUsReworked.AgentIntro;
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CIDescription;
             RoleDescription = "Your are an Agent! You can see extra information from the admin table and the vitals screen. When active, all " +
                 "players in detectable rooms will have their color revealed to you. The Vitals screen will show you how long has someone been dead for.";
             Objectives = CrewWinCon;

@@ -23,9 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Camouflager";
             StartText = "Hinder The <color=#8BFDFDFF>Crew</color>'s Recognition";
-            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.";
-            AttributesText = "- When camouflaged, everyone will appear grey with no name or cosmetics.\n- If the Colorblind Meeting options is on, this effect " +
-                "\ncarries over into the meeting if a meeting is called during a camouflage.";
+            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.\n- When camouflaged, everyone will appear grey with no name or " +
+                "cosmetics." + (CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage." : "");
             Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
             RoleType = RoleEnum.Camouflager;
             Faction = Faction.Intruder;
@@ -34,8 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Concealing)";
             Objectives = IntrudersWinCon;
-            AlignmentDescription = ICDescription;
-            FactionDescription = IntruderFactionDescription;
             RoleDescription = "You are a Camouflager! You can choose to disrupt everyone's vision, causing them to be unable to recognise others. Use this to your " +
                 "advantage and kill while unsuspected in front of everyone!";
         }

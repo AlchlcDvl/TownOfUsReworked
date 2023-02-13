@@ -2,7 +2,6 @@ using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using Reactor.Utilities.Extensions;
 

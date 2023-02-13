@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return false;
 
-            if (!__instance.isActiveAndEnabled || __instance.isCoolingDown)
+            if (!Utils.ButtonUsable(__instance))
                 return false;
             
             var revivedRole = role.RevivedRole?.RoleType;
@@ -89,11 +89,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
+                if (role.InspectedPlayers.Contains(role.ClosestPlayer.PlayerId))
+                    return false;
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true)
                 {
-                    role.InspectedPlayers.Add(role.ClosestPlayer);
+                    role.InspectedPlayers.Add(role.ClosestPlayer.PlayerId);
                     var results = new List<Role>();
                     var targetRole = Role.GetRole(role.ClosestPlayer);
                     results.Add(targetRole);
@@ -369,7 +372,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.MediateButton && revivedRole == RoleEnum.Medium)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.MediateTimer() != 0f)

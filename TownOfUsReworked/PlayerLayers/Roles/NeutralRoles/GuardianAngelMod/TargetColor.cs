@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             {
                 if (player.TargetPlayerId == role.TargetPlayer.PlayerId)
                 {
-                    player.NameText.color = new Color32(255, 217, 0, 255);
-                    player.NameText.text += "<color=#FFFFFFFF> ★</color>";
+                    player.NameText.color = role.Color;
+                    player.NameText.text += " ★";
                 }
             }
         }
@@ -36,11 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (MeetingHud.Instance != null)
                 UpdateMeeting(MeetingHud.Instance, role);
 
-            if (!CustomGameOptions.GAKnowsTargetRole)
-            {
-                role.TargetPlayer.nameText().color =  new Color32(255, 217, 0, 255);
-                role.TargetPlayer.nameText().text += "<color=#FFFFFFFF> ★</color>";
-            }
+            role.TargetPlayer.nameText().color = role.Color;
+            role.TargetPlayer.nameText().text += " ★";
 
             if (role.TargetPlayer == null)
                 return;

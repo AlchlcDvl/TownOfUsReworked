@@ -27,11 +27,13 @@ namespace TownOfUsReworked.Enums
         SetTarget,
         SetGATarget,
         SetGuessTarget,
+        SetBHTarget,
+        SetActorVariables,
 
         Action,
         WinLose,
         Change,
-        
+
         AttemptSound,
 
         Start,
@@ -39,13 +41,13 @@ namespace TownOfUsReworked.Enums
         FixAnimation,
         SetPos,
         SetSettings,
-        
+
         AddMayorVoteBank,
         RemoveAllBodies,
         CheckMurder,
 
         SubmergedFixOxygen,
-        
+
         SendChat,
 
         SetSpawn,
@@ -54,6 +56,8 @@ namespace TownOfUsReworked.Enums
         SyncPlateform,
 
         SetColor,
-        VersionHandshake
+        VersionHandshake,
+
+        ChaosDrive
     }
 }

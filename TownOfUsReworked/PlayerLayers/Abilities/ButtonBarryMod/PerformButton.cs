@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 
             if (__instance == role.ButtonButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies > 0)

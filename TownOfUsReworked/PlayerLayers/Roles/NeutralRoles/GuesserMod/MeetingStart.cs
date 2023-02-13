@@ -4,6 +4,8 @@ using TownOfUsReworked.Classes;
 using System.Linq;
 using Hazel;
 using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
@@ -17,12 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Guesser))
                 return;
-
-            if (true)
-            {
-                var guessmessage = "There seems to be an Overlord bent on dominating the mission! Kill them!";
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, guessmessage);
-            }
+            
+            var role = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+            
+            
         }
     }
 }

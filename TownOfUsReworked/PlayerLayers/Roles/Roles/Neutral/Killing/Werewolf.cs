@@ -195,7 +195,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastMauled;
-            var num = CustomGameOptions.MaulCooldown * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.MaulCooldown) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

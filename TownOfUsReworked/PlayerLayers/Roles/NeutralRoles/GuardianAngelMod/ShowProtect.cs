@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
             {
-                var ga = (GuardianAngel) role;
+                var ga = (GuardianAngel)role;
                 var player = ga.TargetPlayer;
 
                 if (player == null)

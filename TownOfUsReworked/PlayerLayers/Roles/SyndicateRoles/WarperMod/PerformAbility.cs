@@ -9,7 +9,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
     [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    public class PerformKill
+    public class PerformAbility
     {
         public static bool Prefix(KillButton __instance)
         {
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 
             if (__instance == role.WarpButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.WarpTimer() != 0f)
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.KillTimer() != 0f)

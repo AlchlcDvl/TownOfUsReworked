@@ -145,7 +145,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
                         writer.Write((byte)ActionsRPC.SetExtraVotes);
                         writer.Write(role.Player.PlayerId);
-                        writer.WriteBytesAndSize(((Mayor) role).ExtraVotes.ToArray());
+                        writer.WriteBytesAndSize(((Mayor)role).ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }

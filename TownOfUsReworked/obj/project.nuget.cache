@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+AqtvSYWCsmXJqRehJQAVG4akWCvkFF3f+k+TLa2MMn+1yacuLPbDs8tU3jjtIzcvTOLKuwj8gIHzrKO8hjbjw==",
+  "dgSpecHash": "u9s0CzNY15qB3cgj7uNtGm4Bs8WlVvN7uSEW7xIx4XGjRbrZ+hdbZufPsvz8oIDiegFcNTu1dTTQGRuvaUWNnA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Guest User\\Documents\\GitHub\\TownOfUsReworked\\TownOfUsReworked\\TownOfUsReworked.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,7 @@
     "C:\\Users\\Guest User\\.nuget\\packages\\bepinex.il2cpp.msbuild\\2.0.1\\bepinex.il2cpp.msbuild.2.0.1.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\bepinex.unity.common\\6.0.0-be.664\\bepinex.unity.common.6.0.0-be.664.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\bepinex.unity.il2cpp\\6.0.0-be.664\\bepinex.unity.il2cpp.6.0.0-be.664.nupkg.sha512",
-    "C:\\Users\\Guest User\\.nuget\\packages\\gitinfo\\2.0.20\\gitinfo.2.0.20.nupkg.sha512",
+    "C:\\Users\\Guest User\\.nuget\\packages\\gitinfo\\2.3.0\\gitinfo.2.3.0.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\harmonyx\\2.10.1\\harmonyx.2.10.1.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\iced\\1.17.0\\iced.1.17.0.nupkg.sha512",
     "C:\\Users\\Guest User\\.nuget\\packages\\il2cppinterop.common\\1.4.1\\il2cppinterop.common.1.4.1.nupkg.sha512",

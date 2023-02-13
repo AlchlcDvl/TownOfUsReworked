@@ -2,8 +2,9 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using Random = UnityEngine.Random;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
@@ -54,12 +55,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         public static void GuessToAct(PlayerControl player)
         {
             var guess = Role.GetRole<Guesser>(player);
-            /*var newRole  = new Actor(player);
+            var targetRole = Role.GetRole(guess.TargetPlayer);
+            var newRole  = new Actor(player);
             newRole.RoleHistory.Add(guess);
             newRole.RoleHistory.AddRange(guess.RoleHistory);
+            newRole.PretendRoles.Add(targetRole);
+            var i = 0;
+
+            while (i < 4)
+            {
+                var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
+                var role2 = Role.AllRoles.ToList()[random];
+
+                if (role2 != targetRole)
+                {
+                    newRole.PretendRoles.Add(role2);
+                    i++;
+                }
+
+                newRole.PretendRoles.Shuffle();
+            }
             
             if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();*/
+                newRole.RegenTask();
         }
     }
 }

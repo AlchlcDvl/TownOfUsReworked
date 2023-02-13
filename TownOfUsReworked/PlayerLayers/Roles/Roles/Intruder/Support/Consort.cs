@@ -26,16 +26,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Intruder;
             RoleType = RoleEnum.Consort;
             StartText = "Roleblock The Crew And Stop Them From Progressing";
-            AbilitiesText = "- You can seduce players.";
-            AttributesText = "- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
+            AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
                 "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = "Intruder (Support)";
-            FactionDescription = IntruderFactionDescription;
-            AlignmentDescription = ISDescription;
             Objectives = IntrudersWinCon;
             RoleDescription = "You are a Consort! You can have a little bit of \"fun time\" with players to ensure they are unable to stop you from killing" +
                 " everyone.";
@@ -205,15 +202,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
 
             return false;
-        }
-
-        public void PerformBlock()
-        {
-        }
-
-        public void PerformKill()
-        {
-            
         }
     }
 }

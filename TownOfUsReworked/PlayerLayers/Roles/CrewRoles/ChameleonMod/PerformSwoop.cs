@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             if (__instance == role.SwoopButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.SwoopTimer() != 0f)

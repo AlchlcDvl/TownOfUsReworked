@@ -25,8 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Bomber";
             StartText = "Make People Go Boom";
-            AbilitiesText = "- You can place bombs which you can detonate at any time to kill anyone within a certain radius.";
-            AttributesText = "- Your bombs can even kill you and your fellow Syndicate so be careful when making people explode.";
+            AbilitiesText = "- You can place bombs which you can detonate at any time to kill anyone within a certain radius.\n- Your bombs can even kill you and your fellow Syndicate " +
+                "so be careful when making people explode.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
             RoleType = RoleEnum.Bomber;
             Faction = Faction.Syndicate;
@@ -34,11 +34,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = "Syndicate (Killing)";
-            Objectives = IsRecruit ? JackalWinCon : SyndicateWinCon;
+            Objectives = SyndicateWinCon;
             RoleDescription = "You are a Bomber! You are a powerful demolitionist who can get a large number of body counts by detonating bombs placed at key points on the map. Be careful" + 
                 " though, as any unfortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations are key to victory!";
-            FactionDescription = SyndicateFactionDescription;
-            AlignmentDescription = SyKDescription;
         }
 
         public override void Loses()

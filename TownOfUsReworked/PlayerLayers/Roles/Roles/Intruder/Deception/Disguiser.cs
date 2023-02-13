@@ -36,9 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = "Intruder (Deception)";
-            FactionDescription = IntruderFactionDescription;
             Objectives = IntrudersWinCon;
-            AlignmentDescription = IDDescription;
             RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
         }
 

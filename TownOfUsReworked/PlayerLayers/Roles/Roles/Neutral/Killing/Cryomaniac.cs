@@ -27,8 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Cryomaniac";
             StartText = "Who Likes Ice Cream?";
-            AbilitiesText = "- You can douse players in coolant.\n- You can choose to freeze all currently doused players which kills them at the start of the next meeting.";
-            AttributesText = "- People who interact with you will also get doused.";
+            AbilitiesText = "- You can douse players in coolant.\n- You can choose to freeze all currently doused players which kills them at the start of the next meeting." +
+                "\n- People who interact with you will also get doused.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
             RoleType = RoleEnum.Cryomaniac;
             Faction = Faction.Neutral;
@@ -36,10 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = "Neutral (Killing)";
-            FactionDescription = NeutralFactionDescription;
-            AlignmentDescription = NKDescription;
             RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
-            Objectives = NKWinCon;
         }
 
         public override void Loses()
@@ -236,20 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDoused;
-            var num = CustomGameOptions.DouseCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public float FreezeTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDoused;
-            var num = CustomGameOptions.IgniteCd * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

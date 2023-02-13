@@ -3,8 +3,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 namespace TownOfUsReworked.Lobby.Extras.RainbowMod
 {
-    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames),
-        typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
+    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
     public class PatchColours
     {
         public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name)

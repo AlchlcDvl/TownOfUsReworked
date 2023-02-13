@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 
             if (__instance == role.AlertButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (!role.ButtonUsable)

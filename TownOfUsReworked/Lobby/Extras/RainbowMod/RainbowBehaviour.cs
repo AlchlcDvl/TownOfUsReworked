@@ -8,6 +8,8 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
         public Renderer Renderer;
         public int Id;
 
+        public RainbowBehaviour(IntPtr ptr) : base(ptr) {}
+
         public void AddRend(Renderer rend, int id)
         {
             Renderer = rend;
@@ -22,7 +24,5 @@ namespace TownOfUsReworked.Lobby.Extras.RainbowMod
             if (RainbowUtils.IsRainbow(Id))
                 RainbowUtils.SetRainbow(Renderer);
         }
-
-        public RainbowBehaviour(IntPtr ptr) : base(ptr) {}
     }
 }

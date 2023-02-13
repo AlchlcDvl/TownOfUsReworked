@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
         {
             foreach (var role in Role.GetRoles(RoleEnum.SerialKiller))
             {
-                var sk = (SerialKiller) role;
+                var sk = (SerialKiller)role;
                 
                 if (sk.Lusted)
                     sk.Bloodlust();

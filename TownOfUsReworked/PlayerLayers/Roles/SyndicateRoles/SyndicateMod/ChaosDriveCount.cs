@@ -5,37 +5,37 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class ChaosDriveCount
     {
-        public static bool messageSent = false;
-
         public static void Postfix()
         {
-            Role.ChaosDriveMeetingTimerCount += 1;
-
-            if (Role.ChaosDriveMeetingTimerCount >= CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive)
-                Role.SyndicateHasChaosDrive = true;
+            if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount)
+                Role.ChaosDriveMeetingTimerCount++;
 
             var message = "";
-            
-            if (!Role.SyndicateHasChaosDrive)
-            {
-                if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
-                    message = "This is the last meeting before the Syndicate gets their hands on the Chaos Drive!";
-                else
-                    message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} remain till the Syndicate gets their hands on the Chaos Drive!";
-            }
-            else
+
+            if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount - 1)
+                message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the Syndicate gets their hands on the Chaos Drive!";
+            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
+                message = "This is the last meeting before the Syndicate gets their hands on the Chaos Drive!";
+            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount)
                 message = "The Syndicate now possesses the Chaos Drive!";
 
-            if (!messageSent)
+            if (!Role.SyndicateHasChaosDrive && message != "")
             {
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
                 writer.Write(message);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                messageSent = Role.SyndicateHasChaosDrive;
+            }
+
+            if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount && !Role.SyndicateHasChaosDrive)
+            {
+                Role.SyndicateHasChaosDrive = true;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ChaosDrive, SendOption.Reliable, -1);
+                writer.Write(true);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
     }

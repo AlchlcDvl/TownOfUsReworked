@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
             if (__instance == role.MorphButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.MorphButton.graphic.sprite == SampleSprite)

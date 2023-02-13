@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Tracker : Role
     {
-        public Dictionary<byte, ArrowBehaviour> TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> TrackerArrows;
         public PlayerControl ClosestPlayer;
         public DateTime LastTracked { get; set; }
         public int UsesLeft;
@@ -24,19 +24,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Tracker";
             StartText = "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = "Track suspicious players";
+            AbilitiesText = "- You can track players which creates arrows that update every now and then.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
-            LastTracked = DateTime.UtcNow;
             RoleType = RoleEnum.Tracker;
             Faction = Faction.Crew;
             UsesLeft = CustomGameOptions.MaxTracks;
             FactionName = "Crew";
+            TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = "Crew (Investigative)";
-            FactionDescription = CrewFactionDescription;
-            AlignmentDescription = CIDescription;
             Objectives = CrewWinCon;
+            RoleDescription = "You are a Tracker! You can ";
         }
 
         public override void Loses()

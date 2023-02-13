@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Hazel;
-using TownOfUsReworked.Patches;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
@@ -66,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (LoverDead())
                 return true;
 
-            if (Utils.LoversWin(ObjectifierType))
+            if (Utils.LoversWin(Player))
             {
                 Wins();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);

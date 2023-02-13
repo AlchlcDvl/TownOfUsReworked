@@ -21,9 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Blackmailer";
             StartText = "You Know Their Dirty Little Secrets";
-            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting.";
-            AttributesText = "- You can blackmail fellow <color=#FF0000FF>Intruders</color>.\n- Everyone will be alerted at the start of the meeting" + 
-                " that someone has been blackmailed.";
+            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting.\n- You can blackmail fellow <color=#FF0000FF>Intruders</color>.\n- " +
+                "Everyone will be alerted at the start of the meeting that someone has been blackmailed.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             Faction = Faction.Intruder;
@@ -31,9 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = "Intruder (Concealing)";
-            AlignmentDescription = ICDescription;
-            Objectives = IsRecruit ? JackalWinCon : IntrudersWinCon;
-            FactionDescription = IntruderFactionDescription;
+            Objectives = IntrudersWinCon;
             RoleDescription = blackmailed ? "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be " +
                 $"careful though, as you cannot blackmail yourself so the others will get wise to your identity pretty quickly. Currently {Blackmailed.name} is blackmailed." :
                 "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be careful though, as you cannot" +

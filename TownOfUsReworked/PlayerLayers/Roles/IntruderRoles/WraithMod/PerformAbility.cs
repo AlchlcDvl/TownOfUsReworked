@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 
             if (__instance == role.InvisButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (role.InvisTimer() != 0f)

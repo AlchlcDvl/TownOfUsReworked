@@ -120,6 +120,8 @@ namespace TownOfUsReworked.Patches
                 return CustomGameOptions.GuessVentSwitch;
             else if (player.Is(RoleEnum.Troll) && CustomGameOptions.TrollVent)
                 return CustomGameOptions.TrollVentSwitch;
+            else if (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorVent)
+                return CustomGameOptions.ActVentSwitch;
             else
                 return true;
         }

@@ -10,6 +10,7 @@ namespace TownOfUsReworked.MCI
     {
         public static Dictionary<int, ClientData> clients = new();
         public static Dictionary<byte, int> PlayerIdClientId = new();
+        public static bool MCIActive = false;
         public const int MaxID = 100;
 
         public static int AvailableId()

@@ -20,9 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Utility)";
             //IntroSound = TownOfUsReworked.CrewmateIntro;
             Base = true;
-            AlignmentDescription = "You are a Crew (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
             RoleDescription = CUDescription;
-            FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
         }
 

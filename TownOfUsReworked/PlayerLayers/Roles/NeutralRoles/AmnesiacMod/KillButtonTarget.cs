@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             
             role.CurrentTarget = target;
 
-            if (role.CurrentTarget && __instance.enabled)
+            if (role.CurrentTarget && Utils.ButtonUsable(__instance))
             {
                 var component = role.CurrentTarget.bodyRenderer;
                 component.material.SetFloat("_Outline", 1f);

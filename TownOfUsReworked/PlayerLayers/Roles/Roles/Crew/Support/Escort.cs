@@ -3,7 +3,6 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Lobby.CustomOption;
 using System;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 using Hazel;
 using Reactor.Utilities;
 
@@ -25,16 +24,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
             RoleType = RoleEnum.Escort;
             StartText = "Roleblock Players And Stop Them From Harming Others";
-            AbilitiesText = "- You can seduce players.";
-            AttributesText = "- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
+            AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
                 "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
-            AlignmentDescription = CSDescription;
-            FactionDescription = CrewFactionDescription;
             Objectives = CrewWinCon;
             RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
             RoleBlockImmune = true;

@@ -49,6 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public virtual void Loses() {}
         public virtual void Wins() {}
 
+        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
+
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
         protected internal Color32 SubFactionColor { get; set; } = Colors.Clear;
@@ -60,20 +62,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
         protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
-        //protected internal Dictionary<byte, TMP_Text> PlayerNumbers = new Dictionary<byte, TMP_Text>();
 
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
-        protected internal string AttributesText { get; set; } = " - None.";
 
         protected internal string Name { get; set; } = "";
         protected internal string AlignmentName { get; set; } = "";
         protected internal string FactionName { get; set; } = "";
         protected internal string SubFactionName { get; set; } = "";
 
-        protected internal string FactionDescription { get; set; } = "";
         protected internal string RoleDescription { get; set; } = "";
-        protected internal string AlignmentDescription { get; set; } = "";
 
         protected internal string Objectives { get; set; } = "";
         protected internal string KilledBy { get; set; } = "";
@@ -93,27 +91,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsSynFanatic { get; set; } = false;
         protected internal bool IsCrewAlly { get; set; } = false;
 
-        public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill: <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
-            "<color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
-            "<color=#1D7CF2FF>Neophytes</color>.";
-        public static string IntruderFactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do " +
+        public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
+        public static string IntrudersObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +
+            "Neophytes.";
+        public static string IntrudersFactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do " +
             "anything to ensure your victory over others.";
-        public static string ISDescription = "You are an Intruder (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Support them in " +
+        public static string ISDescription = "You are an Intruder (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Help your team in " +
             "everyway possible.";
         public static string ICDescription = "You are an Intruder (Concealing) role! It's your primary job to ensure no information incriminating you or your mates" + 
             " is revealed to the rest of the crew. Do as much as possible to ensure as little information is leaked.";
         public static string IDDescription = "You are an Intruder (Deception) role! It's your job to ensure there's only false information spreading around about you. Keep the " +
-            "misinformation circulating, for it can be advantageous to completely fool even one player.";
+            "misinformation circulating, for it can be advantageous to completely fool even one crew member.";
         public static string IUDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
         public static string IKDescription = "You are a Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " + 
             "with your abilities!";
 
-        public static string SyndicateWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#575657FF>Recruited</color> <color=#008000FF>Syndicate</color>, " +
-            "<color=#8BFDFDFF>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
-            "<color=#1D7CF2FF>Neophytes</color>.";
-        public static string SyndicateFactionDescription = "Your faction is the Syndicate! Your faction has low killing power and is instead geared towards delaying the wins of other " +
-            "factions and causing some good old chaos. After a certain number of meeting, one of you will recieve the \"Chaos Drive\" which will enhance your powers and " +
-            "give you the ability to kill, if you didn't already.";
+        public static string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds.\n   or\n" : "") + "- Cause chaos and kill anyone who opposes " +
+            "the <color=#008000FF>Syndicate</color>.";
+        public static string SyndicateObjective = (CustomGameOptions.AltImps ? "Have a critical sabotage reach 0 seconds or k" : "K") + "ill off all Intruders, Unfaithful Syndicate, " +
+            "Crew and Neutral Killers, Proselytes and Neophytes.";
+        public static string SyndicateFactionDescription = "Your faction is the Syndicate! Your faction has low killing power, is instead geared towards delaying the wins of other " +
+            "factions and causing some good old chaos. After a certain number of meetings, the Syndicate will recieve the \"Chaos Drive\" which will enhance every member's powers and " +
+            "give you an additional ability to kill.";
         public static string SUDescription = "You are a Syndicate (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
         public static string SSuDescription = "You are a Syndicate (Support) role! It is your job to ensure no one bats an eye to the things you or your mates do. Cooperation is key " +
             "for your role to be used to its maximum potential.";
@@ -123,6 +122,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string SPDescription = "You are a Syndicate (Power) role! You are a powerful role who's only goal is to chaos and destruction. Ensure that the crew cannot get " +
             "their wits and information in order!";
 
+        public static string CrewWinCon = "- Finish all tasks.\n   or\n- Eject all <color=#FF0000FF>evildoers</color>.";
+        public static string CrewObjective = "Finish your tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, Neutral Killers, Proselytes and Neophytes.";
         public static string CrewFactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
             " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
         public static string CPDescription = "You are a Crew (Protective) role! You have the capability to stop someone from losing their life, and quite possibly" +
@@ -130,32 +131,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string CIDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
             " can deduce who is good and who is not.";
         public static string CUDescription = "You are a Crewmate! Your role is the base role for the Crew faction. You have no special abilities and should probably do your tasks.";
-        public static string CrewWinCon = "- Finish your tasks along with other <color=#8BFDFDFF>Crew</color>.\n   or\n- Kill: <color=#FF0000FF>Intruders</color>, " +
-            "<color=#008000FF>Syndicate</color>, <color=#370D43FF>Traitor</color>, <color=#4545FFFF>Corrupted</color> and <color=#575657FF>Recruited</color> " +
-            "<color=#8BFDFDFF>Crew</color>,\n<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
-            "<color=#1D7CF2FF>Neophytes</color>.";
         public static string CSDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +
             "fullest extent to bring about a Crew victory!";
-        public static string CADescription = "You are a Crew (Auditor) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +
-            "fullest extent to bring about a Crew victory!";
+        public static string CADescription = "You are a Crew (Auditor) role! You have a special goal. Find and eliminate those who stray from their path!";
+        public static string CKDescription = "You are a Crew (Killing) role! You have no aversion to killing for the better good, even if it costs your life! Elimiate the evildoers" +
+            " and save the Crew!";
+        public static string CSvDescription = "You are a Crew (Sovereign) role! You are a democrat who has no issues with influencing the ballots to get what you want! Stay in power" +
+            " get rid of any and all evildoers who threaten your position!";
             
         public static string NeutralFactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
             " a certain objective.";
         public static string NBDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
-        public static string NKWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color>, <color=#008000FF>Syndicate</color>, <color=#575657FF>Recruited</color> " +
-            "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> of the same type, other <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, " +
-            "<color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>";
         public static string NKDescription = "You are a Neutral (Killing) role! You side with no one and can only win by yourself. You have a special way to kill and gain a large body" +
             " count. Make sure no one survives.";
         public static string NEDescription = "You are a Neutral (Evil) role! You have a conflicting win condition over others and upon achieving it will most likely end the game. " +
             "Finish your objective before the others finish you!";
-        public static string NPDescription = "You are now a Neutral (Proselyte) role! You are no longer the original you, and instead win with the one who converted you! Help your leader" + 
-            " gain a quick majority!";
-        public static string JackalWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#008000FF>Syndicate</color>, <color=#B3B3B3FF>Neutral</color>" +
-            " <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and other <color=#1D7CF2FF>Neophytes</color> excluding the other <color=#575657FF>Recruits</color>";
-        public static string UndeadWinCon = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFDFF>Crew</color>, <color=#008000FF>Syndicate</color> and " +
-            "Non-<color=#7B8968FF>Undead</color> <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>, <color=#1D7CF2FF>Proselytes</color> and " +
-            "<color=#1D7CF2FF>Neophytes</color>.";
+        public static string NPDescription = "You are now a Neutral (Proselyte) role! You are no longer the original you, and instead win as your new self!";
         public static string NNDescription = "You are a Neutral (Neophyte) role! You are the leader of your little faction and your main purpose is to convert others to your cause. " +
             "Gain a majority and overrun the crew!";
 
@@ -229,8 +220,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 role.AbilityButtons.Add(button);
         }
 
-        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
-
         public static void SetColors()
         {
             
@@ -291,12 +280,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayerControl.LocalPlayer.Is(RoleEnum.Phantom));
             var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
             var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
-            var cabalFlag = ((SubFaction == SubFaction.Cabal || IsRecruit) && (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) || PlayerControl.LocalPlayer.IsRecruit()));
-            var sectFlag = ((SubFaction == SubFaction.Sect || IsPersuaded) && (PlayerControl.LocalPlayer.Is(SubFaction.Sect) || PlayerControl.LocalPlayer.IsPersuaded()));
-            var reanimatedFlag = ((SubFaction == SubFaction.Reanimated || IsResurrected) && (PlayerControl.LocalPlayer.Is(SubFaction.Reanimated) || PlayerControl.LocalPlayer.IsResurrected()));
-            var undeadFlag = SubFaction == SubFaction.Undead && PlayerControl.LocalPlayer.Is(SubFaction.Undead);
+            var jackalFlag = PlayerControl.LocalPlayer.GetJackal() != null;
+            var cabalFlag = false;
+            var whispererFlag = PlayerControl.LocalPlayer.GetWhisperer() != null;
+            var sectFlag = false;
+            var draculaFlag = PlayerControl.LocalPlayer.GetDracula() != null;
+            var undeadFlag = false;
+            var necromancerFlag = PlayerControl.LocalPlayer.GetNecromancer() != null;
+            var reanimatedFlag = false;
+
+            if (jackalFlag)
+                cabalFlag = PlayerControl.LocalPlayer.GetJackal().Recruited.Contains(Player.PlayerId);
+            
+            if (whispererFlag)
+                sectFlag = PlayerControl.LocalPlayer.GetWhisperer().Persuaded.Contains(Player.PlayerId);
+
+            if (draculaFlag)
+                undeadFlag = PlayerControl.LocalPlayer.GetDracula().Converted.Contains(Player.PlayerId);
+
+            if (necromancerFlag)
+                reanimatedFlag = PlayerControl.LocalPlayer.GetNecromancer().Resurrected.Contains(Player.PlayerId);
+
             var flag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
-            return coronerFlag || consigFlag || deadFlag || flag;
+            return (coronerFlag || consigFlag || deadFlag || flag) && GameStates.IsInGame;
         }
 
         internal virtual bool SelfCriteria()
@@ -306,7 +312,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (role == null)
                 return false;
 
-            return role == this && Local;
+            return role == this && Local && this.Player == PlayerControl.LocalPlayer;
         }
 
         internal virtual bool ColorCriteria()
@@ -415,11 +421,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
         {
-            if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
-                return "";
-
             string PlayerName = Player.GetDefaultOutfit().PlayerName;
-            
+
+            if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
+                PlayerName = "";
+
             if (LobbyBehaviour.Instance)
                 return PlayerName;
             
@@ -439,6 +445,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Local && CustomGameOptions.ExeTargetKnows && PlayerControl.LocalPlayer.IsExeTarget())
                 PlayerName += " <color=#CCCCCCFF> §</color>";
+
+            if (Local && PlayerControl.LocalPlayer.IsBHTarget())
+                PlayerName += " <color=#B51E39FF> Θ</color>";
 
             if ((Player.IsRecruit() || Player.Is(RoleEnum.Jackal)) && (PlayerControl.LocalPlayer.IsRecruit() || PlayerControl.LocalPlayer.Is(RoleEnum.Jackal)))
                 PlayerName += " <color=#575657FF> $</color>";
@@ -479,6 +488,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var role in AllRoles)
             {
                 if (role.RoleType == roleEnum)
+                    return role;
+            }
+
+            return null;
+        }
+        
+        public static Role GetRoleFromName(string name)
+        {
+            foreach (var role in AllRoles)
+            {
+                if (role.Name == name)
                     return role;
             }
 
@@ -730,26 +750,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-		public virtual List<PlayerControl> GetUntargetables()
-		{
-			List<PlayerControl> list = new List<PlayerControl>();
-
-			List<PlayerControl> deadPlayers = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Data.IsDead || x.Data.Disconnected).ToList();
-			list.AddRange(deadPlayers);
-
-            List<PlayerControl> ventedPlayers = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.inVent &&
-                CustomGameOptions.VentTargetting).ToList();
-            list.AddRange(ventedPlayers);
-
-			return list;
-		}
-
         public void RegenTask()
         {
             if (!Local)
                 return;
 
-            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}\nAttributes:\n{AttributesText}</color>";
+            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}</color>";
             string otherTasks = "";
             string modifierTask = "";
             string abilityTask = "";
@@ -888,8 +894,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                     task.transform.SetParent(player.transform, false);
-                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.IsRecruit ? JackalWinCon : role.Objectives)}\n" +
-                        $"Abilities:\n{role.AbilitiesText}\nAttributes:\n{role.AttributesText}</color>";
+                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.Objectives)}\n" +
+                        $"Abilities:\n{role.AbilitiesText}</color>";
                         
                     player.myTasks.Insert(0, task);
                 }
@@ -919,42 +925,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
             }
         }
-        
-        public PlayerControl GetTarget(List<PlayerControl> untargetablePlayers = null, PlayerControl targetingPlayer = null)
-		{
-			PlayerControl result = null;
-			float num = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-
-			if (!ShipStatus.Instance)
-				return result;
-
-			if (targetingPlayer == null)
-				targetingPlayer = PlayerControl.LocalPlayer;
-
-			Vector2 truePosition = targetingPlayer.GetTruePosition();
-
-			foreach (GameData.PlayerInfo playerInfo in GameData.Instance.AllPlayers)
-			{
-				if (!playerInfo.Disconnected && playerInfo.PlayerId != targetingPlayer.PlayerId && !playerInfo.IsDead &&  !playerInfo.Role.IsImpostor)
-				{
-					PlayerControl @object = playerInfo.Object;
-
-					if ((untargetablePlayers == null || !untargetablePlayers.Any((PlayerControl x) => x == @object)) && @object)
-					{
-						Vector2 vector = @object.GetTruePosition() - truePosition;
-						float magnitude = vector.magnitude;
-
-						if (magnitude <= num && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, magnitude, Constants.ShipAndObjectsMask))
-						{
-							result = @object;
-							num = magnitude;
-						}
-					}
-				}
-			}
-
-			return result;
-		}
 
         [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
         public static class LobbyBehaviour_Start
@@ -1022,6 +992,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var player in __instance.playerStates)
                 {
+                    if (Utils.PlayerById(player.TargetPlayerId) == null)
+                        continue;
+
+                    if (Utils.PlayerById(player.TargetPlayerId).Data.Disconnected)
+                        continue;
+
                     player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
                     var role = GetRole(player);
 
@@ -1033,8 +1009,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         bool loverrivalFlag1 = role.LoverRivalCriteria();
                         bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
 
-                        player.NameText.text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1,
-                            player);
+                        player.NameText.text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1, player);
 
                         if (role.ColorCriteria())
                             player.NameText.color = role.Color;
@@ -1066,13 +1041,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (!(player.Data != null && ((player.Is(Faction.Intruder) && PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (player.Is(Faction.Syndicate) &&
-                        PlayerControl.LocalPlayer.Is(Faction.Syndicate)))))
-                    {
-                        player.nameText().text = player.name;
-                        player.nameText().color = new Color32(255, 255, 255, 255);
-                    }
-
                     var role = GetRole(player);
 
                     if (role != null && role.Criteria())

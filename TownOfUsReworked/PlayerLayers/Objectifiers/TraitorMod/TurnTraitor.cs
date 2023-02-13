@@ -4,7 +4,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Reactor.Utilities;
@@ -30,10 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 
             var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
 
-            if (traitor == null || !traitor.TasksDone)
-                traitor.Turned = true;
-
-            if (traitor.Turned)
+            if (traitor.TasksDone)
             {
                 TurnTraitor(__instance);
 
@@ -137,7 +133,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             else
                 return;
             
-            if (traitorObj.Turned)
+            if (traitorRole.TasksDone)
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
 
             if (CustomGameOptions.TraitorCanAssassin)
@@ -165,7 +161,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 var revealerRole = (Revealer)revealer;
 
-                if (revealerRole.Revealed && traitor.Is(ObjectifierEnum.Traitor) && traitorObj.Turned && CustomGameOptions.RevealerRevealsTraitor)
+                if (revealerRole.Revealed && traitor.Is(ObjectifierEnum.Traitor) && traitorRole.TasksDone && CustomGameOptions.RevealerRevealsTraitor)
                 {
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -177,6 +173,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     revealerRole.ImpArrows.Add(arrow);
                 }
             }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                Coroutines.Start(Utils.FlashCoroutine(traitorObj.Color));
         }
     }
 }

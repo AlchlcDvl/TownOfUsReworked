@@ -2,9 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -16,12 +13,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
             __instance.KillButton.gameObject.SetActive(false);
+            __instance.ReportButton.gameObject.SetActive(!MeetingHud.Instance);
 
             if (Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && GameStates.IsInGame)
             {
                 Sprite Vent;
+                var role = Role.GetRole(PlayerControl.LocalPlayer);
 
                 if (PlayerControl.LocalPlayer.Is(Faction.Intruder))
                     Vent = TownOfUsReworked.IntruderVent;

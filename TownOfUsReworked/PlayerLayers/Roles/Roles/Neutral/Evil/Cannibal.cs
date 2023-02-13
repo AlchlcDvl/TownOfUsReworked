@@ -27,16 +27,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             StartText = "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
             Faction = Faction.Neutral;
-            AbilitiesText = "- You can consume a body, making it disappear from the game.";
-            AttributesText = "- You know when someone dies, so you can find their body.";
+            AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = "Neutral (Evil)";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
-            AlignmentDescription = NEDescription;
-            FactionDescription = NeutralFactionDescription;
             Objectives = $"- Eat {EatNeed} {body}.";
         }
 
@@ -103,17 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return;
                 
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-
             team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-
             __instance.teamToShow = team;
         }
 

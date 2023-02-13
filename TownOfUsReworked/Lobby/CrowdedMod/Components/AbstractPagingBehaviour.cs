@@ -10,6 +10,9 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Components
         private int _page;
         public virtual int MaxPerPage => 15;
 
+        public virtual int MaxPageIndex => throw new NotImplementedException();
+        public virtual void OnPageChanged() => throw new NotImplementedException();
+
         public virtual int PageIndex
         {
             get => _page;
@@ -19,9 +22,6 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Components
                 OnPageChanged();
             }
         }
-
-        public virtual int MaxPageIndex => throw new NotImplementedException();
-        public virtual void OnPageChanged() => throw new NotImplementedException();
 
         public void Start()
         {

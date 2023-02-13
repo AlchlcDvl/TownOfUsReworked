@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
 
             if (__instance == role.MurderButton)
             {
-                if (!__instance.isActiveAndEnabled)
+                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

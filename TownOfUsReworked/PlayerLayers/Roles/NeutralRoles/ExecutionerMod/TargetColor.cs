@@ -35,11 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (MeetingHud.Instance)
                 UpdateMeeting(MeetingHud.Instance, role);
 
-            if (!CustomGameOptions.ExeKnowsTargetRole)
-            {
-                role.TargetPlayer.nameText().color = role.Color;
-                role.TargetPlayer.nameText().text += " §";
-            }
+            role.TargetPlayer.nameText().color = role.Color;
+            role.TargetPlayer.nameText().text += " §";
 
             if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
                 return;

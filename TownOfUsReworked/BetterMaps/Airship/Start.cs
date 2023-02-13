@@ -11,14 +11,4 @@ namespace TownOfUsReworked.BetterMaps.Airship
             SpawnInMinigamePatch.GameStarted = false;
         }
     }
-
-    [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateHeliSize))]
-    class HeliCountDown
-    {
-        public static void Prefix(HeliSabotageSystem __instance)
-        {
-            if (__instance.Countdown > CustomGameOptions.CrashTimer)
-                __instance.Countdown = CustomGameOptions.CrashTimer;
-        }
-    }
 }
