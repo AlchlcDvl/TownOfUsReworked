@@ -513,6 +513,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     BHTargetColor.BHToTroll(bh.Player);
                 }
+
+                bh.LastChecked = DateTime.UtcNow;
+                bh.LastChecked = bh.LastChecked.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BiteCd);
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Necromancer))
+            {
+                var necromancer = (Necromancer)role;
+                necromancer.LastResurrected = DateTime.UtcNow;
+                necromancer.LastResurrected = necromancer.LastResurrected.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ResurrectCooldown);
+                necromancer.LastKilled = DateTime.UtcNow;
+                necromancer.LastKilled = necromancer.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NecroKillCooldown);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Dracula))

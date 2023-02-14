@@ -528,6 +528,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 role2.LastRecruited = DateTime.UtcNow;
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Necromancer))
+            {
+                var role2 = (Necromancer)role;
+                role2.LastResurrected = DateTime.UtcNow;
+                role2.LastKilled = DateTime.UtcNow;
+            }
+
             foreach (var role in Role.GetRoles(RoleEnum.Jester))
             {
                 var role2 = (Jester)role;

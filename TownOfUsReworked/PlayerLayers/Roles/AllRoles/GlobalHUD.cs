@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 return;
 
             __instance.KillButton.gameObject.SetActive(false);
-            __instance.ReportButton.gameObject.SetActive(!MeetingHud.Instance);
+            __instance.ReportButton.gameObject.SetActive(GameStates.IsRoaming);
 
             if (Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && GameStates.IsInGame)
             {
