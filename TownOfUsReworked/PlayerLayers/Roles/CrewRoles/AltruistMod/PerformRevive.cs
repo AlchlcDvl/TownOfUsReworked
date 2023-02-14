@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Altruist))
                 return false;
-            
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
@@ -24,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
-                
+
                 if (!Utils.ButtonUsable(__instance))
                     return false;
 

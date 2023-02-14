@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.PlayerLayers
+﻿using TownOfUsReworked.Classes;
+
+namespace TownOfUsReworked.PlayerLayers
 {
     public interface IVisualAlteration
     {

@@ -37,13 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             if (CustomGameOptions.AltruistTargetBody)
             {
-                if (target != null)
+                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
-                    foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
-                    {
-                        if (deadBody.ParentId == target.ParentId)
-                            deadBody.gameObject.Destroy();
-                    }
+                    if (deadBody.ParentId == parentId)
+                        deadBody.gameObject.Destroy();
                 }
             }
 
@@ -54,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var now = DateTime.UtcNow;
                 var seconds = (now - startTime).TotalSeconds;
 
-                if (seconds < CustomGameOptions.ReviveDuration)
+                if (seconds < CustomGameOptions.AltReviveDuration)
                     yield return null;
                 else
                     break;
@@ -121,6 +118,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     if (deadBody.ParentId == lover.PlayerId)
                         deadBody.gameObject.Destroy();
                 }
+
+                var loverRole = Role.GetRole(lover);
+                loverRole.DeathReason = DeathReasonEnum.Revived;
+                loverRole.KilledBy = " By " + role.PlayerName;
             }
 
             if (revived.Any(x => x.AmOwner))

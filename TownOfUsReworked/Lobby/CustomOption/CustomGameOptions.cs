@@ -383,7 +383,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Altruist Settings
         public static bool AltruistTargetBody => Generate.AltruistTargetBody.Get();
         public static bool UniqueAltruist => Generate.UniqueAltruist.Get();
-        public static float ReviveDuration => Generate.ReviveDuration.Get();
+        public static float AltReviveDuration => Generate.AltReviveDuration.Get();
         public static int AltruistCount => (int)Generate.AltruistCount.Get();
 
         //Medic Settings
@@ -558,7 +558,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool UniqueGuesser => Generate.UniqueGuesser.Get();
         public static bool GuesserAfterVoting => Generate.GuesserAfterVoting.Get();
         public static bool MultipleGuesses => Generate.MultipleGuesses.Get();
-        public static int MeetingHintCount => (int)Generate.MeetingHintCount.Get();
         public static int GuessCount => (int)Generate.GuessCount.Get();
 
         //Glitch Settings
@@ -639,6 +638,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int ResurrectCount => (int)Generate.ResurrectCount.Get();
         public static int NecromancerCount => (int)Generate.NecromancerCount.Get();
         public static bool UniqueNecromancer => Generate.UniqueNecromancer.Get();
+        public static bool NecromancerTargetBody => Generate.NecromancerTargetBody.Get();
+        public static float NecroResurrectDuration => Generate.NecroResurrectDuration.Get();
 
         //Whisperer Settings
         public static bool WhispVent => Generate.WhispVent.Get();

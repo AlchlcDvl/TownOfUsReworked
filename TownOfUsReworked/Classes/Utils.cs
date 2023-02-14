@@ -1014,6 +1014,9 @@ namespace TownOfUsReworked.Classes
 
         public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target)
         {
+            if (killer == null || target == null)
+                return;
+
             MurderPlayer(killer, target);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
             writer.Write((byte)ActionsRPC.BypassKill);

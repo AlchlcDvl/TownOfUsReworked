@@ -67,15 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return;
                 
             var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-
             team.Add(PlayerControl.LocalPlayer);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(SubFaction) && player != PlayerControl.LocalPlayer)
-                    team.Add(player);
-            }
-
             __instance.teamToShow = team;
         }
 

@@ -39,6 +39,7 @@ using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using Eat = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod.Coroutine;
 using Revive = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.Coroutine;
+using Resurrect = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod.Coroutine;
 using RetRevive = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Coroutine;
 using Alt = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod.KillButtonTarget;
 using PerformRemember = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod.PerformRemember;
@@ -2841,6 +2842,26 @@ namespace TownOfUsReworked.Patches
                                             Coroutines.Start(Utils.FlashCoroutine(altruistRole.Color));
 
                                         Coroutines.Start(Revive.AltruistRevive(body, altruistRole));
+                                    }
+                                }
+
+                                break;
+
+                            case ActionsRPC.NecromancerResurrect:
+                                readByte1 = reader.ReadByte();
+                                var necroPlayer = Utils.PlayerById(readByte1);
+                                var necroRole = Role.GetRole<Necromancer>(necroPlayer);
+                                readByte = reader.ReadByte();
+                                var theDeadBodies3 = Object.FindObjectsOfType<DeadBody>();
+
+                                foreach (var body in theDeadBodies3)
+                                {
+                                    if (body.ParentId == readByte)
+                                    {
+                                        if (body.ParentId == PlayerControl.LocalPlayer.PlayerId)
+                                            Coroutines.Start(Utils.FlashCoroutine(necroRole.Color));
+
+                                        Coroutines.Start(Resurrect.NecromancerResurrect(body, necroRole));
                                     }
                                 }
 

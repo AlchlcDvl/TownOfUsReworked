@@ -20,12 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool TargetGuessed = false;
         public bool GuessedThisMeeting { get; set; } = false;
         public int RemainingGuesses { get; set; }
-        public int RemainingHints { get; set; }
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
         public bool GuesserWins { get; set; }
-        public bool RoleHintGiven;
         public bool FactionHintGiven;
-        public bool LetterHintGiven;
+        public bool AlignmentHintGiven;
         public bool SubFactionHintGiven;
 
         public Guesser(PlayerControl player) : base(player)
@@ -39,7 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Evil)";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
             RemainingGuesses = CustomGameOptions.GuessCount;
-            RemainingHints = CustomGameOptions.MeetingHintCount;
 
             //Adds all the roles that have a non-zero chance of being in the game
             ColorMapping.Add("Crewmate", Colors.Crew);

@@ -515,7 +515,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Altruist;
         public static CustomNumberOption AltruistCount;
         public static CustomToggleOption UniqueAltruist;
-        public static CustomNumberOption ReviveDuration;
+        public static CustomNumberOption AltReviveDuration;
         public static CustomToggleOption AltruistTargetBody;
 
         //Medic Options
@@ -922,12 +922,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption VigiKillsExecutioner;
         public static CustomToggleOption UniqueExecutioner;
 
-        //Phantom Options
-        public static CustomHeaderOption Phantom;
-        public static CustomNumberOption PhantomCount;
-        public static CustomNumberOption PhantomTasksRemaining;
-        public static CustomToggleOption PhantomPlayersAlerted;
-
         //Bounty Hunter Options
         public static CustomHeaderOption BountyHunter;
         public static CustomNumberOption BHCount;
@@ -947,7 +941,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption VigiKillsGuesser;
         public static CustomToggleOption UniqueGuesser;
         public static CustomNumberOption GuessCount;
-        public static CustomNumberOption MeetingHintCount;
         public static CustomToggleOption GuesserAfterVoting;
         public static CustomToggleOption MultipleGuesses;
 
@@ -1050,6 +1043,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption ResurrectCount;
         public static CustomToggleOption NecroVent;
         public static CustomToggleOption KillResurrectCooldownsLinked;
+        public static CustomToggleOption NecromancerTargetBody;
+        public static CustomNumberOption NecroResurrectDuration;
         public static CustomToggleOption UniqueNecromancer;
 
         //Whisperer Options
@@ -1074,6 +1069,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //NP Options
         public static CustomHeaderOption NeutralProselyteSettings;
+
+        //Phantom Options
+        public static CustomHeaderOption Phantom;
+        public static CustomNumberOption PhantomCount;
+        public static CustomNumberOption PhantomTasksRemaining;
+        public static CustomToggleOption PhantomPlayersAlerted;
 
         //Vampire Options
         public static CustomHeaderOption Vampire;
@@ -1725,7 +1726,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Altruist = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>");
             AltruistCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Count", 1, 1, 14, 1);
             UniqueAltruist = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Is Unique In All Any", false);
-            ReviveDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Revive Duration", 10f, 1f, 15f, 1f, CooldownFormat);
+            AltReviveDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Revive Duration", 10f, 1f, 15f, 1f, CooldownFormat);
             AltruistTargetBody = new CustomToggleOption(true, num++, MultiMenu.crew, "Target's Body Disappears On Beginning Of Revive", false);
 
             Medic = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color>");
@@ -1918,7 +1919,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             GuessTargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#EEE5BEFF>Guesser</color> Exists", false);
             MultipleGuesses = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times", true);
             GuessCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Number Of Guesses", 1, 1, 14, 1);
-            MeetingHintCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Number Of Hints In Meetings", 1, 1, 14, 1);
             GuesserAfterVoting = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false);
             VigiKillsGuesser = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false);
 
@@ -2030,7 +2030,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ResurrectCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Count", 1, 1, 14, 1);
             NecroKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             NecroKillCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            NecroKillCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Count", 1, 1, 14, 1);
             KillResurrectCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked", false);
+            NecromancerTargetBody = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target's Body Disappears On Beginning Of Resurrect", false);
+            NecroResurrectDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FF1919FF>Necromancer</color> Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat);
             NecroVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Can Vent", false);
 
             Whisperer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>");

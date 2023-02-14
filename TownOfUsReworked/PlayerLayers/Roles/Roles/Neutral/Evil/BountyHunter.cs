@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     public class BountyHunter : Role
     {
         public PlayerControl TargetPlayer = null;
+        public PlayerControl ClosestPlayer;
         public bool TargetKilled;
         public bool ColorHintGiven;
         public bool LetterHintGiven;
@@ -18,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         private KillButton _guessButton;
         public int UsesLeft;
         public TextMeshPro UsesText;
-        public bool ButtonUsable => UsesLeft != 0;
 
         public BountyHunter(PlayerControl player) : base(player)
         {

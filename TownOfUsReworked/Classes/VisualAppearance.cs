@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TownOfUsReworked
+namespace TownOfUsReworked.Classes
 {
     public class VisualAppearance
     {

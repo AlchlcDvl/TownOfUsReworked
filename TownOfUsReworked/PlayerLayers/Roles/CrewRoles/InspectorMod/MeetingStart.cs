@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 if (player2 != null)
                 {
                     string something = $"{player2.name} could be" + roles;
-                    
+
                     //Ensures only the Inspector sees this
                     if (DestroyableSingleton<HudManager>.Instance)
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
