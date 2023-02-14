@@ -23,11 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (__instance == role.RememberButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 

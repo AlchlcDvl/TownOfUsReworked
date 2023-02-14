@@ -811,9 +811,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Bomber Settings
         public static float BombCooldown => Generate.BombCooldown.Get();
+        public static float DetonateCooldown => Generate.DetonateCooldown.Get();
         public static int BomberCount => (int)Generate.BomberCount.Get();
         public static float BombRange => Generate.BombRange.Get();
         public static bool UniqueBomber => Generate.UniqueBomber.Get();
+        public static bool BombCooldownsLinked => Generate.BombCooldownsLinked.Get();
+        public static bool BombsDetonateOnMeetingStart => Generate.BombsDetonateOnMeetingStart.Get();
+        public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound.Get();
 
         //Concealer Settings
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();

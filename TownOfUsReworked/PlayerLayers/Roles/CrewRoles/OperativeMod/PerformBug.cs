@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
@@ -20,11 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                 if (!Utils.ButtonUsable(__instance))
                     return false;
 
-                if (role.BugTimer() != 0f && __instance == role.BugButton)
+                if (role.BugTimer() != 0f)
                     return false;
 
                 role.UsesLeft--;
-                role.LastBugged = System.DateTime.UtcNow;
+                role.LastBugged = DateTime.UtcNow;
                 role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }

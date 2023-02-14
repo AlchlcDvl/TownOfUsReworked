@@ -69,5 +69,6 @@ namespace TownOfUsReworked.Enums
         OverlordWin,
 
         NobodyWins,
+        Stalemate
     }
 }

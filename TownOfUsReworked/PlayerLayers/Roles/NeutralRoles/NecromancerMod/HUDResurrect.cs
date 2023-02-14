@@ -63,6 +63,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             }
             
             role.ResurrectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ResurrectButtonUsable);
+            role.ResurrectUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ResurrectButtonUsable);
+            role.ResurrectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ResurrectButtonUsable);
             KillButtonTarget.SetTarget(role.ResurrectButton, closestBody, role);
 
             if (role.IsResurrecting)
@@ -109,6 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 role.KillUsesText.text = $"{role.KillUsesLeft}";
 
             role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.KillButtonUsable);
+            role.KillUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.KillButtonUsable);
             role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.NecroKillCooldown + (CustomGameOptions.NecroKillCooldownIncrease * role.KillCount));
             Utils.SetTarget(ref role.ClosestPlayer, role.KillButton);
             var renderer2 = role.KillButton.graphic;

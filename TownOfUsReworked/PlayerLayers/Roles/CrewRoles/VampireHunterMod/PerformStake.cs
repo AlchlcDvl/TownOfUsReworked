@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                if (role.StakeTimer() != 0f && __instance == role.StakeButton)
+                if (role.StakeTimer() != 0f)
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), role.ClosestPlayer.Is(SubFaction.Undead));

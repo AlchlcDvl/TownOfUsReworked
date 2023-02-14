@@ -32,7 +32,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.13";
+        public const string VersionString = "0.0.1.14";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;

@@ -6,13 +6,22 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose
     {
+        public static Sprite Hunt => TownOfUsReworked.WhisperSprite;
+        public static Sprite Measure => TownOfUsReworked.MeasureSprite;
+        public static Sprite Sample => TownOfUsReworked.SampleSprite;
+        public static Sprite Mark => TownOfUsReworked.MarkSprite;
+        public static Sprite Drag => TownOfUsReworked.DragSprite;
+        public static Sprite Poison => TownOfUsReworked.PoisonSprite;
+
         public static void Postfix(Object obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
@@ -56,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 var role2 = (Operative)role;
                 role2.LastBugged = DateTime.UtcNow;
                 role2.BuggedPlayers.Clear();
-                
+
                 if (CustomGameOptions.BugsRemoveOnNewRound)
                     role2.Bugs.ClearBugs();
             }
@@ -170,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     case RoleEnum.Operative:
                         role2.LastBugged = DateTime.UtcNow;
                         role2.BuggedPlayers.Clear();
-                        
+
                         if (CustomGameOptions.BugsRemoveOnNewRound)
                             BugExtentions2.ClearBugs(role2.Bugs);
 
@@ -220,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
             {
                 var role2 = (Disguiser)role;
-                role2.DisguiseButton.graphic.sprite = TownOfUsReworked.MeasureSprite;
+                role2.DisguiseButton.graphic.sprite = Measure;
                 role2.MeasuredPlayer = null;
                 role2.LastDisguised = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
@@ -233,10 +242,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (!role2.HasDeclared)
                     role2.LastDeclared = DateTime.UtcNow;
-                
+
                 if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Impostor || !role2.WasMafioso)
                     continue;
-                
+
                 switch (role2.FormerRole.RoleType)
                 {
                     case RoleEnum.Blackmailer:
@@ -255,7 +264,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                         role2.LastInvestigated = DateTime.UtcNow;
                         break;
                     case RoleEnum.Disguiser:
-                        role2.DisguiseButton.graphic.sprite = TownOfUsReworked.MeasureSprite;
+                        role2.DisguiseButton.graphic.sprite = Measure;
                         role2.MeasuredPlayer = null;
                         role2.LastDisguised = DateTime.UtcNow;
                         break;
@@ -269,16 +278,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                         role2.LastCleaned = DateTime.UtcNow;
                         break;
                     case RoleEnum.Morphling:
-                        role2.MorphButton.graphic.sprite = TownOfUsReworked.SampleSprite;
+                        role2.MorphButton.graphic.sprite = Sample;
                         role2.SampledPlayer = null;
                         role2.LastMorphed = DateTime.UtcNow;
                         break;
                     case RoleEnum.Teleporter:
-                        role2.TeleportButton.graphic.sprite = TownOfUsReworked.MarkSprite;
+                        role2.TeleportButton.graphic.sprite = Mark;
                         role2.LastTeleport = DateTime.UtcNow;
                         break;
                     case RoleEnum.Undertaker:
-                        role2.DragDropButton.graphic.sprite = TownOfUsReworked.DragSprite;
+                        role2.DragDropButton.graphic.sprite = Drag;
                         role2.CurrentlyDragging = null;
                         role2.LastDragged = DateTime.UtcNow;
                         break;
@@ -327,7 +336,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Morphling))
             {
                 var role2 = (Morphling)role;
-                role2.MorphButton.graphic.sprite = TownOfUsReworked.SampleSprite;
+                role2.MorphButton.graphic.sprite = Sample;
                 role2.SampledPlayer = null;
                 role2.LastMorphed = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
@@ -336,7 +345,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Teleporter))
             {
                 var role2 = (Teleporter)role;
-                role2.TeleportButton.graphic.sprite = TownOfUsReworked.MarkSprite;
+                role2.TeleportButton.graphic.sprite = Mark;
                 role2.LastTeleport = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
             }
@@ -344,7 +353,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Undertaker))
             {
                 var role2 = (Undertaker)role;
-                role2.DragDropButton.graphic.sprite = TownOfUsReworked.DragSprite;
+                role2.DragDropButton.graphic.sprite = Drag;
                 role2.CurrentlyDragging = null;
                 role2.LastDragged = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
@@ -380,6 +389,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     role2.LastKilled = DateTime.UtcNow;
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Bomber))
+            {
+                var role2 = (Bomber)role;
+                role2.LastDetonated = DateTime.UtcNow;
+                role2.LastPlaced = DateTime.UtcNow;
+
+                if (CustomGameOptions.BombsRemoveOnNewRound)
+                    role2.Bombs.ClearBombs();
+
+                if (Role.SyndicateHasChaosDrive)
+                    role2.LastKilled = DateTime.UtcNow;
+            }
+
             foreach (var role in Role.GetRoles(RoleEnum.Framer))
             {
                 var role2 = (Framer)role;
@@ -403,7 +425,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Poisoner)role;
                 role2.LastPoisoned = DateTime.UtcNow;
-                role2.PoisonButton.graphic.sprite = TownOfUsReworked.PoisonSprite;
+                role2.PoisonButton.graphic.sprite = Poison;
 
                 if (Role.SyndicateHasChaosDrive)
                     role2.LastKilled = DateTime.UtcNow;
@@ -418,10 +440,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (!role2.HasDeclared)
                     role2.LastDeclared = DateTime.UtcNow;
-                
+
                 if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Anarchist || !role2.WasSidekick)
                     continue;
-                
+
                 switch (role2.FormerRole.RoleType)
                 {
                     case RoleEnum.Concealer:
@@ -602,6 +624,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Whisperer)role;
                 role2.LastWhispered = DateTime.UtcNow;
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.BountyHunter))
+            {
+                var role2 = (BountyHunter)role;
+                role2.LastChecked = DateTime.UtcNow;
+
+                if (role2.TargetFound)
+                    role2.GuessButton.graphic.sprite = Hunt;
             }
         }
     }

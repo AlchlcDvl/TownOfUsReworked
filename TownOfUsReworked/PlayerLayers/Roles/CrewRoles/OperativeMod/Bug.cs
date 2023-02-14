@@ -82,7 +82,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
         {
             var BugPref = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             BugPref.name = "Bug";
-            BugPref.transform.localScale = new Vector3(CustomGameOptions.BugRange, CustomGameOptions.BugRange, CustomGameOptions.BugRange);
+            BugPref.transform.localScale = new Vector3(CustomGameOptions.BugRange * ShipStatus.Instance.MaxLightRadius * 2f, CustomGameOptions.BugRange *
+                ShipStatus.Instance.MaxLightRadius * 2f, CustomGameOptions.BugRange * ShipStatus.Instance.MaxLightRadius * 2f);
             GameObject.Destroy(BugPref.GetComponent<SphereCollider>());
             BugPref.GetComponent<MeshRenderer>().material = Operative.BugMaterial;
             BugPref.transform.position = location;

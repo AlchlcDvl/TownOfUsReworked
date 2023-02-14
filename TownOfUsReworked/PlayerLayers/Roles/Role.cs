@@ -386,51 +386,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag;
         }
 
-		public void SetPlayerOutline(PlayerControl target, Color color)
-		{
-			if (target != null)
-			{
-				CosmeticsLayer cosmetics = target.cosmetics;
-				Object @object;
-
-				if (cosmetics == null)
-					@object = null;
-				else
-				{
-					PlayerBodySprite currentBodySprite = cosmetics.currentBodySprite;
-					@object = ((currentBodySprite != null) ? currentBodySprite.BodySprite : null);
-				}
-
-				if (!(@object == null))
-				{
-					target.cosmetics.currentBodySprite.BodySprite.material.SetFloat("_Outline", 1f);
-					target.cosmetics.currentBodySprite.BodySprite.material.SetColor("_OutlineColor", color);
-					return;
-				}
-			}
-		}
-        
-		protected void SetDeadBodyOutline(DeadBody target, Color color)
-		{
-			if (target == null || target.bodyRenderer == null)
-				return;
-
-			target.bodyRenderer.material.SetFloat("_Outline", 1f);
-			target.bodyRenderer.material.SetColor("_OutlineColor", color);
-		}
-
         protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
         {
-            string PlayerName = Player.GetDefaultOutfit().PlayerName;
+            if (Player == null)
+                return "";
 
-            if (Player == null || CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
-                PlayerName = "";
+            string PlayerName = Player.GetDefaultOutfit().PlayerName;
 
             if (LobbyBehaviour.Instance)
                 return PlayerName;
             
             if (!Local)
                 return PlayerName;
+
+            if (CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
+                PlayerName = "";
 
             var objectifier = Objectifier.GetObjectifier(Player);
 
@@ -921,16 +891,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
-
-                foreach (var role in AllRoles)
+                
+                if (Utils.NoOneWins())
                 {
-                    var roleIsEnd = role.GameEnd(__instance);
-
-                    if (!roleIsEnd)
-                        return false;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.Stalemate);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
                 }
+                else
+                {
+                    foreach (var role in AllRoles)
+                    {
+                        var roleIsEnd = role.GameEnd(__instance);
 
-                return true;
+                        if (!roleIsEnd)
+                            return false;
+                    }
+
+                    return true;
+                }
             }
         }
 

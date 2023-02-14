@@ -122,11 +122,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 loverRole.IsResurrected = true;
             }
 
-            if (revived.Any(x => x.AmOwner))
-            {
+            if (Minigame.Instance)
                 Minigame.Instance.Close();
-                Minigame.Instance.Close();
-            }
 
             Utils.Spread(role.Player, player);
         }

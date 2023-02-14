@@ -26,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl BeamPlayer2 { get; set; }
         public Dictionary<byte, DateTime> UnbeamablePlayers = new Dictionary<byte, DateTime>();
         private KillButton _beamButton;
+        public DateTime LastKilled { get; set; }
+        private KillButton _killButton;
+        public PlayerControl ClosestPlayer = null;
 
         public Beamer(PlayerControl player) : base(player)
         {
@@ -48,6 +51,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Syndicate (Support)";
         }
 
+        public float KillTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastKilled;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        public KillButton KillButton
+        {
+            get => _killButton;
+            set
+            {
+                _killButton = value;
+                AddToAbilityButtons(value, this);
+            }
+        }
+
         public override void Loses()
         {
             LostByRPC = true;
@@ -67,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastBeamed;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.BeamCooldown) * 1000f;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.BeamCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
@@ -517,7 +543,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -530,7 +555,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.IntruderWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -543,7 +567,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SyndicateWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -556,7 +579,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SectWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -566,10 +588,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                    Wins();
+                   Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

@@ -29,6 +29,7 @@ using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using Reactor.Networking.Extensions;
@@ -2881,6 +2882,12 @@ namespace TownOfUsReworked.Patches
                                 Warper.WarpPlayersToCoordinates(coordinates);
                                 break;
 
+                            case ActionsRPC.Detonate:
+                                var bomber = Utils.PlayerById(reader.ReadByte());
+                                var bomberRole = Role.GetRole<Bomber>(bomber);
+                                bomberRole.Bombs.DetonateBombs(bomber.name);
+                                break;
+
                             case ActionsRPC.Swoop:
                                 var chameleon = Utils.PlayerById(reader.ReadByte());
                                 var chameleonRole = Role.GetRole<Chameleon>(chameleon);
@@ -3010,101 +3017,75 @@ namespace TownOfUsReworked.Patches
                         switch ((WinLoseRPC)id7)
                         {
                             case WinLoseRPC.CrewWin:
-                                var crew = Utils.PlayerById(reader.ReadByte());
-                                var crewRole = Role.GetRole(crew);
-                                crewRole?.Wins();
                                 Role.CrewWin = true;
                                 break;
 
                             case WinLoseRPC.CrewLose:
-                                var crew2 = Utils.PlayerById(reader.ReadByte());
-                                var crewRole2 = Role.GetRole(crew2);
-                                crewRole2?.Loses();
                                 Role.CrewWin = false;
                                 break;
 
                             case WinLoseRPC.IntruderWin:
-                                var imp = Utils.PlayerById(reader.ReadByte());
-                                var impRole = Role.GetRole(imp);
-                                impRole?.Wins();
                                 Role.IntruderWin = true;
                                 break;
 
                             case WinLoseRPC.IntruderLose:
-                                var imp2 = Utils.PlayerById(reader.ReadByte());
-                                var impRole2 = Role.GetRole(imp2);
-                                impRole2?.Loses();
                                 Role.IntruderWin = false;
                                 break;
 
                             case WinLoseRPC.SyndicateWin:
-                                var syn = Utils.PlayerById(reader.ReadByte());
-                                var synRole = Role.GetRole(syn);
-                                synRole?.Wins();
                                 Role.SyndicateWin = true;
                                 break;
 
                             case WinLoseRPC.SyndicateLose:
-                                var syn2 = Utils.PlayerById(reader.ReadByte());
-                                var synRole2 = Role.GetRole(syn2);
-                                synRole2?.Loses();
                                 Role.SyndicateWin = false;
                                 break;
 
                             case WinLoseRPC.UndeadWin:
-                                var und = Utils.PlayerById(reader.ReadByte());
-                                var undRole = Role.GetRole(und);
-                                undRole?.Wins();
                                 Role.UndeadWin = true;
                                 break;
 
                             case WinLoseRPC.UndeadLose:
-                                var und2 = Utils.PlayerById(reader.ReadByte());
-                                var undRole2 = Role.GetRole(und2);
-                                undRole2?.Loses();
                                 Role.UndeadWin = false;
                                 break;
 
                             case WinLoseRPC.ReanimatedWin:
-                                var rean = Utils.PlayerById(reader.ReadByte());
-                                var reanRole = Role.GetRole(rean);
-                                reanRole?.Wins();
                                 Role.ReanimatedWin = true;
                                 break;
 
                             case WinLoseRPC.ReanimatedLose:
-                                var rean2 = Utils.PlayerById(reader.ReadByte());
-                                var reanRole2 = Role.GetRole(rean2);
-                                reanRole2?.Loses();
                                 Role.ReanimatedWin = false;
                                 break;
 
                             case WinLoseRPC.SectWin:
-                                var sect = Utils.PlayerById(reader.ReadByte());
-                                var sectRole = Role.GetRole(sect);
-                                sectRole?.Wins();
                                 Role.SectWin = true;
                                 break;
 
                             case WinLoseRPC.SectLose:
-                                var sect2 = Utils.PlayerById(reader.ReadByte());
-                                var sectRole2 = Role.GetRole(sect2);
-                                sectRole2?.Loses();
                                 Role.SectWin = false;
                                 break;
 
                             case WinLoseRPC.CabalWin:
-                                var cab = Utils.PlayerById(reader.ReadByte());
-                                var cabRole = Role.GetRole(cab);
-                                cabRole?.Wins();
                                 Role.CabalWin = true;
                                 break;
 
                             case WinLoseRPC.CabalLose:
-                                var cab2 = Utils.PlayerById(reader.ReadByte());
-                                var cabRole2 = Role.GetRole(cab2);
-                                cabRole2?.Loses();
                                 Role.CabalWin = false;
+                                break;
+
+                            case WinLoseRPC.NobodyWins:
+                                Role.NobodyWins = true;
+                                break;
+
+                            case WinLoseRPC.AllNeutralsWin:
+                                Role.AllNeutralsWin = true;
+                                break;
+
+                            case WinLoseRPC.AllNKsWin:
+                                Role.NKWins = true;
+                                break;
+
+                            case WinLoseRPC.Stalemate:
+                                Role.NobodyWins = true;
                                 break;
 
                             case WinLoseRPC.JesterWin:
@@ -3333,18 +3314,6 @@ namespace TownOfUsReworked.Patches
 
                             case WinLoseRPC.PhantomWin:
                                 Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte())).CompletedTasks = true;
-                                break;
-
-                            case WinLoseRPC.NobodyWins:
-                                Role.NobodyWins = true;
-                                break;
-
-                            case WinLoseRPC.AllNeutralsWin:
-                                Role.AllNeutralsWin = true;
-                                break;
-
-                            case WinLoseRPC.AllNKsWin:
-                                Role.NKWins = true;
                                 break;
                         }
 

@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Classes
 
             foreach (string resourceName in resourceNames)
             {
-                if (resourceName.Contains("TownOfUsReworked.Resources.Sounds.") && resourceName.Contains(".raw"))
+                if (resourceName.Contains($"{TownOfUsReworked.Sounds}") && resourceName.Contains(".raw"))
                 {
                     soundEffects.Add(resourceName, TownOfUsReworked.LoadAudioClipFromResources(resourceName));
                     Sounds.Add(TownOfUsReworked.LoadAudioClipFromResources(resourceName));
@@ -33,10 +33,9 @@ namespace TownOfUsReworked.Classes
         {
             //Convenience: As as SoundEffects are stored in the same folder, allow using just the name as well
             if (!path.Contains("."))
-                path = "TownOfUsReworked.Resources.Sounds." + path + ".raw";
+                path = $"{TownOfUsReworked.Sounds}{path}.raw";
 
-            AudioClip returnValue;
-            return soundEffects.TryGetValue(path, out returnValue) ? returnValue : null;
+            return soundEffects.TryGetValue(path, out var returnValue) ? returnValue : null;
         }
 
         public static void Play(string path)

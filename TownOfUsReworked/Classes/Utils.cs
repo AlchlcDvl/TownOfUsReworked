@@ -809,6 +809,12 @@ namespace TownOfUsReworked.Classes
             return flag;
         }
 
+        public static bool NoOneWins()
+        {
+            var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) == 0;
+            return flag;
+        }
+
         public static bool CorruptedWin()
         {
             var flag = PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted)) == 0;
@@ -2230,7 +2236,8 @@ namespace TownOfUsReworked.Classes
                 player.Is(RoleEnum.Sheriff) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Cannibal) || player.Is(RoleEnum.Detective) ||
                 player.Is(RoleEnum.Dracula) || player.Is(RoleEnum.Dampyr) || player.Is(RoleEnum.VampireHunter) || player.Is(RoleEnum.Medic) || player.Is(RoleEnum.Shifter) ||
                 player.Is(RoleEnum.Tracker) || player.Is(RoleEnum.Vigilante) || player.Is(Faction.Syndicate) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Escort) ||
-                player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jackal) || player.Is(RoleEnum.Mystic) || player.Is(RoleEnum.Seer) || player.Is(RoleEnum.Jester));
+                player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jackal) || player.Is(RoleEnum.Mystic) || player.Is(RoleEnum.Seer) || player.Is(RoleEnum.Necromancer) ||
+                player.Is(RoleEnum.Jester) || player.Is(ObjectifierEnum.Corrupted));
             return flag;
         }
 
@@ -2265,7 +2272,7 @@ namespace TownOfUsReworked.Classes
             if (probability == 100)
                 return true;
 
-            var num = Random.RandomRangeInt(1, 101);
+            var num = Random.RandomRangeInt(1, 100);
             return num <= probability;
         }
 

@@ -44,6 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 
             role.GuessButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.GuessButton.SetCoolDown(role.CheckTimer(), CustomGameOptions.BountyHunterCooldown);
+            role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.TargetFound);
             Utils.SetTarget(ref role.ClosestPlayer, role.GuessButton);
             var renderer = role.GuessButton.graphic;
 

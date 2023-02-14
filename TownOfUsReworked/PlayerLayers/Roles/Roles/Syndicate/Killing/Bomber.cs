@@ -6,20 +6,23 @@ using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using Hazel;
+using System.Collections.Generic;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
     public class Bomber : Role
     {
-        public static AssetBundle bundle = loadBundle();
-        public static Material bombMaterial = bundle.LoadAsset<Material>("trap").DontUnload();
+        public static AssetBundle Bundle = LoadBundle();
+        public static Material BombMaterial = Bundle.LoadAsset<Material>("bomb").DontUnload();
         public DateTime LastPlaced { get; set; }
         public DateTime LastDetonated { get; set; }
-        public bool HasPlaced;
         private KillButton _bombButton;
         public DateTime LastKilled { get; set; }
         private KillButton _killButton;
+        private KillButton _detonateButton;
         public PlayerControl ClosestPlayer = null;
+        public List<Bomb> Bombs;
 
         public Bomber(PlayerControl player) : base(player)
         {
@@ -37,6 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = SyndicateWinCon;
             RoleDescription = "You are a Bomber! You are a powerful demolitionist who can get a large number of body counts by detonating bombs placed at key points on the map. Be careful" + 
                 " though, as any unfortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations are key to victory!";
+            Bombs = new List<Bomb>();
         }
 
         public override void Loses()
@@ -77,6 +81,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
+        public KillButton DetonateButton
+        {
+            get => _detonateButton;
+            set
+            {
+                _detonateButton = value;
+                AddToAbilityButtons(value, this);
+            }
+        }
+
         public float BombTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -90,10 +104,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        /*public float DetonateTimer()
+        public float DetonateTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastPlaced;
+            var timeSpan = utcNow - LastDetonated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DetonateCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
@@ -101,12 +115,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }*/
+        }
 
-        public static AssetBundle loadBundle()
+        public static AssetBundle LoadBundle()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream("TownOfUsReworked.Resources.Sounds.bombershader");
+            var stream = assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}bombershader");
             var assets = stream.ReadFully();
             return AssetBundle.LoadFromMemory(assets);
         }
@@ -163,7 +177,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.CabalWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -176,7 +189,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SectWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;
@@ -186,10 +198,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                    Wins();
+                   Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                    writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

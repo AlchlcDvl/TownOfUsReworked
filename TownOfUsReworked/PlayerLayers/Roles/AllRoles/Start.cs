@@ -279,6 +279,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 concealer.LastKilled = concealer.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Beamer))
+            {
+                var beamer = (Beamer)role;
+                beamer.LastBeamed = DateTime.UtcNow;
+                beamer.LastBeamed = beamer.LastBeamed.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCooldown);
+                beamer.LastKilled = DateTime.UtcNow;
+                beamer.LastKilled = beamer.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
+            }
+
+            foreach (var role in Role.GetRoles(RoleEnum.Bomber))
+            {
+                var bomber = (Bomber)role;
+                bomber.LastPlaced = DateTime.UtcNow;
+                bomber.LastPlaced = bomber.LastPlaced.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BombCooldown);
+                bomber.LastDetonated = DateTime.UtcNow;
+                bomber.LastDetonated = bomber.LastDetonated.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DetonateCooldown);
+                bomber.LastKilled = DateTime.UtcNow;
+                bomber.LastKilled = bomber.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
+            }
+
             foreach (var role in Role.GetRoles(RoleEnum.Framer))
             {
                 var framer = (Framer)role;

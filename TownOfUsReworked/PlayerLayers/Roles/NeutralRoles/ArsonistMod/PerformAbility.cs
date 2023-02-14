@@ -18,11 +18,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             if (__instance == role.IgniteButton && role.DousedAlive > 0)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerIgnite))
                     return false;
                 
@@ -78,9 +78,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             }
             else if (__instance == role.DouseButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayerDouse))
                     return false;
                 
