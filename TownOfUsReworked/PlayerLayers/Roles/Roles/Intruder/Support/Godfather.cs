@@ -47,11 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastDeclared;
         public DeadBody CurrentTarget { get; set; }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             if (Disguised)

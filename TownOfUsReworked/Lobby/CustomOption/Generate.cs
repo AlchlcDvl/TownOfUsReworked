@@ -927,6 +927,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption BountyHunterCooldown;
         public static CustomNumberOption BountyHunterGuesses;
         public static CustomToggleOption UniqueBountyHunter;
+        public static CustomToggleOption VigiKillsBH;
 
         //Guesser Options
         public static CustomHeaderOption Guesser;
@@ -1341,6 +1342,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             Patches.ExportButton = new Export(-1);
             Patches.ImportButton = new Import(-1);
+            Patches.PresetButton = new Presets(-1);
 
             GlobalSettings = new CustomHeaderOption(num++, MultiMenu.main, "Global Settings");
             PlayerSpeed = new CustomNumberOption(true, num++, MultiMenu.main, "Player Speed", 1f, 0.25f, 10f, 0.25f, MultiplierFormat);
@@ -1399,7 +1401,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             CustomEject = new CustomToggleOption(true, num++, MultiMenu.main, "Custom Ejection Messages", true);
 
             MapSettings = new CustomHeaderOption(num++, MultiMenu.main, "Map Settings");
-            //Map = new CustomStringOption(true, num++, MultiMenu.main, "Map", new[] {"Skeld", "Mira HQ", "Polus", "Airship", "Submerged"});
+            Map = new CustomStringOption(true, num++, MultiMenu.main, "Map", new[] {"Skeld", "Mira HQ", "Polus", "Airship", "Submerged"});
             RandomMapEnabled = new CustomToggleOption(true, num++, MultiMenu.main, "Choose Random Map", false);
             RandomMapSkeld = new CustomNumberOption(true, num++, MultiMenu.main, "Skeld Chance", 0f, 0f, 100f, 10f, PercentFormat);
             RandomMapMira = new CustomNumberOption(true, num++, MultiMenu.main, "Mira Chance", 0f, 0f, 100f, 10f, PercentFormat);
@@ -1882,6 +1884,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             BountyHunterCooldown= new CustomNumberOption(true, num++, MultiMenu.neutral, "Guess Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             BountyHunterGuesses = new CustomNumberOption(true, num++, MultiMenu.neutral, "Guess Count", 5, 1, 15, 1);
             BHVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Vent", false);
+            VigiKillsBH = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>", false);
 
             Cannibal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>"); 
             CannibalCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Count", 1, 1, 14, 1);
@@ -2242,7 +2245,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             SyKMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Roles", 1, 1, 14, 1);
 
             Bomber = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color>");
-            OperativeCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
+            BomberCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
             UniqueBomber = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Is Unique In All Any", false);
             BombCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
             DetonateCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Detonation Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);

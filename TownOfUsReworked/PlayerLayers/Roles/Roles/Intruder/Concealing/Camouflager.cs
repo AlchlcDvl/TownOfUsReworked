@@ -37,11 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "advantage and kill while unsuspected in front of everyone!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton CamouflageButton
         {
             get => _camouflageButton;

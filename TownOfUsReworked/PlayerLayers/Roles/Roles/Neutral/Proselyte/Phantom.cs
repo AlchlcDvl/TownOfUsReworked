@@ -25,11 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Evil)";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public void Fade()
         {
             Faded = true;

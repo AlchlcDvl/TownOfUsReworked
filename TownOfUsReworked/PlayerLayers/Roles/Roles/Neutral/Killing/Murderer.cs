@@ -30,11 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Killing)";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)

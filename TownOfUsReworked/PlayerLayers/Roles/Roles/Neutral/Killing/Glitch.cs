@@ -58,11 +58,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
 		public void MimicListUpdate()
 		{
 			if (ShapeshifterMenu == null)

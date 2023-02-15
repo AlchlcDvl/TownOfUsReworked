@@ -42,11 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " even if they lose!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ProtectButton
         {
             get => _protectButton;

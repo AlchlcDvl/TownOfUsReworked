@@ -36,11 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleBlockImmune = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton BlockButton
         {
             get => _blockButton;

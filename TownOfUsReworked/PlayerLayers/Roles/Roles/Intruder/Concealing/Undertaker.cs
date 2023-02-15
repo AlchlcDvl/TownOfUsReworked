@@ -32,11 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Intruder (Concealing)";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

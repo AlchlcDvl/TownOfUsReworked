@@ -33,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = CrewWinCon;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton InspectButton
         {
             get => _inspectButton;

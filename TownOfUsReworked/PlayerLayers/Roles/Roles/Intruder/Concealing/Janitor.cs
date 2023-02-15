@@ -32,11 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Janitor! You are a sanitation expert who got swept up with the wrong company. Clean up everyone's messes to ensure nothing goes wrong!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
             var renderer = role.ShieldButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (Utils.EnableAbilityButton(role.ShieldButton, role.Player, role.ClosestPlayer, false, !role.UsedAbility))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

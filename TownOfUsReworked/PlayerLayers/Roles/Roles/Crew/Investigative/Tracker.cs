@@ -38,11 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Tracker! You can ";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton TrackButton
         {
             get => _trackButton;

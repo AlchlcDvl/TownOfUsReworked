@@ -49,6 +49,7 @@ namespace TownOfUsReworked.Enums
         SubmergedFixOxygen,
 
         SendChat,
+        Whisper,
 
         SetSpawn,
         SetSpawnAirship,

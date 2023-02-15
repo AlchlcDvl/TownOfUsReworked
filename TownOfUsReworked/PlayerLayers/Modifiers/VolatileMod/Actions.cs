@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
                         __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
                     }
-                    else if (randomNumber == 3)
+                    /*else if (randomNumber == 3)
                     {
                         //Fake role sound effects
                         otherNumber = Random.RandomRangeInt(0, SoundEffects.Sounds.Count);
@@ -68,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         {
                             SoundManager.Instance.PlaySound(sound, false, 1f);
                         } catch {}
-                    }
+                    }*/
                 }
             }
         }

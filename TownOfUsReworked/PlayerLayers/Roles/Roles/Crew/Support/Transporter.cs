@@ -52,11 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Crew (Support)";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton TransportButton
         {
             get => _transportButton;

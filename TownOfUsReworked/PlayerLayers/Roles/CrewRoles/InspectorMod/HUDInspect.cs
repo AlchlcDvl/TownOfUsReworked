@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
             var renderer = role.InspectButton.graphic;
             
-            if (role.ClosestPlayer != null && !role.InspectButton.isCoolingDown)
+            if (Utils.EnableAbilityButton(role.InspectButton, role.Player, role.ClosestPlayer))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

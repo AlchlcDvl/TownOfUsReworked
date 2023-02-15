@@ -33,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Medium! You can mediate the dead, which reveals the spirits of the dead to you! Use their movements and information to find the evils!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton MediateButton
         {
             get => _mediateButton;

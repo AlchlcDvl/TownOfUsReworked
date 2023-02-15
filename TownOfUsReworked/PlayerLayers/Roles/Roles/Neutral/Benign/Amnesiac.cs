@@ -33,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton RememberButton
         {
             get => _rememberButton;

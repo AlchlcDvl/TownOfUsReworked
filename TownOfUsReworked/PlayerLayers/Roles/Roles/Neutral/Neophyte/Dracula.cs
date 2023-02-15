@@ -38,11 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFactionName = "Undead";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float ConvertTimer()
         {
             var utcNow = DateTime.UtcNow;

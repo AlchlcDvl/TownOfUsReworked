@@ -42,11 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float StakeTimer()
         {
             var utcNow = DateTime.UtcNow;

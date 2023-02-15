@@ -31,11 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Sheriff! You can investigate players to see if they are capable of harming the Crew or not!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton InterrogateButton
         {
             get => _interrogateButton;

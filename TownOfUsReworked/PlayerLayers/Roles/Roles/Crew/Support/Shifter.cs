@@ -29,11 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             //IntroSound = TownOfUsReworked.ShifterIntro;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ShiftButton
         {
             get => _shiftButton;

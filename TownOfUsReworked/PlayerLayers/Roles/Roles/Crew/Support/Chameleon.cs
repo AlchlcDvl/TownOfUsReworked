@@ -25,11 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float SwoopTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -53,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             var color = new Color32(0, 0, 0, 0);
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer == Player)
                 color.a = 26;
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)

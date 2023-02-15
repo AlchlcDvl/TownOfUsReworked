@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
             Utils.SetTarget(ref role.ClosestPlayer, role.RevealButton);
             var renderer = role.RevealButton.graphic;
             
-            if (role.ClosestPlayer != null && !role.RevealButton.isCoolingDown)
+            if (Utils.EnableAbilityButton(role.RevealButton, role.Player, role.ClosestPlayer))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
@@ -51,7 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
                 writer.Write((byte)TurnRPC.TurnSeer);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                return;
             }
         }
     }

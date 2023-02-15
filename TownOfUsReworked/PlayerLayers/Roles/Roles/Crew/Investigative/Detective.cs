@@ -30,11 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Detective! You have a special skill in identifying blood and tracking others. Use these skills to your advantage to catch killers in the act!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ExamineButton
         {
             get => _examineButton;

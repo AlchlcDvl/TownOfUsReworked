@@ -522,6 +522,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int BHCount => (int)Generate.BHCount.Get();
         public static int BountyHunterGuesses => (int)Generate.BountyHunterGuesses.Get();
         public static bool UniqueBountyHunter => Generate.UniqueBountyHunter.Get();
+        public static bool VigiKillsBH => Generate.VigiKillsBH.Get();
 
         //Cannibal Settings
         public static float EatArrowDelay => Generate.EatArrowDelay.Get();

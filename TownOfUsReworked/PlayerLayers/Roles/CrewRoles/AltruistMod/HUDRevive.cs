@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             var renderer = role.ReviveButton.graphic;
 
-            if (role.CurrentTarget != null)
+            if (Utils.EnableDeadButton(role.ReviveButton, role.Player, role.CurrentTarget))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

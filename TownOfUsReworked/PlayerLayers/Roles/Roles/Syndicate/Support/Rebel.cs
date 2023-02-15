@@ -48,11 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastDeclared;
         private KillButton _killButton;
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

@@ -29,11 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             AlignmentName = "Neutral (Proselyte)";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ObliterateButton
         {
             get => _obliterateButton;

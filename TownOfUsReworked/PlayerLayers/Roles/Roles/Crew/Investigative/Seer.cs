@@ -101,11 +101,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)

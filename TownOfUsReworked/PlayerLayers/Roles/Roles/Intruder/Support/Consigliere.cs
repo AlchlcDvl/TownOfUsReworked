@@ -40,11 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = IntrudersWinCon;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

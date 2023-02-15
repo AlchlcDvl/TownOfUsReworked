@@ -40,11 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Recruited.Add(Player.PlayerId);
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public override void Wins()
         {
             CabalWin = true;

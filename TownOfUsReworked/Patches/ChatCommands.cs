@@ -10,6 +10,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
 using TownOfUsReworked.Classes;
+using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 
@@ -75,6 +76,7 @@ namespace TownOfUsReworked.Patches
                 string getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
                 string setColor = TownOfUsReworked.isDev ? " /setcolour or /setcolor," : "";
                 string whisper = CustomGameOptions.Whispers ? " /whisper," : "";
+                string kickBan = AmongUsClient.Instance.CanBan() ? " /kick, /ban, /clearlobby" : "";
                 //TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
 
                 var player = PlayerControl.LocalPlayer;
@@ -88,11 +90,8 @@ namespace TownOfUsReworked.Patches
                     if (text == "/help" || text.StartsWith("/h"))
                     {
                         chatHandled = true;
-                        var message = AmongUsClient.Instance.CanBan()
-                        ? $"Commands available:\n/modinfo, /setname,{setColor} /kick, /ban, /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, " +
-                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls"
-                        : $"Commands available:\n/modinfo, /setname,{setColor} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo," +
-                            " /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls";
+                        var message = $"Commands available:\n/modinfo, /setname,{setColor}{kickBan} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, " +
+                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls";
                         hudManager.AddChat(player, message);
                     }
                     //Display a message (Information about the mod)
@@ -474,12 +473,29 @@ namespace TownOfUsReworked.Patches
                         inputText = text.Substring(6);
                         PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(inputText));
 
-                        if (target != null && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
+                        if (target != null && target != player && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
                         {
                             var client = AmongUsClient.Instance.GetClient(target.OwnerId);
 
                             if (client != null)
                                 AmongUsClient.Instance.KickPlayer(client.Id, false);
+                        }
+                    }
+                    //Clear the lobby (if able to kick, i.e. host command)
+                    else if (text.StartsWith("/clearlobby"))
+                    {
+                        chatHandled = true;
+                        inputText = text.Substring(6);
+
+                        foreach (var player2 in PlayerControl.AllPlayerControls)
+                        {
+                            if (player2 != player && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
+                            {
+                                var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
+
+                                if (client != null)
+                                    AmongUsClient.Instance.KickPlayer(client.Id, false);
+                            }
                         }
                     }
                     //Ban help                    
@@ -2307,54 +2323,26 @@ namespace TownOfUsReworked.Patches
                             var number2 = inputText.Replace(message2, "");
                             number = number.Replace(" ", "");
                             number2 = number2.Replace(" ", "");
-                            PlayerControl whisperer = player;
-                            bool correctNumber = false;
-                            bool correctNumber2 = false;
-                            byte id1 = 100;
-                            byte id2 = 100;
+                            byte id1 = byte.Parse(number);
+                            byte id2 = byte.Parse(number2);
 
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"|{number}| = |{message}");
-                            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"|{number2}| = |{message2}");
-
-                            foreach (var player2 in PlayerControl.AllPlayerControls)
-                            {
-                                if (player2 == player)
-                                    whisperer = player2;
-                                else if ($"{player.PlayerId}" == number)
-                                {
-                                    correctNumber = true;
-                                    id1 = player2.PlayerId;
-                                }
-                                else if ($"{player.PlayerId}" == number2)
-                                {
-                                    correctNumber2 = true;
-                                    id2 = player2.PlayerId;
-                                }
-
-                                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"{player.PlayerId}");
-                            }
-
-                            PlayerControl target = null;
-
-                            if (correctNumber)
-                                target = Utils.PlayerById(id1);
-                            else if (correctNumber2)
-                                target = Utils.PlayerById(id2);
-
-                            if ((correctNumber || correctNumber2) && target != null)
-                            {
-                                var message3 = correctNumber ? message : message2;
-                                hudManager.AddChat(player, $"You whisper to {target.name}: {message3}");
-                                hudManager.AddChat(target, $"{whisperer.name} whispers to you: {message3}");
-
-                                foreach (var player2 in PlayerControl.AllPlayerControls)
-                                {
-                                    if (player2 != whisperer && player2 != target)
-                                        hudManager.AddChat(player2, $"{whisperer.name} is whispering to {target.name}!");
-                                }
-                            }
+                            var whispered = Utils.PlayerById(id1);
+                            var whispered2 = Utils.PlayerById(id2);
+                            
+                            if (whispered != null)
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, $"You whisper to {whispered.name}:{message}");
+                            else if (whispered2 != null)
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, $"You whisper to {whispered2.name}:{message2}.");
                             else
-                                hudManager.AddChat(player, "Who are you trying to whisper to?");
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, "Who are you trying to whisper?");
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
+                            writer.Write(player.PlayerId);
+                            writer.Write(id1);
+                            writer.Write(id2);
+                            writer.Write(message);
+                            writer.Write(message2);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
                     }
                     //Incorrect command

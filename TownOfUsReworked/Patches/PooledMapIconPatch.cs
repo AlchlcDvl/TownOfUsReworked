@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TMPro;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
+namespace TownOfUsReworked.Patches
 {
 	[HarmonyPatch(typeof(PooledMapIcon), nameof(PooledMapIcon.Reset))]
 	public static class PooledMapIconPatch

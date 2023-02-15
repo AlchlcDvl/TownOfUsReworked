@@ -301,11 +301,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)

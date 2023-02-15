@@ -57,11 +57,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             KillCount = 0;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)

@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
                 var renderer = role.MediateButton.graphic;
 
-                if (!role.MediateButton.isCoolingDown)
+                if (Utils.EnableAbilityButton(role.MediateButton, role.Player))
                 {
                     renderer.color = Palette.EnabledColor;
                     renderer.material.SetFloat("_Desat", 0f);

@@ -36,11 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             //IntroSound = TownOfUsReworked.WarperIntro;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

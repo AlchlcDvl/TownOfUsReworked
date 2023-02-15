@@ -42,11 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 $" you are done for. There are currently {DousedAlive} players doused.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton IgniteButton
         {
             get => _igniteButton;

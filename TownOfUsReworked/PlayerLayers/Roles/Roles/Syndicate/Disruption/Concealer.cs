@@ -36,11 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = SyndicateWinCon;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton KillButton
         {
             get => _killButton;

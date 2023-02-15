@@ -33,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxFixes;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton FixButton
         {
             get => _fixButton;

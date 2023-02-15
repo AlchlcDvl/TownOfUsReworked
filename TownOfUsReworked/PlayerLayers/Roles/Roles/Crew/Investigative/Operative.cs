@@ -43,11 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Operative! You can place bugs all around the map and you will be told the roles of whoever triggers them! Use this to find everyone's identities!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton BugButton
         {
             get => _bugButton;

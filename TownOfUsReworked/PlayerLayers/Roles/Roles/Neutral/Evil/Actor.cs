@@ -31,11 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Actor! You are a crazed performer who wants to die! Get guessed as one of the roles you are pretending to be!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)

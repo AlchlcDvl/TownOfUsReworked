@@ -43,11 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Bombs = new List<Bomb>();
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

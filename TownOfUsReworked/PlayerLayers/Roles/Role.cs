@@ -46,7 +46,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
 
-        public virtual void Loses() {}
+        public virtual void Loses()
+        {
+            LostByRPC = true;
+        }
+
         public virtual void Wins() {}
 
         protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
@@ -594,7 +598,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         {
                             try
                             {
-                                SoundManager.Instance.PlaySound(role.IntroSound, false, 1f);
+                                SoundManager.Instance.StopAllSound();
+                                SoundManager.Instance.PlaySound(role.IntroSound, false);
                             } catch {}
                         }
 
@@ -709,11 +714,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                         if (role.IntroSound != null)
                         {
-                            SoundManager.Instance.StopAllSound();
-
                             try
                             {
-                                SoundManager.Instance.PlaySound(role.IntroSound, false, 1f);
+                                SoundManager.Instance.StopAllSound();
+                                SoundManager.Instance.PlaySound(role.IntroSound, false);
                             } catch {}
                         }
 
@@ -898,6 +902,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write((byte)WinLoseRPC.Stalemate);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
+                    Role.NobodyWins = true;
                     return false;
                 }
                 else
@@ -987,8 +992,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (Utils.PlayerById(player.TargetPlayerId).Data.Disconnected)
                         continue;
 
-                    player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
                     var role = GetRole(player);
+
+                    if (role == null)
+                        continue;
+
+                    player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
 
                     if (role != null && role.Criteria())
                     {

@@ -25,11 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public void Fade()
         {
             Faded = true;

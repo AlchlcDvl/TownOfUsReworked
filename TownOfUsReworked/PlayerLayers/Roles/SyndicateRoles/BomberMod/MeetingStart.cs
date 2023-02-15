@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using System;
-using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;

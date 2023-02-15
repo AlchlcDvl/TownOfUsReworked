@@ -34,11 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " Godfather and will inherit stronger variations of your former role.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;

@@ -146,6 +146,8 @@ namespace TownOfUsReworked.Classes
 
             if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
             {
+                playerControl.nameText().color = Color.white;
+
                 if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && playerControl.Is(Faction.Intruder))
                     playerControl.nameText().color = Colors.Intruder;
 
@@ -157,6 +159,7 @@ namespace TownOfUsReworked.Classes
 
                 if (PlayerControl.LocalPlayer.Is(SubFaction.Cabal) && playerControl.Is(SubFaction.Cabal))
                     playerControl.nameText().color = Colors.Cabal;
+                
             }
             else
                 playerControl.nameText().color = Color.white;
@@ -280,23 +283,14 @@ namespace TownOfUsReworked.Classes
 
         public static bool Is(this PlayerControl player, Faction faction)
         {
-            return Role.GetRole(player)?.Faction == faction;
+            var role = Role.GetRole(player);
+            return role == null ? ((player.Data.IsImpostor() && faction == Faction.Intruder) || (!player.Data.IsImpostor() && faction == Faction.Crew)) : role.Faction == faction;
         }
 
         public static bool Is(this PlayerControl player, RoleAlignment alignment)
         {
             return Role.GetRole(player)?.RoleAlignment == alignment;
         }
-
-        /*public static bool Is(this PlayerControl player, AttackEnum attack)
-        {
-            return Role.GetRole(player)?.Attack == attack;
-        }
-
-        public static bool Is(this PlayerControl player, DefenseEnum defense)
-        {
-            return Role.GetRole(player)?.Defense == defense;
-        }*/
 
         public static Faction GetFaction(this PlayerControl player)
         {
@@ -1576,35 +1570,9 @@ namespace TownOfUsReworked.Classes
             return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         }
 
-        public static bool LastCrew()
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-        }
-
-        public static bool CrewDead()
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Crew) && !(x.Data.IsDead || x.Data.Disconnected)) == 0;
-        }
-
-        public static bool ImpsDead()
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 0;
-        }
-
-        public static bool LastNeut()
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Neutral) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-        }
-
         public static bool LastSyn()
         {
             return PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-        }
-
-        public static bool LastNonCrew()
-        {
-            return PlayerControl.AllPlayerControls.ToArray().Count(x => (x.Is(Faction.Syndicate) || x.Is(Faction.Neutral) || x.Is(Faction.Intruder)) && !(x.Data.IsDead ||
-                x.Data.Disconnected)) == 1;
         }
 
         public static bool TasksDone()
@@ -2284,6 +2252,25 @@ namespace TownOfUsReworked.Classes
         public static bool ButtonUsable(KillButton button)
         {
             return button.isActiveAndEnabled && !button.isCoolingDown;
+        }
+
+        public static bool EnableAbilityButton(KillButton button, PlayerControl buttonHolder, PlayerControl target = null, bool effectActive = false, bool usable = true)
+        {
+            if (button == null)
+                return false;
+            
+            if (target == null)
+                return !button.isCoolingDown && !effectActive && usable && !buttonHolder.inVent && !buttonHolder.inMovingPlat;
+
+            return !button.isCoolingDown && !effectActive && usable && !buttonHolder.inVent && !buttonHolder.inMovingPlat && !(target.inVent && CustomGameOptions.VentTargetting);
+        }
+
+        public static bool EnableDeadButton(KillButton button, PlayerControl buttonHolder, DeadBody target = null, bool effectActive = false, bool usable = true)
+        {
+            if (button == null)
+                return false;
+
+            return !button.isCoolingDown && !effectActive && usable && !buttonHolder.inVent && !buttonHolder.inMovingPlat && target != null;
         }
     }
 }

@@ -29,10 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 role.Bombs.Add(BombExtentions.CreateBomb(PlayerControl.LocalPlayer.GetTruePosition()));
                 role.LastPlaced = DateTime.UtcNow;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-
                 if (CustomGameOptions.BombCooldownsLinked)
                 {
                     role.LastPlaced = DateTime.UtcNow;
@@ -60,6 +56,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                     role.LastPlaced = DateTime.UtcNow;
                     role.LastKilled = DateTime.UtcNow;
                 }
+
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                writer.Write((byte)ActionsRPC.Detonate);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 return false;
             }

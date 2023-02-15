@@ -32,11 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFactionName = "Undead";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public override void Wins()
         {
             UndeadWin = true;

@@ -26,11 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)

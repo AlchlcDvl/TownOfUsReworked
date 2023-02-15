@@ -1773,6 +1773,9 @@ namespace TownOfUsReworked.Patches
                             case 73:
                                 new Necromancer(player);
                                 break;
+                            case 74:
+                                new Beamer(player);
+                                break;
                         }
 
                         break;
@@ -1939,15 +1942,6 @@ namespace TownOfUsReworked.Patches
                             case TurnRPC.TurnSeer:
                                 Role.GetRole<Mystic>(Utils.PlayerById(reader.ReadByte())).TurnSeer();
                                 break;
-
-                            case TurnRPC.ExeToJest:
-                                TargetColor.ExeToJest(Utils.PlayerById(reader.ReadByte()));
-                                break;
-
-                            case TurnRPC.GAToSurv:
-                                GATargetColor.GAToSurv(Utils.PlayerById(reader.ReadByte()));
-                                break;
-
                             case TurnRPC.GuessToAct:
                                 GuessTargetColor.GuessToAct(Utils.PlayerById(reader.ReadByte()));
                                 break;
@@ -1959,6 +1953,15 @@ namespace TownOfUsReworked.Patches
                             case TurnRPC.TurnTraitor:
                                 SetTraitor.TurnTraitor(Utils.PlayerById(reader.ReadByte()));
                                 break;
+
+                            case TurnRPC.ExeToJest:
+                                TargetColor.ExeToJest(Utils.PlayerById(reader.ReadByte()));
+                                break;
+
+                            case TurnRPC.GAToSurv:
+                                GATargetColor.GAToSurv(Utils.PlayerById(reader.ReadByte()));
+                                break;
+
                         }
 
                         break;
@@ -1987,7 +1990,7 @@ namespace TownOfUsReworked.Patches
 
                         if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
                             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-                            
+
                         break;
 
                     case CustomRPC.PhantomDied:
@@ -2003,7 +2006,28 @@ namespace TownOfUsReworked.Patches
 
                         if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
                             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-                            
+
+                        break;
+
+                    case CustomRPC.Whisper:
+                        var whisperer = Utils.PlayerById(reader.ReadByte());
+                        var whispered = Utils.PlayerById(reader.ReadByte());
+                        var whispered2 = Utils.PlayerById(reader.ReadByte());
+                        var message = reader.ReadString();
+                        var message2 = reader.ReadString();
+
+                        if (whispered == PlayerControl.LocalPlayer)
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you: {message}");
+                        else if (whispered2 == PlayerControl.LocalPlayer)
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you: {message2}");
+                        else
+                        {
+                            if (whispered != null)
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
+                            else if (whispered2 != null)
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered2.name}.");
+                        }
+
                         break;
 
                     case CustomRPC.CatchPhantom:
@@ -3178,6 +3202,18 @@ namespace TownOfUsReworked.Patches
                                 gaRole4?.Loses();
                                 break;
 
+                            case WinLoseRPC.BountyHunterLose:
+                                var bh2 = Utils.PlayerById(reader.ReadByte());
+                                var bhRole2 = Role.GetRole<BountyHunter>(bh2);
+                                bhRole2?.Loses();
+                                break;
+
+                            case WinLoseRPC.BountyHunterWin:
+                                var bh3 = Utils.PlayerById(reader.ReadByte());
+                                var bhRole3 = Role.GetRole<BountyHunter>(bh3);
+                                bhRole3.TargetKilled = true;
+                                break;
+
                             case WinLoseRPC.JuggernautWin:
                                 var jugg = Utils.PlayerById(reader.ReadByte());
                                 var juggRole = Role.GetRole<Juggernaut>(jugg);
@@ -4307,6 +4343,19 @@ namespace TownOfUsReworked.Patches
                     }
 
                     PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
+                }
+
+                if (CustomGameOptions.BeamerOn > 0)
+                {
+                    num = IsCustom ? CustomGameOptions.BeamerCount : 1;
+                            
+                    while (num > 0)
+                    {
+                        SyndicateSupportRoles.Add((typeof(Beamer), CustomGameOptions.BeamerOn, 74, CustomGameOptions.UniqueBeamer));
+                        num--;
+                    }
+
+                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Beamer Done");
                 }
 
                 if (CustomGameOptions.PoisonerOn > 0)

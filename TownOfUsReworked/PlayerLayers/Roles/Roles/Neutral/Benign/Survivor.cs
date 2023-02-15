@@ -38,11 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Objectives = "Stay alive";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton VestButton
         {
             get => _vestButton;

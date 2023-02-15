@@ -32,14 +32,14 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.14";
+        public const string VersionString = "0.0.1.15";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
         public const int MaxImpostors = 62;
 
         public static string dev = VersionString.Substring(6);
-        public static string version = VersionString.Remove(VersionString.Length - 2);
+        public static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
         public static bool isDev = dev != "0";
         public static bool isTest = false;
         public static string devString = isDev ? $"dev{dev}" : "";
@@ -50,6 +50,8 @@ namespace TownOfUsReworked
         public static string Sounds = "TownOfUsReworked.Resources.Sounds.";
         public static string Misc = "TownOfUsReworked.Resources.Misc.";
         public static string Presets = "TownOfUsReworked.Resources.Presets.";
+
+        private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
 
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -142,8 +144,6 @@ namespace TownOfUsReworked
         public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
-        private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
-
         public static Sprite VaultSprite;
         public static Sprite CokpitSprite;
         public static Sprite TaskSprite;
@@ -152,6 +152,9 @@ namespace TownOfUsReworked
         public static AnimationClip VaultAnim;
         public static AnimationClip CokpitAnim;
         public static AnimationClip MedicalAnim;
+
+        //Sounds
+        public static AudioClip AgentIntro;
 
         public static GameObject CallPlateform;
 
@@ -162,7 +165,6 @@ namespace TownOfUsReworked
 
         public ConfigEntry<string> Ip { get; set; }
         public ConfigEntry<ushort> Port { get; set; }
-        //public DebuggerComponent Component { get; private set; }
 
         public override void Load()
         {
@@ -276,6 +278,9 @@ namespace TownOfUsReworked
             CokpitAnim = assetBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
             MedicalAnim = assetBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
             CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
+
+            //Sounds
+            AgentIntro = LoadAudioClipFromResources($"{Sounds}AgentIntro.raw");
 
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();

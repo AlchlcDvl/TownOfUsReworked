@@ -37,11 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " blackmail yourself so the others will get wise to your identity pretty quickly.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton KillButton
         {
             get => _killButton;

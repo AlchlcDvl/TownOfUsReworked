@@ -33,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 " Your strong skill makes you a very tempting target for evils so be careful when revealing information.";
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);

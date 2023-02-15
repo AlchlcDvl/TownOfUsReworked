@@ -29,11 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             //IntroSound = TownOfUsReworked.MedicIntro;
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton ShieldButton
         {
             get => _shieldButton;

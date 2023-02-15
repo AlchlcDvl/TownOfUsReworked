@@ -16,6 +16,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Releases**](#releases)
 
+[**Changelogs**](#changelogs)
+
 [**Installation**](#installation)
 - [Requirements](#requirements)
 - [Steam Guide](#steam-guide)
@@ -99,16 +101,58 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 # Releases
 
 | Among Us - Version | Mod Version | Link |
-|----------|-------------|-----------------|
-| 2022.12.14 (s & e) | Base Mod (v4.0.2) | [Download](https://github.com/eDonnes124/Town-Of-Us/releases/download/v4.0.2/ToU.v4.0.2.zip) |
+|--------------------|-------------|------|
+| 2022.12.14 (s & e) | v0.0.1dev15 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev15.rar) |
+| 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
+| 2022.12.14 (s & e) | v0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar) |
+| 2022.12.14 (s & e) | v0.0.1dev13 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar) |
+
+-----------------------
+
+# Changelogs
 
 <details>
   <summary> Change Log </summary>
   <details>
-    <summary> Base Mod </summary>
-    <ul>
-      - Base mod, the first release will contain the actual features and roles
-    </ul>
+    <summary> *v0.0.1dev15* </summary>
+    <ul> <li> - Addition: Preset settings (WIP).</li> </ul>
+    <ul> <li> - Addition: Custom intro screen sounds (WIP).</li> </ul>
+    <ul> <li> - Addition: Whispering system.</li> </ul>
+    <ul> <li> - RoleFix: Fixed the issue with Bomber count messing with role gen.</li> </ul>
+    <ul> <li> - Role Fix: Fixed Bounty Hunter not winning.</li> </ul>
+    <ul> <li> - Visual Fix: Fixed Chameleon not appearing semi-invisible for themselves.</li> </ul>
+  </details>
+  <details>
+    <summary> *v0.0.1dev14* </summary>
+    <ul> <li> - Fixed Necromancer not being able to kill.</li> </ul>
+    <ul> <li> - Fixed the uses count on the Necromancer's buttons.</li> </ul>
+    <ul> <li> - Fixed Necromancer's settings being misplaced.</li> </ul>
+    <ul> <li> - Fixed some more cooldown issues (jeez they are one too many).</li> </ul>
+    <ul> <li> - Bomber now works!</li> </ul>
+  </details>
+  <details>
+    <summary> *v0.0.1dev13.5* </summary>
+    <ul> <li> - Fixed some cooldowns.</li> </ul>
+  </details>
+  <details>
+    <summary> *v0.0.1dev13* </summary>
+    <ul> <li> - New Roles, Modifiers and Abilities!</li> </ul>
+    <ul> <li> - Introducing Objectifiers! They are essentially secondary roles for you!</li> </ul>
+    <ul> <li> - New Faction: The Syndicate! Can you survive the chaos they bring?</li> </ul>
+    <ul> <li> - New Subfactions: Undead, Cabal, Reanimated and Sect! Stop them from over taking the mission!</li> </ul>
+    <ul> <li> - New Features! Chat scrolling, chat commands and more!</li> </ul>
+    <ul> <li> - Reworks, renames, buffs and nerfs! A lot of roles are different from the base mod, can you guess which ones were which?</li> </ul>
+    <ul> <li> - New Settings with room for even more customisation!</li> </ul>
+    <ul> <li> - New Mode: Custom! Allow multiple of the same roles to spawn, all at your discretion!</li> </ul>
+    <ul> <li> - Modifiers, Abilities and Objectifiers can now also spawn in Killing Only mode!</li> </ul>
+    <ul> <li> - New Game Modifiers! Spice up your game with settings that can drastically change the outcome of a game!</li> </ul>
+    <ul> <li> - (Most) Vanilla settings have been integrated into the Custom Settings!</li> </ul>
+    <ul> <li> - All Any is now truly All Any!</li> </ul>
+    <ul> <li> - Brought back old and forgotten features from previous versions!</li> </ul>
+    <ul> <li> - Improved features like better end game summaries!</li> </ul>
+    <ul> <li> - Improved the win conditions of a lot of roles!</li> </ul>
+    <ul> <li> - More QoL features!</li> </ul>
+    <ul> <li> - A lot of internal code changes for smoother (and hopefully less buggy) game experiences!</li> </ul>
   </details>
 </details>
 

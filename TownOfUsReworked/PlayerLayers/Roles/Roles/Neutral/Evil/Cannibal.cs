@@ -36,11 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             Objectives = $"- Eat {EatNeed} {body}.";
         }
-
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
         
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {

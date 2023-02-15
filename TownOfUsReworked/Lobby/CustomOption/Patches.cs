@@ -14,6 +14,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         public static Export ExportButton;
         public static Import ImportButton;
+        public static Presets PresetButton;
         public static List<OptionBehaviour> DefaultOptions;
         public static float LobbyTextRowHeight { get; set; } = 0.081f;
 
@@ -55,6 +56,22 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
                     ImportButton.Setting = toggle;
                     ImportButton.OptionCreated();
+                    options.Add(toggle);
+                }
+
+                if (PresetButton.Setting != null)
+                {
+                    PresetButton.Setting.gameObject.SetActive(true);
+                    options.Add(PresetButton.Setting);
+                }
+                else
+                {
+                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    toggle.transform.GetChild(2).gameObject.SetActive(false);
+                    toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
+
+                    PresetButton.Setting = toggle;
+                    PresetButton.OptionCreated();
                     options.Add(toggle);
                 }
             }
@@ -119,6 +136,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
                 return false;
             }
 
+            if (opt == PresetButton.Setting)
+            {
+                PresetButton.OptionCreated();
+                return false;
+            }
+
             //Works but may need to change to gameObject.name check
             var customOption = CustomOption.AllOptions.FirstOrDefault(option => option.Setting == opt);
 
@@ -131,7 +154,12 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     customOption = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == opt);
 
                     if (customOption == null)
-                        return true;
+                    {
+                        customOption = PresetButton.SlotButtons.FirstOrDefault(option => option.Setting == opt);
+
+                        if (customOption == null)
+                            return true;
+                    }
                 }
             }
 
@@ -396,6 +424,15 @@ namespace TownOfUsReworked.Lobby.CustomOption
                     return false;
                 }
 
+                if (__instance == PresetButton.Setting)
+                {
+                    if (!AmongUsClient.Instance.AmHost)
+                        return false;
+
+                    PresetButton.Do();
+                    return false;
+                }
+
                 if (option is CustomHeaderOption)
                     return false;
 
@@ -418,6 +455,17 @@ namespace TownOfUsReworked.Lobby.CustomOption
                         return false;
 
                     button2.Do();
+                    return false;
+                }
+
+                CustomOption option4 = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
+
+                if (option4 is CustomButtonOption button3)
+                {
+                    if (!AmongUsClient.Instance.AmHost)
+                        return false;
+
+                    button3.Do();
                     return false;
                 }
 

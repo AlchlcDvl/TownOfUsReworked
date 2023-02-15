@@ -31,11 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Persuaded.Add(Player.PlayerId);
         }
 
-        public override void Loses()
-        {
-            LostByRPC = true;
-        }
-
         public KillButton WhisperButton
         {
             get => _whisperButton;

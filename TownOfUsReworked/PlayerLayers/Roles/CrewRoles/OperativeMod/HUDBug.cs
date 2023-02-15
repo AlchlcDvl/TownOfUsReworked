@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
             var renderer = role.BugButton.graphic;
             
-            if (!role.BugButton.isCoolingDown && role.ButtonUsable)
+            if (Utils.EnableAbilityButton(role.BugButton, role.Player, null, false, role.ButtonUsable))
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
