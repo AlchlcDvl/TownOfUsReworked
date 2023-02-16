@@ -32,7 +32,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.15";
+        public const string VersionString = "0.0.1.16";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -42,7 +42,7 @@ namespace TownOfUsReworked
         public static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
         public static bool isDev = dev != "0";
         public static bool isTest = false;
-        public static string devString = isDev ? $"dev{dev}" : "";
+        public static string devString = isDev ? $"-dev{dev}" : "";
         public static string test = isTest ? "_test" : "";
         public static string versionFinal = version + devString + test;
 
@@ -91,8 +91,6 @@ namespace TownOfUsReworked
         public static Sprite BlackmailSprite;
         public static Sprite BlackmailLetterSprite;
         public static Sprite BlackmailOverlaySprite;
-        public static Sprite LighterSprite;
-        public static Sprite DarkerSprite;
         public static Sprite InfectSprite;
         public static Sprite BugSprite;
         public static Sprite ExamineSprite;
@@ -104,30 +102,30 @@ namespace TownOfUsReworked
         public static Sprite ObliterateSprite;
         public static Sprite EraseDataSprite;
         public static Sprite DisguiseSprite;
-        public static Sprite FreezeSprite;
+        public static Sprite TimeFreezeSprite;
+        public static Sprite CryoFreezeSprite;
         public static Sprite MeasureSprite;
         public static Sprite WarpSprite;
         public static Sprite PromoteSprite;
-        public static Sprite PossesSprite;
-        public static Sprite UnpossessSprite;
         public static Sprite TeleportSprite;
         public static Sprite MarkSprite;
         public static Sprite Placeholder;
         public static Sprite MeetingPlaceholder;
-        public static Sprite VoteCount;
-        public static Sprite VoteCountDisabled;
         public static Sprite StabSprite;
         public static Sprite SyndicateKill;
         public static Sprite PlantSprite;
         public static Sprite DetonateSprite;
         public static Sprite RessurectSprite;
         public static Sprite WhisperSprite;
-        public static Sprite Lock;
         public static Sprite Clear;
         public static Sprite CrewVent;
         public static Sprite IntruderVent;
         public static Sprite SyndicateVent;
         public static Sprite NeutralVent;
+
+        public static Sprite LighterSprite;
+        public static Sprite DarkerSprite;
+        public static Sprite Lock;
 
         public static Sprite SettingsButtonSprite;
         public static Sprite CrewSettingsButtonSprite;
@@ -179,13 +177,11 @@ namespace TownOfUsReworked
             EngineerFix = CreateSprite($"{Buttons}Fix.png");
             SwapperSwitch = CreateSprite($"{Buttons}SwapActive.png");
             SwapperSwitchDisabled = CreateSprite($"{Buttons}SwapDisabled.png");
-            Footprint = CreateSprite($"{Misc}Footprint.png");
             Rewind = CreateSprite($"{Buttons}Rewind.png");
             MedicSprite = CreateSprite($"{Buttons}Medic.png");
             SeerSprite = CreateSprite($"{Buttons}Seer.png");
             SampleSprite = CreateSprite($"{Buttons}Sample.png");
             MorphSprite = CreateSprite($"{Buttons}Morph.png");
-            Arrow = CreateSprite($"{Misc}Arrow.png");
             MineSprite = CreateSprite($"{Buttons}Mine.png");
             InvisSprite = CreateSprite($"{Buttons}Invis.png");
             DouseSprite = CreateSprite($"{Buttons}Douse.png");
@@ -211,9 +207,6 @@ namespace TownOfUsReworked
             ProtectSprite = CreateSprite($"{Buttons}Protect.png");
             BlackmailSprite = CreateSprite($"{Buttons}Blackmail.png");
             BlackmailLetterSprite = CreateSprite($"{Buttons}Blackmailed.png");
-            BlackmailOverlaySprite = CreateSprite($"{Misc}BlackmailOverlay.png");
-            LighterSprite = CreateSprite($"{Misc}Lighter.png");
-            DarkerSprite = CreateSprite($"{Misc}Darker.png");
             InfectSprite = CreateSprite($"{Buttons}Infect.png");
             BugSprite = CreateSprite($"{Buttons}Trap.png");
             ExamineSprite = CreateSprite($"{Buttons}Examine.png");
@@ -229,7 +222,8 @@ namespace TownOfUsReworked
             EraseDataSprite = CreateSprite($"{Buttons}EraseData.png");
             DisguiseSprite = CreateSprite($"{Buttons}Disguise.png");
             CannibalEat = CreateSprite($"{Buttons}Eat.png");
-            FreezeSprite = CreateSprite($"{Buttons}Freeze.png");
+            TimeFreezeSprite = CreateSprite($"{Buttons}TimeFreeze.png");
+            CryoFreezeSprite = CreateSprite($"{Buttons}CryoFreeze.png");
             MeasureSprite = CreateSprite($"{Buttons}Measure.png");
             TeleportSprite = CreateSprite($"{Buttons}Recall.png");
             MarkSprite = CreateSprite($"{Buttons}Mark.png");
@@ -237,9 +231,6 @@ namespace TownOfUsReworked
             Placeholder = CreateSprite($"{Buttons}Placeholder.png");
             MeetingPlaceholder = CreateSprite($"{Buttons}MeetingPlaceholder.png");
             SyndicateKill = CreateSprite($"{Buttons}SyndicateKill.png");
-            VoteCount = CreateSprite($"{Misc}VoteCount.png");
-            VoteCountDisabled = CreateSprite($"{Misc}VoteCountDisabled.png");
-            Lock = CreateSprite($"{Misc}Lock.png");
             RessurectSprite = CreateSprite($"{Buttons}Ressurect.png");
             WhisperSprite = CreateSprite($"{Buttons}Whisper.png");
             Clear = CreateSprite($"{Buttons}Clear.png");
@@ -247,6 +238,14 @@ namespace TownOfUsReworked
             IntruderVent = CreateSprite($"{Buttons}IntruderVent.png");
             SyndicateVent = CreateSprite($"{Buttons}SyndicateVent.png");
             NeutralVent = CreateSprite($"{Buttons}NeutralVent.png");
+
+            //Misc Stuff
+            Lock = CreateSprite($"{Misc}Lock.png");
+            BlackmailOverlaySprite = CreateSprite($"{Misc}BlackmailOverlay.png");
+            LighterSprite = CreateSprite($"{Misc}Lighter.png");
+            DarkerSprite = CreateSprite($"{Misc}Darker.png");
+            Arrow = CreateSprite($"{Misc}Arrow.png");
+            Footprint = CreateSprite($"{Misc}Footprint.png");
 
             //Settings buttons
             SettingsButtonSprite = CreateSprite($"{Misc}SettingsButton.png");

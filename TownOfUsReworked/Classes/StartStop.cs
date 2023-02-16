@@ -3,6 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Classes
 {
@@ -17,7 +18,8 @@ namespace TownOfUsReworked.Classes
 
             RecordRewind.rewinding = true;
             RecordRewind.whoIsRewinding = role;
-            PlayerControl.LocalPlayer.moveable = false;
+            PlayerControl.LocalPlayer.moveable = !(PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) ||
+                PlayerControl.LocalPlayer.inMovingPlat || PlayerControl.LocalPlayer.onLadder || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeMaster) && CustomGameOptions.TMImmunity));
             oldColor = HudManager.Instance.FullScreen.color;
             HudManager.Instance.FullScreen.gameObject.active = true;
             HudManager.Instance.FullScreen.color = new Color32(0, 0, 255, 128);

@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {
+    //Thanks to twix for this code
     public class Reportmessage
     {
         public static string location;

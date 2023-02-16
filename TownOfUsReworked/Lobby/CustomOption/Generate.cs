@@ -241,6 +241,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption LocationReports;
         public static CustomToggleOption NoNames;
         public static CustomToggleOption Whispers;
+        public static CustomToggleOption WhispersAnnouncement;
         public static CustomToggleOption AppearanceAnimation;
         public static CustomToggleOption LighterDarker;
         public static CustomToggleOption RandomSpawns;
@@ -570,6 +571,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption BlackmailerCount;
         public static CustomToggleOption UniqueBlackmailer;
         public static CustomNumberOption BlackmailCooldown;
+        public static CustomToggleOption WhispersNotPrivate;
 
         //Grenadier Options
         public static CustomHeaderOption Grenadier;
@@ -873,6 +875,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption JestSwitchVent;
         public static CustomToggleOption JestEjectScreen;
         public static CustomToggleOption VigiKillsJester;
+        public static CustomNumberOption HauntCooldown;
+        public static CustomNumberOption HauntCount;
         public static CustomToggleOption UniqueJester;
 
         //Actor Options
@@ -1026,10 +1030,10 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Dracula;
         public static CustomNumberOption DraculaCount;
         public static CustomNumberOption BiteCooldown;
-        public static CustomToggleOption DraculaConvertNeuts;
         public static CustomNumberOption AliveVampCount;
         public static CustomToggleOption DracVent;
         public static CustomToggleOption UniqueDracula;
+        public static CustomToggleOption UndeadVent;
 
         //Necromancer Options
         public static CustomHeaderOption Necromancer;
@@ -1041,6 +1045,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption ResurrectCooldownIncrease;
         public static CustomNumberOption ResurrectCount;
         public static CustomToggleOption NecroVent;
+        public static CustomToggleOption ResurrectVent;
         public static CustomToggleOption KillResurrectCooldownsLinked;
         public static CustomToggleOption NecromancerTargetBody;
         public static CustomNumberOption NecroResurrectDuration;
@@ -1057,6 +1062,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomToggleOption WhisperRateDecreases;
         public static CustomToggleOption WhispVent;
         public static CustomToggleOption UniqueWhisperer;
+        public static CustomToggleOption PersuadedVent;
 
         //Jackal Options
         public static CustomHeaderOption Jackal;
@@ -1074,15 +1080,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomNumberOption PhantomCount;
         public static CustomNumberOption PhantomTasksRemaining;
         public static CustomToggleOption PhantomPlayersAlerted;
-
-        //Vampire Options
-        public static CustomHeaderOption Vampire;
-        public static CustomToggleOption VampVent;
-
-        //Dampyr Options
-        public static CustomHeaderOption Dampyr;
-        public static CustomNumberOption DampBiteCooldown;
-        public static CustomToggleOption DampVent;
 
         //Pestilence Options
         public static CustomHeaderOption Pestilence;
@@ -1296,6 +1293,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static CustomHeaderOption Ruthless;
         public static CustomNumberOption RuthlessCount;
         public static CustomToggleOption UniqueRuthless;
+        public static CustomToggleOption RuthlessKnows;
 
         //Professional Options
         public static CustomHeaderOption Professional;
@@ -1385,6 +1383,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             KillerReports = new CustomToggleOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Killer's Role", false);
             NoNames = new CustomToggleOption(true, num++, MultiMenu.main, "No Player Names", false);
             Whispers = new CustomToggleOption(true, num++, MultiMenu.main, "PSSST *Whispers*", true);
+            WhispersAnnouncement = new CustomToggleOption(true, num++, MultiMenu.main, "Everyone Is Alerted To Whispers", true);
             AppearanceAnimation = new CustomToggleOption(true, num++, MultiMenu.main, "Kill Animations Show Morphed Player", true);
             LighterDarker = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Lighter Darker Colors", true);
             RandomSpawns = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", false);
@@ -1511,7 +1510,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             NeutralNeophyteRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>");
             DraculaOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color>", 0, 0, 100, 10, PercentFormat);
             JackalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>", 0, 0, 100, 10, PercentFormat);
-            NecromancerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color>", 0, 0, 100, 10, PercentFormat);
+            NecromancerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color>", 0, 0, 100, 10, PercentFormat);
             WhispererOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralNeophyteRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> <color=#FFD700FF>Roles</color>");
@@ -1543,6 +1542,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             ImpostorOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateDisruptionRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>");
+            ConcealerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0, 0, 100, 10, PercentFormat);
             DrunkardOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>", 0, 0, 100, 10, PercentFormat);
             FramerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>", 0, 0, 100, 10, PercentFormat);
             PoisonerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>", 0, 0, 100, 10, PercentFormat);
@@ -1554,7 +1554,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
             SyndicateSupportRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
             BeamerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>", 0, 0, 100, 10, PercentFormat);
-            ConcealerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0, 0, 100, 10, PercentFormat);
             RebelOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>", 0, 0, 100, 10, PercentFormat);
             WarperOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>", 0, 0, 100, 10, PercentFormat);
 
@@ -1927,6 +1926,8 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JesterCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Count", 1, 1, 14, 1);
             UniqueJester= new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Is Unique In All Any", false);
             JesterButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Button", true);
+            HauntCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Haunt Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            HauntCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Haunt Count", 1, 1, 14, 1);
             JesterVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Hide In Vents", false);
             JestSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Switch Vents", false);
             JestEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
@@ -2012,9 +2013,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
             DraculaCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Count", 1, 1, 14, 1);
             UniqueDracula = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Is Unique In All Any", false);
             BiteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            DraculaConvertNeuts = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Can Convert <color=#B3B3B3FF>Neutrals</color>", false);
             DracVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Can Vent", false);
             AliveVampCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Alive <color=#7B8968FF>Undead</color> Count", 3, 1, 14, 1);
+            UndeadVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Undead Can Vent", false);
 
             Jackal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>");
             JackalCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Count", 1, 1, 14, 1);
@@ -2023,19 +2024,20 @@ namespace TownOfUsReworked.Lobby.CustomOption
             JackalVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Can Vent", false);
             RecruitVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Recruits Can Vent", false);
 
-            Necromancer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color>");
-            NecromancerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Count", 1, 1, 14, 1);
-            UniqueNecromancer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Is Unique In All Any", false);
+            Necromancer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color>");
+            NecromancerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Count", 1, 1, 14, 1);
+            UniqueNecromancer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Is Unique In All Any", false);
             ResurrectCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             ResurrectCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
             ResurrectCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Count", 5, 1, 14, 1);
             NecroKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             NecroKillCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
             NecroKillCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Count", 5, 1, 14, 1);
-            KillResurrectCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked", false);
+            KillResurrectCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked", false);
             NecromancerTargetBody = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target's Body Disappears On Beginning Of Resurrect", false);
-            NecroResurrectDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat);
-            NecroVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FF1919FF>Necromancer</color> Can Vent", false);
+            NecroResurrectDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat);
+            NecroVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Can Vent", false);
+            ResurrectVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Resurrected Can Vent", false);
 
             Whisperer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>");
             WhispererCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Count", 1, 1, 14, 1);
@@ -2043,16 +2045,13 @@ namespace TownOfUsReworked.Lobby.CustomOption
             WhisperCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             WhisperCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
             WhisperRadius = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Radius", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            WhispVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false);
             InitialWhisperRate = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat);
             WhisperRateDecreases = new CustomToggleOption(true, num++, MultiMenu.neutral, "Whisper Rate Decrease Each Whisper", false);
             WhisperRateDecrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, PercentFormat);
+            WhispVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false);
+            PersuadedVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Persuaded Can Vent", false);
 
             NeutralProselyteSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> Settings");
-
-            Dampyr = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#DF7AE8FF>Dampyr</color>");
-            DampBiteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            DampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#DF7AE8FF>Dampyr</color> Can Vent", false);
 
             Pestilence = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color>");
             PestSpawn = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false);
@@ -2064,9 +2063,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
             PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
             PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
             PhantomPlayersAlerted = new CustomToggleOption(true, num++, MultiMenu.neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false);
-
-            Vampire = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color>");
-            VampVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2BD29CFF>Vampire</color> Can Vent", false);
 
             IntruderSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Settings");
             CustomIntColors = new CustomToggleOption(true, num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
@@ -2087,6 +2083,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
             BlackmailerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Count", 1, 1, 14, 1);
             UniqueBlackmailer = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Is Unique In All Any", false);
             BlackmailCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Blackmail Cooldown", 10f, 1f, 15f, 1f, CooldownFormat);
+            WhispersNotPrivate = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers", true);
 
             Camouflager = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color>");
             CamouflagerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Count", 1, 1, 14, 1);
@@ -2393,6 +2390,11 @@ namespace TownOfUsReworked.Lobby.CustomOption
             Radar = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>");
             RadarCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
             UniqueRadar = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Is Unique In All Any", false);
+
+            Ruthless = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>");
+            RuthlessCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Count", 1, 1, 14, 1);
+            UniqueRuthless = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Is Unique In All Any", false);
+            RuthlessKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Knows Who They Are On Game Start", true);
 
             Snitch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>");
             SnitchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);

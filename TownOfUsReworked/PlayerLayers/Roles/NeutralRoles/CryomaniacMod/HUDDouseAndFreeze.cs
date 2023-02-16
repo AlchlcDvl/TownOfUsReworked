@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDDouseAndFreeze
     {
-        public static Sprite Freeze => TownOfUsReworked.Placeholder;
+        public static Sprite Freeze => TownOfUsReworked.CryoFreezeSprite;
         public static Sprite Douse => TownOfUsReworked.DouseSprite;
         
         public static void Postfix(HudManager __instance)
@@ -20,18 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 return;
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
-
-            foreach (var playerId in role.DousedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-                var data = player?.Data;
-
-                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
-                    continue;
-
-                player.myRend().material.SetColor("_VisorColor", role.Color);
-                player.nameText().color = Color.black;
-            }
 
             if (role.FreezeButton == null)
             {
@@ -79,6 +67,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             {
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
+            }
+
+            foreach (var playerId in role.DousedPlayers)
+            {
+                var player = Utils.PlayerById(playerId);
+                var data = player?.Data;
+
+                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
+                    continue;
+
+                player.myRend().material.SetColor("_VisorColor", role.Color);
+                player.nameText().color = Color.black;
             }
         }
     }

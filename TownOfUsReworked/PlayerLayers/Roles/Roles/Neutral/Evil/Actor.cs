@@ -53,6 +53,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)

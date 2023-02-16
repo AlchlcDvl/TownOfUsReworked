@@ -86,6 +86,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else
@@ -116,6 +118,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SectWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

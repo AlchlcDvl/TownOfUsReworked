@@ -6,9 +6,10 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Reactor.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using Reactor.Utilities.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
-using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -25,17 +26,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public ChatController MimicList { get; set; }
         public float TimeRemaining;
         public bool IsUsingMimic => TimeRemaining > 0f;
+        public bool MimicEnabled;
         public PlayerControl MimicTarget { get; set; }
         public bool GlitchWins { get; set; }
         public bool LastMouse;
         public bool MenuClick;
         public float TimeRemaining2;
         public bool IsUsingHack => TimeRemaining2 > 0f;
+        public bool HackEnabled;
 		public bool lastMouse;
-		public PlayerControl SampledTarget;
-		public bool Enabled;
-		public ShapeshifterMinigame ShapeshifterMenuPrefab;
-		public ShapeshifterMinigame ShapeshifterMenu;
 
         public Glitch(PlayerControl owner) : base(owner)
         {
@@ -57,15 +56,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
         }
-
-		public void MimicListUpdate()
-		{
-			if (ShapeshifterMenu == null)
-				return;
-
-			if (Minigame.Instance && ShapeshifterMenu.amClosing == Minigame.CloseState.Closing)
-				PlayerControl.LocalPlayer.moveable = true;
-		}
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
@@ -147,6 +137,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     return false;
                 }
             }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
             else if (IsResurrected)
             {
                 if (Utils.ReanimatedWin())
@@ -197,6 +199,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
@@ -225,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Player != PlayerControl.LocalPlayer)
                 return;
                 
-            var team = new List<PlayerControl>();
+            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
 
             team.Add(PlayerControl.LocalPlayer);
 
@@ -295,12 +299,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 AddToAbilityButtons(value, this);
             }
         }
+
 		public void Mimic()
 		{
-			if (Player == null || MimicTarget == null)
-				return;
-
-			Enabled = true;
+			MimicEnabled = true;
 			TimeRemaining -= Time.deltaTime;
 			Utils.Morph(Player, MimicTarget);
 
@@ -310,30 +312,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
 		public void UnMimic()
 		{
-			if (Player == null)
-				return;
-
-			Enabled = false;
-			TimeRemaining = 0f;
+			MimicEnabled = false;
 			MimicTarget = null;
+            LastMimic = DateTime.UtcNow;
 			Utils.DefaultOutfit(Player);
 		}
 
-		public void OpenMimicList()
+		public void Hack()
 		{
-			if (ShapeshifterMenu == null)
-			{
-				if (Camera.main == null)
-					return;
+			HackEnabled = true;
+			TimeRemaining2 -= Time.deltaTime;
 
-				ShapeshifterMenu = Object.Instantiate<ShapeshifterMinigame>(ShapeshifterMenuPrefab, Camera.main.transform, false);
-			}
+            var targetRole = GetRole(HackTarget);
+            targetRole.IsBlocked = !targetRole.RoleBlockImmune;
 
-			ShapeshifterMenu.transform.SetParent(Camera.main.transform, false);
-			ShapeshifterMenu.transform.localPosition = new Vector3(0f, 0f, -50f);
-			ShapeshifterMenu.Begin(null);
-			PlayerControl.LocalPlayer.moveable = false;
-			PlayerControl.LocalPlayer.NetTransform.Halt();
+			if (Player.Data.IsDead)
+				TimeRemaining = 0f;
+		}
+
+		public void Unhack()
+		{
+			HackEnabled = false;
+			HackTarget = null;
+            LastHack = DateTime.UtcNow;
+			Utils.DefaultOutfit(Player);
 		}
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
@@ -353,19 +355,124 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return false;
         }
 
-        public void SetHacked(PlayerControl hacked)
+        public void FixedUpdate(HudManager __instance)
         {
-            LastHack = DateTime.UtcNow;
-            Coroutines.Start(Utils.Block(this, hacked));
+            if (MimicList != null)
+            {
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
+
+                if (!MimicList.IsOpen || MeetingHud.Instance)
+                {
+                    MimicList.Toggle();
+                    MimicList.SetVisible(false);
+                    MimicList = null;
+                }
+                else
+                {
+                    foreach (var bubble in MimicList.chatBubPool.activeChildren)
+                    {
+                        if (!IsUsingMimic && MimicList != null)
+                        {
+                            Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
+                            Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
+
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
+                            {
+                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                                {
+                                    if (!Input.GetMouseButtonDown(0) && lastMouse)
+                                    {
+                                        lastMouse = false;
+                                        MimicList.Toggle();
+                                        MimicList.SetVisible(false);
+                                        MimicList = null;
+                                        break;
+                                    }
+
+                                    lastMouse = Input.GetMouseButtonDown(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        public void RPCSetHacked(PlayerControl hacked)
+        public void MimicButtonPress(Glitch __gInstance)
         {
-            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer3.Write((byte)ActionsRPC.ConsRoleblock);
-            writer3.Write(hacked.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer3);
-            SetHacked(hacked);
+            if (__gInstance.MimicList == null)
+            {
+                HudManager.Instance.Chat.SetVisible(false);
+                __gInstance.MimicList = Object.Instantiate(HudManager.Instance.Chat);
+
+                __gInstance.MimicList.transform.SetParent(Camera.main.transform);
+                __gInstance.MimicList.SetVisible(true);
+                __gInstance.MimicList.Toggle();
+
+                __gInstance.MimicList.TextBubble.enabled = false;
+                __gInstance.MimicList.TextBubble.gameObject.SetActive(false);
+
+                __gInstance.MimicList.TextArea.enabled = false;
+                __gInstance.MimicList.TextArea.gameObject.SetActive(false);
+
+                __gInstance.MimicList.BanButton.enabled = false;
+                __gInstance.MimicList.BanButton.gameObject.SetActive(false);
+
+                __gInstance.MimicList.CharCount.enabled = false;
+                __gInstance.MimicList.CharCount.gameObject.SetActive(false);
+
+                __gInstance.MimicList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                __gInstance.MimicList.OpenKeyboardButton.Destroy();
+
+                __gInstance.MimicList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                __gInstance.MimicList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+
+                __gInstance.MimicList.BackgroundImage.enabled = false;
+
+                foreach (var rend in __gInstance.MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    if (rend.name == "SendButton" || rend.name == "QuickChatButton")
+                    {
+                        rend.enabled = false;
+                        rend.gameObject.SetActive(false);
+                    }
+                }
+
+                foreach (var bubble in __gInstance.MimicList.chatBubPool.activeChildren)
+                {
+                    bubble.enabled = false;
+                    bubble.gameObject.SetActive(false);
+                }
+
+                __gInstance.MimicList.chatBubPool.activeChildren.Clear();
+
+                foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x != null && x.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
+                {
+                    if (!player.Data.IsDead)
+                        __gInstance.MimicList.AddChat(player, "Click here");
+                    else
+                    {
+                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
+
+                        foreach (var body in deadBodies)
+                        {
+                            if (body.ParentId == player.PlayerId)
+                            {
+                                player.Data.IsDead = false;
+                                __gInstance.MimicList.AddChat(player, "Click here");
+                                player.Data.IsDead = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                __gInstance.MimicList.Toggle();
+                __gInstance.MimicList.SetVisible(false);
+                __gInstance.MimicList = null;
+            }
         }
     }
 }

@@ -62,6 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal Faction Faction { get; set; } = Faction.None;
         protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
         protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
+        protected internal InspectorResults InspectorResults { get; set; } = InspectorResults.None;
         protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
@@ -81,12 +82,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal string KilledBy { get; set; } = "";
 
         protected internal bool RoleBlockImmune { get; set; } = false;
+        protected internal bool IsBlocked { get; set; } = false;
 
         protected internal bool Base { get; set; } = false;
 
         protected internal bool IsRecruit { get; set; } = false;
         protected internal bool IsResurrected { get; set; } = false;
         protected internal bool IsPersuaded { get; set; } = false;
+        protected internal bool IsBitten { get; set; } = false;
         protected internal bool IsIntTraitor { get; set; } = false;
         protected internal bool IsIntAlly { get; set; } = false;
         protected internal bool IsIntFanatic { get; set; } = false;
@@ -995,7 +998,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var role = GetRole(player);
 
                     if (role == null)
+                    {
+                        try
+                        {
+                            player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
+                        } catch {}
+
                         continue;
+                    }
 
                     player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
 
@@ -1011,13 +1021,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                         if (role.ColorCriteria())
                             player.NameText.color = role.Color;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
-                        } catch {}
                     }
                         
                     if (CustomGameOptions.Whispers)

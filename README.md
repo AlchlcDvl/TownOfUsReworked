@@ -30,32 +30,32 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
 |------------------------------|-------------------------------|---------------------|----------------------------|
-| [Blackmailer](#blackmailer) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
-| [Camouflager](#camouflager) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
-| [Consigliere](#consigliere) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
-| [Consort](#consort) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |
-| [Godfather](#godfather) | [Framer](#framer) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Engineer](#engineer) | [Dampyr](#dampyr) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Escort](#escort) | [Dracula](#dracula) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Inspector](#inspector) | [Executioner](#executioner) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Mayor](#mayor) | [Glitch](#glitch) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Medic](#medic) | [Guardian Angel](#guardian-angel) |
-| [Morphling](#morphling) | [Warper](#warper) | [Medium](#medium) | [Guesser](#guesser) |
-| [Teleporter](#teleporter) |  | [Mystic](#mystic) | [Jackal](#jackal) |
-| [Time Master](#time-master) |  | [Operative](#operative) | [Jester](#jester) |
-| [Undertaker](#undertaker) |  | [Retributionist](#retributionist) | [Juggernaut](#juggernaut) |
-| [Wraith](#wraith) |  | [Revealer](#revealer) | [Murderer](#murderer) |
-|  |  | [Seer](#seer) | [Necromancer](#necromancer) |
-|  |  | [Sheriff](#sheriff) | [Pestilence](#pestilence) |
-|  |  | [Shifter](#shifter) | [Phantom](#phantom) |
-|  |  | [Swapper](#swapper) | [Plaguebearer](#plaguebearer) |
-|  |  | [Time Lord](#time-lord) | [Serial Killer](#serial-killer) |
-|  |  | [Tracker](#tracker) | [Survivor](#survivor) |
-|  |  | [Transporter](#transporter) | [Thief](#thief) |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Vampire](#vampire) |
-|  |  | [Veteran](#veteran) | [Werewolf](#werewolf) |
-|  |  | [Vigilante](#vigilante) | [Whisperer](#whisperer) |
+| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
+| [Blackmailer](#blackmailer) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
+| [Camouflager](#camouflager) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
+| [Consigliere](#consigliere) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |
+| [Consort](#consort) | [Crusader](#crusader) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |
+| [Godfather](#godfather) | [Framer](#framer) | [Engineer](#engineer) | [Dracula](#dracula) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Inspector](#inspector) | [Glitch](#glitch) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medic](#medic) | [Guesser](#guesser) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Medium](#medium) | [Jackal](#jackal) |
+| [Morphling](#morphling) | [Warper](#warper) | [Mystic](#mystic) | [Jester](#jester) |
+| [Teleporter](#teleporter) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |
+| [Time Master](#time-master) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |
+| [Undertaker](#undertaker) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |
+| [Wraith](#wraith) |  | [Seer](#seer) | [Pestilence](#pestilence) |
+|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |
+|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |
+|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |
+|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |
+|  |  | [Tracker](#tracker) | [Thief](#thief) |
+|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |
+|  |  | [Veteran](#veteran) |  |
+|  |  | [Vigilante](#vigilante) |  |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |-------------------------|-------------------------|-------------------------------|
@@ -113,6 +113,22 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.1dev16</summary>
+    <ul> <li>Addition: Added dynamic lobby size changing</li> </ul>
+    <ul> <li>Role Fix: Time Lord and Retributionist-Time Lord getting stuck when rewinding</li> </ul>
+    <ul> <li>Role Fix: Bounty Hunter, Guesser and Actor hints not being sent</li> </ul>
+    <ul> <li>Bug Fix: Fixed Time Lord and Retributionist-Time Lord rewind not reviving those who were poisoned by the Rebel-Poisoner</li> </ul>
+    <ul> <li>Bug Fix: Fixed being able to whisper to dead players and dead players being able to whisper to the living</li> </ul>
+    <ul> <li>Bug Fix: Fixed Ruthless messing with role gen</li> </ul>
+    <ul> <li>Bug Fix: Conceal not working</li> </ul>
+    <ul> <li>Visual Fix: Changed Necromancer's color because it was too similar to Impostor Red</li> </ul>
+    <ul> <li>Buff: Blackmailer and dead players can read whispers now (both of which are togglable)</li> </ul>
+    <ul> <li>Changes: Changed how do the Undead work</li> </ul>
+    <ul> <li>Changes: Changed the appearance of footprints</li> </ul>
+    <ul> <li>Update: Updated CrowdedMod code</li> </ul>
+    <ul> <li>Removed: Dampyr and Vampire</li> </ul>
+  </details>
   <details>
     <summary>v0.0.1dev15</summary>
     <ul> <li>Addition: Preset settings (WIP).</li> </ul>
@@ -759,19 +775,6 @@ The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's
 | Douse Cooldown | The cooldown of the Cryomaniac's douse button | Time | 25s |
 | Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
 
-## Dampyr
-### **Alignment: Neutral (Proselyte)**
-### Win Condition: Kill off others to help the Undead gain a majority.
-
-The Dampyr appears only when a player with the ability to kill gets bitten by the Dracula. The Dampyr has no special abilities aside from being able to kill like normal. However, if the Dampyr kills someone, the Dracula's bite cooldown is reset and if the Dracula bites, the Dampyr's bite cooldown is reset.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Bite Cooldown | The cooldown of the Dampyr's bite button | Time | 25s |
-| Dampyr Can Vent | Decides whether the Dampyr can vent | Toggle | False |
-
 ## Dracula
 ### **Alignment: Neutral (Neophyte)**
 ### Win Condition: Convert the Crew to gain a majority.
@@ -787,7 +790,6 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 | Dracula Is Unique In All Any | Self descriptive | Toggle | False |
 | Bite Cooldown | The cooldown of the Dracula's bite button | Time | 25s |
 | Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
-| Dracula Can Convert Neutrals | Whether the Dracula is able to convert Neutrals | Toggle | False |
 | Alive Undead Count | Limits the number of Undead that can be alive, attempting to convert player after this limit has been reached will kill the target player | Number | 3 |
 
 ## Executioner
@@ -1083,18 +1085,6 @@ The Troll just wants to be killed, but not ejected. The Troll can fake interact 
 | Troll Can Interact | Toggles the Troll's ability to interact with players | Toggle | False |
 | Interaction Cooldown | The cooldown of the Troll's interact button | Time | 25s |
 | Troll Can Vent | Whether Troll Can Vent | Toggle | False |
-
-## Vampire
-### **Alignment: Neutral (Proselyte)**
-### Win Condition: Help the Vampires gain a majority.
-
-The Vampire has no special abilities and just exists to be additional voting power for the Undead subfaction.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Vampire Can Vent | Whether Vampire Can Vent | Toggle | False |
 
 ## Werewolf
 ### **Alignment: Neutral (Killing)**
@@ -1890,7 +1880,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the RainbowMod\
-[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and sound effects code\
+[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and some code\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
@@ -1906,7 +1896,8 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod\
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
-[CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit which is now embedded into the mod
+[CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit which is now embedded into the mod\
+[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas and icons for some buttons
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>
 <p align="center">© Innersloth LLC.</p>

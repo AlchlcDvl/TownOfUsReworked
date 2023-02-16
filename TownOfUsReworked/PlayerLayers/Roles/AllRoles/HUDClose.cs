@@ -336,10 +336,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Morphling))
             {
                 var role2 = (Morphling)role;
-                role2.MorphButton.graphic.sprite = Sample;
                 role2.SampledPlayer = null;
                 role2.LastMorphed = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
+                role2.MorphButton.graphic.sprite = Sample;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Teleporter))
@@ -516,12 +516,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Cryomaniac)role;
                 role2.LastDoused = DateTime.UtcNow;
-            }
-
-            foreach (var role in Role.GetRoles(RoleEnum.Dampyr))
-            {
-                var role2 = (Dampyr)role;
-                role2.LastKilled = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Dracula))

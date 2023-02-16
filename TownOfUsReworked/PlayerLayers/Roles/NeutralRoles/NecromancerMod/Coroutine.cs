@@ -13,6 +13,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using AmongUs.GameOptions;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
@@ -22,9 +23,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
         {
             var parentId = target.ParentId;
             var position = target.TruePosition;
-            role.Resurrecting = true;
 
-            var revived = new List<PlayerControl>();
+            if (!Utils.PlayerById(parentId).Is(SubFaction.None))
+            {
+                Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                yield break;
+            }
+
+            role.Resurrecting = true;
 
             if (CustomGameOptions.NecromancerTargetBody)
             {
@@ -84,7 +90,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
-            revived.Add(player);
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
@@ -107,7 +112,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
-                revived.Add(lover);
 
                 foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
@@ -126,6 +130,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 Minigame.Instance.Close();
 
             Utils.Spread(role.Player, player);
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
         }
     }
 }

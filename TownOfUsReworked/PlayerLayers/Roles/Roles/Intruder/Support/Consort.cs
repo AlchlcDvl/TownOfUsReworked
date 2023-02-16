@@ -4,7 +4,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 using System;
 using TownOfUsReworked.Classes;
 using Hazel;
-using Reactor.Utilities;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -113,21 +113,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public void SetBlocked(PlayerControl blocked)
-        {
+		public void UnBlock()
+		{
+			Enabled = false;
+			BlockTarget = null;
             LastBlock = DateTime.UtcNow;
-            BlockTarget = blocked;
-            Coroutines.Start(Utils.Block(this, blocked));
-        }
+			Utils.DefaultOutfit(Player);
+		}
 
-        public void RPCSetBlocked(PlayerControl blocked)
-        {
-            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-            writer3.Write((byte)ActionsRPC.ConsRoleblock);
-            writer3.Write(blocked.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer3);
-            SetBlocked(blocked);
-        }
+		public void Block()
+		{
+			Enabled = true;
+			TimeRemaining -= Time.deltaTime;
+
+            var targetRole = GetRole(BlockTarget);
+            targetRole.IsBlocked = !targetRole.RoleBlockImmune;
+
+			if (Player.Data.IsDead)
+				TimeRemaining = 0f;
+		}
 
         public override void Wins()
         {
@@ -135,6 +139,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else
@@ -165,6 +171,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SectWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

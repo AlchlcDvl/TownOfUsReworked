@@ -1,4 +1,4 @@
-/*using HarmonyLib;
+using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDHaunt
     {
-        public static Sprite ConvertSprite => TownOfUsReworked.Placeholder;
+        public static Sprite Haunt => TownOfUsReworked.Placeholder;
 
         public static void Postfix(HudManager __instance)
         {
@@ -20,23 +20,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 
             var role = Role.GetRole<Jester>(PlayerControl.LocalPlayer);
 
-            if (!role.VotedOut)
-                return;
-
             if (role.HauntButton == null)
             {
                 role.HauntButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.HauntButton.graphic.enabled = true;
+                role.HauntButton.graphic.sprite = Haunt;
                 role.HauntButton.gameObject.SetActive(false);
             }
 
             role.HauntButton.gameObject.SetActive(!MeetingHud.Instance && role.VotedOut && !LobbyBehaviour.Instance && !role.HasHaunted && PlayerControl.LocalPlayer.Data.IsDead);
-            role.HauntButton.SetCoolDown(role.HauntTimer(), CustomGameOptions.BiteCd);
+            role.HauntButton.SetCoolDown(role.HauntTimer(), CustomGameOptions.HauntCooldown);
             var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => role.ToHaunt.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.HauntButton, ToBeHaunted);
             var renderer = role.HauntButton.graphic;
             
-            if (role.ClosestPlayer != null)
+            if (role.ClosestPlayer != null && !role.HauntButton.isCoolingDown )
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);
@@ -48,4 +46,4 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             }
         }
     }
-}*/
+}

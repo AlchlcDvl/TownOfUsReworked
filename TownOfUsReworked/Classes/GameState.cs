@@ -14,8 +14,7 @@ namespace TownOfUsReworked.Classes
         public static bool IsOnlineGame => AmongUsClient.Instance.NetworkMode == NetworkModes.OnlineGame;
         public static bool IsLocalGame => AmongUsClient.Instance.NetworkMode == NetworkModes.LocalGame;
         public static bool IsFreePlay => AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay;
-        public static bool IsRoaming => IsInGame && !MeetingHud.Instance;
-        public static bool IsInTask => IsRoaming && Minigame.Instance;
+        public static bool IsRoaming => IsInGame && !MeetingHud.Instance && !Minigame.Instance;
         public static bool IsMeeting => IsInGame && MeetingHud.Instance;
     }
 }

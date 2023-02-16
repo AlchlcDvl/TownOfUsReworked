@@ -76,27 +76,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
             }
-            
-            if (role.ClosestPlayer != null)
-            {
-                if (!role.HackButton.isCoolingDown && !role.IsUsingHack)
-                {
-                    renderer2.color = Palette.EnabledColor;
-                    renderer2.material.SetFloat("_Desat", 0f);
-                }
 
-                if (!role.KillButton.isCoolingDown)
-                {
-                    renderer3.color = Palette.EnabledColor;
-                    renderer3.material.SetFloat("_Desat", 0f);
-                }
+            if (!role.KillButton.isCoolingDown && role.ClosestPlayer != null)
+            {
+                renderer3.color = Palette.EnabledColor;
+                renderer3.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer3.color = Palette.DisabledClear;
+                renderer3.material.SetFloat("_Desat", 1f);
+            }
+
+            if (!role.HackButton.isCoolingDown && !role.IsUsingHack && role.ClosestPlayer != null)
+            {
+                renderer2.color = Palette.EnabledColor;
+                renderer2.material.SetFloat("_Desat", 0f);
             }
             else
             {
                 renderer2.color = Palette.DisabledClear;
                 renderer2.material.SetFloat("_Desat", 1f);
-                renderer3.color = Palette.DisabledClear;
-                renderer3.material.SetFloat("_Desat", 1f);
             }
         }
     }

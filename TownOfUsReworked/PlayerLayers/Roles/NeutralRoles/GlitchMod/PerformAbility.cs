@@ -33,10 +33,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                    if (interact[3] == true && interact[0] == true)
-                        role.RPCSetHacked(role.ClosestPlayer);
-
                     if (interact[3] == true)
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        writer.Write((byte)ActionsRPC.GlitchRoleblock);
+                        writer.Write(PlayerControl.LocalPlayer);
+                        writer.Write(role.ClosestPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        role.TimeRemaining2 = CustomGameOptions.HackDuration;
+                        role.HackTarget = role.ClosestPlayer;
+                        role.Hack();
+                    }
+
+                    if (interact[0] == true)
                         role.LastHack = DateTime.UtcNow;
                     else if (interact[1] == true)
                         role.LastHack.AddSeconds(CustomGameOptions.ProtectKCReset);
@@ -63,8 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (!Utils.ButtonUsable(__instance))
                     return false;
 
-                role.MimicList = null;
-                role.OpenMimicList();
+                role.MimicButtonPress(role);
                 return false;
             }
 

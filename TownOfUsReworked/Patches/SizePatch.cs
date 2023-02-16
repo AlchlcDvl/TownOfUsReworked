@@ -12,6 +12,9 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void Postfix(HudManager __instance)
         {
+            if (GameStates.IsLobby)
+                return;
+
             foreach (var player in PlayerControl.AllPlayerControls.ToArray())
             {
                 if (!(player.Data.IsDead || player.Data.Disconnected))

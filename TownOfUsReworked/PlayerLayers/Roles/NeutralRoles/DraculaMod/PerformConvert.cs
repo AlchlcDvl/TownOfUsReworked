@@ -36,9 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                 if (interact[3] == true && interact[0] == true)
                 {
-                    var vampCount = PlayerControl.AllPlayerControls.ToArray().ToList().Count(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
-
-                    if (vampCount == CustomGameOptions.AliveVampCount)
+                    if (role.Converted.Count >= CustomGameOptions.AliveVampCount)
                     {
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
                         role.LastBitten = DateTime.UtcNow;
@@ -51,6 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                         writer3.Write(role.ClosestPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer3);
                         Convert(role, role.ClosestPlayer);
+                        role.LastBitten = DateTime.UtcNow;
                     }
 
                     return false;
@@ -71,183 +70,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             var role = Role.GetRole(other);
             var drac = dracRole.Player;
 
-            var convert = false;
-            var convertNeut = false;
-            var convertNK = false;
-            var convertCK = false;
-            var alreadyVamp = false;
+            var convert = other.Is(SubFaction.None);
 
-            switch (role.RoleType)
+            if (convert)
             {
-                case RoleEnum.Vampire:
-                case RoleEnum.Dampyr:
-                case RoleEnum.Dracula:
-
-                    alreadyVamp = true;
-                    break;
-
-                case RoleEnum.Sheriff:
-                case RoleEnum.Engineer:
-                case RoleEnum.Mayor:
-                case RoleEnum.Swapper:
-                case RoleEnum.TimeLord:
-                case RoleEnum.Medic:
-                case RoleEnum.Agent:
-                case RoleEnum.Altruist:
-                case RoleEnum.Crewmate:
-                case RoleEnum.Tracker:
-                case RoleEnum.Transporter:
-                case RoleEnum.Medium:
-                case RoleEnum.Coroner:
-                case RoleEnum.Operative:
-                case RoleEnum.Detective:
-                case RoleEnum.Shifter:
-                case RoleEnum.Inspector:
-                case RoleEnum.Escort:
-                case RoleEnum.Mystic:
-                case RoleEnum.Seer:
-
-                    convert = true;
-                    break;
-
-                case RoleEnum.Vigilante:
-                case RoleEnum.Veteran:
-
-                    convertCK = true;
-                    convert = true;
-                    break;
-
-                case RoleEnum.Amnesiac:
-                case RoleEnum.Survivor:
-                case RoleEnum.Jester:
-                case RoleEnum.Cannibal:
-                case RoleEnum.Executioner:
-                case RoleEnum.Troll:
-                case RoleEnum.Actor:
-
-                    convertNeut = true;
-                    break;
-
-                case RoleEnum.Cryomaniac:
-                case RoleEnum.Thief:
-                case RoleEnum.Glitch:
-                case RoleEnum.Plaguebearer:
-                case RoleEnum.Werewolf:
-                case RoleEnum.Murderer:
-                case RoleEnum.SerialKiller:
-                case RoleEnum.Arsonist:
-                case RoleEnum.Guesser:
-                case RoleEnum.BountyHunter:
-
-                    convertNK = true;
-                    convertNeut = true;
-                    break;
-            }
-
-            if (alreadyVamp)
-            {
-                dracRole.LastBitten = DateTime.UtcNow;
-
-                if (role.RoleType == RoleEnum.Dracula && drac != other)
-                {
-                    var drac2 = (Dracula)role;
-                    dracRole.Converted.AddRange(drac2.Converted);
-                    drac2.Converted.AddRange(dracRole.Converted);
-                }
-
-                if (!dracRole.Converted.Contains(other.PlayerId))
-                    dracRole.Converted.Add(other.PlayerId);
-            }
-            else if (convertNeut && CustomGameOptions.DraculaConvertNeuts)
-            {
-                Role newRole;
+                role.SubFaction = SubFaction.Undead;
+                role.IsBitten = true;
                 dracRole.Converted.Add(other.PlayerId);
-                
-                if (!convertNK)
-                {
-                    if (role.RoleType == RoleEnum.Amnesiac)
-                    {
-                        var amne = Role.GetRole<Amnesiac>(other);
-                        amne.BodyArrows.Values.DestroyAll();
-                        amne.BodyArrows.Clear();
-                        amne.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
-                    }
-                    else if (role.RoleType == RoleEnum.Cannibal)
-                    {
-                        var can = Role.GetRole<Cannibal>(other);
-                        can.BodyArrows.Values.DestroyAll();
-                        can.BodyArrows.Clear();
-                        can.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
-                    }
-
-                    newRole = new Vampire(other);
-                }
-                else
-                    newRole = new Dampyr(other);
-
-                newRole.RoleHistory.Add(role);
-                newRole.RoleHistory.AddRange(role.RoleHistory);
             }
-            else if (convert)
-            {
-                Role newRole;
+            else if (other.IsBitten())
                 dracRole.Converted.Add(other.PlayerId);
-
-                if (!convertCK)
-                {
-                    if (role.RoleType == RoleEnum.Tracker)
-                    {
-                        var trackerRole = Role.GetRole<Tracker>(other);
-                        trackerRole.TrackerArrows.Values.DestroyAll();
-                        trackerRole.TrackerArrows.Clear();
-                    }
-                    else if (role.RoleType == RoleEnum.Coroner)
-                    {
-                        var coronerRole = Role.GetRole<Coroner>(other);
-                        coronerRole.BodyArrows.Values.DestroyAll();
-                        coronerRole.BodyArrows.Clear();
-                    }
-                    else if (role.RoleType == RoleEnum.Operative)
-                    {
-                        var opRole = Role.GetRole<Operative>(other);
-                        opRole.BuggedPlayers.Clear();
-                        opRole.Bugs.ClearBugs();
-                    }
-                    else if (role.RoleType == RoleEnum.Medic)
-                    {
-                        var medicRole = Role.GetRole<Medic>(other);
-                        medicRole.ShieldedPlayer = null;
-                    }
-
-                    newRole = new Vampire(other);
-                }
-                else
-                    newRole = new Dampyr(other);
-
-                newRole.RoleHistory.Add(role);
-                newRole.RoleHistory.AddRange(role.RoleHistory);
+            else if (other.Is(RoleEnum.Dracula))
+            {
+                var drac2 = (Dracula)role;
+                dracRole.Converted.AddRange(drac2.Converted);
+                drac2.Converted.AddRange(dracRole.Converted);
             }
-            else if (!other.Is(SubFaction.Undead))
+            else if (!other.Is(SubFaction.None))
                 Utils.RpcMurderPlayer(drac, other);
-
-            dracRole.LastBitten = DateTime.UtcNow;
-
-            foreach (var role2 in Role.GetRoles(RoleEnum.Dampyr))
-            {
-                var dampyr = (Dampyr)role2;
-                dampyr.LastKilled = DateTime.UtcNow;
-
-                if (dampyr.Player == PlayerControl.LocalPlayer)
-                    dampyr.RegenTask();
-            }
-
-            foreach (var role2 in Role.GetRoles(RoleEnum.Vampire))
-            {
-                var vampire = (Vampire)role2;
-
-                if (vampire.Player == PlayerControl.LocalPlayer)
-                    vampire.RegenTask();
-            }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
                 Coroutines.Start(Utils.FlashCoroutine(dracRole.Color));

@@ -81,163 +81,159 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 case RoleEnum.Anarchist:
                     newRole = new Anarchist(thief);
                     break;
-                    
+
                 case RoleEnum.Arsonist:
                     newRole = new Arsonist(thief);
                     break;
-                    
+
                 case RoleEnum.Blackmailer:
                     newRole = new Blackmailer(thief);
                     break;
-                    
+
                 case RoleEnum.Bomber:
                     newRole = new Bomber(thief);
                     break;
-                    
+
                 case RoleEnum.Camouflager:
                     newRole = new Camouflager(thief);
                     break;
-                    
+
                 case RoleEnum.Concealer:
                     newRole = new Concealer(thief);
                     break;
-                    
+
                 case RoleEnum.Consigliere:
                     newRole = new Consigliere(thief);
                     break;
-                    
+
                 case RoleEnum.Consort:
                     newRole = new Consort(thief);
                     break;
-                    
+
                 case RoleEnum.Cryomaniac:
                     newRole = new Cryomaniac(thief);
                     break;
-                    
-                case RoleEnum.Dampyr:
-                    newRole = new Dampyr(thief);
-                    break;
-                    
+
                 case RoleEnum.Disguiser:
                     newRole = new Disguiser(thief);
                     break;
-                    
+
                 case RoleEnum.Dracula:
                     newRole = new Dracula(thief);
                     break;
-                    
+
                 case RoleEnum.Framer:
                     newRole = new Framer(thief);
                     break;
-                    
+
                 case RoleEnum.Glitch:
                     newRole = new Glitch(thief);
                     break;
-                    
+
                 case RoleEnum.Godfather:
                     newRole = new Godfather(thief);
                     break;
-                    
+
                 case RoleEnum.Gorgon:
                     newRole = new Gorgon(thief);
                     break;
-                    
+
                 case RoleEnum.Grenadier:
                     newRole = new Grenadier(thief);
                     break;
-                    
+
                 case RoleEnum.Impostor:
                     newRole = new Impostor(thief);
                     break;
-                    
+
                 case RoleEnum.Juggernaut:
                     newRole = new Juggernaut(thief);
                     break;
-                    
+
                 case RoleEnum.Mafioso:
                     newRole = new Mafioso(thief);
                     break;
-                    
+
                 case RoleEnum.Miner:
                     newRole = new Miner(thief);
                     break;
-                    
+
                 case RoleEnum.Morphling:
                     newRole = new Morphling(thief);
                     break;
-                    
+
                 case RoleEnum.Rebel:
                     newRole = new Rebel(thief);
                     break;
-                    
+
                 case RoleEnum.Sidekick:
                     newRole = new Sidekick(thief);
                     break;
-                    
+
                 case RoleEnum.Shapeshifter:
                     newRole = new Shapeshifter(thief);
                     break;
-                    
+
                 case RoleEnum.Murderer:
                     newRole = new Murderer(thief);
                     break;
-                    
+
                 case RoleEnum.Plaguebearer:
                     newRole = new Plaguebearer(thief);
                     break;
-                    
+
                 case RoleEnum.Pestilence:
                     newRole = new Pestilence(thief);
                     break;
-                    
+
                 case RoleEnum.SerialKiller:
                     newRole = new SerialKiller(thief);
                     break;
-                    
+
                 case RoleEnum.Werewolf:
                     newRole = new Werewolf(thief);
                     break;
-                    
+
                 case RoleEnum.Janitor:
                     newRole = new Janitor(thief);
                     break;
-                    
+
                 case RoleEnum.Poisoner:
                     newRole = new Poisoner(thief);
                     break;
-                    
+
                 case RoleEnum.Teleporter:
                     newRole = new Teleporter(thief);
                     break;
-                    
+
                 case RoleEnum.TimeMaster:
                     newRole = new TimeMaster(thief);
                     break;
-                    
+
                 case RoleEnum.Thief:
                     newRole = new Thief(thief);
                     break;
-                    
+
                 case RoleEnum.Undertaker:
                     newRole = new Undertaker(thief);
                     break;
-                    
+
                 case RoleEnum.VampireHunter:
                     newRole = new VampireHunter(thief);
                     break;
-                    
+
                 case RoleEnum.Veteran:
                     newRole = new Veteran(thief);
                     break;
-                    
+
                 case RoleEnum.Vigilante:
                     newRole = new Vigilante(thief);
                     break;
-                    
+
                 case RoleEnum.Warper:
                     newRole = new Warper(thief);
                     break;
-                    
+
                 case RoleEnum.Wraith:
                     newRole = new Wraith(thief);
                     break;

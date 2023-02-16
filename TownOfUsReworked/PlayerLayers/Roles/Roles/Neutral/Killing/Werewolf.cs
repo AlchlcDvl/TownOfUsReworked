@@ -107,6 +107,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     return false;
                 }
             }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
             else if (IsResurrected)
             {
                 if (Utils.ReanimatedWin())
@@ -171,6 +183,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)

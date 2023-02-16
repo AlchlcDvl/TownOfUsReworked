@@ -20,19 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 return;
 
             var role = Role.GetRole<Plaguebearer>(PlayerControl.LocalPlayer);
-            var isDead = role.Player.Data.IsDead;
-
-            foreach (var playerId in role.InfectedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-                var data = player?.Data;
-
-                if (data == null || data.Disconnected || data.IsDead || isDead || playerId == role.Player.PlayerId)
-                    continue;
-
-                player.myRend().material.SetColor("_VisorColor", role.Color);
-                player.nameText().color = Color.black;
-            }
 
             if (role.InfectButton == null)
             {
@@ -59,7 +46,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 renderer.material.SetFloat("_Desat", 1f);
             }
 
-            if (role.CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !isDead)
+            foreach (var playerId in role.InfectedPlayers)
+            {
+                var player = Utils.PlayerById(playerId);
+                var data = player?.Data;
+
+                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
+                    continue;
+
+                player.myRend().material.SetColor("_VisorColor", role.Color);
+                player.nameText().color = Color.black;
+            }
+
+            if (role.CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !role.Player.Data.IsDead)
             {
                 var transform = CustomGameOptions.PestSpawn || role.CanTransform;
                 

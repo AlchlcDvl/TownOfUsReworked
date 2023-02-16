@@ -50,6 +50,7 @@ namespace TownOfUsReworked.Enums
 
         SendChat,
         Whisper,
+        Guess,
 
         SetSpawn,
         SetSpawnAirship,

@@ -76,32 +76,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player != PlayerControl.LocalPlayer)
+                var color = new Color32(0, 0, 0, 0);
+
+                if (PlayerControl.LocalPlayer.Is(Faction) || PlayerControl.LocalPlayer.Data.IsDead)
+                    color.a = 26;
+
+                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
                 {
-                    var color = Colors.Clear;
-                    var playerName = " ";
-
-                    if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Data.IsDead)
+                    player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
                     {
-                        color.a = 26;
-                        playerName = player.name;
-                    }
+                        ColorId = player.CurrentOutfit.ColorId,
+                        HatId = "",
+                        SkinId = "",
+                        VisorId = "",
+                        PlayerName = " "
+                    });
 
-                    if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-                    {
-                        player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                        {
-                            ColorId = player.CurrentOutfit.ColorId,
-                            HatId = "",
-                            SkinId = "",
-                            VisorId = "",
-                            PlayerName = playerName
-                        });
-
-                        PlayerMaterial.SetColors(color, player.myRend());
-                        player.nameText().color = color;
-                        player.cosmetics.colorBlindText.color = color;
-                    }
+                    player.myRend().color = color;
+                    player.nameText().color = new Color32(0, 0, 0, 0);
+                    player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
                 }
             }
         }
@@ -160,6 +153,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CabalWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else
@@ -190,6 +185,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SectWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

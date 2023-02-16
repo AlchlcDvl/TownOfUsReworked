@@ -5,7 +5,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class MimicUnmimic
+    public class DoUndo
     {
         public static void Postfix(HudManager __instance)
         {
@@ -15,8 +15,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                 if (glitch.IsUsingMimic)
                     glitch.Mimic();
-                else if (glitch.MimicTarget)
+                else if (glitch.MimicEnabled)
                     glitch.UnMimic();
+
+                if (glitch.IsUsingHack)
+                    glitch.Hack();
+                else if (glitch.HackEnabled)
+                    glitch.Unhack();
             }
         }
     }

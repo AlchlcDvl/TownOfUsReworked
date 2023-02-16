@@ -11,7 +11,6 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
 using TownOfUsReworked.Classes;
 using Hazel;
-using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
@@ -20,6 +19,7 @@ namespace TownOfUsReworked.Patches
     public static class ChatCommands
     {
         public static System.Collections.Generic.List<string> ChatHistory = new();
+        public static int LobbyLimit = 127;
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         private static class SendChatPatch
@@ -74,9 +74,9 @@ namespace TownOfUsReworked.Patches
                 int EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ?
                     PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount;
                 string getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-                string setColor = TownOfUsReworked.isDev ? " /setcolour or /setcolor," : "";
+                string setColor = TownOfUsReworked.isTest ? " /setcolour or /setcolor," : "";
                 string whisper = CustomGameOptions.Whispers ? " /whisper," : "";
-                string kickBan = AmongUsClient.Instance.CanBan() ? " /kick, /ban, /clearlobby" : "";
+                string kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? " /kick, /ban, /clearlobby, /size," : "";
                 //TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
 
                 var player = PlayerControl.LocalPlayer;
@@ -90,9 +90,8 @@ namespace TownOfUsReworked.Patches
                     if (text == "/help" || text.StartsWith("/h"))
                     {
                         chatHandled = true;
-                        var message = $"Commands available:\n/modinfo, /setname,{setColor}{kickBan} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, " +
-                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls";
-                        hudManager.AddChat(player, message);
+                        hudManager.AddChat(player, $"Commands available:\n/modinfo, /setname,{setColor}{kickBan} /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, " +
+                            "/factioninfo, /alignmentinfo, /quote, /abbreviations, /lookup, /credits, /controls");
                     }
                     //Display a message (Information about the mod)
                     else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
@@ -105,6 +104,33 @@ namespace TownOfUsReworked.Patches
                             " a player's experience will be each game. If I've missed someone, let me know via Discord.");
                         hudManager.AddChat(player, "Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page at " +
                             "\nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
+                    }
+                    else if (text.ToLower().StartsWith("/size "))
+                    {
+                        chatHandled = true;
+
+                        if (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+                        {
+                            if (!Int32.TryParse(text.Substring(6), out LobbyLimit))
+                                hudManager.AddChat(PlayerControl.LocalPlayer, "Invalid Size\nUsage: /size <amount>");
+                            else
+                            {
+                                LobbyLimit = Math.Clamp(LobbyLimit, 4, 15);
+
+                                if (LobbyLimit != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
+                                {
+                                    GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = LobbyLimit;
+                                    DestroyableSingleton<GameStartManager>.Instance.LastPlayerCount = LobbyLimit;
+                                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions)); 
+                                    // TODO Maybe simpler?? 
+                                    hudManager.AddChat(PlayerControl.LocalPlayer, $"Lobby size changed to {LobbyLimit} players.");
+                                }
+                                else
+                                    hudManager.AddChat(PlayerControl.LocalPlayer, $"Lobby size is already {LobbyLimit}.");
+                            }
+                        }
+                        else
+                            hudManager.AddChat(PlayerControl.LocalPlayer, "You can't do that.");
                     }
                     //Abbreviations help                    
                     else if (text == "/abbreviations" || text == "/abbreviations " || text == "/ab" || text == "/ab ")
@@ -197,8 +223,6 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "crew";
                         else if (requiredText == "cryomaniac")
                             abbreviation = "cryo";
-                        else if (requiredText == "dampyr")
-                            abbreviation = "damp";
                         else if (requiredText == "detective")
                             abbreviation = "det";
                         else if (requiredText == "disguiser")
@@ -255,8 +279,6 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "pb";
                         else if (requiredText == "poisoner")
                             abbreviation = "pois";
-                        else if (requiredText == "puppeteer")
-                            abbreviation = "pup";
                         else if (requiredText == "jackal")
                             abbreviation = "jack";
                         else if (requiredText == "serialkiller")
@@ -287,8 +309,6 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "troll";
                         else if (requiredText == "undertaker")
                             abbreviation = "ut";
-                        else if (requiredText == "vampire")
-                            abbreviation = "vamp";
                         else if (requiredText == "vampire hunter")
                             abbreviation = "vh";
                         else if (requiredText == "veteran")
@@ -395,7 +415,7 @@ namespace TownOfUsReworked.Patches
                         if (abbreviation == "Invalid input.")
                             chatText = abbreviation;
                         else
-                            chatText = "The abbreviation for " + tempText + " is " + abbreviation + "!";
+                            chatText = $"The abbreviation for {tempText} is {abbreviation}!";
                         
                         hudManager.AddChat(player, chatText);
                     }
@@ -407,7 +427,7 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, "Mod Creator: slushiegoose");
                         hudManager.AddChat(player, "Continued By: polus.gg");
                         hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, tix and MyDragonBreath");
                         hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
                     //Name help                    
@@ -598,11 +618,6 @@ namespace TownOfUsReworked.Patches
                             chatText = "The Crewmate is just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
                         else if (inputText == "cryomaniac" || inputText == "cryo")
                             chatText = "The Cryomaniac is someone who's obsessed with freezing everyone. Ensure you are not douse because they freeze you!";
-                        else if (inputText == "dampyr" || inputText == "damp")
-                        {
-                            chatText = "The Dampyr is an Undead that is formed from a Dracula converting a killing role. The Dampyr can bite players to kill them." +
-                                " For balancing purposes, the Dracula and the Dampyr share cooldowns to avoid them getting a quick majority.";
-                        }
                         else if (inputText == "detective" || inputText == "det")
                         {
                             chatText = "The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective " +
@@ -719,8 +734,6 @@ namespace TownOfUsReworked.Patches
                         }
                         else if (inputText == "poisoner" || inputText == "pois")
                             chatText = "The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration.";
-                        else if (inputText == "puppeteer" || inputText == "pup")
-                            chatText = "The Puppeteer can control a player and force them to kill someone.";
                         else if (inputText == "serial killer" || inputText == "sk")
                         {
                             chatText = "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, " +
@@ -761,8 +774,6 @@ namespace TownOfUsReworked.Patches
                         }
                         else if (inputText == "undertaker" || inputText == "ut")
                             chatText = "The Undertaker can drag, drop bodies and hide them in vents.";
-                        else if (inputText == "vampire" || inputText == "vamp")
-                            chatText = "The Vampire has no special abilities and just exists to be additional voting power for the Undead subfaction.";
                         else if (inputText == "vampire hunter" || inputText == "vh")
                         {
                             chatText = "The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, " +
@@ -1091,8 +1102,6 @@ namespace TownOfUsReworked.Patches
                             chatText = "Life's great mate, I totally am not jealous at the fact that others are better than me.";
                         else if (inputText == "cryomaniac" || inputText == "cryo")
                             chatText = "Turn the AC up!";
-                        else if (inputText == "dampyr" || inputText == "damp")
-                            chatText = "I'm way too thirsty nowadays. And Sir Dracula just keeps biting people and not giving me a chance quench my thirst.";
                         else if (inputText == "detective" || inputText == "det")
                             chatText = "I am skilled in identifying blood. *Looks at a body* Yup, that's definitely blood.";
                         else if (inputText == "disguiser" || inputText == "disg")
@@ -1149,8 +1158,6 @@ namespace TownOfUsReworked.Patches
                             chatText = "*Cough* This should surely work right? *Cough* I sure hope it does.";
                         else if (inputText == "poisoner" || inputText == "pois")
                             chatText = "So now if you mix these together, you end up creating this...thing.";
-                        else if (inputText == "puppeteer" || inputText == "pup")
-                            chatText = "Are you sure you wanna do that?";
                         else if (inputText == "serial killer" || inputText == "sk")
                             chatText = "My knife, WHERE'S MY KNIFE?!";
                         else if (inputText == "shapeshifter" || inputText == "ss")
@@ -1179,8 +1186,6 @@ namespace TownOfUsReworked.Patches
                             chatText = "Kill me.";
                         else if (inputText == "undertaker" || inputText == "ut")
                             chatText = "The Janitor was on a strike so I exist now.";
-                        else if (inputText == "vampire" || inputText == "vamp")
-                            chatText = "The strength of an Undead is that people will not believe in them. That said, there's someone who is mindlessly chasing us, plese help.";
                         else if (inputText == "vampire hunter" || inputText == "vh")
                             chatText = "The Dracula could be anywhere! He could be you! He could be me! He could even be- *gets voted off*";
                         else if (inputText == "veteran" || inputText == "vet")
@@ -1851,7 +1856,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "The Taskmaster needs to finish their tasks before a certain number of meetings are called in order to win.";
                         else if (inputText == "traitor" || inputText == "trait")
                         {
-                            chatText = "The Traitor is a crewmate who needs to finish their tasks to switch sides. Upon finishing their tasks, the Traitor has a 50%" +
+                            chatText = "The Traitor is a crewmate who needs to finish their tasks to switch sides. Upon finishing their tasks, the Traitor has a" +
                                 " chance to side with either the Intruders or the Syndicate and win with them. If they happen to be the last of the factioned evils " +
                                 "the Traitor loses all of their current role's abilities and instead gain the ability to kill.";
                         }
@@ -1868,7 +1873,7 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, "Mod Creator: slushiegoose");
                         hudManager.AddChat(player, "Continued By: polus.gg");
                         hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H and twix");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, tix and MyDragonBreath");
                         hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
                     //Quotes
@@ -2330,19 +2335,41 @@ namespace TownOfUsReworked.Patches
                             var whispered2 = Utils.PlayerById(id2);
                             
                             if (whispered != null)
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, $"You whisper to {whispered.name}:{message}");
-                            else if (whispered2 != null)
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, $"You whisper to {whispered2.name}:{message2}.");
-                            else
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, "Who are you trying to whisper?");
+                            {
+                                if (whispered.Data.IsDead)
+                                    hudManager.AddChat(player, $"{whispered.name} is dead.");
+                                else if (whispered.Data.Disconnected)
+                                    hudManager.AddChat(player, $"{whispered.name} is not in this world anymore.");
+                                else
+                                {
+                                    hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
-                            writer.Write(player.PlayerId);
-                            writer.Write(id1);
-                            writer.Write(id2);
-                            writer.Write(message);
-                            writer.Write(message2);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
+                                    writer.Write(player.PlayerId);
+                                    writer.Write(id1);
+                                    writer.Write(message);
+                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                }
+                            }
+                            else if (whispered2 != null)
+                            {
+                                if (whispered.Data.IsDead)
+                                    hudManager.AddChat(player, $"{whispered2.name} is dead.");
+                                else if (whispered.Data.Disconnected)
+                                    hudManager.AddChat(player, $"{whispered2.name} is not in this world anymore.");
+                                else
+                                {
+                                    hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
+
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
+                                    writer.Write(player.PlayerId);
+                                    writer.Write(id1);
+                                    writer.Write(message);
+                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                }
+                            }
+                            else
+                                hudManager.AddChat(player, "Who are you trying to whisper?");
                         }
                     }
                     //Incorrect command

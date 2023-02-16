@@ -242,8 +242,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
                 {
                     ColorMapping.Add("Dracula", Colors.Dracula);
-                    ColorMapping.Add("Vampire", Colors.Vampire);
-                    ColorMapping.Add("Dampyr", Colors.Dampyr);
+                    ColorMapping.Add("Bitten", Colors.Undead);
                 }
                 
                 if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
@@ -327,6 +326,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)

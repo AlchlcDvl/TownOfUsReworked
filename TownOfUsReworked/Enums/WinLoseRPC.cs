@@ -60,6 +60,7 @@ namespace TownOfUsReworked.Enums
         ReanimatedLose,
 
         AllNKsWin,
+        AllNKsLose,
 
         LoveWin,
         TaskmasterWin,

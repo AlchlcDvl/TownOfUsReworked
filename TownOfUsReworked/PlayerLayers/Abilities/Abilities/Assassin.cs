@@ -238,8 +238,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
                 {
                     ColorMapping.Add("Dracula", Colors.Dracula);
-                    ColorMapping.Add("Vampire", Colors.Vampire);
-                    ColorMapping.Add("Dampyr", Colors.Dampyr);
+                    ColorMapping.Add("Bitten", Colors.Undead);
                 }
                 
                 if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))

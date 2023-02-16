@@ -41,6 +41,9 @@ namespace TownOfUsReworked.Patches
             var ejectString = "";
             PlayerControl target = null;
 
+            if (role == null)
+                return;
+
             role.DeathReason = DeathReasonEnum.Ejected;
             role.KilledBy = " ";
             
@@ -80,9 +83,9 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.EjectionRevealsRole)
                 {
                     if (player.Is(RoleEnum.Jester) && CustomGameOptions.JestEjectScreen)
-                        ejectString = "You feel a sense of dread during this ejection. The <color=#F7B3DAFF>Jester</color> has won!";
+                        ejectString = "The <color=#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
                     else if (target != null && CustomGameOptions.ExeEjectScreen)
-                        ejectString = "You feel a sense of dread during the ejection. The <color=#CCCCCCFF>Executioner</color> has won!";
+                        ejectString = "The <color=#CCCCCCFF>Executioner</color> has doomed all of you!";
                     else
                         ejectString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
                 }

@@ -6,6 +6,7 @@ using TownOfUsReworked.Lobby.CustomOption;
 
 namespace TownOfUsReworked.Patches
 {
+    //Thanks to The Other Roles: Community Edition for this code
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
     class IntroCutsceneOnDestroyPatch
     {
@@ -201,9 +202,6 @@ namespace TownOfUsReworked.Patches
 
                         case 4:
                             player.transform.position = airshipSpawn[rnd.Next(airshipSpawn.Count)];
-                            break;
-                        
-                        default:
                             break;
                     }
                 }
@@ -424,9 +422,6 @@ namespace TownOfUsReworked.Patches
 
                         case 4:
                             player.transform.position = airshipSpawn[rnd.Next(airshipSpawn.Count)];
-                            break;
-                        
-                        default:
                             break;
                     }
                 }

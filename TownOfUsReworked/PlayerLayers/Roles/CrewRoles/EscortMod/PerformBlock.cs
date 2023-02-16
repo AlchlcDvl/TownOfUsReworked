@@ -4,6 +4,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 {
@@ -31,7 +32,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.SerialKiller), false, false, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true)
-                    role.RPCSetBlocked(role.ClosestPlayer);
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    writer.Write((byte)ActionsRPC.EscRoleblock);
+                    writer.Write(PlayerControl.LocalPlayer);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    role.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                    role.BlockTarget = role.ClosestPlayer;
+                    role.Block();
+                }
 
                 if (interact[0] == true)
                     role.LastBlock = DateTime.UtcNow;

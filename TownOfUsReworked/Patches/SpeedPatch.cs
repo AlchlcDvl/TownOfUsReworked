@@ -10,6 +10,9 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void PostfixPhysics(PlayerPhysics __instance)
         {
+            if (GameStates.IsLobby)
+                return;
+
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                 __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor;
         }
@@ -18,6 +21,9 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void PostfixNetwork(CustomNetworkTransform __instance)
         {
+            if (GameStates.IsLobby)
+                return;
+
             if (!__instance.AmOwner && __instance.interpolateMovement != 0.0f && !__instance.gameObject.GetComponent<PlayerControl>().Data.IsDead)
             {
                 var player = __instance.gameObject.GetComponent<PlayerControl>();

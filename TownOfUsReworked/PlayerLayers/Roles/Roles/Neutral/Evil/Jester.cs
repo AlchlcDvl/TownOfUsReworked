@@ -54,6 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
@@ -62,10 +64,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void SetHaunted(MeetingHud __instance)
         {
-            ToHaunt.Clear();
-
             if (!VotedOut)
                 return;
+
+            ToHaunt.Clear();
 
             foreach (var state in __instance.playerStates)
             {
@@ -90,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastHaunted;
-            var num = CustomGameOptions.DampBiteCd * 1000f;
+            var num = CustomGameOptions.HauntCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)

@@ -46,6 +46,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool KillerReports => Generate.KillerReports.Get();
         public static bool NoNames => Generate.NoNames.Get();
         public static bool Whispers => Generate.Whispers.Get();
+        public static bool WhispersAnnouncement => Generate.WhispersAnnouncement.Get();
         public static bool AppearanceAnimation => Generate.AppearanceAnimation.Get();
         public static bool LighterDarker => Generate.LighterDarker.Get();
         public static bool RandomSpawns => Generate.RandomSpawns.Get();
@@ -499,7 +500,9 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool JesterButton => Generate.JesterButton.Get();
         public static bool JesterVent => Generate.JesterVent.Get();
         public static int JesterCount => (int)Generate.JesterCount.Get();
+        public static int HauntCount => (int)Generate.HauntCount.Get();
         public static bool UniqueJester => Generate.UniqueJester.Get();
+        public static float HauntCooldown => Generate.HauntCooldown.Get();
 
         //Actor Settings
         public static bool VigiKillsActor => Generate.VigiKillsActor.Get();
@@ -622,7 +625,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
 
         //Dracula Settings
         public static bool DracVent => Generate.DracVent.Get();
-        public static bool DraculaConvertNeuts => Generate.DraculaConvertNeuts.Get();
+        public static bool UndeadVent => Generate.UndeadVent.Get();
         public static float BiteCd => Generate.BiteCooldown.Get();
         public static int DraculaCount => (int)Generate.DraculaCount.Get();
         public static int AliveVampCount => (int)Generate.AliveVampCount.Get();
@@ -641,6 +644,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool UniqueNecromancer => Generate.UniqueNecromancer.Get();
         public static bool NecromancerTargetBody => Generate.NecromancerTargetBody.Get();
         public static float NecroResurrectDuration => Generate.NecroResurrectDuration.Get();
+        public static bool ResurrectVent => Generate.ResurrectVent.Get();
 
         //Whisperer Settings
         public static bool WhispVent => Generate.WhispVent.Get();
@@ -652,6 +656,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static bool WhisperRateDecreases => Generate.WhisperRateDecreases.Get();
         public static int WhispererCount => (int)Generate.WhispererCount.Get();
         public static bool UniqueWhisperer => Generate.UniqueWhisperer.Get();
+        public static bool PersuadedVent => Generate.PersuadedVent.Get();
 
         //Jackal Settings
         public static bool JackalVent => Generate.JackalVent.Get();
@@ -659,13 +664,6 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static int JackalCount => (int)Generate.JackalCount.Get();
         public static bool UniqueJackal => Generate.UniqueJackal.Get();
         public static float RecruitCooldown => Generate.RecruitCooldown.Get();
-
-        //Vampire Settings
-        public static bool VampVent => Generate.VampVent.Get();
-
-        //Dampyr Settings
-        public static bool DampVent => Generate.DampVent.Get();
-        public static float DampBiteCd => Generate.DampBiteCooldown.Get();
 
         //Phantom Settings
         public static int PhantomCount => (int)Generate.PhantomCount.Get();
@@ -689,6 +687,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         public static float BlackmailCd => Generate.BlackmailCooldown.Get();
         public static int BlackmailerCount => (int)Generate.BlackmailerCount.Get();
         public static bool UniqueBlackmailer => Generate.UniqueBlackmailer.Get();
+        public static bool WhispersNotPrivate => Generate.WhispersNotPrivate.Get();
 
         //Grenadier Settings
         public static bool GrenadierIndicators => Generate.GrenadierIndicators.Get();
@@ -945,6 +944,7 @@ namespace TownOfUsReworked.Lobby.CustomOption
         //Ruthless Settings
         public static int RuthlessCount => (int)Generate.RuthlessCount.Get();
         public static bool UniqueRuthless => Generate.UniqueRuthless.Get();
+        public static bool RuthlessKnows => Generate.RuthlessKnows.Get();
 
         //Insider Settings
         public static bool InsiderKnows => Generate.InsiderKnows.Get();

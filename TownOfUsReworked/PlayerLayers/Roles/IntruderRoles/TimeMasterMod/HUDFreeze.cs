@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDFreeze
     {
-        public static Sprite Freeze => TownOfUsReworked.FreezeSprite;
+        public static Sprite Freeze => TownOfUsReworked.TimeFreezeSprite;
 
         public static void Postfix(HudManager __instance)
         {

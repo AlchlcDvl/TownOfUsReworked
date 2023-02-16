@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Pestilence";
             StartText = "The Horseman Of The Apocalypse Has Arrived!";
-            AbilitiesText = "Kill everyone with your unstoppable abilities!\nFake Tasks:";
+            AbilitiesText = "Kill everyone with your unstoppable abilities!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Pestilence;
@@ -37,6 +37,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 _obliterateButton = value;
                 AddToAbilityButtons(value, this);
             }
+        }
+
+        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        {
+            if (Player != PlayerControl.LocalPlayer)
+                return;
+                
+            var team = new List<PlayerControl>();
+            team.Add(PlayerControl.LocalPlayer);
+            __instance.teamToShow = team;
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
@@ -88,6 +98,42 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     Wins();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                     writer.Write((byte)WinLoseRPC.SyndicateWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsPersuaded)
+            {
+                if (Utils.SectWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.SectWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsBitten)
+            {
+                if (Utils.UndeadWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.UndeadWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (IsResurrected)
+            {
+                if (Utils.ReanimatedWin())
+                {
+                   Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     return false;

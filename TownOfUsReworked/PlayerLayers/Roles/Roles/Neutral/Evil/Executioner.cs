@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Lobby.CustomOption;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -10,6 +11,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
     {
         public PlayerControl TargetPlayer = null;
         public bool TargetVotedOut;
+        public List<byte> ToDoom = new List<byte>();
+        public bool HasDoomed = false;
+        private KillButton _doomButton;
+        public PlayerControl ClosestPlayer;
+        public DateTime LastDoomed;
 
         public Executioner(PlayerControl player) : base(player)
         {
@@ -37,6 +43,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             __instance.teamToShow = team;
         }
 
+        public void SetDoomed(MeetingHud __instance)
+        {
+            if (!TargetVotedOut)
+                return;
+
+            ToDoom.Clear();
+
+            foreach (var state in __instance.playerStates)
+            {
+                if (state.AmDead || Utils.PlayerById(state.TargetPlayerId).Data.Disconnected || state.VotedFor != Player.PlayerId || state.TargetPlayerId == Player.PlayerId)
+                    continue;
+                
+                ToDoom.Add(state.TargetPlayerId);
+            }
+        }
+
+        public KillButton DoomButton
+        {
+            get => _doomButton;
+            set
+            {
+                _doomButton = value;
+                AddToAbilityButtons(value, this);
+            }
+        }
+
         public override void Wins()
         {
             if ((Player.Data.IsDead && !CustomGameOptions.ExeCanWinBeyondDeath) || Player.Data.Disconnected || TargetPlayer == null)
@@ -52,10 +84,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
+            else if (IsBitten)
+                UndeadWin = true;
             else if (IsResurrected)
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
                 AllNeutralsWin = true;
+        }
+
+        public float HauntTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastDoomed;
+            var num = CustomGameOptions.HauntCooldown * 1000f;
+            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0;
+
+            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

@@ -4,6 +4,7 @@ using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Reactor.Networking.Rpc;
 using UnityEngine;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
 {
@@ -46,6 +47,16 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
             }
         }
 
+        [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.AreInvalid))]
+        public static class InvalidOptionsPatches
+        {
+            public static bool Prefix(GameOptionsData __instance, [HarmonyArgument(0)] int maxExpectedPlayers)
+            {
+                return __instance.MaxPlayers > maxExpectedPlayers || __instance.NumImpostors < 1 || __instance.NumImpostors + 1 > maxExpectedPlayers / 2 ||
+                    __instance.KillDistance is < 0 or > 2 || __instance.PlayerSpeedMod is <= 0f or > 3f;
+            }
+        }
+
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
         public static class GameStartManagerUpdatePatch
         {
@@ -77,7 +88,7 @@ namespace TownOfUsReworked.Lobby.CrowdedMod.Patches
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
         public static class GameSettingMenu_OnEnable // Credits to https://github.com/Galster-dev/GameSettingsUnlocker
         {
-            static void Prefix(ref GameSettingMenu __instance)
+            public static void Prefix(ref GameSettingMenu __instance)
             {
                 __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
             }

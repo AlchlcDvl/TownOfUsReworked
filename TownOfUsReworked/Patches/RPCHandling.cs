@@ -2012,21 +2012,15 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.Whisper:
                         var whisperer = Utils.PlayerById(reader.ReadByte());
                         var whispered = Utils.PlayerById(reader.ReadByte());
-                        var whispered2 = Utils.PlayerById(reader.ReadByte());
                         var message = reader.ReadString();
-                        var message2 = reader.ReadString();
 
                         if (whispered == PlayerControl.LocalPlayer)
                             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you: {message}");
-                        else if (whispered2 == PlayerControl.LocalPlayer)
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you: {message2}");
-                        else
-                        {
-                            if (whispered != null)
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
-                            else if (whispered2 != null)
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered2.name}.");
-                        }
+                        else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || (PlayerControl.LocalPlayer.Data.IsDead &&
+                            CustomGameOptions.DeadSeeEverything))
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
+                        else if (CustomGameOptions.WhispersAnnouncement)
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
 
                         break;
 
@@ -2971,40 +2965,34 @@ namespace TownOfUsReworked.Patches
                                 var camouflager = Utils.PlayerById(reader.ReadByte());
                                 var camouflagerRole = Role.GetRole<Camouflager>(camouflager);
                                 camouflagerRole.TimeRemaining = CustomGameOptions.CamouflagerDuration;
-                                Utils.Camouflage();
+                                camouflagerRole.Camouflage();
                                 break;
 
                             case ActionsRPC.EscRoleblock:
-                                var targetPlayer = Utils.PlayerById(reader.ReadByte());
-
-                                if (targetPlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                                {
-                                    var escort = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Escort && ((Escort)x).BlockTarget == targetPlayer);
-                                    ((Escort)escort)?.SetBlocked(targetPlayer);
-                                }
-
+                                var escort = Utils.PlayerById(reader.ReadByte());
+                                var blocked2 = Utils.PlayerById(reader.ReadByte());
+                                var escortRole = Role.GetRole<Escort>(escort);
+                                escortRole.BlockTarget = blocked2;
+                                escortRole.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                                escortRole.Block();
                                 break;
 
                             case ActionsRPC.ConsRoleblock:
-                                var targetPlayer2 = Utils.PlayerById(reader.ReadByte());
-
-                                if (targetPlayer2.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                                {
-                                    var consort = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Consort && ((Consort)x).BlockTarget == targetPlayer2);
-                                    ((Consort)consort)?.SetBlocked(targetPlayer2);
-                                }
-
+                                var consort = Utils.PlayerById(reader.ReadByte());
+                                var blocked = Utils.PlayerById(reader.ReadByte());
+                                var consortRole = Role.GetRole<Consort>(consort);
+                                consortRole.BlockTarget = blocked;
+                                consortRole.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                                consortRole.Block();
                                 break;
 
                             case ActionsRPC.GlitchRoleblock:
-                                var targetPlayer3 = Utils.PlayerById(reader.ReadByte());
-
-                                if (targetPlayer3.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                                {
-                                    var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch && ((Glitch)x).HackTarget == targetPlayer3);
-                                    ((Glitch)glitch)?.SetHacked(targetPlayer3);
-                                }
-
+                                var glitch = Utils.PlayerById(reader.ReadByte());
+                                var hacked = Utils.PlayerById(reader.ReadByte());
+                                var glitchRole3 = Role.GetRole<Glitch>(glitch);
+                                glitchRole3.HackTarget = hacked;
+                                glitchRole3.TimeRemaining2 = CustomGameOptions.HackDuration;
+                                glitchRole3.Hack();
                                 break;
 
                             case ActionsRPC.Conceal:
@@ -3106,6 +3094,10 @@ namespace TownOfUsReworked.Patches
 
                             case WinLoseRPC.AllNKsWin:
                                 Role.NKWins = true;
+                                break;
+
+                            case WinLoseRPC.AllNKsLose:
+                                Role.NKWins = false;
                                 break;
 
                             case WinLoseRPC.Stalemate:

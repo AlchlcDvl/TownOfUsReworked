@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
             TaskText = "Your attacks cannot be stopped";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
             AbilityType = AbilityEnum.Ruthless;
+            Hidden = !CustomGameOptions.RuthlessKnows;
         }
     }
 }

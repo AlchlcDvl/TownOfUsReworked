@@ -68,10 +68,6 @@ namespace TownOfUsReworked.Classes
                 points.RemoveAt(0);
                 points.RemoveAt(0);
 
-                if (PlayerControl.LocalPlayer.Data.IsDead || (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || PlayerControl.LocalPlayer.inMovingPlat ||
-                    (PlayerControl.LocalPlayer.Is(RoleEnum.TimeMaster) && CustomGameOptions.TMImmunity))
-                    return;
-
                 if (PlayerControl.LocalPlayer.inVent)
                 {
                     PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
@@ -129,6 +125,17 @@ namespace TownOfUsReworked.Classes
 
                 if (poisonerRole.PoisonedPlayer == player)
                     poisonerRole.PoisonedPlayer = poisonerRole.Player;
+            }
+
+            foreach (var rebel in Role.GetRoles(RoleEnum.Rebel))
+            {
+                var rebRole = (Rebel)rebel;
+
+                if (rebRole.FormerRole.RoleType != RoleEnum.Poisoner)
+                    continue;
+
+                if (rebRole.PoisonedPlayer == player)
+                    rebRole.PoisonedPlayer = rebRole.Player;
             }
 
             player.Revive();

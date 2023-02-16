@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDConfuse
     {
-        public static Sprite Confuse => TownOfUsReworked.FreezeSprite;
+        public static Sprite Confuse => TownOfUsReworked.Placeholder;
         public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)

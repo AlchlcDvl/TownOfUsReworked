@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         public static Sprite MorphSprite => TownOfUsReworked.MorphSprite;
         public static Sprite MarkSprite => TownOfUsReworked.MarkSprite;
         public static Sprite TeleportSprite => TownOfUsReworked.TeleportSprite;
-        public static Sprite Freeze => TownOfUsReworked.FreezeSprite;
+        public static Sprite Freeze => TownOfUsReworked.TimeFreezeSprite;
         public static Sprite Drag => TownOfUsReworked.DragSprite;
         public static Sprite InvisSprite => TownOfUsReworked.InvisSprite;
         public static Sprite Drop => TownOfUsReworked.DropSprite;

@@ -85,6 +85,9 @@ namespace TownOfUsReworked.Patches
                 if (playerControl.IsResurrected())
                     summary += " <color=#E6108AFF>Σ</color>";
 
+                if (playerControl.IsBitten())
+                    summary += " <color=#7B8968FF>γ</color>";
+
                 var objectifier = Objectifier.GetObjectifier(playerControl);
 
                 if (objectifier != null)
