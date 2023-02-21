@@ -5,6 +5,22 @@ namespace TownOfUsReworked.MCI
 {
     public class MCIUtils
     {
+        public const int MaxID = 100;
+
+        public static int AvailableId()
+        {
+            for (int i = 2; i < MaxID; i++)
+            {
+                if (!InstanceControl.clients.ContainsKey(i))
+                {
+                    if (PlayerControl.LocalPlayer.OwnerId != i)
+                        return i;
+                }
+            }
+
+            return -1;
+        }
+
         public static void CleanUpLoad()
         {
             if (GameData.Instance.AllPlayers.Count == 1)
@@ -23,7 +39,7 @@ namespace TownOfUsReworked.MCI
             int sampleId = id;
 
             if (sampleId == -1)
-                sampleId = InstanceControl.AvailableId();
+                sampleId = AvailableId();
 
             var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
             PlayerControl playerControl = Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);

@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
@@ -11,33 +10,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class GATargetColor
     {
-        private static void UpdateMeeting(MeetingHud __instance, GuardianAngel role)
-        {
-            if (CustomGameOptions.GAKnowsTargetRole)
-                return;
-
-            foreach (var player in __instance.playerStates)
-            {
-                if (player.TargetPlayerId == role.TargetPlayer.PlayerId)
-                {
-                    player.NameText.color = role.Color;
-                    player.NameText.text += " ★";
-                }
-            }
-        }
-
         private static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.GuardianAngel))
                 return;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
-
-            if (MeetingHud.Instance != null)
-                UpdateMeeting(MeetingHud.Instance, role);
-
-            role.TargetPlayer.nameText().color = role.Color;
-            role.TargetPlayer.nameText().text += " ★";
 
             if (role.TargetPlayer == null)
                 return;

@@ -1,6 +1,6 @@
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TMPro;
 using TownOfUsReworked.Classes;
 using Hazel;

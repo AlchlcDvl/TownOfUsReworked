@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
@@ -31,6 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
             role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
+            role.PrimaryButton = role.StakeButton;
             var renderer = role.StakeButton.graphic;
             
             if (role.ClosestPlayer != null && !role.StakeButton.isCoolingDown)

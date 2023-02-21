@@ -1,6 +1,6 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Enums;
 

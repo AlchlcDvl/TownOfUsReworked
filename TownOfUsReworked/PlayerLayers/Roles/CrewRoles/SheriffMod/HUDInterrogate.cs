@@ -2,7 +2,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
@@ -32,6 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);
+            role.PrimaryButton = role.InterrogateButton;
             var renderer = role.InterrogateButton.graphic;
 
             if (role.ClosestPlayer != null && !role.InterrogateButton.isCoolingDown)

@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.Patches
 {
@@ -14,10 +15,27 @@ namespace TownOfUsReworked.Patches
             __instance.transform.Find("Text_TMP").gameObject.SetActive(false);
         }
     }
-    
+
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
+        public static void Postfix(HudManager __instance)
+        {
+            if (!GameStates.IsInGame)
+                return;
+
+            var role = Role.GetRole(PlayerControl.LocalPlayer);
+
+            if (role == null)
+                return;
+
+            if (role.AbilityButtons.Count > 0)
+            {
+                if (Input.GetKeyDown(KeyCode.Q) && role.PrimaryButton != null)
+                    role.PrimaryButton.DoClick();
+            }
+        }
+
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         class AbilityButtonUpdatePatch
         {

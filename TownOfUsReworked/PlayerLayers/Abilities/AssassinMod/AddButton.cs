@@ -15,7 +15,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
@@ -32,12 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            
-            if (player == null || player.Data.IsDead || player.Data.Disconnected)
-                    return true;
-
-            var role = Role.GetRole(player);
-            return role != null && role.Criteria();
+            return player == null || player.Data.IsDead || player.Data.Disconnected;
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
@@ -163,13 +158,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
                 var sectflag = targetPlayer.IsPersuaded() && currentGuess == "Persuaded";
                 var reanimatedflag = targetPlayer.IsResurrected() && currentGuess == "Resurrected";
+                var undeadflag = targetPlayer.IsBitten() && currentGuess == "Bitten";
+                var framedflag = targetPlayer.IsFramed();
 
                 if (targetPlayer.Is(RoleEnum.Actor))
                 {
                     if (currentGuess != "Actor")
                     {
                         var actor = Role.GetRole<Actor>(targetPlayer);
-                        
+
                         if (actor.PretendRoles.Contains(Role.GetRoleFromName(currentGuess)))
                         {
                             actor.Guessed = true;
@@ -178,7 +175,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     }
                 }
 
-                var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag;
+                var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag;
                 var toDie = flag ? playerRole.Player : role.Player;
 
                 if (!toDie.Is(RoleEnum.Pestilence) || PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence))

@@ -3,8 +3,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {

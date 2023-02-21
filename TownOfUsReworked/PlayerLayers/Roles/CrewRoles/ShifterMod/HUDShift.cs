@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             role.ShiftButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.ShiftButton.SetCoolDown(role.ShiftTimer(), CustomGameOptions.ShifterCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShiftButton);
+            role.PrimaryButton = role.ShiftButton;
             var renderer = role.ShiftButton.graphic;
             
             if (role.ClosestPlayer != null && !role.ShiftButton.isCoolingDown)

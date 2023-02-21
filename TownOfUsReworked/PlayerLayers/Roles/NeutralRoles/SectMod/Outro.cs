@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SectMod
             PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
-                player.NameText().text = "<color=#" + Color.white.ToHtmlStringRGBA() + ">" + player.NameText().text + "</color>";
+                player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = Colors.Sect;
             var text = Object.Instantiate(__instance.WinText);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

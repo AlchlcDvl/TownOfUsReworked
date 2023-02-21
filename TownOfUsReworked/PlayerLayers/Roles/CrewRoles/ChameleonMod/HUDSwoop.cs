@@ -3,7 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
@@ -28,6 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
             }
 
             role.SwoopButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.PrimaryButton = role.SwoopButton;
 
             if (role.IsSwooped)
                 role.SwoopButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.SwoopDuration);

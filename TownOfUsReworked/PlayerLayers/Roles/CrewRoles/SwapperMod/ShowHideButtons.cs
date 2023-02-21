@@ -10,7 +10,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
@@ -124,7 +124,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     var self = CalculateVotes(__instance);
                     var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
                     var maxIdx = self.MaxPair(out var tie);
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Meeting was a tie = {tie}");
+                    TownOfUsReworked.LogSomething($"Meeting was a tie = {tie}");
                     var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
                     
                     for (var i = 0; i < __instance.playerStates.Length; i++)

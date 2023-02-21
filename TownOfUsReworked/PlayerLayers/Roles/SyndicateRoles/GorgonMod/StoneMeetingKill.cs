@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                     var target = tuple.Item1;
 
                     if (stoned || time >= CustomGameOptions.GazeTime + CustomGameOptions.GazeDelay && !(target.Data.IsDead || target.Data.Disconnected))
-                        Utils.RpcMurderPlayer(gorgon.Player, target);
+                        Utils.RpcMurderPlayer(gorgon.Player, target, false);
                     
                     target.moveable = true;
                 }

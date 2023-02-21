@@ -1,6 +1,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
 using System;
@@ -49,20 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return 0;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public void TurnSeer()
-        {
-            var mystic = Role.GetRole<Mystic>(Player);
-            var role = new Seer(Player);
-            role.RoleHistory.Add(mystic);
-            role.RoleHistory.AddRange(mystic.RoleHistory);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player == PlayerControl.LocalPlayer)
-                    role.RegenTask();
-            }
         }
 
         protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

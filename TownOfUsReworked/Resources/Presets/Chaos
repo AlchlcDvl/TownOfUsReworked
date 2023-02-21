@@ -58,6 +58,8 @@ No Player Names
 False
 PSSST *Whispers*
 True
+Everyone Is Alerted To Whispers
+True
 Kill Animations Show Morphed Player
 True
 Enable Lighter Darker Colors
@@ -82,6 +84,8 @@ See Tasks During The Game
 True
 Custom Ejection Messages
 True
+Map
+0
 Choose Random Map
 False
 Skeld Chance
@@ -234,8 +238,8 @@ Move Electrical Outlet
 100
 <color=#45076AFF>Jackal</color>
 100
-<color=#FF1919FF>Necromancer</color>
-100
+<color=#BF5FFFFF>Necromancer</color>
+0
 <color=#2D6AA5FF>Whisperer</color>
 100
 <color=#662962FF>Phantom</color>
@@ -270,6 +274,8 @@ Move Electrical Outlet
 100
 <color=#FF0000FF>Impostor</color>
 100
+<color=#C02525FF>Concealer</color>
+100
 <color=#1E300BFF>Drunkard</color>
 100
 <color=#00FFFFFF>Framer</color>
@@ -283,8 +289,6 @@ Move Electrical Outlet
 <color=#7E4D00FF>Gorgon</color>
 100
 <color=#0028F5FF>Beamer</color>
-100
-<color=#C02525FF>Concealer</color>
 100
 <color=#FFFCCEFF>Rebel</color>
 100
@@ -756,6 +760,8 @@ Guess Count
 5
 <color=#B51E39FF>Bounty Hunter</color> Can Vent
 True
+<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>
+False
 <color=#8C4005FF>Cannibal</color> Count
 1
 <color=#8C4005FF>Cannibal</color> Is Unique In All Any
@@ -769,7 +775,7 @@ True
 <color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies
 True
 Time After Death Arrow Appears
-0
+5
 <color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>
 True
 <color=#CCCCCCFF>Executioner</color> Count
@@ -824,6 +830,10 @@ True
 False
 <color=#F7B3DAFF>Jester</color> Can Button
 True
+Haunt Cooldown
+25
+Haunt Count
+1
 <color=#F7B3DAFF>Jester</color> Can Hide In Vents
 True
 <color=#F7B3DAFF>Jester</color> Can Switch Vents
@@ -869,7 +879,7 @@ True
 <color=#642DEAFF>Cryomaniac</color> Is Unique In All Any
 False
 Douse Cooldown
-10
+25
 <color=#642DEAFF>Cryomaniac</color> Can Vent
 True
 <color=#00FF00FF>Glitch</color> Count
@@ -895,7 +905,7 @@ False
 <color=#A12B56FF>Juggernaut</color> Kill Cooldown
 10
 Kill Cooldown Bonus
-10
+5
 <color=#A12B56FF>Juggernaut</color> Can Vent
 True
 <color=#6F7BEAFF>Murderer</color> Count
@@ -903,7 +913,7 @@ True
 <color=#6F7BEAFF>Murderer</color> Is Unique In All Any
 False
 Kill Cooldown
-10
+25
 <color=#6F7BEAFF>Murderer</color> Can Vent
 True
 <color=#CFFE61FF>Plaguebearer</color> Count
@@ -946,12 +956,12 @@ Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Roles
 False
 Bite Cooldown
 10
-<color=#AC8A00FF>Dracula</color> Can Convert <color=#B3B3B3FF>Neutrals</color>
-True
 <color=#AC8A00FF>Dracula</color> Can Vent
 True
 Alive <color=#7B8968FF>Undead</color> Count
 3
+Undead Can Vent
+False
 <color=#45076AFF>Jackal</color> Count
 1
 <color=#45076AFF>Jackal</color> Is Unique In All Any
@@ -962,9 +972,9 @@ Recruit Cooldown
 True
 Recruits Can Vent
 True
-<color=#FF1919FF>Necromancer</color> Count
+<color=#BF5FFFFF>Necromancer</color> Count
 1
-<color=#FF1919FF>Necromancer</color> Is Unique In All Any
+<color=#BF5FFFFF>Necromancer</color> Is Unique In All Any
 False
 Resurrect Cooldown
 10
@@ -973,19 +983,21 @@ Resurrect Cooldown Increases By
 Resurrect Count
 5
 Kill Cooldown
-10
+25
 Kill Cooldown Increases By
 2.5
 Kill Count
 5
-<color=#FF1919FF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked
+<color=#BF5FFFFF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked
 False
 Target's Body Disappears On Beginning Of Resurrect
 True
-<color=#FF1919FF>Necromancer</color> Resurrect Duration
-1
-<color=#FF1919FF>Necromancer</color> Can Vent
-True
+<color=#BF5FFFFF>Necromancer</color> Resurrect Duration
+10
+<color=#BF5FFFFF>Necromancer</color> Can Vent
+False
+Resurrected Can Vent
+False
 <color=#2D6AA5FF>Whisperer</color> Count
 1
 <color=#2D6AA5FF>Whisperer</color> Is Unique In All Any
@@ -996,18 +1008,16 @@ Whisper Cooldown Increases By
 2.5
 Whisper Radius
 1
-<color=#2D6AA5FF>Whisperer</color> Can Vent
-True
 Whisper Rate
 20
 Whisper Rate Decrease Each Whisper
 False
 Whisper Rate Decrease
 5
-Bite Cooldown
-10
-<color=#DF7AE8FF>Dampyr</color> Can Vent
+<color=#2D6AA5FF>Whisperer</color> Can Vent
 True
+Persuaded Can Vent
+False
 <color=#424242FF>Pestilence</color> Can Spawn Directly
 False
 <color=#424242FF>Pestilence</color> Transform Alerts Everyone
@@ -1022,8 +1032,6 @@ Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked
 5
 Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable
 False
-<color=#2BD29CFF>Vampire</color> Can Vent
-True
 Enable Custom <color=#FF0000FF>Intruder</color> Colors
 True
 <color=#FF0000FF>Intruder</color> Count
@@ -1052,6 +1060,8 @@ Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Roles
 False
 Blackmail Cooldown
 10
+<color=#02A752FF>Blackmailer</color> Can Read Whispers
+True
 <color=#378AC0FF>Camouflager</color> Count
 1
 <color=#378AC0FF>Camouflager</color> Is Unique In All Any
@@ -1143,7 +1153,7 @@ Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Roles
 <color=#FFFF99FF>Consigliere</color> Is Unique In All Any
 False
 Reveal Cooldown
-10
+25
 Info That <color=#FFFF99FF>Consigliere</color> Sees
 0
 <color=#801780FF>Consort</color> Count
@@ -1151,7 +1161,7 @@ Info That <color=#FFFF99FF>Consigliere</color> Sees
 <color=#801780FF>Consort</color> Is Unique In All Any
 False
 Roleblock Cooldown
-10
+25
 Roleblock Duration
 25
 <color=#404C08FF>Godfather</color> Count
@@ -1297,7 +1307,7 @@ Beam Cooldown
 <color=#FFFCCEFF>Rebel</color> Is Unique In All Any
 False
 Ability Cooldown Bonus
-0.25
+0.75
 Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others
 True
 <color=#8C7140FF>Warper</color> Count
@@ -1336,22 +1346,6 @@ False
 True
 <color=#374D1EFF>Diseased</color> Kill Multiplier
 3
-<color=#FF8080FF>Dwarf</color> Count
-1
-<color=#FF8080FF>Dwarf</color> Is Unique In All Any
-False
-<color=#FF8080FF>Dwarf</color> Speed
-1.5
-<color=#FF8080FF>Dwarf</color> Scale
-0.5
-<color=#FFB34DFF>Giant</color> Count
-1
-<color=#FFB34DFF>Giant</color> Is Unique In All Any
-False
-<color=#FFB34DFF>Giant</color> Speed
-0.75
-<color=#FFB34DFF>Giant</color> Scale
-1.5
 <color=#758000FF>Drunk</color> Count
 1
 <color=#758000FF>Drunk</color> Is Unique In All Any
@@ -1360,12 +1354,32 @@ False
 False
 Reversed Controls Interval
 1
+<color=#FF8080FF>Dwarf</color> Count
+1
+<color=#FF8080FF>Dwarf</color> Is Unique In All Any
+False
+<color=#FF8080FF>Dwarf</color> Speed
+1.5
+<color=#FF8080FF>Dwarf</color> Scale
+0.5
 <color=#80B3FFFF>Flincher</color> Count
 1
 <color=#80B3FFFF>Flincher</color> Is Unique In All Any
 False
 Flinch Interval
 1
+<color=#FFB34DFF>Giant</color> Count
+1
+<color=#FFB34DFF>Giant</color> Is Unique In All Any
+False
+<color=#FFB34DFF>Giant</color> Speed
+0.75
+<color=#FFB34DFF>Giant</color> Scale
+1.5
+<color=#2DE5BEFF>Indomitable</color> Count
+1
+<color=#2DE5BEFF>Indomitable</color> Is Unique In All Any
+False
 <color=#860B7AFF>Professional</color> Count
 1
 <color=#860B7AFF>Professional</color> Is Unique In All Any
@@ -1448,6 +1462,12 @@ Task Transparancy
 1
 <color=#FF0080FF>Radar</color> Is Unique In All Any
 False
+<color=#2160DDFF>Ruthless</color> Count
+1
+<color=#2160DDFF>Ruthless</color> Is Unique In All Any
+False
+<color=#2160DDFF>Ruthless</color> Knows Who They Are On Game Start
+True
 <color=#D4AF37FF>Snitch</color> Count
 1
 <color=#D4AF37FF>Snitch</color> Is Unique In All Any

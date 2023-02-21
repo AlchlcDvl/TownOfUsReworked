@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
             role.RevealButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.RevealButton.SetCoolDown(role.SeerTimer(), CustomGameOptions.SeerCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.RevealButton);
+            role.PrimaryButton = role.RevealButton;
             var renderer = role.RevealButton.graphic;
             
             if (role.ClosestPlayer != null && !role.RevealButton.isCoolingDown)

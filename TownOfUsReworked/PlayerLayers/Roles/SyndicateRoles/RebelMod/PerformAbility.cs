@@ -4,8 +4,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -56,9 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
-                if (interact[3] == true && interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
-                else if (interact[0] == true)
+                if (interact[3] == true || interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
@@ -255,6 +254,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             sidekick.RoleHistory.Add(formerRole);
             sidekick.RoleHistory.AddRange(formerRole.RoleHistory);
             sidekick.Rebel = reb;
+
+            if (target == PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Sidekick));
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

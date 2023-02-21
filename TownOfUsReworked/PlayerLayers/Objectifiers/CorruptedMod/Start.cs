@@ -2,7 +2,7 @@ using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Classes;
 

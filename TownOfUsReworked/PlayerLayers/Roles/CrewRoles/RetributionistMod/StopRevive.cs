@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
 using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.AllRoles;
 using Random = UnityEngine.Random;
@@ -95,12 +95,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         
                         position++;
                     }
+
+                    var player2 = Utils.PlayerById(player);
                     
-                    string something = $"{player.name} could be" + roles;
-                    
-                    //Ensures only the Inspector sees this
-                    if (DestroyableSingleton<HudManager>.Instance)
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+                    if (player2 != null)
+                    {
+                        string something = $"{player2.name} could be" + roles;
+                        
+                        //Ensures only the Retributionist-Inspector sees this
+                        if (DestroyableSingleton<HudManager>.Instance)
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+                    }
                 }
 
                 ret.InspectResults.Clear();

@@ -3,7 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using AmongUs.GameOptions;
 using System.Linq;
 
@@ -51,6 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             role.ReviveButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.ReviveUsed);
             KillButtonTarget.SetTarget(role.ReviveButton, closestBody, role);
             role.ReviveButton.SetCoolDown(0f, 1f);
+            role.PrimaryButton = role.ReviveButton;
 
             var renderer = role.ReviveButton.graphic;
 

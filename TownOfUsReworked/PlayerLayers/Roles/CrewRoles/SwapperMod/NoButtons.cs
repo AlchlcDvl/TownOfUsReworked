@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 

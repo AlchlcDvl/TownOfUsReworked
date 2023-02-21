@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using Hazel;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 {

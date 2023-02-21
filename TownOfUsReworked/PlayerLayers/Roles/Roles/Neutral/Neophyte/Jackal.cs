@@ -1,6 +1,6 @@
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public PlayerControl ClosestPlayer;
         private KillButton _recruitButton;
         public bool HasRecruited = false;
-        public bool RecruitsDead => (EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) && (GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead);
+        public bool RecruitsDead => (EvilRecruit != null && EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) && (GoodRecruit != null && GoodRecruit.Data.Disconnected ||
+            GoodRecruit.Data.IsDead);
         public DateTime LastRecruited { get; set; }
         public List<byte> Recruited;
 

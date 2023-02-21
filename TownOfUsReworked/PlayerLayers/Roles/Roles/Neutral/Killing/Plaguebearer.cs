@@ -4,7 +4,7 @@ using System.Linq;
 using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
@@ -263,16 +263,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void TurnPestilence()
         {
+            var pb = Role.GetRole<Plaguebearer>(Player);
             var role = new Pestilence(Player);
+            role.RoleHistory.Add(pb);
+            role.RoleHistory.AddRange(pb.RoleHistory);
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (CustomGameOptions.PlayersAlerted)
-                    Coroutines.Start(Utils.FlashCoroutine(Colors.Pestilence));
+                    Coroutines.Start(Utils.FlashCoroutine(Color));
                 
                 if (player == PlayerControl.LocalPlayer)
                     role.RegenTask();
             }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

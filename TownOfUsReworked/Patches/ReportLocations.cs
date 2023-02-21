@@ -1,6 +1,6 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches

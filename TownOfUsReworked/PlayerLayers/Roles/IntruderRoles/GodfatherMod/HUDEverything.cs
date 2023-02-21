@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
 using System.Linq;
 using AmongUs.GameOptions;
@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDEverything
     {
-        public static Sprite Promote => TownOfUsReworked.Placeholder;
+        public static Sprite Promote => TownOfUsReworked.PromoteSprite;
         public static Sprite Blackmail => TownOfUsReworked.BlackmailSprite;
         public static Sprite Camouflage => TownOfUsReworked.Camouflage;
         public static Sprite MeasureSprite => TownOfUsReworked.MeasureSprite;

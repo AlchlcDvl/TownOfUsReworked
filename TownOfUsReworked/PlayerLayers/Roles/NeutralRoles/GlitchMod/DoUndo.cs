@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
@@ -14,14 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 var glitch = (Glitch)role;
 
                 if (glitch.IsUsingMimic)
-                    glitch.Mimic();
-                else if (glitch.MimicEnabled)
-                    glitch.UnMimic();
-
-                if (glitch.IsUsingHack)
-                    glitch.Hack();
-                else if (glitch.HackEnabled)
-                    glitch.Unhack();
+                    Utils.Morph(glitch.Player, glitch.MimicTarget);
+                else if (glitch.MimicTarget)
+                    Utils.DefaultOutfit(glitch.Player);
             }
         }
     }

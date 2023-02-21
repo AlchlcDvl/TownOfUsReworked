@@ -15,6 +15,9 @@ namespace TownOfUsReworked.Patches
                 if (Input.GetKeyDown(KeyCode.LeftShift) && GameStates.IsCountDown)
                     GameStartManager.Instance.countDownTimer = 0;
 
+                if (Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S))
+                    GameStartManager.Instance.Start();
+
                 if (Input.GetKeyDown(KeyCode.C) && GameStates.IsCountDown)
                     GameStartManager.Instance.ResetStartState();
             }

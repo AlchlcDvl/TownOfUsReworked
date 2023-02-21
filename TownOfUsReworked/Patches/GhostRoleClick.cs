@@ -3,7 +3,7 @@ using Hazel;
 using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.Patches
                     return;
 
                 if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
-                    PlayerControl.LocalPlayer.Is(Faction.Neutral)))
+                    PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral)))
                     return;
 
                 if (tasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)

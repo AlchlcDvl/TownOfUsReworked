@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             {
                 var haunter = (Revealer)role;
 
-                if (PlayerControl.LocalPlayer.Data.IsDead || haunter.Caught)
+                if (PlayerControl.LocalPlayer.Data.IsDead || haunter.Caught || LobbyBehaviour.Instance || MeetingHud.Instance)
                 {
                     haunter.RevealerArrows.DestroyAll();
                     haunter.RevealerArrows.Clear();

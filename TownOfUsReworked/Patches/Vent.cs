@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using AmongUs.GameOptions;
 
@@ -122,6 +122,10 @@ namespace TownOfUsReworked.Patches
                 return CustomGameOptions.TrollVentSwitch;
             else if (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorVent)
                 return CustomGameOptions.ActVentSwitch;
+            else if (player.Is(RoleEnum.Phantom))
+                return false;
+            else if (player.Is(RoleEnum.Revealer))
+                return false;
             else
                 return true;
         }

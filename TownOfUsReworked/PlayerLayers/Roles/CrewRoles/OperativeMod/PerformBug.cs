@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {

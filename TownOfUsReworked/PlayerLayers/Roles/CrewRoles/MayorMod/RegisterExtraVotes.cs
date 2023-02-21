@@ -12,7 +12,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -210,8 +210,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
             {
                 var exiledString = exiled == null ? "null" : exiled.PlayerName;
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exiled PlayerName = {exiledString}");
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Was a tie = {tie}");
+                TownOfUsReworked.LogSomething($"Exiled PlayerName = {exiledString}");
+                TownOfUsReworked.LogSomething($"Was a tie = {tie}");
             }
         }
 

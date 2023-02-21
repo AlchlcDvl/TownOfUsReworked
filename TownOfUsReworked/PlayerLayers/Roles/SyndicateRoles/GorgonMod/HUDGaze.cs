@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {

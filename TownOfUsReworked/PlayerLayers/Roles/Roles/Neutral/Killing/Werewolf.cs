@@ -1,7 +1,7 @@
 using Hazel;
 using System;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
@@ -234,26 +234,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
             foreach (var player in closestPlayers)
             {
-                if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player))
+                Utils.Spread(Player, player);
+
+                if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player) || Player == player || ClosestPlayer == player)
                     continue;
                     
-                if (player != Player && !player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player2, player);
+                if (!player.Is(RoleEnum.Pestilence))
+                    Utils.RpcMurderPlayer(player2, player, false);
                 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player, player2);
-                
-                if (player.IsInfected() || Player.IsInfected())
-                {
-                    foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                        ((Plaguebearer)pb).RpcSpreadInfection(player, Player);
-                }
-
-                if (player.Is(RoleEnum.Arsonist))
-                {
-                    foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
-                        ((Arsonist)arso).RpcSpreadDouse(player, Player);
-                }
+                    Utils.RpcMurderPlayer(player, player2, false);
             }
         }
     }

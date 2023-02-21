@@ -8,7 +8,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Patches;
@@ -48,15 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             var hudManager = DestroyableSingleton<HudManager>.Instance;
             var assassinPlayer = assassin.Player;
 
-            if (player != assassinPlayer && player.Is(ModifierEnum.Indomitable) && !player.Is(RoleEnum.Actor))
-            {
-                if (player == PlayerControl.LocalPlayer)
-                    Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));
-                
-                return;
-            }
-
-            if (player != assassinPlayer && player == PlayerControl.LocalPlayer && player.Is(ModifierEnum.Indomitable))
+            if (player != assassinPlayer && player.Is(ModifierEnum.Indomitable) && !player.Is(RoleEnum.Actor) && player == PlayerControl.LocalPlayer)
             {
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));
                 return;
@@ -223,16 +215,27 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 meetingHud.ClearVote();
             }
 
-            if (assassin.Player == PlayerControl.LocalPlayer)
+            if (assassinPlayer == PlayerControl.LocalPlayer)
             {
-                if (assassin.Player != player)
+                if (assassinPlayer != player)
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");
                 else
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
             }
+            else if (assassinPlayer != player && PlayerControl.LocalPlayer == player)
+                hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{assassinPlayer.name} guessed you as {guess}!");
             else
             {
-                
+                string something = "";
+
+                if ((assassinPlayer.GetFaction() == PlayerControl.LocalPlayer.GetFaction() && (assassinPlayer.GetFaction() == Faction.Intruder || assassinPlayer.GetFaction() ==
+                    Faction.Syndicate)) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+                {
+                    if (assassinPlayer != player)
+                        something = $"{assassinPlayer.name} guessed {player.name} as {player}!";
+                    else
+                        something = $"{assassinPlayer.name} incorrectly guessed {player.name} as {player} and died!";
+                }
             }
 
             if (AmongUsClient.Instance.AmHost)

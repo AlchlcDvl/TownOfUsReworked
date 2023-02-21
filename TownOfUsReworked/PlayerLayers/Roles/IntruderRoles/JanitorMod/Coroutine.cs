@@ -1,5 +1,5 @@
 using System.Collections;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 

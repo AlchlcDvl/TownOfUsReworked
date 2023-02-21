@@ -5,16 +5,17 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System.Linq;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
-using TownOfUsReworked.Lobby.Extras.RainbowMod;
+using TownOfUsReworked.Cosmetics;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -105,10 +106,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                     while (i < 4)
                     {
+                        if (results.Count >= PlayerControl.AllPlayerControls.Count)
+                            break;
+
                         var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
                         var role2 = Role.AllRoles.ToList()[random];
 
-                        if (role2 != targetRole)
+                        if (role2.RoleType != targetRole.RoleType)
                         {
                             results.Add(role2);
                             i++;
@@ -117,7 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         results.Shuffle();
                     }
 
-                    role.InspectResults.Add(role.ClosestPlayer, results);
+                    role.InspectResults.Add(role.ClosestPlayer.PlayerId, results);
             
                     try
                     {
@@ -449,7 +453,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.BugUsesLeft--;
                 role.LastBugged = System.DateTime.UtcNow;
-                role.Bugs.Add(BugExtentions2.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
+                role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
             else if (__instance == role.RewindButton && revivedRole == RoleEnum.TimeLord)

@@ -4,7 +4,7 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ImpostorMod

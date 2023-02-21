@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod

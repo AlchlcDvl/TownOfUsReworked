@@ -110,6 +110,9 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Beamer = new Color32(0, 40, 245, 255); //#0028F5FF
         public readonly static Color32 Crusader = new Color32(223, 122, 232, 255); //#DF7AE8FF
 
+        //Other Role Colors
+        public readonly static Color32 Betrayer = new Color32(17, 128, 106, 255); //#11806AFF
+
         //Modifier Colors
         public readonly static Color32 Bait = new Color32(0, 179, 179, 255); //#00B3B3FF
         public readonly static Color32 Coward = new Color32(69, 107, 168, 255); //#456BA8FF
@@ -154,22 +157,18 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Alignment = new Color32(29, 124, 242, 255); //#1D7CF2FF
         public readonly static Color32 Status = new Color32(155, 89, 182, 255); //#9B59B6FF
         public readonly static Color32 Clear = new Color32(0, 0, 0, 0); //#00000000
-        public readonly static Color32 Recruit = new Color32(128, 128, 0, 255); //#808000FF
-        public readonly static Color32 Persuaded = new Color32(17, 128, 106, 255); //#11806AFF
-        public readonly static Color32 Revived = new Color32(145, 102, 64, 255); //#916640FF
 
         //Color Storage For Colors I Will Use Later
         public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
         public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2
-        //#286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626 #4e4e4e #b148e2 #fffead #00B3B3
-        //#1abc9c #2ecc71 #1f8b4c #3498db #206694 #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4
-        //#95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1 #6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7
-        //#EC1C45 #EC62A5 #00EEFF #204D42 #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e
-        //#FC0303 #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #8637C2
-        //#3769FE #4d4d4d #8ff731
+        public readonly static Color32 A = new Color32(128, 128, 0, 255); //#808000FF
+        public readonly static Color32 Revived = new Color32(145, 102, 64, 255); //#916640FF
+        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626
+        //#4e4e4e #b148e2 #fffead #00B3B3 #1abc9c #2ecc71 #1f8b4c #3498db #206694 #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC1C45 #EC62A5 #00EEFF #204D42 #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2
+        //#8637C2 #3769FE #4d4d4d #8ff731
 
         //Symbol Storage For Objectifiers I Will Make Later
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ✚ ❥ ✔ ε η Δ Γ ι κ λ ν ξ Ξ ρ σ τ υ φ Φ ψ Ψ ω χ ς 
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω χ
     }
 }

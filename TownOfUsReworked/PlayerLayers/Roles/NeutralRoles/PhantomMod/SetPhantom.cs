@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     {
         public static void Postfix(AirshipExileController __instance) => SetPhantom.ExileControllerPostfix(__instance);
     }
-    
+
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public class SetPhantom
     {
@@ -26,13 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral))
+            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !Utils.NeutralHasUnfinishedBusiness(exiled))
                 WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
-                return;
-            
-            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
                 return;
 
             if (PlayerControl.LocalPlayer != WillBePhantom)
@@ -49,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
 
-                System.Console.WriteLine("Become Phantom - Phantom");
+                TownOfUsReworked.LogSomething("Becoming");
 
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
 
@@ -94,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                     var normalPlayerTask = task.Cast<NormalPlayerTask>();
 
                     var updateArrow = normalPlayerTask.taskStep > 0;
-                    
+
                     normalPlayerTask.taskStep = 0;
                     normalPlayerTask.Initialize();
 
@@ -111,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 
                     if (updateArrow)
                         normalPlayerTask.UpdateArrow();
-                    
+
                     var taskInfo = player.Data.FindTaskById(task.Id);
                     taskInfo.Complete = false;
                 }

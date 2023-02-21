@@ -24,12 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            
-            if (player == null || player.Data.IsDead || player.Data.Disconnected)
-                return true;
-
-            var role = Role.GetRole(player);
-            return role != null && role.Criteria();
+            return player == null || player.Data.IsDead || player.Data.Disconnected;
         }
 
         public static void GenButton(Guesser role, PlayerVoteArea voteArea)

@@ -2,7 +2,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -32,10 +32,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 var flag4 = role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) || role.ClosestPlayer.Is(Faction.Syndicate) ||
                     (role.ClosestPlayer.Is(RoleEnum.Jester) && CustomGameOptions.VigiKillsJester) || (role.ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) ||
                     (role.ClosestPlayer.Is(RoleEnum.Cannibal) && CustomGameOptions.VigiKillsCannibal) || (role.ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) ||
-                    role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsRecruit() || role.ClosestPlayer.IsFramed() ||
-                    PlayerControl.LocalPlayer.IsTurnedTraitor() || role.Player.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll) || role.Player.IsTurnedTraitor() ||
-                    role.ClosestPlayer.IsTurnedTraitor() || role.ClosestPlayer.IsResurrected() || role.ClosestPlayer.IsTurnedFanatic() || role.Player.IsTurnedFanatic() ||
-                    (role.ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor);
+                    role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsFramed() ||
+                    role.Player.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll) || role.Player.NotOnTheSameSide() || role.ClosestPlayer.NotOnTheSameSide() ||
+                    (role.ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor) || (role.ClosestPlayer.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), flag4);
 
                 if (interact[3] == true && interact[0] == true)

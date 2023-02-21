@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.MultitaskerMod
 {

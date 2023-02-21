@@ -1,6 +1,6 @@
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
@@ -75,6 +75,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     continue;
                 
                 ToHaunt.Add(state.TargetPlayerId);
+            }
+
+            while (ToHaunt.Count > CustomGameOptions.HauntCount)
+            {
+                ToHaunt.Shuffle();
+                ToHaunt.Remove(ToHaunt[ToHaunt.Count - 1]);
             }
         }
 

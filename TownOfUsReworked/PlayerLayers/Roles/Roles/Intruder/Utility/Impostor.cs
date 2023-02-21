@@ -3,7 +3,7 @@ using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {

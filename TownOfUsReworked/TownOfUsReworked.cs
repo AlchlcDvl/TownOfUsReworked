@@ -8,15 +8,15 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Reactor;
+using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
-using TownOfUsReworked.Lobby.Extras.RainbowMod;
-using System.IO;
+using TownOfUsReworked.Cosmetics;
 using Reactor.Networking;
 using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.16";
+        public const string VersionString = "0.0.1.17";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -50,8 +50,12 @@ namespace TownOfUsReworked
         public static string Sounds = "TownOfUsReworked.Resources.Sounds.";
         public static string Misc = "TownOfUsReworked.Resources.Misc.";
         public static string Presets = "TownOfUsReworked.Resources.Presets.";
+        public static string Hats = "TownOfUsReworked.Resources.Hats.";
+        public static string Visors = "TownOfUsReworked.Resources.Visors.";
+        public static string Nameplates = "TownOfUsReworked.Resources.Nameplates.";
 
         private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
+        public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
 
         public static Sprite JanitorClean;
         public static Sprite EngineerFix;
@@ -122,6 +126,10 @@ namespace TownOfUsReworked
         public static Sprite IntruderVent;
         public static Sprite SyndicateVent;
         public static Sprite NeutralVent;
+        public static Sprite RecruitSprite;
+        public static Sprite BiteSprite;
+        public static Sprite SidekickSprite;
+        public static Sprite HauntSprite;
 
         public static Sprite LighterSprite;
         public static Sprite DarkerSprite;
@@ -151,12 +159,12 @@ namespace TownOfUsReworked
         public static AnimationClip CokpitAnim;
         public static AnimationClip MedicalAnim;
 
-        //Sounds
-        public static AudioClip AgentIntro;
-
         public static GameObject CallPlateform;
 
         private static DLoadImage _iCallLoadImage;
+
+        //Sounds
+        public static AudioClip AgentIntro;
 
         private Harmony _harmony;
         private Harmony Harmony { get; } = new (Id);
@@ -179,7 +187,7 @@ namespace TownOfUsReworked
             SwapperSwitchDisabled = CreateSprite($"{Buttons}SwapDisabled.png");
             Rewind = CreateSprite($"{Buttons}Rewind.png");
             MedicSprite = CreateSprite($"{Buttons}Medic.png");
-            SeerSprite = CreateSprite($"{Buttons}Seer.png");
+            SeerSprite = CreateSprite($"{Buttons}Reveal.png");
             SampleSprite = CreateSprite($"{Buttons}Sample.png");
             MorphSprite = CreateSprite($"{Buttons}Morph.png");
             MineSprite = CreateSprite($"{Buttons}Mine.png");
@@ -238,6 +246,11 @@ namespace TownOfUsReworked
             IntruderVent = CreateSprite($"{Buttons}IntruderVent.png");
             SyndicateVent = CreateSprite($"{Buttons}SyndicateVent.png");
             NeutralVent = CreateSprite($"{Buttons}NeutralVent.png");
+            RecruitSprite = CreateSprite($"{Buttons}Recruit.png");
+            BiteSprite = CreateSprite($"{Buttons}Bite.png");
+            PromoteSprite = CreateSprite($"{Buttons}Promote.png");
+            HauntSprite = CreateSprite($"{Buttons}Haunt.png");
+            SidekickSprite = CreateSprite($"{Buttons}Sidekick.png");
 
             //Misc Stuff
             Lock = CreateSprite($"{Misc}Lock.png");
@@ -279,7 +292,7 @@ namespace TownOfUsReworked
             CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
             //Sounds
-            AgentIntro = LoadAudioClipFromResources($"{Sounds}AgentIntro.raw");
+            AgentIntro = CreateAudio($"{Sounds}AgentIntro.raw");
 
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
@@ -291,7 +304,6 @@ namespace TownOfUsReworked
             var ip = Ip.Value;
 
             //MessageWait = Config.Bind("Other", "MessageWait", 1);
-
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
             {
                 foreach (var address in Dns.GetHostAddresses(Ip.Value))
@@ -334,12 +346,12 @@ namespace TownOfUsReworked
 
         private delegate bool DLoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
 
-        public static AudioClip LoadAudioClipFromResources(string path, string sfxName = "")
+        public static AudioClip CreateAudio(string path, string sfxName = "")
         {
             try
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                Stream stream = assembly.GetManifestResourceStream(path);
+                var assembly = Assembly.GetExecutingAssembly();
+                var stream = assembly.GetManifestResourceStream(path);
                 var byteAudio = new byte[stream.Length];
                 _ = stream.Read(byteAudio, 0, (int)stream.Length);
                 float[] samples = new float[byteAudio.Length / 4];
@@ -351,9 +363,7 @@ namespace TownOfUsReworked
                     samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
                 }
 
-                int channels = 2;
-                int sampleRate = 48000;
-                AudioClip audioClip = AudioClip.Create(sfxName, samples.Length, channels, sampleRate, false);
+                var audioClip = AudioClip.Create(sfxName, samples.Length, 2, 48000, false);
                 audioClip.SetData(samples, 0);
                 return audioClip;
             }
@@ -362,5 +372,7 @@ namespace TownOfUsReworked
                 return null;
             }
         }
+
+        public static void LogSomething(object message) => PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
     }
 }

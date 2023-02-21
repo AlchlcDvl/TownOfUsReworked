@@ -29,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             role.ShieldButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedAbility);
             role.ShieldButton.SetCoolDown(0f, 1f);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
+            role.PrimaryButton = role.ShieldButton;
             var renderer = role.ShieldButton.graphic;
             
             if (Utils.EnableAbilityButton(role.ShieldButton, role.Player, role.ClosestPlayer, false, !role.UsedAbility))

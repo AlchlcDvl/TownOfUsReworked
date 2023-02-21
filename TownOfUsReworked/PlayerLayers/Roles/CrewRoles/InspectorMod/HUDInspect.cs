@@ -4,7 +4,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {

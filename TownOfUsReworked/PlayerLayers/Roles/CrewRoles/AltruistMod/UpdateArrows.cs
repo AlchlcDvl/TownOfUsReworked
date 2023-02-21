@@ -14,10 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 {
                     Coroutine.Arrow.gameObject.Destroy();
                     Coroutine.Target = null;
-                    return;
                 }
-
-                Coroutine.Arrow.target = Coroutine.Target.transform.position;
+                else
+                    Coroutine.Arrow.target = Coroutine.Target.transform.position;
             }
         }
     }

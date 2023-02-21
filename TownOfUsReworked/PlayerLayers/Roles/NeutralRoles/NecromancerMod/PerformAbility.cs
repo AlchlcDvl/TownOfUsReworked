@@ -3,7 +3,7 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 

@@ -3,7 +3,7 @@ using Hazel;
 using System.Collections;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.BetterMaps.Airship

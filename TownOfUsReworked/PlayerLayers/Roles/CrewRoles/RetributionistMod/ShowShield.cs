@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (exPlayer != null)
                 {
-                    System.Console.WriteLine(exPlayer.name + " is ex-Shielded and unvisored");
+                    TownOfUsReworked.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
                     exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
                     exPlayer.myRend().material.SetFloat("_Outline", 0f);
                     ret.exShielded = null;

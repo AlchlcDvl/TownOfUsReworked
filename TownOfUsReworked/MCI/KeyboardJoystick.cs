@@ -17,13 +17,13 @@ namespace TownOfUsReworked.MCI
 
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                if (GameStates.IsInGame)
+                if (!GameStates.IsLobby)
                     return; //Don't try to add bots when you are playtesting
 
                 controllingFigure = PlayerControl.LocalPlayer.PlayerId;
 
                 if (PlayerControl.AllPlayerControls.Count == 15)
-                    return; //Remove this if your willing to suffer with the consequences. 
+                    return; //Remove this if you're willing to suffer with the consequences. 
 
                 MCIUtils.CleanUpLoad();
                 MCIUtils.CreatePlayerInstance("Robot");

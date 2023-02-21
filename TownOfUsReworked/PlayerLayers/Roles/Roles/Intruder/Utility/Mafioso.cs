@@ -1,6 +1,6 @@
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using Reactor.Utilities;
@@ -149,14 +149,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             role.RoleHistory.Add(mafioso);
             role.RoleHistory.AddRange(mafioso.RoleHistory);
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            if (Player == PlayerControl.LocalPlayer)
             {
-                if (player == PlayerControl.LocalPlayer)
-                {
-                    role.RegenTask();
-                    Coroutines.Start(Utils.FlashCoroutine(Color));
-                }
+                role.RegenTask();
+                Coroutines.Start(Utils.FlashCoroutine(Color));
             }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

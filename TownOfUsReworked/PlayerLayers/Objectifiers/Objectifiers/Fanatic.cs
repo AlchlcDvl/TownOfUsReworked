@@ -1,7 +1,8 @@
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
 {
@@ -28,6 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             var fanaticRole = Role.GetRole(fanatic);
             fanaticRole.Faction = faction;
             Turned = true;
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Mystic));
         }
     }
 }

@@ -1,5 +1,5 @@
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
 using TownOfUsReworked.Classes;
 using Hazel;

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             role.ExamineButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.ExamineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ExamineButton);
+            role.PrimaryButton = role.ExamineButton;
             var renderer = role.ExamineButton.graphic;
             
             if (Utils.EnableAbilityButton(role.ExamineButton, role.Player, role.ClosestPlayer))

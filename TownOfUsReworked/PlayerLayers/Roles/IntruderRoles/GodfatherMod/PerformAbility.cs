@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 using System;
 using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 using Reactor.Networking.Extensions;
 
@@ -489,6 +489,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             mafioso.RoleHistory.Add(formerRole);
             mafioso.RoleHistory.AddRange(formerRole.RoleHistory);
             mafioso.Godfather = gf;
+
+            if (target == PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Mafioso));
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
 
         public static void SpawnVent(int ventId, Godfather role, Vector2 position, float zAxis)

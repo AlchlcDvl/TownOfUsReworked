@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {

@@ -2,8 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using Random = UnityEngine.Random;
-using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ActorMod
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 

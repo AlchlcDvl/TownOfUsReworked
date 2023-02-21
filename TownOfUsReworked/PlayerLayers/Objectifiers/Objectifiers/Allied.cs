@@ -1,5 +1,5 @@
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers

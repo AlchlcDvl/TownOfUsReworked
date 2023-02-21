@@ -4,14 +4,14 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDEverything
     {
-        public static Sprite Promote => TownOfUsReworked.Placeholder;
+        public static Sprite Sidekick => TownOfUsReworked.SidekickSprite;
         public static Sprite Conceal => TownOfUsReworked.Placeholder;
         public static Sprite Kill => TownOfUsReworked.SyndicateKill;
         public static Sprite PoisonSprite => TownOfUsReworked.PoisonSprite;
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 {
                     role.DeclareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                     role.DeclareButton.graphic.enabled = true;
-                    role.DeclareButton.graphic.sprite = Promote;
+                    role.DeclareButton.graphic.sprite = Sidekick;
                     role.DeclareButton.gameObject.SetActive(false);
                 }
 

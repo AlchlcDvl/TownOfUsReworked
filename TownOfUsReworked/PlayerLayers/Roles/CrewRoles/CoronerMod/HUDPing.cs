@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;

@@ -4,8 +4,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
+using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Objects;
 using Reactor.Utilities.Extensions;
 using System.Reflection;
 using TMPro;
@@ -24,6 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = "Crew (Support)";
+            InspectedPlayers = new List<byte>();
+            InspectResults = new Dictionary<byte, List<Role>>();
         }
 
         //Retributionist Stuff
@@ -207,8 +209,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         //Inspector Stuff
         public DateTime LastInspected { get; set; }
-        public List<byte> InspectedPlayers = new List<byte>();
-        public Dictionary<PlayerControl, List<Role>> InspectResults = new Dictionary<PlayerControl, List<Role>>();
+        public List<byte> InspectedPlayers;
+        public Dictionary<byte, List<Role>> InspectResults;
         private KillButton _inspectButton;
 
         public KillButton InspectButton

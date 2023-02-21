@@ -26,7 +26,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 return;
 
             if (role.TargetFound)
+            {
+                role.TargetPlayer.nameText().color = role.Color;
+                role.TargetPlayer.nameText().text += " Φ";
                 return;
+            }
 
             if (!(role.TargetPlayer.Data.IsDead || role.TargetPlayer.Data.Disconnected))
                 return;

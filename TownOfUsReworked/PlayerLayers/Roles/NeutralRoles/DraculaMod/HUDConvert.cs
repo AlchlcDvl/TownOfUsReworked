@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDConvert
     {
-        public static Sprite ConvertSprite => TownOfUsReworked.Placeholder;
+        public static Sprite BiteSprite => TownOfUsReworked.BiteSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             {
                 role.BiteButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
                 role.BiteButton.graphic.enabled = true;
-                role.BiteButton.graphic.sprite = ConvertSprite;
+                role.BiteButton.graphic.sprite = BiteSprite;
                 role.BiteButton.gameObject.SetActive(false);
             }
 

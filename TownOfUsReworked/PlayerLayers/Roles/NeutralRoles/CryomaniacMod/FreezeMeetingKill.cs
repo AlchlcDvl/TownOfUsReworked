@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                     foreach (var player in role.DousedPlayers)
                     {
                         var player2 = Utils.PlayerById(player);
-                        Utils.RpcMurderPlayer(role.Player, player2);
+                        Utils.RpcMurderPlayer(role.Player, player2, false);
                     }
 
                     role.DousedPlayers.Clear();

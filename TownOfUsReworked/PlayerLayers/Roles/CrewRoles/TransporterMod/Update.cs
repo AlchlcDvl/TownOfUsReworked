@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using InnerNet;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
@@ -16,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
 
-            if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
+            if (GameStates.IsInGame)
             {
                 if (role != null)
                 {

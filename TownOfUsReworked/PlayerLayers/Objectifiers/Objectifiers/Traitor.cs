@@ -1,5 +1,5 @@
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 
@@ -9,6 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
     {
         public Role former;
         public string Side;
+        public bool CanBetray = false;
 
         public Traitor(PlayerControl player) : base(player)
         {

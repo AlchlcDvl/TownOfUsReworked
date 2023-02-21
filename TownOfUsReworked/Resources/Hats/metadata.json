@@ -1,2224 +1,2560 @@
 {
-  "credits": [
-    {
-      "id": "kara0000",
-      "name": "Clickbait",
-      "artist": "Kara"
-    },
+  "credits":
+  [
     {
       "id": "kara0001",
       "name": "Pipe",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0002",
-      "name": "Very Expensive Hat",
-      "artist": "Kara"
-    },
-    {
-      "id": "kara0003",
-      "name": "TROLLED",
-      "artist": "Kara"
+      "name": "Very Expensive",
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0004",
       "name": "Stoned",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0005",
       "name": "Folder",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0006",
       "name": "GUB",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0007",
       "name": "kara lore",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0008",
       "name": "Inner bean",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0009",
       "name": "Wave the Trans Flag in the sunset",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0010",
       "name": "Money Circle",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0011",
       "name": "Realest Epicest Face in all the lands of Epicness made by Kara (Not Face Reveal), Produced by Karaesthetic. Sponsored by Det",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0012",
       "name": "Magnifying Glass Tilted Right",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0013",
       "name": "Recycle-mate",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0014",
       "name": "Retro Book",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0015",
       "name": "Retro camera",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0016",
       "name": "Retro Wings",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0017",
       "name": "Caught in Retro 32 bits",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0018",
-      "name": "Retro Shady Hat",
-      "artist": "Kara"
+      "name": "Retro Shady",
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0019",
       "name": "TEH EPIK RUBBR DUCKIE!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0020",
       "name": "Pocket Kara",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0021",
       "name": "Secrets Revealed",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0022",
       "name": "Pizza!",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0023",
       "name": "Tomorrow is another day",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0024",
       "name": "Triangle Buddy",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0025",
       "name": "Triangle Buddy 2",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0026",
       "name": "Triangle Buddy 3",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0027",
       "name": "Milk with Ice",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0028",
       "name": "Saltiest Bean in The West",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0029",
       "name": "Snowgraved",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0030",
       "name": "RGB BEAN *LIMITED EDITION*",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0031",
       "name": "Crewmate.exe",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0032",
       "name": "Cheesed",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0033",
       "name": "Cool Face",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0034",
       "name": "yeah",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0035",
       "name": "Crewmate Pop-up",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0036",
       "name": "The good hat :)",
-      "artist": "Kara"
-    },
-    {
-      "id": "kara0037",
-      "name": "You.",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0038",
       "name": "BLUE LOBSTER",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0039",
-      "name": "Bucket Hat",
-      "artist": "Kara"
+      "name": "Bucket",
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0040",
       "name": "Blahaj",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0041",
       "name": "Creature",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0042",
       "name": "Clown",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0043",
       "name": "The Guys",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0044",
       "name": "Crewmate Stew",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0045",
-      "name": "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED",
-      "artist": "Kara"
+      "name": "REEEEEEEEEEEEEEEEED",
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0046",
       "name": "Computer-mate",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0047",
       "name": "Impsockster",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0048",
       "name": "uncle",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0049",
       "name": "fat",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "kara0050",
       "name": "my reaction to that information",
-      "artist": "Kara"
+      "artist": "Kara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0000",
-      "name": "annamaja hat",
-      "artist": "TheLastShaymin"
+      "name": "annamaja",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0001",
-      "name": "zylus hat",
-      "artist": "TheLastShaymin"
+      "name": "zylus",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0002",
-      "name": "anniefuschia hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "hats0003",
-      "name": "aphex hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0004",
-      "name": "aplatypuss hat",
-      "artist": "Pigoletto"
+      "name": "anniefuschia",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0005",
-      "name": " asexual hat",
-      "artist": "TheLastShaymin"
+      "name": " asexual",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0006",
-      "name": "ash_1 hat",
-      "artist": "TheLastShaymin"
+      "name": "ash_1",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0007",
       "name": "ash_1 hat flipped",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "hats0008",
-      "name": "axilla hat",
-      "artist": "TheLastShaymin"
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0009",
-      "name": "ben hat",
-      "artist": "TheLastShaymin"
+      "name": "ben",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0010",
-      "name": "besty hat",
-      "artist": "TheLastShaymin"
+      "name": "besty",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0011",
-      "name": "bisexual hat",
-      "artist": "TheLastShaymin"
+      "name": "bisexual",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0012",
-      "name": "bloody hat",
-      "artist": "TheLastShaymin"
+      "name": "bloody",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0013",
-      "name": "boba hat",
-      "artist": "TheLastShaymin"
+      "name": "boba",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0014",
-      "name": "breeh hat",
-      "artist": "TheLastShaymin"
+      "name": "breeh",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0015",
-      "name": "brittzey hat",
-      "artist": "TheLastShaymin"
+      "name": "brittzey",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0016",
-      "name": "cheesy hat",
-      "artist": "Pigoletto"
+      "name": "cheesy",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0017",
-      "name": "chilledchaos hat",
-      "artist": "Pigoletto"
+      "name": "chilledchaos",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0018",
-      "name": "clara hat",
-      "artist": "TheLastShaymin"
+      "name": "clara",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0019",
-      "name": "dawko hat",
-      "artist": "TheLastShaymin"
+      "name": "dawko",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0020",
-      "name": "dizzilulu hat",
-      "artist": "TheLastShaymin"
+      "name": "dizzilulu",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0021",
-      "name": "duncan hat",
-      "artist": "TheLastShaymin"
+      "name": "duncan",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0022",
-      "name": "dyto hat",
-      "artist": "TheLastShaymin"
+      "name": "dyto",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0023",
-      "name": "ellum hat",
-      "artist": "TheLastShaymin"
+      "name": "ellum",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0024",
-      "name": "falcone_1 hat",
-      "artist": "TheLastShaymin"
+      "name": "falcone_1",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0025",
-      "name": "freyzplayz hat",
-      "artist": "TheLastShaymin"
+      "name": "freyzplayz",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0026",
-      "name": "garbage hat",
-      "artist": "TheLastShaymin"
+      "name": "garbage",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0027",
-      "name": "gay hat",
-      "artist": "TheLastShaymin"
+      "name": "gay",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0028",
-      "name": "glitch hat",
-      "artist": "PhasmoFireGod"
+      "name": "glitch",
+      "artist": "PhasmoFireGod",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0029",
-      "name": "harrie hat",
-      "artist": "TheLastShaymin"
+      "name": "harrie",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0030",
-      "name": "jamobo hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "hats0031",
-      "name": "jose hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "hats0032",
-      "name": "junkyard hat",
-      "artist": "Pigoletto"
+      "name": "jamobo",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0033",
-      "name": "justjames hat",
-      "artist": "TheLastShaymin"
+      "name": "justjames",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0034",
-      "name": "kara hat",
-      "artist": "Ressnie"
+      "name": "kara",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0035",
-      "name": "mama hat",
-      "artist": "PhasmoFireGod"
+      "name": "mama",
+      "artist": "PhasmoFireGod",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0036",
-      "name": "kay hat",
-      "artist": "TheLastShaymin"
+      "name": "kay",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0037",
-      "name": "lawhoo hat",
-      "artist": "LaWhooligan"
+      "name": "lawhoo",
+      "artist": "LaWhooligan",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0038",
-      "name": "lewis hat",
-      "artist": "TheLastShaymin"
+      "name": "lewis",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0039",
-      "name": "lexiemarie hat",
-      "artist": "TheLastShaymin"
+      "name": "lexiemarie",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0040",
-      "name": "mindy hat",
-      "artist": "Ressnie"
+      "name": "mindy",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0041",
-      "name": "nerdout hat",
-      "artist": "Taamoy"
+      "name": "nerdout",
+      "artist": "Taamoy",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0042",
-      "name": "nilesy hat",
-      "artist": "TheLastShaymin"
+      "name": "nilesy",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0043",
-      "name": "nonbinary hat",
-      "artist": "TheLastShaymin"
+      "name": "nonbinary",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0044",
-      "name": "ozza hat",
-      "artist": "Ressnie"
+      "name": "ozza",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0045",
-      "name": "pansexual hat",
-      "artist": "TheLastShaymin"
+      "name": "pansexual",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0046",
-      "name": "pastaroni hat",
-      "artist": "Ressnie"
+      "name": "pastaroni",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0047",
-      "name": "ped hat",
-      "artist": "TheLastShaymin"
+      "name": "ped",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0048",
-      "name": "phoebe hat",
-      "artist": "TheLastShaymin"
+      "name": "phoebe",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0049",
-      "name": "ravs hat",
-      "artist": "TheLastShaymin"
+      "name": "ravs",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0050",
-      "name": "razzbowski hat",
-      "artist": "TheLastShaymin"
+      "name": "razzbowski",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0051",
-      "name": "rhythian hat",
-      "artist": "TheLastShaymin"
+      "name": "rhythian",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0052",
-      "name": "shubble hat",
-      "artist": "Pigoletto"
+      "name": "shubble",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0053",
-      "name": "sips hat",
-      "artist": "TheLastShaymin"
+      "name": "sips",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0054",
-      "name": "stumpy hat",
-      "artist": "TheLastShaymin"
+      "name": "stumpy",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0055",
-      "name": "toby hat",
-      "artist": "TheLastShaymin"
+      "name": "toby",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0056",
-      "name": "tomcraven hat",
-      "artist": "TheLastShaymin"
+      "name": "tomcraven",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0057",
-      "name": "trans_1 hat",
-      "artist": "TheLastShaymin"
+      "name": "trans_1",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0058",
-      "name": "trans_2 hat",
-      "artist": "TheLastShaymin"
+      "name": "trans_2",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0059",
-      "name": "trans_3 hat",
-      "artist": "TheLastShaymin"
+      "name": "trans_3",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0060",
-      "name": "trans_4 hat",
-      "artist": "TheLastShaymin"
+      "name": "trans_4",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0061",
-      "name": "vikram_1 hat",
-      "artist": "TheLastShaymin"
+      "name": "vikram_1",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0062",
-      "name": "vikram_2 hat",
-      "artist": "TheLastShaymin"
+      "name": "vikram_2",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0063",
-      "name": "wolfabelle hat",
-      "artist": "TheLastShaymin"
+      "name": "wolfabelle",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0064",
-      "name": "zeroyalviking hat",
-      "artist": "Pigoletto"
+      "name": "zeroyalviking",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0065",
-      "name": "falcone hat",
-      "artist": "TheLastShaymin"
+      "name": "falcone",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0066",
-      "name": "pinkee hat",
-      "artist": "PhasmoFireGod"
+      "name": "pinkee",
+      "artist": "PhasmoFireGod",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0067",
-      "name": "racoon hat",
-      "artist": "PhasmoFireGod"
+      "name": "racoon",
+      "artist": "PhasmoFireGod",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0068",
-      "name": "firegod hat",
-      "artist": "PhasmoFireGod"
+      "name": "firegod",
+      "artist": "PhasmoFireGod",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0069",
-      "name": "slushie hat",
-      "artist": "TheLastShaymin"
+      "name": "slushie",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0070",
-      "name": "dad hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "hats0071",
-      "name": "platty halloween hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0072",
-      "name": "cheesy halloween hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0073",
-      "name": "chilled halloween hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0074",
-      "name": "zeroyalviking halloween hat",
-      "artist": "Pigoletto"
+      "name": "dad",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0075",
-      "name": "fox hat",
-      "artist": "Pigoletto"
+      "name": "fox",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0076",
-      "name": "frog hat",
-      "artist": "Pigoletto"
+      "name": "frog",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0077",
-      "name": "pig hat",
-      "artist": "Pigoletto"
+      "name": "pig",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0078",
-      "name": "owl hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0079",
-      "name": "witch hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0080",
-      "name": "goldfish hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0081",
-      "name": "ctulhu hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0082",
-      "name": "spider hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0083",
-      "name": "crocodile hat",
-      "artist": "Pigoletto"
+      "name": "owl",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0084",
-      "name": "A Knoife! hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0085",
-      "name": "Blush-stache hat",
-      "artist": "Sugawara"
+      "name": "A Knoife!",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0086",
-      "name": "BTW hat",
-      "artist": "Sugawara"
+      "name": "BTW",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0087",
-      "name": "Flower Fedora hat",
-      "artist": "Sugawara"
+      "name": "Flower Fedora",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0088",
-      "name": "Gigawolf hat",
-      "artist": "Sugawara"
+      "name": "Gigawolf",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0089",
-      "name": "Good Aura hat",
-      "artist": "Sugawara"
+      "name": "Good Aura",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0090",
-      "name": "Guardian Angel hat",
-      "artist": "Sugawara"
+      "name": "Guardian Angel",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0091",
-      "name": "Horned Angel hat",
-      "artist": "Sugawara"
+      "name": "Horned Angel",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0092",
-      "name": "Kartodk Evil hat",
-      "artist": "Sugawara"
+      "name": "Kartodk Evil",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0093",
-      "name": "Kartodk Sus hat",
-      "artist": "Sugawara"
+      "name": "Kartodk Sus",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0094",
-      "name": "Lavish hat",
-      "artist": "Sugawara"
+      "name": "Lavish",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0095",
-      "name": "Lie-canthrope hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0096",
-      "name": "Overgrown hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0097",
-      "name": "Press X hat",
-      "artist": "Sugawara"
+      "name": "Lie-canthrope",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0098",
-      "name": "Rico's Navy hat",
-      "artist": "Sugawara"
+      "name": "Rico's Navy",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0099",
-      "name": "Sav Beanie hat",
-      "artist": "Sugawara"
+      "name": "Sav Beanie",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0100",
-      "name": "Sparkles! hat",
-      "artist": "Sugawara"
+      "name": "Sparkles!",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0101",
-      "name": "Specs n' Antlers hat",
-      "artist": "Sugawara"
+      "name": "Specs n' Antlers",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0102",
-      "name": "Stylish Witch hat",
-      "artist": "Sugawara"
+      "name": "Stylish Witch",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0103",
-      "name": "Tropic Beach hat",
-      "artist": "Sugawara"
+      "name": "Tropic Beach",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0104",
-      "name": "ash_2 hat",
-      "artist": "TheLastShaymin"
+      "name": "ash_2",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0105",
       "name": "blood_bourne_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0106",
       "name": "goku_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0107",
       "name": "queenie_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0108",
       "name": "tissue_box_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0109",
       "name": "your_mom_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0110",
       "name": "mantis_shrimpling_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0111",
       "name": "luffy_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0112",
       "name": "carnage_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0113",
       "name": "stebon_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0114",
       "name": "harley_quinn_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0115",
       "name": "weasel_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0116",
       "name": "dino_egg_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0117",
       "name": "skater_girl_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0118",
       "name": "sims_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0119",
       "name": "shrimp_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0120",
       "name": "pepe_hat",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0121",
-      "name": "dwarf hat",
-      "artist": "Pigoletto"
+      "name": "dwarf",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0122",
-      "name": "rooster hat",
-      "artist": "Pigoletto"
+      "name": "rooster",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0123",
-      "name": "monster hat",
-      "artist": "Pigoletto"
+      "name": "monster",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0124",
-      "name": "Cyreni's Pony hat",
-      "artist": "Sugawara"
+      "name": "Cyreni's Pony",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0125",
-      "name": "Oreos hat",
-      "artist": "Sugawara"
+      "name": "Oreos",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0126",
-      "name": "Soyciety hat",
-      "artist": "Sugawara"
+      "name": "Soyciety",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0127",
-      "name": "Tsedtacle hat",
-      "artist": "Tsed"
+      "name": "Tsedtacle",
+      "artist": "Tsed",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0128",
-      "name": "Big Shot hat",
-      "artist": "LayZ"
+      "name": "Big Shot",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0129",
-      "name": "L hat",
-      "artist": "LayZ"
+      "name": "L",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0130",
-      "name": "Menacing hat",
-      "artist": "LayZ"
+      "name": "Menacing",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0131",
-      "name": "No U hat",
-      "artist": "LayZ"
+      "name": "No U",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0132",
-      "name": "Okey hat",
-      "artist": "LayZ"
-    },
-    {
-      "id": "hats0133",
-      "name": "sans hat",
-      "artist": "LayZ"
+      "name": "Okey",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0134",
-      "name": "Squid hat",
-      "artist": "LayZ"
+      "name": "Squid",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0135",
-      "name": "Wimpy Kid hat",
-      "artist": "LayZ"
+      "name": "Wimpy Kid",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0136",
-      "name": "Cros Style hat",
-      "artist": "Sugawara"
+      "name": "Cros Style",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0137",
-      "name": "Novasauros hat",
-      "artist": "Sugawara"
+      "name": "Novasauros",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0138",
-      "name": "Peppercorny hat",
-      "artist": "Sugawara"
+      "name": "Peppercorny",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0139",
-      "name": "Rainy Day hat",
-      "artist": "Sugawara"
+      "name": "Rainy Day",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0140",
-      "name": "Scarf Gang hat",
-      "artist": "Sugawara"
+      "name": "Scarf Gang",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0141",
-      "name": "So Devilish hat",
-      "artist": "Sugawara"
+      "name": "So Devilish",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0142",
-      "name": "Huntress hat",
-      "artist": "Sugawara"
+      "name": "Huntress",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0143",
-      "name": "You're so Salty! hat",
-      "artist": "Sugawara"
+      "name": "You're so Salty!",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0144",
-      "name": "LayZFox hat",
-      "artist": "LayZ"
-    },
-    {
-      "id": "hats0145",
-      "name": "Impostor Spark hat",
-      "artist": "LayZ"
+      "name": "LayZFox",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0146",
-      "name": "X-Ray hat",
-      "artist": "LayZ"
+      "name": "X-Ray",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0147",
-      "name": "Pap hat",
-      "artist": "LayZ"
+      "name": "Pap",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0148",
-      "name": "Cocoa hat",
-      "artist": "LayZ"
+      "name": "Cocoa",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0149",
-      "name": "Doused hat",
-      "artist": "LayZ"
+      "name": "Doused",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0150",
-      "name": "Fluffy Boi hat",
-      "artist": "LayZ"
+      "name": "Fluffy Boi",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0151",
-      "name": "Hot Saucy hat",
-      "artist": "LayZ"
+      "name": "Hot Saucy",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0152",
-      "name": "ImPAWstor hat",
-      "artist": "LayZ"
+      "name": "ImPAWstor",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0153",
-      "name": "MMMM hat",
-      "artist": "LayZ"
+      "name": "MMMM",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0154",
-      "name": "Bad Aura hat",
-      "artist": "Sugawara"
+      "name": "Bad Aura",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0155",
-      "name": "Dunce hat",
-      "artist": "Sugawara"
+      "name": "Dunce",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0156",
-      "name": "Gay-ny Day hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0157",
-      "name": "Marionette hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0158",
-      "name": "Random Ronnie hat",
-      "artist": "Sugawara"
+      "name": "Gay-ny Day",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0159",
-      "name": "Disconnected hat",
-      "artist": "Sugawara"
+      "name": "Disconnected",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0160",
-      "name": "Lunch hat",
-      "artist": "Sugawara"
+      "name": "Lunch",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0161",
-      "name": "Peace Never! hat",
-      "artist": "Sugawara"
-    },
-    {
-      "id": "hats0162",
-      "name": "Amcam hat",
-      "artist": "Ophidian"
+      "name": "Peace Never!",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0163",
-      "name": "Book Of Sus hat",
-      "artist": "Ophidian"
+      "name": "Book Of Sus",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0164",
-      "name": "Caramilk hat",
-      "artist": "Ophidian"
+      "name": "Caramilk",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0165",
-      "name": "DJSmiles hat",
-      "artist": "Ophidian"
-    },
-    {
-      "id": "hats0166",
-      "name": "DrunkyPoo hat",
-      "artist": "Ophidian"
+      "name": "DJSmiles",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0167",
-      "name": "HoliGhost hat",
-      "artist": "Ophidian"
+      "name": "HoliGhost",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0168",
-      "name": "ImpTongue hat",
-      "artist": "Ophidian"
+      "name": "ImpTongue",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0169",
-      "name": "Jessie hat",
-      "artist": "Ophidian"
+      "name": "Jessie",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0170",
-      "name": "L hat",
-      "artist": "Ophidian"
+      "name": "L",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0171",
-      "name": "Paws hat",
-      "artist": "Ophidian"
+      "name": "Paws",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0172",
-      "name": "Potterhead hat",
-      "artist": "Ophidian"
+      "name": "Potterhead",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0173",
-      "name": "Lil Swift hat",
-      "artist": "Ophidian"
+      "name": "Lil Swift",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0174",
-      "name": "Sableye hat",
-      "artist": "Ophidian"
-    },
-    {
-      "id": "hats0175",
-      "name": "Sheriff hat",
-      "artist": "Ophidian"
+      "name": "Sableye",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0176",
-      "name": "Steampunk hat",
-      "artist": "Ophidian"
+      "name": "Steampunk",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0177",
-      "name": "Steampunk Look hat",
-      "artist": "Ophidian"
+      "name": "Steampunk Look",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0178",
-      "name": "Sushub hat",
-      "artist": "Ophidian"
+      "name": "Sushub",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0179",
-      "name": "Susotion hat",
-      "artist": "Ophidian"
+      "name": "Susotion",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0180",
-      "name": "Bee hat",
-      "artist": "Pigoletto"
+      "name": "Bee",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0181",
-      "name": "T-Rex hat",
-      "artist": "Pigoletto"
+      "name": "T-Rex",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0182",
-      "name": "Maid hat",
-      "artist": "Ophidian"
-    },
-    {
-      "id": "hats0183",
-      "name": "Koji hat",
-      "artist": "Ophidian"
+      "name": "Maid",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0184",
-      "name": "Ellum hat",
-      "artist": "Ophidian"
+      "name": "Ellum",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0185",
-      "name": "Koji Maid hat",
-      "artist": "Ophidian"
+      "name": "Koji Maid",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0186",
-      "name": "jeremy hat",
-      "artist": "TheLastShaymin"
+      "name": "jeremy",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0187",
-      "name": "kDoolz hat",
-      "artist": "TheLastShaymin"
+      "name": "kDoolz",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0188",
-      "name": "tenma hat",
-      "artist": "TheLastShaymin"
+      "name": "tenma",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0189",
-      "name": "jukebox hat",
-      "artist": "TheLastShaymin"
+      "name": "jukebox",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0190",
-      "name": "PK Fire hat",
-      "artist": "LayZ"
+      "name": "PK Fire",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0191",
-      "name": "Termy Boi hat",
-      "artist": "LayZ"
+      "name": "Termy Boi",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0192",
-      "name": "Tippy hat",
-      "artist": "LayZ"
+      "name": "Tippy",
+      "artist": "LayZ",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0193",
-      "name": "Akatsuki hat",
-      "artist": "Ophidian"
+      "name": "Akatsuki",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0194",
-      "name": "Bearded Grizzly hat",
-      "artist": "Ophidian"
+      "name": "Bearded Grizzly",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0195",
-      "name": "Dumbdog hat",
-      "artist": "Ophidian"
+      "name": "Dumbdog",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0196",
-      "name": "Eyeball hat",
-      "artist": "Ophidian"
+      "name": "Eyeball",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0197",
       "name": "Friday Night Funkin hat 1",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0198",
       "name": "Friday Night Funkin hat 2",
-      "artist": "Ophidian"
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0199",
-      "name": "Jerm hat",
-      "artist": "Ophidian"
+      "name": "Jerm",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0200",
-      "name": "Milky Joe hat",
-      "artist": "Ophidian"
-    },
-    {
-      "id": "hats0201",
-      "name": "Monkeh hat",
-      "artist": "Pigoletto"
+      "name": "Milky Joe",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0202",
-      "name": "Pink hat",
-      "artist": "Pigoletto"
-    },
-    {
-      "id": "hats0203",
-      "name": "Sugarcat hat",
-      "artist": "Pigoletto"
+      "name": "Pink",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0204",
-      "name": "Zombie hat",
-      "artist": "Pigoletto"
+      "name": "Zombie",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0205",
-      "name": "Iron Man hat",
-      "artist": "TheLastShaymin"
+      "name": "Iron Man",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0206",
-      "name": "Thanos hat",
-      "artist": "TheLastShaymin"
+      "name": "Thanos",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0207",
-      "name": "Side Arms hat",
-      "artist": "Ghost_ejims"
+      "name": "Side Arms",
+      "artist": "Ghost_ejims",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0208",
       "name": "Kara hat 2",
-      "artist": "TheLastShaymin"
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0209",
-      "name": "Bergmeister hat",
-      "artist": "Bergmeister"
+      "name": "Bergmeister",
+      "artist": "Bergmeister",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0210",
-      "name": "Chrome hat",
-      "artist": "Ophidian"
+      "name": "Chrome",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0211",
-      "name": "Dabi hat",
-      "artist": "Ophidian"
+      "name": "Dabi",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0212",
-      "name": "James hat",
-      "artist": "Ophidian"
+      "name": "James",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0213",
-      "name": "Meowth hat",
-      "artist": "Ophidian"
+      "name": "Meowth",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0214",
-      "name": "Mudkip hat",
-      "artist": "Ophidian"
+      "name": "Mudkip",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0215",
-      "name": "Patrick Jenner hat",
-      "artist": "Ophidian"
+      "name": "Patrick Jenner",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0216",
-      "name": "Ravenclaw hat",
-      "artist": "Ophidian"
+      "name": "Ravenclaw",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0217",
-      "name": "Taxi hat",
-      "artist": "Ophidian"
+      "name": "Taxi",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0218",
-      "name": "The Witcher hat",
-      "artist": "Ophidian"
+      "name": "The Witcher",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0219",
-      "name": "Blue Dream hat",
-      "artist": "Sweetrolled"
+      "name": "Blue Dream",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0220",
-      "name": "BrittanyP95 Treasure hat",
-      "artist": "Sweetrolled"
+      "name": "BrittanyP95 Treasure",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0221",
-      "name": "Chibiusa hat",
-      "artist": "Sweetrolled"
+      "name": "Chibiusa",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0222",
-      "name": "Cynda hat",
-      "artist": "Sweetrolled"
+      "name": "Cynda",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0223",
-      "name": "Chicky Tenders hat",
-      "artist": "Sweetrolled"
+      "name": "Chicky Tenders",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0224",
-      "name": "Chicky Tenders Sauce hat",
-      "artist": "Sweetrolled"
-    },
-    {
-      "id": "hats0225",
-      "name": "Demogorgan hat",
-      "artist": "Sweetrolled"
+      "name": "Chicky Tenders Sauce",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0226",
-      "name": "Detective hat",
-      "artist": "Sweetrolled"
+      "name": "Detective",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0227",
-      "name": "Fairy hat",
-      "artist": "Sweetrolled"
+      "name": "Fairy",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0228",
-      "name": "FengPJ hat",
-      "artist": "Sweetrolled"
+      "name": "FengPJ",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0229",
-      "name": "Freckled Phenom hat",
-      "artist": "Sweetrolled"
+      "name": "Freckled Phenom",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0230",
-      "name": "Golden Boi hat",
-      "artist": "Sweetrolled"
+      "name": "Golden Boi",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0231",
-      "name": "Hold My Beer hat",
-      "artist": "Sweetrolled"
-    },
-    {
-      "id": "hats0232",
-      "name": "Huntress hat",
-      "artist": "Sweetrolled"
+      "name": "Hold My Beer",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0233",
-      "name": "Kate hat",
-      "artist": "Sweetrolled"
+      "name": "Kate",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0234",
-      "name": "Lil Too Much hat",
-      "artist": "Sweetrolled"
+      "name": "Lil Too Much",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0235",
-      "name": "Liv Chipz Periodt hat",
-      "artist": "Sweetrolled"
+      "name": "Liv Chipz Periodt",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0236",
-      "name": "Mac Vibes hat",
-      "artist": "Sweetrolled"
+      "name": "Mac Vibes",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0237",
-      "name": "McRib hat",
-      "artist": "Sweetrolled"
+      "name": "McRib",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0238",
-      "name": "Nurse hat",
-      "artist": "Sweetrolled"
+      "name": "Nurse",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0239",
-      "name": "Periodt hat",
-      "artist": "Sweetrolled"
+      "name": "Periodt",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0240",
-      "name": "Petty Perkins hat",
-      "artist": "Sweetrolled"
+      "name": "Petty Perkins",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0241",
-      "name": "Pilborg It Me hat",
-      "artist": "Sweetrolled"
+      "name": "Pilborg It Me",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0242",
-      "name": "Sailor Steve hat",
-      "artist": "Sweetrolled"
+      "name": "Sailor Steve",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0243",
-      "name": "Sweetroll hat",
-      "artist": "Sweetrolled"
+      "name": "Sweetroll",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0244",
-      "name": "Taste The Rainbow hat",
-      "artist": "Sweetrolled"
+      "name": "Taste The Rainbow",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0245",
-      "name": "Tux hat",
-      "artist": "Sweetrolled"
+      "name": "Tux",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0246",
-      "name": "Undead Marah hat",
-      "artist": "Sweetrolled"
+      "name": "Undead Marah",
+      "artist": "Sweetrolled",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0247",
-      "name": "Kn0vis hat",
-      "artist": "Sugawara"
+      "name": "Kn0vis",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0248",
-      "name": "Anya hat",
-      "artist": "Ophidian"
+      "name": "Anya",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0249",
-      "name": "Pizza hat",
-      "artist": "Ophidian"
+      "name": "Pizza",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0250",
-      "name": "Gaara hat",
-      "artist": "Ophidian"
+      "name": "Gaara",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0251",
-      "name": "Hinata hat",
-      "artist": "Ophidian"
+      "name": "Hinata",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0252",
-      "name": "MartiMoo hat",
-      "artist": "Ophidian"
+      "name": "MartiMoo",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0253",
-      "name": "Roman hat",
-      "artist": "Ophidian"
+      "name": "Roman",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0254",
-      "name": "Purple Shark hat",
-      "artist": "Ophidian"
+      "name": "Purple Shark",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0255",
-      "name": "Umbreon hat",
-      "artist": "Ophidian"
+      "name": "Umbreon",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0256",
-      "name": "Virgil hat",
-      "artist": "Ophidian"
+      "name": "Virgil",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0257",
       "name": "Side Arms hat 2",
-      "artist": "Ghost_ejims"
+      "artist": "Ghost_ejims",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0258",
-      "name": "Rawbuhbuh hat",
-      "artist": "NightRaiderTea"
+      "name": "Rawbuhbuh",
+      "artist": "NightRaiderTea",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0259",
-      "name": "HeyMcGurk hat",
-      "artist": "Ophidian"
+      "name": "HeyMcGurk",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0260",
-      "name": "Tuskspicious hat",
-      "artist": "Ophidian"
+      "name": "Tuskspicious",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0261",
-      "name": "Bunnies hat",
-      "artist": "Pigoletto"
+      "name": "Bunnies",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0262",
-      "name": "Mushroom hat",
-      "artist": "Pigoletto"
+      "name": "Mushroom",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0263",
-      "name": "Red Panda hat",
-      "artist": "Pigoletto"
+      "name": "Red Panda",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0264",
-      "name": "Wizard hat",
-      "artist": "Pigoletto"
+      "name": "Wizard",
+      "artist": "Pigoletto",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0265",
-      "name": "Courtilly hat",
-      "artist": "Sarinjin"
+      "name": "Courtilly",
+      "artist": "Sarinjin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0266",
-      "name": "Mods hat",
-      "artist": "Ophidian"
+      "name": "Mods",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0267",
-      "name": "NoiBat hat",
-      "artist": "Ophidian"
+      "name": "NoiBat",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0268",
-      "name": "Piss Bucket hat",
-      "artist": "Ophidian"
+      "name": "Piss Bucket",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0269",
-      "name": "Zavvygamer hat",
-      "artist": "Ophidian"
+      "name": "Zavvygamer",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0270",
-      "name": "Bill Cipher hat",
-      "artist": "Ophidian"
+      "name": "Bill Cipher",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0271",
-      "name": "Blossom hat",
-      "artist": "Ophidian"
+      "name": "Blossom",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0272",
-      "name": "Bubbles hat",
-      "artist": "Ophidian"
+      "name": "Bubbles",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0273",
-      "name": "Buttercup hat",
-      "artist": "Ophidian"
+      "name": "Buttercup",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0274",
-      "name": "Dell hat",
-      "artist": "Ophidian"
+      "name": "Dell",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0275",
-      "name": "Gengar hat",
-      "artist": "Ophidian"
+      "name": "Gengar",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0276",
-      "name": "Grumpy Cat hat",
-      "artist": "Ophidian"
+      "name": "Grumpy Cat",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0277",
-      "name": "Ksmac3 hat",
-      "artist": "Ophidian"
+      "name": "Ksmac3",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0278",
-      "name": "Pennywise hat",
-      "artist": "Ophidian"
+      "name": "Pennywise",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0279",
-      "name": "Redneck hat",
-      "artist": "Ophidian"
+      "name": "Redneck",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0280",
-      "name": "Red Body hat",
-      "artist": "Ophidian"
+      "name": "Red Body",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0281",
-      "name": "Pink Body hat",
-      "artist": "Ophidian"
+      "name": "Pink Body",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0282",
-      "name": "Yellow Body hat",
-      "artist": "Ophidian"
+      "name": "Yellow Body",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0283",
-      "name": "Nogla hat",
-      "artist": "Sarinjin"
+      "name": "Nogla",
+      "artist": "Sarinjin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0284",
-      "name": "Wildcat hat",
-      "artist": "Sarinjin"
+      "name": "Wildcat",
+      "artist": "Sarinjin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0285",
-      "name": "Olive Kruzadar hat",
-      "artist": "Sarinjin"
+      "name": "Olive Kruzadar",
+      "artist": "Sarinjin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0286",
-      "name": "Red Kruzadar hat",
-      "artist": "Sarinjin"
+      "name": "Red Kruzadar",
+      "artist": "Sarinjin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0287",
-      "name": "Koala hat",
-      "artist": "Ophidian"
+      "name": "Koala",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0288",
-      "name": "Raptor hat",
-      "artist": "Ophidian"
+      "name": "Raptor",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0289",
-      "name": "Kangaroo hat",
-      "artist": "Ophidian"
+      "name": "Kangaroo",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0290",
-      "name": "HeckMuffins hat",
-      "artist": "Ophidian"
+      "name": "HeckMuffins",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0291",
-      "name": "HecksAmphy hat",
-      "artist": "Ophidian"
+      "name": "HecksAmphy",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0292",
-      "name": "Ophidian hat",
-      "artist": "Ophidian"
+      "name": "Ophidian",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0293",
-      "name": "Rikiisnotaferet hat",
-      "artist": "Ophidian"
+      "name": "Rikiisnotaferet",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0294",
-      "name": "SpiceRat hat",
-      "artist": "Ophidian"
+      "name": "SpiceRat",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0295",
-      "name": "Spicesjolt hat",
-      "artist": "Ophidian"
+      "name": "Spicesjolt",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0296",
-      "name": "RicKafe hat",
-      "artist": "Ophidian"
+      "name": "RicKafe",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0297",
-      "name": "Caracupcake hat",
-      "artist": "Ophidian"
+      "name": "Caracupcake",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0298",
-      "name": "Cosmicara hat",
-      "artist": "Ophidian"
+      "name": "Cosmicara",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0299",
-      "name": "Crabcake hat",
-      "artist": "Ophidian"
+      "name": "Crabcake",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0300",
-      "name": "McMayhem hat",
-      "artist": "Ophidian"
+      "name": "McMayhem",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0301",
-      "name": "MissJersey hat",
-      "artist": "Ophidian"
+      "name": "MissJersey",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "hats0302",
-      "name": "Quonk Gun hat",
-      "artist": "Ophidian"
+      "name": "Quonk Gun",
+      "artist": "Ophidian",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0000",
-      "name": "ZeroXFusionz hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "misc0001",
-      "name": "Zemo hat", 
-      "artist": ""
+      "name": "ZeroXFusionz",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0002",
-      "name": "wrench_f hat",
-      "artist": "TheLastShaymin"
+      "name": "wrench_f",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0003",
-      "name": "vince_foot_front hat",
-      "artist": "Ressnie"
+      "name": "vince_foot_front",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0004",
-      "name": "vince_front hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "misc0005",
-      "name": "toast hat",
-      "artist": ""
-    },
-    {
-      "id": "misc0006",
-      "name": "syntrocity hat",
-      "artist": ""
+      "name": "vince_front",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0007",
-      "name": "stitch hat",
-      "artist": "TheLastShaymin"
+      "name": "stitch",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0008",
-      "name": "shrek hat",
-      "artist": "TheLastShaymin"
+      "name": "shrek",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0009",
-      "name": "revmeerkat_front hat",
-      "artist": "TheLastShaymin"
+      "name": "revmeerkat_front",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0010",
-      "name": "reenyy hat",
-      "artist": "TheLastShaymin"
+      "name": "reenyy",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0011",
-      "name": "rayc hat",
-      "artist": "tori#1277"
-    },
-    {
-      "id": "misc0012",
-      "name": "rae hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0013",
-      "name": "poki hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0014",
-      "name": "peter hat",
-      "artist": "a"
+      "name": "rayc",
+      "artist": "tori#1277",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0015",
-      "name": "Paule_front hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "misc0016",
-      "name": "miyoung hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0017",
-      "name": "mika hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0018",
-      "name": "ludwig hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0019",
-      "name": "lily hat",
-      "artist": "a"
+      "name": "Paule_front",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0020",
-      "name": "groot hat",
-      "artist": "TheLastShaymin"
+      "name": "groot",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0021",
-      "name": "gorillaphent_f hat",
-      "artist": "TheLastShaymin"
+      "name": "gorillaphent_f",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "misc0022",
-      "name": "gh00stie_f hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "misc0023",
-      "name": "dream hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0024",
-      "name": "corpse hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0025",
-      "name": "carrot hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0026",
-      "name": "bingus hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0027",
-      "name": "bimbus hat",
-      "artist": "a"
-    },
-    {
-      "id": "misc0028",
-      "name": "aria hat",
-      "artist": "a"
-    },
-    {
-      "id": "myhats0000",
-      "name": "pot hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0001",
-      "name": "box hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0002",
-      "name": "eye hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0003",
-      "name": "fundy hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0004",
-      "name": "sykkuno hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0005",
-      "name": "5up hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0006",
-      "name": "crumb hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0007",
-      "name": "sussy hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0008",
-      "name": "penguin hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0009",
-      "name": "dolphin hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0010",
-      "name": "skull hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0011",
-      "name": "croissant hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0012",
-      "name": "platypus hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0013",
-      "name": "vines hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0014",
-      "name": "5up scarf hat",
-      "artist": "acron"
-    },
-    {
-      "id": "myhats0015",
-      "name": "baby hat",
-      "artist": "acron"
+      "name": "gh00stie_f",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "myhats0016",
-      "name": "raflp hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0000",
-      "name": "wendy hat",
-      "artist": "a"
+      "name": "raflp",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0001",
-      "name": "waffle hat",
-      "artist": "Ressnie"
+      "name": "waffle",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0002",
-      "name": "Voteme hat",
-      "artist": "Ressnie"
+      "name": "Voteme",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0003",
-      "name": "squirrel hat",
-      "artist": "TheLastShaymin"
+      "name": "squirrel",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0004",
-      "name": "shiki hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0005",
-      "name": "rollups hat",
-      "artist": "a"
+      "name": "shiki",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0006",
-      "name": "rocky hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "standard0007",
-      "name": "pepe hat",
-      "artist": "a"
-    },
-    {
-      "id": "standard0008",
-      "name": "penguinface_front hat",
-      "artist": "a"
+      "name": "rocky",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0009",
-      "name": "pancakes hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0010",
-      "name": "masayoshi hat",
-      "artist": "a"
+      "name": "pancakes",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0011",
-      "name": "leah hat",
-      "artist": "TheLastShaymin"
+      "name": "leah",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0012",
-      "name": "kris hat",
-      "artist": "tori#1277"
-    },
-    {
-      "id": "standard0013",
-      "name": "jodi hat",
-      "artist": "a"
+      "name": "kris",
+      "artist": "tori#1277",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0014",
-      "name": "jerm hat",
-      "artist": "TheLastShaymin"
+      "name": "jerm",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0015",
-      "name": "janet hat",
-      "artist": "tori#1277"
-    },
-    {
-      "id": "standard0016",
-      "name": " hat",
-      "artist": ""
+      "name": "janet",
+      "artist": "tori#1277",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0017",
-      "name": "hafu hat",
-      "artist": "TheLastShaymin"
+      "name": "hafu",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0018",
-      "name": "giacomo hat",
-      "artist": "TheLastShaymin"
+      "name": "giacomo",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0019",
       "name": "Frog hat redesign (original by Ressnie)",
-      "artist": "Little Doo Doo"
+      "artist": "Little Doo Doo",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0020",
-      "name": "frenchtoast hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0021",
-      "name": "fire hat",
-      "artist": ""
+      "name": "frenchtoast",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0022",
-      "name": "crunchy hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "standard0023",
-      "name": "couve hat",
-      "artist": ""
+      "name": "crunchy",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0024",
-      "name": "charizard hat",
-      "artist": "TheLastShaymin"
-    },
-    {
-      "id": "standard0025",
-      "name": "buffyhelmet hat",
-      "artist": ""
-    },
-    {
-      "id": "standard0026",
-      "name": "buffyarms hat",
-      "artist": ""
-    },
-    {
-      "id": "standard0027",
-      "name": "buffy hat",
-      "artist": ""
+      "name": "charizard",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0028",
-      "name": "brizzyears hat",
-      "artist": "Ressnie"
+      "name": "brizzyears",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0029",
-      "name": "br00d hat",
-      "artist": "TheLastShaymin"
+      "name": "br00d",
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0030",
-      "name": "blaustoise hat",
-      "artist": "tori#1277"
-    },
-    {
-      "id": "standard0031",
-      "name": "bird hat",
-      "artist": ""
+      "name": "blaustoise",
+      "artist": "tori#1277",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0032",
-      "name": "birb hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0033",
-      "name": "bestcrewmate hat",
-      "artist": ""
+      "name": "birb",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0034",
-      "name": "basetrade_3 hat",
-      "artist": "Ressnie"
+      "name": "basetrade_3",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0035",
-      "name": "basetrade_2 hat",
-      "artist": "Ressnie"
+      "name": "basetrade_2",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0036",
-      "name": "basetrade_1 hat",
-      "artist": "Ressnie"
-    },
-    {
-      "id": "standard0037",
-      "name": "ash hat",
-      "artist": "???"
+      "name": "basetrade_1",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0038",
       "name": "_hat",
-      "artist": "TheLastShaymin"
+      "artist": "TheLastShaymin",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0039",
-      "name": "Snapper hat",
-      "artist": "Little Doo Doo"
+      "name": "Snapper",
+      "artist": "Little Doo Doo",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0040",
-      "name": "Slippy hat",
-      "artist": "Little Doo Doo"
+      "name": "Slippy",
+      "artist": "Little Doo Doo",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0041",
-      "name": "Frog hat",
-      "artist": "Ressnie"
+      "name": "Frog",
+      "artist": "Ressnie",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0042",
-      "name": "Jessie Monkey hat",
-      "artist": "Little Doo Doo"
+      "name": "Jessie Monkey",
+      "artist": "Little Doo Doo",
+      "adaptive": false,
+      "nobounce": false
     },
     {
       "id": "standard0043",
-      "name": "Sunflower hat",
-      "artist": "Little Doo Doo"
+      "name": "Sunflower",
+      "artist": "Little Doo Doo",
+      "adaptive": false,
+      "nobounce": false
     }
   ]
 }

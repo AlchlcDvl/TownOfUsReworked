@@ -7,8 +7,9 @@ using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Objects;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
@@ -29,7 +30,6 @@ using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using Reactor.Networking.Extensions;
@@ -628,7 +628,7 @@ namespace TownOfUsReworked.Patches
                         AllObjectifiers.Shuffle();
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Classic/Custom Sorting Done");
+                    TownOfUsReworked.LogSomething("Classic/Custom Sorting Done");
                 }
                 else if (IsAA)
                 {
@@ -676,7 +676,7 @@ namespace TownOfUsReworked.Patches
                     if (CustomGameOptions.EnableObjectifiers)
                         AllObjectifiers.Shuffle();
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any Sorting Done");
+                    TownOfUsReworked.LogSomething("All Any Sorting Done");
                 }
 
                 var NonIntruderRoles = new List<(Type, int, int, bool)>();
@@ -712,7 +712,7 @@ namespace TownOfUsReworked.Patches
 
                     spawnList1 = nonIntruderRoles;
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 1 Done");
+                    TownOfUsReworked.LogSomething("All Any List 1 Done");
 
                     while (impRoles.Count <= impostors.Count && IntruderRoles.Count > 0)
                     {
@@ -727,7 +727,7 @@ namespace TownOfUsReworked.Patches
 
                     spawnList2 = impRoles;
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 2 Done");
+                    TownOfUsReworked.LogSomething("All Any List 2 Done");
                 }
 
                 spawnList1.Shuffle();
@@ -829,7 +829,7 @@ namespace TownOfUsReworked.Patches
                 Sort(IntruderRoles, CustomGameOptions.IntruderCount, CustomGameOptions.IntruderCount);
                 Sort(SyndicateRoles, CustomGameOptions.SyndicateCount, CustomGameOptions.SyndicateCount);
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Killing Role List Sorted");
+                TownOfUsReworked.LogSomething("Killing Role List Sorted");
 
                 var nonIntruderRoles = new List<(Type, int, int, bool)>();
 
@@ -911,12 +911,17 @@ namespace TownOfUsReworked.Patches
                 spawnList1.Shuffle();
             }
 
-            if (!(spawnList1.Contains((typeof(Dracula), CustomGameOptions.DraculaOn, 39, CustomGameOptions.UniqueDracula)) ||
-                spawnList1.Contains((typeof(VampireHunter), CustomGameOptions.VampireHunterOn, 21, CustomGameOptions.UniqueVampireHunter)) ||
+            if (!(spawnList1.Contains((typeof(VampireHunter), CustomGameOptions.VampireHunterOn, 21, CustomGameOptions.UniqueVampireHunter)) ||
                 spawnList1.Contains((typeof(Rebel), CustomGameOptions.RebelOn, 61, CustomGameOptions.UniqueRebel)) ||
-                spawnList1.Contains((typeof(Plaguebearer), CustomGameOptions.PlaguebearerOn, 61, CustomGameOptions.UniquePlaguebearer)) ||
+                spawnList1.Contains((typeof(Plaguebearer), CustomGameOptions.PlaguebearerOn, 33, CustomGameOptions.UniquePlaguebearer)) ||
                 spawnList2.Contains((typeof(Rebel), CustomGameOptions.RebelOn, 61, CustomGameOptions.UniqueRebel)) ||
-                spawnList2.Contains((typeof(Godfather), CustomGameOptions.GodfatherOn, 61, CustomGameOptions.UniqueGodfather))))
+                spawnList1.Contains((typeof(Amnesiac), CustomGameOptions.AmnesiacOn, 23, CustomGameOptions.UniqueAmnesiac)) ||
+                spawnList1.Contains((typeof(Thief), CustomGameOptions.ThiefOn, 38, CustomGameOptions.UniqueThief)) ||
+                spawnList1.Contains((typeof(GuardianAngel), CustomGameOptions.GuardianAngelOn, 26, CustomGameOptions.UniqueGuardianAngel)) ||
+                spawnList1.Contains((typeof(Guesser), CustomGameOptions.GuesserOn, 66, CustomGameOptions.UniqueGuesser)) ||
+                spawnList1.Contains((typeof(BountyHunter), CustomGameOptions.BountyHunterOn, 70, CustomGameOptions.UniqueBountyHunter)) ||
+                spawnList1.Contains((typeof(Executioner), CustomGameOptions.ExecutionerOn, 24, CustomGameOptions.UniqueExecutioner)) ||
+                spawnList2.Contains((typeof(Godfather), CustomGameOptions.GodfatherOn, 56, CustomGameOptions.UniqueGodfather))))
             {
                 while (spawnList1.Contains((typeof(Seer), CustomGameOptions.SeerOn, 72, CustomGameOptions.UniqueSeer)))
                 {
@@ -933,7 +938,7 @@ namespace TownOfUsReworked.Patches
                 spawnList1.Shuffle();
             }
 
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Layers Sorted");
+            TownOfUsReworked.LogSomething("Layers Sorted");
 
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
@@ -947,7 +952,7 @@ namespace TownOfUsReworked.Patches
                 Role.GenRole<Role>(type, crewmates.TakeFirst(), id);
             }
 
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Spawn Done");
+            TownOfUsReworked.LogSomething("Role Spawn Done");
 
             if (CustomGameOptions.EnableObjectifiers)
             {
@@ -981,7 +986,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = obj;
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 3 Done");
+                    TownOfUsReworked.LogSomething("All Any List 3 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1010,7 +1015,7 @@ namespace TownOfUsReworked.Patches
                         Objectifier.GenObjectifier<Objectifier>(type, canHaveNeutralObjectifier.TakeFirst(), id);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Objectifiers Done");
+                TownOfUsReworked.LogSomething("Objectifiers Done");
             }
 
             if (CustomGameOptions.EnableAbilities)
@@ -1075,7 +1080,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = ab;
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 4 Done");
+                    TownOfUsReworked.LogSomething("All Any List 4 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1125,7 +1130,7 @@ namespace TownOfUsReworked.Patches
                         Ability.GenAbility<Ability>(type, canHaveTunnelerAbility.TakeFirst(), id);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Abilities Done");
+                TownOfUsReworked.LogSomething("Abilities Done");
             }
 
             if (CustomGameOptions.EnableModifiers)
@@ -1161,7 +1166,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = mod;
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("All Any List 5 Done");
+                    TownOfUsReworked.LogSomething("All Any List 5 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1188,7 +1193,7 @@ namespace TownOfUsReworked.Patches
                         Modifier.GenModifier<Modifier>(type, canHaveModifier.TakeFirst(), id);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Modifiers Done");
+                TownOfUsReworked.LogSomething("Modifiers Done");
             }
 
             if (CustomGameOptions.AlliedOn > 0)
@@ -1221,7 +1226,7 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Allied Faction Set Done");
+                TownOfUsReworked.LogSomething("Allied Faction Set Done");
             }
 
             if (!IsKilling)
@@ -1321,7 +1326,7 @@ namespace TownOfUsReworked.Patches
                     bhTargets.Add(player);
                 }
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Targets Set");
+                TownOfUsReworked.LogSomething("Targets Set");
 
                 if (CustomGameOptions.ExecutionerOn > 0)
                 {
@@ -1344,11 +1349,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(exe.Player.PlayerId);
                             writer.Write(exe.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
+                            //TownOfUsReworked.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Exe Target Set");
+                    TownOfUsReworked.LogSomething("Exe Target Set");
                 }
 
                 if (CustomGameOptions.GuesserOn > 0)
@@ -1372,11 +1377,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(guess.Player.PlayerId);
                             writer.Write(guess.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Exe Target = {exe.TargetPlayer.name}");
+                            //TownOfUsReworked.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guess Target Set");
+                    TownOfUsReworked.LogSomething("Guess Target Set");
                 }
                 
                 if (CustomGameOptions.GuardianAngelOn > 0)
@@ -1400,11 +1405,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(ga.Player.PlayerId);
                             writer.Write(ga.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"GA Target = {ga.TargetPlayer.name}");
+                            //TownOfUsReworked.LogSomething($"GA Target = {ga.TargetPlayer.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("GA Target Set");
+                    TownOfUsReworked.LogSomething("GA Target Set");
                 }
                 
                 if (CustomGameOptions.BountyHunterOn > 0)
@@ -1428,11 +1433,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(bh.Player.PlayerId);
                             writer.Write(bh.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"BH Target = {ga.TargetPlayer.name}");
+                            //TownOfUsReworked.LogSomething($"BH Target = {ga.TargetPlayer.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("BH Target Set");
+                    TownOfUsReworked.LogSomething("BH Target Set");
                 }
                 
                 if (CustomGameOptions.ActorOn > 0)
@@ -1472,11 +1477,11 @@ namespace TownOfUsReworked.Patches
                                 writer.Write(role.Name);
 
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Pretend Target = {act.TargetPlayer.name}");
+                            //TownOfUsReworked.LogSomething($"Pretend Target = {act.TargetPlayer.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Act Variables Set");
+                    TownOfUsReworked.LogSomething("Act Variables Set");
                 }
 
                 if (CustomGameOptions.JackalOn > 0)
@@ -1505,7 +1510,7 @@ namespace TownOfUsReworked.Patches
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.GoodRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Good Recruit = {jackal.GoodRecruit.name}");
+                            //TownOfUsReworked.LogSomething($"Good Recruit = {jackal.GoodRecruit.name}");
                         }
                         
                         if (evilRecruits.Count > 0)
@@ -1526,11 +1531,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.EvilRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"Evil Recruit = {jackal.EvilRecruit.name}");
+                            //TownOfUsReworked.LogSomething($"Evil Recruit = {jackal.EvilRecruit.name}");
                         }
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jackal Recruits Set");
+                    TownOfUsReworked.LogSomething("Jackal Recruits Set");
                 }
             }
         }
@@ -2015,13 +2020,16 @@ namespace TownOfUsReworked.Patches
                         var message = reader.ReadString();
 
                         if (whispered == PlayerControl.LocalPlayer)
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you: {message}");
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
                         else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || (PlayerControl.LocalPlayer.Data.IsDead &&
                             CustomGameOptions.DeadSeeEverything))
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}:{message}");
                         else if (CustomGameOptions.WhispersAnnouncement)
                             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
 
+                        break;
+                    
+                    case CustomRPC.Guess:
                         break;
 
                     case CustomRPC.CatchPhantom:
@@ -2182,6 +2190,10 @@ namespace TownOfUsReworked.Patches
                         setplayer.transform.position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), setplayer.transform.position.z);
                         break;
 
+                    case CustomRPC.SyncCustomSettings:
+                        Rpc.ReceiveRpc(reader);
+                        break;
+
                     case CustomRPC.SetSettings:
                         readByte = reader.ReadByte();
                         GameOptionsManager.Instance.currentNormalGameOptions.MapId = readByte == byte.MaxValue ? (byte)0 : readByte;
@@ -2273,7 +2285,7 @@ namespace TownOfUsReworked.Patches
                                 SwapVotes.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == readSByte);
                                 readSByte2 = reader.ReadSByte();
                                 SwapVotes.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == readSByte2);
-                                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bytes received - " + readSByte + " - " + readSByte2);
+                                TownOfUsReworked.LogSomething("Bytes received - " + readSByte + " - " + readSByte2);
                                 break;
 
                             case ActionsRPC.Remember:
@@ -2291,7 +2303,7 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.WhisperConvert:
                                 var persuaded = Utils.PlayerById(reader.ReadByte());
                                 var whisp = Utils.PlayerById(reader.ReadByte());
-                                var whispRole = Role.GetRole<Whisperer>(persuaded);
+                                var whispRole = Role.GetRole<Whisperer>(whisp);
                                 var persuadedRole = Role.GetRole(persuaded);
                                 persuadedRole.SubFaction = SubFaction.Sect;
                                 persuadedRole.IsPersuaded = true;
@@ -2672,20 +2684,6 @@ namespace TownOfUsReworked.Patches
                                 GuesserKill.MurderPlayer(assassin2, toDie2, guessString2);
                                 break;
 
-                            case ActionsRPC.Mimic:
-                                var glitchPlayer = Utils.PlayerById(reader.ReadByte());
-                                var mimicPlayer = Utils.PlayerById(reader.ReadByte());
-                                var glitchRole = Role.GetRole<Glitch>(glitchPlayer);
-                                glitchRole.TimeRemaining = CustomGameOptions.MimicDuration;
-                                glitchRole.MimicTarget = mimicPlayer;
-                                break;
-
-                            case ActionsRPC.UnMimic:
-                                var glitchPlayer3 = Utils.PlayerById(reader.ReadByte());
-                                var glitchRole2 = Role.GetRole<Glitch>(glitchPlayer3);
-                                glitchRole2.UnMimic();
-                                break;
-
                             case ActionsRPC.Interrogate:
                                 var sheriff = Utils.PlayerById(reader.ReadByte());
                                 var otherPlayer = Utils.PlayerById(reader.ReadByte());
@@ -2986,15 +2984,6 @@ namespace TownOfUsReworked.Patches
                                 consortRole.Block();
                                 break;
 
-                            case ActionsRPC.GlitchRoleblock:
-                                var glitch = Utils.PlayerById(reader.ReadByte());
-                                var hacked = Utils.PlayerById(reader.ReadByte());
-                                var glitchRole3 = Role.GetRole<Glitch>(glitch);
-                                glitchRole3.HackTarget = hacked;
-                                glitchRole3.TimeRemaining2 = CustomGameOptions.HackDuration;
-                                glitchRole3.Hack();
-                                break;
-
                             case ActionsRPC.Conceal:
                                 var concealer = Utils.PlayerById(reader.ReadByte());
                                 var concealerRole = Role.GetRole<Concealer>(concealer);
@@ -3015,12 +3004,36 @@ namespace TownOfUsReworked.Patches
                                 var gorgon = Role.GetRole<Gorgon>(gorg);
                                 gorgon.Gazed.Add((stoned, 0, false));
                                 break;
+
+                            case ActionsRPC.SetMimic:
+                                var glitchPlayer = Utils.PlayerById(reader.ReadByte());
+                                var mimicPlayer = Utils.PlayerById(reader.ReadByte());
+                                var glitchRole = Role.GetRole<Glitch>(glitchPlayer);
+                                glitchRole.MimicTarget = mimicPlayer;
+                                glitchRole.IsUsingMimic = true;
+                                Utils.Morph(glitchPlayer, mimicPlayer);
+                                break;
+
+                            case ActionsRPC.RpcResetAnim:
+                                var animPlayer = Utils.PlayerById(reader.ReadByte());
+                                var theGlitchRole = Role.GetRole<Glitch>(animPlayer);
+                                theGlitchRole.MimicTarget = null;
+                                theGlitchRole.IsUsingMimic = false;
+                                Utils.DefaultOutfit(theGlitchRole.Player);
+                                break;
+
+                            case ActionsRPC.GlitchRoleblock:
+                                var hackPlayer = Utils.PlayerById(reader.ReadByte());
+
+                                if (hackPlayer.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                                {
+                                    var glitch = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Glitch);
+                                    ((Glitch) glitch)?.SetHacked(hackPlayer);
+                                }
+
+                                break;
                         }
 
-                        break;
-
-                    case CustomRPC.SyncCustomSettings:
-                        Rpc.ReceiveRpc(reader);
                         break;
 
                     case CustomRPC.WinLose:
@@ -3355,7 +3368,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("RPC SET ROLE");
+                TownOfUsReworked.LogSomething("RPC SET ROLE");
                 var infected = GameData.Instance.AllPlayers.ToArray().Where(o => o.IsImpostor());
 
                 //Utils.ShowDeadBodies = false;
@@ -3413,7 +3426,7 @@ namespace TownOfUsReworked.Patches
                 Role.Buttons.Clear();
                 Role.SetColors();
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cleared Lists");
+                TownOfUsReworked.LogSomething("Cleared Lists");
                 
                 ExileControllerPatch.lastExiled = null;
 
@@ -3422,7 +3435,7 @@ namespace TownOfUsReworked.Patches
                 PhantomOn = false;
                 RevealerOn = false;
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cleared Functions");
+                TownOfUsReworked.LogSomething("Cleared Functions");
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(startWriter);
@@ -3449,7 +3462,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Mayor Done");
+                    TownOfUsReworked.LogSomething("Mayor Done");
                 }
 
                 if (CustomGameOptions.SheriffOn > 0)
@@ -3462,7 +3475,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Sheriff Done");
+                    TownOfUsReworked.LogSomething("Sheriff Done");
                 }
 
                 if (CustomGameOptions.InspectorOn > 0)
@@ -3475,7 +3488,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Inspector Done");
+                    TownOfUsReworked.LogSomething("Inspector Done");
                 }
 
                 if (CustomGameOptions.VigilanteOn > 0)
@@ -3488,7 +3501,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Vigilante Done");
+                    TownOfUsReworked.LogSomething("Vigilante Done");
                 }
 
                 if (CustomGameOptions.EngineerOn > 0)
@@ -3501,7 +3514,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Engineer Done");
+                    TownOfUsReworked.LogSomething("Engineer Done");
                 }
 
                 if (CustomGameOptions.SwapperOn > 0)
@@ -3514,7 +3527,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Swapper Done");
+                    TownOfUsReworked.LogSomething("Swapper Done");
                 }
 
                 if (CustomGameOptions.TimeLordOn > 0)
@@ -3527,7 +3540,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Time Lord Done");
+                    TownOfUsReworked.LogSomething("Time Lord Done");
                 }
 
                 if (CustomGameOptions.MedicOn > 0)
@@ -3540,7 +3553,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Medic Done");
+                    TownOfUsReworked.LogSomething("Medic Done");
                 }
 
                 if (CustomGameOptions.AgentOn > 0)
@@ -3553,7 +3566,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Agent Done");
+                    TownOfUsReworked.LogSomething("Agent Done");
                 }
 
                 if (CustomGameOptions.AltruistOn > 0)
@@ -3566,7 +3579,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Altruist Done");
+                    TownOfUsReworked.LogSomething("Altruist Done");
                 }
 
                 if (CustomGameOptions.VeteranOn > 0)
@@ -3579,7 +3592,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     } 
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Veteran Done");
+                    TownOfUsReworked.LogSomething("Veteran Done");
                 }
 
                 if (CustomGameOptions.TrackerOn > 0)
@@ -3592,7 +3605,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     } 
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tracker Done");
+                    TownOfUsReworked.LogSomething("Tracker Done");
                 }
 
                 if (CustomGameOptions.TransporterOn > 0)
@@ -3605,7 +3618,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Transporter Done");
+                    TownOfUsReworked.LogSomething("Transporter Done");
                 }
 
                 if (CustomGameOptions.MediumOn > 0)
@@ -3618,7 +3631,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Medium Done");
+                    TownOfUsReworked.LogSomething("Medium Done");
                 }
 
                 if (CustomGameOptions.CoronerOn > 0)
@@ -3631,7 +3644,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Coroner Done");
+                    TownOfUsReworked.LogSomething("Coroner Done");
                 }
 
                 if (CustomGameOptions.OperativeOn > 0)
@@ -3644,7 +3657,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Operative Done");
+                    TownOfUsReworked.LogSomething("Operative Done");
                 }
 
                 if (CustomGameOptions.DetectiveOn > 0)
@@ -3657,7 +3670,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Detective Done");
+                    TownOfUsReworked.LogSomething("Detective Done");
                 }
 
                 if (CustomGameOptions.EscortOn > 0)
@@ -3670,7 +3683,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Escort Done");
+                    TownOfUsReworked.LogSomething("Escort Done");
                 }
 
                 if (CustomGameOptions.ShifterOn > 0)
@@ -3683,7 +3696,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shifter Done");
+                    TownOfUsReworked.LogSomething("Shifter Done");
                 }
 
                 if (CustomGameOptions.ChameleonOn > 0)
@@ -3696,7 +3709,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Chameleon Done");
+                    TownOfUsReworked.LogSomething("Chameleon Done");
                 }
 
                 if (CustomGameOptions.RetributionistOn > 0)
@@ -3709,7 +3722,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Chameleon Done");
+                    TownOfUsReworked.LogSomething("Chameleon Done");
                 }
 
                 if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
@@ -3722,7 +3735,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Crewmate Done");
+                    TownOfUsReworked.LogSomething("Crewmate Done");
                 }
 
                 if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
@@ -3735,7 +3748,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Vampire Hunter Done");
+                    TownOfUsReworked.LogSomething("Vampire Hunter Done");
                 }
 
                 if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 ||
@@ -3749,11 +3762,13 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Mystic Done");
+                    TownOfUsReworked.LogSomething("Mystic Done");
                 }
 
-                if (CustomGameOptions.SeerOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.VampireHunterOn > 0 || CustomGameOptions.GodfatherOn > 0 ||
-                    CustomGameOptions.RebelOn > 0 || CustomGameOptions.PlaguebearerOn > 0 || CustomGameOptions.MysticOn > 0))
+                if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
+                    CustomGameOptions.GodfatherOn > 0 || CustomGameOptions.RebelOn > 0 || CustomGameOptions.PlaguebearerOn > 0 || CustomGameOptions.MysticOn > 0 ||
+                    CustomGameOptions.TraitorOn > 0 || CustomGameOptions.AmnesiacOn > 0 || CustomGameOptions.ThiefOn > 0 || CustomGameOptions.ExecutionerOn > 0 ||
+                    CustomGameOptions.GuardianAngelOn > 0 || CustomGameOptions.GuesserOn > 0))
                 {
                     num = IsCustom ? CustomGameOptions.SeerCount : 1;
 
@@ -3763,7 +3778,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Seer Done");
+                    TownOfUsReworked.LogSomething("Seer Done");
                 }
                 #endregion
 
@@ -3778,7 +3793,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jester Done");
+                    TownOfUsReworked.LogSomething("Jester Done");
                 }
 
                 if (CustomGameOptions.AmnesiacOn > 0)
@@ -3791,7 +3806,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Amnesiac Done");
+                    TownOfUsReworked.LogSomething("Amnesiac Done");
                 }
 
                 if (CustomGameOptions.ExecutionerOn > 0)
@@ -3804,7 +3819,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Executioner Done");
+                    TownOfUsReworked.LogSomething("Executioner Done");
                 }
 
                 if (CustomGameOptions.SurvivorOn > 0)
@@ -3817,7 +3832,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Survivor Done");
+                    TownOfUsReworked.LogSomething("Survivor Done");
                 }
 
                 if (CustomGameOptions.GuardianAngelOn > 0)
@@ -3830,7 +3845,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guardian Angel Done");
+                    TownOfUsReworked.LogSomething("Guardian Angel Done");
                 }
 
                 if (CustomGameOptions.GlitchOn > 0)
@@ -3843,7 +3858,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Glitch Done");
+                    TownOfUsReworked.LogSomething("Glitch Done");
                 }
 
                 if (CustomGameOptions.MurdererOn > 0)
@@ -3856,7 +3871,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Murderer Done");
+                    TownOfUsReworked.LogSomething("Murderer Done");
                 }
 
                 if (CustomGameOptions.CryomaniacOn > 0)
@@ -3869,7 +3884,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cryomaniac Done");
+                    TownOfUsReworked.LogSomething("Cryomaniac Done");
                 }
 
                 if (CustomGameOptions.WerewolfOn > 0)
@@ -3882,7 +3897,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Werewolf Done");
+                    TownOfUsReworked.LogSomething("Werewolf Done");
                 }
 
                 if (CustomGameOptions.ArsonistOn > 0)
@@ -3895,7 +3910,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Arsonist Done");
+                    TownOfUsReworked.LogSomething("Arsonist Done");
                 }
 
                 if (CustomGameOptions.JackalOn > 0)
@@ -3908,7 +3923,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Jackal Done");
+                    TownOfUsReworked.LogSomething("Jackal Done");
                 }
 
                 if (CustomGameOptions.NecromancerOn > 0)
@@ -3921,7 +3936,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Necromancer Done");
+                    TownOfUsReworked.LogSomething("Necromancer Done");
                 }
 
                 if (CustomGameOptions.PlaguebearerOn > 0)
@@ -3940,7 +3955,7 @@ namespace TownOfUsReworked.Patches
 
                     var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage($"{PBorPest} Done");
+                    TownOfUsReworked.LogSomething($"{PBorPest} Done");
                 }
 
                 if (CustomGameOptions.SerialKillerOn > 0)
@@ -3953,7 +3968,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Serial Killer Done");
+                    TownOfUsReworked.LogSomething("Serial Killer Done");
                 }
 
                 if (CustomGameOptions.JuggernautOn > 0)
@@ -3966,7 +3981,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Juggeraut Done");
+                    TownOfUsReworked.LogSomething("Juggeraut Done");
                 }
 
                 if (CustomGameOptions.CannibalOn > 0)
@@ -3979,7 +3994,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Cannibal Done");
+                    TownOfUsReworked.LogSomething("Cannibal Done");
                 }
 
                 if (CustomGameOptions.GuesserOn > 0)
@@ -3992,7 +4007,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Guesser Done");
+                    TownOfUsReworked.LogSomething("Guesser Done");
                 }
 
                 if (CustomGameOptions.ActorOn > 0)
@@ -4005,7 +4020,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Actor Done");
+                    TownOfUsReworked.LogSomething("Actor Done");
                 }
 
                 if (CustomGameOptions.ThiefOn > 0)
@@ -4018,7 +4033,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Thief Done");
+                    TownOfUsReworked.LogSomething("Thief Done");
                 }
 
                 if (CustomGameOptions.DraculaOn > 0)
@@ -4031,7 +4046,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dracula Done");
+                    TownOfUsReworked.LogSomething("Dracula Done");
                 }
 
                 if (CustomGameOptions.WhispererOn > 0)
@@ -4044,7 +4059,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Whisperer Done");
+                    TownOfUsReworked.LogSomething("Whisperer Done");
                 }
 
                 if (CustomGameOptions.TrollOn > 0)
@@ -4057,7 +4072,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Troll Done");
+                    TownOfUsReworked.LogSomething("Troll Done");
                 }
 
                 if (CustomGameOptions.BountyHunterOn > 0)
@@ -4070,7 +4085,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bounty Hunter Done");
+                    TownOfUsReworked.LogSomething("Bounty Hunter Done");
                 }
                 #endregion
 
@@ -4085,7 +4100,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Undertaker Done");
+                    TownOfUsReworked.LogSomething("Undertaker Done");
                 }
 
                 if (CustomGameOptions.MorphlingOn > 0)
@@ -4098,7 +4113,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Morphling Done");
+                    TownOfUsReworked.LogSomething("Morphling Done");
                 }
 
                 if (CustomGameOptions.BlackmailerOn > 0)
@@ -4111,7 +4126,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Blackmailer Done");
+                    TownOfUsReworked.LogSomething("Blackmailer Done");
                 }
 
                 if (CustomGameOptions.MinerOn > 0)
@@ -4124,7 +4139,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Miner Done");
+                    TownOfUsReworked.LogSomething("Miner Done");
                 }
 
                 if (CustomGameOptions.TeleporterOn > 0)
@@ -4137,7 +4152,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Teleporter Done");
+                    TownOfUsReworked.LogSomething("Teleporter Done");
                 }
 
                 if (CustomGameOptions.WraithOn > 0)
@@ -4150,7 +4165,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Wraith Done");
+                    TownOfUsReworked.LogSomething("Wraith Done");
                 }
 
                 if (CustomGameOptions.ConsortOn > 0)
@@ -4163,7 +4178,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Consort Done");
+                    TownOfUsReworked.LogSomething("Consort Done");
                 }
 
                 if (CustomGameOptions.JanitorOn > 0)
@@ -4176,7 +4191,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Janitor Done");
+                    TownOfUsReworked.LogSomething("Janitor Done");
                 }
 
                 if (CustomGameOptions.CamouflagerOn > 0)
@@ -4189,7 +4204,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Camouflager Done");
+                    TownOfUsReworked.LogSomething("Camouflager Done");
                 }
 
                 if (CustomGameOptions.GrenadierOn > 0)
@@ -4202,7 +4217,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Grenadier Done");
+                    TownOfUsReworked.LogSomething("Grenadier Done");
                 }
 
                 if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
@@ -4215,7 +4230,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Impostor Done");
+                    TownOfUsReworked.LogSomething("Impostor Done");
                 }
 
                 if (CustomGameOptions.ConsigliereOn > 0)
@@ -4228,7 +4243,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Consigliere Done");
+                    TownOfUsReworked.LogSomething("Consigliere Done");
                 }
 
                 if (CustomGameOptions.DisguiserOn > 0)
@@ -4241,7 +4256,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Disguiser Done");
+                    TownOfUsReworked.LogSomething("Disguiser Done");
                 }
 
                 if (CustomGameOptions.TimeMasterOn > 0)
@@ -4254,7 +4269,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Time Master Done");
+                    TownOfUsReworked.LogSomething("Time Master Done");
                 }
 
                 if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
@@ -4267,7 +4282,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Godfather Done");
+                    TownOfUsReworked.LogSomething("Godfather Done");
                 }
                 #endregion
 
@@ -4282,7 +4297,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Anarchist Done");
+                    TownOfUsReworked.LogSomething("Anarchist Done");
                 }
 
                 if (CustomGameOptions.ShapeshifterOn > 0)
@@ -4295,7 +4310,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shapeshifter Done");
+                    TownOfUsReworked.LogSomething("Shapeshifter Done");
                 }
 
                 if (CustomGameOptions.GorgonOn > 0)
@@ -4308,7 +4323,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Gorgon Done");
+                    TownOfUsReworked.LogSomething("Gorgon Done");
                 }
 
                 if (CustomGameOptions.FramerOn > 0)
@@ -4321,7 +4336,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Framer Done");
+                    TownOfUsReworked.LogSomething("Framer Done");
                 }
 
                 if (CustomGameOptions.RebelOn > 0 && CustomGameOptions.SyndicateCount >= 3)
@@ -4334,7 +4349,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rebel Done");
+                    TownOfUsReworked.LogSomething("Rebel Done");
                 }
 
                 if (CustomGameOptions.BeamerOn > 0)
@@ -4347,7 +4362,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Beamer Done");
+                    TownOfUsReworked.LogSomething("Beamer Done");
                 }
 
                 if (CustomGameOptions.PoisonerOn > 0)
@@ -4360,7 +4375,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Poisoner Done");
+                    TownOfUsReworked.LogSomething("Poisoner Done");
                 }
 
                 if (CustomGameOptions.ConcealerOn > 0)
@@ -4373,7 +4388,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Concealer Done");
+                    TownOfUsReworked.LogSomething("Concealer Done");
                 }
 
                 if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
@@ -4386,7 +4401,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Warper Done");
+                    TownOfUsReworked.LogSomething("Warper Done");
                 }
 
                 if (CustomGameOptions.BomberOn > 0)
@@ -4399,7 +4414,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bomber Done");
+                    TownOfUsReworked.LogSomething("Bomber Done");
                 }
 
                 if (CustomGameOptions.DrunkardOn > 0)
@@ -4412,7 +4427,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Drunkard Done");
+                    TownOfUsReworked.LogSomething("Drunkard Done");
                 }
                 #endregion
 
@@ -4427,7 +4442,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Diseased Done");
+                    TownOfUsReworked.LogSomething("Diseased Done");
                 }
 
                 if (CustomGameOptions.BaitOn > 0)
@@ -4440,7 +4455,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Bait Done");
+                    TownOfUsReworked.LogSomething("Bait Done");
                 }
                 
                 if (CustomGameOptions.DwarfOn > 0)
@@ -4453,7 +4468,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Dwarf Done");
+                    TownOfUsReworked.LogSomething("Dwarf Done");
                 }
                 
                 if (CustomGameOptions.VIPOn > 0)
@@ -4466,7 +4481,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("VIP Done");
+                    TownOfUsReworked.LogSomething("VIP Done");
                 }
                 
                 if (CustomGameOptions.ShyOn > 0)
@@ -4479,7 +4494,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Shy Done");
+                    TownOfUsReworked.LogSomething("Shy Done");
                 }
 
                 if (CustomGameOptions.GiantOn > 0)
@@ -4492,7 +4507,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Giant Done");
+                    TownOfUsReworked.LogSomething("Giant Done");
                 }
                 
                 if (CustomGameOptions.DrunkOn > 0)
@@ -4505,7 +4520,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Drunk Done");
+                    TownOfUsReworked.LogSomething("Drunk Done");
                 }
 
                 if (CustomGameOptions.FlincherOn > 0)
@@ -4518,7 +4533,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Flincher Done");
+                    TownOfUsReworked.LogSomething("Flincher Done");
                 }
 
                 if (CustomGameOptions.CowardOn > 0)
@@ -4531,7 +4546,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Coward Done");
+                    TownOfUsReworked.LogSomething("Coward Done");
                 }
 
                 if (CustomGameOptions.VolatileOn > 0)
@@ -4544,7 +4559,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Volatile Done");
+                    TownOfUsReworked.LogSomething("Volatile Done");
                 }
 
                 if (CustomGameOptions.IndomitableOn > 0)
@@ -4557,7 +4572,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Indomitable Done");
+                    TownOfUsReworked.LogSomething("Indomitable Done");
                 }
 
                 if (CustomGameOptions.ProfessionalOn > 0)
@@ -4570,7 +4585,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Professional Done");
+                    TownOfUsReworked.LogSomething("Professional Done");
                 }
                 #endregion
 
@@ -4585,7 +4600,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Crew Assassin Done");
+                    TownOfUsReworked.LogSomething("Crew Assassin Done");
                 }
 
                 if (CustomGameOptions.SyndicateAssassinOn > 0)
@@ -4598,7 +4613,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Syndicate Assassin Done");
+                    TownOfUsReworked.LogSomething("Syndicate Assassin Done");
                 }
 
                 if (CustomGameOptions.IntruderAssassinOn > 0)
@@ -4611,7 +4626,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Intruder Assassin Done");
+                    TownOfUsReworked.LogSomething("Intruder Assassin Done");
                 }
 
                 if (CustomGameOptions.NeutralAssassinOn > 0)
@@ -4624,7 +4639,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Neutral Assassin Done");
+                    TownOfUsReworked.LogSomething("Neutral Assassin Done");
                 }
 
                 if (CustomGameOptions.RuthlessOn > 0)
@@ -4637,7 +4652,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Ruthless Done");
+                    TownOfUsReworked.LogSomething("Ruthless Done");
                 }
 
                 if (CustomGameOptions.SnitchOn > 0)
@@ -4650,7 +4665,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Snitch Done");
+                    TownOfUsReworked.LogSomething("Snitch Done");
                 }
 
                 if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting)
@@ -4663,7 +4678,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Insider Done");
+                    TownOfUsReworked.LogSomething("Insider Done");
                 }
 
                 if (CustomGameOptions.LighterOn > 0)
@@ -4676,7 +4691,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Lighter Done");
+                    TownOfUsReworked.LogSomething("Lighter Done");
                 }
 
                 if (CustomGameOptions.MultitaskerOn > 0)
@@ -4689,7 +4704,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Multitasker Done");
+                    TownOfUsReworked.LogSomething("Multitasker Done");
                 }
 
                 if (CustomGameOptions.RadarOn > 0)
@@ -4702,7 +4717,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Radar Done");
+                    TownOfUsReworked.LogSomething("Radar Done");
                 }
 
                 if (CustomGameOptions.TiebreakerOn > 0)
@@ -4715,7 +4730,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tiebreaker Done");
+                    TownOfUsReworked.LogSomething("Tiebreaker Done");
                 }
 
                 if (CustomGameOptions.TorchOn > 0)
@@ -4728,7 +4743,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Torch Done");
+                    TownOfUsReworked.LogSomething("Torch Done");
                 }
 
                 if (CustomGameOptions.UnderdogOn > 0)
@@ -4741,7 +4756,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Underdog Done");
+                    TownOfUsReworked.LogSomething("Underdog Done");
                 }
 
                 if (CustomGameOptions.TunnelerOn > 0)
@@ -4754,7 +4769,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Tunneler Done");
+                    TownOfUsReworked.LogSomething("Tunneler Done");
                 }
                 #endregion
 
@@ -4769,7 +4784,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Lovers Done");
+                    TownOfUsReworked.LogSomething("Lovers Done");
                 }
 
                 if (CustomGameOptions.RivalsOn > 0)
@@ -4782,7 +4797,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Rivals Done");
+                    TownOfUsReworked.LogSomething("Rivals Done");
                 }
 
                 if (CustomGameOptions.FanaticOn > 0)
@@ -4795,7 +4810,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Fanatic Done");
+                    TownOfUsReworked.LogSomething("Fanatic Done");
                 }
 
                 if (CustomGameOptions.CorruptedOn > 0)
@@ -4808,7 +4823,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Corrupted Done");
+                    TownOfUsReworked.LogSomething("Corrupted Done");
                 }
 
                 if (CustomGameOptions.OverlordOn > 0)
@@ -4821,7 +4836,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Overlord Done");
+                    TownOfUsReworked.LogSomething("Overlord Done");
                 }
 
                 if (CustomGameOptions.AlliedOn > 0)
@@ -4834,7 +4849,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Allied Done");
+                    TownOfUsReworked.LogSomething("Allied Done");
                 }
 
                 if (CustomGameOptions.TraitorOn > 0)
@@ -4847,7 +4862,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Traitor Done");
+                    TownOfUsReworked.LogSomething("Traitor Done");
                 }
 
                 if (CustomGameOptions.TaskmasterOn > 0)
@@ -4860,15 +4875,15 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Taskmaster Done");
+                    TownOfUsReworked.LogSomething("Taskmaster Done");
                 }
                 #endregion
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Gen Start");
+                TownOfUsReworked.LogSomething("Role Gen Start");
 
                 RoleGen(infected.ToList());
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Role Gen Done");
+                TownOfUsReworked.LogSomething("Role Gen Done");
             }
         }
     }

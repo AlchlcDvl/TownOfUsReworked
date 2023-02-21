@@ -2,7 +2,7 @@ using HarmonyLib;
 using Reactor.Utilities;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -44,9 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             {
                 role.CompletedTasks = true;
 
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                    Coroutines.Start(Utils.FlashCoroutine(Color.white));
-                else if (PlayerControl.LocalPlayer.Data.IsImpostor() || (PlayerControl.LocalPlayer.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals))
+                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
+                    (PlayerControl.LocalPlayer.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals))
                     Coroutines.Start(Utils.FlashCoroutine(Color.white));
             }
         }

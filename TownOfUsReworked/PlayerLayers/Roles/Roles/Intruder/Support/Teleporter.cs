@@ -4,7 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
@@ -28,44 +28,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                 {
                     var showProtected = CustomGameOptions.ShowProtect;
 
-                    if (showProtected == ProtectOptions.Everyone)
+                    if (showProtected == ProtectOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showProtected == ProtectOptions.Self || showProtected ==
+                        ProtectOptions.SelfAndGA)) || (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && (showProtected == ProtectOptions.GA || showProtected ==
+                        ProtectOptions.SelfAndGA)))
                     {
                         player.myRend().material.SetColor("_VisorColor", ProtectedColor);
                         player.myRend().material.SetFloat("_Outline", 1f);
                         player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
                     }
-                    else if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showProtected == ProtectOptions.Self || showProtected == ProtectOptions.SelfAndGA))
+                    else
                     {
-                        player.myRend().material.SetColor("_VisorColor", ProtectedColor);
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
-                    }
-                    else if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && (showProtected == ProtectOptions.GA || showProtected == ProtectOptions.SelfAndGA))
-                    {
-                        player.myRend().material.SetColor("_VisorColor", ProtectedColor);
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
+                        player.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                        player.myRend().material.SetFloat("_Outline", 0f);
                     }
                 }
                 else if (ga.TargetPlayer.IsShielded())
                 {
                     var showShielded = CustomGameOptions.ShowShielded;
 
-                    if (showShielded == ShieldOptions.Everyone)
-                    {
-                        player.myRend().material.SetColor("_VisorColor", ShieldedColor);
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", ShieldedColor);
-                    }
-                    else if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self ||
-                        showShielded == ShieldOptions.SelfAndMedic))
-                    {
-                        player.myRend().material.SetColor("_VisorColor", ShieldedColor);
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", ShieldedColor);
-                    }
-                    else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) &&
-                             (showShielded == ShieldOptions.Medic || showShielded == ShieldOptions.SelfAndMedic))
+                    if (showShielded == ShieldOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self ||
+                        showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic ||
+                        showShielded == ShieldOptions.SelfAndMedic)))
                     {
                         player.myRend().material.SetColor("_VisorColor", ShieldedColor);
                         player.myRend().material.SetFloat("_Outline", 1f);

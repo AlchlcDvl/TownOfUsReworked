@@ -28,34 +28,34 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
-|------------------------------|-------------------------------|---------------------|----------------------------|
-| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
-| [Blackmailer](#blackmailer) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
-| [Camouflager](#camouflager) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
-| [Consigliere](#consigliere) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |
-| [Consort](#consort) | [Crusader](#crusader) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |
-| [Godfather](#godfather) | [Framer](#framer) | [Engineer](#engineer) | [Dracula](#dracula) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Inspector](#inspector) | [Glitch](#glitch) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medic](#medic) | [Guesser](#guesser) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Medium](#medium) | [Jackal](#jackal) |
-| [Morphling](#morphling) | [Warper](#warper) | [Mystic](#mystic) | [Jester](#jester) |
-| [Teleporter](#teleporter) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |
-| [Time Master](#time-master) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |
-| [Undertaker](#undertaker) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |
-| [Wraith](#wraith) |  | [Seer](#seer) | [Pestilence](#pestilence) |
-|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |
-|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |
-|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |
-|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |
-|  |  | [Tracker](#tracker) | [Thief](#thief) |
-|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |
-|  |  | [Veteran](#veteran) |  |
-|  |  | [Vigilante](#vigilante) |  |
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Other](#other-roles) |
+|------------------------------|-------------------------------|---------------------|----------------------------|-----------------------|
+| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) | [Betrayer](betrayer) |
+| [Blackmailer](#blackmailer) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |  |
+| [Camouflager](#camouflager) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |  |
+| [Consigliere](#consigliere) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |  |
+| [Consort](#consort) | [Crusader](#crusader) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |  |
+| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |  |
+| [Godfather](#godfather) | [Framer](#framer) | [Engineer](#engineer) | [Dracula](#dracula) |  |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |  |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Inspector](#inspector) | [Glitch](#glitch) |  |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |  |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medic](#medic) | [Guesser](#guesser) |  |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Medium](#medium) | [Jackal](#jackal) |  |
+| [Morphling](#morphling) | [Warper](#warper) | [Mystic](#mystic) | [Jester](#jester) |  |
+| [Teleporter](#teleporter) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |  |
+| [Time Master](#time-master) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |  |
+| [Undertaker](#undertaker) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |  |
+| [Wraith](#wraith) |  | [Seer](#seer) | [Pestilence](#pestilence) |  |
+|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |  |
+|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |  |
+|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |  |
+|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |  |
+|  |  | [Tracker](#tracker) | [Thief](#thief) |  |
+|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |  |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |  |
+|  |  | [Veteran](#veteran) |  |  |
+|  |  | [Vigilante](#vigilante) |  |  |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |-------------------------|-------------------------|-------------------------------|
@@ -93,6 +93,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 [**Game Info**](#game-info)
 - [Colors](#colors)
 - [Factions](#factions)
+- [Subfactions](#subfactions)
 
 [**Credits & Resources**](#credits--resources)
 
@@ -102,7 +103,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
-| 2022.12.14 (s & e) | v0.0.1dev16 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev16.rar) |
+| 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1dev17.rar) |
+| 2022.12.14 (s & e) | v0.0.1dev16 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev16/ToU-Rew-v0.0.1dev16.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev15 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev15.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar) |
@@ -1868,6 +1870,26 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 - This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the other members are
 - Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing
 
+## Subfactions
+
+**Undead**
+- This subfaction is led by the Dracula
+- There is a limit of how many can be alive in the subfaction
+
+**Sect**
+- This subfaction is led by the Whisperer
+- The Whisperer can bring in as many people as they can, provided they have the cooldown and the % for it
+- The whispers are precious so the Whisperer must whisper near as many people as possible
+
+**Cabal**
+- This subfaction is led by the Jackal
+- There can be a maximum of 4 members in this subfaction, the Jackal and their 3 recruits
+- The Cabal starts off strong with 3 guaranteed members with the 4th one coming along if both the recruits die
+
+**Reanimated**
+- This subfactions is led by the Necromancer
+- The only condition for becoming a member of this faction is the need to die so that the Necromancer can revive them
+
 -----------------------
 
 # Credits & Resources
@@ -1880,8 +1902,9 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
-[XtraCube](https://github.com/XtraCube) - For the RainbowMod\
+[XtraCube](https://github.com/XtraCube) - For the CustomColors\
 [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and some code\
+[Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the code for custom cosmetics\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\

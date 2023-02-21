@@ -120,6 +120,8 @@ namespace TownOfUsReworked.Enums
         Sidekick,
         Warper,
 
+        Betrayer,
+
         None
     }
 

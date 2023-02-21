@@ -2,12 +2,12 @@ using Reactor.Utilities.Extensions;
 using System;
 using System.Reflection;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {

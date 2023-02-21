@@ -1,4 +1,4 @@
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using System;
 using TownOfUsReworked.Classes;

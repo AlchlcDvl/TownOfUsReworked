@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using System;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Classes;

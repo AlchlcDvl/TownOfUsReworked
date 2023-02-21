@@ -3,11 +3,9 @@ using HarmonyLib;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
+using TownOfUsReworked.Objects;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
@@ -181,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                         role2.BuggedPlayers.Clear();
 
                         if (CustomGameOptions.BugsRemoveOnNewRound)
-                            BugExtentions2.ClearBugs(role2.Bugs);
+                            BugExtentions.ClearBugs(role2.Bugs);
 
                         break;
                     case RoleEnum.Inspector:

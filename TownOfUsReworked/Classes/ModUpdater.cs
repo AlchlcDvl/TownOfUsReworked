@@ -6,7 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
-using Reactor.Utilities;
 using System.Text.Json.Serialization;
 
 namespace TownOfUsReworked.Classes
@@ -93,7 +92,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception e)
             {
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Exception occured when clearing old versions:\n" + e);
+                TownOfUsReworked.LogSomething("Exception occured when clearing old versions:\n" + e);
             }
         }
 
@@ -115,7 +114,7 @@ namespace TownOfUsReworked.Classes
                 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Server returned no data: " + response.StatusCode.ToString());
+                    TownOfUsReworked.LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -179,7 +178,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception ex)
             {
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(ex);
+                TownOfUsReworked.LogSomething(ex);
             }
 
             return false;
@@ -210,7 +209,7 @@ namespace TownOfUsReworked.Classes
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage("Server returned no data: " + response.StatusCode.ToString());
+                    TownOfUsReworked.LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -237,7 +236,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception ex)
             {
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(ex);
+                TownOfUsReworked.LogSomething(ex);
             }
             
             ShowPopup("Update wasn't successful\nTry again later,\nor update manually.");

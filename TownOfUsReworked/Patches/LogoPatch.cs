@@ -2,7 +2,6 @@ using HarmonyLib;
 using System;
 using UnityEngine;
 using static UnityEngine.UI.Button;
-using TownOfUsReworked.Lobby;
 
 namespace TownOfUsReworked.Patches
 {

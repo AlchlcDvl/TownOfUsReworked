@@ -11,21 +11,6 @@ namespace TownOfUsReworked.MCI
         public static Dictionary<int, ClientData> clients = new();
         public static Dictionary<byte, int> PlayerIdClientId = new();
         public static bool MCIActive = false;
-        public const int MaxID = 100;
-
-        public static int AvailableId()
-        {
-            for (int i = 2; i < MaxID; i++)
-            {
-                if (!clients.ContainsKey(i))
-                {
-                    if (PlayerControl.LocalPlayer.OwnerId != i)
-                        return i;
-                }
-            }
-
-            return -1;
-        }
 
         public static void SwitchTo(byte playerId)
         {

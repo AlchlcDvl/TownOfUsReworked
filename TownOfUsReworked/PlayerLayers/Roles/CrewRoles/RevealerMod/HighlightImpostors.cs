@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
@@ -64,6 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 }
             }
         }
+
         public static void Postfix(HudManager __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))

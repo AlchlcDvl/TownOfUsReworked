@@ -2,9 +2,10 @@ using System;
 using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 {
@@ -87,6 +88,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (player == PlayerControl.LocalPlayer)
                     role.RegenTask();
             }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
 
         public override void Wins()

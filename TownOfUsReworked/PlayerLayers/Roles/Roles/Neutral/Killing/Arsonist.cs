@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
@@ -264,7 +264,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         public void Ignite()
         {
-            System.Console.WriteLine("Ignite 1");
+            TownOfUsReworked.LogSomething("Ignite 1");
 
             foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
             {
@@ -277,13 +277,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     if (player == null || player.Data.Disconnected || player.Data.IsDead || player.Is(RoleEnum.Pestilence))
                         continue;
 
-                    Utils.RpcMurderPlayer(Player, player);
+                    Utils.RpcMurderPlayer(Player, player, false);
                 }
 
                 arso2.DousedPlayers.Clear();
             }
             
-            System.Console.WriteLine("Ignite 2");
+            TownOfUsReworked.LogSomething("Ignite 2");
         }
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)

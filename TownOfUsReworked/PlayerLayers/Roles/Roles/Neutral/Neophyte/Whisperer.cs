@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
 
@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public DateTime LastWhispered;
         public int WhisperCount;
         public int ConversionCount;
-        public List<(PlayerControl, int)> PlayerConversion = new List<(PlayerControl, int)>();
+        public List<(byte, int)> PlayerConversion;
         public float WhisperConversion = CustomGameOptions.InitialWhisperRate;
         public List<byte> Persuaded;
 
@@ -29,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFactionColor = Colors.Sect;
             Persuaded = new List<byte>();
             Persuaded.Add(Player.PlayerId);
+            PlayerConversion = new List<(byte, int)>();
         }
 
         public KillButton WhisperButton
@@ -95,14 +96,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public List<(PlayerControl, int)> GetPlayers()
+        public List<(byte, int)> GetPlayers()
         {
-            var playerList = new List<(PlayerControl, int)>();
+            var playerList = new List<(byte, int)>();
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (Player != player)
-                    playerList.Add((player, 100));
+                    playerList.Add((player.PlayerId, 100));
             }
 
             return playerList;

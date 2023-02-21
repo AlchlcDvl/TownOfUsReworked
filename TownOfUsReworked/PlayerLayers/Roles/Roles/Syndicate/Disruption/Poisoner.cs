@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             if (!PoisonedPlayer.Is(RoleEnum.Pestilence))
             {
-                Utils.RpcMurderPlayer(Player, PoisonedPlayer);
+                Utils.RpcMurderPlayer(Player, PoisonedPlayer, false);
 
                 if (!PoisonedPlayer.Data.IsDead)
                 {

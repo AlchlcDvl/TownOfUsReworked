@@ -3,7 +3,7 @@ using Object = UnityEngine.Object;
 using Hazel;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {

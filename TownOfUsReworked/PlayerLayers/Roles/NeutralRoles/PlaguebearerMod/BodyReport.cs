@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {

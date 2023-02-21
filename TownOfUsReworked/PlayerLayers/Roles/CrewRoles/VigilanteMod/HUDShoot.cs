@@ -2,7 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             role.ShootButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.KilledInno);
             role.ShootButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
             Utils.SetTarget(ref role.ClosestPlayer, role.ShootButton);
+            role.PrimaryButton = role.ShootButton;
             var renderer = role.ShootButton.graphic;
             
             if (role.ClosestPlayer != null && !role.KilledInno && !role.ShootButton.isCoolingDown)

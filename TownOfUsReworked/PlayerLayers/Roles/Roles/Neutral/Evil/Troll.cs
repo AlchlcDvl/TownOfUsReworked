@@ -1,6 +1,6 @@
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using Hazel;
@@ -42,12 +42,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (!Killed || !Player.Data.IsDead || Player.Data.Disconnected)
+            if (Player.Data.Disconnected)
                 return true;
 
             if (Killed)
             {
-                TrollWins = true;
+                Wins();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
                 writer.Write((byte)WinLoseRPC.TrollWin);
                 writer.Write(Player.PlayerId);
@@ -77,6 +77,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 ReanimatedWin = true;
             else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
                 AllNeutralsWin = true;
+            else
+                TrollWins = true;
         }
 
         public float InteractTimer()

@@ -4,7 +4,7 @@ using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod

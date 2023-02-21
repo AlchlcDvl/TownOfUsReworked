@@ -2,7 +2,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -47,6 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
             var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);
+            role.PrimaryButton = role.TrackButton;
             var renderer = role.TrackButton.graphic;
             
             if (role.ClosestPlayer != null && role.ButtonUsable && !role.TrackButton.isCoolingDown)

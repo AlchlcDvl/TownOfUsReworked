@@ -2,7 +2,7 @@ using HarmonyLib;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {

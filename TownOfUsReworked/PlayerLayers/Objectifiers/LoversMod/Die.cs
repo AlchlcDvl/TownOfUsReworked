@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod

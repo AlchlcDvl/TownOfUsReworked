@@ -2,7 +2,7 @@ using HarmonyLib;
 using Reactor.Utilities;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 {
                     ((Medic)role2).ShieldedPlayer = null;
                     ((Medic)role2).exShielded = player;
-                    System.Console.WriteLine(player.name + " Is Ex-Shielded");
+                    TownOfUsReworked.LogSomething(player.name + " Is Ex-Shielded");
                 }
             }
 

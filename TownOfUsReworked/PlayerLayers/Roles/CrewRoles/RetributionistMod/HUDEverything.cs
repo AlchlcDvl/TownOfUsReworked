@@ -3,7 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using AmongUs.GameOptions;
 using System.Linq;
 using TownOfUsReworked.Patches;
@@ -72,6 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.ReviveButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.ReviveUsed);
                 KillButtonTarget.SetTarget(role.ReviveButton, closestBody, role);
                 role.ReviveButton.SetCoolDown(0f, 1f);
+                role.PrimaryButton = role.ReviveButton;
 
                 var renderer = role.ReviveButton.graphic;
 
@@ -112,6 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.BugButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.BugButtonUsable);
                 role.BugUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.BugButtonUsable);
+                role.PrimaryButton = role.BugButton;
 
                 if (role.BugButtonUsable)
                     role.BugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
@@ -140,6 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 }
 
                 role.SwoopButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+                role.PrimaryButton = role.SwoopButton;
 
                 if (role.IsSwooped)
                     role.SwoopButton.SetCoolDown(role.SwoopTimeRemaining, CustomGameOptions.SwoopDuration);
@@ -185,6 +188,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 
                 role.FixButton.SetCoolDown(0f, 10f);
                 role.FixButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.FixButtonUsable);
+                role.PrimaryButton = role.FixButton;
 
                 if (!ShipStatus.Instance)
                     return;
@@ -268,6 +272,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.ShieldButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedAbility);
                 role.ShieldButton.SetCoolDown(0f, 1f);
                 Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
+                role.PrimaryButton = role.ShieldButton;
                 var renderer = role.ShieldButton.graphic;
                 
                 if (role.ClosestPlayer != null)
@@ -295,6 +300,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.ExamineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
                 Utils.SetTarget(ref role.ClosestPlayer, role.ExamineButton);
                 var renderer = role.ExamineButton.graphic;
+                role.PrimaryButton = role.ExamineButton;
                 
                 if (role.ClosestPlayer != null && !role.ExamineButton.isCoolingDown)
                 {
@@ -322,6 +328,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.InspectedPlayers.Contains(x.PlayerId)).ToList();
                 Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
                 var renderer = role.InspectButton.graphic;
+                role.PrimaryButton = role.InspectButton;
                 
                 if (role.ClosestPlayer != null && !role.InspectButton.isCoolingDown)
                 {
@@ -348,6 +355,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
                 var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
                 Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);
+                role.PrimaryButton = role.InterrogateButton;
                 var renderer = role.InterrogateButton.graphic;
 
                 if (role.ClosestPlayer != null && !role.InterrogateButton.isCoolingDown)
@@ -387,6 +395,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.RewindUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RewindButtonUsable);
                 role.RewindButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RewindButtonUsable);
+                role.PrimaryButton = role.RewindButton;
 
                 if (role.RewindButtonUsable)
                     role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
@@ -437,6 +446,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
                 var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
                 Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);
+                role.PrimaryButton = role.TrackButton;
                 var renderer = role.TrackButton.graphic;
                 
                 if (role.ClosestPlayer != null && role.TrackButtonUsable && !role.TrackButton.isCoolingDown)
@@ -467,6 +477,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
                 role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
                 Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
+                role.PrimaryButton = role.StakeButton;
                 var renderer = role.StakeButton.graphic;
                 
                 if (role.ClosestPlayer != null && !role.StakeButton.isCoolingDown)
@@ -506,6 +517,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.AlertButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.AlertButtonUsable);
                 role.AlertUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.AlertButtonUsable);
+                role.PrimaryButton = role.AlertButton;
 
                 if (role.AlertButtonUsable)
                 {
@@ -546,6 +558,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.ShootButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
                 Utils.SetTarget(ref role.ClosestPlayer, role.ShootButton);
                 var renderer = role.ShootButton.graphic;
+                role.PrimaryButton = role.ShootButton;
                 
                 if (role.ClosestPlayer != null && !role.ShootButton.isCoolingDown)
                 {

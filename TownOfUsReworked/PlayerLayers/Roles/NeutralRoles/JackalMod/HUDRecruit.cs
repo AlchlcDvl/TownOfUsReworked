@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDRecruit
     {
-        public static Sprite Recruit => TownOfUsReworked.Placeholder;
+        public static Sprite Recruit => TownOfUsReworked.RecruitSprite;
 
         public static void Postfix(HudManager __instance)
         {

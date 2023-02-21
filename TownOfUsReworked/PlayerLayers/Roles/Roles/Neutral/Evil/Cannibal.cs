@@ -2,7 +2,7 @@ using System;
 using Hazel;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using System.Linq;

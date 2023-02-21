@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
@@ -43,6 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
             role.BugButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
             role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.PrimaryButton = role.BugButton;
 
             if (role.ButtonUsable)
                 role.BugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);

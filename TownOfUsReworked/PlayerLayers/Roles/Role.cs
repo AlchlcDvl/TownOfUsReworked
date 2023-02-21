@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -16,9 +16,8 @@ using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using AmongUs.GameOptions;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -67,6 +66,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
         protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
+        protected internal KillButton PrimaryButton { get; set; } = null;
+        protected internal KillButton SecondaryButton { get; set; } = null;
+        protected internal KillButton TertiaryButton { get; set; } = null;
+        protected internal KillButton QuartnaryButton { get; set; } = null;
 
         protected internal string StartText { get; set; } = "";
         protected internal string AbilitiesText { get; set; } = " - None.";
@@ -185,8 +188,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool LostByRPC { get; protected set; }
 
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        protected internal int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
-        protected internal bool TasksDone => TasksLeft <= 0;
+        protected internal bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
 
@@ -271,180 +275,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         internal virtual bool GameEnd(LogicGameFlowNormal __instance)
         {
             return true;
-        }
-
-        internal virtual bool Criteria()
-        {
-            return (SelfCriteria() || RoleCriteria() || TargetCriteria() || LoverRivalRoleCriteria() || Local) && GameStates.IsInGame;
-        }
-
-        internal virtual bool RoleCriteria()
-        {
-            var coronerFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Contains(Player.PlayerId);
-            var consigFlag = PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && GetRole<Consigliere>(PlayerControl.LocalPlayer).Investigated.Contains(Player.PlayerId) &&
-                CustomGameOptions.ConsigInfo == ConsigInfo.Role;
-            var deadFlag = PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything && !(PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) ||
-                PlayerControl.LocalPlayer.Is(RoleEnum.Phantom));
-            var syndicateFlag = (Faction == Faction.Syndicate || IsSynTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.IsSynTraitor());
-            var intruderFlag = (Faction == Faction.Intruder || IsIntTraitor) && (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.IsIntTraitor());
-            var jackalFlag = PlayerControl.LocalPlayer.GetJackal() != null;
-            var cabalFlag = false;
-            var whispererFlag = PlayerControl.LocalPlayer.GetWhisperer() != null;
-            var sectFlag = false;
-            var draculaFlag = PlayerControl.LocalPlayer.GetDracula() != null;
-            var undeadFlag = false;
-            var necromancerFlag = PlayerControl.LocalPlayer.GetNecromancer() != null;
-            var reanimatedFlag = false;
-
-            if (jackalFlag)
-                cabalFlag = PlayerControl.LocalPlayer.GetJackal().Recruited.Contains(Player.PlayerId);
-            
-            if (whispererFlag)
-                sectFlag = PlayerControl.LocalPlayer.GetWhisperer().Persuaded.Contains(Player.PlayerId);
-
-            if (draculaFlag)
-                undeadFlag = PlayerControl.LocalPlayer.GetDracula().Converted.Contains(Player.PlayerId);
-
-            if (necromancerFlag)
-                reanimatedFlag = PlayerControl.LocalPlayer.GetNecromancer().Resurrected.Contains(Player.PlayerId);
-
-            var flag = (syndicateFlag || intruderFlag || cabalFlag || sectFlag || reanimatedFlag || undeadFlag) && CustomGameOptions.FactionSeeRoles;
-            return (coronerFlag || consigFlag || deadFlag || flag) && GameStates.IsInGame;
-        }
-
-        internal virtual bool SelfCriteria()
-        {
-            var role = GetRole(PlayerControl.LocalPlayer);
-
-            if (role == null)
-                return false;
-
-            return role == this && Local && this.Player == PlayerControl.LocalPlayer;
-        }
-
-        internal virtual bool ColorCriteria()
-        {
-            return (SelfCriteria() || RoleCriteria() || TargetCriteria() || LoverRivalRoleCriteria() || Local) && GameStates.IsInGame;
-        }
-        
-        internal virtual bool TargetCriteria()
-        {
-            bool flag = false;
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
-            {
-                var role = GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
-                PlayerControl target = role.TargetPlayer;
-                flag = target != null && CustomGameOptions.GAKnowsTargetRole && Player == target;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Executioner))
-            {
-                var role = GetRole<Executioner>(PlayerControl.LocalPlayer);
-                PlayerControl target = role.TargetPlayer;
-                flag = target != null && CustomGameOptions.ExeKnowsTargetRole && Player == target;
-            }
-
-            return flag;
-        }
-        
-        internal virtual bool LoverRivalRoleCriteria()
-        {
-            bool flag = false;
-
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers))
-            {
-                if (Local)
-                    return true;
-
-                var role = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer);
-                PlayerControl otherlover = role.OtherLover;
-                flag = otherlover != null && CustomGameOptions.LoversRoles && Player == otherlover;
-            }
-            else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals))
-            {
-                if (Local)
-                    return true;
-
-                var role = Objectifier.GetObjectifier<Rivals>(PlayerControl.LocalPlayer);
-                PlayerControl otherrival = role.OtherRival;
-                flag = otherrival != null && CustomGameOptions.RivalsRoles && Player == otherrival;
-            }
-
-            return flag;
-        }
-        
-        internal virtual bool LoverRivalCriteria()
-        {
-            bool flag = false;
-
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers))
-            {
-                var role = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer);
-                PlayerControl otherlover = role.OtherLover;
-                flag = otherlover != null && Player == otherlover;
-            }
-            else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals))
-            {
-                var role = Objectifier.GetObjectifier<Rivals>(PlayerControl.LocalPlayer);
-                PlayerControl otherrival = role.OtherRival;
-                flag = otherrival != null && Player == otherrival;
-            }
-
-            return flag;
-        }
-
-        protected virtual string NameText(bool revealTasks, bool revealRole, bool revealObjectifier, PlayerVoteArea player = null)
-        {
-            if (Player == null)
-                return "";
-
-            string PlayerName = Player.GetDefaultOutfit().PlayerName;
-
-            if (LobbyBehaviour.Instance)
-                return PlayerName;
-            
-            if (!Local)
-                return PlayerName;
-
-            if (CamouflageUnCamouflage.IsCamoed || (CustomGameOptions.NoNames && !Local))
-                PlayerName = "";
-
-            var objectifier = Objectifier.GetObjectifier(Player);
-
-            if (objectifier != null && revealObjectifier)
-                PlayerName += $" {objectifier.GetColoredSymbol()}";
-
-            if (player != null && PlayerControl.LocalPlayer.CanDoTasks() && !TasksDone && CustomGameOptions.SeeTasks && revealTasks)
-                PlayerName += $" ({TotalTasks - TasksLeft}/{TotalTasks})";
-
-            if (Local && CustomGameOptions.GATargetKnows && PlayerControl.LocalPlayer.IsGATarget())
-                PlayerName += " <color=#FFFFFFFF>★</color>";
-
-            if (Local && CustomGameOptions.ExeTargetKnows && PlayerControl.LocalPlayer.IsExeTarget())
-                PlayerName += " <color=#CCCCCCFF>§</color>";
-
-            if (Local && CustomGameOptions.GuesserTargetKnows && PlayerControl.LocalPlayer.IsGuessTarget())
-                PlayerName += " <color=#EEE5BEFF>π</color>";
-
-            if (Local && PlayerControl.LocalPlayer.IsBHTarget())
-                PlayerName += " <color=#B51E39FF>Θ</color>";
-            
-            if (PlayerControl.LocalPlayer.IsRecruit())
-            {
-                var jackal = PlayerControl.LocalPlayer.GetJackal();
-
-                if (jackal.Recruited.Contains(PlayerControl.LocalPlayer.PlayerId) && jackal.Recruited.Contains(Player.PlayerId))
-                    PlayerName += " <color=#575657FF>$</color>";
-            }
-
-            if (player != null && MeetingHud.Instance && (MeetingHud.Instance.state == MeetingHud.VoteStates.Proceeding || MeetingHud.Instance.state == MeetingHud.VoteStates.Results))
-                return PlayerName;
-
-            if (!revealRole)
-                return PlayerName;
-
-            Player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
-            return PlayerName + "\n" + Name;
         }
 
         public static T GenRole<T>(Type type, PlayerControl player, int id)
@@ -756,7 +586,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 
                 firstText = taskArray[0].Cast<ImportantTextTask>();
             
-                if (firstText.Text.Contains("Modifier:"))
+                if (firstText.Text.Contains("Objectifier:"))
                     taskArray.ToList().Remove(taskArray[0]);
                 
                 firstText = taskArray[0].Cast<ImportantTextTask>();
@@ -766,7 +596,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 
                 firstText = taskArray[0].Cast<ImportantTextTask>();
             
-                if (firstText.Text.Contains("Objectifier:"))
+                if (firstText.Text.Contains("Modifier:"))
                     taskArray.ToList().Remove(taskArray[0]);
             }
             catch (InvalidCastException)
@@ -792,10 +622,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var jackal = Player.GetJackal();
                 tasks += $"\n<color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">- You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
             }
-            
+
             if (Player.IsGATarget() && CustomGameOptions.GATargetKnows)
                 tasks += "\n<color=#FFFFFFFF>- You are a Guardian Angel's target!</color>";
-            
+
             if (Player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
                 tasks += "\n<color=#CCCCCCFF>- You are an Executioner's target!</color>";
 
@@ -810,9 +640,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
-        public static class PlayerControl_SetTasks
+        private static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
+            private static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
             {
                 if (__instance == null)
                     return;
@@ -834,10 +664,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var jackal = role.Player.GetJackal();
                         task.Text += $"\n- <color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
                     }
-                    
+                    if (role.IsRecruit)
+                    {
+                        var jackal = role.Player.GetJackal();
+                        task.Text += $"\n- <color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
+                    }
+
                     if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
                         task.Text += "\n- <color=#FFFFFFFF>You are a Guardian Angel's target!</color>";
-                    
+
                     if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
                         task.Text += "\n- <color=#CCCCCCFF>You are an Executioner's target!</color>";
 
@@ -846,17 +681,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     if (!player.CanDoTasks() && !player.Is(Faction.Intruder))
                         task.Text += "\nFake Tasks:";
-                    
+
                     if (task.Text != "")
                         player.myTasks.Insert(0, task);
-                }
-
-                if (ability != null)
-                {
-                    var avTask = new GameObject(ability.Name + "Task").AddComponent<ImportantTextTask>();
-                    avTask.transform.SetParent(player.transform, false);
-                    avTask.Text = $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
-                    player.myTasks.Insert(0, avTask);
                 }
 
                 if (modifier != null)
@@ -865,6 +692,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     modTask.transform.SetParent(player.transform, false);
                     modTask.Text = $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText}</color>";
                     player.myTasks.Insert(0, modTask);
+                }
+
+                if (ability != null)
+                {
+                    var avTask = new GameObject(ability.Name + "Task").AddComponent<ImportantTextTask>();
+                    avTask.transform.SetParent(player.transform, false);
+                    avTask.Text = $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
+                    player.myTasks.Insert(0, avTask);
                 }
 
                 if (objectifier != null)
@@ -879,9 +714,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
                     task.transform.SetParent(player.transform, false);
-                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.Objectives)}\n" +
-                        $"Abilities:\n{role.AbilitiesText}</color>";
-                        
+                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.Objectives)}\nAbilities:\n{role.AbilitiesText}</color>";
+
                     player.myTasks.Insert(0, task);
                 }
             }
@@ -979,85 +813,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Modifier.ModifierDictionary.Clear();
                 Ability.AbilityDictionary.Clear();
                 Objectifier.ObjectifierDictionary.Clear();
-            }
-        }
-        
-        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        public static class HudManager_Update
-        {
-            private static void UpdateMeeting(MeetingHud __instance)
-            {
-                foreach (var player in __instance.playerStates)
-                {
-                    if (Utils.PlayerById(player.TargetPlayerId) == null)
-                        continue;
-
-                    if (Utils.PlayerById(player.TargetPlayerId).Data.Disconnected)
-                        continue;
-
-                    var role = GetRole(player);
-
-                    if (role == null)
-                    {
-                        try
-                        {
-                            player.NameText.text = role.Player.GetDefaultOutfit().PlayerName;
-                        } catch {}
-
-                        continue;
-                    }
-
-                    player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
-
-                    if (role != null && role.Criteria())
-                    {
-                        bool selfFlag = role.SelfCriteria();
-                        bool targetFlag = role.TargetCriteria();
-                        bool roleFlag = role.RoleCriteria();
-                        bool loverrivalFlag1 = role.LoverRivalCriteria();
-                        bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
-
-                        player.NameText.text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1, player);
-
-                        if (role.ColorCriteria())
-                            player.NameText.color = role.Color;
-                    }
-                        
-                    if (CustomGameOptions.Whispers)
-                        player.NameText.text = $"[{player.TargetPlayerId}] " + player.NameText.text;
-                }
-            }
-
-            [HarmonyPriority(Priority.First)]
-            private static void Postfix(HudManager __instance)
-            {
-                if (LobbyBehaviour.Instance)
-                    return;
-                    
-                if (MeetingHud.Instance)
-                    UpdateMeeting(MeetingHud.Instance);
-
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
-                    return;
-
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    var role = GetRole(player);
-
-                    if (role != null && role.Criteria())
-                    {
-                        bool selfFlag = role.SelfCriteria();
-                        bool targetFlag = role.TargetCriteria();
-                        bool roleFlag = role.RoleCriteria();
-                        bool loverrivalFlag1 = role.LoverRivalCriteria();
-                        bool loverrivalFlag2 = role.LoverRivalRoleCriteria();
-
-                        player.nameText().text = role.NameText(selfFlag || roleFlag, selfFlag || roleFlag || targetFlag || loverrivalFlag2, selfFlag || loverrivalFlag1);
-
-                        if (role.ColorCriteria())
-                            player.nameText().color = role.Color;
-                    }
-                }
             }
         }
     }

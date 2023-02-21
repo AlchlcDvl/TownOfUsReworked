@@ -42,6 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 
             role.UsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
             role.RewindButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.ButtonUsable);
+            role.PrimaryButton = role.RewindButton;
 
             if (role.ButtonUsable)
                 role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());

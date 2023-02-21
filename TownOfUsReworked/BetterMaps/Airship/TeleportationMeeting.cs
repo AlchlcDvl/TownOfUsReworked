@@ -2,7 +2,7 @@
 using HarmonyLib;
 using System.Collections;
 using UnityEngine;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {

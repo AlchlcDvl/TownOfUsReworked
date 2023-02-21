@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 using Hazel;
@@ -31,6 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
             role.RevealButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.RevealButton.SetCoolDown(role.RevealTimer(), CustomGameOptions.RevealCooldown);
             Utils.SetTarget(ref role.ClosestPlayer, role.RevealButton);
+            role.PrimaryButton = role.RevealButton;
             var renderer = role.RevealButton.graphic;
             
             if (Utils.EnableAbilityButton(role.RevealButton, role.Player, role.ClosestPlayer))

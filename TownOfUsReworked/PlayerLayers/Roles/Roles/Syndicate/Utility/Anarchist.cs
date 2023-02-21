@@ -1,7 +1,7 @@
 using TownOfUsReworked.Enums;
 using System;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
 

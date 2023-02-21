@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using System.Linq;
 using System;
@@ -38,6 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 }
 
                 role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+                role.PrimaryButton = role.MediateButton;
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {

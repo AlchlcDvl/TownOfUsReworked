@@ -2,7 +2,7 @@ using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
 using Hazel;
 

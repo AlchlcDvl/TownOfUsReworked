@@ -51,10 +51,12 @@ namespace TownOfUsReworked.Patches
                 var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
                 var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
 
-                var role = Role.GetRole(playerControl);
+                var info = playerControl.AllPlayerInfo();
 
-                if (role != null)
+                if (info[0] != null)
                 {
+                    var role = info[0] as Role;
+
                     if (role.RoleHistory.Count != 0)
                     {
                         role.RoleHistory.Reverse();
@@ -88,10 +90,11 @@ namespace TownOfUsReworked.Patches
                 if (playerControl.IsBitten())
                     summary += " <color=#7B8968FF>γ</color>";
 
-                var objectifier = Objectifier.GetObjectifier(playerControl);
-
-                if (objectifier != null)
+                if (info[3] != null)
+                {
+                    var objectifier = info[3] as Objectifier;
                     summary += $" {objectifier.GetColoredSymbol()}";
+                }
 
                 var modifier = Modifier.GetModifier(playerControl);
 
@@ -195,7 +198,7 @@ namespace TownOfUsReworked.Patches
                 winnersText.AppendLine("<size=75%>No One Won</size>");
 
             if (loserCount == 0)
-                winnersText.AppendLine("<size=75%>No One Lost</size>");
+                losersText.AppendLine("<size=75%>No One Lost</size>");
 
             winnersText.AppendLine(" ");
             

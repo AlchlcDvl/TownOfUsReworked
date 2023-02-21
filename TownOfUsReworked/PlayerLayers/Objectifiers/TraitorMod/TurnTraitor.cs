@@ -7,7 +7,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Reactor.Utilities;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using System.Linq;

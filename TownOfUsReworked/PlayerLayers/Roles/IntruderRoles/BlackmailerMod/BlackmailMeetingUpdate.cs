@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             public static void Postfix(MeetingHud __instance)
             {
                 shookAlready = false;
-
                 var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
 
                 foreach (var role in blackmailers)

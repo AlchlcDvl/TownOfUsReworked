@@ -4,7 +4,7 @@ using Reactor.Utilities;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.Roles

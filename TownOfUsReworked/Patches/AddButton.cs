@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {

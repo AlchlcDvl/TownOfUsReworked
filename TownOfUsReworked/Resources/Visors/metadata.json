@@ -1,0 +1,198 @@
+{
+  "credits":
+  [
+    {
+      "id": "visor0000",
+      "name": "aphex",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0001",
+      "name": "aplatypuss",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0002",
+      "name": "axilla",
+      "artist": "TheLastShaymin",
+      "adaptive": false
+    },
+    {
+      "id": "visor0003",
+      "name": "platty halloween",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0004",
+      "name": "cheesy halloween",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0005",
+      "name": "chilled halloween",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0006",
+      "name": "zeroyalviking halloween",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0007",
+      "name": "witch",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0008",
+      "name": "goldfish",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0009",
+      "name": "ctulhu",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0010",
+      "name": "spider",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0011",
+      "name": "crocodile",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0012",
+      "name": "Blush-stache",
+      "artist": "Sugawara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0013",
+      "name": "Overgrown",
+      "artist": "Sugawara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0014",
+      "name": "Press X",
+      "artist": "Sugawara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0015",
+      "name": "sans",
+      "artist": "LayZ",
+      "adaptive": false
+    },
+    {
+      "id": "visor0016",
+      "name": "Gleam",
+      "artist": "LayZ",
+      "adaptive": false
+    },
+    {
+      "id": "visor0017",
+      "name": "Marionette",
+      "artist": "Sugawara",
+      "adaptive": false,
+      "nobounce": false
+    },
+    {
+      "id": "visor0018",
+      "name": "Random Ronnie",
+      "artist": "Sugawara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0019",
+      "name": "Amcam",
+      "artist": "Ophidian",
+      "adaptive": false
+    },
+    {
+      "id": "visor0020",
+      "name": "DrunkyPoo",
+      "artist": "Ophidian",
+      "adaptive": false
+    },
+    {
+      "id": "visor0021",
+      "name": "Sheriff",
+      "artist": "Ophidian",
+      "adaptive": false
+    },
+    {
+      "id": "visor0022",
+      "name": "Koji",
+      "artist": "Ophidian",
+      "adaptive": false
+    },
+    {
+      "id": "visor0023",
+      "name": "Monkeh",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0024",
+      "name": "Sugarcat",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0025",
+      "name": "Demogorgan",
+      "artist": "Sweetrolled",
+      "adaptive": false
+    },
+    {
+      "id": "visor0026",
+      "name": "Huntress",
+      "artist": "Sweetrolled",
+      "adaptive": false
+    },
+    {
+      "id": "visor0027",
+      "name": "jose",
+      "artist": "Ressnie",
+      "adaptive": false
+    },
+    {
+      "id": "visor0028",
+      "name": "junkyard",
+      "artist": "Pigoletto",
+      "adaptive": false
+    },
+    {
+      "id": "visor0029",
+      "name": "Clickbait",
+      "artist": "Kara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0030",
+      "name": "TROLLED",
+      "artist": "Kara",
+      "adaptive": false
+    },
+    {
+      "id": "visor0031",
+      "name": "You.",
+      "artist": "Kara",
+      "adaptive": false
+    }
+  ]
+}

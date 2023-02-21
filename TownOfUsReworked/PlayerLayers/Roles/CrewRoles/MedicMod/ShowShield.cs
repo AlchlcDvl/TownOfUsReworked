@@ -1,10 +1,9 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
                 if (exPlayer != null)
                 {
-                    System.Console.WriteLine(exPlayer.name + " is ex-Shielded and unvisored");
+                    TownOfUsReworked.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
                     exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
                     exPlayer.myRend().material.SetFloat("_Outline", 0f);
                     medic.exShielded = null;
@@ -49,15 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                     player.myRend().material.SetColor("_VisorColor", ProtectedColor);
                     player.myRend().material.SetFloat("_Outline", 1f);
                     player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
-
-                    if (!MeetingHud.Instance)
-                        continue;
-
-                    SpriteRenderer icon = MeetingHud.Instance.playerStates.FirstOrDefault(v => v.TargetPlayerId == player.PlayerId).GAIcon;
-                    icon.gameObject.SetActive(true);
-                    icon.enabled = true;
-                    icon.sprite = TownOfUsReworked.MedicSprite;
-                    icon.transform.localScale = Vector2.one / 4;
                 }
             }
         }

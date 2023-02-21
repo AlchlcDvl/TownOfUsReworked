@@ -3,7 +3,7 @@ using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
 using Random = UnityEngine.Random;
 using System.Linq;
@@ -47,6 +47,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
                     while (i < 4)
                     {
+                        if (results.Count >= PlayerControl.AllPlayerControls.Count)
+                            break;
+
                         var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
                         var role2 = Role.AllRoles.ToList()[random];
 

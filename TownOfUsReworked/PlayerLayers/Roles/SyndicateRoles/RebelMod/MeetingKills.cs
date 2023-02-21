@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using TownOfUsReworked.Lobby.CustomOption;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.RebelMod
 {
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.RebelMod
                         var target = tuple.Item1;
 
                         if (stoned || time >= CustomGameOptions.GazeTime + CustomGameOptions.GazeDelay && !(target.Data.IsDead || target.Data.Disconnected))
-                            Utils.RpcMurderPlayer(rebel.Player, target);
+                            Utils.RpcMurderPlayer(rebel.Player, target, false);
                         
                         target.moveable = true;
                     }
