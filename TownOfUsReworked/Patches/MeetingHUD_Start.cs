@@ -26,13 +26,16 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(MeetingHud __instance)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 var buggedBodies = Object.FindObjectsOfType<DeadBody>();
 
                 foreach (var body in buggedBodies)
                     body.gameObject.Destroy();
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                    player.MyPhysics.ResetAnimState();
             }
         }
         

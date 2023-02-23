@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
@@ -16,17 +15,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Concealer))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Concealer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ConcealButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.ConcealTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Conceal);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -36,9 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

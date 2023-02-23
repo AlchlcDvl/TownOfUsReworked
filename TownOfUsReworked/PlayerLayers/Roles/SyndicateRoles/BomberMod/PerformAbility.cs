@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
@@ -17,13 +16,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Bomber))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
 
             if (__instance == role.BombButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.BombTimer() != 0f)
                     return false;
 
@@ -40,9 +39,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             }
             else if (__instance == role.DetonateButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.DetonateTimer() != 0f)
                     return false;
 
@@ -58,18 +54,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                     role.LastKilled = DateTime.UtcNow;
                 }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Detonate);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
                 return false;
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using System;
 using TMPro;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class BountyHunter : Role
     {
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = "Neutral (Evil)";
+            AlignmentName = NE;
             RoleDescription = "You are a Bounty Hunter! You are an assassin who is in pursuit of a target! Find and kill them at all costs!";
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
         }
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;

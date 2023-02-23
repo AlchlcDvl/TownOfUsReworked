@@ -5,7 +5,6 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using System.Linq;
 using System;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {

@@ -6,12 +6,10 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
@@ -33,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             var revived = new List<PlayerControl>();
 
             if (AmongUsClient.Instance.AmHost)
-                Utils.RpcMurderPlayer(role.Player, role.Player);
+                Utils.RpcMurderPlayer(role.Player, role.Player, false);
 
             if (CustomGameOptions.AltruistTargetBody)
             {

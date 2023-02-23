@@ -12,30 +12,43 @@ using TMPro;
 using System.Linq;
 using Reactor.Utilities;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Retributionist : Role
     {
         public Retributionist(PlayerControl player) : base(player)
         {
             Name = "Retributionist";
+            StartText = "Mimic the Dead";
+            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8BFDFDFF>Crew</color>.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
             Faction = Faction.Crew;
+            FactionName = "Crew";
+            FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = "Crew (Support)";
-            InspectedPlayers = new List<byte>();
-            InspectResults = new Dictionary<byte, List<Role>>();
+            AlignmentName = CS;
+            RoleDescription = "Your are a Retributionist! You are a sorcerer who can mimic the skills of the true-hearted dead! Use your plethora of abilities to find all evildoers!";
+            Objectives = CrewWinCon;
+            InspectorResults = InspectorResults.DealsWithDead;
+            Inspected = new List<byte>();
+            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            MediatedPlayers = new Dictionary<byte, ArrowBehaviour>();
+            Bugs = new List<Bug>();
+            TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
+            OtherButtons = new List<GameObject>();
+            ListOfActives = new List<bool>();
+            Interrogated = new List<byte>();
         }
 
         //Retributionist Stuff
-        public readonly List<GameObject> OtherButtons = new List<GameObject>();
-        public readonly List<bool> ListOfActives = new List<bool>();
+        public readonly List<GameObject> OtherButtons;
+        public readonly List<bool> ListOfActives;
         public Role RevivedRole;
         public PlayerControl Revived;
         public PlayerControl ClosestPlayer;
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -83,7 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.CabalWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CabalWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -95,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.IntrudersWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.IntruderWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -107,7 +120,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SyndicateWins())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SyndicateWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -119,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SectWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SectWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -131,7 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.UndeadWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -142,8 +155,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                   Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -153,7 +166,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             else if (Utils.CrewWins())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -165,7 +178,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         }
 
         //Coroner Stuff
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> BodyArrows;
+        private KillButton _autopsyButton;
+        private KillButton _compareButton;
 
         public void DestroyCoronerArrow(byte targetPlayerId)
         {
@@ -178,6 +193,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 GameObject.Destroy(arrow.Value.gameObject);
                 
             BodyArrows.Remove(arrow.Key);
+        }
+
+        public KillButton AutopsyButton
+        {
+            get => _autopsyButton;
+            set
+            {
+                _autopsyButton = value;
+                AddToAbilityButtons(value, this);
+            }
+        }
+
+        public KillButton CompareButton
+        {
+            get => _compareButton;
+            set
+            {
+                _compareButton = value;
+                AddToAbilityButtons(value, this);
+            }
         }
 
         //Detective Stuff
@@ -209,8 +244,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
 
         //Inspector Stuff
         public DateTime LastInspected { get; set; }
-        public List<byte> InspectedPlayers;
-        public Dictionary<byte, List<Role>> InspectResults;
+        public List<byte> Inspected;
         private KillButton _inspectButton;
 
         public KillButton InspectButton
@@ -287,7 +321,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         //Operative Stuff
         public static AssetBundle Bundle = LoadBundle();
         public static Material BugMaterial = Bundle.LoadAsset<Material>("trap").DontUnload();
-        public List<Bug> Bugs = new List<Bug>();
+        public List<Bug> Bugs;
         public DateTime LastBugged { get; set; }
         public List<RoleEnum> BuggedPlayers;
         private KillButton _bugButton;
@@ -327,7 +361,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         }
 
         //Sheriff Stuff
-        public List<byte> Interrogated = new List<byte>();
+        public List<byte> Interrogated;
         private KillButton _interrogateButton;
         public DateTime LastInterrogated { get; set; }
 
@@ -355,7 +389,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         }
 
         //Tracker Stuff
-        public Dictionary<byte, ArrowBehaviour> TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> TrackerArrows;
         public DateTime LastTracked { get; set; }
         private KillButton _trackButton;
         public int TrackUsesLeft;

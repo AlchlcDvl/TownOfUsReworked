@@ -7,7 +7,6 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)
                     return false;
                 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Mine);
                 var position = PlayerControl.LocalPlayer.transform.position;
                 var id = GetAvailableId();

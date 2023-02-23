@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
+namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Rivals : Objectifier
     {
@@ -16,9 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Rival";
             SymbolName = "α";
-            TaskText = "You have a Rival!";
+            TaskText = $"- Get {OtherRival.name} killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
+            ObjectifierDescription = $"You are a Rival! You are in competition with {OtherRival.name}! Kill {OtherRival.name} and survive to the final 2!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -54,7 +55,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             rival1.OtherRival = secondRival;
             rival2.OtherRival = firstRival;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetDuo, SendOption.Reliable, -1);
+            firstRival.RegenTask();
+            secondRival.RegenTask();
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetDuo, SendOption.Reliable);
             writer.Write(firstRival.PlayerId);
             writer.Write(secondRival.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -68,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (Utils.RivalsWin(Player))
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.RivalWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

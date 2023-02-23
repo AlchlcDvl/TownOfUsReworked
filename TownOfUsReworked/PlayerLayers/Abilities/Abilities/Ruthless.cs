@@ -2,17 +2,18 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
+namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Ruthless : Ability
     {
         public Ruthless(PlayerControl player) : base(player)
         {
             Name = "Ruthless";
-            TaskText = "Your attacks cannot be stopped";
+            TaskText = "- Your attacks cannot be stopped.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
             AbilityType = AbilityEnum.Ruthless;
             Hidden = !CustomGameOptions.RuthlessKnows;
+            AbilityDescription = "You are Ruthless! No form of protection can stop you killing!";
         }
     }
 }

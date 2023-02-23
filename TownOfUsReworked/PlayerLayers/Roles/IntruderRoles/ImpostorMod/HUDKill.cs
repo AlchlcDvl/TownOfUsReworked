@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;

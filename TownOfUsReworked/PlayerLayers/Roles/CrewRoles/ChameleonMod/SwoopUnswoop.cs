@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {

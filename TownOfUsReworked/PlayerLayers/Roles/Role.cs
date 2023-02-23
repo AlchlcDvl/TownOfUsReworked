@@ -1,22 +1,12 @@
-using HarmonyLib;
 using Hazel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
-using TMPro;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
 using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -45,24 +35,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
 
-        public virtual void Loses()
-        {
-            LostByRPC = true;
-        }
-
+        public virtual void Loses() => LostByRPC = true;
         public virtual void Wins() {}
-
-        protected virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
+        public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
         protected internal Color32 FactionColor { get; set; } = Colors.Faction;
-        protected internal Color32 SubFactionColor { get; set; } = Colors.Clear;
+        protected internal Color32 SubFactionColor { get; set; } = Colors.SubFaction;
         protected internal RoleEnum RoleType { get; set; } = RoleEnum.None;
         protected internal Faction Faction { get; set; } = Faction.None;
         protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
         protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
         protected internal InspectorResults InspectorResults { get; set; } = InspectorResults.None;
-        protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
         protected internal AudioClip IntroSound { get; set; } = null;
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
         protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
@@ -71,18 +55,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal KillButton TertiaryButton { get; set; } = null;
         protected internal KillButton QuartnaryButton { get; set; } = null;
 
-        protected internal string StartText { get; set; } = "";
+        protected internal string StartText { get; set; } = "Woah The Game Started";
         protected internal string AbilitiesText { get; set; } = " - None.";
 
-        protected internal string Name { get; set; } = "";
-        protected internal string AlignmentName { get; set; } = "";
-        protected internal string FactionName { get; set; } = "";
-        protected internal string SubFactionName { get; set; } = "";
+        protected internal string Name { get; set; } = "Roleless";
+        protected internal string AlignmentName { get; set; } = "None";
+        protected internal string FactionName { get; set; } = "None";
+        protected internal string SubFactionName { get; set; } = "None";
 
-        protected internal string RoleDescription { get; set; } = "";
+        protected internal string RoleDescription { get; set; } = "You are a role!";
 
-        protected internal string Objectives { get; set; } = "";
+        protected internal string Objectives { get; set; } = "- None.";
+
         protected internal string KilledBy { get; set; } = "";
+        protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
 
         protected internal bool RoleBlockImmune { get; set; } = false;
         protected internal bool IsBlocked { get; set; } = false;
@@ -101,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsSynFanatic { get; set; } = false;
         protected internal bool IsCrewAlly { get; set; } = false;
 
-        public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n   or\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
+        public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
         public static string IntrudersObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +
             "Neophytes.";
         public static string IntrudersFactionDescription = "You are an Intruder! Your main task is to kill anyone who dares to oppose you. Sabotage the systems, murder the crew, do " +
@@ -115,8 +101,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string IUDescription = "You are a Intruder (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
         public static string IKDescription = "You are a Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " + 
             "with your abilities!";
+        public static string IS = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>";
+        public static string IC = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>";
+        public static string ID = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>";
+        public static string IK = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static string IU = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>";
 
-        public static string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds.\n   or\n" : "") + "- Cause chaos and kill anyone who opposes " +
+        public static string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds.\n" : "") + "- Cause chaos and kill anyone who opposes " +
             "the <color=#008000FF>Syndicate</color>.";
         public static string SyndicateObjective = (CustomGameOptions.AltImps ? "Have a critical sabotage reach 0 seconds or k" : "K") + "ill off all Intruders, Unfaithful Syndicate, " +
             "Crew and Neutral Killers, Proselytes and Neophytes.";
@@ -131,8 +122,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static string SyKDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
         public static string SPDescription = "You are a Syndicate (Power) role! You are a powerful role who's only goal is to chaos and destruction. Ensure that the crew cannot get " +
             "their wits and information in order!";
+        public static string SU = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static string SSu = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>";
+        public static string SD = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>";
+        public static string SyK = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static string SP = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>";
 
-        public static string CrewWinCon = "- Finish all tasks.\n   or\n- Eject all <color=#FF0000FF>evildoers</color>.";
+        public static string CrewWinCon = "- Finish all tasks.\n- Eject all <color=#FF0000FF>evildoers</color>.";
         public static string CrewObjective = "Finish your tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, Neutral Killers, Proselytes and Neophytes.";
         public static string CrewFactionDescription = "Your faction is the Crew! You do not know who the other members of your faction are. It is your job to deduce" + 
             " who is evil and who is not. Eject or kill all evils or finish all of your tasks to win!";
@@ -140,7 +136,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 " even gain information from the dead!";
         public static string CIDescription = "You are a Crew (Investigative) role! You can gain information via special methods and using that acquired info, you" +
             " can deduce who is good and who is not.";
-        public static string CUDescription = "You are a Crewmate! Your role is the base role for the Crew faction. You have no special abilities and should probably do your tasks.";
+        public static string CUDescription = "You are a Crew (Utility) role! You usually have no special ability and cannot even appear under natural conditions.";
         public static string CSDescription = "You are a Crew (Support) role! You have a miscellaneous ability that cannot be classified on its own. Use your abilities to their " +
             "fullest extent to bring about a Crew victory!";
         public static string CADescription = "You are a Crew (Auditor) role! You have a special goal. Find and eliminate those who stray from their path!";
@@ -148,24 +144,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             " and save the Crew!";
         public static string CSvDescription = "You are a Crew (Sovereign) role! You are a democrat who has no issues with influencing the ballots to get what you want! Stay in power" +
             " get rid of any and all evildoers who threaten your position!";
+        public static string CP = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>";
+        public static string CI = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>";
+        public static string CU = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static string CS = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Support</color>)</color>";
+        public static string CA = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>";
+        public static string CK = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static string CSv = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>";
             
         public static string NeutralFactionDescription = "Your faction is Neutral! You do not have any team mates and can only by yourself or by other players after finishing" +
             " a certain objective.";
         public static string NBDescription = "You are a Neutral (Benign) role! You can win with anyone as long as a certain condition has been fulfilled for you.";
         public static string NKDescription = "You are a Neutral (Killing) role! You side with no one and can only win by yourself. You have a special way to kill and gain a large body" +
             " count. Make sure no one survives.";
-        public static string NEDescription = "You are a Neutral (Evil) role! You have a conflicting win condition over others and upon achieving it will most likely end the game. " +
-            "Finish your objective before the others finish you!";
+        public static string NEDescription = "You are a Neutral (Evil) role! You have a conflicting win condition over others. Finish your objective before the others finish you!";
         public static string NPDescription = "You are now a Neutral (Proselyte) role! You are no longer the original you, and instead win as your new self!";
         public static string NNDescription = "You are a Neutral (Neophyte) role! You are the leader of your little faction and your main purpose is to convert others to your cause. " +
             "Gain a majority and overrun the crew!";
+        public static string NB = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>";
+        public static string NE = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>";
+        public static string NK = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static string NN = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>";
+        public static string NP = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Proselyte</color>)</color>";
 
         protected Role(PlayerControl player)
         {
             Player = player;
 
-            if (!RoleDictionary.ContainsKey(player.PlayerId))
-                RoleDictionary.Add(player.PlayerId, this);
+            if (RoleDictionary.ContainsKey(player.PlayerId))
+                RoleDictionary.Remove(player.PlayerId);
+
+            RoleDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
@@ -201,10 +210,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
         public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
 
-        private bool Equals(Role other)
-        {
-            return Equals(Player, other.Player) && RoleType == other.RoleType;
-        }
+        private bool Equals(Role other) => Equals(Player, other.Player) && RoleType == other.RoleType;
 
         public override bool Equals(object obj)
         {
@@ -220,10 +226,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return Equals((Role)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Player, (int)RoleType);
-        }
+        public override int GetHashCode() => HashCode.Combine(Player, (int)RoleType);
 
         public void AddToAbilityButtons(KillButton button, Role role)
         {
@@ -272,15 +275,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(34, "lighter"); // Rainbow
         }
 
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            return true;
-        }
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public static T GenRole<T>(Type type, PlayerControl player, int id)
 		{
 			var role = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable, -1);
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable);
 			writer.Write(player.PlayerId);
 			writer.Write(id);
 			AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -303,7 +303,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var role in AllRoles)
             {
                 if (role.RoleType == roleEnum)
-                    return role;
+                {
+                    if (!role.Player.Data.IsDead)
+                        return role;
+                }
             }
 
             return null;
@@ -331,489 +334,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return a.RoleType == b.RoleType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Role a, Role b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(Role a, Role b) => !(a == b);
         
-        public static T GetRoleValue<T>(RoleEnum roleEnum) where T : Role
-        {
-            return GetRoleValue(roleEnum) as T;
-        }
+        public static T GetRoleValue<T>(RoleEnum roleEnum) where T : Role => GetRoleValue(roleEnum) as T;
         
-        public static T GetRole<T>(PlayerControl player) where T : Role
-        {
-            return GetRole(player) as T;
-        }
+        public static T GetRole<T>(PlayerControl player) where T : Role => GetRole(player) as T;
 
-        public static Role GetRole(PlayerVoteArea area)
-        {
-            var player = Utils.PlayerById(area.TargetPlayerId);
-            return player == null ? null : GetRole(player);
-        }
+        public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Role> GetRoles(RoleEnum roletype)
-        {
-            return AllRoles.Where(x => x.RoleType == roletype);
-        }
+        public static IEnumerable<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype);
 
-        public static IEnumerable<Role> GetRoles(Faction faction)
-        {
-            return AllRoles.Where(x => x.Faction == faction);
-        }
+        public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction);
 
-        public static IEnumerable<Role> GetRoles(RoleAlignment ra)
-        {
-            return AllRoles.Where(x => x.RoleAlignment == ra);
-        }
+        public static IEnumerable<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra);
 
-        public static IEnumerable<Role> GetRoles(SubFaction subfaction)
-        {
-            return AllRoles.Where(x => x.SubFaction == subfaction);
-        }
-
-        public static class IntroCutScenePatch
-        {
-            public static TextMeshPro StatusText;
-            public static float Scale;
-
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
-            public static class IntroCutscene_BeginCrewmate
-            {
-                public static void Postfix(IntroCutscene __instance)
-                {
-                    var player = PlayerControl.LocalPlayer;
-                    var modifier = Modifier.GetModifier(player);
-                    var objectifier = Objectifier.GetObjectifier(player);
-                    var ability = Ability.GetAbility(player);
-                    var flag = modifier == null && ability == null && objectifier == null;
-
-                    StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
-                }
-            }
-
-            [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginImpostor))]
-            public static class IntroCutscene_BeginImpostor
-            {
-                public static void Postfix(IntroCutscene __instance)
-                {
-                    var player = PlayerControl.LocalPlayer;
-                    var modifier = Modifier.GetModifier(player);
-                    var objectifier = Objectifier.GetObjectifier(player);
-                    var ability = Ability.GetAbility(player);
-                    var flag = modifier == null && ability == null && objectifier == null;
-
-                    StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
-                }
-            }
-            
-            [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
-            public static class IntroCutscene_CoBegin_d__29
-            {
-                public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
-                {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-
-                    if (role != null)
-                    {
-                        __instance.__4__this.TeamTitle.text = role.FactionName;
-                        __instance.__4__this.TeamTitle.color = role.FactionColor;
-                        __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
-                        __instance.__4__this.RoleText.text = role.Name;
-                        __instance.__4__this.RoleText.color = role.Color;
-                        __instance.__4__this.YouAreText.color = role.Color;
-                        __instance.__4__this.RoleBlurbText.color = role.Color;
-                        __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = " ";
-                        __instance.__4__this.RoleBlurbText.text = role.StartText;
-
-                        if (role.IntroSound != null)
-                        {
-                            try
-                            {
-                                SoundManager.Instance.StopAllSound();
-                                SoundManager.Instance.PlaySound(role.IntroSound, false);
-                            } catch {}
-                        }
-
-                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
-                            PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
-                            (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
-
-                        if (flag)
-                            __instance.__4__this.RoleText.outlineColor = role.FactionColor;
-                    }
-
-                    if (StatusText != null)
-                    {
-                        var player = PlayerControl.LocalPlayer;
-                        var modifier = Modifier.GetModifier(player);
-                        var objectifier = Objectifier.GetObjectifier(player);
-                        var ability = Ability.GetAbility(player);
-
-                        var statusString = "";
-                        var status = "";
-
-                        if (modifier != null && !modifier.Hidden)
-                            status += $" {modifier.ColorString}{modifier.Name}</color>";
-
-                        if (objectifier != null && !objectifier.Hidden)
-                            status += $" {objectifier.ColorString}{objectifier.Name}</color>";
-
-                        if (ability != null && !ability.Hidden)
-                            status += $" {ability.ColorString}{ability.Name}</color>";
-
-                        if (status.Length != 0)
-                            statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
-
-                        StatusText.text = statusString;
-                        StatusText.outlineColor = Colors.Status;
-
-                        StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
-                        StatusText.gameObject.SetActive(true);
-                    }
-                }
-            }
-
-            [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__32), nameof(IntroCutscene._ShowTeam_d__32.MoveNext))]
-            public static class IntroCutscene_ShowTeam__d_21
-            {
-                public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
-                {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-
-                    if (role != null)
-                        role.IntroPrefix(__instance);
-                }
-
-                public static void Postfix(IntroCutscene._ShowTeam_d__32 __instance)
-                {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-
-                    if (role != null)
-                    {
-                        __instance.__4__this.TeamTitle.text = role.FactionName;
-                        __instance.__4__this.TeamTitle.color = role.FactionColor;
-                        __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
-                        __instance.__4__this.BackgroundBar.material.color = role.Color;
-                        __instance.__4__this.ImpostorText.text = " ";
-                    }
-
-                    if (StatusText != null)
-                    {
-                        var player = PlayerControl.LocalPlayer;
-                        var modifier = Modifier.GetModifier(player);
-                        var objectifier = Objectifier.GetObjectifier(player);
-                        var ability = Ability.GetAbility(player);
-
-                        var statusString = "";
-                        var status = "";
-
-                        if (modifier != null && !modifier.Hidden)
-                            status += $" {modifier.ColorString}{modifier.Name}</color>";
-
-                        if (objectifier != null && !objectifier.Hidden)
-                            status += $" {objectifier.ColorString}{objectifier.Name}</color>";
-
-                        if (ability != null && !ability.Hidden)
-                            status += $" {ability.ColorString}{ability.Name}</color>";
-
-                        if (status.Length != 0)
-                            statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
-
-                        StatusText.text = statusString;
-                        StatusText.outlineColor = Colors.Status;
-
-                        StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
-                        StatusText.gameObject.SetActive(true);
-                    }
-                }
-            }
-
-            [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
-            public static class IntroCutscene_ShowRole_d__24
-            {
-                public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
-                {
-                    var role = GetRole(PlayerControl.LocalPlayer);
-
-                    if (role != null)
-                    {
-                        __instance.__4__this.RoleText.text = role.Name;
-                        __instance.__4__this.RoleText.color = role.Color;
-                        __instance.__4__this.YouAreText.color = role.Color;
-                        __instance.__4__this.RoleBlurbText.text = role.StartText;
-                        __instance.__4__this.RoleBlurbText.color = role.Color;
-
-                        if (role.IntroSound != null)
-                        {
-                            try
-                            {
-                                SoundManager.Instance.StopAllSound();
-                                SoundManager.Instance.PlaySound(role.IntroSound, false);
-                            } catch {}
-                        }
-
-                        var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
-                            PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
-                            (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
-
-                        if (flag)
-                            __instance.__4__this.RoleText.outlineColor = role.FactionColor;
-                    }
-                }
-            }
-        }
-
-        public void RegenTask()
-        {
-            if (!Local)
-                return;
-
-            string tasks = $"{ColorString}Role: {Name}\nAlignment: {AlignmentName}\nObjective:\n{Objectives}\nAbilities:\n{AbilitiesText}</color>";
-            string otherTasks = "";
-            string modifierTask = "";
-            string abilityTask = "";
-            string objectifierTask = "";
-
-            try
-            {
-                var taskArray = Player.myTasks.ToArray();
-                var firstText = taskArray[0].Cast<ImportantTextTask>();
-            
-                if (firstText.Text.Contains("Role:"))
-                    taskArray.ToList().Remove(taskArray[0]);
-                
-                firstText = taskArray[0].Cast<ImportantTextTask>();
-            
-                if (firstText.Text.Contains("Objectifier:"))
-                    taskArray.ToList().Remove(taskArray[0]);
-                
-                firstText = taskArray[0].Cast<ImportantTextTask>();
-            
-                if (firstText.Text.Contains("Ability:"))
-                    taskArray.ToList().Remove(taskArray[0]);
-                
-                firstText = taskArray[0].Cast<ImportantTextTask>();
-            
-                if (firstText.Text.Contains("Modifier:"))
-                    taskArray.ToList().Remove(taskArray[0]);
-            }
-            catch (InvalidCastException)
-            {
-                return;
-            }
-
-            var modifier = Modifier.GetModifier(Player);
-            var ability = Ability.GetAbility(Player);
-            var objectifier = Objectifier.GetObjectifier(Player);
-
-            if (objectifier != null)
-                objectifierTask += $"{objectifier.ColorString}Objectifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
-
-            if (modifier != null)
-                modifierTask += $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText}</color>";
-
-            if (ability != null)
-                abilityTask += $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-                tasks += $"\n<color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">- You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
-            }
-
-            if (Player.IsGATarget() && CustomGameOptions.GATargetKnows)
-                tasks += "\n<color=#FFFFFFFF>- You are a Guardian Angel's target!</color>";
-
-            if (Player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
-                tasks += "\n<color=#CCCCCCFF>- You are an Executioner's target!</color>";
-
-            if (!IsRecruit && !Player.IsGATarget() && !Player.IsExeTarget())
-                tasks = "";
-
-            if (!Player.CanDoTasks() && !Player.Is(Faction.Intruder))
-                tasks += $"\n<color=#" + Color.ToHtmlStringRGBA() + "Fake Tasks:";
-
-            tasks += objectifierTask + modifierTask + abilityTask + otherTasks;
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = tasks;
-        }
-
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
-        private static class PlayerControl_SetTasks
-        {
-            private static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
-            {
-                if (__instance == null)
-                    return;
-
-                var player = __instance.__4__this;
-                var role = GetRole(player);
-                var modifier = Modifier.GetModifier(player);
-                var objectifier = Objectifier.GetObjectifier(player);
-                var ability = Ability.GetAbility(player);
-
-                if (role != null)
-                {
-                    var task = new GameObject("OtherTask").AddComponent<ImportantTextTask>();
-                    task.transform.SetParent(player.transform, false);
-                    task.Text = "Other Things:";
-
-                    if (role.IsRecruit)
-                    {
-                        var jackal = role.Player.GetJackal();
-                        task.Text += $"\n- <color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
-                    }
-                    if (role.IsRecruit)
-                    {
-                        var jackal = role.Player.GetJackal();
-                        task.Text += $"\n- <color=#" + Colors.Cabal.ToHtmlStringRGBA() + $">You are a member of the Cabal! Help {jackal.Player.name} in taking over the mission!</color>";
-                    }
-
-                    if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
-                        task.Text += "\n- <color=#FFFFFFFF>You are a Guardian Angel's target!</color>";
-
-                    if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
-                        task.Text += "\n- <color=#CCCCCCFF>You are an Executioner's target!</color>";
-
-                    if (!role.IsRecruit && !player.IsGATarget() && !player.IsExeTarget())
-                        task.Text = "";
-
-                    if (!player.CanDoTasks() && !player.Is(Faction.Intruder))
-                        task.Text += "\nFake Tasks:";
-
-                    if (task.Text != "")
-                        player.myTasks.Insert(0, task);
-                }
-
-                if (modifier != null)
-                {
-                    var modTask = new GameObject(modifier.Name + "Task").AddComponent<ImportantTextTask>();
-                    modTask.transform.SetParent(player.transform, false);
-                    modTask.Text = $"{modifier.ColorString}Modifier: {modifier.Name}\n{modifier.TaskText}</color>";
-                    player.myTasks.Insert(0, modTask);
-                }
-
-                if (ability != null)
-                {
-                    var avTask = new GameObject(ability.Name + "Task").AddComponent<ImportantTextTask>();
-                    avTask.transform.SetParent(player.transform, false);
-                    avTask.Text = $"{ability.ColorString}Ability: {ability.Name}\n{ability.TaskText}</color>";
-                    player.myTasks.Insert(0, avTask);
-                }
-
-                if (objectifier != null)
-                {
-                    var obTask = new GameObject(objectifier.Name + "Task").AddComponent<ImportantTextTask>();
-                    obTask.transform.SetParent(player.transform, false);
-                    obTask.Text = $"{objectifier.ColorString}Objectifier: {objectifier.Name}\n{objectifier.TaskText}</color>";
-                    player.myTasks.Insert(0, obTask);
-                }
-
-                if (role != null)
-                {
-                    var task = new GameObject(role.Name + "Task").AddComponent<ImportantTextTask>();
-                    task.transform.SetParent(player.transform, false);
-                    task.Text = $"{role.ColorString}Role: {role.Name}\nAlignment: {role.AlignmentName}\nObjective:\n{(role.Objectives)}\nAbilities:\n{role.AbilitiesText}</color>";
-
-                    player.myTasks.Insert(0, task);
-                }
-            }
-        }
-
-        [HarmonyPatch]
-        public static class ShipStatus_KMPKPPGPNIH
-        {
-            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-            public static bool Prefix(LogicGameFlowNormal __instance)
-            {
-                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
-                    return true;
-
-                if (!AmongUsClient.Instance.AmHost)
-                    return false;
-                
-                if (Utils.NoOneWins())
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
-                    writer.Write((byte)WinLoseRPC.Stalemate);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    Role.NobodyWins = true;
-                    return false;
-                }
-                else
-                {
-                    foreach (var role in AllRoles)
-                    {
-                        var roleIsEnd = role.GameEnd(__instance);
-
-                        if (!roleIsEnd)
-                            return false;
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-        public static class LobbyBehaviour_Start
-        {
-            private static void Postfix(LobbyBehaviour __instance)
-            {
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Tracker))
-                {
-                    ((Tracker)role).TrackerArrows.Values.DestroyAll();
-                    ((Tracker)role).TrackerArrows.Clear();
-                }
-
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Amnesiac))
-                {
-                    ((Amnesiac)role).BodyArrows.Values.DestroyAll();
-                    ((Amnesiac)role).BodyArrows.Clear();
-                }
-
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Cannibal))
-                {
-                    ((Cannibal)role).BodyArrows.Values.DestroyAll();
-                    ((Cannibal)role).BodyArrows.Clear();
-                }
-
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Medium))
-                {
-                    ((Medium)role).MediatedPlayers.Values.DestroyAll();
-                    ((Medium)role).MediatedPlayers.Clear();
-                }
-
-                foreach (var role in AllRoles.Where(x => x.RoleType == RoleEnum.Coroner))
-                {
-                    ((Coroner)role).BodyArrows.Values.DestroyAll();
-                    ((Coroner)role).BodyArrows.Clear();
-                }
-
-                foreach (var role in Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Taskmaster))
-                {
-                    ((Taskmaster)role).ImpArrows.DestroyAll();
-                    ((Taskmaster)role).TMArrows.Values.DestroyAll();
-                    ((Taskmaster)role).TMArrows.Clear();
-                }
-
-                foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
-                {
-                    ((Snitch)role).ImpArrows.DestroyAll();
-                    ((Snitch)role).SnitchArrows.Values.DestroyAll();
-                    ((Snitch)role).SnitchArrows.Clear();
-                }
-
-                foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
-                    ((Radar)role).RadarArrow.DestroyAll();
-
-                RoleDictionary.Clear();
-                Modifier.ModifierDictionary.Clear();
-                Ability.AbilityDictionary.Clear();
-                Objectifier.ObjectifierDictionary.Clear();
-            }
-        }
+        public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction);
     }
 }

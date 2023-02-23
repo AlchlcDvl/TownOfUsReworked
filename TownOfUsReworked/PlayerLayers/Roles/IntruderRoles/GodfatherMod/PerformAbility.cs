@@ -2,7 +2,6 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 using System;
 using System.Linq;
@@ -83,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 if (interact[3] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Declare);
                     writer.Write(role.Player.PlayerId);
@@ -126,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     role.Blackmailed = role.ClosestPlayer;
                     role.BlackmailButton.SetCoolDown(1f, 1f);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Blackmail);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -143,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.CamouflageTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Camouflage);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -204,7 +203,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     }
                     else if (role.DisguiseButton.graphic.sprite == DisguiseSprite)
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.GodfatherAction);
                         writer.Write((byte)GodfatherActionsRPC.Disguise);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -243,7 +242,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.FlashTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.FlashGrenade);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -269,7 +268,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 var playerId = role.CurrentTarget.ParentId;
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(role.Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.JanitorClean);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -299,7 +298,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)
                     return false;
                 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Mine);
                 var position = PlayerControl.LocalPlayer.transform.position;
@@ -349,7 +348,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     if (role.MorphTimer() != 0f)
                         return false;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Morph);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -386,7 +385,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     if (role.TeleportTimer() != 0f)
                         return false;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Teleport);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -403,7 +402,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.FreezeTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.TimeFreeze);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -422,7 +421,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     var playerId = role.CurrentTarget.ParentId;
                     var player = Utils.PlayerById(playerId);
                     Utils.Spread(role.Player, player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Drag);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -435,7 +434,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 }
                 else
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Drop);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -466,7 +465,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.InvisTimer() != 0f)
                     return false;
                 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Invis);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using System;
 using Reactor.Utilities;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sidekick : Role
     {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Syndicate";
             FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            AlignmentName = "Syndicate (Utility)";
+            AlignmentName = SU;
             Objectives = "- Kill: <color=#FF0000FF>Intruders</color>, <color=#8BFDFD>Crew</color> and <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>," +
                 " <color=#1D7CF2FF>Proselytes</color> and <color=#1D7CF2FF>Neophytes</color>.";
         }
@@ -79,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.CabalWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CabalWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -91,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SectWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SectWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -103,7 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.UndeadWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -114,8 +114,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                   Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -124,9 +124,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
             else if (Utils.SyndicateWins())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SyndicateWin);
-                writer.Write(Player.PlayerId);
                 Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
@@ -146,12 +145,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             role.FormerRole = formerRole;
             role.RoleHistory.Add(sidekick);
             role.RoleHistory.AddRange(sidekick.RoleHistory);
+            Player.RegenTask();
 
             if (Player == PlayerControl.LocalPlayer)
-            {
-                role.RegenTask();
                 Coroutines.Start(Utils.FlashCoroutine(Color));
-            }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));

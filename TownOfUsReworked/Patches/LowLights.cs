@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -12,7 +11,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameData.PlayerInfo player, ref float __result)
         {
-            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+            if (GameStates.IsHnS)
             {
                 if (GameOptionsManager.Instance.currentHideNSeekGameOptions.useFlashlight)
                 {

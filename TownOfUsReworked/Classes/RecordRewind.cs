@@ -3,7 +3,6 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.CustomOptions;
@@ -82,7 +81,7 @@ namespace TownOfUsReworked.Classes
                         PlayerControl.LocalPlayer.Collider.enabled = true;
                         PlayerControl.LocalPlayer.NetTransform.enabled = true;
 
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixAnimation, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixAnimation, SendOption.Reliable);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
@@ -104,7 +103,7 @@ namespace TownOfUsReworked.Classes
                         deadTime = 0;
                         isDead = false;
 
-                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
                         write.Write((byte)ActionsRPC.RewindRevive);
                         write.Write(PlayerControl.LocalPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(write);

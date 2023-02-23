@@ -5,20 +5,23 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
+namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Snitch : Ability
     {
-        public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
-        public Dictionary<byte, ArrowBehaviour> SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
+        public List<ArrowBehaviour> ImpArrows;
+        public Dictionary<byte, ArrowBehaviour> SnitchArrows;
 
         public Snitch(PlayerControl player) : base(player)
         {
             Name = "Snitch";
-            TaskText = "Complete all your tasks to discover the <color=#FF0000FF>Intruders</color>!";
+            TaskText = "- You can finish your tasks to get information on who's evil.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
             AbilityType = AbilityEnum.Snitch;
             Hidden = !CustomGameOptions.SnitchKnows;
+            ImpArrows = new List<ArrowBehaviour>();
+            SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
+            AbilityDescription = "You are a Snitch! Finish your tasks to find who all the evil players are!";
         }
         
         public void DestroyArrow(byte targetPlayerId)

@@ -6,7 +6,6 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod

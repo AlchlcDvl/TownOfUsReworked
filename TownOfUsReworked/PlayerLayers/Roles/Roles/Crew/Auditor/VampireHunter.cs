@@ -7,7 +7,7 @@ using Hazel;
 using Il2CppSystem.Collections.Generic;
 using Reactor.Utilities;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class VampireHunter : Role
     {
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Vampire Hunter";
             StartText = "Stake The <color=#7B8968FF>Undead</color>";
-            AbilitiesText = "- You can investigate players to see if they have been turned.\n- You you investigate a turned person, or an <color=#7B8968FF>Undead</color>" +
+            AbilitiesText = "- You can stake players to see if they have been turned.\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color>" +
                 " tries to interact with you, you will kill them.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             RoleType = RoleEnum.VampireHunter;
@@ -28,9 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Crew";
             FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
-            AlignmentName = "Crew (Auditor)";
+            AlignmentName = CA;
             Objectives = CrewWinCon;
-            RoleDescription = "You are a Vampire Hunter! You are a vengeful priest on the hunt for the Undead! Use your expertise in tracking down the Undead!";
+            RoleDescription = "You are a Vampire Hunter! You are a vengeful priest on the hunt for the Undead! Use your expertise in the field and track down the Undead!";
+            InspectorResults = InspectorResults.TracksOthers;
         }
 
         public KillButton StakeButton
@@ -56,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -82,12 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             var role = new Vigilante(Player);
             role.RoleHistory.Add(vh);
             role.RoleHistory.AddRange(vh.RoleHistory);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player == PlayerControl.LocalPlayer)
-                    role.RegenTask();
-            }
+            Player.RegenTask();
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
@@ -119,7 +115,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.CabalWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CabalWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -131,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.IntrudersWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.IntruderWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -143,7 +139,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SyndicateWins())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SyndicateWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -155,7 +151,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SectWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SectWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -166,8 +162,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                   Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -177,7 +173,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             else if (Utils.CrewWins())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

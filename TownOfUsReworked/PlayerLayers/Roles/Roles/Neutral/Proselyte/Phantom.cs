@@ -4,7 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Phantom : Role
     {
@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
-            RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = "Neutral (Evil)";
+            RoleAlignment = RoleAlignment.NeutralPros;
+            AlignmentName = NP;
         }
 
         public void Fade()
@@ -74,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 
             if (CompletedTasks)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.PhantomWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

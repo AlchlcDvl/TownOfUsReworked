@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;

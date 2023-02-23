@@ -2,8 +2,8 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
@@ -301,129 +301,117 @@ namespace TownOfUsReworked.Patches
             {
                 var dracula = PlayerControl.LocalPlayer.GetDracula();
 
-                if (dracula != null)
+                if (dracula.Converted.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
                 {
-                    if (dracula.Converted.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#7B8968FF>γ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#7B8968FF>γ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.PlayerId))
-                                    consigliere.Investigated.Remove(player.PlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.PlayerId))
+                                consigliere.Investigated.Remove(player.PlayerId);
                         }
-                        else
-                            color = dracula.SubFactionColor;
                     }
+                    else
+                        color = dracula.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var jackal = PlayerControl.LocalPlayer.GetJackal();
 
-                if (jackal != null)
+                if (jackal.Recruited.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
                 {
-                    if (jackal.Recruited.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#575657FF>$</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#575657FF>$</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.PlayerId))
-                                    consigliere.Investigated.Remove(player.PlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.PlayerId))
+                                consigliere.Investigated.Remove(player.PlayerId);
                         }
-                        else
-                            color = jackal.SubFactionColor;
                     }
+                    else
+                        color = jackal.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var necromancer = PlayerControl.LocalPlayer.GetNecromancer();
 
-                if (necromancer != null)
+                if (necromancer.Resurrected.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
                 {
-                    if (necromancer.Resurrected.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#E6108AFF>Σ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#E6108AFF>Σ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.PlayerId))
-                                    consigliere.Investigated.Remove(player.PlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.PlayerId))
+                                consigliere.Investigated.Remove(player.PlayerId);
                         }
-                        else
-                            color = necromancer.SubFactionColor;
                     }
+                    else
+                        color = necromancer.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var whisperer = PlayerControl.LocalPlayer.GetWhisperer();
 
-                if (whisperer != null)
+                if (whisperer.Persuaded.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
                 {
-                    if (whisperer.Persuaded.Contains(player.PlayerId) && player != PlayerControl.LocalPlayer)
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#F995FCFF>Λ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#F995FCFF>Λ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.PlayerId))
-                                    consigliere.Investigated.Remove(player.PlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.PlayerId))
+                                consigliere.Investigated.Remove(player.PlayerId);
                         }
-                        else
-                            color = whisperer.SubFactionColor;
                     }
                     else
+                        color = whisperer.SubFactionColor;
+                }
+                else
+                {
+                    foreach (var stats in whisperer.PlayerConversion)
                     {
-                        foreach (var stats in whisperer.PlayerConversion)
-                        {
-                            if (stats.Item1 != player.PlayerId)
-                                continue;
+                        if (stats.Item1 != player.PlayerId)
+                            continue;
 
-                            var perc = stats.Item2;
-                            var diff = (6, 106, 3);
-                            var diffPerc = (byte)((100 - perc) / 100);
+                        var perc = stats.Item2;
+                        var diff = (6, 106, 3);
+                        var diffPerc = (byte)((100 - perc) / 100);
 
-                            color = new Color32((byte)(255 - (diff.Item1 * diffPerc)), (byte)(255 - (diff.Item2 * diffPerc)), (byte)(255 - (diff.Item3 * diffPerc)), 255);
-                        }
+                        color = new Color32((byte)(255 - (diff.Item1 * diffPerc)), (byte)(255 - (diff.Item2 * diffPerc)), (byte)(255 - (diff.Item3 * diffPerc)), 255);
                     }
                 }
             }
@@ -594,6 +582,61 @@ namespace TownOfUsReworked.Patches
             if (player.IsProtected() && CustomGameOptions.ShowProtect == ProtectOptions.Everyone && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
                 name += " <color=#FFFFFFFF>η</color>";
 
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+            {
+                var role = localinfo[0] as Role;
+
+                if (role.TasksDone)
+                {
+                    if (CustomGameOptions.SnitchSeesRoles)
+                    {
+                        var role2 = info[0] as Role;
+
+                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        {
+                            color = role2.Color;
+                            name += $"\n{role2.Name}";
+                            roleRevealed = true;
+                        }
+                    }
+                    else
+                    {
+                        var role2 = info[0] as Role;
+
+                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        {
+                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor))
+                            {
+                                color = role2.FactionColor;
+                                name += $"\n{role2.FactionName}";
+                            }
+                            else
+                            {
+                                color = Colors.Crew;
+                                name += "\nCrew";
+                            }
+
+                            roleRevealed = true;
+                        }
+                    }
+                }
+            }
+
+            if (player.Is(AbilityEnum.Snitch) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+            {
+                var role = info[0] as Role;
+
+                if (role.TasksDone)
+                {
+                    var ability = info[2] as Ability;
+                    color = ability.Color;
+                    name += $"\n{ability.Name}";
+                    roleRevealed = true;
+                }
+            }
+
             if (PlayerControl.LocalPlayer.GetFaction() == player.GetFaction() && player != PlayerControl.LocalPlayer && (player.GetFaction() == Faction.Intruder || player.GetFaction() ==
                 Faction.Syndicate) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
@@ -662,7 +705,7 @@ namespace TownOfUsReworked.Patches
             var roleRevealed = false;
 
             if (CustomGameOptions.Whispers && !(CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind))
-                name = $"[{player.TargetPlayerId}]" + name;
+                name = $"[{player.TargetPlayerId}] " + name;
 
             if (player.CanDoTasks() && (PlayerControl.LocalPlayer.PlayerId == player.TargetPlayerId || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
             {
@@ -906,129 +949,117 @@ namespace TownOfUsReworked.Patches
             {
                 var dracula = PlayerControl.LocalPlayer.GetDracula();
 
-                if (dracula != null)
+                if (dracula.Converted.Contains(player.TargetPlayerId))
                 {
-                    if (dracula.Converted.Contains(player.TargetPlayerId))
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#7B8968FF>γ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#7B8968FF>γ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                                    consigliere.Investigated.Remove(player.TargetPlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.TargetPlayerId))
+                                consigliere.Investigated.Remove(player.TargetPlayerId);
                         }
-                        else
-                            color = dracula.SubFactionColor;
                     }
+                    else
+                        color = dracula.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var jackal = PlayerControl.LocalPlayer.GetJackal();
 
-                if (jackal != null)
+                if (jackal.Recruited.Contains(player.TargetPlayerId))
                 {
-                    if (jackal.Recruited.Contains(player.TargetPlayerId))
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#575657FF>$</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#575657FF>$</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                                    consigliere.Investigated.Remove(player.TargetPlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.TargetPlayerId))
+                                consigliere.Investigated.Remove(player.TargetPlayerId);
                         }
-                        else
-                            color = jackal.SubFactionColor;
                     }
+                    else
+                        color = jackal.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var necromancer = PlayerControl.LocalPlayer.GetNecromancer();
 
-                if (necromancer != null)
+                if (necromancer.Resurrected.Contains(player.TargetPlayerId))
                 {
-                    if (necromancer.Resurrected.Contains(player.TargetPlayerId))
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#E6108AFF>Σ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#E6108AFF>Σ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                                    consigliere.Investigated.Remove(player.TargetPlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.TargetPlayerId))
+                                consigliere.Investigated.Remove(player.TargetPlayerId);
                         }
-                        else
-                            color = necromancer.SubFactionColor;
                     }
+                    else
+                        color = necromancer.SubFactionColor;
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var whisperer = PlayerControl.LocalPlayer.GetWhisperer();
 
-                if (whisperer != null)
+                if (whisperer.Persuaded.Contains(player.TargetPlayerId))
                 {
-                    if (whisperer.Persuaded.Contains(player.TargetPlayerId))
+                    if (CustomGameOptions.FactionSeeRoles)
                     {
-                        if (CustomGameOptions.FactionSeeRoles)
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
+                        name += " <color=#F995FCFF>Λ</color>";
+                        roleRevealed = true;
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                         {
-                            var role = info[0] as Role;
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            name += " <color=#F995FCFF>Λ</color>";
-                            roleRevealed = true;
+                            var consigliere = localinfo[0] as Consigliere;
 
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
-                            {
-                                var consigliere = localinfo[0] as Consigliere;
-
-                                if (consigliere.Investigated.Contains(player.TargetPlayerId))
-                                    consigliere.Investigated.Remove(player.TargetPlayerId);
-                            }
+                            if (consigliere.Investigated.Contains(player.TargetPlayerId))
+                                consigliere.Investigated.Remove(player.TargetPlayerId);
                         }
-                        else
-                            color = whisperer.SubFactionColor;
                     }
                     else
+                        color = whisperer.SubFactionColor;
+                }
+                else
+                {
+                    foreach (var stats in whisperer.PlayerConversion)
                     {
-                        foreach (var stats in whisperer.PlayerConversion)
-                        {
-                            if (stats.Item1 != player.TargetPlayerId)
-                                continue;
+                        if (stats.Item1 != player.TargetPlayerId)
+                            continue;
 
-                            var perc = stats.Item2;
-                            var diff = (6, 106, 3);
-                            var diffPerc = (byte)((100 - perc) / 100);
+                        var perc = stats.Item2;
+                        var diff = (6, 106, 3);
+                        var diffPerc = (byte)((100 - perc) / 100);
 
-                            color = new Color32((byte)(255 - (diff.Item1 * diffPerc)), (byte)(255 - (diff.Item2 * diffPerc)), (byte)(255 - (diff.Item3 * diffPerc)), 255);
-                        }
+                        color = new Color32((byte)(255 - (diff.Item1 * diffPerc)), (byte)(255 - (diff.Item2 * diffPerc)), (byte)(255 - (diff.Item3 * diffPerc)), 255);
                     }
                 }
             }
@@ -1187,6 +1218,62 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && CustomGameOptions.SnitchSeestargetsInMeeting && !(PlayerControl.LocalPlayer.Data.IsDead &&
+                CustomGameOptions.DeadSeeEverything) && player != PlayerControl.LocalPlayer)
+            {
+                var role = localinfo[0] as Role;
+
+                if (role.TasksDone)
+                {
+                    if (CustomGameOptions.SnitchSeesRoles)
+                    {
+                        var role2 = info[0] as Role;
+
+                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        {
+                            color = role2.Color;
+                            name += $"\n{role2.Name}";
+                            roleRevealed = true;
+                        }
+                    }
+                    else
+                    {
+                        var role2 = info[0] as Role;
+
+                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        {
+                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor))
+                            {
+                                color = role2.FactionColor;
+                                name += $"\n{role2.FactionName}";
+                            }
+                            else
+                            {
+                                color = Colors.Crew;
+                                name += "\nCrew";
+                            }
+
+                            roleRevealed = true;
+                        }
+                    }
+                }
+            }
+
+            if (player.Is(AbilityEnum.Snitch))
+            {
+                var role = info[0] as Role;
+
+                if (role.TasksDone)
+                {
+                    var ability = info[2] as Ability;
+                    color = ability.Color;
+                    name += $"\n{ability.Name}";
+                    roleRevealed = true;
+                }
+            }
+
             if (PlayerControl.LocalPlayer.GetFaction() == player.GetFaction() && player.TargetPlayerId != PlayerControl.LocalPlayer.PlayerId && (player.GetFaction() == Faction.Intruder ||
                 player.GetFaction() == Faction.Syndicate) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
@@ -1211,6 +1298,12 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = role.FactionColor;
+                    
+                    if (player.Is(ObjectifierEnum.Traitor))
+                    {
+                        var objectifier = info[3] as Objectifier;
+                        name += $" {objectifier.GetColoredSymbol()}";
+                    }
                 }
             }
 

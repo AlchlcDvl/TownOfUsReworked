@@ -75,7 +75,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool EnableUniques => Generate.EnableUniques.Get();
 
         //Map Settings
-        //public static Map Map => (Map)Generate.Map.Get();
+        public static Map Map => (Map)Generate.Map.Get();
         public static bool RandomMapEnabled => Generate.RandomMapEnabled.Get();
         public static float RandomMapSkeld => Generate.RandomMapSkeld.Get();
         public static float RandomMapMira => Generate.RandomMapMira.Get();
@@ -207,6 +207,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int LighterOn => (int)Generate.LighterOn.Get();
         public static int ButtonBarryOn => (int)Generate.ButtonBarryOn.Get();
         public static int TunnelerOn => (int)Generate.TunnelerOn.Get();
+        public static int NinjaOn => (int)Generate.NinjaOn.Get();
         public static int RadarOn => (int)Generate.RadarOn.Get();
         public static int TiebreakerOn => (int)Generate.TiebreakerOn.Get();
         public static int InsiderOn => (int)Generate.InsiderOn.Get();
@@ -327,6 +328,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueCoroner => Generate.UniqueCoroner.Get();
         public static int CoronerCount => (int)Generate.CoronerCount.Get();
         public static float CoronerKillerNameTime => Generate.CoronerKillerNameTime.Get();
+        public static float CompareCooldown => Generate.CompareCooldown.Get();
 
         //Revealer Settings
         public static bool RevealerKnows => Generate.RevealerKnows.Get();
@@ -374,6 +376,7 @@ namespace TownOfUsReworked.CustomOptions
         //Vigilante Settings
         public static VigiOptions VigiOptions => (VigiOptions)Generate.VigiOptions.Get();
         public static int VigilanteCount => (int)Generate.VigilanteCount.Get();
+        public static int VigiBulletCount => (int)Generate.VigiBulletCount.Get();
         public static float VigiKillCd => Generate.VigiKillCd.Get();
         public static bool UniqueVigilante => Generate.UniqueVigilante.Get();
         public static bool MisfireKillsInno => Generate.MisfireKillsInno.Get();
@@ -783,10 +786,12 @@ namespace TownOfUsReworked.CustomOptions
 
         //Anarchist Settings
         public static int AnarchistCount => (int)Generate.AnarchistCount.Get();
+        public static float ChaosDriveCooldownDecrease => Generate.ChaosDriveCooldownDecrease.Get();
 
         //Framer Settings
         public static int FramerCount => (int)Generate.FramerCount.Get();
         public static float FrameCooldown => Generate.FrameCooldown.Get();
+        public static float ChaosDriveFrameRadius => Generate.ChaosDriveFrameRadius.Get();
         public static bool UniqueFramer => Generate.UniqueFramer.Get();
 
         //ShapeShifter Settings
@@ -818,6 +823,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool BombCooldownsLinked => Generate.BombCooldownsLinked.Get();
         public static bool BombsDetonateOnMeetingStart => Generate.BombsDetonateOnMeetingStart.Get();
         public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound.Get();
+        public static float ChaosDriveBombRange => Generate.ChaosDriveBombRange.Get();
 
         //Concealer Settings
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
@@ -830,6 +836,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueRebel => Generate.UniqueRebel.Get();
         public static bool PromotedSidekickCanPromote => Generate.PromotedSidekickCanPromote.Get();
         public static float SidekickAbilityCooldownDecrease => Generate.SidekickAbilityCooldownDecrease.Get();
+        public static float ChaosDriveRebelKillDecrease => Generate.ChaosDriveRebelKillDecrease.Get();
 
         //Warper Settings
         public static float WarpCooldown => Generate.WarpCooldown.Get();
@@ -861,7 +868,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int SnitchCount => (int)Generate.SnitchCount.Get();
         public static bool SnitchSeesCrew => Generate.SnitchSeesCrew.Get();
         public static bool SnitchSeesRoles => Generate.SnitchSeesRoles.Get();
-        public static bool SnitchSeesImpInMeeting => Generate.SnitchSeesImpInMeeting.Get();
+        public static bool SnitchSeestargetsInMeeting => Generate.SnitchSeestargetsInMeeting.Get();
         public static bool SnitchSeesTraitor => Generate.SnitchSeesTraitor.Get();
         public static bool SnitchKnows => Generate.SnitchKnows.Get();
         public static int SnitchTasksRemaining => (int)Generate.SnitchTasksRemaining.Get();
@@ -940,6 +947,7 @@ namespace TownOfUsReworked.CustomOptions
         //Indomitable Settings
         public static bool UniqueIndomitable => Generate.UniqueIndomitable.Get();
         public static int IndomitableCount => (int)Generate.IndomitableCount.Get();
+        public static bool IndomitableKnows => Generate.IndomitableKnows.Get();
 
         //Ruthless Settings
         public static int RuthlessCount => (int)Generate.RuthlessCount.Get();
@@ -1005,6 +1013,10 @@ namespace TownOfUsReworked.CustomOptions
         public static int ShyCount => (int)Generate.ShyCount.Get();
         public static bool UniqueShy => Generate.UniqueShy.Get();
 
+        //Ninja Settings
+        public static int NinjaCount => (int)Generate.NinjaCount.Get();
+        public static bool UniqueNinja => Generate.UniqueNinja.Get();
+
         //VIP Settings
         public static bool VIPKnows => Generate.VIPKnows.Get();
         public static bool UniqueVIP => Generate.UniqueVIP.Get();
@@ -1034,6 +1046,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int OverlordCount => (int)Generate.OverlordCount.Get();
         public static bool UniqueOverlord => Generate.UniqueOverlord.Get();
         public static int OverlordMeetingWinCount => (int)Generate.OverlordMeetingWinCount.Get();
+        public static bool OverlordKnows => Generate.OverlordKnows.Get();
 
         //Allied Settings
         public static int AlliedCount => (int)Generate.AlliedCount.Get();

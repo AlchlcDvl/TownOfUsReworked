@@ -36,7 +36,7 @@ namespace TownOfUsReworked.Patches
                 {
                     string report = $"The body was found in {location}.";
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
                     writer.Write(report);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

@@ -6,7 +6,6 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Networking.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
@@ -35,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     var playerId = role.CurrentTarget.ParentId;
                     var player = Utils.PlayerById(playerId);
                     Utils.Spread(role.Player, player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Drag);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(playerId);
@@ -47,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                 }
                 else
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Drop);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();

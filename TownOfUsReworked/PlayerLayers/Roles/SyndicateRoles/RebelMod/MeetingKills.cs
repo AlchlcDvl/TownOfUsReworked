@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.RebelMod
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.RebelMod
                     if (rebel.Player != rebel.PoisonedPlayer && rebel.PoisonedPlayer != null)
                     {
                         if (!rebel.PoisonedPlayer.Data.IsDead && !rebel.PoisonedPlayer.Is(RoleEnum.Pestilence))
-                            Utils.MurderPlayer(rebel.Player, rebel.PoisonedPlayer);
+                            Utils.MurderPlayer(rebel.Player, rebel.PoisonedPlayer, false);
                     }
                 }
                 else if (rebel.FormerRole.RoleType == RoleEnum.Gorgon)

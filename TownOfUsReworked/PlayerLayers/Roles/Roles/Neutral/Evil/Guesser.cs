@@ -8,7 +8,7 @@ using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Guesser : Role
     {
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = "Neutral (Evil)";
+            AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
             RemainingGuesses = CustomGameOptions.GuessCount;
 
@@ -199,9 +199,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                     if (CustomGameOptions.BeamerOn > 0)
                         ColorMapping.Add("Beamer", Colors.Beamer);
 
-                    if (CustomGameOptions.PoisonerOn > 0)
-                        ColorMapping.Add("Poisoner", Colors.Poisoner);
-
                     if (CustomGameOptions.RebelOn > 0)
                     {
                         ColorMapping.Add("Rebel", Colors.Rebel);
@@ -300,7 +297,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -344,7 +341,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (TargetGuessed)
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.GuesserWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -352,7 +349,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 return false;
             }   
 
-            return (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected) && !TargetGuessed;
+            return true;
         }
     }
 }

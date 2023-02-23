@@ -58,7 +58,7 @@ namespace TownOfUsReworked.Classes
         public static bool FixSubOxygen()
         {
             SubmergedCompatibility.RepairOxygen();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable);
             writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             return false;
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.Classes
 
         public static bool FixLights(SwitchSystem lights)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.FixLights);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             lights.ActualSwitches = lights.ExpectedSwitches;

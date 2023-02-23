@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
@@ -42,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.SyndicateWin && role.SubFaction == SubFaction.None)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SyndicateLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -53,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!arso.ArsonistWins && arso.SubFaction == SubFaction.None)
                 {
                     arso.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ArsonistLose);
                     writer.Write(arso.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -65,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.CrewWin && role.SubFaction == SubFaction.None)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CrewLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -76,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.AllNeutralsWin)
                 {
                     amne.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.AmnesiacLose);
                     writer.Write(amne.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -88,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.CabalWin)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CabalLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -99,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (cann.EatNeed > 0 && cann.SubFaction == SubFaction.None)
                 {
                     cann.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CannibalLose);
                     writer.Write(cann.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -111,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!cryo.CryoWins && cryo.SubFaction == SubFaction.None)
                 {
                     cryo.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CryomaniacLose);
                     writer.Write(cryo.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -123,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!gli.GlitchWins && gli.SubFaction == SubFaction.None)
                 {
                     gli.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.GlitchLose);
                     writer.Write(gli.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -135,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!guess.GuesserWins && guess.SubFaction == SubFaction.None)
                 {
                     guess.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.GuesserLose);
                     writer.Write(guess.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -146,7 +145,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 if (!jest.VotedOut && jest.SubFaction == SubFaction.None)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.JesterLose);
                     writer.Write(jest.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -159,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!jugg.JuggernautWins && jugg.SubFaction == SubFaction.None)
                 {
                     jugg.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.JuggernautLose);
                     writer.Write(jugg.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -171,7 +170,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!murd.MurdWins && murd.SubFaction == SubFaction.None)
                 {
                     murd.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.MurdererLose);
                     writer.Write(murd.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -183,7 +182,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!pest.PestilenceWins && pest.SubFaction == SubFaction.None)
                 {
                     pest.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.PestilenceLose);
                     writer.Write(pest.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -195,7 +194,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!phan.CompletedTasks)
                 {
                     phan.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.PhantomLose);
                     writer.Write(phan.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -207,7 +206,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!pb.PlaguebearerWins && pb.SubFaction == SubFaction.None)
                 {
                     pb.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.PlaguebearerLose);
                     writer.Write(pb.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -219,7 +218,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.ReanimatedWin)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ReanimatedLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -230,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.SectWin)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SectLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -241,7 +240,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!sk.SerialKillerWins && sk.SubFaction == SubFaction.None)
                 {
                     sk.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SerialKillerLose);
                     writer.Write(sk.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -253,7 +252,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!ga.TargetAlive)
                 {
                     ga.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.GuardianAngelLose);
                     writer.Write(ga.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -265,7 +264,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!exe.TargetVotedOut)
                 {
                     exe.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ExecutionerLose);
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -277,7 +276,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!surv.Alive)
                 {
                     surv.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SurvivorLose);
                     writer.Write(surv.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -289,7 +288,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.AllNeutralsWin)
                 {
                     thief.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ThiefLose);
                     writer.Write(thief.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -301,7 +300,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!troll.Killed)
                 {
                     troll.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.TrollLose);
                     writer.Write(troll.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -313,7 +312,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.UndeadWin)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.UndeadLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -324,7 +323,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!ww.WWWins)
                 {
                     ww.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.WerewolfLose);
                     writer.Write(ww.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -336,7 +335,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.IntruderWin)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.IntruderLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -347,7 +346,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.AllNeutralsWin && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.AllNeutralsLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -358,7 +357,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!Role.NKWins && CustomGameOptions.NoSolo == NoSolo.AllNKs)
                 {
                     role.Loses();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.AllNKsLose);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

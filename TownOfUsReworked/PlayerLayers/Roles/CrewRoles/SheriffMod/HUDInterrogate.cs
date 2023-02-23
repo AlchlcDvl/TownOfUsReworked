@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod

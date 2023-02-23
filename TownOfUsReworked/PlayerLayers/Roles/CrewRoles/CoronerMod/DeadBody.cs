@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
@@ -13,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
     {
         private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Coroner))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Coroner))
                 return;
 
             Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Add(info.PlayerId);

@@ -4,7 +4,6 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                     return false;
 
                 Utils.Spread(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId));
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.CannibalEat);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(role.CurrentTarget.ParentId);

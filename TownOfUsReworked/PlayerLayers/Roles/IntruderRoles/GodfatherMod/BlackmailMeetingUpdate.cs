@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Linq;
 using System.Collections;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {

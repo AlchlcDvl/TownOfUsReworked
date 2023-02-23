@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
+namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Overlord : Objectifier
     {
@@ -15,9 +15,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Overlord";
             SymbolName = "β";
-            TaskText = "Take over the mission!";
+            TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Overlord;
+            Hidden = !CustomGameOptions.OverlordKnows;
+            ObjectifierDescription = $"You are an Overlord! You are a patient insurgent who must survive for {CustomGameOptions.OverlordMeetingWinCount} meetings to successfully take " +
+                "over the Crew's mission!";
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
@@ -28,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (MeetingCountAchieved())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.OverlordWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

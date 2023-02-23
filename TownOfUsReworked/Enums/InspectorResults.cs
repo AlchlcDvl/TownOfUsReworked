@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Enums
 {
     public enum InspectorResults
     {
-        MeddleWithDead, //Janitor, Undertaker, Altruist, Necromancer
+        MeddlesWithDead, //Janitor, Undertaker, Altruist, Necromancer
         DealsWithDead, //Coroner, Amnesiac, Cannibal, Retributionist
         SeeksToProtect, //Guardian Angel, Survivor, Veteran, Medic, Ambusher
         LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence
@@ -13,11 +13,13 @@ namespace TownOfUsReworked.Enums
         HasInformation, //Sheriff, Consigliere, Blackmailer, Detective, Inspector
         MeddlesWithOthers, //Escort, Consort, Jester, Executioner, Actor
         TouchesPeople, //Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
-        Unseen, //Grenadier, Chameleon, Wraith, Poisoner, Gorgon, Concealer
+        Unseen, //Chameleon, Wraith, Poisoner, Gorgon, Concealer
         UsesGuns, //Vigilante, Bounty Hunter, Guesser, Mafioso
         TracksOthers, //Tracker, Mystic, Vampire Hunter, Whisperer
         IsAggressive, //Werewolf, Juggernaut, Sidekick, Serial Killer
-        CausesConfusion, //Morphling, Disguiser, Shapeshifter
+        CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer
+        DropsItems, //Bomber, Operative, Grenadier
+        Ghostly, //Revealer, Phantom
         None
     }
 }

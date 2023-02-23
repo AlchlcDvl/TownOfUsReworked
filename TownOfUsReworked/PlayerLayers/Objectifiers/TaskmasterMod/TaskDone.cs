@@ -5,7 +5,6 @@ using TownOfUsReworked.Classes;
 using System.Linq;
 using Reactor.Utilities;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {

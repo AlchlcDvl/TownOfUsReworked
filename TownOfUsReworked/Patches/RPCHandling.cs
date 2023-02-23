@@ -4,21 +4,17 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
-using TownOfUsReworked.PlayerLayers.Modifiers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
@@ -87,11 +83,6 @@ namespace TownOfUsReworked.Patches
         private static readonly List<(Type, int, int, bool)> AllAbilities = new List<(Type, int, int, bool)>();
         private static readonly List<(Type, int, int, bool)> AllObjectifiers = new List<(Type, int, int, bool)>();
 
-        private static readonly bool IsAA = CustomGameOptions.GameMode == GameMode.AllAny;
-        private static readonly bool IsCustom = CustomGameOptions.GameMode == GameMode.Custom;
-        private static readonly bool IsClassic = CustomGameOptions.GameMode == GameMode.Classic;
-        private static readonly bool IsKilling = CustomGameOptions.GameMode == GameMode.KillingOnly;
-
         private static bool PhantomOn;
         private static bool RevealerOn;
 
@@ -119,6 +110,9 @@ namespace TownOfUsReworked.Patches
                 min = 0;
 
             var amount = Random.RandomRangeInt(min, max + 1);
+
+            if (min == max)
+                amount = min;
 
             if (amount < 0)
                 amount = 0;
@@ -182,9 +176,9 @@ namespace TownOfUsReworked.Patches
             crewmates.Shuffle();
             impostors.Shuffle();
 
-            if (!IsKilling)
+            if (!GameStates.IsKilling)
             {
-                if (IsClassic || IsCustom)
+                if (GameStates.IsClassic || GameStates.IsCustom)
                 {
                     if (!CustomGameOptions.AltImps)
                     {
@@ -630,7 +624,7 @@ namespace TownOfUsReworked.Patches
 
                     TownOfUsReworked.LogSomething("Classic/Custom Sorting Done");
                 }
-                else if (IsAA)
+                else if (GameStates.IsAA)
                 {
                     CrewRoles.AddRange(CrewAuditorRoles);
                     CrewRoles.AddRange(CrewInvestigativeRoles);
@@ -697,7 +691,7 @@ namespace TownOfUsReworked.Patches
                 spawnList1 = NonIntruderRoles;
                 spawnList2 = IntruderRoles;
 
-                if (IsAA)
+                if (GameStates.IsAA)
                 {
                     while (nonIntruderRoles.Count <= crewmates.Count && NonIntruderRoles.Count > 0)
                     {
@@ -959,6 +953,7 @@ namespace TownOfUsReworked.Patches
                 var canHaveLoverorRival = PlayerControl.AllPlayerControls.ToArray().ToList();
                 var canHaveNeutralObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
                 var canHaveCrewObjectifier = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveAllied = PlayerControl.AllPlayerControls.ToArray().ToList();
 
                 canHaveLoverorRival.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Jester) || player.Is(RoleEnum.Shifter));
                 canHaveLoverorRival.Shuffle();
@@ -968,11 +963,14 @@ namespace TownOfUsReworked.Patches
 
                 canHaveCrewObjectifier.RemoveAll(player => !player.Is(Faction.Crew));
                 canHaveCrewObjectifier.Shuffle();
+
+                canHaveAllied.RemoveAll(player => !player.Is(RoleAlignment.NeutralKill));
+                canHaveAllied.Shuffle();
                 
                 var obj = new List<(Type, int, int, bool)>();
                 var spawnList = AllObjectifiers;
                 
-                if (IsAA)
+                if (GameStates.IsAA)
                 {
                     while (obj.Count <= allCount && AllObjectifiers.Count > 0)
                     {
@@ -999,20 +997,22 @@ namespace TownOfUsReworked.Patches
                     var (type, _, id, unique) = spawnList.TakeFirst();
                     int[] LoverRival = { 0, 1 };
                     int[] Crew = { 2, 3, 6 };
-                    int[] Neutral = { 4, 5, 7 };
-                    var random = Random.RandomRangeInt(0, 3);
+                    int[] Neutral = { 4, 7 };
+                    int[] Allied = { 5 };
 
-                    if (LoverRival.Contains(id) && random == 0 && canHaveLoverorRival.Count > 4)
+                    if (LoverRival.Contains(id) && canHaveLoverorRival.Count > 4)
                     {
                         if (id == 0)
                             Lovers.Gen(canHaveLoverorRival);
                         else if (id == 1)
                             Rivals.Gen(canHaveLoverorRival);
                     }
-                    else if (Crew.Contains(id) && random == 1 && canHaveCrewObjectifier.Count > 0)
+                    else if (Crew.Contains(id) && canHaveCrewObjectifier.Count > 0)
                         Objectifier.GenObjectifier<Objectifier>(type, canHaveCrewObjectifier.TakeFirst(), id);
-                    else if (Neutral.Contains(id) && random == 2 && canHaveNeutralObjectifier.Count > 0)
+                    else if (Neutral.Contains(id) && canHaveNeutralObjectifier.Count > 0)
                         Objectifier.GenObjectifier<Objectifier>(type, canHaveNeutralObjectifier.TakeFirst(), id);
+                    else if (Allied.Contains(id) && canHaveAllied.Count > 0)
+                        Objectifier.GenObjectifier<Objectifier>(type, canHaveAllied.TakeFirst(), id);
                 }
 
                 TownOfUsReworked.LogSomething("Objectifiers Done");
@@ -1066,7 +1066,7 @@ namespace TownOfUsReworked.Patches
                 var ab = new List<(Type, int, int, bool)>();
                 var spawnList = AllAbilities;
                 
-                if (IsAA)
+                if (GameStates.IsAA)
                 {
                     while (ab.Count <= allCount && AllAbilities.Count > 0)
                     {
@@ -1098,35 +1098,34 @@ namespace TownOfUsReworked.Patches
                     int[] Crew = { 0, 3 };
                     int[] Neutral = { 13 };
                     int[] Intruder = { 11 };
-                    int[] Killing = { 10 };
+                    int[] Killing = { 10, 14 };
                     int[] NonEvil = { 7 };
                     int[] Evil = { 8 };
                     int[] Tasked = { 2, 4 };
                     int[] Global = { 5, 6 };
                     int[] Tunneler = { 9 };
-                    var random = Random.RandomRangeInt(0, 11);
 
-                    if (canHaveSnitch.Count > 0 && random == 0 && Snitch.Contains(id))
+                    if (canHaveSnitch.Count > 0 && Snitch.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveSnitch.TakeFirst(), id);
-                    else if (canHaveSyndicateAbility.Count > 0 && random == 1 && Syndicate.Contains(id))
+                    else if (canHaveSyndicateAbility.Count > 0 && Syndicate.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveSyndicateAbility.TakeFirst(), id);
-                    else if (canHaveCrewAbility.Count > 0 && random == 2 && Crew.Contains(id))
+                    else if (canHaveCrewAbility.Count > 0 && Crew.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveCrewAbility.TakeFirst(), id);
-                    else if (canHaveNeutralAbility.Count > 0 && random == 3 && Neutral.Contains(id))
+                    else if (canHaveNeutralAbility.Count > 0 && Neutral.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveNeutralAbility.TakeFirst(), id);
-                    else if (canHaveIntruderAbility.Count > 0 && random == 4 && Intruder.Contains(id))
+                    else if (canHaveIntruderAbility.Count > 0 && Intruder.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveIntruderAbility.TakeFirst(), id);
-                    else if (canHaveKillingAbility.Count > 0 && random == 5 && Killing.Contains(id))
+                    else if (canHaveKillingAbility.Count > 0 && Killing.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveKillingAbility.TakeFirst(), id);
-                    else if (canHaveNonEvilAbility.Count > 0 && random == 6 && NonEvil.Contains(id))
+                    else if (canHaveNonEvilAbility.Count > 0 && NonEvil.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveNonEvilAbility.TakeFirst(), id);
-                    else if (canHaveEvilAbility.Count > 0 && random == 7 && Evil.Contains(id))
+                    else if (canHaveEvilAbility.Count > 0 && Evil.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveEvilAbility.TakeFirst(), id);
-                    else if (canHaveTaskedAbility.Count > 0 && random == 8 && Tasked.Contains(id))
+                    else if (canHaveTaskedAbility.Count > 0 && Tasked.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveTaskedAbility.TakeFirst(), id);
-                    else if (canHaveAbility.Count > 0 && random == 9 && Global.Contains(id))
+                    else if (canHaveAbility.Count > 0 && Global.Contains(id))
                         Ability.GenAbility<Ability>(type, canHaveAbility.TakeFirst(), id);
-                    else if (canHaveTunnelerAbility.Count > 0 && random == 10 && Tunneler.Contains(id) && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
+                    else if (canHaveTunnelerAbility.Count > 0 && Tunneler.Contains(id) && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
                         Ability.GenAbility<Ability>(type, canHaveTunnelerAbility.TakeFirst(), id);
                 }
 
@@ -1139,6 +1138,7 @@ namespace TownOfUsReworked.Patches
                 var canHaveDiseased = PlayerControl.AllPlayerControls.ToArray().ToList();
                 var canHaveProfessional = PlayerControl.AllPlayerControls.ToArray().ToList();
                 var canHaveModifier = PlayerControl.AllPlayerControls.ToArray().ToList();
+                var canHaveShy = PlayerControl.AllPlayerControls.ToArray().ToList();
 
                 canHaveBait.RemoveAll(player => player.Is(RoleEnum.Vigilante) || player.Is(RoleEnum.Shifter) || player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll));
                 canHaveBait.Shuffle();
@@ -1148,11 +1148,16 @@ namespace TownOfUsReworked.Patches
 
                 canHaveProfessional.RemoveAll(player => !player.Is(AbilityEnum.Assassin));
                 canHaveProfessional.Shuffle();
+
+                canHaveShy.RemoveAll(player => (player.Is(RoleEnum.Mayor) && CustomGameOptions.MayorButton) || (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterButton) ||
+                    (player.Is(RoleEnum.Swapper) && CustomGameOptions.SwapperButton) || (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) &&
+                    CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && CustomGameOptions.ExecutionerButton));
+                canHaveShy.Shuffle();
                 
                 var mod = new List<(Type, int, int, bool)>();
                 var spawnList = AllAbilities;
                 
-                if (IsAA)
+                if (GameStates.IsAA)
                 {
                     while (mod.Count <= allCount && AllModifiers.Count > 0)
                     {
@@ -1180,17 +1185,19 @@ namespace TownOfUsReworked.Patches
                     int[] Bait = { 1 };
                     int[] Diseased = { 0 };
                     int[] Professional = { 10 };
-                    int[] Global = { 2, 3, 4, 5, 6, 7, 8, 9, 11 };
-                    var random = Random.RandomRangeInt(0, 4);
+                    int[] Global = { 2, 3, 5, 6, 7, 8, 9, 11 };
+                    int[] Shy = { 4 };
 
-                    if (canHaveBait.Count > 0 && random == 0 && Bait.Contains(id))
+                    if (canHaveBait.Count > 0 && Bait.Contains(id))
                         Modifier.GenModifier<Modifier>(type, canHaveBait.TakeFirst(), id);
-                    else if (canHaveDiseased.Count > 0 && random == 1 && Diseased.Contains(id))
+                    else if (canHaveDiseased.Count > 0 && Diseased.Contains(id))
                         Modifier.GenModifier<Modifier>(type, canHaveDiseased.TakeFirst(), id);
-                    else if (canHaveProfessional.Count > 0 && random == 2 && Professional.Contains(id))
+                    else if (canHaveProfessional.Count > 0 && Professional.Contains(id))
                         Modifier.GenModifier<Modifier>(type, canHaveProfessional.TakeFirst(), id);
-                    else if (canHaveModifier.Count > 0 && random == 3 && Global.Contains(id))
+                    else if (canHaveModifier.Count > 0 && Global.Contains(id))
                         Modifier.GenModifier<Modifier>(type, canHaveModifier.TakeFirst(), id);
+                    else if (canHaveShy.Count > 0 && Shy.Contains(id))
+                        Modifier.GenModifier<Modifier>(type, canHaveShy.TakeFirst(), id);
                 }
 
                 TownOfUsReworked.LogSomething("Modifiers Done");
@@ -1203,24 +1210,56 @@ namespace TownOfUsReworked.Patches
                     var alliedRole = Role.GetRole(ally.Player);
 
                     if (CustomGameOptions.AlliedFaction == AlliedFaction.Intruder)
+                    {
                         alliedRole.Faction = Faction.Intruder;
+                        alliedRole.FactionName = "Intruder";
+                        alliedRole.IsIntAlly = true;
+                        ally.Color = Colors.Intruder;
+                    }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Syndicate)
+                    {
                         alliedRole.Faction = Faction.Syndicate;
+                        alliedRole.FactionName = "Syndicate";
+                        alliedRole.IsSynAlly = true;
+                        ally.Color = Colors.Syndicate;
+                    }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Crew)
+                    {
                         alliedRole.Faction = Faction.Crew;
+                        alliedRole.FactionName = "Crew";
+                        alliedRole.IsCrewAlly = true;
+                        ally.Color = Colors.Crew;
+                    }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Random)
                     {
                         var random = Random.RandomRangeInt(0, 3);
 
                         if (random == 0)
+                        {
                             alliedRole.Faction = Faction.Intruder;
+                            alliedRole.FactionName = "Intruder";
+                            alliedRole.IsIntAlly = true;
+                            ally.Color = Colors.Intruder;
+                        }
                         else if (random == 1)
+                        {
                             alliedRole.Faction = Faction.Syndicate;
+                            alliedRole.FactionName = "Syndicate";
+                            alliedRole.IsSynAlly = true;
+                            ally.Color = Colors.Syndicate;
+                        }
                         else if (random == 2)
+                        {
                             alliedRole.Faction = Faction.Crew;
+                            alliedRole.FactionName = "Crew";
+                            alliedRole.IsCrewAlly = true;
+                            ally.Color = Colors.Crew;
+                        }
                     }
+                    
+                    ally.Side = alliedRole.FactionName;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAlliedFaction, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAlliedFaction, SendOption.Reliable);
                     writer.Write(ally.Player.PlayerId);
                     writer.Write((byte)alliedRole.Faction);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1229,7 +1268,7 @@ namespace TownOfUsReworked.Patches
                 TownOfUsReworked.LogSomething("Allied Faction Set Done");
             }
 
-            if (!IsKilling)
+            if (!GameStates.IsKilling)
             {
                 var toChooseFromNeut = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral)).ToList();
 
@@ -1240,13 +1279,13 @@ namespace TownOfUsReworked.Patches
 
                     SetPhantom.WillBePhantom = pc;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                     writer.Write(pc.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 else
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                     writer.Write(byte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -1261,13 +1300,13 @@ namespace TownOfUsReworked.Patches
 
                     SetRevealer.WillBeRevealer = pc;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                     writer.Write(pc.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
                 else
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                     writer.Write(byte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -1345,7 +1384,7 @@ namespace TownOfUsReworked.Patches
 
                             exeTargets.Remove(exe.TargetPlayer);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetTarget, SendOption.Reliable);
                             writer.Write(exe.Player.PlayerId);
                             writer.Write(exe.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1373,7 +1412,7 @@ namespace TownOfUsReworked.Patches
 
                             guessTargets.Remove(guess.TargetPlayer);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGuessTarget, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGuessTarget, SendOption.Reliable);
                             writer.Write(guess.Player.PlayerId);
                             writer.Write(guess.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1401,7 +1440,7 @@ namespace TownOfUsReworked.Patches
 
                             gaTargets.Remove(ga.TargetPlayer);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGATarget, SendOption.Reliable);
                             writer.Write(ga.Player.PlayerId);
                             writer.Write(ga.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1429,7 +1468,7 @@ namespace TownOfUsReworked.Patches
 
                             bhTargets.Remove(bh.TargetPlayer);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBHTarget, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBHTarget, SendOption.Reliable);
                             writer.Write(bh.Player.PlayerId);
                             writer.Write(bh.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1468,7 +1507,7 @@ namespace TownOfUsReworked.Patches
                                 }
                             }
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetActorVariables, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetActorVariables, SendOption.Reliable);
                             writer.Write(act.Player.PlayerId);
                             writer.Write(act.HasPretendTarget);
                             writer.Write(act.PretendTarget == null ? byte.MaxValue : act.PretendTarget.PlayerId);
@@ -1506,7 +1545,7 @@ namespace TownOfUsReworked.Patches
                             (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
                             jackal.Recruited.Add(jackal.GoodRecruit.PlayerId);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit, SendOption.Reliable);
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.GoodRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1527,7 +1566,7 @@ namespace TownOfUsReworked.Patches
                             (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
                             jackal.Recruited.Add(jackal.EvilRecruit.PlayerId);
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetEvilRecruit, SendOption.Reliable);
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.EvilRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1873,6 +1912,9 @@ namespace TownOfUsReworked.Patches
                             case 10:
                                 new Ruthless(player3);
                                 break;
+                            case 14:
+                                new Ninja(player3);
+                                break;
                         }
 
                         break;
@@ -1928,6 +1970,14 @@ namespace TownOfUsReworked.Patches
 
                         switch ((TurnRPC)id5)
                         {
+                            case TurnRPC.TurnTraitorBetrayer:
+                                Objectifier.GetObjectifier<Traitor>(Utils.PlayerById(reader.ReadByte())).TurnBetrayer();
+                                break;
+
+                            case TurnRPC.TurnFanaticBetrayer:
+                                Objectifier.GetObjectifier<Fanatic>(Utils.PlayerById(reader.ReadByte())).TurnBetrayer();
+                                break;
+
                             case TurnRPC.TurnPestilence:
                                 Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).TurnPestilence();
                                 break;
@@ -1944,9 +1994,14 @@ namespace TownOfUsReworked.Patches
                                 Role.GetRole<Sidekick>(Utils.PlayerById(reader.ReadByte())).TurnRebel();
                                 break;
 
+                            case TurnRPC.TurnSheriff:
+                                Role.GetRole<Seer>(Utils.PlayerById(reader.ReadByte())).TurnSheriff();
+                                break;
+
                             case TurnRPC.TurnSeer:
                                 Role.GetRole<Mystic>(Utils.PlayerById(reader.ReadByte())).TurnSeer();
                                 break;
+
                             case TurnRPC.GuessToAct:
                                 GuessTargetColor.GuessToAct(Utils.PlayerById(reader.ReadByte()));
                                 break;
@@ -1967,6 +2022,13 @@ namespace TownOfUsReworked.Patches
                                 GATargetColor.GAToSurv(Utils.PlayerById(reader.ReadByte()));
                                 break;
 
+                            case TurnRPC.TurnFanatic:
+                                var attacker = Utils.PlayerById(reader.ReadByte());
+                                var fanatic = Utils.PlayerById(reader.ReadByte());
+                                var attackerRole = Role.GetRole(attacker);
+                                var fanaticObj = Objectifier.GetObjectifier<Fanatic>(fanatic);
+                                fanaticObj.TurnFanatic(fanatic, attackerRole.Faction);
+                                break;
                         }
 
                         break;
@@ -1986,7 +2048,7 @@ namespace TownOfUsReworked.Patches
                         var former = Role.GetRole(revealer);
                         Role.RoleDictionary.Remove(revealer.PlayerId);
                         var revealerRole = new Revealer(revealer);
-                        revealerRole.RegenTask();
+                        revealer.RegenTask();
                         revealerRole.FormerRole = former;
                         revealerRole.RoleHistory.Add(former);
                         revealerRole.RoleHistory.AddRange(former.RoleHistory);
@@ -2003,7 +2065,7 @@ namespace TownOfUsReworked.Patches
                         var phantomFormer = Role.GetRole(phantom);
                         Role.RoleDictionary.Remove(phantom.PlayerId);
                         var phantomRole = new Phantom(phantom);
-                        phantomRole.RegenTask();
+                        phantom.RegenTask();
                         phantomRole.RoleHistory.Add(phantomFormer);
                         phantomRole.RoleHistory.AddRange(phantomFormer.RoleHistory);
                         phantom.gameObject.layer = LayerMask.NameToLayer("Players");
@@ -2173,8 +2235,34 @@ namespace TownOfUsReworked.Patches
                     case CustomRPC.SetAlliedFaction:
                         var player6 = Utils.PlayerById(reader.ReadByte());
                         var alliedRole = Role.GetRole(player6);
+                        var ally = Objectifier.GetObjectifier<Allied>(player6);
                         var faction = (Faction)reader.ReadByte();
                         alliedRole.Faction = faction;
+
+                        if (faction == Faction.Crew)
+                        {
+                            alliedRole.FactionName = "Crew";
+                            alliedRole.FactionColor = Colors.Crew;
+                            alliedRole.IsCrewAlly = true;
+                            ally.Color = Colors.Crew;
+                        }
+                        else if (faction == Faction.Intruder)
+                        {
+                            alliedRole.FactionName = "Intruder";
+                            alliedRole.FactionColor = Colors.Intruder;
+                            alliedRole.IsIntAlly = true;
+                            ally.Color = Colors.Intruder;
+                        }
+                        else if (faction == Faction.Syndicate)
+                        {
+                            alliedRole.FactionName = "Syndicate";
+                            alliedRole.FactionColor = Colors.Syndicate;
+                            alliedRole.IsSynAlly = true;
+                            ally.Color = Colors.Syndicate;
+                        }
+                        
+                        ally.Side = alliedRole.FactionName;
+
                         break;
 
                     case CustomRPC.SubmergedFixOxygen:
@@ -2667,7 +2755,7 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.BypassKill:
                                 var killer = Utils.PlayerById(reader.ReadByte());
                                 var TargetPlayer = Utils.PlayerById(reader.ReadByte());
-                                Utils.MurderPlayer(killer, TargetPlayer);
+                                Utils.MurderPlayer(killer, TargetPlayer, !killer.Is(AbilityEnum.Ninja));
                                 break;
 
                             case ActionsRPC.AssassinKill:
@@ -2837,11 +2925,12 @@ namespace TownOfUsReworked.Patches
                                         Coroutines.Start(Eat.EatCoroutine(body, cannibalRole));
                                 }
 
-                                cannibalRole.LastEaten = DateTime.UtcNow;
                                 break;
 
                             case ActionsRPC.Infect:
-                                Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).InfectedPlayers.Add(reader.ReadByte());
+                                var pb = Utils.PlayerById(reader.ReadByte());
+                                var infected = reader.ReadByte();
+                                Role.GetRole<Plaguebearer>(pb).InfectedPlayers.Add(infected);
                                 break;
 
                             case ActionsRPC.AltruistRevive:
@@ -3437,7 +3526,7 @@ namespace TownOfUsReworked.Patches
 
                 TownOfUsReworked.LogSomething("Cleared Functions");
 
-                var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable, -1);
+                var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(startWriter);
                 
                 if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
@@ -3445,7 +3534,7 @@ namespace TownOfUsReworked.Patches
                 
                 int num = 0;
 
-                if (!IsKilling)
+                if (!GameStates.IsKilling)
                 {
                     PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
                     RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
@@ -3454,7 +3543,7 @@ namespace TownOfUsReworked.Patches
                 #region Crew Roles
                 if (CustomGameOptions.MayorOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MayorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MayorCount : 1;
 
                     while (num > 0)
                     {
@@ -3467,7 +3556,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.SheriffOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.SheriffCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SheriffCount : 1;
 
                     while (num > 0)
                     {
@@ -3480,7 +3569,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.InspectorOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.InspectorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.InspectorCount : 1;
 
                     while (num > 0)
                     {
@@ -3493,7 +3582,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.VigilanteOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.VigilanteCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.VigilanteCount : 1;
 
                     while (num > 0)
                     {
@@ -3506,7 +3595,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.EngineerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.EngineerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.EngineerCount : 1;
 
                     while (num > 0)
                     {
@@ -3519,7 +3608,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.SwapperOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.SwapperCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SwapperCount : 1;
 
                     while (num > 0)
                     {
@@ -3532,7 +3621,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TimeLordOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TimeLordCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TimeLordCount : 1;
 
                     while (num > 0)
                     {
@@ -3545,7 +3634,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MedicOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MedicCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MedicCount : 1;
 
                     while (num > 0)
                     {
@@ -3558,7 +3647,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.AgentOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.AgentCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.AgentCount : 1;
 
                     while (num > 0)
                     {
@@ -3571,7 +3660,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.AltruistOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.AltruistCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.AltruistCount : 1;
 
                     while (num > 0)
                     {
@@ -3584,7 +3673,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.VeteranOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.VeteranCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.VeteranCount : 1;
 
                     while (num > 0)
                     {
@@ -3597,7 +3686,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TrackerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TrackerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TrackerCount : 1;
 
                     while (num > 0) 
                     {
@@ -3610,7 +3699,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TransporterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TransporterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TransporterCount : 1;
 
                     while (num > 0)
                     {
@@ -3623,7 +3712,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MediumOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MediumCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MediumCount : 1;
 
                     while (num > 0)
                     {
@@ -3636,7 +3725,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CoronerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CoronerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CoronerCount : 1;
 
                     while (num > 0)
                     {
@@ -3649,7 +3738,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.OperativeOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.OperativeCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.OperativeCount : 1;
 
                     while (num > 0)
                     {
@@ -3662,7 +3751,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.DetectiveOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DetectiveCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DetectiveCount : 1;
 
                     while (num > 0)
                     {
@@ -3675,7 +3764,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.EscortOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.EscortCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.EscortCount : 1;
 
                     while (num > 0)
                     {
@@ -3688,7 +3777,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ShifterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ShifterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ShifterCount : 1;
 
                     while (num > 0)
                     {
@@ -3701,7 +3790,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ChameleonOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ChameleonCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ChameleonCount : 1;
 
                     while (num > 0)
                     {
@@ -3714,7 +3803,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.RetributionistOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.RetributionistCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.RetributionistCount : 1;
 
                     while (num > 0)
                     {
@@ -3725,7 +3814,7 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.LogSomething("Chameleon Done");
                 }
 
-                if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
+                if (CustomGameOptions.CrewmateOn > 0 && GameStates.IsCustom)
                 {
                     num = CustomGameOptions.CrewCount;
 
@@ -3740,7 +3829,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.VampireHunterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.VampireHunterCount : 1;
 
                     while (num > 0)
                     {
@@ -3754,7 +3843,7 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 ||
                     CustomGameOptions.JackalOn > 0))
                 {
-                    num = IsCustom ? CustomGameOptions.MysticCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MysticCount : 1;
 
                     while (num > 0)
                     {
@@ -3770,7 +3859,7 @@ namespace TownOfUsReworked.Patches
                     CustomGameOptions.TraitorOn > 0 || CustomGameOptions.AmnesiacOn > 0 || CustomGameOptions.ThiefOn > 0 || CustomGameOptions.ExecutionerOn > 0 ||
                     CustomGameOptions.GuardianAngelOn > 0 || CustomGameOptions.GuesserOn > 0))
                 {
-                    num = IsCustom ? CustomGameOptions.SeerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SeerCount : 1;
 
                     while (num > 0)
                     {
@@ -3785,7 +3874,7 @@ namespace TownOfUsReworked.Patches
                 #region Neutral Roles
                 if (CustomGameOptions.JesterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.JesterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.JesterCount : 1;
 
                     while (num > 0)
                     {
@@ -3798,7 +3887,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.AmnesiacOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.AmnesiacCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.AmnesiacCount : 1;
 
                     while (num > 0)
                     {
@@ -3811,7 +3900,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ExecutionerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ExecutionerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ExecutionerCount : 1;
 
                     while (num > 0)
                     {
@@ -3824,7 +3913,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.SurvivorOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.SurvivorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SurvivorCount : 1;
 
                     while (num > 0)
                     {
@@ -3837,7 +3926,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GuardianAngelOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GuardianAngelCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GuardianAngelCount : 1;
 
                     while (num > 0)
                     {
@@ -3850,7 +3939,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GlitchOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GlitchCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GlitchCount : 1;
 
                     while (num > 0)
                     {
@@ -3863,7 +3952,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MurdererOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MurdCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MurdCount : 1;
 
                     while (num > 0)
                     {
@@ -3876,7 +3965,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CryomaniacOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CryomaniacCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CryomaniacCount : 1;
 
                     while (num > 0)
                     {
@@ -3889,7 +3978,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.WerewolfOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.WerewolfCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.WerewolfCount : 1;
 
                     while (num > 0)
                     {
@@ -3902,7 +3991,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ArsonistOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ArsonistCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ArsonistCount : 1;
 
                     while (num > 0)
                     {
@@ -3915,7 +4004,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.JackalOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.JackalCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.JackalCount : 1;
 
                     while (num > 0)
                     {
@@ -3928,7 +4017,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.NecromancerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.NecromancerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.NecromancerCount : 1;
 
                     while (num > 0)
                     {
@@ -3941,7 +4030,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.PlaguebearerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.PlaguebearerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.PlaguebearerCount : 1;
 
                     while (num > 0)
                     {
@@ -3960,7 +4049,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.SerialKillerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.SKCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SKCount : 1;
 
                     while (num > 0)
                     {
@@ -3973,7 +4062,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.JuggernautOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.JuggernautCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.JuggernautCount : 1;
 
                     while (num > 0)
                     {
@@ -3986,7 +4075,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CannibalOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CannibalCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CannibalCount : 1;
 
                     while (num > 0)
                     {
@@ -3999,7 +4088,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GuesserOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GuesserCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GuesserCount : 1;
 
                     while (num > 0)
                     {
@@ -4010,9 +4099,10 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.LogSomething("Guesser Done");
                 }
 
-                if (CustomGameOptions.ActorOn > 0)
+                if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
+                    CustomGameOptions.IntruderAssassinOn > 0))
                 {
-                    num = IsCustom ? CustomGameOptions.ActorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ActorCount : 1;
 
                     while (num > 0)
                     {
@@ -4025,7 +4115,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ThiefOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ThiefCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ThiefCount : 1;
 
                     while (num > 0)
                     {
@@ -4038,7 +4128,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.DraculaOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DraculaCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DraculaCount : 1;
 
                     while (num > 0)
                     {
@@ -4051,7 +4141,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.WhispererOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.WhispererCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.WhispererCount : 1;
 
                     while (num > 0)
                     {
@@ -4064,7 +4154,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TrollOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TrollCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TrollCount : 1;
 
                     while (num > 0)
                     {
@@ -4077,7 +4167,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.BountyHunterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.BHCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.BHCount : 1;
 
                     while (num > 0)
                     {
@@ -4092,7 +4182,7 @@ namespace TownOfUsReworked.Patches
                 #region Intruder Roles
             if (CustomGameOptions.UndertakerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.UndertakerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.UndertakerCount : 1;
 
                     while (num > 0)
                     {
@@ -4105,7 +4195,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MorphlingOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MorphlingCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MorphlingCount : 1;
 
                     while (num > 0)
                     {
@@ -4118,7 +4208,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.BlackmailerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.BlackmailerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.BlackmailerCount : 1;
 
                     while (num > 0)
                     {
@@ -4131,7 +4221,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MinerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MinerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MinerCount : 1;
 
                     while (num > 0)
                     {
@@ -4144,7 +4234,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TeleporterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TeleporterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TeleporterCount : 1;
 
                     while (num > 0)
                     {
@@ -4157,7 +4247,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.WraithOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.WraithCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.WraithCount : 1;
 
                     while (num > 0)
                     {
@@ -4170,7 +4260,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ConsortOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ConsortCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ConsortCount : 1;
 
                     while (num > 0)
                     {
@@ -4183,7 +4273,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.JanitorOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.JanitorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.JanitorCount : 1;
 
                     while (num > 0)
                     {
@@ -4196,7 +4286,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CamouflagerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CamouflagerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CamouflagerCount : 1;
 
                     while (num > 0)
                     {
@@ -4209,7 +4299,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GrenadierOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GrenadierCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GrenadierCount : 1;
 
                     while (num > 0)
                     {
@@ -4220,7 +4310,7 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.LogSomething("Grenadier Done");
                 }
 
-                if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
+                if (CustomGameOptions.ImpostorOn > 0 && GameStates.IsCustom)
                 {
                     num = CustomGameOptions.ImpCount;
 
@@ -4235,7 +4325,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ConsigliereOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ConsigliereCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ConsigliereCount : 1;
 
                     while (num > 0)
                     {
@@ -4248,7 +4338,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.DisguiserOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DisguiserCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DisguiserCount : 1;
 
                     while (num > 0)
                     {
@@ -4261,7 +4351,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TimeMasterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TimeMasterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TimeMasterCount : 1;
 
                     while (num > 0)
                     {
@@ -4274,7 +4364,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
                 {
-                    num = IsCustom ? CustomGameOptions.GodfatherCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GodfatherCount : 1;
                         
                     while (num > 0)
                     {
@@ -4287,7 +4377,7 @@ namespace TownOfUsReworked.Patches
                 #endregion
 
                 #region Syndicate Roles
-                if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
+                if (CustomGameOptions.AnarchistOn > 0 && GameStates.IsCustom)
                 {
                     num = CustomGameOptions.AnarchistCount;
 
@@ -4302,7 +4392,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ShapeshifterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ShapeshifterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ShapeshifterCount : 1;
 
                     while (num > 0)
                     {
@@ -4315,7 +4405,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GorgonOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GorgonCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GorgonCount : 1;
 
                     while (num > 0)
                     {
@@ -4328,7 +4418,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.FramerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.FramerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.FramerCount : 1;
 
                     while (num > 0)
                     {
@@ -4341,7 +4431,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.RebelOn > 0 && CustomGameOptions.SyndicateCount >= 3)
                 {
-                    num = IsCustom ? CustomGameOptions.RebelCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.RebelCount : 1;
                             
                     while (num > 0)
                     {
@@ -4354,7 +4444,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.BeamerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.BeamerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.BeamerCount : 1;
                             
                     while (num > 0)
                     {
@@ -4367,7 +4457,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.PoisonerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.PoisonerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.PoisonerCount : 1;
 
                     while (num > 0)
                     {
@@ -4380,7 +4470,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ConcealerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ConcealerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ConcealerCount : 1;
 
                     while (num > 0)
                     {
@@ -4393,7 +4483,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
                 {
-                    num = IsCustom ? CustomGameOptions.WarperCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.WarperCount : 1;
 
                     while (num > 0)
                     {
@@ -4406,7 +4496,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.BomberOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.BomberCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.BomberCount : 1;
 
                     while (num > 0)
                     {
@@ -4419,7 +4509,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.DrunkardOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DrunkardCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DrunkardCount : 1;
 
                     while (num > 0)
                     {
@@ -4434,7 +4524,7 @@ namespace TownOfUsReworked.Patches
                 #region Modifiers
                 if (CustomGameOptions.DiseasedOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DiseasedCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DiseasedCount : 1;
                     
                     while (num > 0)
                     {
@@ -4447,7 +4537,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.BaitOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.BaitCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.BaitCount : 1;
                     
                     while (num > 0)
                     {
@@ -4460,7 +4550,7 @@ namespace TownOfUsReworked.Patches
                 
                 if (CustomGameOptions.DwarfOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DwarfCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DwarfCount : 1;
                     
                     while (num > 0)
                     {
@@ -4473,7 +4563,7 @@ namespace TownOfUsReworked.Patches
                 
                 if (CustomGameOptions.VIPOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.VIPCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.VIPCount : 1;
                     
                     while (num > 0)
                     {
@@ -4486,7 +4576,7 @@ namespace TownOfUsReworked.Patches
                 
                 if (CustomGameOptions.ShyOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ShyCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ShyCount : 1;
                     
                     while (num > 0)
                     {
@@ -4499,7 +4589,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.GiantOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.GiantCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.GiantCount : 1;
                     
                     while (num > 0)
                     {
@@ -4512,7 +4602,7 @@ namespace TownOfUsReworked.Patches
                 
                 if (CustomGameOptions.DrunkOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.DrunkCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.DrunkCount : 1;
                     
                     while (num > 0)
                     {
@@ -4525,7 +4615,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.FlincherOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.FlincherCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.FlincherCount : 1;
                     
                     while (num > 0)
                     {
@@ -4538,7 +4628,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CowardOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CowardCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CowardCount : 1;
                     
                     while (num > 0)
                     {
@@ -4551,7 +4641,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.VolatileOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.VolatileCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.VolatileCount : 1;
                     
                     while (num > 0)
                     {
@@ -4564,7 +4654,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.IndomitableOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.IndomitableCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.IndomitableCount : 1;
                     
                     while (num > 0)
                     {
@@ -4577,7 +4667,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.ProfessionalOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.ProfessionalCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.ProfessionalCount : 1;
                     
                     while (num > 0)
                     {
@@ -4644,7 +4734,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.RuthlessOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.RuthlessCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.RuthlessCount : 1;
                     
                     while (num > 0)
                     {
@@ -4657,7 +4747,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.SnitchOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.SnitchCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.SnitchCount : 1;
                     
                     while (num > 0)
                     {
@@ -4670,7 +4760,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting)
                 {
-                    num = IsCustom ? CustomGameOptions.InsiderCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.InsiderCount : 1;
                     
                     while (num > 0)
                     {
@@ -4683,7 +4773,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.LighterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.LighterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.LighterCount : 1;
                     
                     while (num > 0)
                     {
@@ -4696,7 +4786,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.MultitaskerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.MultitaskerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.MultitaskerCount : 1;
                     
                     while (num > 0)
                     {
@@ -4709,7 +4799,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.RadarOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.RadarCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.RadarCount : 1;
                     
                     while (num > 0)
                     {
@@ -4722,7 +4812,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TiebreakerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TiebreakerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TiebreakerCount : 1;
                     
                     while (num > 0)
                     {
@@ -4735,7 +4825,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TorchOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TorchCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TorchCount : 1;
                     
                     while (num > 0)
                     {
@@ -4748,7 +4838,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.UnderdogOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.UnderdogCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.UnderdogCount : 1;
                     
                     while (num > 0)
                     {
@@ -4761,7 +4851,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TunnelerOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TunnelerCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TunnelerCount : 1;
                     
                     while (num > 0)
                     {
@@ -4771,12 +4861,25 @@ namespace TownOfUsReworked.Patches
 
                     TownOfUsReworked.LogSomething("Tunneler Done");
                 }
+
+                if (CustomGameOptions.NinjaOn > 0)
+                {
+                    num = GameStates.IsCustom ? CustomGameOptions.NinjaCount : 1;
+                    
+                    while (num > 0)
+                    {
+                        AllAbilities.Add((typeof(Ninja), CustomGameOptions.NinjaOn, 14, CustomGameOptions.UniqueNinja));
+                        num--;
+                    }
+
+                    TownOfUsReworked.LogSomething("Ninja Done");
+                }
                 #endregion
 
                 #region Objectifiers
-                if (CustomGameOptions.LoversOn > 0)
+                if (CustomGameOptions.LoversOn > 0 && PlayerControl.AllPlayerControls.Count > 4)
                 {
-                    num = IsCustom ? CustomGameOptions.LoversCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.LoversCount : 1;
                     
                     while (num > 0)
                     {
@@ -4787,9 +4890,9 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.LogSomething("Lovers Done");
                 }
 
-                if (CustomGameOptions.RivalsOn > 0)
+                if (CustomGameOptions.RivalsOn > 0 && PlayerControl.AllPlayerControls.Count > 4)
                 {
-                    num = IsCustom ? CustomGameOptions.RivalsCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.RivalsCount : 1;
                     
                     while (num > 0)
                     {
@@ -4802,7 +4905,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.FanaticOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.FanaticCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.FanaticCount : 1;
                     
                     while (num > 0)
                     {
@@ -4815,7 +4918,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.CorruptedOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.CorruptedCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.CorruptedCount : 1;
                     
                     while (num > 0)
                     {
@@ -4828,7 +4931,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.OverlordOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.OverlordCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.OverlordCount : 1;
                     
                     while (num > 0)
                     {
@@ -4841,7 +4944,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.AlliedOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.AlliedCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.AlliedCount : 1;
                     
                     while (num > 0)
                     {
@@ -4854,7 +4957,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TraitorOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TraitorCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TraitorCount : 1;
                     
                     while (num > 0)
                     {
@@ -4867,7 +4970,7 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.TaskmasterOn > 0)
                 {
-                    num = IsCustom ? CustomGameOptions.TaskmasterCount : 1;
+                    num = GameStates.IsCustom ? CustomGameOptions.TaskmasterCount : 1;
                     
                     while (num > 0)
                     {

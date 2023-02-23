@@ -3,7 +3,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod

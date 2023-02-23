@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
@@ -24,6 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
                 return;
+            
+            PlayerControl.LocalPlayer.RegenTask();
 
             //Crew cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Chameleon))

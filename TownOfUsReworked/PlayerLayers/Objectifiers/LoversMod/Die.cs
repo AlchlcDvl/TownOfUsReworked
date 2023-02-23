@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
@@ -29,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                 otherLover.Exiled();
             }
             else if (AmongUsClient.Instance.AmHost && !otherLover.Is(RoleEnum.Pestilence))
-                Utils.RpcMurderPlayer(otherLover, otherLover);
+                Utils.RpcMurderPlayer(otherLover, otherLover, false);
 
             return true;
         }

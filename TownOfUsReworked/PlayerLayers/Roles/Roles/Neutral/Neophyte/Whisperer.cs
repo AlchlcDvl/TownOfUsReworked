@@ -5,7 +5,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Whisperer : Role
     {
@@ -27,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SubFaction = SubFaction.Sect;
             SubFactionName = "Sect";
             SubFactionColor = Colors.Sect;
+            AlignmentName = NN;
             Persuaded = new List<byte>();
             Persuaded.Add(Player.PlayerId);
             PlayerConversion = new List<(byte, int)>();
@@ -47,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             SectWin = true;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -73,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Utils.SectWin())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();

@@ -5,16 +5,18 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Jester : Role
     {
         public bool VotedOut;
-        public List<byte> ToHaunt = new List<byte>();
+        public List<byte> ToHaunt;
         public bool HasHaunted = false;
         private KillButton _hauntButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastHaunted;
+        public int MaxUses;
+        public bool CanHaunt => VotedOut && !HasHaunted && MaxUses > 0 && ToHaunt.Count > 0;
 
         public Jester(PlayerControl player) : base(player)
         {
@@ -28,11 +30,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = "Neutral (Evil)";
+            AlignmentName = NE;
             RoleDescription = "You are a Jester! You are a suicidal lunatic who wants to be thrown out of the airlock. Get yourself ejected at all costs!";
+            ToHaunt = new List<byte>();
+            MaxUses = CustomGameOptions.HauntCount > PlayerControl.AllPlayerControls.Count ? PlayerControl.AllPlayerControls.Count : CustomGameOptions.HauntCount;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;

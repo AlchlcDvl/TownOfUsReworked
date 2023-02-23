@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
@@ -45,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             if (role.TargetGuessed)
                 return;
             
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
             writer.Write((byte)TurnRPC.GuessToAct);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -67,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
                 var role2 = Role.AllRoles.ToList()[random];
 
-                if (role2 != targetRole)
+                if (role2.RoleType != targetRole.RoleType)
                 {
                     newRole.PretendRoles.Add(role2);
                     i++;
@@ -76,8 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 newRole.PretendRoles.Shuffle();
             }
             
-            if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+            player.RegenTask();
         }
     }
 }

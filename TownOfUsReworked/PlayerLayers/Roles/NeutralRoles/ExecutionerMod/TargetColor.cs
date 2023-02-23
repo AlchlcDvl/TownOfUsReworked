@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (role.TargetVotedOut)
                 return;
             
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
             writer.Write((byte)TurnRPC.ExeToJest);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -38,9 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             var newRole = new Jester(player);
             newRole.RoleHistory.Add(exe);
             newRole.RoleHistory.AddRange(exe.RoleHistory);
-            
-            if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+            player.RegenTask();
         }
     }
 }

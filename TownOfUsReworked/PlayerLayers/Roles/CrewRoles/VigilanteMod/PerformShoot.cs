@@ -4,7 +4,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -47,8 +46,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     }
                     else
                     {
-                        if (CustomGameOptions.MisfireKillsInno)
-                            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                        if (CustomGameOptions.MisfireKillsInno || role.ClosestPlayer.IsFramed())
+                            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, !role.Player.Is(AbilityEnum.Ninja));
                         
                         if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
@@ -64,13 +63,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                             role.KilledInno = true;
 
                         if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
-                            Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
+                            Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer, false);
                         else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
                             role.PreMeetingDie = true;
                         else if (CustomGameOptions.VigiOptions == VigiOptions.PostMeeting)
                             role.PostMeetingDie = true;
                     }
                 }
+                else if (interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 

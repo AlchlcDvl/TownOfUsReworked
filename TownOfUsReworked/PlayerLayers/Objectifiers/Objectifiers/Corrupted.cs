@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
+namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Corrupted : Objectifier
     {
@@ -18,9 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Corrupted";
             SymbolName = "δ";
-            TaskText = "You are not <color=#8BFDFDFF>Crew</color> anymore!";
+            TaskText = "- Kill everyone!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
+            ObjectifierDescription = "You are Corrupted! You are no longer Crew and feel the need to kill everyone!";
         }
 
         public KillButton KillButton
@@ -30,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             {
                 _killButton = value;
                 var role = Role.GetRole(Player);
-                role?.AddToAbilityButtons(value, role);
+                role.AddToAbilityButtons(value, role);
             }
         }
 
@@ -47,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (Utils.CorruptedWin())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CorruptedWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

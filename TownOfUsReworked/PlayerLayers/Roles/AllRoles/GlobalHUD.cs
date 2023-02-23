@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 return;
 
             __instance.KillButton.gameObject.SetActive(false);
-            __instance.ReportButton.gameObject.SetActive(GameStates.IsRoaming);
             var role = Role.GetRole(PlayerControl.LocalPlayer);
 
             if (Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && GameStates.IsInGame)
@@ -37,33 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 __instance.ImpostorVentButton.graphic.sprite = Vent;
             }
 
-            if (MapBehaviour.Instance)
+            if (PlayerControl.LocalPlayer.inVent)
             {
-                __instance.ImpostorVentButton.gameObject.SetActive(false);
-                __instance.ReportButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                __instance.ImpostorVentButton.gameObject.SetActive(GameStates.IsRoaming);
-                __instance.ReportButton.gameObject.SetActive(GameStates.IsRoaming);
-            }
-
-            if (MeetingHud.Instance != null)
-            {
-                foreach (var player in MeetingHud.Instance.playerStates)
-                {
-                    if (player.NameText != null && role.Player.PlayerId == player.TargetPlayerId)
-                        player.NameText.color = role.Color;
-                }
-            }
-
-            if (HudManager.Instance != null && HudManager.Instance.Chat != null)
-            {
-                foreach (var bubble in HudManager.Instance.Chat.chatBubPool.activeChildren)
-                {
-                    if (bubble.Cast<ChatBubble>().NameText != null && role.Player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
-                        bubble.Cast<ChatBubble>().NameText.color = role.Color;
-                }
+                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
+                    __instance.ImpostorVentButton.gameObject.SetActive(PlayerControl.LocalPlayer.inVent);
             }
         }
     }

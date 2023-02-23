@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Actor : Role
     {
@@ -19,19 +19,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Actor";
             StartText = "It Was Jest A Prank Bro";
-            Objectives = $"- Get guessed as one of your target roles.\n- Your target roles are {PretendRoles[0].Name}, {PretendRoles[1].Name}, {PretendRoles[2].Name}," +
-                $" {PretendRoles[3].Name} and {PretendRoles[4].Name}.";
+            Objectives = $"- Get guessed as one of your target roles.\n- Your target roles are {Roles()}.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
             RoleType = RoleEnum.Actor;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = "Neutral (Evil)";
+            AlignmentName = NE;
             RoleDescription = "You are an Actor! You are a crazed performer who wants to die! Get guessed as one of the roles you are pretending to be!";
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -71,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Guessed)
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ActorWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -80,6 +79,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }   
             
             return true;
+        }
+
+        private string Roles()
+        {
+            string roles = "";
+            int i = 0;
+
+            foreach (var role2 in PretendRoles)
+            {
+                if (i < PretendRoles.Count - 1)
+                    roles += $" {role2.Name}, ";
+                else if (i == PretendRoles.Count - 1)
+                    roles += $" and {role2.Name}";
+                
+                i++;
+            }
+
+            return roles;
         }
     }
 }

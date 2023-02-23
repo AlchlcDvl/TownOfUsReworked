@@ -3,25 +3,28 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Collections.Generic;
 using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
+namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Taskmaster : Objectifier
     {
-        public bool Revealed => TasksLeft() <= CustomGameOptions.TMTasksRemaining;
-        public int TasksToBeDone;
+        public bool Revealed => Role.GetRole(Player).TasksLeft <= CustomGameOptions.TMTasksRemaining;
         public bool WinTasksDone;
         public bool TaskmasterWins { get; set; }
-        public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
-        public Dictionary<byte, ArrowBehaviour> TMArrows = new Dictionary<byte, ArrowBehaviour>();
+        public List<ArrowBehaviour> ImpArrows;
+        public Dictionary<byte, ArrowBehaviour> TMArrows;
 
         public Taskmaster(PlayerControl player) : base(player)
         {
             Name = "Taskmaster";
-            TaskText = "Do something that no one has ever done before! Finish your tasks";
+            TaskText = "- Finish your tasks before the game ends.";
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
+            ObjectifierDescription = "You are a Taskmaster! You are a master of completion who wants to do everything in the ship! Finish your tasks before the game ends!";
+            ImpArrows = new List<ArrowBehaviour>();
+            TMArrows = new Dictionary<byte, ArrowBehaviour>();
         }
 
         public override void Wins()
@@ -37,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (WinTasksDone)
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.TaskmasterWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

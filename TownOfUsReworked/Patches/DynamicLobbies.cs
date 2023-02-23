@@ -27,7 +27,7 @@ namespace TownOfUsReworked.Patches
                 }
 
                 ChatCommands.LobbyLimit = maxPlayers;
-                settings.MaxPlayers = 127; // Force 15 Player Lobby on Server
+                settings.MaxPlayers = 127; // Force 127 Player Lobby on Server
                 DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
             }
 

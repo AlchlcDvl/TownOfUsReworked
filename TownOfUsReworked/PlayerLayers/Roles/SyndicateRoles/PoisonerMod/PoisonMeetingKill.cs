@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
 {
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 if (poisoner.Player != poisoner.PoisonedPlayer && poisoner.PoisonedPlayer != null)
                 {
                     if (!poisoner.PoisonedPlayer.Data.IsDead && !poisoner.PoisonedPlayer.Is(RoleEnum.Pestilence))
-                        Utils.MurderPlayer(poisoner.Player, poisoner.PoisonedPlayer);
+                        Utils.RpcMurderPlayer(poisoner.Player, poisoner.PoisonedPlayer, false);
                 }
             }
         }

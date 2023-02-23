@@ -5,9 +5,7 @@ using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using HarmonyLib;
 using Hazel;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -20,25 +18,24 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Player = player;
 
-            if (!ObjectifierDictionary.ContainsKey(player.PlayerId))
-                ObjectifierDictionary.Add(player.PlayerId, this);
+            if (ObjectifierDictionary.ContainsKey(player.PlayerId))
+                ObjectifierDictionary.Remove(player.PlayerId);
+
+            ObjectifierDictionary.Add(player.PlayerId, this);
         }
 
-        protected internal Color Color { get; set; }
-        protected internal ObjectifierEnum ObjectifierType { get; set; }
-        protected internal string Name { get; set; }
-        protected internal string SymbolName { get; set; }
-        protected internal string ObjectifierDescription { get; set; }
-        protected internal string TaskText { get; set; }
+        protected internal Color Color { get; set; } = Colors.Objectifier;
+        protected internal ObjectifierEnum ObjectifierType { get; set; } = ObjectifierEnum.None;
+        protected internal string Name { get; set; } = "Objectifierless";
+        protected internal string SymbolName { get; set; } = ":";
+        protected internal string ObjectifierDescription { get; set; } = "You are an objectifier!";
+        protected internal string TaskText { get; set; } = "- None.";
         protected internal bool Hidden { get; set; } = false;
 
-        public virtual void Loses() {}
+        public virtual void Loses() => LostByRPC = true;
         public virtual void Wins() {}
 
-        protected internal string GetColoredSymbol()
-        {
-            return $"{ColorString}{SymbolName}</color>";
-        }
+        protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -56,30 +53,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 PlayerName = value.Data.PlayerName;
             }
         }
-        
-
-        protected internal int TasksLeft()
-        {
-            if (Player == null || Player.Data == null)
-                return 0;
-            
-            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        }
-
-        protected internal bool TasksDone => TasksLeft() <= 0;
 
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
-        private bool Equals(Objectifier other)
-        {
-            return Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
-        }
+        private bool Equals(Objectifier other) => Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
 
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            return true;
-        }
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public override bool Equals(object obj)
         {
@@ -95,10 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return Equals((Objectifier)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Player, (int)ObjectifierType);
-        }
+        public override int GetHashCode() => HashCode.Combine(Player, (int)ObjectifierType);
 
         public static bool operator ==(Objectifier a, Objectifier b)
         {
@@ -122,71 +99,26 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return null;
         }
         
-        public static T GetObjectifierValue<T>(ObjectifierEnum objEnum) where T : Objectifier
-        {
-            return GetObjectifierValue(objEnum) as T;
-        }
+        public static T GetObjectifierValue<T>(ObjectifierEnum objEnum) where T : Objectifier => GetObjectifierValue(objEnum) as T;
 
-        public static bool operator !=(Objectifier a, Objectifier b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(Objectifier a, Objectifier b) => !(a == b);
 
-        public static Objectifier GetObjectifier(PlayerControl player)
-        {
-            return (from entry in ObjectifierDictionary where entry.Key == player.PlayerId select entry.Value).FirstOrDefault();
-        }
+        public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.FirstOrDefault(x => x.Player == player);
 
-        public static T GetObjectifier<T>(PlayerControl player) where T : Objectifier
-        {
-            return GetObjectifier(player) as T;
-        }
+        public static T GetObjectifier<T>(PlayerControl player) where T : Objectifier => GetObjectifier(player) as T;
 
-        public static Objectifier GetObjectifier(PlayerVoteArea area)
-        {
-            var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
-            return player == null ? null : GetObjectifier(player);
-        }
+        public static Objectifier GetObjectifier(PlayerVoteArea area) => GetObjectifier(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype)
-        {
-            return AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
-        }
+        public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
 
         public static T GenObjectifier<T>(Type type, PlayerControl player, int id, List<PlayerControl> players = null)
 		{
 			var objectifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable, -1);
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable);
 			writer.Write(player.PlayerId);
 			writer.Write(id);
 			AmongUsClient.Instance.FinishRpcImmediately(writer);
 			return objectifier;
 		}
-
-       [HarmonyPatch]
-        public static class ShipStatus_KMPKPPGPNIH
-        {
-            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-            public static bool Prefix(LogicGameFlowNormal __instance)
-            {
-                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
-                    return true;
-
-                if (!AmongUsClient.Instance.AmHost)
-                    return false;
-
-                var result = true;
-
-                foreach (var obj in AllObjectifiers)
-                {
-                    var objIsEnd = obj.GameEnd(__instance);
-
-                    if (!objIsEnd)
-                        result = false;
-                }
-
-                return result;
-            }
-        }
     }
 }

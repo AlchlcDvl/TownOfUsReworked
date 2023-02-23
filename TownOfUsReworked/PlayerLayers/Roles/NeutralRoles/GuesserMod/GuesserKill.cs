@@ -3,9 +3,7 @@ using Hazel;
 using UnityEngine;
 using UnityEngine.UI;
 using Swaps = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -24,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         public static void RpcMurderPlayer(Guesser assassin, PlayerVoteArea voteArea, PlayerControl player, string guess)
         {
             MurderPlayer(assassin, voteArea, player, guess);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GuesserKill);
             writer.Write(player.PlayerId);
             writer.Write(guess);

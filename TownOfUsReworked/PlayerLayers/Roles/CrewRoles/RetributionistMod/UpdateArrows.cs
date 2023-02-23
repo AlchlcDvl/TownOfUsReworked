@@ -7,7 +7,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Cosmetics;
 using UnityEngine;
 using System;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {

@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
@@ -8,6 +7,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.AllRoles;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -79,38 +79,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
-            else if (ret.RevivedRole.RoleType == RoleEnum.Inspector)
-            {
-                foreach (var (player, results) in ret.InspectResults)
-                {
-                    string roles = "";
-                    var position = 0;
-
-                    foreach (var result in results)
-                    {
-                        if (position < results.Count - 1)
-                            roles += $" {result.Name},";
-                        else if (position == results.Count - 1)
-                            roles += $" or {result.Name}.";
-                        
-                        position++;
-                    }
-
-                    var player2 = Utils.PlayerById(player);
-                    
-                    if (player2 != null)
-                    {
-                        string something = $"{player2.name} could be" + roles;
-                        
-                        //Ensures only the Retributionist-Inspector sees this
-                        if (DestroyableSingleton<HudManager>.Instance)
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
-                    }
-                }
-
-                ret.InspectResults.Clear();
-                ret.InspectedPlayers.Clear();
-            }
             else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
                 ret.Interrogated.Clear();
 

@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using System;
 using System.Collections.Generic;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Jackal : Role
     {
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = "Neutral (Neophyte)";
+            AlignmentName = NN;
             RoleDescription = "You are a Jackal! You are a greedy double agent sent from a rival company! Use your recruits to your advantage and take over the mission!";
             SubFactionName = "Cabal";
             Recruited = new List<byte>();
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Utils.CabalWin())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
@@ -87,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             }
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var jackTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
             jackTeam.Add(PlayerControl.LocalPlayer);

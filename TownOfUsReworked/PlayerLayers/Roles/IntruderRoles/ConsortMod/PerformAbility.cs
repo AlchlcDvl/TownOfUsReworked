@@ -3,9 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
@@ -34,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
                 if (interact[3] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.ConsRoleblock);
                     writer.Write(PlayerControl.LocalPlayer);
                     writer.Write(role.ClosestPlayer.PlayerId);
@@ -62,29 +60,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                if (role.ClosestPlayer.IsShielded())
-                {
-                    var medic = role.ClosestPlayer.GetMedic().Player.PlayerId;
-                    var writer1 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.AttemptSound, SendOption.Reliable, -1);
-                    writer1.Write(medic);
-                    writer1.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer1);
-                    StopKill.BreakShield(medic, role.ClosestPlayer.PlayerId, CustomGameOptions.ShieldBreaks);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
 
-                    if (CustomGameOptions.ShieldBreaks)
-                        role.LastKilled = DateTime.UtcNow;
-                }
-                else if (role.ClosestPlayer.IsVesting())
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-                else if (role.ClosestPlayer.IsProtected())
+                if (interact[3] == true || interact[0] == true)
+                    role.LastKilled = DateTime.UtcNow;
+                else if (interact[1] == true)
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (PlayerControl.LocalPlayer.IsOtherRival(role.ClosestPlayer))
-                    role.LastKilled = DateTime.UtcNow;
-                else
-                {
-                    role.LastKilled = DateTime.UtcNow;
-                    Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, role.ClosestPlayer);
-                }
+                else if (interact[2] == true)
+                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
             }

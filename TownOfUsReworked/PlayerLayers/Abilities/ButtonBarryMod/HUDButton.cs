@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod

@@ -3,8 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {

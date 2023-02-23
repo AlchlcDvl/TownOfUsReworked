@@ -2,16 +2,17 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.PlayerLayers.Modifiers.Modifiers
+namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Flincher : Modifier
     {
         public Flincher(PlayerControl player) : base(player)
         {
             Name = "Flincher";
-            TaskText = "EEEK";
+            TaskText = "- You will randomly flinch while walking.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Flincher : Colors.Modifier;
             ModifierType = ModifierEnum.Flincher;
+            ModifierDescription = "You are a Flincher! You are so unprepared for everything that even walking can get you to flinch!";
         }
     }
 }

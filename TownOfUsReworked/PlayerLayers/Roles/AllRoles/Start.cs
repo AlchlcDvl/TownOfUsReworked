@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
 using UnityEngine;
@@ -470,7 +469,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (ga.TargetPlayer == null)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.GAToSurv);
                     writer.Write(ga.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -499,7 +498,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (exe.TargetPlayer == null)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.ExeToJest);
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -513,7 +512,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (guess.TargetPlayer == null)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.GuessToAct);
                     writer.Write(guess.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -527,7 +526,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 if (bh.TargetPlayer == null)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.BHToTroll);
                     writer.Write(bh.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

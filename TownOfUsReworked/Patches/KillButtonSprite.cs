@@ -2,7 +2,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 
 namespace TownOfUsReworked.Patches

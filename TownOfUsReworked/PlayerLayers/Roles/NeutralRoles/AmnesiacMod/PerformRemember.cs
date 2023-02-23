@@ -3,11 +3,9 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
@@ -34,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 var playerId = role.CurrentTarget.ParentId;
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(role.Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Remember);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
@@ -341,11 +339,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             
             newRole.RoleHistory.Add(amneRole);
             newRole.RoleHistory.AddRange(amneRole.RoleHistory);
-
-            DestroyableSingleton<HudManager>.Instance.KillButton.gameObject.SetActive(false);
-            
-            if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+            amnesiac.RegenTask();
 
             if (ability == AbilityEnum.Snitch)
             {

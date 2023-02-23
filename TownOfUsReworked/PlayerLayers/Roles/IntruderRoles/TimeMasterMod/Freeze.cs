@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 {
     public class Freeze
     {
-        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         public static class FreezeFunctions
         {
             private static List<PlayerControl> Frozen = new List<PlayerControl>();

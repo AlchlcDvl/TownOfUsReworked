@@ -1,13 +1,9 @@
 using HarmonyLib;
+using Hazel;
+using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
-using Object = UnityEngine.Object;
 using System.Linq;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {
@@ -16,7 +12,25 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
     {
         public static void Postfix(HudManager __instance)
         {
-            
+            if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Traitor))
+                return;
+
+            var traitor = Objectifier.GetObjectifier<Traitor>(PlayerControl.LocalPlayer);
+
+            if (!traitor.Turned)
+                return;
+
+            var traitorRole = Role.GetRole(PlayerControl.LocalPlayer);
+            var factiondead = PlayerControl.AllPlayerControls.ToArray().Where(x => x.GetFaction() == traitorRole.Faction).Count() == 0;
+
+            if (factiondead)
+            {
+                traitor.TurnBetrayer();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnTraitorBetrayer);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

@@ -2,7 +2,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 using TownOfUsReworked.CustomOptions;
 
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             role.InspectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
-            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.InspectedPlayers.Contains(x.PlayerId)).ToList();
+            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
             Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
             var renderer = role.InspectButton.graphic;
             

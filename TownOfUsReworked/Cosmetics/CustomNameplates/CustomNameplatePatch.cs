@@ -24,7 +24,7 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
 
                     foreach (var data in AuthorDatas)
                     {
-                        allPlates.Add(CreateNamePlate(GetSprite(data.Id), data.Name, data.Artist));
+                        allPlates.Add(CreateNamePlate(data.Id, data.Name, data.Artist));
                         _customNamePlatesLoaded = true;
                         NamePlateID++;
                     }
@@ -34,16 +34,19 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
                 }
             }
 
-            private static Sprite GetSprite(string id) => TownOfUsReworked.CreateSprite($"{TownOfUsReworked.Nameplates}{id}.png");
-
-            private static NamePlateData CreateNamePlate(Sprite sprite, string nameplateName, string author)
+            private static NamePlateData CreateNamePlate(string id, string nameplateName, string author)
             {
+                var sprite = TownOfUsReworked.CreateSprite($"{TownOfUsReworked.Nameplates}{id}.png");
+
+                var a = ScriptableObject.CreateInstance<NamePlateViewData>();
+                var b = new AddressableLoadWrapper<NamePlateViewData>();
+                a.Image = sprite;
+                b.viewData = a;
+
                 var newPlate = ScriptableObject.CreateInstance<NamePlateData>();
-                newPlate.viewData.viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+                newPlate.viewData = b;
                 newPlate.name = $"{nameplateName} By {author}";
-                newPlate.viewData.viewData.Image = sprite;
-                newPlate.ProductId = "nameplate_" + sprite.name.Replace(' ', '_');
-                newPlate.BundleId = "nameplate_" + sprite.name.Replace(' ', '_');
+                newPlate.ProductId = id;
                 newPlate.displayOrder = 99 + NamePlateID;
                 newPlate.Free = true;
                 newPlate.ChipOffset = new Vector2(0f, 0.2f);

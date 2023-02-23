@@ -17,28 +17,20 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         {
             Player = player;
 
-            if (!ModifierDictionary.ContainsKey(player.PlayerId))
-                ModifierDictionary.Add(player.PlayerId, this);
+            if (ModifierDictionary.ContainsKey(player.PlayerId))
+                ModifierDictionary.Remove(player.PlayerId);
+
+            ModifierDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
 
-        protected internal Color Color { get; set; }
-        protected internal ModifierEnum ModifierType { get; set; }
-        protected internal string Name { get; set; }
-        protected internal string ModifierDescription { get; set; }
-        protected internal string TaskText { get; set; }
+        protected internal Color Color { get; set; } = Colors.Modifier;
+        protected internal ModifierEnum ModifierType { get; set; } = ModifierEnum.None;
+        protected internal string Name { get; set; } = "Modifierless";
+        protected internal string ModifierDescription { get; set; } = "You are a modifier!";
+        protected internal string TaskText { get; set; } = "- None";
         protected internal bool Hidden { get; set; } = false;
-
-        protected internal int TasksLeft()
-        {
-            if (Player == null || Player.Data == null)
-                return 0;
-            
-            return Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        }
-
-        protected internal bool TasksDone => TasksLeft() <= 0;
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -58,15 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
-        private bool Equals(Modifier other)
-        {
-            return Equals(Player, other.Player) && ModifierType == other.ModifierType;
-        }
-
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            return true;
-        }
+        private bool Equals(Modifier other) => Equals(Player, other.Player) && ModifierType == other.ModifierType;
 
         public override bool Equals(object obj)
         {
@@ -82,10 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             return Equals((Modifier)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Player, (int)ModifierType);
-        }
+        public override int GetHashCode() => HashCode.Combine(Player, (int)ModifierType);
 
         public static bool operator ==(Modifier a, Modifier b)
         {
@@ -98,37 +79,18 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             return a.ModifierType == b.ModifierType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Modifier a, Modifier b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(Modifier a, Modifier b) => !(a == b);
 
-        public static Modifier GetModifier(PlayerControl player)
-        {
-            return (from entry in ModifierDictionary where entry.Key == player.PlayerId select entry.Value).FirstOrDefault();
-        }
+        public static Modifier GetModifier(PlayerControl player) => AllModifiers.FirstOrDefault(x => x.Player == player);
 
-        public static T GetModifier<T>(PlayerControl player) where T : Modifier
-        {
-            return GetModifier(player) as T;
-        }
+        public static T GetModifier<T>(PlayerControl player) where T : Modifier => GetModifier(player) as T;
 
-        public virtual List<PlayerControl> GetTeammates()
-        {
-            var team = new List<PlayerControl>();
-            return team;
-        }
-
-        public static Modifier GetModifier(PlayerVoteArea area)
-        {
-            var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
-            return player == null ? null : GetModifier(player);
-        }
+        public static Modifier GetModifier(PlayerVoteArea area) => GetModifier(Utils.PlayerByVoteArea(area));
 
         public static T GenModifier<T>(Type type, PlayerControl player, int id)
 		{
 			var modifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable, -1);
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable);
 			writer.Write(player.PlayerId);
 			writer.Write(id);
 			AmongUsClient.Instance.FinishRpcImmediately(writer);

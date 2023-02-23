@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
         {
             public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
             {
-                Utils.RpcMurderPlayer(__instance, target);
+                Utils.RpcMurderPlayer(__instance, target, !__instance.Is(AbilityEnum.Ninja));
                 return false;
             }
         }
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
                         PlayerControl.LocalPlayer.CheckMurder(__instance.currentTarget);
                     else
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CheckMurder, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CheckMurder, SendOption.Reliable);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(__instance.currentTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);

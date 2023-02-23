@@ -11,9 +11,7 @@ using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using Hazel;
@@ -283,7 +281,7 @@ namespace TownOfUsReworked.Classes
 
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(startingVent.transform.position.x);
                     writer2.Write(startingVent.transform.position.y);
@@ -307,7 +305,7 @@ namespace TownOfUsReworked.Classes
 
                     ChangeFloor(startingVent.transform.position.y > -7f);
 
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(startingVent.transform.position.x);
                     writer2.Write(startingVent.transform.position.y);

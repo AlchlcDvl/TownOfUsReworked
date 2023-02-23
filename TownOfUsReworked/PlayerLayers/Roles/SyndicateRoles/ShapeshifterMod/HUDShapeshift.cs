@@ -3,7 +3,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod

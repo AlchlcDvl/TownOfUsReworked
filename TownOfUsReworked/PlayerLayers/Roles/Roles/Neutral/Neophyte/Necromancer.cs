@@ -7,7 +7,7 @@ using TMPro;
 using System;
 using UnityEngine;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Necromancer : Role
     {
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             FactionName = "Neutral";
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = "Neutral (Neophyte)";
+            AlignmentName = NN;
             RoleDescription = "Your are a Necromancer! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
             Objectives = "- Resurrect the dead into helping you gain control of the crew.";
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             KillCount = 0;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -138,7 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             if (Utils.ReanimatedWin())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();

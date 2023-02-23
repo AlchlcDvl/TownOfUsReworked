@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
-namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
+namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Lovers : Objectifier
     {
@@ -16,9 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = "You are in Love";
+            TaskText = $"- Live to the final 3 with {OtherLover.name}";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
+            ObjectifierDescription = $"You are a Lover! You are in love with {OtherLover.name}! Survive to the final 3 with your loved one!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -54,7 +55,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             lover1.OtherLover = secondLover;
             lover2.OtherLover = firstLover;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCouple, SendOption.Reliable, -1);
+            firstLover.RegenTask();
+            secondLover.RegenTask();
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCouple, SendOption.Reliable);
             writer.Write(firstLover.PlayerId);
             writer.Write(secondLover.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -68,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers
             if (Utils.LoversWin(Player))
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.LoveWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

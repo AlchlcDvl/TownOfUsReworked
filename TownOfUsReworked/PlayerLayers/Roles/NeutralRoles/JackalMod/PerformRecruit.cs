@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
@@ -37,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 if (interact[3] == true)
                 {
                     Recruit(role, role.ClosestPlayer);
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
@@ -77,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 jackal.Recruited.AddRange(jackRole.Recruited);
             }
             else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(jack, other);
+                Utils.RpcMurderPlayer(jack, other, true);
 
             jackRole.HasRecruited = true;
             jackRole.RecruitButton.gameObject.SetActive(false);

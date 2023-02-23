@@ -4,7 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Revealer : Role
     {
@@ -12,9 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         public bool Revealed;
         public bool CompletedTasks;
         public bool Faded;
-        public List<ArrowBehaviour> ImpArrows = new List<ArrowBehaviour>();
-        public List<PlayerControl> RevealerTargets = new List<PlayerControl>();
-        public List<ArrowBehaviour> RevealerArrows = new List<ArrowBehaviour>();
+        public List<ArrowBehaviour> ImpArrows;
+        public List<PlayerControl> RevealerTargets;
+        public List<ArrowBehaviour> RevealerArrows;
         public Role FormerRole;
 
         public Revealer(PlayerControl player) : base(player)
@@ -23,6 +23,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
             RoleType = RoleEnum.Revealer;
             Faction = Faction.Crew;
+            FactionName = "Crew";
+            FactionColor = Colors.Crew;
+            RoleAlignment = RoleAlignment.CrewUtil;
+            AlignmentName = CU;
+            ImpArrows = new List<ArrowBehaviour>();
+            RevealerTargets = new List<PlayerControl>();
+            RevealerArrows = new List<ArrowBehaviour>();
+            RoleDescription = "You are now a Revealer! You are a ghostly apparition who wants revenge on the evildoers for killing you! Finish your tasks so that all living Crew are " + 
+                "notified of who's evil!";
+            Objectives = CrewWinCon;
+            InspectorResults = InspectorResults.Ghostly;
         }
 
         public void Fade()

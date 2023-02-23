@@ -6,7 +6,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
+namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Assassin : Ability
     {
@@ -23,10 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public Assassin(PlayerControl player) : base(player)
         {
             Name = "Assassin";
-            TaskText = "Guess and shoot";
+            TaskText = "- You can guess players mid-meetings.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
+            AbilityDescription = "You are an Assassin! You can discreetly kill people by guessing what they are! Be careful though, as missing a shot can get you killed!";
 
             //Adds all the roles that have a non-zero chance of being in the game
             if (!(PlayerControl.LocalPlayer.Is(Faction.Crew) && PlayerControl.LocalPlayer.Is(SubFaction.None)))
@@ -109,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 }
             }
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Intruder) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
+            if (!(PlayerControl.LocalPlayer.Is(Faction.Intruder) && PlayerControl.LocalPlayer.Is(SubFaction.None)) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 
@@ -159,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                 }
             }
 
-            if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate) && CustomGameOptions.SyndicateCount > 0)
+            if (!(PlayerControl.LocalPlayer.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(SubFaction.None)) && CustomGameOptions.SyndicateCount > 0)
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 
@@ -192,9 +193,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
                     if (CustomGameOptions.BeamerOn > 0)
                         ColorMapping.Add("Beamer", Colors.Beamer);
 
-                    if (CustomGameOptions.PoisonerOn > 0)
-                        ColorMapping.Add("Poisoner", Colors.Poisoner);
-
                     if (CustomGameOptions.RebelOn > 0)
                     {
                         ColorMapping.Add("Rebel", Colors.Rebel);
@@ -205,28 +203,28 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
 
             if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
             {
-                if (CustomGameOptions.ArsonistOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist))
+                if (CustomGameOptions.ArsonistOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Arsonist", Colors.Arsonist);
 
-                if (CustomGameOptions.GlitchOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch))
+                if (CustomGameOptions.GlitchOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Glitch) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Glitch", Colors.Glitch);
 
-                if (CustomGameOptions.SerialKillerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller))
+                if (CustomGameOptions.SerialKillerOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.SerialKiller) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Serial Killer", Colors.SerialKiller);
 
-                if (CustomGameOptions.JuggernautOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut))
+                if (CustomGameOptions.JuggernautOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Juggernaut) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Juggernaut", Colors.Juggernaut);
 
-                if (CustomGameOptions.MurdererOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
+                if (CustomGameOptions.MurdererOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Murderer", Colors.Murderer);
 
-                if (CustomGameOptions.CryomaniacOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer))
+                if (CustomGameOptions.CryomaniacOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Murderer) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
 
-                if (CustomGameOptions.WerewolfOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf))
+                if (CustomGameOptions.WerewolfOn > 0 && !PlayerControl.LocalPlayer.Is(RoleEnum.Werewolf) && PlayerControl.LocalPlayer.Is(SubFaction.None))
                     ColorMapping.Add("Werewolf", Colors.Werewolf);
 
-                if (CustomGameOptions.PlaguebearerOn > 0)
+                if (CustomGameOptions.PlaguebearerOn > 0 && PlayerControl.LocalPlayer.Is(SubFaction.None))
                 {
                     if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
                         ColorMapping.Add("Pestilence", Colors.Pestilence);

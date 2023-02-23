@@ -2,11 +2,11 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
 using System;
 using Reactor.Utilities;
+using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -20,6 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Rebel))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
             
             if (__instance == role.DeclareButton && !role.HasDeclared)
@@ -31,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
                 if (interact[3] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RebelAction);
                     writer.Write((byte)RebelActionsRPC.Sidekick);
                     writer.Write(role.Player.PlayerId);
@@ -46,9 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 
@@ -74,13 +74,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             
             if (__instance == role.ConcealButton && formerRole == RoleEnum.Concealer)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.ConcealTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Conceal);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -91,32 +88,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.FrameButton && formerRole == RoleEnum.Framer)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.FrameTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                if (interact[3] == true && interact[0] == true)
+                if (!Role.SyndicateHasChaosDrive)
                 {
-                    role.Framed.Add(role.ClosestPlayer.PlayerId);
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                    if (interact[3] == true && interact[0] == true)
+                    {
+                        role.Framed.Add(role.ClosestPlayer.PlayerId);
+                        role.LastFramed = DateTime.UtcNow;
+                    }
+                    else if (interact[1] == true)
+                        role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                }
+                else
+                {
+                    var closestplayers = Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius);
+
+                    foreach (var player in closestplayers)
+                    {
+                        if (!player.Is(Faction.Syndicate))
+                            role.Framed.Add(player.PlayerId);
+                    }
+
                     role.LastFramed = DateTime.UtcNow;
                 }
-                else if (interact[1] == true)
-                    role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
             else if (__instance == role.GazeButton && formerRole == RoleEnum.Gorgon)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.GazeTimer() != 0f)
                     return false;
 
@@ -127,7 +133,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
                 if (interact[3] == true && interact[0] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RebelAction);
                     writer.Write((byte)RebelActionsRPC.Gaze);
                     writer.Write(role.Player.PlayerId);
@@ -150,9 +156,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.PoisonButton && formerRole == RoleEnum.Poisoner)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.PoisonTimer() != 0f)
                     return false;
                 
@@ -169,7 +172,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     role.PoisonedPlayer = role.ClosestPlayer;
                     role.PoisonTimeRemaining = CustomGameOptions.PoisonDuration;
 
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.RebelAction);
                     writer2.Write((byte)RebelActionsRPC.Poison);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -191,13 +194,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.ShapeshiftButton && formerRole == RoleEnum.Shapeshifter)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.ShapeshiftTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Shapeshift);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -208,13 +208,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.WarpButton && formerRole == RoleEnum.Warper)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.WarpTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Warp);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -225,13 +222,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             }
             else if (__instance == role.ConfuseButton && formerRole == RoleEnum.Drunkard)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.DrunkTimer() != 0f)
                     return false;
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Confuse);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

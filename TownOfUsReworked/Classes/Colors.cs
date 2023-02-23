@@ -9,7 +9,8 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Modifier = new Color32(128, 128, 128, 255); //#7F7F7FFF
         public readonly static Color32 Ability = new Color32(255, 153, 0, 255); //#FF9900FF
         public readonly static Color32 Objectifier = new Color32(221, 88, 91, 255); //#DD585BFF
-        public readonly static Color32 Faction = new Color32(0, 230, 109, 255); //# #00E66DFF
+        public readonly static Color32 Faction = new Color32(0, 230, 109, 255); //#00E66DFF
+        public readonly static Color32 SubFaction = new Color32(32, 77, 66, 255); //#204D42FF
 
         //Faction Colors
         public readonly static Color32 Crew = new Color32(139, 253, 253, 255); //#8BFDFDFF
@@ -157,16 +158,16 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Alignment = new Color32(29, 124, 242, 255); //#1D7CF2FF
         public readonly static Color32 Status = new Color32(155, 89, 182, 255); //#9B59B6FF
         public readonly static Color32 Clear = new Color32(0, 0, 0, 0); //#00000000
+        public readonly static Color32 Objectives = new Color32(177, 72, 226, 255); //#B148E2FF
+        public readonly static Color32 Other = new Color32(128, 128, 0, 255); //#808000FF
+        public readonly static Color32 Attributes = new Color32(0, 179, 179, 255); //#00B3B3FF
+        public readonly static Color32 Abilities = new Color32(32, 102, 148, 255); //#206694FF
 
         //Color Storage For Colors I Will Use Later
-        public readonly static Color32 G = new Color32(255, 0, 255, 255); //#FF00FFFF
-        public readonly static Color32 B = new Color32(128, 179, 255, 255); //#2672FFFF
-        public readonly static Color32 A = new Color32(128, 128, 0, 255); //#808000FF
-        public readonly static Color32 Revived = new Color32(145, 102, 64, 255); //#916640FF
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626
-        //#4e4e4e #b148e2 #fffead #00B3B3 #1abc9c #2ecc71 #1f8b4c #3498db #206694 #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff00ef #ff7272 #f25ff1
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC1C45 #EC62A5 #00EEFF #204D42 #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2
-        //#8637C2 #3769FE #4d4d4d #8ff731
+        //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC1C45 #EC62A5 #00EEFF #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2
+        //#8637C2 #3769FE #4d4d4d #8ff731 #2672FF #916640
 
         //Symbol Storage For Objectifiers I Will Make Later
         //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω χ

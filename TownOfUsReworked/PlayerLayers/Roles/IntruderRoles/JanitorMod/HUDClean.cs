@@ -4,7 +4,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using AmongUs.GameOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
@@ -78,13 +77,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 
             if (role.CurrentTarget != null && !role.CleanButton.isCoolingDown)
             {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
             }
             else
             {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
 
             if (role.ClosestPlayer != null && !role.KillButton.isCoolingDown)

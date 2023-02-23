@@ -2,7 +2,6 @@ using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {
@@ -31,12 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     var player = Utils.PlayerById(arrow.Key);
 
                     if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
-                    {
                         snitch.DestroyArrow(arrow.Key);
-                        continue;
-                    }
-                    
-                    arrow.Value.target = player.transform.position;
+                    else
+                        arrow.Value.target = player.transform.position;
                 }
             }
         }

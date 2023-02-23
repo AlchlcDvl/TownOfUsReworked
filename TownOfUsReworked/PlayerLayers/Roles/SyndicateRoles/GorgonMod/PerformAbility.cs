@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
 using TownOfUsReworked.CustomOptions;
 
@@ -16,13 +15,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Gorgon))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Gorgon>(PlayerControl.LocalPlayer);
 
             if (__instance == role.GazeButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.GazeTimer() != 0f)
                     return false;
 
@@ -33,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 
                 if (interact[3] == true && interact[0] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Gaze);
                     writer.Write(role.Player.PlayerId);
                     writer.Write(role.ClosestPlayer.PlayerId);
@@ -55,9 +54,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

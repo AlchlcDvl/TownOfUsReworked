@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod

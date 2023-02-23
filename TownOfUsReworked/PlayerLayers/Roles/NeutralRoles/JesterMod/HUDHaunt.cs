@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 using UnityEngine;
 
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jester))
                 return;
 
             var role = Role.GetRole<Jester>(PlayerControl.LocalPlayer);
@@ -34,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             Utils.SetTarget(ref role.ClosestPlayer, role.HauntButton, ToBeHaunted);
             var renderer = role.HauntButton.graphic;
             
-            if (role.ClosestPlayer != null && !role.HauntButton.isCoolingDown )
+            if (role.ClosestPlayer != null && !role.HauntButton.isCoolingDown && role.CanHaunt)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

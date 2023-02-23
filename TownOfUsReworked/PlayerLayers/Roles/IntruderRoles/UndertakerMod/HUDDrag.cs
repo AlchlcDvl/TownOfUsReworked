@@ -4,7 +4,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using AmongUs.GameOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod

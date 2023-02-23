@@ -2,7 +2,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System.Linq;
 using TownOfUsReworked.CustomOptions;
 

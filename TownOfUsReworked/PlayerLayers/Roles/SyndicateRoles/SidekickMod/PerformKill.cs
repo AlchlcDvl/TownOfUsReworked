@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
 {
@@ -15,13 +14,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sidekick))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Sidekick>(PlayerControl.LocalPlayer);
 
             if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

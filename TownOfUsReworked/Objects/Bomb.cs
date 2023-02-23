@@ -6,7 +6,6 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.Objects
             if (transform == null)
                 return;
 
-            players = Utils.GetClosestPlayers(transform.position, CustomGameOptions.BombRange);
+            players = Utils.GetClosestPlayers(transform.position, CustomGameOptions.BombRange + (Role.SyndicateHasChaosDrive ? CustomGameOptions.ChaosDriveBombRange : 0f));
         }
     }
 
@@ -58,7 +57,7 @@ namespace TownOfUsReworked.Objects
 
                 foreach (var player in t.players)
                 {
-                    Utils.RpcMurderPlayer(player, player);
+                    Utils.RpcMurderPlayer(player, player, false);
                     var targetRole = Role.GetRole(player);
                     targetRole.KilledBy = " By " + name;
                     targetRole.DeathReason = DeathReasonEnum.Killed;
@@ -72,8 +71,9 @@ namespace TownOfUsReworked.Objects
         {
             var BombPref = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             BombPref.name = "Bomb";
-            BombPref.transform.localScale = new Vector3(CustomGameOptions.BombRange * ShipStatus.Instance.MaxLightRadius * 2f, CustomGameOptions.BombRange *
-                ShipStatus.Instance.MaxLightRadius * 2f, CustomGameOptions.BombRange * ShipStatus.Instance.MaxLightRadius * 2f);
+            var range = CustomGameOptions.BombRange + (Role.SyndicateHasChaosDrive ? CustomGameOptions.ChaosDriveBombRange : 0f);
+            BombPref.transform.localScale = new Vector3(range * ShipStatus.Instance.MaxLightRadius * 2f, range * ShipStatus.Instance.MaxLightRadius * 2f, range *
+                ShipStatus.Instance.MaxLightRadius * 2f);
             GameObject.Destroy(BombPref.GetComponent<SphereCollider>());
             BombPref.GetComponent<MeshRenderer>().material = Bomber.BombMaterial;
             BombPref.transform.position = location;

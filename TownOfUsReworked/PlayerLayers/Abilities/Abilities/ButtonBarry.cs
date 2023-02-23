@@ -4,7 +4,7 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
+namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class ButtonBarry : Ability
     {
@@ -15,9 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.Abilities
         public ButtonBarry(PlayerControl player) : base(player)
         {
             Name = "Button Barry";
-            TaskText = "Call a button from anywhere!";
+            TaskText = "- You can call a button from anywhere.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
+            AbilityDescription = "You are a Button Barry! You are paranoid of those around you and can call a meeting from anywhere at the cost of your vision!";
         }
 
         public KillButton ButtonButton

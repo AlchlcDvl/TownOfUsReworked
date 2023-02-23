@@ -2,8 +2,8 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 {
@@ -42,6 +42,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
             {
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
+            }
+
+            if (role.ChangedDead && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                role.TurnSheriff();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnSheriff);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
     }

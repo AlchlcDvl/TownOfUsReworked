@@ -2,7 +2,6 @@ using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {

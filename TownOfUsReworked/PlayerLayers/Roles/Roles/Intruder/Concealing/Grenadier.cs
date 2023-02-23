@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using Il2CppSystem.Collections.Generic;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Grenadier : Role
     {
@@ -29,18 +29,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
         {
             Name = "Grenadier";
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = "- You can flashbang the <color=#8BFDFDFF>Crew</color>, which blinds them.\n- Blinding players will fill their screen with white for a short while, " +
-                "making them unable to see anything.";
+            AbilitiesText = "- You can drop a flashbang, which blinds players around you.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
             RoleType = RoleEnum.Grenadier;
             Faction = Faction.Intruder;
             FactionName = "Intruder";
             FactionColor = Colors.Intruder;
-            RoleAlignment = RoleAlignment.IntruderSupport;
+            RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName ="Intruder (Concealing)";
             Objectives = IntrudersWinCon;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
+            InspectorResults = InspectorResults.DropsItems;
         }
 
         public float KillTimer()
@@ -222,27 +222,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             flashedPlayers.Clear();
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
-                
-            var team = new List<PlayerControl>();
 
+            var team = new List<PlayerControl>();
             team.Add(PlayerControl.LocalPlayer);
 
-            if (!IsRecruit)
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
-                        team.Add(player);
-                }
+                if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                    team.Add(player);
             }
-            else
+
+            if (IsRecruit)
             {
                 var jackal = Player.GetJackal();
-
                 team.Add(jackal.Player);
                 team.Add(jackal.GoodRecruit);
             }
@@ -274,7 +270,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.CabalWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CabalWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -286,7 +282,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.SectWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.SectWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -298,7 +294,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
                 if (Utils.UndeadWin())
                 {
                     Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -309,8 +305,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             {
                 if (Utils.ReanimatedWin())
                 {
-                   Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
@@ -320,9 +316,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             else if (Utils.IntrudersWin())
             {
                 Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.IntruderWin);
-                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

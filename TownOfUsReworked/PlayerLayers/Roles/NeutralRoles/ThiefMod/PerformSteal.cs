@@ -3,11 +3,9 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
@@ -41,16 +39,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 {
                     if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
                         role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
-                        Utils.RpcMurderPlayer(role.Player, role.Player);
+                        Utils.RpcMurderPlayer(role.Player, role.Player, true);
                     else
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.Steal);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(role.ClosestPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
-                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, true);
                         Steal(role, role.ClosestPlayer);
                     }
                 }
@@ -245,9 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             
             newRole.RoleHistory.Add(thiefRole);
             newRole.RoleHistory.AddRange(thiefRole.RoleHistory);
-
-            if (thief == newRole.Player && thief == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+            thief.RegenTask();
 
             if (other.IsRecruit())
                 newRole.IsRecruit = true;
@@ -266,9 +262,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 
                 if (other.IsRecruit())
                     newRole2.IsRecruit = true;
-                
-                if (other == PlayerControl.LocalPlayer)
-                    newRole2.RegenTask();
+
+                other.RegenTask();
             }
 
             if (ability == AbilityEnum.Snitch)

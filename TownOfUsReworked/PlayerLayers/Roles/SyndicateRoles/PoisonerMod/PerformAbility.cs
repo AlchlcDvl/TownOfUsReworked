@@ -5,7 +5,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
 {
@@ -19,13 +18,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Poisoner))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Poisoner>(PlayerControl.LocalPlayer);
             
             if (__instance == role.PoisonButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.PoisonTimer() != 0f)
                     return false;
                 
@@ -41,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
                 {
                     role.PoisonedPlayer = role.ClosestPlayer;
                     role.TimeRemaining = CustomGameOptions.PoisonDuration;
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.Poison);
                     writer2.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer2.Write(role.PoisonedPlayer.PlayerId);
@@ -62,9 +61,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PoisonerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

@@ -3,8 +3,8 @@ using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Objects;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Coroner))
                 return;
 
-            if (Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Player.Data.IsDead)
+            if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
                 
             var br = new BodyReport

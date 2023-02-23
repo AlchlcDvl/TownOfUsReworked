@@ -1,7 +1,6 @@
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     foreach (var button in ret.OtherButtons.Where(button => button != null))
                         button.SetActive(false);
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RetributionistAction);
                     writer.Write((byte)RetributionistActionsRPC.RetributionistReviveSet);
                     writer.Write(ret.Player.PlayerId);

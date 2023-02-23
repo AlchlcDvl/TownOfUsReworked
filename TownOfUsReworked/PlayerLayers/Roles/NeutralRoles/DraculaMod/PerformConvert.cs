@@ -2,7 +2,6 @@ using System;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
@@ -34,26 +33,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
-                    if (role.Converted.Count >= CustomGameOptions.AliveVampCount)
-                    {
-                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
-                        role.LastBitten = DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
-                        writer3.Write((byte)ActionsRPC.Convert);
-                        writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer3.Write(role.ClosestPlayer.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer3);
-                        Convert(role, role.ClosestPlayer);
-                        role.LastBitten = DateTime.UtcNow;
-                    }
-
+                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer3.Write((byte)ActionsRPC.Convert);
+                    writer3.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer3.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer3);
+                    Convert(role, role.ClosestPlayer);
                     return false;
                 }
+
+                if (interact[0] == true)
+                    role.LastBitten = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
@@ -69,6 +61,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
         {
             var role = Role.GetRole(other);
             var drac = dracRole.Player;
+
+            if (dracRole.Converted.Count >= CustomGameOptions.AliveVampCount)
+            {
+                Utils.RpcMurderPlayer(drac, other, !drac.Is(AbilityEnum.Ninja));
+                return;
+            }
 
             var convert = other.Is(SubFaction.None);
 
@@ -87,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 drac2.Converted.AddRange(dracRole.Converted);
             }
             else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(drac, other);
+                Utils.RpcMurderPlayer(drac, other, !drac.Is(AbilityEnum.Ninja));
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
                 Coroutines.Start(Utils.FlashCoroutine(dracRole.Color));

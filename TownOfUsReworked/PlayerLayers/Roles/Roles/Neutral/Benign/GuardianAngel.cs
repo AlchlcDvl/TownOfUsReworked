@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class GuardianAngel : Role
     {
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastProtected = DateTime.UtcNow;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             var gaTeam = new List<PlayerControl>();
             gaTeam.Add(PlayerControl.LocalPlayer);

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 
@@ -78,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 
                     if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.None))
                     {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.WhisperConvert);
                         writer.Write(playerConversion.Item1);
                         writer.Write(role.Player.PlayerId);

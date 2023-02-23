@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 {
@@ -15,36 +15,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.FrameButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.FrameTimer() != 0f)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                if (interact[3] == true && interact[0] == true)
+                if (!Role.SyndicateHasChaosDrive)
                 {
-                    role.Framed.Add(role.ClosestPlayer.PlayerId);
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                    if (interact[3] == true && interact[0] == true)
+                    {
+                        role.Framed.Add(role.ClosestPlayer.PlayerId);
+                        role.LastFramed = DateTime.UtcNow;
+                    }
+                    else if (interact[1] == true)
+                        role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                }
+                else
+                {
+                    var closestplayers = Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius);
+
+                    foreach (var player in closestplayers)
+                    {
+                        if (!player.Is(Faction.Syndicate))
+                            role.Framed.Add(player.PlayerId);
+                    }
+
                     role.LastFramed = DateTime.UtcNow;
                 }
-                else if (interact[1] == true)
-                    role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

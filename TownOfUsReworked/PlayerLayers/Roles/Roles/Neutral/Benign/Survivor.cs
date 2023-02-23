@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Survivor : Role
     {
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             UsesLeft = CustomGameOptions.MaxVests;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = "Neutral (Benign)";
+            AlignmentName = NB;
             Objectives = "Stay alive";
         }
 
@@ -73,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.Roles
             LastVested = DateTime.UtcNow;
         }
 
-        protected override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;

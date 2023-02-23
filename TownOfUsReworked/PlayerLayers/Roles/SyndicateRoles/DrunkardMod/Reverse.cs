@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
 {
     public class Reverse
     {
-        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         public static class ConfuseFunctions
         {
             private static List<PlayerControl> Confused = new List<PlayerControl>();

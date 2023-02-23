@@ -1,17 +1,14 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using AmongUs.GameOptions;
 using Reactor.Utilities;
 
@@ -29,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 Coroutines.Start(Utils.FlashCoroutine(Color.red));
                 yield break;
             }
+
+            if (PlayerControl.LocalPlayer.PlayerId == parentId)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
 
             role.Resurrecting = true;
 
@@ -67,12 +67,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             }
 
             var player = Utils.PlayerById(parentId);
-
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
             targetRole.SubFaction = SubFaction.Reanimated;
             targetRole.IsResurrected = true;
+            role.Resurrected.Add(parentId);
 
             foreach (var poisoner in Role.GetRoles(RoleEnum.Poisoner))
             {

@@ -1,18 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
 using AmongUs.GameOptions;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -27,10 +25,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var parentId = target.ParentId;
             var position = target.TruePosition;
 
-            var revived = new List<PlayerControl>();
-
             if (AmongUsClient.Instance.AmHost)
-                Utils.RpcMurderPlayer(role.Player, role.Player);
+                Utils.RpcMurderPlayer(role.Player, role.Player, false);
+
+            if (PlayerControl.LocalPlayer.PlayerId == parentId)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
 
             if (CustomGameOptions.AltruistTargetBody)
             {
@@ -64,7 +63,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             }
 
             var player = Utils.PlayerById(parentId);
-
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
@@ -85,7 +83,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
-            revived.Add(player);
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
@@ -108,7 +105,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
-                revived.Add(lover);
 
                 foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
@@ -121,11 +117,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 loverRole.KilledBy = " By " + role.PlayerName;
             }
 
-            if (revived.Any(x => x.AmOwner))
-            {
+            if (Minigame.Instance)
                 Minigame.Instance.Close();
-                Minigame.Instance.Close();
-            }
 
             role.ReviveUsed = true;
             Utils.Spread(role.Player, player);

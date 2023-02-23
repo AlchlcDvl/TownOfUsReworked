@@ -3,7 +3,6 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
@@ -14,24 +13,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Chameleon))
                 return false;
-            
-            if (!PlayerControl.LocalPlayer.CanMove)
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Chameleon>(PlayerControl.LocalPlayer);
 
             if (__instance == role.SwoopButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.SwoopTimer() != 0f)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.SwoopDuration;
-                role.RegenTask();
+                role.Player.RegenTask();
                 role.Invis();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Swoop);
                 writer.Write(role.Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

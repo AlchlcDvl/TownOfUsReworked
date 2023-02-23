@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
@@ -35,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
             if (!(role.TargetPlayer.Data.IsDead || role.TargetPlayer.Data.Disconnected))
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
             writer.Write((byte)TurnRPC.BHToTroll);
             writer.Write(PlayerControl.LocalPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -48,9 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
             var newRole = new Troll(player);
             newRole.RoleHistory.Add(bh);
             newRole.RoleHistory.AddRange(bh.RoleHistory);
-
-            if (newRole.Player == PlayerControl.LocalPlayer)
-                newRole.RegenTask();
+            player.RegenTask();
         }
     }
 }

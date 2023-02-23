@@ -17,8 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             Player = player;
 
-            if (!AbilityDictionary.ContainsKey(player.PlayerId))
-                AbilityDictionary.Add(player.PlayerId, this);
+            if (AbilityDictionary.ContainsKey(player.PlayerId))
+                AbilityDictionary.Remove(player.PlayerId);
+
+            AbilityDictionary.Add(player.PlayerId, this);
         }
 
         public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
@@ -26,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         protected internal string Name { get; set; }
         protected internal string AbilityDescription { get; set; }
         protected internal string TaskText { get; set; }
-        protected internal string CommandInfo { get; set; }
         protected internal Color Color { get; set; }
         protected internal AbilityEnum AbilityType { get; set; }
         protected internal bool Hidden { get; set; } = false;
@@ -49,15 +50,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
-        private bool Equals(Ability other)
-        {
-            return Equals(Player, other.Player) && AbilityType == other.AbilityType;
-        }
+        private bool Equals(Ability other) => Equals(Player, other.Player) && AbilityType == other.AbilityType;
 
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            return true;
-        }
+        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public override bool Equals(object obj)
         {
@@ -73,20 +68,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return Equals((Ability)obj);
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Player, (int)AbilityType);
-        }
+        public override int GetHashCode() => HashCode.Combine(Player, (int)AbilityType);
 
-        public static Ability GetAbility(PlayerControl player)
-        {
-            return (from entry in AbilityDictionary where entry.Key == player.PlayerId select entry.Value).FirstOrDefault();
-        }
+        public static Ability GetAbility(PlayerControl player) => AllAbilities.FirstOrDefault(x => x.Player == player);
 
-        public static T GetAbility<T>(PlayerControl player) where T : Ability
-        {
-            return GetAbility(player) as T;
-        }
+        public static T GetAbility<T>(PlayerControl player) where T : Ability => GetAbility(player) as T;
 
         public static Ability GetAbilityValue(AbilityEnum abilityEnum)
         {
@@ -99,47 +85,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return null;
         }
 
-        public static T GetAbilityValue<T>(AbilityEnum abilityEnum) where T : Ability
-        {
-           return GetAbilityValue(abilityEnum) as T;
-        }
+        public static T GetAbilityValue<T>(AbilityEnum abilityEnum) where T : Ability => GetAbilityValue(abilityEnum) as T;
 
-        public static Ability GetAbility(PlayerVoteArea area)
-        {
-            var player = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == area.TargetPlayerId);
-            return player == null ? null : GetAbility(player);
-        }
+        public static Ability GetAbility(PlayerVoteArea area) => GetAbility(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Ability> GetAbilities(AbilityEnum abilitytype)
-        {
-            return AllAbilities.Where(x => x.AbilityType == abilitytype);
-        }
-
-        public void RegenTask()
-        {
-            bool createTask;
-            
-            try
-            {
-                var firstText = Player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                createTask = !firstText.Text.Contains("Role:");
-            }
-            catch (InvalidCastException)
-            {
-                createTask = true;
-            }
-
-            if (createTask)
-            {
-                var task = new GameObject(Name + "Task").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(Player.transform, false);
-                task.Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
-                Player.myTasks.Insert(0, task);
-                return;
-            }
-
-            Player.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{ColorString}Role: {Name}\n{TaskText}</color>";
-        }
+        public static IEnumerable<Ability> GetAbilities(AbilityEnum abilitytype) => AllAbilities.Where(x => x.AbilityType == abilitytype);
 
         public static bool operator ==(Ability a, Ability b)
         {
@@ -152,15 +102,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return a.AbilityType == b.AbilityType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Ability a, Ability b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(Ability a, Ability b) => !(a == b);
 
         public static T GenAbility<T>(Type type, PlayerControl player, int id)
 		{
 			var ability = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable, -1);
+			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable);
 			writer.Write(player.PlayerId);
 			writer.Write(id);
 			AmongUsClient.Instance.FinishRpcImmediately(writer);

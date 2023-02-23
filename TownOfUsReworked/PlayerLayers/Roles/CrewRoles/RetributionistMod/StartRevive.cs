@@ -3,7 +3,6 @@ using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             Revive(ret, ret.Revived);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.RetributionistRevive);
             writer.Write(ret.Player.PlayerId);

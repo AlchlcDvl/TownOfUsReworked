@@ -9,11 +9,18 @@ namespace TownOfUsReworked.MCI
     class Keyboard_Joystick
     {
         public static int controllingFigure = 0;
+        public static bool limitUncapped = false;
 
         public static void Postfix()
         {
             if (!GameStates.IsLocalGame)
                 return; //You must ensure you are only playing on local
+            
+            if (Input.GetKeyDown(KeyCode.RightControl))
+            {
+                limitUncapped = !limitUncapped;
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "The lobby limit as been " + (limitUncapped ? "unlocked" : "locked") + "!");
+            }
 
             if (Input.GetKeyDown(KeyCode.F5))
             {
@@ -22,7 +29,7 @@ namespace TownOfUsReworked.MCI
 
                 controllingFigure = PlayerControl.LocalPlayer.PlayerId;
 
-                if (PlayerControl.AllPlayerControls.Count == 15)
+                if (PlayerControl.AllPlayerControls.Count == 15 && !limitUncapped)
                     return; //Remove this if you're willing to suffer with the consequences. 
 
                 MCIUtils.CleanUpLoad();

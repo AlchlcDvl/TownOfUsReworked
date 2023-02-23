@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     var role = (Vigilante)vigi;
 
                     if (role.PreMeetingDie)
-                        Utils.RpcMurderPlayer(role.Player, role.Player);
+                        Utils.RpcMurderPlayer(role.Player, role.Player, false);
                     
                     return;
                 }

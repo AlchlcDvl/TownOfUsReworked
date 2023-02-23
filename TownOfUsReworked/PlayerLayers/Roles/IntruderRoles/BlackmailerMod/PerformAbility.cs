@@ -4,7 +4,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
@@ -46,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                     role.Blackmailed = role.ClosestPlayer;
                     role.BlackmailButton.SetCoolDown(1f, 1f);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Blackmail);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(role.ClosestPlayer.PlayerId);

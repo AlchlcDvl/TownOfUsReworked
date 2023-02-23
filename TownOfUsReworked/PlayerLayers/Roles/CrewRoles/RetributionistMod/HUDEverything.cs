@@ -2,7 +2,6 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using TownOfUsReworked.CustomOptions;
 using AmongUs.GameOptions;
 using System.Linq;
@@ -325,7 +324,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.InspectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
                 role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
-                var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.InspectedPlayers.Contains(x.PlayerId)).ToList();
+                var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
                 Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
                 var renderer = role.InspectButton.graphic;
                 role.PrimaryButton = role.InspectButton;

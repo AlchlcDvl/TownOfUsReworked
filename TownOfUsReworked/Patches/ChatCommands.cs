@@ -97,7 +97,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
                     {
                         chatHandled = true;
-                        hudManager.AddChat(player, "Welcome to Town Of Us Reworked v" + TownOfUsReworked.versionFinal + "!");
+                        hudManager.AddChat(player, $"Welcome to Town Of Us Reworked {TownOfUsReworked.versionFinal}!");
                         hudManager.AddChat(player, "Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code.");
                         hudManager.AddChat(player, "Credits to the parties have already been given (good luck to those who want to try to cancel me for no reason). This mod has " +
                             "several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique" + 
@@ -1325,13 +1325,22 @@ namespace TownOfUsReworked.Patches
                         }
                         
                         if (modifier != null)
-                            hudManager.AddChat(player, modifier.ModifierDescription);
+                        {
+                            if (!modifier.Hidden)
+                                hudManager.AddChat(player, modifier.ModifierDescription);
+                        }
                         
                         if (objectifier != null)
-                            hudManager.AddChat(player, objectifier.ObjectifierDescription);
+                        {
+                            if (!objectifier.Hidden)
+                                hudManager.AddChat(player, objectifier.ObjectifierDescription);
+                        }
                         
                         if (ability != null)
-                            hudManager.AddChat(player, ability.AbilityDescription);
+                        {
+                            if (!ability.Hidden)
+                                hudManager.AddChat(player, ability.AbilityDescription);
+                        }
                     }
                     //RoleInfo help                    
                     else if (text == "/roleinfo" || text == "/roleinfo ")
@@ -2344,7 +2353,7 @@ namespace TownOfUsReworked.Patches
                                 {
                                     hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
 
-                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
                                     writer.Write(player.PlayerId);
                                     writer.Write(id1);
                                     writer.Write(message);
@@ -2361,7 +2370,7 @@ namespace TownOfUsReworked.Patches
                                 {
                                     hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
 
-                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable, -1);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
                                     writer.Write(player.PlayerId);
                                     writer.Write(id1);
                                     writer.Write(message);

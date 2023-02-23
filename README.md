@@ -64,13 +64,14 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
 | [Drunk](#drunk) | [Lighter](#lighter) | [Lovers](#lovers) |
 | [Dwarf](#dwarf) | [Multitasker](#multitasker) | [Overlord](#overlord) |
-| [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
-| [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
-| [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
-| [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
-| [Shy](#shy) | [Torch](#torch) |  |
-| [VIP](#vip) | [Tunneler](#tunneler) |  |
-| [Volatile](#volatile) | [Underdog](#underdog) |  |
+| [Flincher](#flincher) | [Ninja](#ninja) | [Rivals](#rivals) |
+| [Giant](#giant) | [Radar](#radar) | [Taskmaster](#taskmaster) |
+| [Indomitable](#indomitable) | [Ruthless](#ruthless) | [Traitor](#traitor) |
+| [Professional](#professional) | [Snitch](#snitch) |  |
+| [Shy](#shy) | [Tiebreaker](#tiebreaker) |  |
+| [VIP](#vip) | [Torch](#torch) |  |
+| [Volatile](#volatile) | [Tunneler](#tunneler) |  |
+|  | [Underdog](#underdog) |  |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
@@ -103,7 +104,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
-| 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1dev17.zip) |
+| 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
+| 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1-dev17.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev16 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev16/ToU-Rew-v0.0.1dev16.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev15 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev15.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
@@ -116,6 +118,47 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.1dev18</summary>
+    <ul> <li>New Ability: Ninja</li> </ul>
+    <ul> <li>Addition: Chaos drive abilities! Earlier it only added a kill button but now the Syndicate also has buffed abilities (only some roles have it as of right now)</li> </ul>
+    <ul> <li>Addition: Added an announcements and updates button for those who are too lazy to check the changelogs</li> </ul>
+    <ul> <li>Buff: Coroner can now autopsy dead bodies and compare them to players to find the killers</li> </ul>
+    <ul> <li>Changes: Seer now turns into Sheriff if all players whose roles can change/have changed are dead</li> </ul>
+    <ul> <li>Changes: The Main Menu was changed a bit</li> </ul>
+    <ul> <li>Improvement: Better task lists</li> </ul>
+    <ul> <li>Improvement: All the non-role layer details are finally complete</li> </ul>
+    <ul> <li>Improvement: Removed the "Sabotage and kill everyone" text that all Intruders have (to make way for the new task lists)</li> </ul>
+    <ul> <li>Bug Fix: Fixed the report button not showing for some reason</li> </ul>
+    <ul> <li>Bug Fix: Fixed Modifiers, Objectifiers and Abilities from sometimes not spawning</li> </ul>
+    <ul> <li>Bug Fix: Fixed Shy being assigned to roles who cannot button (like Mayor with the Mayor Button settings turned off)</li> </ul>
+    <ul> <li>Visual Fix: Fixed Janitor's clean button incorrectly lighting up</li> </ul>
+    <ul> <li>Visual Fix: Fixed the good recruit not showing up on your screen if you are the Serial Killer recruit</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Allied not winning with and displaying their decided faction</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Fanatic not changing factions properly</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter not being able to check for targets</li> </ul>
+    <ul> <li>Role Fix: Fixed Vampire Hunter not killing an Undead interactor</li> </ul>
+  </details>
+  <details>
+    <summary>v0.0.1dev17</summary>
+    <ul> <li>Addition: Custom nameplates and visors</li> </ul>
+    <ul> <li>Addition: New 'Casual' preset</li> </ul>
+    <ul> <li>Addition: You minimap now reflects the color of your role</li> </ul>
+    <ul> <li>Addition: Polus Reactor countdown can be changed now</li> </ul>
+    <ul> <li>Improvement: The end game screen shows your role under your name if you win</li> </ul>
+    <ul> <li>Internal: The code recieved yet another restructuring</li> </ul>
+    <ul> <li>Internal: The code for custom hats and role names was changed</li> </ul>
+    <ul> <li>Changes: Some buttons have their art now</li> </ul>
+    <ul> <li>Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on</li> </ul>
+    <ul> <li>Bug Fix: Fixed Seer not flashing when someone's role changes</li> </ul>
+    <ul> <li>Bug Fix: Fixed Revealers and Phantoms being unable to leave vents (WIP)</li> </ul>
+    <ul> <li>Bug Fix: Fixed Plaguebearer turning Pestilence not appearing on the end game summary</li> </ul>
+    <ul> <li>Bug Fix: Fixed Indomitable messing with role gen</li> </ul>
+    <ul> <li>Bug Fix: Fixed Inspector not being able to use their buttons</li> </ul>
+    <ul> <li>Visual Fix: Fixed Turquoise and Lilac having the wrong names</li> </ul>
+    <ul> <li>Visual Fix: Fixed role names not appearing under people's names if they are not the player themselves</li> </ul>
+    <ul> <li>Role Fix: Another attempt at unglitching Glitch</li> </ul>
+  </details>
   <details>
     <summary>v0.0.1dev16</summary>
     <ul> <li>Addition: Added dynamic lobby size changing</li> </ul>
@@ -291,7 +334,7 @@ The Altruist is capable of reviving dead players. Upon finding a dead body, the 
 ## Chameleon
 ### **Alignment: Crew (Support)**
 
-The Chameleon is capable of going invisible to stalk players.
+The Chameleon can go invisible to stalk players and see what they do when no one is around.
 
 ### Game Options
 

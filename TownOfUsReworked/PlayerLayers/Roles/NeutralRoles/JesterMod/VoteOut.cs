@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
                 var jest = (Jester)role;
                 jest.VotedOut = true;
                 jest.SetHaunted(MeetingHud.Instance);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.JesterWin);
                 writer.Write(jest.Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

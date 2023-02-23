@@ -7,6 +7,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System;
+using System.Collections;
+using System.Runtime.InteropServices;
+using BepInEx;
+using BepInEx.Unity.IL2CPP.Utils;
+using UnityEngine.Networking;
+using Il2CppInterop.Runtime.Attributes;
 
 namespace TownOfUsReworked.Classes
 {
@@ -41,7 +48,7 @@ namespace TownOfUsReworked.Classes
             ClearOldVersions();
         }
 
-        public static void ExecuteUpdate(string updateType = "TOU")
+        public static void ExecuteUpdate(string updateType)
         {
             string info = "";
 
@@ -75,6 +82,8 @@ namespace TownOfUsReworked.Classes
                 else
                     info = "Update might already\nbe in progress";
             }
+            else
+                return;
 
             ModUpdater.InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>((p) => { ModUpdater.SetPopupText(info); })));
         }
@@ -184,7 +193,7 @@ namespace TownOfUsReworked.Classes
             return false;
         }
 
-        public static async Task<bool> DownloadUpdate(string updateType = "TOU")
+        public static async Task<bool> DownloadUpdate(string updateType)
         {
             //Downloads the new TownOfUsReworked/Submerged dll from GitHub into the plugins folder
             string downloadDLL= "";
@@ -271,5 +280,41 @@ namespace TownOfUsReworked.Classes
             [JsonPropertyName("browser_download_url")]
             public string browser_download_url { get; set; }
         }
+    }
+
+    public class BepInExUpdater : MonoBehaviour
+    {
+        public const string RequiredBepInExVersion = "6.0.0-be.664+0b23557c1355913983f3540797fa22c43a02247d";
+        public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/664/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.664%2B0b23557.zip";
+        public static bool UpdateRequired => Paths.BepInExVersion.ToString() != RequiredBepInExVersion;
+
+        public void Awake()
+        {
+            TownOfUsReworked.LogSomething("BepInEx Update Required...");
+            TownOfUsReworked.LogSomething($"{Paths.BepInExVersion}, {RequiredBepInExVersion} ");
+            this.StartCoroutine(CoUpdate());
+        }
+
+        [HideFromIl2Cpp]
+        public IEnumerator CoUpdate()
+        {
+            Task.Run(() => MessageBox(GetForegroundWindow(), "Required BepInEx update is downloading, please wait...", "The Other Roles", 0));
+            UnityWebRequest www = UnityWebRequest.Get(BepInExDownloadURL);
+            yield return www.Send();        
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                TownOfUsReworked.LogSomething(www.error);
+                yield break;
+            }
+
+            var zipPath = Path.Combine(Paths.GameRootPath, ".bepinex_update");
+            File.WriteAllBytes(zipPath, www.downloadHandler.data);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        public static extern int MessageBox(IntPtr hWnd, String text, String caption, int options);
     }
 }

@@ -3,18 +3,16 @@ using Hazel;
 using UnityEngine;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
+using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities.Abilities;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Reactor.Utilities;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
@@ -30,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         {
             MurderPlayer(assassin, voteArea, player, guess);
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.AssassinKill);
             writer.Write(player.PlayerId);
             writer.Write(guess);
@@ -179,7 +177,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.SetSwaps);
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
@@ -253,7 +251,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                             if (mayor.Player == PlayerControl.LocalPlayer)
                                 mayor.VoteBank += votesRegained;
                                 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
                             writer.Write(mayor.Player.PlayerId);
                             writer.Write(votesRegained);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -32,7 +32,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.17";
+        public const string VersionString = "0.0.1.18";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -44,7 +44,7 @@ namespace TownOfUsReworked
         public static bool isTest = false;
         public static string devString = isDev ? $"-dev{dev}" : "";
         public static string test = isTest ? "_test" : "";
-        public static string versionFinal = version + devString + test;
+        public static string versionFinal = $"v{version}{devString}{test}";
 
         public static string Buttons = "TownOfUsReworked.Resources.Buttons.";
         public static string Sounds = "TownOfUsReworked.Resources.Sounds.";

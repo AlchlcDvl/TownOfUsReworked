@@ -3,7 +3,6 @@ using Hazel;
 using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using System;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var playerId = role.CurrentTarget.ParentId;
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(role.Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.AltruistRevive);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -65,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (interact[3] == true && interact[0] == true)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RetributionistAction);
                     writer.Write((byte)RetributionistActionsRPC.Protect);
                     writer.Write(role.Player.PlayerId);
@@ -90,38 +89,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                if (role.InspectedPlayers.Contains(role.ClosestPlayer.PlayerId))
+                if (role.Inspected.Contains(role.ClosestPlayer.PlayerId))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
 
                 if (interact[3] == true)
                 {
-                    role.InspectedPlayers.Add(role.ClosestPlayer.PlayerId);
-                    var results = new List<Role>();
-                    var targetRole = Role.GetRole(role.ClosestPlayer);
-                    results.Add(targetRole);
-
-                    var i = 0;
-
-                    while (i < 4)
-                    {
-                        if (results.Count >= PlayerControl.AllPlayerControls.Count)
-                            break;
-
-                        var random = Random.RandomRangeInt(0, Role.AllRoles.Count());
-                        var role2 = Role.AllRoles.ToList()[random];
-
-                        if (role2.RoleType != targetRole.RoleType)
-                        {
-                            results.Add(role2);
-                            i++;
-                        }
-
-                        results.Shuffle();
-                    }
-
-                    role.InspectResults.Add(role.ClosestPlayer.PlayerId, results);
+                    role.Inspected.Add(role.ClosestPlayer.PlayerId);
             
                     try
                     {
@@ -313,7 +288,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         break;
                 }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.EngineerFix);
                 writer.Write(PlayerControl.LocalPlayer.NetId);
@@ -365,9 +340,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     return false;
 
                 role.SwoopTimeRemaining = CustomGameOptions.SwoopDuration;
-                role.RegenTask();
+                role.Player.RegenTask();
                 role.Invis();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Swoop);
                 writer.Write(role.Player.PlayerId);
@@ -376,9 +351,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (__instance == role.MediateButton && revivedRole == RoleEnum.Medium)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.MediateTimer() != 0f)
                     return false;
 
@@ -395,7 +367,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
                         {
                             role.AddMediatePlayer(dead.PlayerId);
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                             writer.Write((byte)ActionsRPC.RetributionistAction);
                             writer.Write((byte)RetributionistActionsRPC.Mediate);
                             writer.Write(dead.PlayerId);
@@ -415,7 +387,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
                     {
                         role.AddMediatePlayer(dead.PlayerId);
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.RetributionistAction);
                         writer.Write((byte)RetributionistActionsRPC.Mediate);
                         writer.Write(dead.PlayerId);
@@ -466,7 +438,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.RewindUsesLeft--;
                 StartStop.StartRewind(role);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Rewind);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -556,7 +528,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.AlertTimeRemaining = CustomGameOptions.AlertDuration;
                 role.AlertUsesLeft--;
                 role.Alert();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Alert);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

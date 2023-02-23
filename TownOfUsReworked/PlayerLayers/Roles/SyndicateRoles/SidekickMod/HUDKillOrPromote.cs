@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.Roles;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
@@ -49,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
             if (role.CanPromote && !role.Player.Data.IsDead)
             {
                 role.TurnRebel();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable, -1);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnRebel);
                 writer.Write(role.Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
