@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             {
                 _buttonButton = value;
                 var role = Role.GetRole(Player);
-                role?.AddToAbilityButtons(value, role);
+                role.AddToAbilityButtons(value, role);
             }
         }
         

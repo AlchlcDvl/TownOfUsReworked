@@ -79,40 +79,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            
-            if (IsWinningRival())
-                return false;
 
-            return true;
+            return false;
         }
 
-        public bool RivalDead()
-        {
-            PlayerControl rival = OtherRival;
+        public bool RivalDead() => OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
 
-            return !(rival.Data.IsDead || rival.Data.Disconnected);
-        }
+        public bool IsDeadRival() => Player.Data.IsDead || Player.Data.Disconnected;
 
-        public bool IsDeadRival()
-        {
-            PlayerControl rival = Player;
-            
-            return !(rival.Data.IsDead || rival.Data.Disconnected);
-        }
+        public bool BothRivalsDead() => IsDeadRival() && RivalDead();
 
-        public bool BothRivalsDead()
-        {
-            return IsDeadRival() && RivalDead();
-        }
+        public bool IsWinningRival() =>  RivalDead() && !IsDeadRival();
 
-        public bool IsWinningRival()
-        {
-            return RivalDead() && !IsDeadRival();
-        }
-
-        public override void Wins()
-        {
-            RivalWins = true;
-        }
+        public override void Wins() => RivalWins = true;
     }
 }

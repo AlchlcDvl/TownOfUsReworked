@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (LoverDead())
+            if (LoverDead() || IsDeadLover())
                 return true;
 
             if (Utils.LoversWin(Player))
@@ -80,20 +80,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 return false;
             }
 
-            return false;
+            return !LoversDead();
         }
 
-        public bool LoverDead()
-        {
-            PlayerControl lover1 = Player;
-            PlayerControl lover2 = OtherLover;
-            
-            return lover1 != null && lover2 != null && ((lover1.Data.IsDead && lover1.Data.Disconnected) || (lover2.Data.Disconnected || lover2.Data.IsDead));
-        }
+        public bool LoverDead() => OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
 
-        public override void Wins()
-        {
-            LoveWins = true;
-        }
+        public bool IsDeadLover() => Player.Data.IsDead || Player.Data.Disconnected;
+
+        public bool LoversDead() => LoverDead() && IsDeadLover();
+
+        public override void Wins() => LoveWins = true;
     }
 }

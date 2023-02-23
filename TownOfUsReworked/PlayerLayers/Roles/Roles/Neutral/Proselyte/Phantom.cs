@@ -62,10 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
 
-        public override void Wins()
-        {
-            PhantomWin = true;
-        }
+        public override void Wins() => PhantomWin = true;
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {

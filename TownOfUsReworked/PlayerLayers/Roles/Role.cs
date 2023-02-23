@@ -86,6 +86,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsSynAlly { get; set; } = false;
         protected internal bool IsSynFanatic { get; set; } = false;
         protected internal bool IsCrewAlly { get; set; } = false;
+        protected internal bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
+            !IsSynFanatic && !IsCrewAlly;
+        protected internal List<bool> Status => new List<bool>()
+        {
+            IsRecruit, //0
+            IsResurrected, //1
+            IsPersuaded, //2
+            IsBitten, //3
+            IsIntAlly, //4
+            IsIntFanatic, //5
+            IsIntFanatic, //6
+            IsSynAlly, //7
+            IsSynFanatic, //8
+            IsSynTraitor, //9
+            IsCrewAlly, //10
+            NotDefective, //11
+         };
 
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
         public static string IntrudersObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +

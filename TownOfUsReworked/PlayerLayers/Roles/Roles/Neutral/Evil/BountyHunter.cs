@@ -4,6 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using TMPro;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -71,10 +72,56 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (!Player.Data.IsDead || Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
-            
-            return !(TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected) && !TargetKilled;
+
+            if (IsRecruit && Utils.CabalWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.CabalWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (IsPersuaded && Utils.SectWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.SectWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (IsBitten && Utils.UndeadWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.UndeadWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (IsResurrected && Utils.ReanimatedWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.ReanimatedWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (Utils.AllNeutralsWin() && NotDefective)
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+
+            return NotDefective;
         }
     }
 }

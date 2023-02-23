@@ -27,10 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TMArrows = new Dictionary<byte, ArrowBehaviour>();
         }
 
-        public override void Wins()
-        {
-            TaskmasterWins = true;
-        }
+        public override void Wins() => TaskmasterWins = true;
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {

@@ -36,27 +36,58 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             Objectives = $"- Eat {EatNeed} {body}.";
         }
-        
+
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (IsRecruit)
+            if (IsRecruit && Utils.CabalWin())
             {
-                if (Utils.CabalWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.CabalWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
-
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.CabalWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
                 return false;
             }
-            else if (EatNeed <= 0)
+            else if (IsPersuaded && Utils.SectWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.SectWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (IsBitten && Utils.UndeadWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.UndeadWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (IsResurrected && Utils.ReanimatedWin())
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.ReanimatedWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (Utils.AllNeutralsWin() && NotDefective)
+            {
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
+            }
+            else if (EatWin() && NotDefective)
             {
                 Wins();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
@@ -67,19 +98,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return false;
             }
 
-            return true;
+            return NotDefective;
         }
 
         public override void Wins()
         {
             if (IsRecruit)
                 CabalWin = true;
-            else if (IsIntAlly)
-                IntruderWin = true;
-            else if (IsSynAlly)
-                SyndicateWin = true;
-            else if (IsCrewAlly)
-                CrewWin = true;
             else if (IsPersuaded)
                 SectWin = true;
             else if (IsBitten)
@@ -134,5 +159,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 
             BodyArrows.Remove(arrow.Key);
         }
+
+        private bool EatWin() => EatNeed <= 0;
     }
 }

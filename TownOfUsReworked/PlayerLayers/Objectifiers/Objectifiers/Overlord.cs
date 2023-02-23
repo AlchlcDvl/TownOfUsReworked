@@ -42,19 +42,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return false;
         }
 
-        public override void Wins()
-        {
-            OverlordWins = true;
-        }
+        public override void Wins() => OverlordWins = true;
 
-        private bool MeetingCountAchieved()
-        {
-            var flag = false;
-
-            if (OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive)
-                flag = true;
-
-            return flag;
-        }
+        private bool MeetingCountAchieved() => OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive;
     }
 }

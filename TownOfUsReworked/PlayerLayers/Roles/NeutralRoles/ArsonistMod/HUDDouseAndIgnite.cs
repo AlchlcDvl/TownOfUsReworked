@@ -20,18 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            foreach (var playerId in role.DousedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-                var data = player?.Data;
-
-                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
-                    continue;
-
-                player.myRend().material.SetColor("_VisorColor", role.Color);
-                player.nameText().color = Color.black;
-            }
-
             if (role.DouseButton == null)
             {
                 role.DouseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);

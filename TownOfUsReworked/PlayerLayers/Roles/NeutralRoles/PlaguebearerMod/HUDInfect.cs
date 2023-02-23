@@ -45,18 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 renderer.material.SetFloat("_Desat", 1f);
             }
 
-            foreach (var playerId in role.InfectedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-                var data = player?.Data;
-
-                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
-                    continue;
-
-                player.myRend().material.SetColor("_VisorColor", role.Color);
-                player.nameText().color = Color.black;
-            }
-
             if (role.CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !role.Player.Data.IsDead)
             {
                 var transform = role.CanTransform;

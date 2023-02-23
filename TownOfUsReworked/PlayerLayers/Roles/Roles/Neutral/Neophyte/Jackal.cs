@@ -41,10 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Recruited.Add(Player.PlayerId);
         }
 
-        public override void Wins()
-        {
-            CabalWin = true;
-        }
+        public override void Wins() => CabalWin = true;
         
         public float RecruitTimer()
         {

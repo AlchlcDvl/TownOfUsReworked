@@ -75,18 +75,6 @@ namespace TownOfUsReworked.Patches
                         color = Colors.Glitch;
                 }
             }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
-            {
-                var coroner = localinfo[0] as Coroner;
-
-                if (coroner.Reported.Contains(player.PlayerId))
-                {
-                    var role = info[0] as Role;
-                    color = role.Color;
-                    name += $"\n{role.Name}";
-                    roleRevealed = true;
-                }
-            }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var consigliere = localinfo[0] as Consigliere;
@@ -123,28 +111,40 @@ namespace TownOfUsReworked.Patches
                 var arsonist = localinfo[0] as Arsonist;
 
                 if (arsonist.DousedPlayers.Contains(player.PlayerId))
+                {
                     name += " <color=#EE7600FF>Ξ</color>";
+                    player.myRend().material.SetColor("_VisorColor", arsonist.Color);
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var plaguebearer = localinfo[0] as Plaguebearer;
 
                 if (plaguebearer.InfectedPlayers.Contains(player.PlayerId))
+                {
                     name += " <color=#CFFE61FF>ρ</color>";
+                    player.myRend().material.SetColor("_VisorColor", plaguebearer.Color);
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var cryomaniac = localinfo[0] as Cryomaniac;
 
                 if (cryomaniac.DousedPlayers.Contains(player.PlayerId))
+                {
                     name += " <color=#642DEAFF>λ</color>";
+                    player.myRend().material.SetColor("_VisorColor", cryomaniac.Color);
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Framer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var framer = localinfo[0] as Framer;
 
                 if (framer.Framed.Contains(player.PlayerId))
+                {
                     name += " <color=#00FFFFFF>ς</color>";
+                    player.myRend().material.SetColor("_VisorColor", framer.Color);
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Executioner) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {

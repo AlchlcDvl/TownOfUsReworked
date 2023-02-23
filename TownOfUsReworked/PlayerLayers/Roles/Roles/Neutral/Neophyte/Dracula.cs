@@ -51,10 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public override void Wins()
-        {
-            UndeadWin = true;
-        }
+        public override void Wins() => UndeadWin = true;
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {

@@ -1214,6 +1214,7 @@ namespace TownOfUsReworked.Patches
                         alliedRole.Faction = Faction.Intruder;
                         alliedRole.FactionName = "Intruder";
                         alliedRole.IsIntAlly = true;
+                        alliedRole.FactionColor = Colors.Intruder;
                         ally.Color = Colors.Intruder;
                     }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Syndicate)
@@ -1221,6 +1222,7 @@ namespace TownOfUsReworked.Patches
                         alliedRole.Faction = Faction.Syndicate;
                         alliedRole.FactionName = "Syndicate";
                         alliedRole.IsSynAlly = true;
+                        alliedRole.FactionColor = Colors.Syndicate;
                         ally.Color = Colors.Syndicate;
                     }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Crew)
@@ -1228,6 +1230,7 @@ namespace TownOfUsReworked.Patches
                         alliedRole.Faction = Faction.Crew;
                         alliedRole.FactionName = "Crew";
                         alliedRole.IsCrewAlly = true;
+                        alliedRole.FactionColor = Colors.Crew;
                         ally.Color = Colors.Crew;
                     }
                     else if (CustomGameOptions.AlliedFaction == AlliedFaction.Random)
@@ -1239,6 +1242,7 @@ namespace TownOfUsReworked.Patches
                             alliedRole.Faction = Faction.Intruder;
                             alliedRole.FactionName = "Intruder";
                             alliedRole.IsIntAlly = true;
+                            alliedRole.FactionColor = Colors.Intruder;
                             ally.Color = Colors.Intruder;
                         }
                         else if (random == 1)
@@ -1246,6 +1250,7 @@ namespace TownOfUsReworked.Patches
                             alliedRole.Faction = Faction.Syndicate;
                             alliedRole.FactionName = "Syndicate";
                             alliedRole.IsSynAlly = true;
+                            alliedRole.FactionColor = Colors.Syndicate;
                             ally.Color = Colors.Syndicate;
                         }
                         else if (random == 2)
@@ -1253,6 +1258,7 @@ namespace TownOfUsReworked.Patches
                             alliedRole.Faction = Faction.Crew;
                             alliedRole.FactionName = "Crew";
                             alliedRole.IsCrewAlly = true;
+                            alliedRole.FactionColor = Colors.Crew;
                             ally.Color = Colors.Crew;
                         }
                     }
@@ -2262,7 +2268,6 @@ namespace TownOfUsReworked.Patches
                         }
                         
                         ally.Side = alliedRole.FactionName;
-
                         break;
 
                     case CustomRPC.SubmergedFixOxygen:

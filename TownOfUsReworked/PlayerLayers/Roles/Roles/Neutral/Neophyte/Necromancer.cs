@@ -93,10 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public override void Wins()
-        {
-            ReanimatedWin = true;
-        }
+        public override void Wins() => ReanimatedWin = true;
 
         public KillButton ResurrectButton
         {

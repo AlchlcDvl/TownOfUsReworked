@@ -104,6 +104,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1-dev17.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev16 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev16/ToU-Rew-v0.0.1dev16.rar) |
@@ -118,6 +119,10 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.1dev18.5</summary>
+    <ul> <li>Critical Fix: Fixed games not ending correctly (hopefully)</li> </ul>
+  </details>
   <details>
     <summary>v0.0.1dev18</summary>
     <ul> <li>New Ability: Ninja</li> </ul>

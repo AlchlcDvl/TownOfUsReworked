@@ -35,10 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             }
         }
 
-        public override void Wins()
-        {
-            CorruptedWin = true;
-        }
+        public override void Wins() => CorruptedWin = true;
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {

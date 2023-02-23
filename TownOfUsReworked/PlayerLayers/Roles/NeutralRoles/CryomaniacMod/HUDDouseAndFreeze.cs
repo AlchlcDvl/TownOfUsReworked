@@ -67,18 +67,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 renderer.color = Palette.DisabledClear;
                 renderer.material.SetFloat("_Desat", 1f);
             }
-
-            foreach (var playerId in role.DousedPlayers)
-            {
-                var player = Utils.PlayerById(playerId);
-                var data = player?.Data;
-
-                if (data == null || data.Disconnected || data.IsDead || PlayerControl.LocalPlayer.Data.IsDead)
-                    continue;
-
-                player.myRend().material.SetColor("_VisorColor", role.Color);
-                player.nameText().color = Color.black;
-            }
         }
     }
 }

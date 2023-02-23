@@ -3,6 +3,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using Reactor.Utilities;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -70,6 +71,39 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             betrayer.FactionName = role.FactionName;
             betrayer.Objectives = role.Objectives;
             Player.RegenTask();
+        }
+
+        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        {
+            if (Player.Data.IsDead || Player.Data.Disconnected)
+                return true;
+
+            if (Side == "Intruder")
+            {
+                if (Utils.IntrudersWin())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                    writer.Write((byte)WinLoseRPC.IntruderWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+            else if (Side == "Syndicate")
+            {
+                if (Utils.SyndicateWins())
+                {
+                    Wins();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                    writer.Write((byte)WinLoseRPC.SyndicateWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+            }
+
+            return !Turned;
         }
     }
 }

@@ -68,17 +68,13 @@ namespace TownOfUsReworked.Patches
             {
                 foreach (var role in Role.AllRoles)
                 {
-                    var roleIsEnd = role.GameEnd(__instance);
-
-                    if (!roleIsEnd)
+                    if (!role.GameEnd(__instance))
                         return false;
                 }
                 
                 foreach (var obj in Objectifier.AllObjectifiers)
                 {
-                    var objIsEnd = obj.GameEnd(__instance);
-
-                    if (!objIsEnd)
+                    if (!obj.GameEnd(__instance))
                         return false;
                 }
 

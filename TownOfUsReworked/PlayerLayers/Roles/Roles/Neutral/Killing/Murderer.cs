@@ -35,118 +35,89 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (IsRecruit)
+            if (IsRecruit && Utils.CabalWin())
             {
-                if (Utils.CabalWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.CabalWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.CabalWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsCrewAlly)
+            else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                if (Utils.CrewWins())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.CrewWin);
-                    writer.Write(Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsIntAlly)
+            else if (Utils.AllNKsWin() && NotDefective)
             {
-                if (Utils.IntrudersWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.IntruderWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.AllNKsWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
+            else if (IsCrewAlly && Utils.CrewWins())
             {
-                if (Utils.AllNeutralsWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                    writer.Write(Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.CrewWin);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
+            else if (IsIntAlly && Utils.IntrudersWin())
             {
-                if (Utils.AllNKsWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                    writer.Write(Player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.IntruderWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsPersuaded)
+            else if (IsSynAlly && Utils.SyndicateWins())
             {
-                if (Utils.SectWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.SectWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.SyndicateWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsBitten)
+            else if (IsPersuaded && Utils.SectWin())
             {
-                if (Utils.UndeadWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.UndeadWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.SectWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsResurrected)
+            else if (IsBitten && Utils.UndeadWin())
             {
-                if (Utils.ReanimatedWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.UndeadWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (IsSynAlly)
+            else if (IsResurrected && Utils.ReanimatedWin())
             {
-                if (Utils.SyndicateWins())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.SyndicateWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Wins();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.ReanimatedWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (Utils.NKWins(RoleType))
+            else if (Utils.NKWins(RoleType) && NotDefective)
             {
                 Wins();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
