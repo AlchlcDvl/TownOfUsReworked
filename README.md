@@ -104,6 +104,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2022.12.14 (s & e) | v0.0.1dev19 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1-dev17.zip) |
@@ -119,6 +120,24 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.1dev19</summary>
+    <ul> <li>Addition: New 'Default' preset for those who want to reset their settings to default</li> </ul>
+    <ul> <li>Addition: New 'Vanilla' gamemode, no idea why I added it so just roll with it</li> </ul>
+    <ul> <li>Addition: Added LevelImpostor compatibility</li> </ul>
+    <ul> <li>Improvement: Settings now loop (for example if the setting allows for the range 1 to 10, moving beyond 10 will result in the setting becoming 1)</li> </ul>
+    <ul> <li>Changes: None of the Neutral (Evil) roles end the game anymore, instead making them win brings about a penalty to players</li> </ul>
+    <ul> <li>Critical Fix: Another attempt at fixing games not ending properly</li> </ul>
+    <ul> <li>Critical Fix: MCI works now (albiet with some bugs of its own)! Controls will be coming later so until then, just press random buttons</li> </ul>
+    <ul> <li>Bug Fix: Presets can now be loaded properly</li> </ul>
+    <ul> <li>Bug Fix: Fixed changelogs appearing as "Fetching..." always</li> </ul>
+    <ul> <li>Bug Fix: Fixed the Corrupted kill button not lighting up properly</li> </ul>
+    <ul> <li>Bug Fix: Fixed the Speci vent not having the proper vent connections</li> </ul>
+    <ul> <li>Visual Fix: Fixed Detective footprints being absolutely huge</li> </ul>
+    <ul> <li>Role Fix: Fixed Retributionist mediate button not showing up</li> </ul>
+    <ul> <li>Role Fix: Fixed Poisoner returning an Intruder win rather than a Syndicate one</li> </ul>
+    <ul> <li>Removal: Removed the 'Footprint Size' settings because it's kind of useless</li> </ul>
+  </details>
   <details>
     <summary>v0.0.1dev18.5</summary>
     <ul> <li>Critical Fix: Fixed games not ending correctly (hopefully)</li> </ul>
