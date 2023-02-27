@@ -10,7 +10,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 using Reactor.Utilities;
 using TownOfUsReworked.Objects;
 
@@ -63,33 +63,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     hudManager.KillOverlay.ShowKillAnimation(assassinPlayer.Data, player.Data);
             }
 
-            var amOwner = player.AmOwner;
+            assassinPlayer.RegenTask();
+            player.RegenTask();
 
-            if (amOwner)
+            if (player.AmOwner)
             {
-                //Utils.ShowDeadBodies = true;
                 hudManager.ShadowQuad.gameObject.SetActive(false);
                 player.nameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 player.RpcSetScanner(false);
-                ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
-                importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
-
-                if (!GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks)
-                {
-                    for (int i = 0; i < player.myTasks.Count; i++)
-                    {
-                        PlayerTask playerTask = player.myTasks.ToArray()[i];
-                        playerTask.OnRemove();
-                        Object.Destroy(playerTask.gameObject);
-                    }
-
-                    player.myTasks.Clear();
-                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostIgnoreTasks, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
-                }
-                else
-                    importantTextTask.Text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.GhostDoTasks, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
-
-                player.myTasks.Insert(0, importantTextTask);
 
                 if (player.Is(RoleEnum.Swapper))
                 {
@@ -105,6 +86,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                         button.SetActive(false);
                         button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
                     }
+                }
+
+                if (player.Is(RoleEnum.Guesser))
+                {
+                    var assassin2 = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+                    ShowHideGuessButtons.HideButtons(assassin2);
                 }
 
                 if (player.Is(AbilityEnum.Assassin))
@@ -130,7 +117,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             var meetingHud = MeetingHud.Instance;
 
-            if (amOwner)
+            if (player.AmOwner)
                 meetingHud.SetForegroundForDead();
 
             var deadPlayer = new DeadPlayer

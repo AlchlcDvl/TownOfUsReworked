@@ -14,15 +14,9 @@ namespace TownOfUsReworked.CustomOptions
             Indent = indent;
         }
 
-        protected internal bool Get()
-        {
-            return (bool) Value;
-        }
+        protected internal bool Get() => (bool)Value;
 
-        protected internal void Toggle()
-        {
-            Set(!Get());
-        }
+        protected internal void Toggle() => Set(!Get());
 
         public override void OptionCreated()
         {

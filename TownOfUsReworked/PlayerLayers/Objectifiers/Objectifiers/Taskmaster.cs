@@ -27,8 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TMArrows = new Dictionary<byte, ArrowBehaviour>();
         }
 
-        public override void Wins() => TaskmasterWins = true;
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -36,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 
             if (WinTasksDone)
             {
-                Wins();
+                TaskmasterWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.TaskmasterWin);
                 writer.Write(Player.PlayerId);

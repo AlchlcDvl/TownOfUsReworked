@@ -9,6 +9,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -53,10 +54,7 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro)
-        {
-            Coroutines.Start(CancelCoro(flashCoro));
-        }
+        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
         protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
@@ -100,14 +98,11 @@ namespace TownOfUsReworked.CustomOptions
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
-
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
-
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
             var i = 0;
-
             OldButtons = __instance.Children.ToList();
 
             foreach (var option in __instance.Children)
@@ -121,7 +116,7 @@ namespace TownOfUsReworked.CustomOptions
 
         private void ImportSlot(int slotId)
         {
-            TownOfUsReworked.LogSomething(slotId);
+            Utils.LogSomething($"Loading Slot - {slotId}");
             string text;
 
             try

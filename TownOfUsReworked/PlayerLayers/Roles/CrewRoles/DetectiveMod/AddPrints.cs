@@ -15,10 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
         private static float Interval => CustomGameOptions.FootprintInterval * 10;
         private static bool Vent => CustomGameOptions.VentFootprintVisible;
 
-        private static Vector2 Position(PlayerControl player)
-        {
-            return player.GetTruePosition() + new Vector2(0, 0.366667f);
-        }
+        private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
         public static void Postfix(PlayerControl __instance)
         {

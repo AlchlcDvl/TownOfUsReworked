@@ -14,41 +14,52 @@ namespace TownOfUsReworked.MCI
 
         public static void SwitchTo(byte playerId)
         {
+            if (!MCIActive)
+                return;
+
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
             PlayerControl.LocalPlayer.moveable = false;
-            
+
+            Object.Destroy(PlayerControl.LocalPlayer.lightSource);
+            HudManager.Instance.KillButton.buttonLabelText.gameObject.SetActive(false);
+
             //Setup new player
             var newPlayer = Utils.PlayerById(playerId);
-
-            newPlayer.lightSource = Object.Instantiate(PlayerControl.LocalPlayer.LightPrefab, newPlayer.transform);
-            newPlayer.lightSource.Initialize(newPlayer.Collider.offset);
-
-            newPlayer.moveable = true;
-            newPlayer.MyPhysics.ResetMoveState();
-            KillAnimation.SetMovement(newPlayer, true);
-            newPlayer.MyPhysics.inputHandler.enabled = true;
-            
-            //Assign new player
             PlayerControl.LocalPlayer = newPlayer;
+            PlayerControl.LocalPlayer.moveable = true;
+
             AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
             AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
-            DestroyableSingleton<HudManager>.Instance.SetHudActive(true);
+            HudManager.Instance.SetHudActive(true);
 
             //Hacky "fix" for twix and Det
-            DestroyableSingleton<HudManager>.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
+            HudManager.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
                     Object.Destroy(x.gameObject);
             });
 
-            DestroyableSingleton<HudManager>.Instance.transform.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
+            HudManager.Instance.KillButton.transform.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
+            {
+                if (x.gameObject.name == "KillTimer_TMP(Clone)")
+                    Object.Destroy(x.gameObject);
+            });
+
+            HudManager.Instance.transform.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
                     Object.Destroy(x.gameObject);
             });
+
+            PlayerControl.LocalPlayer.lightSource = Object.Instantiate(PlayerControl.LocalPlayer.LightPrefab);
+            PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
+            PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
+            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.Collider.offset * 0.5f);
             
             Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
+            PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
+            KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
         }
 
         public static void SwitchTo(int clientId)

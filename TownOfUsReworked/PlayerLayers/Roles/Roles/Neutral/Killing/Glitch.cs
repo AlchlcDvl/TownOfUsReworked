@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            //IntroSound = TownOfUsReworked.GlitchIntro;
+            IntroSound = "GlitchIntro";
             RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
                 "unable to oppose you and mimic others to frame them! Do not let anyone live.";
         }
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -76,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNKsWin() && NotDefective)
             {
-                Wins();
+                NKWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNKsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -94,7 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsCrewAlly && Utils.CrewWins())
             {
-                Wins();
+                CrewWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
                 writer.Write(Player.PlayerId);
@@ -104,7 +104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsIntAlly && Utils.IntrudersWin())
             {
-                Wins();
+                IntruderWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.IntruderWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -113,7 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsSynAlly && Utils.SyndicateWins())
             {
-                Wins();
+                SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SyndicateWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -122,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -131,7 +131,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -140,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -149,16 +149,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.NKWins(RoleType) && NotDefective)
             {
-                Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.NKWins(RoleType) && NotDefective)
-            {
-                Wins();
+                GlitchWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.GlitchWin);
                 writer.Write(Player.PlayerId);
@@ -168,30 +159,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             return false;
-        }
-
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsIntAlly)
-                IntruderWin = true;
-            else if (IsSynAlly)
-                SyndicateWin = true;
-            else if (IsCrewAlly)
-                CrewWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNKs)
-                NKWins = true;
-            else
-                GlitchWins = true;
         }
 
         public float HackTimer()
@@ -627,7 +594,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 __instance.KillButton.SetCoolDown(CustomGameOptions.GlitchKillCooldown - (float)(DateTime.UtcNow - __gInstance.LastKilled).TotalSeconds, CustomGameOptions.GlitchKillCooldown);
                 Utils.SetTarget(ref __gInstance.ClosestPlayer, __gInstance.KillButton);
 
-                if (Utils.EnableAbilityButton(__gInstance.KillButton, __gInstance.Player, __gInstance.ClosestPlayer))
+                if (!__gInstance.KillButton.isCoolingDown && __gInstance.ClosestPlayer != null)
                 {
                     __gInstance.KillButton.graphic.material.SetFloat("_Desat", 0f);
                     __gInstance.KillButton.graphic.color = Palette.EnabledColor;
@@ -674,7 +641,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 __gInstance.HackButton.SetCoolDown(CustomGameOptions.HackCooldown - (float)(DateTime.UtcNow - __gInstance.LastHack).TotalSeconds, CustomGameOptions.HackCooldown);
                 Utils.SetTarget(ref __gInstance.ClosestPlayer, __gInstance.HackButton);
 
-                if (Utils.EnableAbilityButton(__gInstance.HackButton, __gInstance.Player, __gInstance.ClosestPlayer, __gInstance.IsUsingHack))
+                if (!__gInstance.KillButton.isCoolingDown && __gInstance.ClosestPlayer != null && !__gInstance.IsUsingHack)
                 {
                     __gInstance.HackButton.graphic.material.SetFloat("_Desat", 0f);
                     __gInstance.HackButton.graphic.color = Palette.EnabledColor;
@@ -731,7 +698,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!__gInstance.IsUsingMimic)
                     __gInstance.MimicButton.SetCoolDown(CustomGameOptions.MimicCooldown - (float)(DateTime.UtcNow - __gInstance.LastMimic).TotalSeconds, CustomGameOptions.MimicCooldown);
 
-                if (Utils.EnableAbilityButton(__gInstance.MimicButton, __gInstance.Player, null, __gInstance.IsUsingMimic))
+                if (!__gInstance.KillButton.isCoolingDown && !__gInstance.IsUsingMimic)
                 {
                     __gInstance.MimicButton.graphic.material.SetFloat("_Desat", 0f);
                     __gInstance.MimicButton.graphic.color = Palette.EnabledColor;

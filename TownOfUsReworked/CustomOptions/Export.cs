@@ -10,6 +10,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -119,7 +120,7 @@ namespace TownOfUsReworked.CustomOptions
 
         private void ExportSlot(int slotId)
         {
-            TownOfUsReworked.LogSomething(slotId);
+            Utils.LogSomething($"Saving Slot - {slotId}");
             var builder = new StringBuilder();
 
             foreach (var option in AllOptions)

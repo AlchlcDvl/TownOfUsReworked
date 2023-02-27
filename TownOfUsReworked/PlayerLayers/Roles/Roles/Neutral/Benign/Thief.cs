@@ -3,7 +3,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -18,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Thief";
             StartText = "Steal From The Killers";
-            AbilitiesText = "Steal From The Killers";
+            AbilitiesText = "- You can kill players to steal their roles.\n- You cannot steal roles from players who cannot kill.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Thief;
@@ -62,20 +61,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -83,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -92,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -101,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -110,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -119,7 +104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

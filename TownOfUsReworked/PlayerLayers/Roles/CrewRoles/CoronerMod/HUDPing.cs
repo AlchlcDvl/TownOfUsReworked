@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             role.PrimaryButton = role.AutopsyButton;
             var renderer2 = role.AutopsyButton.graphic;
 
-            if (Utils.EnableDeadButton(role.AutopsyButton, role.Player, role.CurrentTarget))
+            if (role.CurrentTarget != null)
             {
                 renderer2.color = Palette.EnabledColor;
                 renderer2.material.SetFloat("_Desat", 0f);
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
             var renderer3 = role.CompareButton.graphic;
 
-            if (Utils.EnableAbilityButton(role.CompareButton, role.Player, role.ClosestPlayer))
+            if (!role.CompareButton.isCoolingDown && role.ClosestPlayer != null && role.ReferenceBody != null)
             {
                 renderer3.color = Palette.EnabledColor;
                 renderer3.material.SetFloat("_Desat", 0f);

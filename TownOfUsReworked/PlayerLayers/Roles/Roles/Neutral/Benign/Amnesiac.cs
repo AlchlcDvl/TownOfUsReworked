@@ -5,13 +5,12 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : Role
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> BodyArrows;
         public DeadBody CurrentTarget = null;
         private KillButton _rememberButton;
 
@@ -19,7 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Amnesiac";
             StartText = "You Forgor :Skull:";
-            AbilitiesText = "- You can copy over a player's role should you find their body.";
+            AbilitiesText = "- You can copy over a player's role should you find their body." + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow " +
+                "pointing to their body." : "");
             RoleType = RoleEnum.Amnesiac;
             Faction = Faction.Neutral;
             FactionName = "Neutral";
@@ -27,10 +27,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            //IntroSound = TownOfUsReworked.AmnesiacIntro;
+            IntroSound = "AmnesiacIntro";
             RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
                 " instead need to win as the role you become after finding a dead body.";
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
+            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            InspectorResults = InspectorResults.DealsWithDead;
         }
 
         public KillButton RememberButton
@@ -69,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -78,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -87,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -96,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -105,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -114,26 +116,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             return NotDefective;
-        }
-
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsIntAlly)
-                IntruderWin = true;
-            else if (IsSynAlly)
-                SyndicateWin = true;
-            else if (IsCrewAlly)
-                CrewWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
         }
     }
 }

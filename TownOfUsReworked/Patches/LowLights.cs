@@ -50,9 +50,6 @@ namespace TownOfUsReworked.Patches
             {
                 if (player._object.Is(AbilityEnum.Torch))
                     __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-
-                if (player._object.Is(AbilityEnum.Lighter))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod;
                     
                 return false;
             }

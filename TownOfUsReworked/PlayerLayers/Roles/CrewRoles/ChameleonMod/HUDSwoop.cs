@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             var renderer = role.SwoopButton.graphic;
 
-            if (Utils.EnableAbilityButton(role.SwoopButton, role.Player, null, role.IsSwooped))
+            if (!role.SwoopButton.isCoolingDown && !role.IsSwooped)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

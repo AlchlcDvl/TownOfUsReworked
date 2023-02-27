@@ -308,22 +308,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
-            else 
-                GuesserWins = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -331,7 +315,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -340,7 +324,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -349,7 +333,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -358,7 +342,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -367,23 +351,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
             }
-            else if (TargetGuessed && NotDefective)
-            {
-                Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.GuesserWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }   
 
             return NotDefective;
         }

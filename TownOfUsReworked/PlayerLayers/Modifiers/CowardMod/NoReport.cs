@@ -10,10 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.CowardMod
         public static void Postfix(HudManager __instance)
         {
             if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
-            {
-                __instance.ReportButton.graphic.enabled = false;
                 __instance.ReportButton.gameObject.SetActive(false);
-            }
         }
     }
 }

@@ -8,6 +8,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -35,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
 
-        public virtual void Loses() => LostByRPC = true;
-        public virtual void Wins() {}
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
         protected internal Color32 Color { get; set; } = Colors.Role;
@@ -47,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
         protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
         protected internal InspectorResults InspectorResults { get; set; } = InspectorResults.None;
-        protected internal AudioClip IntroSound { get; set; } = null;
+        protected internal string IntroSound { get; set; } = "";
         protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
         protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
         protected internal KillButton PrimaryButton { get; set; } = null;
@@ -88,21 +87,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool IsCrewAlly { get; set; } = false;
         protected internal bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
             !IsSynFanatic && !IsCrewAlly;
-        protected internal List<bool> Status => new List<bool>()
-        {
-            IsRecruit, //0
-            IsResurrected, //1
-            IsPersuaded, //2
-            IsBitten, //3
-            IsIntAlly, //4
-            IsIntFanatic, //5
-            IsIntFanatic, //6
-            IsSynAlly, //7
-            IsSynFanatic, //8
-            IsSynTraitor, //9
-            IsCrewAlly, //10
-            NotDefective, //11
-         };
 
         public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
         public static string IntrudersObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +
@@ -211,8 +195,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public bool LostByRPC { get; protected set; }
-
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
@@ -309,8 +291,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (player == null)
                 return null;
 
-            if (RoleDictionary.TryGetValue(player.PlayerId, out var role))
-                return role;
+            foreach (var role in AllRoles)
+            {
+                if (role.Player == player)
+                    return role;
+            }
 
             return null;
         }
@@ -320,10 +305,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var role in AllRoles)
             {
                 if (role.RoleType == roleEnum)
-                {
-                    if (!role.Player.Data.IsDead)
-                        return role;
-                }
+                    return role;
             }
 
             return null;
@@ -340,7 +322,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return null;
         }
 
-        public static bool operator ==(Role a, Role b)
+        public static bool operator == (Role a, Role b)
         {
             if (a is null && b is null)
                 return true;
@@ -351,7 +333,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return a.RoleType == b.RoleType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Role a, Role b) => !(a == b);
+        public static bool operator != (Role a, Role b) => !(a == b);
         
         public static T GetRoleValue<T>(RoleEnum roleEnum) where T : Role => GetRoleValue(roleEnum) as T;
         
@@ -366,5 +348,110 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static IEnumerable<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra);
 
         public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction);
+
+        public static IEnumerable<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results);
+        
+        [HarmonyPatch]
+        public static class CheckEndGame
+        {
+            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+            public static bool Prefix(LogicGameFlowNormal __instance)
+            {
+                if (GameStates.IsHnS)
+                    return true;
+
+                if (!AmongUsClient.Instance.AmHost)
+                    return false;
+
+                bool crewexists = false;
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.Is(Faction.Crew) && !player.NotOnTheSameSide())
+                        crewexists = true;
+                }
+
+                if (Utils.NoOneWins())
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
+                    writer.Write((byte)WinLoseRPC.Stalemate);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    Role.NobodyWins = true;
+                    return true;
+                }
+                else if ((Utils.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                    writer.Write((byte)WinLoseRPC.CrewWin);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    Role.CrewWin = true;
+                    return true;
+                }
+                else if (Utils.Sabotaged())
+                {
+                    if (CustomGameOptions.AltImps)
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                        writer.Write((byte)WinLoseRPC.SyndicateWin);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        Utils.EndGame();
+                        Role.SyndicateWin = true;
+                    }
+                    else
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                        writer.Write((byte)WinLoseRPC.IntruderWin);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        Utils.EndGame();
+                        Role.IntruderWin = true;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    foreach (var role in AllRoles)
+                    {
+                        if (!role.GameEnd(__instance))
+                            return false;
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
+        private static class PlayerControl_SetTasks
+        {
+            private static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
+            {
+                if (__instance == null)
+                    return;
+
+                var player = __instance.__4__this;
+                var text = player.GetTaskList();
+
+                try
+                {
+                    var firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
+
+                    if (firstText.Text.Contains("Sabotage and kill everyone"))
+                        player.myTasks.Remove(firstText);
+
+                    firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
+                    
+                    if (firstText.Text.Contains("Fake"))
+                        player.myTasks.Remove(firstText);
+                } catch {}
+
+                var task = new GameObject("DetailTask").AddComponent<ImportantTextTask>();
+                task.transform.SetParent(player.transform, false);
+                task.Text = text;
+                player.myTasks.Insert(0, task);
+            }
+        }
     }
 }

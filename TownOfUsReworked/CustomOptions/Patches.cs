@@ -458,7 +458,7 @@ namespace TownOfUsReworked.CustomOptions
                     return false;
                 }
 
-                CustomOption option4 = ImportButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
+                CustomOption option4 = PresetButton.SlotButtons.FirstOrDefault(option => option.Setting == __instance);
 
                 if (option4 is CustomButtonOption button3)
                 {

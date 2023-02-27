@@ -13,15 +13,9 @@ namespace TownOfUsReworked.Patches
             public const string TypeName = "Steamworks.SteamAPI, Assembly-CSharp-firstpass";
             public const string MethodName = "RestartAppIfNecessary";
 
-            public static bool Prepare()
-            {
-                return Type.GetType(TypeName, false) != null;
-            }
+            public static bool Prepare() => Type.GetType(TypeName, false) != null;
 
-            public static MethodBase TargetMethod()
-            {
-                return AccessTools.Method(TypeName + ":" + MethodName);
-            }
+            public static MethodBase TargetMethod() => AccessTools.Method(TypeName + ":" + MethodName);
 
             public static bool Prefix(out bool __result)
             {

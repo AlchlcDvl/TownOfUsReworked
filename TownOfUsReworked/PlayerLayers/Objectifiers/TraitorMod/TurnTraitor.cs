@@ -44,6 +44,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected).Count();
             var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected).Count();
 
+            var turnIntruder = false;
+            var turnSyndicate = false;
+
             if (IntrudersAlive > 0 && SyndicateAlive > 0)
             {
                 var random = Random.RandomRangeInt(0, 100);
@@ -51,76 +54,33 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 if (IntrudersAlive == SyndicateAlive)
                 {
                     if (random < 50)
-                    {
-                        traitorRole.Faction = Faction.Intruder;
-                        traitorObj.Color = Colors.Intruder;
-                        traitorRole.IsIntTraitor = true;
-                        traitorObj.Side = "Intruders";
-                        traitorRole.FactionColor = Colors.Intruder;
-                        traitorObj.Objective = Role.IntrudersWinCon;
-                        traitorRole.FactionName = "Intruder";
-                    }
+                        turnIntruder = true;
                     else if (random >= 50)
-                    {
-                        traitorRole.Faction = Faction.Syndicate;
-                        traitorObj.Color = Colors.Syndicate;
-                        traitorObj.Side = "Syndicate";
-                        traitorRole.IsSynTraitor = true;
-                        traitorRole.FactionColor = Colors.Syndicate;
-                        traitorObj.Objective = Role.SyndicateWinCon;
-                        traitorRole.FactionName = "Syndicate";
-                    }
+                        turnSyndicate = true;
                 }
                 else if (IntrudersAlive > SyndicateAlive)
                 {
                     if (random < 25)
-                    {
-                        traitorRole.Faction = Faction.Intruder;
-                        traitorObj.Color = Colors.Intruder;
-                        traitorRole.IsIntTraitor = true;
-                        traitorObj.Side = "Intruders";
-                        traitorRole.FactionColor = Colors.Intruder;
-                        traitorObj.Objective = Role.IntrudersWinCon;
-                        traitorRole.FactionName = "Intruder";
-                    }
+                        turnIntruder = true;
                     else if (random >= 25)
-                    {
-                        traitorRole.Faction = Faction.Syndicate;
-                        traitorObj.Color = Colors.Syndicate;
-                        traitorObj.Side = "Syndicate";
-                        traitorRole.IsSynTraitor = true;
-                        traitorRole.FactionColor = Colors.Syndicate;
-                        traitorObj.Objective = Role.SyndicateWinCon;
-                        traitorRole.FactionName = "Syndicate";
-                    }
+                        turnSyndicate = true;
                 }
                 else if (IntrudersAlive < SyndicateAlive)
                 {
                     if (random < 75)
-                    {
-                        traitorRole.Faction = Faction.Intruder;
-                        traitorObj.Color = Colors.Intruder;
-                        traitorRole.IsIntTraitor = true;
-                        traitorObj.Side = "Intruders";
-                        traitorRole.FactionColor = Colors.Intruder;
-                        traitorObj.Objective = Role.IntrudersWinCon;
-                        traitorRole.FactionName = "Intruder";
-                    }
+                        turnIntruder = true;
                     else if (random >= 75)
-                    {
-                        traitorRole.Faction = Faction.Syndicate;
-                        traitorObj.Color = Colors.Syndicate;
-                        traitorObj.Side = "Syndicate";
-                        traitorRole.IsSynTraitor = true;
-                        traitorRole.FactionColor = Colors.Syndicate;
-                traitorObj.Objective = Role.SyndicateWinCon;
-                        traitorRole.FactionName = "Syndicate";
-                    }
+                        turnSyndicate = true;
                 }
-
-                traitorObj.former = traitorRole;
             }
             else if (IntrudersAlive > 0 && SyndicateAlive == 0)
+                turnIntruder = true;
+            else if (SyndicateAlive > 0 && IntrudersAlive == 0)
+                turnSyndicate = true;
+            else
+                return;
+            
+            if (turnIntruder)
             {
                 traitorRole.Faction = Faction.Intruder;
                 traitorObj.Color = Colors.Intruder;
@@ -131,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 traitorObj.Objective = Role.IntrudersWinCon;
                 traitorRole.FactionName = "Intruder";
             }
-            else if (SyndicateAlive > 0 && IntrudersAlive == 0)
+            else if (turnSyndicate)
             {
                 traitorRole.Faction = Faction.Syndicate;
                 traitorRole.IsSynTraitor = true;
@@ -142,15 +102,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 traitorRole.FactionColor = Colors.Syndicate;
                 traitorRole.FactionName = "Syndicate";
             }
-            else
-                return;
+
+            traitorObj.former = traitorRole;
+            traitorObj.Side2 = traitorRole.Faction;
+            traitorObj.Turned = true;
+            traitor.RegenTask();
 
             if (CustomGameOptions.TraitorCanAssassin)
                 Ability.GenAbility<Ability>(typeof(Assassin), traitor, 0);
-
-            Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
-            traitorObj.Turned = true;
-            traitor.RegenTask();
 
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
             {
@@ -187,8 +146,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 }
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Coroutines.Start(Utils.FlashCoroutine(traitorObj.Color));
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic) && traitor != PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
+
+            if (traitor == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(traitorRole.Faction))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Traitor));
         }
     }
 }

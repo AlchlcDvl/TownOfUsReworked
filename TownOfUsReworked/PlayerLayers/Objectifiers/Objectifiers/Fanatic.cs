@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using Reactor.Utilities;
 using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -13,6 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Turned = false;
         public string Side;
         public string Objective;
+        public Faction Side2;
+        public bool Betray => PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Side2) && x != Player).Count() == 0;
 
         public Fanatic(PlayerControl player) : base(player)
         {
@@ -20,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "♠";
             TaskText = Turned
                 ? Objective
-                : "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#006000FF>Syndicate</color> to join their side.";
+                : "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
@@ -34,11 +37,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             var fanaticRole = Role.GetRole(fanatic);
             var fanatic2 = GetObjectifier<Fanatic>(fanatic);
             fanaticRole.Faction = faction;
+            fanatic2.former = fanaticRole;
             Turned = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Mystic));
-            
+
             if (faction == Faction.Syndicate)
             {
                 fanatic2.Objective = Role.SyndicateWinCon;
@@ -55,13 +59,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 fanaticRole.FactionColor = Colors.Intruder;
                 fanaticRole.FactionName = "Intruder";
             }
-            
+
+            fanatic2.Side2 = faction;
             fanatic.RegenTask();
         }
 
         public void TurnBetrayer()
         {
             var role = Role.GetRole(Player);
+
+            if (role.RoleType == RoleEnum.Betrayer)
+                return;
+
             var betrayer = new Betrayer(Player);
             betrayer.Faction = role.Faction;
             betrayer.SubFaction = role.SubFaction;
@@ -78,29 +87,23 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Side == "Intruder")
+            if (Side == "Intruder" && Utils.IntrudersWin())
             {
-                if (Utils.IntrudersWin())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.IntruderWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Role.IntruderWin = true;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.IntruderWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
-            else if (Side == "Syndicate")
+            else if (Side == "Syndicate" && Utils.SyndicateWins())
             {
-                if (Utils.SyndicateWins())
-                {
-                    Wins();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.SyndicateWin);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    return false;
-                }
+                Role.SyndicateWin = true;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.SyndicateWin);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Utils.EndGame();
+                return false;
             }
 
             return !Turned;

@@ -15,68 +15,60 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
         public static void Postfix(HudManager __instance)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
                 return;
 
-            if (PlayerControl.LocalPlayer == null)
-                return;
+            var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
-            if (PlayerControl.LocalPlayer.Data == null)
-                return;
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Medium))
+            if (role.MediateButton == null)
             {
-                var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
+                role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                role.MediateButton.graphic.enabled = true;
+                role.MediateButton.graphic.sprite = Mediate;
+                role.MediateButton.gameObject.SetActive(false);
+            }
 
-                if (role.MediateButton == null)
+            role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+            role.PrimaryButton = role.MediateButton;
+
+            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.MediateButton.graphic.enabled = true;
-                    role.MediateButton.graphic.sprite = Mediate;
-                    role.MediateButton.gameObject.SetActive(false);
-                }
-
-                role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.PrimaryButton = role.MediateButton;
-
-                if (!PlayerControl.LocalPlayer.Data.IsDead)
-                {
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    if (role.MediatedPlayers.Keys.Contains(player.PlayerId))
                     {
-                        if (role.MediatedPlayers.Keys.Contains(player.PlayerId))
-                        {
-                            role.MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
-                            player.Visible = true;
+                        role.MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
+                        player.Visible = true;
 
-                            if (!CustomGameOptions.ShowMediatePlayer)
+                        if (!CustomGameOptions.ShowMediatePlayer)
+                        {
+                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
                             {
-                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit() {ColorId = player.GetDefaultOutfit().ColorId, HatId = "", SkinId = "",
-                                    VisorId = "", PlayerName = " "});
-                                PlayerMaterial.SetColors(Color.grey, player.myRend());
-                            }
+                                ColorId = player.GetDefaultOutfit().ColorId,
+                                HatId = "",
+                                SkinId = "",
+                                VisorId = "",
+                                PlayerName = " "
+                            });
+
+                            PlayerMaterial.SetColors(Color.grey, player.myRend());
                         }
                     }
                 }
-
-                role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
-                var renderer = role.MediateButton.graphic;
-
-                if (Utils.EnableAbilityButton(role.MediateButton, role.Player))
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
             }
-            else if (CustomGameOptions.ShowMediumToDead && Role.AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.
-                LocalPlayer.PlayerId)))
+
+            role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
+            var renderer = role.MediateButton.graphic;
+
+            if (!role.MediateButton.isCoolingDown)
             {
-                var role = (Medium)Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.Keys.Contains(PlayerControl.LocalPlayer.PlayerId));
-                role.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role.Player.transform.position;
+                renderer.color = Palette.EnabledColor;
+                renderer.material.SetFloat("_Desat", 0f);
+            }
+            else
+            {
+                renderer.color = Palette.DisabledClear;
+                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

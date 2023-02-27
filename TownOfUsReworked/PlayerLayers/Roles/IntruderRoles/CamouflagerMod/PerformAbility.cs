@@ -15,13 +15,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Camouflager))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
 
             if (__instance == role.CamouflageButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.CamouflageTimer() != 0f)
                     return false;
 
@@ -35,9 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

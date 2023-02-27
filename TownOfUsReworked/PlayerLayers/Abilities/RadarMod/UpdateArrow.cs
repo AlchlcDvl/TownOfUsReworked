@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
     {
         public static void Postfix(PlayerControl __instance)
         {
-            foreach (var ability in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
+            foreach (var ability in Ability.GetAbilities(AbilityEnum.Radar))
             {
                 var radar = (Radar)ability;
 

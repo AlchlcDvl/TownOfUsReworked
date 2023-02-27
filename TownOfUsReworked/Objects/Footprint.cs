@@ -2,6 +2,7 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Cosmetics;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
 
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.Objects
         private void Start()
         {
             _gameObject = new GameObject("Footprint");
-            _gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+            _gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover);
             _gameObject.transform.position = Position;
             _gameObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, _velocity));
             _gameObject.transform.SetParent(Player.transform.parent);
@@ -51,7 +52,9 @@ namespace TownOfUsReworked.Objects
             _spriteRenderer = _gameObject.AddComponent<SpriteRenderer>();
             _spriteRenderer.sprite = TownOfUsReworked.Footprint;
             _spriteRenderer.color = Color;
-            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * (CustomGameOptions.FootprintSize / 10);
+            var modifier = Modifier.GetModifier(Player);
+            var size = modifier.TryGetModifiedAppearance(out var appearance) ? appearance.SizeFactor : new Vector3(1f, 1f, 1f);
+            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * (new Vector2(size.x, size.y) / 10f);
 
             _gameObject.SetActive(true);
         }

@@ -123,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     var self = CalculateVotes(__instance);
                     var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
                     var maxIdx = self.MaxPair(out var tie);
-                    TownOfUsReworked.LogSomething($"Meeting was a tie = {tie}");
+                    Utils.LogSomething($"Meeting was a tie = {tie}");
                     var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
                     
                     for (var i = 0; i < __instance.playerStates.Length; i++)

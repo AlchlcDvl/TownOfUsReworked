@@ -1,9 +1,7 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {
@@ -20,10 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             if (!traitor.Turned)
                 return;
 
-            var traitorRole = Role.GetRole(PlayerControl.LocalPlayer);
-            var factiondead = PlayerControl.AllPlayerControls.ToArray().Where(x => x.GetFaction() == traitorRole.Faction).Count() == 0;
-
-            if (factiondead)
+            if (traitor.Betray)
             {
                 traitor.TurnBetrayer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);

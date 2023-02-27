@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Syndicate;
             FactionName = "Syndicate";
             AlignmentName = SSu;
-            //IntroSound = TownOfUsReworked.WarperIntro;
+            IntroSound = "WarperIntro";
         }
 
         public float KillTimer()
@@ -61,13 +61,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Warp()
         {
-            Dictionary<byte, Vector2> coordinates = GenerateWarpCoordinates();
+            var coordinates = GenerateWarpCoordinates();
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Warp);
             writer.Write((byte)coordinates.Count);
 
-            foreach ((byte key, Vector2 value) in coordinates)
+            foreach (var (key, value) in coordinates)
             {
                 writer.Write(key);
                 writer.Write(value);
@@ -86,6 +86,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
+                if (MapBehaviour.Instance)
+                    MapBehaviour.Instance.Close();
+
                 if (PlayerControl.LocalPlayer.inVent)
                 {
                     PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
@@ -93,18 +96,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            foreach ((byte key, Vector2 value) in coordinates)
+            foreach (var (key, value) in coordinates)
             {
-                PlayerControl player = Utils.PlayerById(key);
+                var player = Utils.PlayerById(key);
                 player.transform.position = value;
+                Utils.LogSomething($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
             }
         }
 
         private Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
-            List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
-            HashSet<Vent> vents = Object.FindObjectsOfType<Vent>().ToHashSet();
-            Dictionary<byte, Vector2> coordinates = new Dictionary<byte, Vector2>(targets.Count);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
+            var vents = Object.FindObjectsOfType<Vent>().ToHashSet();
+            var coordinates = new Dictionary<byte, Vector2>(targets.Count);
             var rnd = new System.Random((int)DateTime.Now.Ticks);
 
             List<Vector3> SkeldPositions = new List<Vector3>()
@@ -362,20 +366,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else
-                SyndicateWin = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -383,7 +373,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -392,7 +382,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -401,7 +391,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -410,18 +400,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.SyndicateWins())
+            else if (Utils.SyndicateWins() && NotDefective)
             {
+                SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SyndicateWin);
-                Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

@@ -8,18 +8,16 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Reactor;
-using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using TownOfUsReworked.Cosmetics;
 using Reactor.Networking;
 using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 namespace TownOfUsReworked
 {
@@ -32,7 +30,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.18";
+        public const string VersionString = "0.0.1.19";
         public static System.Version Version = System.Version.Parse(VersionString);
 
         public const int MaxPlayers = 127;
@@ -46,13 +44,14 @@ namespace TownOfUsReworked
         public static string test = isTest ? "_test" : "";
         public static string versionFinal = $"v{version}{devString}{test}";
 
-        public static string Buttons = "TownOfUsReworked.Resources.Buttons.";
-        public static string Sounds = "TownOfUsReworked.Resources.Sounds.";
-        public static string Misc = "TownOfUsReworked.Resources.Misc.";
-        public static string Presets = "TownOfUsReworked.Resources.Presets.";
-        public static string Hats = "TownOfUsReworked.Resources.Hats.";
-        public static string Visors = "TownOfUsReworked.Resources.Visors.";
-        public static string Nameplates = "TownOfUsReworked.Resources.Nameplates.";
+        public static string Resources = "TownOfUsReworked.Resources.";
+        public static string Buttons = $"{Resources}Buttons.";
+        public static string Sounds = $"{Resources}Sounds.";
+        public static string Misc = $"{Resources}Misc.";
+        public static string Presets = $"{Resources}Presets.";
+        public static string Hats = $"{Resources}Hats.";
+        public static string Visors = $"{Resources}Visors.";
+        public static string Nameplates = $"{Resources}Nameplates.";
 
         private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
@@ -121,7 +120,6 @@ namespace TownOfUsReworked
         public static Sprite DetonateSprite;
         public static Sprite RessurectSprite;
         public static Sprite WhisperSprite;
-        public static Sprite Clear;
         public static Sprite CrewVent;
         public static Sprite IntruderVent;
         public static Sprite SyndicateVent;
@@ -130,6 +128,7 @@ namespace TownOfUsReworked
         public static Sprite BiteSprite;
         public static Sprite SidekickSprite;
         public static Sprite HauntSprite;
+        public static Sprite CorruptedKill;
 
         public static Sprite LighterSprite;
         public static Sprite DarkerSprite;
@@ -161,11 +160,6 @@ namespace TownOfUsReworked
 
         public static GameObject CallPlateform;
 
-        private static DLoadImage _iCallLoadImage;
-
-        //Sounds
-        public static AudioClip AgentIntro;
-
         private Harmony _harmony;
         private Harmony Harmony { get; } = new (Id);
 
@@ -177,109 +171,116 @@ namespace TownOfUsReworked
             _harmony = new Harmony("TownOfUsReworked");
             Generate.GenerateAll();
 
-            NormalGameOptionsV07.RecommendedImpostors = NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
-            NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(2, 127).ToArray();
+            var maxImpostors = (Il2CppStructArray<int>) Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
+            GameOptionsData.MaxImpostors = GameOptionsData.RecommendedImpostors = maxImpostors;
+            NormalGameOptionsV07.MaxImpostors = NormalGameOptionsV07.RecommendedImpostors = maxImpostors;
+            HideNSeekGameOptionsV07.MaxImpostors = maxImpostors;
+
+            var minPlayers = (Il2CppStructArray<int>) Enumerable.Repeat(1, byte.MaxValue).ToArray();
+            GameOptionsData.MinPlayers = minPlayers;
+            NormalGameOptionsV07.MinPlayers = minPlayers;
+            HideNSeekGameOptionsV07.MinPlayers = minPlayers;
 
             //Ability buttons
-            JanitorClean = CreateSprite($"{Buttons}Clean.png");
-            EngineerFix = CreateSprite($"{Buttons}Fix.png");
-            SwapperSwitch = CreateSprite($"{Buttons}SwapActive.png");
-            SwapperSwitchDisabled = CreateSprite($"{Buttons}SwapDisabled.png");
-            Rewind = CreateSprite($"{Buttons}Rewind.png");
-            MedicSprite = CreateSprite($"{Buttons}Medic.png");
-            SeerSprite = CreateSprite($"{Buttons}Reveal.png");
-            SampleSprite = CreateSprite($"{Buttons}Sample.png");
-            MorphSprite = CreateSprite($"{Buttons}Morph.png");
-            MineSprite = CreateSprite($"{Buttons}Mine.png");
-            InvisSprite = CreateSprite($"{Buttons}Invis.png");
-            DouseSprite = CreateSprite($"{Buttons}Douse.png");
-            IgniteSprite = CreateSprite($"{Buttons}Ignite.png");
-            ReviveSprite = CreateSprite($"{Buttons}Revive.png");
-            ButtonSprite = CreateSprite($"{Buttons}Button.png");
-            DragSprite = CreateSprite($"{Buttons}Drag.png");
-            DropSprite = CreateSprite($"{Buttons}Drop.png");
-            CycleBackSprite = CreateSprite($"{Buttons}CycleBack.png");
-            CycleForwardSprite = CreateSprite($"{Buttons}CycleForward.png");
-            GuessSprite = CreateSprite($"{Buttons}Guess.png");
-            FlashSprite = CreateSprite($"{Buttons}Flash.png");
-            AlertSprite = CreateSprite($"{Buttons}Alert.png");
-            RememberSprite = CreateSprite($"{Buttons}Remember.png");
-            TrackSprite = CreateSprite($"{Buttons}Track.png");
-            PoisonSprite = CreateSprite($"{Buttons}Poison.png");
-            PoisonedSprite = CreateSprite($"{Buttons}Poisoned.png");
-            TransportSprite = CreateSprite($"{Buttons}Transport.png");
-            PlantSprite = CreateSprite($"{Buttons}Plant.png");
-            DetonateSprite = CreateSprite($"{Buttons}Detonate.png");
-            MediateSprite = CreateSprite($"{Buttons}Mediate.png");
-            VestSprite = CreateSprite($"{Buttons}Vest.png");
-            ProtectSprite = CreateSprite($"{Buttons}Protect.png");
-            BlackmailSprite = CreateSprite($"{Buttons}Blackmail.png");
-            BlackmailLetterSprite = CreateSprite($"{Buttons}Blackmailed.png");
-            InfectSprite = CreateSprite($"{Buttons}Infect.png");
-            BugSprite = CreateSprite($"{Buttons}Trap.png");
-            ExamineSprite = CreateSprite($"{Buttons}Examine.png");
-            HackSprite = CreateSprite($"{Buttons}Hack.png");
-            MimicSprite = CreateSprite($"{Buttons}Mimic.png");
-            Camouflage = CreateSprite($"{Buttons}Camouflage.png");
-            StabSprite = CreateSprite($"{Buttons}Stab.png");
-            Shift = CreateSprite($"{Buttons}Shift.png");
-            ShootSprite = CreateSprite($"{Buttons}Shoot.png");
-            MaulSprite = CreateSprite($"{Buttons}Maul.png");
-            ObliterateSprite = CreateSprite($"{Buttons}Obliterate.png");
-            AssaultSprite = CreateSprite($"{Buttons}Assault.png");
-            EraseDataSprite = CreateSprite($"{Buttons}EraseData.png");
-            DisguiseSprite = CreateSprite($"{Buttons}Disguise.png");
-            CannibalEat = CreateSprite($"{Buttons}Eat.png");
-            TimeFreezeSprite = CreateSprite($"{Buttons}TimeFreeze.png");
-            CryoFreezeSprite = CreateSprite($"{Buttons}CryoFreeze.png");
-            MeasureSprite = CreateSprite($"{Buttons}Measure.png");
-            TeleportSprite = CreateSprite($"{Buttons}Recall.png");
-            MarkSprite = CreateSprite($"{Buttons}Mark.png");
-            WarpSprite = CreateSprite($"{Buttons}Warp.png");
-            Placeholder = CreateSprite($"{Buttons}Placeholder.png");
-            MeetingPlaceholder = CreateSprite($"{Buttons}MeetingPlaceholder.png");
-            SyndicateKill = CreateSprite($"{Buttons}SyndicateKill.png");
-            RessurectSprite = CreateSprite($"{Buttons}Ressurect.png");
-            WhisperSprite = CreateSprite($"{Buttons}Whisper.png");
-            Clear = CreateSprite($"{Buttons}Clear.png");
-            CrewVent = CreateSprite($"{Buttons}CrewVent.png");
-            IntruderVent = CreateSprite($"{Buttons}IntruderVent.png");
-            SyndicateVent = CreateSprite($"{Buttons}SyndicateVent.png");
-            NeutralVent = CreateSprite($"{Buttons}NeutralVent.png");
-            RecruitSprite = CreateSprite($"{Buttons}Recruit.png");
-            BiteSprite = CreateSprite($"{Buttons}Bite.png");
-            PromoteSprite = CreateSprite($"{Buttons}Promote.png");
-            HauntSprite = CreateSprite($"{Buttons}Haunt.png");
-            SidekickSprite = CreateSprite($"{Buttons}Sidekick.png");
+            JanitorClean = Utils.CreateSprite($"{Buttons}Clean.png");
+            EngineerFix = Utils.CreateSprite($"{Buttons}Fix.png");
+            SwapperSwitch = Utils.CreateSprite($"{Buttons}SwapActive.png");
+            SwapperSwitchDisabled = Utils.CreateSprite($"{Buttons}SwapDisabled.png");
+            Rewind = Utils.CreateSprite($"{Buttons}Rewind.png");
+            MedicSprite = Utils.CreateSprite($"{Buttons}Medic.png");
+            SeerSprite = Utils.CreateSprite($"{Buttons}Reveal.png");
+            SampleSprite = Utils.CreateSprite($"{Buttons}Sample.png");
+            MorphSprite = Utils.CreateSprite($"{Buttons}Morph.png");
+            MineSprite = Utils.CreateSprite($"{Buttons}Mine.png");
+            InvisSprite = Utils.CreateSprite($"{Buttons}Invis.png");
+            DouseSprite = Utils.CreateSprite($"{Buttons}Douse.png");
+            IgniteSprite = Utils.CreateSprite($"{Buttons}Ignite.png");
+            ReviveSprite = Utils.CreateSprite($"{Buttons}Revive.png");
+            ButtonSprite = Utils.CreateSprite($"{Buttons}Button.png");
+            DragSprite = Utils.CreateSprite($"{Buttons}Drag.png");
+            DropSprite = Utils.CreateSprite($"{Buttons}Drop.png");
+            CycleBackSprite = Utils.CreateSprite($"{Buttons}CycleBack.png");
+            CycleForwardSprite = Utils.CreateSprite($"{Buttons}CycleForward.png");
+            GuessSprite = Utils.CreateSprite($"{Buttons}Guess.png");
+            FlashSprite = Utils.CreateSprite($"{Buttons}Flash.png");
+            AlertSprite = Utils.CreateSprite($"{Buttons}Alert.png");
+            RememberSprite = Utils.CreateSprite($"{Buttons}Remember.png");
+            TrackSprite = Utils.CreateSprite($"{Buttons}Track.png");
+            PoisonSprite = Utils.CreateSprite($"{Buttons}Poison.png");
+            PoisonedSprite = Utils.CreateSprite($"{Buttons}Poisoned.png");
+            TransportSprite = Utils.CreateSprite($"{Buttons}Transport.png");
+            PlantSprite = Utils.CreateSprite($"{Buttons}Plant.png");
+            DetonateSprite = Utils.CreateSprite($"{Buttons}Detonate.png");
+            MediateSprite = Utils.CreateSprite($"{Buttons}Mediate.png");
+            VestSprite = Utils.CreateSprite($"{Buttons}Vest.png");
+            ProtectSprite = Utils.CreateSprite($"{Buttons}Protect.png");
+            BlackmailSprite = Utils.CreateSprite($"{Buttons}Blackmail.png");
+            BlackmailLetterSprite = Utils.CreateSprite($"{Buttons}Blackmailed.png");
+            InfectSprite = Utils.CreateSprite($"{Buttons}Infect.png");
+            BugSprite = Utils.CreateSprite($"{Buttons}Trap.png");
+            ExamineSprite = Utils.CreateSprite($"{Buttons}Examine.png");
+            HackSprite = Utils.CreateSprite($"{Buttons}Hack.png");
+            MimicSprite = Utils.CreateSprite($"{Buttons}Mimic.png");
+            Camouflage = Utils.CreateSprite($"{Buttons}Camouflage.png");
+            StabSprite = Utils.CreateSprite($"{Buttons}Stab.png");
+            Shift = Utils.CreateSprite($"{Buttons}Shift.png");
+            ShootSprite = Utils.CreateSprite($"{Buttons}Shoot.png");
+            MaulSprite = Utils.CreateSprite($"{Buttons}Maul.png");
+            ObliterateSprite = Utils.CreateSprite($"{Buttons}Obliterate.png");
+            AssaultSprite = Utils.CreateSprite($"{Buttons}Assault.png");
+            EraseDataSprite = Utils.CreateSprite($"{Buttons}EraseData.png");
+            DisguiseSprite = Utils.CreateSprite($"{Buttons}Disguise.png");
+            CannibalEat = Utils.CreateSprite($"{Buttons}Eat.png");
+            TimeFreezeSprite = Utils.CreateSprite($"{Buttons}TimeFreeze.png");
+            CryoFreezeSprite = Utils.CreateSprite($"{Buttons}CryoFreeze.png");
+            MeasureSprite = Utils.CreateSprite($"{Buttons}Measure.png");
+            TeleportSprite = Utils.CreateSprite($"{Buttons}Recall.png");
+            MarkSprite = Utils.CreateSprite($"{Buttons}Mark.png");
+            WarpSprite = Utils.CreateSprite($"{Buttons}Warp.png");
+            Placeholder = Utils.CreateSprite($"{Buttons}Placeholder.png");
+            MeetingPlaceholder = Utils.CreateSprite($"{Buttons}MeetingPlaceholder.png");
+            SyndicateKill = Utils.CreateSprite($"{Buttons}SyndicateKill.png");
+            RessurectSprite = Utils.CreateSprite($"{Buttons}Ressurect.png");
+            WhisperSprite = Utils.CreateSprite($"{Buttons}Whisper.png");
+            CorruptedKill = Utils.CreateSprite($"{Buttons}CorruptedKill.png");
+            CrewVent = Utils.CreateSprite($"{Buttons}CrewVent.png");
+            IntruderVent = Utils.CreateSprite($"{Buttons}IntruderVent.png");
+            SyndicateVent = Utils.CreateSprite($"{Buttons}SyndicateVent.png");
+            NeutralVent = Utils.CreateSprite($"{Buttons}NeutralVent.png");
+            RecruitSprite = Utils.CreateSprite($"{Buttons}Recruit.png");
+            BiteSprite = Utils.CreateSprite($"{Buttons}Bite.png");
+            PromoteSprite = Utils.CreateSprite($"{Buttons}Promote.png");
+            HauntSprite = Utils.CreateSprite($"{Buttons}Haunt.png");
+            SidekickSprite = Utils.CreateSprite($"{Buttons}Sidekick.png");
 
             //Misc Stuff
-            Lock = CreateSprite($"{Misc}Lock.png");
-            BlackmailOverlaySprite = CreateSprite($"{Misc}BlackmailOverlay.png");
-            LighterSprite = CreateSprite($"{Misc}Lighter.png");
-            DarkerSprite = CreateSprite($"{Misc}Darker.png");
-            Arrow = CreateSprite($"{Misc}Arrow.png");
-            Footprint = CreateSprite($"{Misc}Footprint.png");
+            Lock = Utils.CreateSprite($"{Misc}Lock.png");
+            BlackmailOverlaySprite = Utils.CreateSprite($"{Misc}BlackmailOverlay.png");
+            LighterSprite = Utils.CreateSprite($"{Misc}Lighter.png");
+            DarkerSprite = Utils.CreateSprite($"{Misc}Darker.png");
+            Arrow = Utils.CreateSprite($"{Misc}Arrow.png");
+            Footprint = Utils.CreateSprite($"{Misc}Footprint.png");
 
             //Settings buttons
-            SettingsButtonSprite = CreateSprite($"{Misc}SettingsButton.png");
-            CrewSettingsButtonSprite = CreateSprite($"{Misc}Crew.png");
-            NeutralSettingsButtonSprite = CreateSprite($"{Misc}Neutral.png");
-            IntruderSettingsButtonSprite = CreateSprite($"{Misc}Intruders.png");
-            SyndicateSettingsButtonSprite = CreateSprite($"{Misc}Syndicate.png");
-            ModifierSettingsButtonSprite = CreateSprite($"{Misc}Modifiers.png");
-            ObjectifierSettingsButtonSprite = CreateSprite($"{Misc}Objectifiers.png");
-            AbilitySettingsButtonSprite = CreateSprite($"{Misc}Abilities.png");
-            ToUBanner = CreateSprite($"{Misc}TownOfUsReworkedBanner.png");
-            UpdateTOUButton = CreateSprite($"{Misc}UpdateToUButton.png");
-            UpdateSubmergedButton = CreateSprite($"{Misc}UpdateSubmergedButton.png");
+            SettingsButtonSprite = Utils.CreateSprite($"{Misc}SettingsButton.png");
+            CrewSettingsButtonSprite = Utils.CreateSprite($"{Misc}Crew.png");
+            NeutralSettingsButtonSprite = Utils.CreateSprite($"{Misc}Neutral.png");
+            IntruderSettingsButtonSprite = Utils.CreateSprite($"{Misc}Intruders.png");
+            SyndicateSettingsButtonSprite = Utils.CreateSprite($"{Misc}Syndicate.png");
+            ModifierSettingsButtonSprite = Utils.CreateSprite($"{Misc}Modifiers.png");
+            ObjectifierSettingsButtonSprite = Utils.CreateSprite($"{Misc}Objectifiers.png");
+            AbilitySettingsButtonSprite = Utils.CreateSprite($"{Misc}Abilities.png");
+            ToUBanner = Utils.CreateSprite($"{Misc}TownOfUsReworkedBanner.png");
+            UpdateTOUButton = Utils.CreateSprite($"{Misc}UpdateToUButton.png");
+            UpdateSubmergedButton = Utils.CreateSprite($"{Misc}UpdateSubmergedButton.png");
 
             //Menu settings
-            DiscordImage = CreateSprite($"{Misc}Discord.png");
-            UpdateImage = CreateSprite($"{Misc}Update.png");
+            DiscordImage = Utils.CreateSprite($"{Misc}Discord.png");
+            UpdateImage = Utils.CreateSprite($"{Misc}Update.png");
 
             //Better Aiship Resources
-            var resourceSteam = myAssembly.GetManifestResourceStream($"{Misc}Airship");
-            var assetBundle = AssetBundle.LoadFromMemory(resourceSteam.ReadFully());
+            var resourceStream = myAssembly.GetManifestResourceStream($"{Misc}Airship");
+            var assetBundle = AssetBundle.LoadFromMemory(resourceStream.ReadFully());
 
             VaultSprite = assetBundle.LoadAsset<Sprite>("Vault").DontDestroy();
             CokpitSprite = assetBundle.LoadAsset<Sprite>("Cokpit").DontDestroy();
@@ -289,10 +290,8 @@ namespace TownOfUsReworked
             VaultAnim = assetBundle.LoadAsset<AnimationClip>("Vault.anim").DontDestroy();
             CokpitAnim = assetBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
             MedicalAnim = assetBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
-            CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
-            //Sounds
-            AgentIntro = CreateAudio($"{Sounds}AgentIntro.raw");
+            CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
             PalettePatch.Load();
             ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
@@ -320,59 +319,7 @@ namespace TownOfUsReworked
 
             _harmony.PatchAll();
             SubmergedCompatibility.Initialize();
+            SoundEffectsManager.Load();
         }
-
-        public static Sprite CreateSprite(string name)
-        {
-            var pixelsPerUnit = 100f;
-            var pivot = new Vector2(0.5f, 0.5f);
-            var assembly = Assembly.GetExecutingAssembly();
-            var tex = Utils.CreateEmptyTexture();
-            var imageStream = assembly.GetManifestResourceStream(name);
-            var img = imageStream.ReadFully();
-            LoadImage(tex, img, true);
-            tex.DontDestroy();
-            var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), pivot, pixelsPerUnit);
-            sprite.DontDestroy();
-            return sprite;
-        }
-
-        public static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
-        {
-            _iCallLoadImage ??= IL2CPP.ResolveICall<DLoadImage>("UnityEngine.ImageConversion::LoadImage");
-            var il2CPPArray = (Il2CppStructArray<byte>) data;
-            _iCallLoadImage.Invoke(tex.Pointer, il2CPPArray.Pointer, markNonReadable);
-        }
-
-        private delegate bool DLoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
-
-        public static AudioClip CreateAudio(string path, string sfxName = "")
-        {
-            try
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-                var stream = assembly.GetManifestResourceStream(path);
-                var byteAudio = new byte[stream.Length];
-                _ = stream.Read(byteAudio, 0, (int)stream.Length);
-                float[] samples = new float[byteAudio.Length / 4];
-                int offset;
-
-                for (int i = 0; i < samples.Length; i++)
-                {
-                    offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
-                }
-
-                var audioClip = AudioClip.Create(sfxName, samples.Length, 2, 48000, false);
-                audioClip.SetData(samples, 0);
-                return audioClip;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public static void LogSomething(object message) => PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
     }
 }

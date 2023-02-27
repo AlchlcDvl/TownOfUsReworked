@@ -197,18 +197,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                             return FixFunctions.FixCamo();
 
                         break;
+
+                    case 6:
+                        var comms6 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+
+                        if (comms6.IsActive)
+                            return FixFunctions.FixComms();
+
+                        var reactor6 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+
+                        if (reactor6.IsActive)
+                            return FixFunctions.FixReactor(SystemTypes.Laboratory);
+
+                        var oxygen6 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+
+                        if (oxygen6.IsActive)
+                            return FixFunctions.FixOxygen();
+
+                        var lights6 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+
+                        if (lights6.IsActive)
+                            return FixFunctions.FixLights(lights6);
+
+                        break;
                 }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.EngineerFix);
                 writer.Write(PlayerControl.LocalPlayer.NetId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
-                } catch {}
-
                 return false;
             }
 

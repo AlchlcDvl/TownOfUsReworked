@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (exPlayer != null)
                 {
-                    TownOfUsReworked.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
+                    Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
                     exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
                     exPlayer.myRend().material.SetFloat("_Outline", 0f);
                     ret.exShielded = null;

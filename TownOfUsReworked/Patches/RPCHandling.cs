@@ -622,7 +622,7 @@ namespace TownOfUsReworked.Patches
                         AllObjectifiers.Shuffle();
                     }
 
-                    TownOfUsReworked.LogSomething("Classic/Custom Sorting Done");
+                    Utils.LogSomething("Classic/Custom Sorting Done");
                 }
                 else if (GameStates.IsAA)
                 {
@@ -670,7 +670,7 @@ namespace TownOfUsReworked.Patches
                     if (CustomGameOptions.EnableObjectifiers)
                         AllObjectifiers.Shuffle();
 
-                    TownOfUsReworked.LogSomething("All Any Sorting Done");
+                    Utils.LogSomething("All Any Sorting Done");
                 }
 
                 var NonIntruderRoles = new List<(Type, int, int, bool)>();
@@ -706,7 +706,7 @@ namespace TownOfUsReworked.Patches
 
                     spawnList1 = nonIntruderRoles;
 
-                    TownOfUsReworked.LogSomething("All Any List 1 Done");
+                    Utils.LogSomething("All Any List 1 Done");
 
                     while (impRoles.Count <= impostors.Count && IntruderRoles.Count > 0)
                     {
@@ -721,13 +721,13 @@ namespace TownOfUsReworked.Patches
 
                     spawnList2 = impRoles;
 
-                    TownOfUsReworked.LogSomething("All Any List 2 Done");
+                    Utils.LogSomething("All Any List 2 Done");
                 }
 
                 spawnList1.Shuffle();
                 spawnList2.Shuffle();
             }
-            else
+            else if (GameStates.IsKilling)
             {
                 CrewRoles.Clear();
                 IntruderRoles.Clear();
@@ -773,6 +773,7 @@ namespace TownOfUsReworked.Patches
                 NeutralKillingRoles.Add((typeof(SerialKiller), CustomGameOptions.SerialKillerOn, 35, CustomGameOptions.UniqueSerialKiller));
                 NeutralKillingRoles.Add((typeof(Juggernaut), CustomGameOptions.JuggernautOn, 36, CustomGameOptions.UniqueJuggernaut));
                 NeutralKillingRoles.Add((typeof(Murderer), CustomGameOptions.MurdererOn, 28, CustomGameOptions.UniqueMurderer));
+                NeutralKillingRoles.Add((typeof(Thief), CustomGameOptions.ThiefOn, 38, CustomGameOptions.UniqueThief));
 
                 if (CustomGameOptions.AddArsonist)
                     NeutralKillingRoles.Add((typeof(Arsonist), CustomGameOptions.ArsonistOn, 31, CustomGameOptions.UniqueArsonist));
@@ -802,28 +803,23 @@ namespace TownOfUsReworked.Patches
                 if (spareCrew > 2)
                     Sort(NeutralKillingRoles, neutrals, neutrals);
                 else
-                    Sort(NeutralKillingRoles, crewmates.Count - 3, crewmates.Count - 3);
+                    Sort(NeutralKillingRoles, crewmates.Count - 2, crewmates.Count - 2);
 
-                if (CrewRoles.Count + NeutralKillingRoles.Count > crewmates.Count)
-                    Sort(CrewRoles, crewmates.Count - NeutralKillingRoles.Count, crewmates.Count - NeutralKillingRoles.Count);
-                else if (CrewRoles.Count + NeutralKillingRoles.Count < crewmates.Count)
+                int vigis = (crewmates.Count - NeutralKillingRoles.Count - (CustomGameOptions.AltImps ? 0 : CustomGameOptions.SyndicateCount)) / 2;
+                int vets = (crewmates.Count - NeutralKillingRoles.Count) / 2;
+
+                while (vigis > 0)
                 {
-                    int vigis = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
-                    int vets = (crewmates.Count - NeutralKillingRoles.Count - CrewRoles.Count) / 2;
-
-                    while (vigis > 0)
-                    {
-                        CrewRoles.Add((typeof(Vigilante), 100, 3, false));
-                        vigis -= 1;
-                        CrewRoles.Add((typeof(Veteran), 100, 11, false));
-                        vets -= 1;
-                    }
+                    CrewRoles.Add((typeof(Vigilante), 100, 3, false));
+                    vigis -= 1;
+                    CrewRoles.Add((typeof(Veteran), 100, 11, false));
+                    vets -= 1;
                 }
 
                 Sort(IntruderRoles, CustomGameOptions.IntruderCount, CustomGameOptions.IntruderCount);
                 Sort(SyndicateRoles, CustomGameOptions.SyndicateCount, CustomGameOptions.SyndicateCount);
 
-                TownOfUsReworked.LogSomething("Killing Role List Sorted");
+                Utils.LogSomething("Killing Role List Sorted");
 
                 var nonIntruderRoles = new List<(Type, int, int, bool)>();
 
@@ -837,7 +833,7 @@ namespace TownOfUsReworked.Patches
                     IntruderRoles.Clear();
                     IntruderRoles.AddRange(SyndicateRoles);
                 }
-                    
+
                 spawnList1 = nonIntruderRoles;
                 spawnList2 = IntruderRoles;
 
@@ -878,6 +874,20 @@ namespace TownOfUsReworked.Patches
 
                     AllObjectifiers.Shuffle();
                 }
+            }
+            else
+            {
+                CrewRoles.Clear();
+                IntruderRoles.Clear();
+
+                while (CrewRoles.Count < crewmates.Count)
+                    CrewRoles.Add((typeof(Crewmate), 100, 20, false));
+                
+                while (IntruderRoles.Count < impostors.Count)
+                    IntruderRoles.Add((typeof(Impostor), 100, 52, false));
+                    
+                spawnList1 = CrewRoles;
+                spawnList2 = IntruderRoles;
             }
 
             if (!spawnList1.Contains((typeof(Dracula), CustomGameOptions.DraculaOn, 39, CustomGameOptions.UniqueDracula)))
@@ -932,7 +942,7 @@ namespace TownOfUsReworked.Patches
                 spawnList1.Shuffle();
             }
 
-            TownOfUsReworked.LogSomething("Layers Sorted");
+            Utils.LogSomething("Layers Sorted");
 
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
@@ -946,7 +956,7 @@ namespace TownOfUsReworked.Patches
                 Role.GenRole<Role>(type, crewmates.TakeFirst(), id);
             }
 
-            TownOfUsReworked.LogSomething("Role Spawn Done");
+            Utils.LogSomething("Role Spawn Done");
 
             if (CustomGameOptions.EnableObjectifiers)
             {
@@ -984,7 +994,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = obj;
-                    TownOfUsReworked.LogSomething("All Any List 3 Done");
+                    Utils.LogSomething("All Any List 3 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1015,7 +1025,7 @@ namespace TownOfUsReworked.Patches
                         Objectifier.GenObjectifier<Objectifier>(type, canHaveAllied.TakeFirst(), id);
                 }
 
-                TownOfUsReworked.LogSomething("Objectifiers Done");
+                Utils.LogSomething("Objectifiers Done");
             }
 
             if (CustomGameOptions.EnableAbilities)
@@ -1080,7 +1090,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = ab;
-                    TownOfUsReworked.LogSomething("All Any List 4 Done");
+                    Utils.LogSomething("All Any List 4 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1129,7 +1139,7 @@ namespace TownOfUsReworked.Patches
                         Ability.GenAbility<Ability>(type, canHaveTunnelerAbility.TakeFirst(), id);
                 }
 
-                TownOfUsReworked.LogSomething("Abilities Done");
+                Utils.LogSomething("Abilities Done");
             }
 
             if (CustomGameOptions.EnableModifiers)
@@ -1171,7 +1181,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     spawnList = mod;
-                    TownOfUsReworked.LogSomething("All Any List 5 Done");
+                    Utils.LogSomething("All Any List 5 Done");
                 }
 
                 spawnList.Shuffle();
@@ -1200,7 +1210,7 @@ namespace TownOfUsReworked.Patches
                         Modifier.GenModifier<Modifier>(type, canHaveShy.TakeFirst(), id);
                 }
 
-                TownOfUsReworked.LogSomething("Modifiers Done");
+                Utils.LogSomething("Modifiers Done");
             }
 
             if (CustomGameOptions.AlliedOn > 0)
@@ -1271,7 +1281,7 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                TownOfUsReworked.LogSomething("Allied Faction Set Done");
+                Utils.LogSomething("Allied Faction Set Done");
             }
 
             if (!GameStates.IsKilling)
@@ -1317,7 +1327,7 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                var pretendRoles = new List<Role>();
+                var pretendRoles = new List<InspectorResults>();
                 var exeTargets = new List<PlayerControl>();
                 var gaTargets = new List<PlayerControl>();
                 var guessTargets = new List<PlayerControl>();
@@ -1364,14 +1374,14 @@ namespace TownOfUsReworked.Patches
                     }
 
                     if (!player.Is(RoleEnum.Actor))
-                        pretendRoles.Add(Role.GetRole(player));
+                        pretendRoles.Add(Role.GetRole(player).InspectorResults);
 
                     guessTargets.Add(player);
                     pretendTargets.Add(player);
                     bhTargets.Add(player);
                 }
 
-                TownOfUsReworked.LogSomething("Targets Set");
+                Utils.LogSomething("Targets Set");
 
                 if (CustomGameOptions.ExecutionerOn > 0)
                 {
@@ -1394,11 +1404,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(exe.Player.PlayerId);
                             writer.Write(exe.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
+                            //Utils.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("Exe Target Set");
+                    Utils.LogSomething("Exe Target Set");
                 }
 
                 if (CustomGameOptions.GuesserOn > 0)
@@ -1422,11 +1432,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(guess.Player.PlayerId);
                             writer.Write(guess.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
+                            //Utils.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("Guess Target Set");
+                    Utils.LogSomething("Guess Target Set");
                 }
                 
                 if (CustomGameOptions.GuardianAngelOn > 0)
@@ -1450,11 +1460,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(ga.Player.PlayerId);
                             writer.Write(ga.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"GA Target = {ga.TargetPlayer.name}");
+                            //Utils.LogSomething($"GA Target = {ga.TargetPlayer.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("GA Target Set");
+                    Utils.LogSomething("GA Target Set");
                 }
                 
                 if (CustomGameOptions.BountyHunterOn > 0)
@@ -1478,55 +1488,37 @@ namespace TownOfUsReworked.Patches
                             writer.Write(bh.Player.PlayerId);
                             writer.Write(bh.TargetPlayer.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"BH Target = {ga.TargetPlayer.name}");
+                            //Utils.LogSomething($"BH Target = {ga.TargetPlayer.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("BH Target Set");
+                    Utils.LogSomething("BH Target Set");
                 }
                 
                 if (CustomGameOptions.ActorOn > 0)
                 {
                     foreach (Actor act in Role.GetRoles(RoleEnum.Actor))
                     {
-                        act.PretendRoles = new Il2CppSystem.Collections.Generic.List<Role>();
+                        act.PretendRoles = InspectorResults.None;
                         
                         if (pretendRoles.Count > 0)
                         {
-                            while (act.PretendRoles.Count <= 5)
+                            while (act.PretendRoles == InspectorResults.None)
                             {
                                 pretendRoles.Shuffle();
                                 var actNum = Random.RandomRangeInt(0, pretendRoles.Count);
-                                act.PretendRoles.Add(pretendRoles[actNum]);
-
-                                if (pretendRoles[actNum].HasTarget())
-                                    act.HasPretendTarget = true;
-                            }
-
-                            if (act.HasPretendTarget && pretendTargets.Count > 0)
-                            {
-                                while (act.PretendTarget == null || act.PretendTarget == act.Player)
-                                {
-                                    pretendTargets.Shuffle();
-                                    var actNum = Random.RandomRangeInt(0, pretendTargets.Count);
-                                    act.PretendTarget = pretendTargets[actNum];
-                                }
+                                act.PretendRoles = pretendRoles[actNum];
                             }
 
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetActorVariables, SendOption.Reliable);
                             writer.Write(act.Player.PlayerId);
-                            writer.Write(act.HasPretendTarget);
-                            writer.Write(act.PretendTarget == null ? byte.MaxValue : act.PretendTarget.PlayerId);
-
-                            foreach (var role in act.PretendRoles)
-                                writer.Write(role.Name);
-
+                            writer.Write((byte)act.PretendRoles);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"Pretend Target = {act.TargetPlayer.name}");
+                            //Utils.LogSomething($"Pretend Target = {act.TargetPlayer.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("Act Variables Set");
+                    Utils.LogSomething("Act Variables Set");
                 }
 
                 if (CustomGameOptions.JackalOn > 0)
@@ -1555,7 +1547,7 @@ namespace TownOfUsReworked.Patches
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.GoodRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"Good Recruit = {jackal.GoodRecruit.name}");
+                            //Utils.LogSomething($"Good Recruit = {jackal.GoodRecruit.name}");
                         }
                         
                         if (evilRecruits.Count > 0)
@@ -1576,11 +1568,11 @@ namespace TownOfUsReworked.Patches
                             writer.Write(jackal.Player.PlayerId);
                             writer.Write(jackal.EvilRecruit.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            //TownOfUsReworked.LogSomething($"Evil Recruit = {jackal.EvilRecruit.name}");
+                            //Utils.LogSomething($"Evil Recruit = {jackal.EvilRecruit.name}");
                         }
                     }
 
-                    TownOfUsReworked.LogSomething("Jackal Recruits Set");
+                    Utils.LogSomething("Jackal Recruits Set");
                 }
             }
         }
@@ -2105,7 +2097,6 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.Start:
-                        //Utils.ShowDeadBodies = false;
                         Role.NobodyWins = false;
                         Role.CrewWin = false;
                         Role.SyndicateWin = false;
@@ -2118,7 +2109,7 @@ namespace TownOfUsReworked.Patches
                         Role.ReanimatedWin = false;
                         Role.SyndicateHasChaosDrive = false;
                         Role.ChaosDriveMeetingTimerCount = 0;
-                        ExileControllerPatch.lastExiled = null;
+                        MiscPatches.ExileControllerPatch.lastExiled = null;
                         RecordRewind.points.Clear();
                         Murder.KilledPlayers.Clear();
                         Role.Buttons.Clear();
@@ -2162,18 +2153,9 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetActorVariables:
                         var act = Utils.PlayerById(reader.ReadByte());
-                        var hasTarget = reader.ReadBoolean();
-                        var targetid = reader.ReadByte();
-                        var pretendTarget = targetid == byte.MaxValue ? null : Utils.PlayerById(targetid);
+                        var targetRoles = reader.ReadByte();
                         var actRole = Role.GetRole<Actor>(act);
-                        actRole.HasPretendTarget = hasTarget;
-                        actRole.PretendTarget = pretendTarget;
-                        actRole.PretendRoles.Add(Role.GetRoleFromName(reader.ReadString()));
-                        actRole.PretendRoles.Add(Role.GetRoleFromName(reader.ReadString()));
-                        actRole.PretendRoles.Add(Role.GetRoleFromName(reader.ReadString()));
-                        actRole.PretendRoles.Add(Role.GetRoleFromName(reader.ReadString()));
-                        actRole.PretendRoles.Add(Role.GetRoleFromName(reader.ReadString()));
-                        actRole.PretendRoles.Shuffle();
+                        actRole.PretendRoles = (InspectorResults)targetRoles;
                         break;
 
                     case CustomRPC.SetGoodRecruit:
@@ -2378,7 +2360,7 @@ namespace TownOfUsReworked.Patches
                                 SwapVotes.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == readSByte);
                                 readSByte2 = reader.ReadSByte();
                                 SwapVotes.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == readSByte2);
-                                TownOfUsReworked.LogSomething("Bytes received - " + readSByte + " - " + readSByte2);
+                                Utils.LogSomething("Bytes received - " + readSByte + " - " + readSByte2);
                                 break;
 
                             case ActionsRPC.Remember:
@@ -3139,56 +3121,28 @@ namespace TownOfUsReworked.Patches
                                 Role.CrewWin = true;
                                 break;
 
-                            case WinLoseRPC.CrewLose:
-                                Role.CrewWin = false;
-                                break;
-
                             case WinLoseRPC.IntruderWin:
                                 Role.IntruderWin = true;
-                                break;
-
-                            case WinLoseRPC.IntruderLose:
-                                Role.IntruderWin = false;
                                 break;
 
                             case WinLoseRPC.SyndicateWin:
                                 Role.SyndicateWin = true;
                                 break;
 
-                            case WinLoseRPC.SyndicateLose:
-                                Role.SyndicateWin = false;
-                                break;
-
                             case WinLoseRPC.UndeadWin:
                                 Role.UndeadWin = true;
-                                break;
-
-                            case WinLoseRPC.UndeadLose:
-                                Role.UndeadWin = false;
                                 break;
 
                             case WinLoseRPC.ReanimatedWin:
                                 Role.ReanimatedWin = true;
                                 break;
 
-                            case WinLoseRPC.ReanimatedLose:
-                                Role.ReanimatedWin = false;
-                                break;
-
                             case WinLoseRPC.SectWin:
                                 Role.SectWin = true;
                                 break;
 
-                            case WinLoseRPC.SectLose:
-                                Role.SectWin = false;
-                                break;
-
                             case WinLoseRPC.CabalWin:
                                 Role.CabalWin = true;
-                                break;
-
-                            case WinLoseRPC.CabalLose:
-                                Role.CabalWin = false;
                                 break;
 
                             case WinLoseRPC.NobodyWins:
@@ -3203,248 +3157,92 @@ namespace TownOfUsReworked.Patches
                                 Role.NKWins = true;
                                 break;
 
-                            case WinLoseRPC.AllNKsLose:
-                                Role.NKWins = false;
-                                break;
-
                             case WinLoseRPC.Stalemate:
                                 Role.NobodyWins = true;
                                 break;
 
                             case WinLoseRPC.JesterWin:
-                                var jest = Utils.PlayerById(reader.ReadByte());
-                                var jestRole = Role.GetRole<Jester>(jest);
-                                jestRole.VotedOut = true;
-                                break;
-
-                            case WinLoseRPC.JesterLose:
-                                var jest2 = Utils.PlayerById(reader.ReadByte());
-                                var jestRole2 = Role.GetRole<Jester>(jest2);
-                                jestRole2?.Loses();
-                                break;
-
-                            case WinLoseRPC.AmnesiacLose:
-                                var amne = Utils.PlayerById(reader.ReadByte());
-                                var amneRole = Role.GetRole<Amnesiac>(amne);
-                                amneRole?.Loses();
-                                break;
-
-                            case WinLoseRPC.ThiefLose:
-                                var thief2 = Utils.PlayerById(reader.ReadByte());
-                                var thiefRole2 = Role.GetRole<Thief>(thief2);
-                                thiefRole2?.Loses();
+                                Role.GetRole<Jester>(Utils.PlayerById(reader.ReadByte())).VotedOut = true;
                                 break;
 
                             case WinLoseRPC.ArsonistWin:
-                                var arso = Utils.PlayerById(reader.ReadByte());
-                                var arsoRole = Role.GetRole<Arsonist>(arso);
-                                arsoRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.ArsonistLose:
-                                var arso2 = Utils.PlayerById(reader.ReadByte());
-                                var arsoRole2 = Role.GetRole<Arsonist>(arso2);
-                                arsoRole2?.Loses();
+                                Role.GetRole<Arsonist>(Utils.PlayerById(reader.ReadByte())).ArsonistWins = true;
                                 break;
 
                             case WinLoseRPC.CannibalWin:
-                                var cann = Utils.PlayerById(reader.ReadByte());
-                                var cannRole = Role.GetRole<Cannibal>(cann);
-                                cannRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.CannibalLose:
-                                var cann2 = Utils.PlayerById(reader.ReadByte());
-                                var cannRole2 = Role.GetRole<Cannibal>(cann2);
-                                cannRole2?.Loses();
+                                Role.GetRole<Cannibal>(Utils.PlayerById(reader.ReadByte())).CannibalWin = true;
                                 break;
 
                             case WinLoseRPC.CryomaniacWin:
-                                var cryo = Utils.PlayerById(reader.ReadByte());
-                                var cryoRole = Role.GetRole<Cryomaniac>(cryo);
-                                cryoRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.CryomaniacLose:
-                                var cryo2 = Utils.PlayerById(reader.ReadByte());
-                                var cryoRole2 = Role.GetRole<Cryomaniac>(cryo2);
-                                cryoRole2?.Loses();
+                                Role.GetRole<Cryomaniac>(Utils.PlayerById(reader.ReadByte())).CryoWins = true;
                                 break;
 
                             case WinLoseRPC.ExecutionerWin:
-                                var exe2 = Utils.PlayerById(reader.ReadByte());
-                                var exeRole2 = Role.GetRole<Executioner>(exe2);
-                                exeRole2.TargetVotedOut = true;
-                                break;
-
-                            case WinLoseRPC.ExecutionerLose:
-                                var exe3 = Utils.PlayerById(reader.ReadByte());
-                                var exeRole3 = Role.GetRole<Executioner>(exe3);
-                                exeRole3?.Loses();
+                                Role.GetRole<Executioner>(Utils.PlayerById(reader.ReadByte())).TargetVotedOut = true;
                                 break;
 
                             case WinLoseRPC.GlitchWin:
-                                var gli = Utils.PlayerById(reader.ReadByte());
-                                var gliRole = Role.GetRole<Glitch>(gli);
-                                gliRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.GlitchLose:
-                                var gli2 = Utils.PlayerById(reader.ReadByte());
-                                var gliRole2 = Role.GetRole<Glitch>(gli2);
-                                gliRole2?.Loses();
-                                break;
-
-                            case WinLoseRPC.GuardianAngelLose:
-                                var ga4 = Utils.PlayerById(reader.ReadByte());
-                                var gaRole4 = Role.GetRole<GuardianAngel>(ga4);
-                                gaRole4?.Loses();
-                                break;
-
-                            case WinLoseRPC.BountyHunterLose:
-                                var bh2 = Utils.PlayerById(reader.ReadByte());
-                                var bhRole2 = Role.GetRole<BountyHunter>(bh2);
-                                bhRole2?.Loses();
+                                Role.GetRole<Glitch>(Utils.PlayerById(reader.ReadByte())).GlitchWins = true;
                                 break;
 
                             case WinLoseRPC.BountyHunterWin:
-                                var bh3 = Utils.PlayerById(reader.ReadByte());
-                                var bhRole3 = Role.GetRole<BountyHunter>(bh3);
-                                bhRole3.TargetKilled = true;
+                                Role.GetRole<BountyHunter>(Utils.PlayerById(reader.ReadByte())).TargetKilled = true;
                                 break;
 
                             case WinLoseRPC.JuggernautWin:
-                                var jugg = Utils.PlayerById(reader.ReadByte());
-                                var juggRole = Role.GetRole<Juggernaut>(jugg);
-                                juggRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.JuggernautLose:
-                                var jugg2 = Utils.PlayerById(reader.ReadByte());
-                                var juggRole2 = Role.GetRole<Juggernaut>(jugg2);
-                                juggRole2?.Loses();
+                                Role.GetRole<Juggernaut>(Utils.PlayerById(reader.ReadByte())).JuggernautWins = true;
                                 break;
 
                             case WinLoseRPC.MurdererWin:
-                                var murd = Utils.PlayerById(reader.ReadByte());
-                                var murdRole = Role.GetRole<Murderer>(murd);
-                                murdRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.MurdererLose:
-                                var murd2 = Utils.PlayerById(reader.ReadByte());
-                                var murdRole2 = Role.GetRole<Murderer>(murd2);
-                                murdRole2?.Loses();
+                                Role.GetRole<Murderer>(Utils.PlayerById(reader.ReadByte())).MurdWins = true;
                                 break;
 
                             case WinLoseRPC.PestilenceWin:
-                                var pest = Utils.PlayerById(reader.ReadByte());
-                                var pestRole = Role.GetRole<Pestilence>(pest);
-                                pestRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.PestilenceLose:
-                                var pest2 = Utils.PlayerById(reader.ReadByte());
-                                var pestRole2 = Role.GetRole<Pestilence>(pest2);
-                                pestRole2?.Loses();
+                                Role.GetRole<Pestilence>(Utils.PlayerById(reader.ReadByte())).PestilenceWins = true;
                                 break;
 
                             case WinLoseRPC.PlaguebearerWin:
-                                var pb = Utils.PlayerById(reader.ReadByte());
-                                var pbRole = Role.GetRole<Plaguebearer>(pb);
-                                pbRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.PlaguebearerLose:
-                                var pb2 = Utils.PlayerById(reader.ReadByte());
-                                var pbRole2 = Role.GetRole<Plaguebearer>(pb2);
-                                pbRole2?.Loses();
+                                Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).PlaguebearerWins = true;
                                 break;
 
                             case WinLoseRPC.SerialKillerWin:
-                                var sk = Utils.PlayerById(reader.ReadByte());
-                                var skRole = Role.GetRole<SerialKiller>(sk);
-                                skRole?.Wins();
-                                break;
-
-                            case WinLoseRPC.SerialKillerLose:
-                                var sk2 = Utils.PlayerById(reader.ReadByte());
-                                var skRole2 = Role.GetRole<SerialKiller>(sk2);
-                                skRole2?.Loses();
-                                break;
-
-                            case WinLoseRPC.SurvivorLose:
-                                var surv3 = Utils.PlayerById(reader.ReadByte());
-                                var survRole3 = Role.GetRole<Survivor>(surv3);
-                                survRole3?.Loses();
+                                Role.GetRole<SerialKiller>(Utils.PlayerById(reader.ReadByte())).SerialKillerWins = true;
                                 break;
 
                             case WinLoseRPC.TrollWin:
-                                var tro = Utils.PlayerById(reader.ReadByte());
-                                var troRole = Role.GetRole<Troll>(tro);
-                                troRole.TrollWins = true;
+                                Role.GetRole<Troll>(Utils.PlayerById(reader.ReadByte())).Killed = true;
                                 break;
 
-                            case WinLoseRPC.TrollLose:
-                                var tro2 = Utils.PlayerById(reader.ReadByte());
-                                var troRole2 = Role.GetRole<Troll>(tro2);
-                                troRole2?.Loses();
+                            case WinLoseRPC.ActorWin:
+                                Role.GetRole<Actor>(Utils.PlayerById(reader.ReadByte())).Guessed = true;
                                 break;
 
                             case WinLoseRPC.GuesserWin:
-                                var guess2 = Utils.PlayerById(reader.ReadByte());
-                                var guessRole2 = Role.GetRole<Guesser>(guess2);
-                                guessRole2?.Wins();
-                                break;
-
-                            case WinLoseRPC.GuesserLose:
-                                var guess3 = Utils.PlayerById(reader.ReadByte());
-                                var guessRole3 = Role.GetRole<Guesser>(guess3);
-                                guessRole3?.Loses();
+                                Role.GetRole<Guesser>(Utils.PlayerById(reader.ReadByte())).TargetGuessed = true;
                                 break;
 
                             case WinLoseRPC.WerewolfWin:
-                                var ww2 = Utils.PlayerById(reader.ReadByte());
-                                var wwRole2 = Role.GetRole<Werewolf>(ww2);
-                                wwRole2?.Wins();
-                                break;
-
-                            case WinLoseRPC.WerewolfLose:
-                                var ww3 = Utils.PlayerById(reader.ReadByte());
-                                var wwRole3 = Role.GetRole<Werewolf>(ww3);
-                                wwRole3?.Loses();
+                                Role.GetRole<Werewolf>(Utils.PlayerById(reader.ReadByte())).WWWins = true;
                                 break;
 
                             case WinLoseRPC.CorruptedWin:
-                                var corr = Utils.PlayerById(reader.ReadByte());
-                                var corrObj = Objectifier.GetObjectifier<Corrupted>(corr);
-                                corrObj?.Wins();
-                                break;
-
-                            case WinLoseRPC.CorruptedLose:
-                                var corr2 = Utils.PlayerById(reader.ReadByte());
-                                var corrObj2 = Objectifier.GetObjectifier<Corrupted>(corr2);
-                                corrObj2?.Loses();
+                                Objectifier.GetObjectifier<Corrupted>(Utils.PlayerById(reader.ReadByte())).CorruptedWin = true;
                                 break;
 
                             case WinLoseRPC.LoveWin:
-                                var winnerlover = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Lovers>(winnerlover)?.Wins();
+                                Objectifier.GetObjectifier<Lovers>(Utils.PlayerById(reader.ReadByte())).LoveWins = true;
                                 break;
 
                             case WinLoseRPC.OverlordWin:
-                                var winnerov = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Overlord>(winnerov)?.Wins();
+                                Objectifier.GetObjectifier<Overlord>(Utils.PlayerById(reader.ReadByte())).OverlordWins = true;
                                 break;
 
                             case WinLoseRPC.TaskmasterWin:
-                                var winnertask = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Taskmaster>(winnertask)?.Wins();
+                                Objectifier.GetObjectifier<Taskmaster>(Utils.PlayerById(reader.ReadByte())).TaskmasterWins = true;
                                 break;
 
                             case WinLoseRPC.RivalWin:
-                                var winnerRival = Utils.PlayerById(reader.ReadByte());
-                                Objectifier.GetObjectifier<Rivals>(winnerRival)?.Wins();
+                                Objectifier.GetObjectifier<Rivals>(Utils.PlayerById(reader.ReadByte())).RivalWins = true;
                                 break;
 
                             case WinLoseRPC.PhantomWin:
@@ -3462,10 +3260,8 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                TownOfUsReworked.LogSomething("RPC SET ROLE");
+                Utils.LogSomething("RPC SET ROLE");
                 var infected = GameData.Instance.AllPlayers.ToArray().Where(o => o.IsImpostor());
-
-                //Utils.ShowDeadBodies = false;
 
                 Role.NobodyWins = false;
 
@@ -3520,16 +3316,16 @@ namespace TownOfUsReworked.Patches
                 Role.Buttons.Clear();
                 Role.SetColors();
 
-                TownOfUsReworked.LogSomething("Cleared Lists");
+                Utils.LogSomething("Cleared Lists");
                 
-                ExileControllerPatch.lastExiled = null;
+                MiscPatches.ExileControllerPatch.lastExiled = null;
 
                 Alt.DontRevive = byte.MaxValue;
 
                 PhantomOn = false;
                 RevealerOn = false;
 
-                TownOfUsReworked.LogSomething("Cleared Functions");
+                Utils.LogSomething("Cleared Functions");
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(startWriter);
@@ -3539,7 +3335,7 @@ namespace TownOfUsReworked.Patches
                 
                 int num = 0;
 
-                if (!GameStates.IsKilling)
+                if (!GameStates.IsKilling && !GameStates.IsVanilla)
                 {
                     PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
                     RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
@@ -3556,7 +3352,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Mayor Done");
+                    Utils.LogSomething("Mayor Done");
                 }
 
                 if (CustomGameOptions.SheriffOn > 0)
@@ -3569,7 +3365,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Sheriff Done");
+                    Utils.LogSomething("Sheriff Done");
                 }
 
                 if (CustomGameOptions.InspectorOn > 0)
@@ -3582,7 +3378,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Inspector Done");
+                    Utils.LogSomething("Inspector Done");
                 }
 
                 if (CustomGameOptions.VigilanteOn > 0)
@@ -3595,7 +3391,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Vigilante Done");
+                    Utils.LogSomething("Vigilante Done");
                 }
 
                 if (CustomGameOptions.EngineerOn > 0)
@@ -3608,7 +3404,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Engineer Done");
+                    Utils.LogSomething("Engineer Done");
                 }
 
                 if (CustomGameOptions.SwapperOn > 0)
@@ -3621,7 +3417,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Swapper Done");
+                    Utils.LogSomething("Swapper Done");
                 }
 
                 if (CustomGameOptions.TimeLordOn > 0)
@@ -3634,7 +3430,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Time Lord Done");
+                    Utils.LogSomething("Time Lord Done");
                 }
 
                 if (CustomGameOptions.MedicOn > 0)
@@ -3647,7 +3443,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Medic Done");
+                    Utils.LogSomething("Medic Done");
                 }
 
                 if (CustomGameOptions.AgentOn > 0)
@@ -3660,7 +3456,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Agent Done");
+                    Utils.LogSomething("Agent Done");
                 }
 
                 if (CustomGameOptions.AltruistOn > 0)
@@ -3673,7 +3469,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Altruist Done");
+                    Utils.LogSomething("Altruist Done");
                 }
 
                 if (CustomGameOptions.VeteranOn > 0)
@@ -3686,7 +3482,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     } 
 
-                    TownOfUsReworked.LogSomething("Veteran Done");
+                    Utils.LogSomething("Veteran Done");
                 }
 
                 if (CustomGameOptions.TrackerOn > 0)
@@ -3699,7 +3495,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     } 
 
-                    TownOfUsReworked.LogSomething("Tracker Done");
+                    Utils.LogSomething("Tracker Done");
                 }
 
                 if (CustomGameOptions.TransporterOn > 0)
@@ -3712,7 +3508,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Transporter Done");
+                    Utils.LogSomething("Transporter Done");
                 }
 
                 if (CustomGameOptions.MediumOn > 0)
@@ -3725,7 +3521,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Medium Done");
+                    Utils.LogSomething("Medium Done");
                 }
 
                 if (CustomGameOptions.CoronerOn > 0)
@@ -3738,7 +3534,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Coroner Done");
+                    Utils.LogSomething("Coroner Done");
                 }
 
                 if (CustomGameOptions.OperativeOn > 0)
@@ -3751,7 +3547,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Operative Done");
+                    Utils.LogSomething("Operative Done");
                 }
 
                 if (CustomGameOptions.DetectiveOn > 0)
@@ -3764,7 +3560,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Detective Done");
+                    Utils.LogSomething("Detective Done");
                 }
 
                 if (CustomGameOptions.EscortOn > 0)
@@ -3777,7 +3573,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Escort Done");
+                    Utils.LogSomething("Escort Done");
                 }
 
                 if (CustomGameOptions.ShifterOn > 0)
@@ -3790,7 +3586,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Shifter Done");
+                    Utils.LogSomething("Shifter Done");
                 }
 
                 if (CustomGameOptions.ChameleonOn > 0)
@@ -3803,7 +3599,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Chameleon Done");
+                    Utils.LogSomething("Chameleon Done");
                 }
 
                 if (CustomGameOptions.RetributionistOn > 0)
@@ -3816,7 +3612,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Chameleon Done");
+                    Utils.LogSomething("Chameleon Done");
                 }
 
                 if (CustomGameOptions.CrewmateOn > 0 && GameStates.IsCustom)
@@ -3829,7 +3625,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Crewmate Done");
+                    Utils.LogSomething("Crewmate Done");
                 }
 
                 if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
@@ -3842,7 +3638,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Vampire Hunter Done");
+                    Utils.LogSomething("Vampire Hunter Done");
                 }
 
                 if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 ||
@@ -3856,7 +3652,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Mystic Done");
+                    Utils.LogSomething("Mystic Done");
                 }
 
                 if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
@@ -3872,7 +3668,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Seer Done");
+                    Utils.LogSomething("Seer Done");
                 }
                 #endregion
 
@@ -3887,7 +3683,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Jester Done");
+                    Utils.LogSomething("Jester Done");
                 }
 
                 if (CustomGameOptions.AmnesiacOn > 0)
@@ -3900,7 +3696,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Amnesiac Done");
+                    Utils.LogSomething("Amnesiac Done");
                 }
 
                 if (CustomGameOptions.ExecutionerOn > 0)
@@ -3913,7 +3709,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Executioner Done");
+                    Utils.LogSomething("Executioner Done");
                 }
 
                 if (CustomGameOptions.SurvivorOn > 0)
@@ -3926,7 +3722,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Survivor Done");
+                    Utils.LogSomething("Survivor Done");
                 }
 
                 if (CustomGameOptions.GuardianAngelOn > 0)
@@ -3939,7 +3735,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Guardian Angel Done");
+                    Utils.LogSomething("Guardian Angel Done");
                 }
 
                 if (CustomGameOptions.GlitchOn > 0)
@@ -3952,7 +3748,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Glitch Done");
+                    Utils.LogSomething("Glitch Done");
                 }
 
                 if (CustomGameOptions.MurdererOn > 0)
@@ -3965,7 +3761,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Murderer Done");
+                    Utils.LogSomething("Murderer Done");
                 }
 
                 if (CustomGameOptions.CryomaniacOn > 0)
@@ -3978,7 +3774,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Cryomaniac Done");
+                    Utils.LogSomething("Cryomaniac Done");
                 }
 
                 if (CustomGameOptions.WerewolfOn > 0)
@@ -3991,7 +3787,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Werewolf Done");
+                    Utils.LogSomething("Werewolf Done");
                 }
 
                 if (CustomGameOptions.ArsonistOn > 0)
@@ -4004,7 +3800,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Arsonist Done");
+                    Utils.LogSomething("Arsonist Done");
                 }
 
                 if (CustomGameOptions.JackalOn > 0)
@@ -4017,7 +3813,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Jackal Done");
+                    Utils.LogSomething("Jackal Done");
                 }
 
                 if (CustomGameOptions.NecromancerOn > 0)
@@ -4030,7 +3826,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Necromancer Done");
+                    Utils.LogSomething("Necromancer Done");
                 }
 
                 if (CustomGameOptions.PlaguebearerOn > 0)
@@ -4049,7 +3845,7 @@ namespace TownOfUsReworked.Patches
 
                     var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
 
-                    TownOfUsReworked.LogSomething($"{PBorPest} Done");
+                    Utils.LogSomething($"{PBorPest} Done");
                 }
 
                 if (CustomGameOptions.SerialKillerOn > 0)
@@ -4062,7 +3858,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Serial Killer Done");
+                    Utils.LogSomething("Serial Killer Done");
                 }
 
                 if (CustomGameOptions.JuggernautOn > 0)
@@ -4075,7 +3871,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Juggeraut Done");
+                    Utils.LogSomething("Juggeraut Done");
                 }
 
                 if (CustomGameOptions.CannibalOn > 0)
@@ -4088,7 +3884,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Cannibal Done");
+                    Utils.LogSomething("Cannibal Done");
                 }
 
                 if (CustomGameOptions.GuesserOn > 0)
@@ -4101,7 +3897,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Guesser Done");
+                    Utils.LogSomething("Guesser Done");
                 }
 
                 if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
@@ -4115,7 +3911,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Actor Done");
+                    Utils.LogSomething("Actor Done");
                 }
 
                 if (CustomGameOptions.ThiefOn > 0)
@@ -4128,7 +3924,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Thief Done");
+                    Utils.LogSomething("Thief Done");
                 }
 
                 if (CustomGameOptions.DraculaOn > 0)
@@ -4141,7 +3937,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Dracula Done");
+                    Utils.LogSomething("Dracula Done");
                 }
 
                 if (CustomGameOptions.WhispererOn > 0)
@@ -4154,7 +3950,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Whisperer Done");
+                    Utils.LogSomething("Whisperer Done");
                 }
 
                 if (CustomGameOptions.TrollOn > 0)
@@ -4167,7 +3963,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Troll Done");
+                    Utils.LogSomething("Troll Done");
                 }
 
                 if (CustomGameOptions.BountyHunterOn > 0)
@@ -4180,7 +3976,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Bounty Hunter Done");
+                    Utils.LogSomething("Bounty Hunter Done");
                 }
                 #endregion
 
@@ -4195,7 +3991,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Undertaker Done");
+                    Utils.LogSomething("Undertaker Done");
                 }
 
                 if (CustomGameOptions.MorphlingOn > 0)
@@ -4208,7 +4004,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Morphling Done");
+                    Utils.LogSomething("Morphling Done");
                 }
 
                 if (CustomGameOptions.BlackmailerOn > 0)
@@ -4221,7 +4017,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Blackmailer Done");
+                    Utils.LogSomething("Blackmailer Done");
                 }
 
                 if (CustomGameOptions.MinerOn > 0)
@@ -4234,7 +4030,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Miner Done");
+                    Utils.LogSomething("Miner Done");
                 }
 
                 if (CustomGameOptions.TeleporterOn > 0)
@@ -4247,7 +4043,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Teleporter Done");
+                    Utils.LogSomething("Teleporter Done");
                 }
 
                 if (CustomGameOptions.WraithOn > 0)
@@ -4260,7 +4056,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Wraith Done");
+                    Utils.LogSomething("Wraith Done");
                 }
 
                 if (CustomGameOptions.ConsortOn > 0)
@@ -4273,7 +4069,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Consort Done");
+                    Utils.LogSomething("Consort Done");
                 }
 
                 if (CustomGameOptions.JanitorOn > 0)
@@ -4286,7 +4082,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Janitor Done");
+                    Utils.LogSomething("Janitor Done");
                 }
 
                 if (CustomGameOptions.CamouflagerOn > 0)
@@ -4299,7 +4095,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Camouflager Done");
+                    Utils.LogSomething("Camouflager Done");
                 }
 
                 if (CustomGameOptions.GrenadierOn > 0)
@@ -4312,7 +4108,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Grenadier Done");
+                    Utils.LogSomething("Grenadier Done");
                 }
 
                 if (CustomGameOptions.ImpostorOn > 0 && GameStates.IsCustom)
@@ -4325,7 +4121,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Impostor Done");
+                    Utils.LogSomething("Impostor Done");
                 }
 
                 if (CustomGameOptions.ConsigliereOn > 0)
@@ -4338,7 +4134,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Consigliere Done");
+                    Utils.LogSomething("Consigliere Done");
                 }
 
                 if (CustomGameOptions.DisguiserOn > 0)
@@ -4351,7 +4147,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Disguiser Done");
+                    Utils.LogSomething("Disguiser Done");
                 }
 
                 if (CustomGameOptions.TimeMasterOn > 0)
@@ -4364,7 +4160,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Time Master Done");
+                    Utils.LogSomething("Time Master Done");
                 }
 
                 if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
@@ -4377,7 +4173,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Godfather Done");
+                    Utils.LogSomething("Godfather Done");
                 }
                 #endregion
 
@@ -4392,7 +4188,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Anarchist Done");
+                    Utils.LogSomething("Anarchist Done");
                 }
 
                 if (CustomGameOptions.ShapeshifterOn > 0)
@@ -4405,7 +4201,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Shapeshifter Done");
+                    Utils.LogSomething("Shapeshifter Done");
                 }
 
                 if (CustomGameOptions.GorgonOn > 0)
@@ -4418,7 +4214,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Gorgon Done");
+                    Utils.LogSomething("Gorgon Done");
                 }
 
                 if (CustomGameOptions.FramerOn > 0)
@@ -4431,7 +4227,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Framer Done");
+                    Utils.LogSomething("Framer Done");
                 }
 
                 if (CustomGameOptions.RebelOn > 0 && CustomGameOptions.SyndicateCount >= 3)
@@ -4444,7 +4240,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Rebel Done");
+                    Utils.LogSomething("Rebel Done");
                 }
 
                 if (CustomGameOptions.BeamerOn > 0)
@@ -4457,7 +4253,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Beamer Done");
+                    Utils.LogSomething("Beamer Done");
                 }
 
                 if (CustomGameOptions.PoisonerOn > 0)
@@ -4470,7 +4266,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Poisoner Done");
+                    Utils.LogSomething("Poisoner Done");
                 }
 
                 if (CustomGameOptions.ConcealerOn > 0)
@@ -4483,7 +4279,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Concealer Done");
+                    Utils.LogSomething("Concealer Done");
                 }
 
                 if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
@@ -4496,7 +4292,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Warper Done");
+                    Utils.LogSomething("Warper Done");
                 }
 
                 if (CustomGameOptions.BomberOn > 0)
@@ -4509,7 +4305,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Bomber Done");
+                    Utils.LogSomething("Bomber Done");
                 }
 
                 if (CustomGameOptions.DrunkardOn > 0)
@@ -4522,7 +4318,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Drunkard Done");
+                    Utils.LogSomething("Drunkard Done");
                 }
                 #endregion
 
@@ -4537,7 +4333,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Diseased Done");
+                    Utils.LogSomething("Diseased Done");
                 }
 
                 if (CustomGameOptions.BaitOn > 0)
@@ -4550,7 +4346,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Bait Done");
+                    Utils.LogSomething("Bait Done");
                 }
                 
                 if (CustomGameOptions.DwarfOn > 0)
@@ -4563,7 +4359,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Dwarf Done");
+                    Utils.LogSomething("Dwarf Done");
                 }
                 
                 if (CustomGameOptions.VIPOn > 0)
@@ -4576,7 +4372,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("VIP Done");
+                    Utils.LogSomething("VIP Done");
                 }
                 
                 if (CustomGameOptions.ShyOn > 0)
@@ -4589,7 +4385,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Shy Done");
+                    Utils.LogSomething("Shy Done");
                 }
 
                 if (CustomGameOptions.GiantOn > 0)
@@ -4602,7 +4398,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Giant Done");
+                    Utils.LogSomething("Giant Done");
                 }
                 
                 if (CustomGameOptions.DrunkOn > 0)
@@ -4615,7 +4411,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Drunk Done");
+                    Utils.LogSomething("Drunk Done");
                 }
 
                 if (CustomGameOptions.FlincherOn > 0)
@@ -4628,7 +4424,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Flincher Done");
+                    Utils.LogSomething("Flincher Done");
                 }
 
                 if (CustomGameOptions.CowardOn > 0)
@@ -4641,7 +4437,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Coward Done");
+                    Utils.LogSomething("Coward Done");
                 }
 
                 if (CustomGameOptions.VolatileOn > 0)
@@ -4654,7 +4450,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Volatile Done");
+                    Utils.LogSomething("Volatile Done");
                 }
 
                 if (CustomGameOptions.IndomitableOn > 0)
@@ -4667,7 +4463,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Indomitable Done");
+                    Utils.LogSomething("Indomitable Done");
                 }
 
                 if (CustomGameOptions.ProfessionalOn > 0)
@@ -4680,7 +4476,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Professional Done");
+                    Utils.LogSomething("Professional Done");
                 }
                 #endregion
 
@@ -4695,7 +4491,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Crew Assassin Done");
+                    Utils.LogSomething("Crew Assassin Done");
                 }
 
                 if (CustomGameOptions.SyndicateAssassinOn > 0)
@@ -4708,7 +4504,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Syndicate Assassin Done");
+                    Utils.LogSomething("Syndicate Assassin Done");
                 }
 
                 if (CustomGameOptions.IntruderAssassinOn > 0)
@@ -4721,7 +4517,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Intruder Assassin Done");
+                    Utils.LogSomething("Intruder Assassin Done");
                 }
 
                 if (CustomGameOptions.NeutralAssassinOn > 0)
@@ -4734,7 +4530,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Neutral Assassin Done");
+                    Utils.LogSomething("Neutral Assassin Done");
                 }
 
                 if (CustomGameOptions.RuthlessOn > 0)
@@ -4747,7 +4543,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Ruthless Done");
+                    Utils.LogSomething("Ruthless Done");
                 }
 
                 if (CustomGameOptions.SnitchOn > 0)
@@ -4760,7 +4556,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Snitch Done");
+                    Utils.LogSomething("Snitch Done");
                 }
 
                 if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting)
@@ -4773,7 +4569,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Insider Done");
+                    Utils.LogSomething("Insider Done");
                 }
 
                 if (CustomGameOptions.LighterOn > 0)
@@ -4786,7 +4582,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Lighter Done");
+                    Utils.LogSomething("Lighter Done");
                 }
 
                 if (CustomGameOptions.MultitaskerOn > 0)
@@ -4799,7 +4595,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Multitasker Done");
+                    Utils.LogSomething("Multitasker Done");
                 }
 
                 if (CustomGameOptions.RadarOn > 0)
@@ -4812,7 +4608,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Radar Done");
+                    Utils.LogSomething("Radar Done");
                 }
 
                 if (CustomGameOptions.TiebreakerOn > 0)
@@ -4825,7 +4621,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Tiebreaker Done");
+                    Utils.LogSomething("Tiebreaker Done");
                 }
 
                 if (CustomGameOptions.TorchOn > 0)
@@ -4838,7 +4634,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Torch Done");
+                    Utils.LogSomething("Torch Done");
                 }
 
                 if (CustomGameOptions.UnderdogOn > 0)
@@ -4851,7 +4647,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Underdog Done");
+                    Utils.LogSomething("Underdog Done");
                 }
 
                 if (CustomGameOptions.TunnelerOn > 0)
@@ -4864,7 +4660,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Tunneler Done");
+                    Utils.LogSomething("Tunneler Done");
                 }
 
                 if (CustomGameOptions.NinjaOn > 0)
@@ -4877,7 +4673,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Ninja Done");
+                    Utils.LogSomething("Ninja Done");
                 }
                 #endregion
 
@@ -4892,7 +4688,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Lovers Done");
+                    Utils.LogSomething("Lovers Done");
                 }
 
                 if (CustomGameOptions.RivalsOn > 0 && PlayerControl.AllPlayerControls.Count > 4)
@@ -4905,7 +4701,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Rivals Done");
+                    Utils.LogSomething("Rivals Done");
                 }
 
                 if (CustomGameOptions.FanaticOn > 0)
@@ -4918,7 +4714,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Fanatic Done");
+                    Utils.LogSomething("Fanatic Done");
                 }
 
                 if (CustomGameOptions.CorruptedOn > 0)
@@ -4931,7 +4727,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Corrupted Done");
+                    Utils.LogSomething("Corrupted Done");
                 }
 
                 if (CustomGameOptions.OverlordOn > 0)
@@ -4944,7 +4740,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Overlord Done");
+                    Utils.LogSomething("Overlord Done");
                 }
 
                 if (CustomGameOptions.AlliedOn > 0)
@@ -4957,7 +4753,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Allied Done");
+                    Utils.LogSomething("Allied Done");
                 }
 
                 if (CustomGameOptions.TraitorOn > 0)
@@ -4970,7 +4766,7 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Traitor Done");
+                    Utils.LogSomething("Traitor Done");
                 }
 
                 if (CustomGameOptions.TaskmasterOn > 0)
@@ -4983,15 +4779,15 @@ namespace TownOfUsReworked.Patches
                         num--;
                     }
 
-                    TownOfUsReworked.LogSomething("Taskmaster Done");
+                    Utils.LogSomething("Taskmaster Done");
                 }
                 #endregion
 
-                TownOfUsReworked.LogSomething("Role Gen Start");
+                Utils.LogSomething("Role Gen Start");
 
                 RoleGen(infected.ToList());
 
-                TownOfUsReworked.LogSomething("Role Gen Done");
+                Utils.LogSomething("Role Gen Done");
             }
         }
     }

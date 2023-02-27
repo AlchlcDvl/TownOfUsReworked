@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ClosestPlayer;
         private KillButton _recruitButton;
         public bool HasRecruited = false;
-        public bool RecruitsDead => (EvilRecruit != null && EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) && (GoodRecruit != null && GoodRecruit.Data.Disconnected ||
-            GoodRecruit.Data.IsDead);
+        public bool RecruitsDead => (EvilRecruit == null && GoodRecruit == null) || ((EvilRecruit != null && EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) &&
+            (GoodRecruit != null && GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead));
         public DateTime LastRecruited { get; set; }
         public List<byte> Recruited;
 
@@ -40,8 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Recruited = new List<byte>();
             Recruited.Add(Player.PlayerId);
         }
-
-        public override void Wins() => CabalWin = true;
         
         public float RecruitTimer()
         {
@@ -63,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

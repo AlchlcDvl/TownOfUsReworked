@@ -137,15 +137,9 @@ namespace TownOfUsReworked.Cosmetics
             return new Color(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
         }
 
-        public Color ToColor()
-        {
-            return ToColor(this);
-        }
+        public Color ToColor() => ToColor(this);
 
-        public override string ToString()
-        {
-            return "H:" + h + " S:" + s + " B:" + b;
-        }
+        public override string ToString() => "H:" + h + " S:" + s + " B:" + b;
 
         public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
         {

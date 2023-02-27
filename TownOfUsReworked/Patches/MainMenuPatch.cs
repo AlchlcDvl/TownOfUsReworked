@@ -4,6 +4,7 @@ using UnityEngine;
 using static UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
 using TMPro;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
@@ -55,8 +56,8 @@ namespace TownOfUsReworked.Patches
                 popUp = Object.Instantiate(Object.FindObjectOfType<AnnouncementPopUp>(true));
                 popUp.gameObject.SetActive(true);
                 popUp.Init();
-                string creditsString = "test";
-                popUp.AnnounceTextMeshPro.text = creditsString;
+                var changelog = Utils.CreateText("Changelog", "Misc");
+                popUp.AnnounceTextMeshPro.text = $"<size=60%>{changelog}</size>";
 
                 __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) =>
                 {

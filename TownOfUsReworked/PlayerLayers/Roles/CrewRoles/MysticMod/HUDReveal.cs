@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
             role.PrimaryButton = role.RevealButton;
             var renderer = role.RevealButton.graphic;
             
-            if (Utils.EnableAbilityButton(role.RevealButton, role.Player, role.ClosestPlayer))
+            if (!role.RevealButton.isCoolingDown && role.ClosestPlayer != null)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

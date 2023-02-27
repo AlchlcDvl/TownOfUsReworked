@@ -23,10 +23,7 @@ namespace TownOfUsReworked.CrowdedMod.Components
             }
         }
 
-        public void Start()
-        {
-            OnPageChanged();
-        }
+        public void Start() => OnPageChanged();
 
         public virtual void Update()
         {

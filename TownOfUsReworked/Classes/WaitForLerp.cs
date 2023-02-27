@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Classes
 {
     public class WaitForLerp : IEnumerator
     {
@@ -24,9 +24,6 @@ namespace TownOfUsReworked.Patches
             return timer < duration;
         }
 
-        public void Reset()
-        {
-            timer = 0f;
-        }
+        public void Reset() => timer = 0f;
     }
 }

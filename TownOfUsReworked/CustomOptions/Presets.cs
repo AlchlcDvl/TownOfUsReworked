@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
@@ -9,6 +8,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -53,10 +53,7 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro)
-        {
-            Coroutines.Start(CancelCoro(flashCoro));
-        }
+        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
         protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
@@ -87,19 +84,17 @@ namespace TownOfUsReworked.CustomOptions
         protected internal void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Chaos", delegate { LoadPreset("Chaos"); }));
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Casual", delegate { LoadPreset("Casual"); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Chaos", delegate { LoadPreset("Chaos"); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Default", delegate { LoadPreset("Default"); }));
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
-
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
-
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
             var i = 0;
-
             OldButtons = __instance.Children.ToList();
 
             foreach (var option in __instance.Children)
@@ -111,27 +106,14 @@ namespace TownOfUsReworked.CustomOptions
             __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
         }
 
-        private void UpdatePreset(string presetName)
-        {
-            TownOfUsReworked.LogSomething(presetName);
-            var text = File.ReadAllText($"{TownOfUsReworked.Presets}{presetName}");
-            var text2 = Path.Combine(Application.persistentDataPath, $"{presetName}-temp");
-            File.WriteAllText(text2, text);
-            var text3 = Path.Combine(Application.persistentDataPath, $"{presetName}");
-            File.Delete(text3);
-            File.Move(text2, text3);
-        }
-
         private void LoadPreset(string presetName)
         {
-            TownOfUsReworked.LogSomething($"Loading - {presetName}");
-            UpdatePreset(presetName);
-            string text;
+            Utils.LogSomething($"Loading - {presetName}");
+            string text = null;
 
             try
             {
-                var path =  Path.Combine(Application.persistentDataPath, $"{presetName}");
-                text = File.ReadAllText(path);
+                text = Utils.CreateText(presetName, "Presets");
             }
             catch
             {

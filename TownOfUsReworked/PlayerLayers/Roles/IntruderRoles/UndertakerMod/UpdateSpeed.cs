@@ -6,7 +6,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-    public static class PlayerPhysics_FixedUpdate
+    public static class UpdateSpeed
     {
         public static void Postfix(PlayerPhysics __instance)
         {

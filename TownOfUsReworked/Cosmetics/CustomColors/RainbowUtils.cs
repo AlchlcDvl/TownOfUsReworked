@@ -17,15 +17,9 @@ namespace TownOfUsReworked.Cosmetics
         public static Color Fire => new HSBColor(PP(0f, 0.17f, 0.4f), 1, 1).ToColor();
         public static Color FireShadow => Shadow(Fire);
 
-        public static float PP(float min, float max, float mul)
-        {
-            return min + Mathf.PingPong(Time.time * mul, max - min);
-        }
+        public static float PP(float min, float max, float mul) => min + Mathf.PingPong(Time.time * mul, max - min);
 
-        public static Color Shadow(Color color)
-        {
-            return new Color(color.r - 0.3f, color.g - 0.3f, color.b - 0.3f);
-        }
+        public static Color Shadow(Color color) => new Color(color.r - 0.3f, color.g - 0.3f, color.b - 0.3f);
 
         public static void SetRainbow(Renderer rend)
         {

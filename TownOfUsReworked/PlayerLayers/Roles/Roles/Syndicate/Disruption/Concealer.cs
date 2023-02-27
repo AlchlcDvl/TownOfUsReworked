@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Concealer";
             StartText = "Make The <color=#8BFDFDFF>Crew</color> Invisible For Some Chaos";
-            AbilitiesText = "- You can turn off player's ability to see things properly, making all other players appear invisible to themselves.";
+            AbilitiesText = "- You can turn off player's ability to see things properly, making all other players appear invisible.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
             RoleType = RoleEnum.Concealer;
             Faction = Faction.Syndicate;
@@ -34,6 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleDescription = "You are a Concealer! You can turn everyone invisible to everyone else but themselves by making them unable to see things properly. " +
                 "Use this to get away from crime scenes as fast as possible!";
             Objectives = SyndicateWinCon;
+            InspectorResults = InspectorResults.Unseen;
         }
 
         public KillButton KillButton
@@ -143,20 +144,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else
-                SyndicateWin = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -164,7 +151,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -173,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -182,7 +169,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -191,18 +178,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.SyndicateWins())
+            else if (Utils.SyndicateWins() && NotDefective)
             {
+                SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SyndicateWin);
-                Wins();
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;

@@ -43,8 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public override void Wins() => SectWin = true;
-
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
@@ -62,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

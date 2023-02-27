@@ -33,7 +33,8 @@ namespace TownOfUsReworked.CrowdedMod.Components
                     var buttonTransform = panel.transform;
                     buttonTransform.localPosition = new Vector3(shapeshifterMinigame.XStart + shapeshifterMinigame.XOffset * (relativeIndex % 3), shapeshifterMinigame.YStart +
                         shapeshifterMinigame.YOffset * row, buttonTransform.localPosition.z);
-                } else
+                }
+                else
                     panel.gameObject.SetActive(false);
 
                 i++;

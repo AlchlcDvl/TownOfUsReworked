@@ -4,9 +4,9 @@ namespace TownOfUsReworked.Enums
     {
         MeddlesWithDead, //Janitor, Undertaker, Altruist, Necromancer
         DealsWithDead, //Coroner, Amnesiac, Cannibal, Retributionist
-        SeeksToProtect, //Guardian Angel, Survivor, Veteran, Medic, Ambusher
+        SeeksToProtect, //Guardian Angel, Survivor, Veteran, Medic, Crusader
         LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence
-        BringsChaos, //Jackal, Swapper, Shifter, Camouflager
+        BringsChaos, //Jackal, Swapper, Shifter, Camouflager, Thief
         LikesToExplore, //Teleporter, Warper, Beamer, Transporter
         IsBasic, //Crewmate, Impostor, Murderer, Anarchist
         DifferentLens, //Glitch, Agent, Medium, Engineer, Time Lord, Time Master
@@ -15,9 +15,9 @@ namespace TownOfUsReworked.Enums
         TouchesPeople, //Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
         Unseen, //Chameleon, Wraith, Poisoner, Gorgon, Concealer
         UsesGuns, //Vigilante, Bounty Hunter, Guesser, Mafioso
-        TracksOthers, //Tracker, Mystic, Vampire Hunter, Whisperer
+        TracksOthers, //Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
         IsAggressive, //Werewolf, Juggernaut, Sidekick, Serial Killer
-        CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer
+        CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
         DropsItems, //Bomber, Operative, Grenadier
         Ghostly, //Revealer, Phantom
         None

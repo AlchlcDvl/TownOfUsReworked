@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 {
                     ((Medic)role2).ShieldedPlayer = null;
                     ((Medic)role2).exShielded = player;
-                    TownOfUsReworked.LogSomething(player.name + " Is Ex-Shielded");
+                    Utils.LogSomething(player.name + " Is Ex-Shielded");
                 }
             }
 

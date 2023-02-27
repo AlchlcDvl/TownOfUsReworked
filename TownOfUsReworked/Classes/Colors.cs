@@ -170,6 +170,6 @@ namespace TownOfUsReworked.Classes
         //#8637C2 #3769FE #4d4d4d #8ff731 #2672FF #916640
 
         //Symbol Storage For Objectifiers I Will Make Later
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω χ
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω χ Ӫ
     }
 }

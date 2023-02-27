@@ -35,8 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             }
         }
 
-        public override void Wins() => CorruptedWin = true;
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -44,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Utils.CorruptedWin())
             {
-                Wins();
+                CorruptedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CorruptedWin);
                 writer.Write(Player.PlayerId);

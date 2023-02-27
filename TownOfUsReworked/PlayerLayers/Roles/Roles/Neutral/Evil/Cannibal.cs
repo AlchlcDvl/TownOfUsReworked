@@ -14,12 +14,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         private KillButton _eatButton;
         public DeadBody CurrentTarget { get; set; }
-        public int EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
-            CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
+        public int EatNeed;
         public string body => EatNeed == 1 ? "body" : "bodies";
         public bool CannibalWin;
         public DateTime LastEaten { get; set; }
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+        public Dictionary<byte, ArrowBehaviour> BodyArrows;
+        public bool EatWin => EatNeed <= 0;
         
         public Cannibal(PlayerControl player) : base(player)
         {
@@ -35,6 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             Objectives = $"- Eat {EatNeed} {body}.";
+            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
+                CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
@@ -44,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -53,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -62,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -71,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -80,39 +83,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
             }
-            else if (EatWin() && NotDefective)
-            {
-                Wins();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CannibalWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
 
             return NotDefective;
-        }
-
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
@@ -159,7 +138,5 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 
             BodyArrows.Remove(arrow.Key);
         }
-
-        private bool EatWin() => EatNeed <= 0;
     }
 }

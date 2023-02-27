@@ -37,6 +37,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
         public static Vent AdminVent;
         public static Vent SpeciVent;
         public static Vent BathroomVent;
+        public static Vent BelowLabVent;
 
         public static Console TempCold;
 
@@ -205,9 +206,11 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 LightCageVent.Center = ElectricBuildingVent;
                 ScienceBuildingVent.Left = StorageVent;
                 StorageVent.Center = ScienceBuildingVent;
-                AdminVent.Right = SpeciVent;
+                AdminVent.Center = SpeciVent;
                 SpeciVent.Left = AdminVent;
                 SpeciVent.Center = BathroomVent;
+                SpeciVent.Right = null;
+                BathroomVent.Left = SpeciVent;
             }
         }
 

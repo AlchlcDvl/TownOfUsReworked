@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Assassin(PlayerControl player) : base(player)
         {
             Name = "Assassin";
-            TaskText = "- You can guess players mid-meetings.";
+            TaskText = $"- You can guess players mid-meetings.\n- You have {RemainingKills} guess left.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;

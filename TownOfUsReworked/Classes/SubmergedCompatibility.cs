@@ -20,12 +20,8 @@ namespace TownOfUsReworked.Classes
 {
     public static class SubmergedCompatibility
     {
-        public static class Classes
-        {
-            public const string ElevatorMover = "ElevatorMover";
-        }
-
         public const string SUBMERGED_GUID = "Submerged";
+        public const string ElevatorMover = "ElevatorMover";
         public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)5;
 
         public static SemanticVersioning.Version Version { get; private set; }
@@ -210,7 +206,7 @@ namespace TownOfUsReworked.Classes
             if (!isSubmerged())
                 return Tuple.Create(false, (object)null);
 
-            IList elevatorlist = Utils.createList(SubmarineElevator);
+            IList elevatorlist = Utils.CreateList(SubmarineElevator);
             elevatorlist = (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null));
 
             foreach (object elevator in elevatorlist)
@@ -407,10 +403,7 @@ namespace TownOfUsReworked.Classes
             catch (System.NullReferenceException) {}
         }
 
-        public static bool isSubmerged()
-        {
-            return Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
-        }
+        public static bool isSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
     }
 
     public class MissingSubmergedBehaviour : MonoBehaviour

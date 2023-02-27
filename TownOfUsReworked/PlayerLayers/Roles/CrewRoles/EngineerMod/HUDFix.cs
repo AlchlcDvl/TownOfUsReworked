@@ -57,10 +57,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
-            var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
+            var active = specials.Any(s => s.IsActive) || camouflager?.Camouflaged == true || concealer?.Concealed == true || shapeshifter?.Shapeshifted == true;
             var renderer = role.FixButton.graphic;
             
-            if (Utils.EnableAbilityButton(role.FixButton, role.Player, null, false, active && !dummyActive && role.ButtonUsable))
+            if (!role.FixButton.isCoolingDown && active && !dummyActive && role.ButtonUsable)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

@@ -6,6 +6,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using Hazel;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
@@ -31,6 +32,14 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected internal string ModifierDescription { get; set; } = "You are a modifier!";
         protected internal string TaskText { get; set; } = "- None";
         protected internal bool Hidden { get; set; } = false;
+
+        public virtual bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        {
+            appearance = Player.GetDefaultAppearance();
+            appearance.SpeedFactor = Player.Data.IsDead ? CustomGameOptions.GhostSpeed : CustomGameOptions.PlayerSpeed;
+            appearance.SizeFactor = new Vector3(1f, 1f, 1f);
+            return true;
+        }
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
@@ -68,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)ModifierType);
 
-        public static bool operator ==(Modifier a, Modifier b)
+        public static bool operator == (Modifier a, Modifier b)
         {
             if (a is null && b is null)
                 return true;
@@ -79,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             return a.ModifierType == b.ModifierType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Modifier a, Modifier b) => !(a == b);
+        public static bool operator != (Modifier a, Modifier b) => !(a == b);
 
         public static Modifier GetModifier(PlayerControl player) => AllModifiers.FirstOrDefault(x => x.Player == player);
 

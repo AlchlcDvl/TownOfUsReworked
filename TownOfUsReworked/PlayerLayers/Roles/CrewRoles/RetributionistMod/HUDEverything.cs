@@ -24,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         public static Sprite Track => TownOfUsReworked.TrackSprite;
         public static Sprite Alert => TownOfUsReworked.AlertSprite;
         public static Sprite Shoot => TownOfUsReworked.ShootSprite;
+        public static Sprite Mediate => TownOfUsReworked.MediateSprite;
 
         public static void Postfix(HudManager __instance)
         {
@@ -219,7 +220,71 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (copyRole == RoleEnum.Coroner)
             {
+                var data = PlayerControl.LocalPlayer.Data;
+                var isDead = data.IsDead;
                 var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
+                var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
+                var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
+                DeadBody closestBody = null;
+                var closestDistance = float.MaxValue;
+                var allBodies = Object.FindObjectsOfType<DeadBody>();
+
+                if (role.AutopsyButton == null)
+                {
+                    role.AutopsyButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                    role.AutopsyButton.graphic.enabled = true;
+                    role.AutopsyButton.graphic.sprite = Placeholder;
+                    role.AutopsyButton.gameObject.SetActive(false);
+                }
+
+                if (role.CompareButton == null)
+                {
+                    role.CompareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                    role.CompareButton.graphic.enabled = true;
+                    role.CompareButton.graphic.sprite = Placeholder;
+                    role.CompareButton.gameObject.SetActive(false);
+                }
+
+                foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
+                {
+                    var distance = Vector2.Distance(truePosition, body.TruePosition);
+
+                    if (!(distance < closestDistance))
+                        continue;
+
+                    closestBody = body;
+                    closestDistance = distance;
+                }
+
+                KillButtonTarget.SetTarget(role.AutopsyButton, closestBody, role);
+                role.AutopsyButton.SetCoolDown(0f, 1f);
+                role.AutopsyButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+                role.PrimaryButton = role.AutopsyButton;
+                var renderer2 = role.AutopsyButton.graphic;
+
+                if (!role.AutopsyButton.isCoolingDown && role.CurrentTarget != null)
+                {
+                    renderer2.color = Palette.EnabledColor;
+                    renderer2.material.SetFloat("_Desat", 0f);
+                }
+                else
+                {
+                    renderer2.color = Palette.DisabledClear;
+                    renderer2.material.SetFloat("_Desat", 1f);
+                }
+
+                var renderer3 = role.CompareButton.graphic;
+
+                if (!role.CompareButton.isCoolingDown && role.ClosestPlayer != null)
+                {
+                    renderer3.color = Palette.EnabledColor;
+                    renderer3.material.SetFloat("_Desat", 0f);
+                }
+                else
+                {
+                    renderer3.color = Palette.DisabledClear;
+                    renderer3.material.SetFloat("_Desat", 1f);
+                }
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {
@@ -560,6 +625,59 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.PrimaryButton = role.ShootButton;
                 
                 if (role.ClosestPlayer != null && !role.ShootButton.isCoolingDown)
+                {
+                    renderer.color = Palette.EnabledColor;
+                    renderer.material.SetFloat("_Desat", 0f);
+                }
+                else
+                {
+                    renderer.color = Palette.DisabledClear;
+                    renderer.material.SetFloat("_Desat", 1f);
+                }
+            }
+            else if (copyRole == RoleEnum.Medium)
+            {
+                if (role.MediateButton == null)
+                {
+                    role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
+                    role.MediateButton.graphic.enabled = true;
+                    role.MediateButton.graphic.sprite = Mediate;
+                    role.MediateButton.gameObject.SetActive(false);
+                }
+
+                role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
+                role.PrimaryButton = role.MediateButton;
+
+                if (!PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                    {
+                        if (role.MediatedPlayers.Keys.Contains(player.PlayerId))
+                        {
+                            role.MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
+                            player.Visible = true;
+
+                            if (!CustomGameOptions.ShowMediatePlayer)
+                            {
+                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
+                                {
+                                    ColorId = player.GetDefaultOutfit().ColorId,
+                                    HatId = "",
+                                    SkinId = "",
+                                    VisorId = "",
+                                    PlayerName = " "
+                                });
+
+                                PlayerMaterial.SetColors(Color.grey, player.myRend());
+                            }
+                        }
+                    }
+                }
+
+                role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
+                var renderer = role.MediateButton.graphic;
+
+                if (!role.MediateButton.isCoolingDown)
                 {
                     renderer.color = Palette.EnabledColor;
                     renderer.material.SetFloat("_Desat", 0f);

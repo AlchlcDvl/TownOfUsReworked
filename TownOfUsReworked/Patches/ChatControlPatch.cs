@@ -45,6 +45,8 @@ namespace TownOfUsReworked.Patches
 
                 if (CurrentHistorySelection < ChatCommands.ChatHistory.Count)
                     __instance.TextArea.SetText(ChatCommands.ChatHistory[CurrentHistorySelection]);
+                else if (CurrentHistorySelection > ChatCommands.ChatHistory.Count)
+                    __instance.TextArea.SetText(ChatCommands.ChatHistory[0]);
                 else
                     __instance.TextArea.SetText("");
             }

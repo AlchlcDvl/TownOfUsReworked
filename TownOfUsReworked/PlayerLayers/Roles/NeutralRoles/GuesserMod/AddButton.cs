@@ -145,10 +145,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 var flag = roleflag || recruitflag;
                 var toDie = flag ? playerRole.Player : role.Player;
                 role.TargetGuessed = flag;
-
-                if (role.TargetGuessed)
-                    role.Wins();
-
                 GuesserKill.RpcMurderPlayer(role, toDie, currentGuess);
                 ShowHideGuessButtons.HideSingle(role, targetId);
             }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Cosmetics.CustomNameplates
 {
@@ -36,7 +37,7 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
 
             private static NamePlateData CreateNamePlate(string id, string nameplateName, string author)
             {
-                var sprite = TownOfUsReworked.CreateSprite($"{TownOfUsReworked.Nameplates}{id}.png");
+                var sprite = Utils.CreateSprite($"{TownOfUsReworked.Nameplates}{id}.png");
 
                 var a = ScriptableObject.CreateInstance<NamePlateViewData>();
                 var b = new AddressableLoadWrapper<NamePlateViewData>();

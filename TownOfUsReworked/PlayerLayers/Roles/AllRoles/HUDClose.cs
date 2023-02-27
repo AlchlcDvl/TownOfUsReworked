@@ -51,6 +51,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 role2.LastInspected = DateTime.UtcNow;
             }
 
+            foreach (var role in Role.GetRoles(RoleEnum.Coroner))
+            {
+                var role2 = (Coroner)role;
+                role2.LastCompared = DateTime.UtcNow;
+            }
+
             foreach (var role in Role.GetRoles(RoleEnum.Medium))
             {
                 var role2 = (Medium)role;

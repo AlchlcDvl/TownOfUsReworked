@@ -302,7 +302,6 @@ namespace TownOfUsReworked.CustomOptions
         public static float ExamineCd => Generate.ExamineCooldown.Get();
         public static bool UniqueDetective => Generate.UniqueDetective.Get();
         public static float RecentKill => Generate.RecentKill.Get();
-        public static float FootprintSize => Generate.FootprintSize.Get();
         public static float FootprintInterval => Generate.FootprintInterval.Get();
         public static float FootprintDuration => Generate.FootprintDuration.Get();
         public static bool AnonymousFootPrint => Generate.AnonymousFootPrint.Get();
@@ -327,6 +326,7 @@ namespace TownOfUsReworked.CustomOptions
         public static float CoronerArrowDuration => Generate.CoronerArrowDuration.Get();
         public static bool UniqueCoroner => Generate.UniqueCoroner.Get();
         public static int CoronerCount => (int)Generate.CoronerCount.Get();
+        public static int CompareLimit => (int)Generate.CompareLimit.Get();
         public static float CoronerKillerNameTime => Generate.CoronerKillerNameTime.Get();
         public static float CompareCooldown => Generate.CompareCooldown.Get();
 

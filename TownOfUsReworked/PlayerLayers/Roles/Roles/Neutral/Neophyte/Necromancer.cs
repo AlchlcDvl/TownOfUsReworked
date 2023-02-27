@@ -93,8 +93,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public override void Wins() => ReanimatedWin = true;
-
         public KillButton ResurrectButton
         {
             get => _resurrectButton;
@@ -134,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

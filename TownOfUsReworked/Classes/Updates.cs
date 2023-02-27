@@ -101,7 +101,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception e)
             {
-                TownOfUsReworked.LogSomething("Exception occured when clearing old versions:\n" + e);
+                Utils.LogSomething("Exception occured when clearing old versions:\n" + e);
             }
         }
 
@@ -123,7 +123,7 @@ namespace TownOfUsReworked.Classes
                 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    TownOfUsReworked.LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                    Utils.LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -187,7 +187,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception ex)
             {
-                TownOfUsReworked.LogSomething(ex);
+                Utils.LogSomething(ex);
             }
 
             return false;
@@ -218,7 +218,7 @@ namespace TownOfUsReworked.Classes
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    TownOfUsReworked.LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                    Utils.LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -245,7 +245,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (System.Exception ex)
             {
-                TownOfUsReworked.LogSomething(ex);
+                Utils.LogSomething(ex);
             }
             
             ShowPopup("Update wasn't successful\nTry again later,\nor update manually.");
@@ -290,8 +290,8 @@ namespace TownOfUsReworked.Classes
 
         public void Awake()
         {
-            TownOfUsReworked.LogSomething("BepInEx Update Required...");
-            TownOfUsReworked.LogSomething($"{Paths.BepInExVersion}, {RequiredBepInExVersion} ");
+            Utils.LogSomething("BepInEx Update Required...");
+            Utils.LogSomething($"{Paths.BepInExVersion}, {RequiredBepInExVersion} ");
             this.StartCoroutine(CoUpdate());
         }
 
@@ -304,7 +304,7 @@ namespace TownOfUsReworked.Classes
 
             if (www.isNetworkError || www.isHttpError)
             {
-                TownOfUsReworked.LogSomething(www.error);
+                Utils.LogSomething(www.error);
                 yield break;
             }
 

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
         public static void SetTarget(KillButton __instance, DeadBody target, Retributionist role)
         {
-            if (role.RevivedRole?.RoleType != RoleEnum.Altruist)
+            if (role.RevivedRole?.RoleType != RoleEnum.Altruist || role.RevivedRole?.RoleType != RoleEnum.Coroner)
                 return;
 
             if (role.CurrentTarget && role.CurrentTarget != target)

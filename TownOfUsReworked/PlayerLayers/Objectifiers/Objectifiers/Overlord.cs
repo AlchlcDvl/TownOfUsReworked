@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public int OverlordMeetingCount = 0;
         public bool IsAlive => !(Player.Data.IsDead || Player.Data.Disconnected);
         public bool OverlordWins { get; set; }
+        public bool MeetingCountAchieved => OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive;
 
         public Overlord(PlayerControl player) : base(player)
         {
@@ -28,9 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
                 
-            if (MeetingCountAchieved())
+            if (MeetingCountAchieved)
             {
-                Wins();
+                OverlordWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.OverlordWin);
                 writer.Write(Player.PlayerId);
@@ -41,9 +42,5 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             return false;
         }
-
-        public override void Wins() => OverlordWins = true;
-
-        private bool MeetingCountAchieved() => OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive;
     }
 }

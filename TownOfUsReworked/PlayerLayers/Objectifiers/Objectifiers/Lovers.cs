@@ -66,12 +66,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (LoverDead() || IsDeadLover())
-                return true;
-
             if (Utils.LoversWin(Player))
             {
-                Wins();
+                LoveWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.LoveWin);
                 writer.Write(Player.PlayerId);
@@ -80,15 +77,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 return false;
             }
 
-            return !LoversDead();
+            return !(LoversDead() || IsDeadLover());
         }
 
-        public bool LoverDead() => OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
+        public bool LoverDead() => OtherLover == null || OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
 
         public bool IsDeadLover() => Player.Data.IsDead || Player.Data.Disconnected;
 
         public bool LoversDead() => LoverDead() && IsDeadLover();
-
-        public override void Wins() => LoveWins = true;
     }
 }

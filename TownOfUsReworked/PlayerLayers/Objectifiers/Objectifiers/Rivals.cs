@@ -71,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Utils.RivalsWin(Player))
             {
-                Wins();
+                RivalWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.RivalWin);
                 writer.Write(Player.PlayerId);
@@ -90,7 +90,5 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool BothRivalsDead() => IsDeadRival() && RivalDead();
 
         public bool IsWinningRival() =>  RivalDead() && !IsDeadRival();
-
-        public override void Wins() => RivalWins = true;
     }
 }

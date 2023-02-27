@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
 
-                TownOfUsReworked.LogSomething("Becoming");
+                Utils.LogSomething("Becoming");
 
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
 
@@ -78,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
-                ExileControllerPostfix(ExileControllerPatch.lastExiled);
+                ExileControllerPostfix(MiscPatches.ExileControllerPatch.lastExiled);
         }
 
         public static void RemoveTasks(PlayerControl player)

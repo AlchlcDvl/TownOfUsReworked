@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             role.PrimaryButton = role.ExamineButton;
             var renderer = role.ExamineButton.graphic;
             
-            if (Utils.EnableAbilityButton(role.ExamineButton, role.Player, role.ClosestPlayer))
+            if (!role.ExamineButton.isCoolingDown && role.ClosestPlayer != null)
             {
                 renderer.color = Palette.EnabledColor;
                 renderer.material.SetFloat("_Desat", 0f);

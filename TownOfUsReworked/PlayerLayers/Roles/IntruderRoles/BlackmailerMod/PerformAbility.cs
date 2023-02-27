@@ -16,13 +16,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Blackmailer))
                 return false;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.BlackmailButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.BlackmailTimer() != 0f)
                     return false;
 
@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                     }
 
                     role.Blackmailed = role.ClosestPlayer;
-                    role.BlackmailButton.SetCoolDown(1f, 1f);
+                    role.LastBlackmailed = DateTime.UtcNow;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Blackmail);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -58,9 +58,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 

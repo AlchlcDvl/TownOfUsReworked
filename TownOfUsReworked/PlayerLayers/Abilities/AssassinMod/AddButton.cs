@@ -162,12 +162,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     if (currentGuess != "Actor")
                     {
                         var actor = Role.GetRole<Actor>(targetPlayer);
-
-                        if (actor.PretendRoles.Contains(Role.GetRoleFromName(currentGuess)))
-                        {
-                            actor.Guessed = true;
-                            return;
-                        }
                     }
                 }
 

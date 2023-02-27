@@ -6,6 +6,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using Hazel;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -32,14 +33,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal string TaskText { get; set; } = "- None.";
         protected internal bool Hidden { get; set; } = false;
 
-        public virtual void Loses() => LostByRPC = true;
-        public virtual void Wins() {}
 
         protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
-        public bool LostByRPC { get; protected set; }
 
         public PlayerControl Player
         {
@@ -120,5 +118,27 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 			AmongUsClient.Instance.FinishRpcImmediately(writer);
 			return objectifier;
 		}
+        
+        [HarmonyPatch]
+        public static class CheckEndGame
+        {
+            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+            public static bool Prefix(LogicGameFlowNormal __instance)
+            {
+                if (GameStates.IsHnS)
+                    return true;
+
+                if (!AmongUsClient.Instance.AmHost)
+                    return false;
+
+                foreach (var obj in AllObjectifiers)
+                {
+                    if (!obj.GameEnd(__instance))
+                        return false;
+                }
+
+                return false;
+            }
+        }
     }
 }

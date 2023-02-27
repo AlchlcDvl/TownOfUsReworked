@@ -58,6 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                         case 3:
                         case 4:
                         case 5:
+                        case 6:
                             HudOverrideSystemType comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                             if (comms5.IsActive)

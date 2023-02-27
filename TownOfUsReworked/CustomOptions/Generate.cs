@@ -454,7 +454,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption UniqueDetective;
         public static CustomNumberOption ExamineCooldown;
         public static CustomNumberOption RecentKill;
-        public static CustomNumberOption FootprintSize;
         public static CustomNumberOption FootprintInterval;
         public static CustomNumberOption FootprintDuration;
         public static CustomToggleOption AnonymousFootPrint;
@@ -469,6 +468,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption CoronerReportRole;
         public static CustomNumberOption CoronerKillerNameTime;
         public static CustomNumberOption CompareCooldown;
+        public static CustomNumberOption CompareLimit;
 
         //Inspector Options
         public static CustomHeaderOption Inspector;
@@ -1375,7 +1375,7 @@ namespace TownOfUsReworked.CustomOptions
             //ChatCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Chat Cooldown", 0f, 3f, 10f, 0.5f, CooldownFormat);
 
             GameModeSettings = new CustomHeaderOption(num++, MultiMenu.main, "Game Mode Settings");
-            GameMode = new CustomStringOption(true, num++, MultiMenu.main, "Game Mode", new[] { "Classic", "All Any", "Killing Only", "Custom" });
+            GameMode = new CustomStringOption(true, num++, MultiMenu.main, "Game Mode", new[] { "Classic", "All Any", "Killing Only", "Custom", "Vanilla" });
 
             KillingOnlySettings = new CustomHeaderOption(num++, MultiMenu.main, "<color=#1D7CF2FF>Killing</color> Only Mode Settings");
             NeutralRoles = new CustomNumberOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> Count", 1, 0f, 13, 1);
@@ -1396,7 +1396,7 @@ namespace TownOfUsReworked.CustomOptions
             FactionSeeRoles = new CustomToggleOption(true, num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team", true);
             VisualTasks = new CustomToggleOption(true, num++, MultiMenu.main, "Tasks Can Be Visualised", false);
             LocationReports = new CustomToggleOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Location", false);
-            RoleFactionReports = new CustomStringOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Role/Faction", new [] { "<color=#FFD700FF>Roles</color>", "Factions", "Never" });
+            RoleFactionReports = new CustomStringOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Role/Faction", new [] { "Roles", "Factions", "Never" });
             KillerReports = new CustomToggleOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Killer's Role", false);
             NoNames = new CustomToggleOption(true, num++, MultiMenu.main, "No Player Names", false);
             Whispers = new CustomToggleOption(true, num++, MultiMenu.main, "PSSST *Whispers*", true);
@@ -1662,13 +1662,13 @@ namespace TownOfUsReworked.CustomOptions
             CoronerReportName = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
             CoronerKillerNameTime = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
             CompareCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            CompareLimit = new CustomNumberOption(true, num++, MultiMenu.crew, "Compare Limit", 5, 1, 15, 1);
 
             Detective = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>");
             DetectiveCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Count", 1, 1, 14, 1);
             UniqueDetective = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Is Unique In All Any", false);
             ExamineCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Examine Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
             RecentKill = new CustomNumberOption(true, num++, MultiMenu.crew, "Bloody Player Duration", 25f, 5f, 60f, 2.5f, CooldownFormat);
-            FootprintSize = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Size", 4f, 1f, 10f, 1f);
             FootprintInterval = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat);
             FootprintDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Duration", 10f, 0.5f, 10f, 0.5f, CooldownFormat);
             AnonymousFootPrint = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous Footprint", false);

@@ -51,8 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public override void Wins() => UndeadWin = true;
-
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
@@ -70,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -68,13 +68,10 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.ImpostorText.text = " ";
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
 
-                    if (role.IntroSound != null)
+                    if (role.IntroSound != "")
                     {
-                        try
-                        {
-                            SoundManager.Instance.StopAllSound();
-                            SoundManager.Instance.PlaySound(role.IntroSound, false);
-                        } catch {}
+                        SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
+                        SoundEffectsManager.Play(role.IntroSound);
                     }
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
@@ -186,13 +183,10 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
                     __instance.__4__this.RoleBlurbText.color = role.Color;
 
-                    if (role.IntroSound != null)
+                    if (role.IntroSound != "")
                     {
-                        try
-                        {
-                            SoundManager.Instance.StopAllSound();
-                            SoundManager.Instance.PlaySound(role.IntroSound, false);
-                        } catch {}
+                        SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
+                        SoundEffectsManager.Play(role.IntroSound);
                     }
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&

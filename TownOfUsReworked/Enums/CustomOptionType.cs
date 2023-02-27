@@ -70,7 +70,8 @@ namespace TownOfUsReworked.Enums
         Classic,
         AllAny,
         KillingOnly,
-        Custom
+        Custom,
+        Vanilla
     }
 
     public enum Map

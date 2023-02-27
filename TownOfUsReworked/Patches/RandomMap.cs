@@ -23,7 +23,7 @@ namespace TownOfUsReworked.Patches
         {
             if (AmongUsClient.Instance.AmHost)
             {
-                previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
+                previousMap = (byte)CustomGameOptions.Map;
                 vision = CustomGameOptions.CrewVision;
 
                 if (!(commonTasks == 0 && shortTasks == 0 && longTasks == 0))
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Patches
                     longTasks = CustomGameOptions.LongTasks;
                 }
 
-                byte map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
+                var map = (byte)CustomGameOptions.Map == 3 ? (byte)4 : ((byte)CustomGameOptions.Map == 4 ? (byte)5 : (byte)CustomGameOptions.Map);
 
                 if (CustomGameOptions.RandomMapEnabled)
                 {
@@ -162,8 +162,6 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
                 AdjustCooldowns(CustomGameOptions.LargeMapIncreasedCooldown);
             }
-
-            return;
         }
 
         public static void AdjustCooldowns(float change)
@@ -207,7 +205,6 @@ namespace TownOfUsReworked.Patches
             }
 
             Generate.EmergencyButtonCooldown.Set((float)Generate.EmergencyButtonCooldown.Value + change, false);
-            return;
         }
     }
 }

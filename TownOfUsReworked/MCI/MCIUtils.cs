@@ -11,11 +11,8 @@ namespace TownOfUsReworked.MCI
         {
             for (int i = 2; i < MaxID; i++)
             {
-                if (!InstanceControl.clients.ContainsKey(i))
-                {
-                    if (PlayerControl.LocalPlayer.OwnerId != i)
-                        return i;
-                }
+                if (!InstanceControl.clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
+                    return i;
             }
 
             return -1;
@@ -32,9 +29,11 @@ namespace TownOfUsReworked.MCI
 
         public static PlayerControl CreatePlayerInstance(string name, int id = -1)
         {
-            PlatformSpecificData samplePSD = new PlatformSpecificData();
-            samplePSD.Platform = Platforms.StandaloneItch;
-            samplePSD.PlatformName = "Robot";
+            PlatformSpecificData samplePSD = new()
+            {
+                Platform = Platforms.StandaloneWin10,
+                PlatformName = "Robot"
+            };
 
             int sampleId = id;
 
@@ -42,27 +41,18 @@ namespace TownOfUsReworked.MCI
                 sampleId = AvailableId();
 
             var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
-            PlayerControl playerControl = Object.Instantiate<PlayerControl>(AmongUsClient.Instance.PlayerPrefab, Vector3.zero, Quaternion.identity);
-            playerControl.PlayerId = (byte)GameData.Instance.GetAvailableId();
-            playerControl.FriendCode = sampleC.FriendCode;
-            playerControl.Puid = sampleC.ProductUserId;
-            sampleC.Character = playerControl;
 
-            if (ShipStatus.Instance)
-                ShipStatus.Instance.SpawnPlayer(playerControl, Palette.PlayerColors.Length, false);
+            AmongUsClient.Instance.CreatePlayer(sampleC);
+            AmongUsClient.Instance.allClients.Add(sampleC);
 
-            AmongUsClient.Instance.Spawn(playerControl, sampleC.Id, SpawnFlags.IsClientCharacter);
-            GameData.Instance.AddPlayer(playerControl);
-            
-            playerControl.SetName(name + $" ({playerControl.PlayerId}:{sampleId})");
-            playerControl.SetSkin(HatManager.Instance.allSkins[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-            playerControl.SetHat(HatManager.Instance.allHats[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-            playerControl.SetColor(UnityEngine.Random.Range(0, Palette.PlayerColors.Length));
+            sampleC.Character.SetName(name + $" {{{sampleC.Character.PlayerId}:{sampleId}}}");
+            sampleC.Character.SetSkin(HatManager.Instance.allSkins[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            sampleC.Character.SetHat(HatManager.Instance.allHats[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
 
-            //PlayerControl.AllPlayerControls.Add(playerControl);
             InstanceControl.clients.Add(sampleId, sampleC);
-            InstanceControl.PlayerIdClientId.Add(playerControl.PlayerId, sampleId);
-            return playerControl;
+            InstanceControl.PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
+            return sampleC.Character;
         }
     }
 }

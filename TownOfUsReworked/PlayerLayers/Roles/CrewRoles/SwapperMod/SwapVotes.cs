@@ -38,8 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         {
             public static void Postfix(MeetingHud __instance)
             {
-                TownOfUsReworked.LogSomething(Swap1 == null ? "null" : Swap1.ToString());
-                TownOfUsReworked.LogSomething(Swap2 == null ? "null" : Swap2.ToString());
+                Utils.LogSomething(Swap1 == null ? "null" : Swap1.ToString());
+                Utils.LogSomething(Swap2 == null ? "null" : Swap2.ToString());
 
                 if (!((Swap1 != null) & (Swap2 != null)))
                     return;

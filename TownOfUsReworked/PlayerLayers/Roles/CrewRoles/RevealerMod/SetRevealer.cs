@@ -80,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
-                ExileControllerPostfix(ExileControllerPatch.lastExiled);
+                ExileControllerPostfix(MiscPatches.ExileControllerPatch.lastExiled);
         }
 
         public static void RemoveTasks(PlayerControl player)

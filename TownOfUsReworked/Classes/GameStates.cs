@@ -23,5 +23,6 @@ namespace TownOfUsReworked.Classes
         public static bool IsCustom => CustomGameOptions.GameMode == GameMode.Custom;
         public static bool IsClassic => CustomGameOptions.GameMode == GameMode.Classic;
         public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
+        public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
     }
 }

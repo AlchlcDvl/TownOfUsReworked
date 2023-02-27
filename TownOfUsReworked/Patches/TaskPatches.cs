@@ -1,8 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using System;
-using UnityEngine;
 
 namespace TownOfUsReworked.Patches
 {
@@ -54,37 +52,6 @@ namespace TownOfUsReworked.Patches
                 }
 
                 return true;
-            }
-        }
-
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
-        private static class PlayerControl_SetTasks
-        {
-            private static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
-            {
-                if (__instance == null)
-                    return;
-
-                var player = __instance.__4__this;
-                var text = player.GetTaskList();
-
-                try
-                {
-                    var firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-
-                    if (firstText.Text.Contains("Sabotage and kill everyone"))
-                        player.myTasks.Remove(firstText);
-
-                    firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                    
-                    if (firstText.Text.Contains("Fake"))
-                        player.myTasks.Remove(firstText);
-                } catch (InvalidCastException) {}
-                
-                var task = new GameObject("DetailTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = text;
-                player.myTasks.Insert(0, task);
             }
         }
     }

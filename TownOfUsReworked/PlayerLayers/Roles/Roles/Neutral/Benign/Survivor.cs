@@ -5,7 +5,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Survivor";
             StartText = "Do Whatever It Takes To Live";
-            AbilitiesText = "Stay alive to win";
+            AbilitiesText = $"- You can put on a vest, which makes you unkillable for a short duration of time.\n- You have {UsesLeft} vests remaining.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
             LastVested = DateTime.UtcNow;
             RoleType = RoleEnum.Survivor;
@@ -36,7 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
-            Objectives = "Stay alive";
+            Objectives = "- Live to the end of the game.";
+            InspectorResults = InspectorResults.SeeksToProtect;
+            RoleDescription = "You are a Survivor! You care not for who lives or dies, you just want to live! Do whatever it takes to survive, even it's with the bad guys.";
         }
 
         public KillButton VestButton
@@ -84,20 +85,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -105,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -114,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -123,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -132,7 +119,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -141,7 +128,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

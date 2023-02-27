@@ -40,14 +40,7 @@ namespace TownOfUsReworked.Patches
             foreach (var playerControl in PlayerControl.AllPlayerControls)
             {
                 var summary = "";
-                var colorString = "";
-                var roleName = "";
-                var modifierName = "";
-                var abilityName = "";
                 var endString = "</color>";
-                var modifierString = "";
-                var abilityString = "";
-                var roleString = "";
                 var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
                 var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
 
@@ -62,20 +55,10 @@ namespace TownOfUsReworked.Patches
                         role.RoleHistory.Reverse();
 
                         foreach (var role2 in role.RoleHistory)
-                        {
-                            colorString = role2.ColorString;
-                            roleName = role2.Name;
-                            roleString = colorString + roleName + endString + " → ";
-
-                            summary += roleString;
-                        }
+                            summary += $"{role2.ColorString}{role2.Name}{endString} → ";
                     }
-
-                    colorString = role.ColorString;
-                    roleName = role.Name;
-                    roleString = colorString + roleName + endString;
-
-                    summary += roleString;
+                    
+                    summary += $"{role.ColorString}{role.Name}{endString}";
                 }
 
                 if (playerControl.IsRecruit())
@@ -96,28 +79,16 @@ namespace TownOfUsReworked.Patches
                     summary += $" {objectifier.GetColoredSymbol()}";
                 }
 
-                var modifier = Modifier.GetModifier(playerControl);
-
-                if (modifier != null)
+                if (info[1] != null)
                 {
-                    colorString = " (" + modifier.ColorString;
-                    modifierName = modifier.Name;
-
-                    modifierString = colorString + modifierName + endString + ")";
-
-                    summary += modifierString;
+                    var modifier = info[1] as Modifier;
+                    summary += $" ({modifier.ColorString}{modifier.Name}{endString})";
                 }
 
-                var ability = Ability.GetAbility(playerControl);
-
-                if (ability != null)
+                if (info[2] != null)
                 {
-                    colorString = " [" + ability.ColorString;
-                    abilityName = ability.Name;
-
-                    abilityString = colorString + abilityName + endString + "]";
-
-                    summary += abilityString;
+                    var ability = info[2] as Ability;
+                    summary += $" [{ability.ColorString}{ability.Name}{endString}]";
                 }
 
                 if (playerControl.IsGATarget())
@@ -132,15 +103,12 @@ namespace TownOfUsReworked.Patches
                 if (playerControl.IsGuessTarget())
                     summary += " <color=#EEE5BEFF>π</color>";
 
-                if (playerControl.IsActTarget())
-                    summary += " <color=#00ACC2FF>Ӫ</color>";
-
                 if (playerControl.CanDoTasks())
                     summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
 
                 summary += " | " + playerControl.DeathReason();
 
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() {PlayerName = playerControl.Data.PlayerName, Role = summary});
+                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Role = summary });
             }
         }
     }
@@ -200,15 +168,15 @@ namespace TownOfUsReworked.Patches
             if (loserCount == 0)
                 losersText.AppendLine("<size=75%>No One Lost</size>");
 
-            winnersText.AppendLine(" ");
-            
+            winnersText.AppendLine();
+
             TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();
             roleSummaryTextMesh.alignment = TMPro.TextAlignmentOptions.TopLeft;
             roleSummaryTextMesh.color = Color.white;
             roleSummaryTextMesh.fontSizeMin = 1.5f;
             roleSummaryTextMesh.fontSizeMax = 1.5f;
             roleSummaryTextMesh.fontSize = 1.5f;
-             
+
             var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
             roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
             roleSummaryTextMesh.text = roleSummaryText.ToString() + winnersText.ToString() + losersText.ToString();

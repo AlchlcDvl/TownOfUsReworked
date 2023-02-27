@@ -209,8 +209,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
             {
                 var exiledString = exiled == null ? "null" : exiled.PlayerName;
-                TownOfUsReworked.LogSomething($"Exiled PlayerName = {exiledString}");
-                TownOfUsReworked.LogSomething($"Was a tie = {tie}");
+                Utils.LogSomething($"Exiled PlayerName = {exiledString}");
+                Utils.LogSomething($"Was a tie = {tie}");
             }
         }
 

@@ -12,19 +12,10 @@ namespace TownOfUsReworked.CrowdedMod.Net
 
         public override RpcLocalHandling LocalHandling => RpcLocalHandling.After;
 
-        public override void Write(MessageWriter writer, byte data)
-        {
-            writer.Write(data);
-        }
+        public override void Write(MessageWriter writer, byte data) => writer.Write(data);
 
-        public override byte Read(MessageReader reader)
-        {
-            return reader.ReadByte();
-        }
+        public override byte Read(MessageReader reader) => reader.ReadByte();
 
-        public override void Handle(PlayerControl player, byte data)
-        {
-            player.SetColor(data);
-        }
+        public override void Handle(PlayerControl player, byte data) => player.SetColor(data);
     }
 }

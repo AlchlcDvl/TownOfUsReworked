@@ -5,7 +5,6 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -19,16 +18,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public TextMeshPro UsesText;
         public bool ButtonUsable => UsesLeft != 0;
         public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || TargetPlayer.Data.Disconnected || TargetPlayer == null) &&
-            !Player.Data.Disconnected;
+        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || TargetPlayer == null) && !Player.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         private KillButton _protectButton;
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            StartText = "Protect Your Target With Your Life";
-            Objectives = "- Have your target live to the end of the game.";
+            StartText = $"Protect {TargetPlayer.Data.PlayerName} With Your Life";
+            Objectives = $"- Have {TargetPlayer.Data.PlayerName} live to the end of the game.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             LastProtected = DateTime.UtcNow;
             RoleType = RoleEnum.GuardianAngel;
@@ -37,10 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.MaxProtects;
             FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = "Protect Your Target With Your Life";
-            AbilitiesText = "- You can protect your target from death for a short while.";
-            RoleDescription = "You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep your target alive at all costs" +
-                " even if they lose!";
+            AlignmentName = NB;
+            AbilitiesText = $"- You can protect {TargetPlayer.Data.PlayerName} from death for a short while.";
+            RoleDescription = $"You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep {TargetPlayer.Data.PlayerName}" +
+                " alive at all costs even if they lose!";
+            InspectorResults = InspectorResults.SeeksToProtect;
         }
 
         public KillButton ProtectButton
@@ -86,20 +85,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = gaTeam;
         }
 
-        public override void Wins()
-        {
-            if (IsRecruit)
-                CabalWin = true;
-            else if (IsPersuaded)
-                SectWin = true;
-            else if (IsBitten)
-                UndeadWin = true;
-            else if (IsResurrected)
-                ReanimatedWin = true;
-            else if (CustomGameOptions.NoSolo == NoSolo.AllNeutrals)
-                AllNeutralsWin = true;
-        }
-
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
@@ -107,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsRecruit && Utils.CabalWin())
             {
-                Wins();
+                CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CabalWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -116,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsPersuaded && Utils.SectWin())
             {
-                Wins();
+                SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.SectWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -125,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsBitten && Utils.UndeadWin())
             {
-                Wins();
+                UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.UndeadWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -134,7 +119,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsResurrected && Utils.ReanimatedWin())
             {
-                Wins();
+                ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.ReanimatedWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -143,7 +128,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.AllNeutralsWin() && NotDefective)
             {
-                Wins();
+                AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -3,6 +3,7 @@ using HarmonyLib;
 using UnityEngine;
 using System.Linq;
 using Reactor.Utilities.Extensions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Cosmetics.CustomVisors
 {
@@ -49,7 +50,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{id}.png");
                 var mainImg = stream.ReadFully();
                 var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                TownOfUsReworked.LoadImage(tex2D, mainImg, false);
+                Utils.LoadImage(tex2D, mainImg, false);
                 var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
 
                 var a = ScriptableObject.CreateInstance<VisorViewData>();

@@ -91,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public static IEnumerable<Ability> GetAbilities(AbilityEnum abilitytype) => AllAbilities.Where(x => x.AbilityType == abilitytype);
 
-        public static bool operator ==(Ability a, Ability b)
+        public static bool operator == (Ability a, Ability b)
         {
             if (a is null && b is null)
                 return true;
@@ -102,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return a.AbilityType == b.AbilityType && a.Player.PlayerId == b.Player.PlayerId;
         }
 
-        public static bool operator !=(Ability a, Ability b) => !(a == b);
+        public static bool operator != (Ability a, Ability b) => !(a == b);
 
         public static T GenAbility<T>(Type type, PlayerControl player, int id)
 		{
