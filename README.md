@@ -4,7 +4,7 @@
 
 ![LOGO](./Images/ToU-Rew.png)
 
-An Among Us mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
+An Among Us mod that adds a bunch of <color=#FFD700>roles</color>, modifiers, objectifiers, abilities and game settings.
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
