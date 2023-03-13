@@ -1,7 +1,6 @@
 ﻿using System;
 using HarmonyLib;
 using Hazel;
-using UnityEngine;
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
@@ -9,73 +8,64 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static Sprite MarkSprite => TownOfUsReworked.MarkSprite;
-        public static Sprite TeleportSprite => TownOfUsReworked.TeleportSprite;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Teleporter))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Teleporter>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.TeleportButton)
+            if (role.IsBlocked)
+                return false;
+
+            if (__instance == role.MarkButton)
             {
-                if (role.Player.inVent)
+                if (!role.CanMark)
                     return false;
 
-                if (!Utils.ButtonUsable(__instance))
+                if (role.MarkTimer() != 0f)
                     return false;
 
-                if (role.TeleportButton.graphic.sprite == MarkSprite)
-                {
-                    role.TeleportPoint = PlayerControl.LocalPlayer.transform.position;
-                    role.TeleportButton.graphic.sprite = TeleportSprite;
-                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
+                if (role.TeleportPoint == PlayerControl.LocalPlayer.transform.position)
+                    return false;
 
-                    if (role.TeleportTimer() < 5f)
-                        role.LastTeleport = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.TeleportCd);
-                }
-                else
-                {
-                    if (role.TeleportTimer() != 0f)
-                        return false;
+                role.TeleportPoint = PlayerControl.LocalPlayer.transform.position;
+                role.LastMarked = DateTime.UtcNow;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.Teleport);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.TeleportPoint);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                if (CustomGameOptions.TeleCooldownsLinked)
                     role.LastTeleport = DateTime.UtcNow;
-                    Teleporter.Teleport(role.Player);
-                }
 
                 return false;
             }
-            else if (__instance == role.KillButton)
+            else if (__instance == role.TeleportButton)
             {
-                if (role.KillTimer() != 0f)
+                if (role.TeleportTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (role.TeleportPoint == PlayerControl.LocalPlayer.transform.position)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Teleport);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(role.TeleportPoint);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.LastTeleport = DateTime.UtcNow;
+                Teleporter.Teleport(role.Player);
 
-                if (interact[3] == true || interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
-                else if (interact[1] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+                if (CustomGameOptions.TeleCooldownsLinked)
+                    role.LastMarked = DateTime.UtcNow;
 
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

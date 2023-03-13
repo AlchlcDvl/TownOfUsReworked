@@ -13,9 +13,6 @@ namespace TownOfUsReworked.Patches
     {
         public static byte previousMap;
         public static float vision;
-        public static int commonTasks;
-        public static int shortTasks;
-        public static int longTasks;
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
         [HarmonyPrefix]
@@ -25,13 +22,6 @@ namespace TownOfUsReworked.Patches
             {
                 previousMap = (byte)CustomGameOptions.Map;
                 vision = CustomGameOptions.CrewVision;
-
-                if (!(commonTasks == 0 && shortTasks == 0 && longTasks == 0))
-                {
-                    commonTasks = CustomGameOptions.CommonTasks;
-                    shortTasks = CustomGameOptions.ShortTasks;
-                    longTasks = CustomGameOptions.LongTasks;
-                }
 
                 var map = (byte)CustomGameOptions.Map == 3 ? (byte)4 : ((byte)CustomGameOptions.Map == 4 ? (byte)5 : (byte)CustomGameOptions.Map);
 
@@ -61,6 +51,10 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
                 GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
                 GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = CustomGameOptions.ShortTasks;
+                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = CustomGameOptions.LongTasks;
+                GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = CustomGameOptions.ShortTasks;
+                GameOptionsManager.Instance.currentNormalGameOptions.MapId = map;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings, SendOption.Reliable);
                 writer.Write(map);
@@ -92,10 +86,6 @@ namespace TownOfUsReworked.Patches
 
                 if (CustomGameOptions.RandomMapEnabled)
                     GameOptionsManager.Instance.currentNormalGameOptions.MapId = previousMap;
-
-                GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = commonTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = shortTasks;
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = longTasks;
             }
         }
 

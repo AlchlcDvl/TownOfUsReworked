@@ -7,19 +7,22 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public static class PerformSHoot
     {
-        private static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Vigilante))
-                return false;
+                return true;
 
             var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.ShootButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.ShootButton))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -34,9 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.IsFramed() ||
                     role.Player.Is(ObjectifierEnum.Corrupted) || role.ClosestPlayer.Is(RoleEnum.Troll) || role.Player.NotOnTheSameSide() || role.ClosestPlayer.NotOnTheSameSide() ||
                     (role.ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor) || (role.ClosestPlayer.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), flag4);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, flag4);
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {                
                     if (flag4 && !role.Player.IsFramed())
                     {
@@ -78,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

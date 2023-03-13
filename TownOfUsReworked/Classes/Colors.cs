@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Shifter = new Color32(223, 133, 31, 255); //#DF851FFF
         public readonly static Color32 VampireHunter = new Color32(192, 192, 192, 255); //#C0C0C0FF
         public readonly static Color32 Escort = new Color32(128, 51, 51, 255); //#803333FF
-        public readonly static Color32 Inspector = new Color32 (126, 60, 100, 255); //#7E3C64FF
+        public readonly static Color32 Inspector = new Color32(126, 60, 100, 255); //#7E3C64FF
         public readonly static Color32 Revealer = new Color32(211, 211, 211, 255); //#D3D3D3FF
         public readonly static Color32 Mystic = new Color32(112, 142, 239, 255); //#708EEFFF
         public readonly static Color32 Retributionist = new Color32(141, 15, 140, 255); //#8D0F8CFF
@@ -99,7 +99,7 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Ambusher = new Color32(43, 210, 156, 255); //#2BD29CFF
 
         //Syndicate Colors
-        public readonly static Color32 Warper = new Color32 (140, 113, 64, 255); //#8C7140FF
+        public readonly static Color32 Warper = new Color32(140, 113, 64, 255); //#8C7140FF
         public readonly static Color32 Framer = new Color32(0, 255, 255, 255); //#00FFFFFF
         public readonly static Color32 Rebel = new Color32(255, 252, 206, 255); //#FFFCCEFF
         public readonly static Color32 Sidekick = new Color32(151, 156, 159, 255); //#979C9FFF
@@ -133,7 +133,6 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Assassin = new Color32(7, 55, 99, 255); //#073763FF
         public readonly static Color32 Torch = new Color32(255, 255, 153, 255); //#FFFF99FF
         public readonly static Color32 Tunneler = new Color32(233, 30, 99, 255); //#E91E63FF
-        public readonly static Color32 Lighter = new Color32(26, 255, 116, 255); //#1AFF74FF
         public readonly static Color32 ButtonBarry = new Color32(230, 0, 255, 255); //#E600FFFF
         public readonly static Color32 Tiebreaker = new Color32(153, 230, 153, 255); //#99E699FF
         public readonly static Color32 Snitch = new Color32(212, 174, 55, 255); //#D4AF37FF
@@ -163,13 +162,13 @@ namespace TownOfUsReworked.Classes
         public readonly static Color32 Attributes = new Color32(236, 28, 69, 255); //#EC1C45FF
         public readonly static Color32 Abilities = new Color32(32, 102, 148, 255); //#206694FF
 
-        //Color Storage For Colors I Will Use Later
+        //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626
-        //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2
-        //#8637C2 #3769FE #4d4d4d #8ff731 #2672FF #916640
+        //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #f1c40f #c27c0e #e67e22 #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #8ff731
+        //#8637C2 #3769FE
 
-        //Symbol Storage For Objectifiers I Will Make Later
+        //Symbol Storage
         //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω χ Ӫ
     }
 }

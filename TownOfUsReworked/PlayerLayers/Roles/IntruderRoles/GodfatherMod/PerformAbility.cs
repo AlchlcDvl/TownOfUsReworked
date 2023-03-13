@@ -8,77 +8,29 @@ using System.Linq;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 using Reactor.Networking.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static Sprite MeasureSprite => TownOfUsReworked.MeasureSprite;
-        public static Sprite DisguiseSprite => TownOfUsReworked.DisguiseSprite;
-        public static Sprite SampleSprite => TownOfUsReworked.SampleSprite;
-        public static Sprite MorphSprite => TownOfUsReworked.MorphSprite;
-        public static Sprite MarkSprite => TownOfUsReworked.MarkSprite;
-        public static Sprite TeleportSprite => TownOfUsReworked.TeleportSprite;
-        public static Sprite Drag => TownOfUsReworked.DragSprite;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Godfather))
-                return false;
+                return true;
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
             if (!Utils.ButtonUsable(__instance))
                 return false;
 
-            if (__instance == role.KillButton)
+            if (__instance == role.DeclareButton && !role.HasDeclared)
             {
-                if (role.KillTimer() != 0f)
-                    return false;
-
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
-
-                if (interact[3] == true && interact[0] == true)
-                {
-                    role.LastKilled = DateTime.UtcNow;
-
-                    if (CustomGameOptions.JaniCooldownsLinked && role.FormerRole?.RoleType == RoleEnum.Janitor)
-                        role.LastCleaned = DateTime.UtcNow;
-                }
-                else if (interact[0] == true)
-                {
-                    role.LastKilled = DateTime.UtcNow;
-
-                    if (CustomGameOptions.JaniCooldownsLinked && role.FormerRole?.RoleType == RoleEnum.Janitor)
-                        role.LastCleaned = DateTime.UtcNow;
-                }
-                else if (interact[1] == true)
-                {
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
-                    if (CustomGameOptions.JaniCooldownsLinked && role.FormerRole?.RoleType == RoleEnum.Janitor)
-                        role.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
-                }
-                else if (interact[2] == true)
-                {
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
-                    if (CustomGameOptions.JaniCooldownsLinked && role.FormerRole?.RoleType == RoleEnum.Janitor)
-                        role.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
-                }
-
-                return false;
-            }
-            else if (__instance == role.DeclareButton && !role.HasDeclared)
-            {
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
                 if (interact[3] == true)
                 {
@@ -86,10 +38,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Declare);
                     writer.Write(role.Player.PlayerId);
-                    writer.Write(role.ClosestPlayer.PlayerId);
+                    writer.Write(role.ClosestTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Declare(role, role.ClosestPlayer);
+                    Declare(role, role.ClosestTarget);
                 }
+                else if (interact[0] == true)
+                    role.LastDeclared = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
 
@@ -106,32 +60,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.BlackmailTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (Utils.IsTooFar(role.Player, role.ClosestBlackmail))
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestBlackmail);
 
                 if (interact[3] == true)
                 {
-                    role.Blackmailed?.myRend().material.SetFloat("_Outline", 0f);
-
-                    if (role.Blackmailed != null && role.Blackmailed.Data.IsImpostor())
-                    {
-                        if (role.Blackmailed.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && role.Blackmailed.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-                            role.Blackmailed.nameText().color = Colors.Blackmailer;
-                        else
-                            role.Blackmailed.nameText().color = Color.clear;
-                    }
-
-                    role.Blackmailed = role.ClosestPlayer;
+                    role.BlackmailedPlayer = role.ClosestBlackmail;
                     role.BlackmailButton.SetCoolDown(1f, 1f);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
                     writer.Write((byte)GodfatherActionsRPC.Blackmail);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.ClosestPlayer.PlayerId);
+                    writer.Write(role.ClosestTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
+                if (interact[0] == true)
+                    role.LastBlackmailed = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
@@ -140,6 +87,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             else if (__instance == role.CamouflageButton && formerRole == RoleEnum.Camouflager)
             {
                 if (role.CamouflageTimer() != 0f)
+                    return false;
+
+                if (CamouflageUnCamouflage.IsCamoed)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -156,13 +106,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.ConsigliereTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
                 if (interact[3] == true)
-                    role.Investigated.Add(role.ClosestPlayer.PlayerId);
+                    role.Investigated.Add(role.ClosestTarget.PlayerId);
                 
                 if (interact[0] == true)
                     role.LastInvestigated = DateTime.UtcNow;
@@ -171,70 +121,73 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 return false;
             }
-            else if (__instance == role.DisguiseButton && formerRole == RoleEnum.Disguiser)
+            else if (formerRole == RoleEnum.Disguiser)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-                
-                if (role.DisguiseTimer() != 0f)
-                    return false;
-
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-                
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-                
-                if (interact[3] == true)
+                if (__instance == role.DisguiseButton)
                 {
-                    if (role.DisguiseButton.graphic.sprite == MeasureSprite)
-                    {
-                        role.MeasuredPlayer = role.ClosestPlayer;
-                        role.DisguiseButton.graphic.sprite = DisguiseSprite;
-
-                        if (role.DisguiseTimer() < 5f)
-                            role.LastDisguised = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.DisguiseCooldown);
-                            
-                        try
-                        {
-                            //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
-                        } catch {}
-
+                    if (role.DisguiseTimer() != 0f)
                         return false;
-                    }
-                    else if (role.DisguiseButton.graphic.sprite == DisguiseSprite)
+
+                    if (Utils.IsTooFar(role.Player, role.ClosestTarget))
+                        return false;
+                    
+                    if (role.Disguised || role.DelayActive)
+                        return false;
+
+                    if (role.ClosestTarget == role.MeasuredPlayer)
+                        return false;
+
+                    var interact = Utils.Interact(role.Player, role.ClosestTarget);
+
+                    if (interact[3] == true)
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.GodfatherAction);
                         writer.Write((byte)GodfatherActionsRPC.Disguise);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(role.MeasuredPlayer.PlayerId);
-                        writer.Write(role.ClosestPlayer.PlayerId);
+                        writer.Write(role.ClosestTarget.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role.DisguiseTimeRemaining = CustomGameOptions.DisguiseDuration;
-                        role.Disguise();
-                        
-                        try
-                        {
-                            //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
-                        } catch {}
-
-                        return false;
+                        role.DisguiserTimeRemaining = CustomGameOptions.DisguiseDuration;
+                        role.Delay();
                     }
+                    else if (interact[0] == true)
+                        role.LastDisguised = DateTime.UtcNow;
+                    else if (interact[1] == true)
+                        role.LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                    return false;
                 }
-                else if (interact[1] == true)
-                    role.LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (__instance == role.MeasureButton)
+                {
+                    if (role.MeasureTimer() != 0f)
+                        return false;
+
+                    if (Utils.IsTooFar(role.Player, role.MeasureTarget))
+                        return false;
+
+                    if (role.ClosestTarget == role.MeasuredPlayer)
+                        return false;
+
+                    var interact = Utils.Interact(role.Player, role.MeasureTarget);
+
+                    if (interact[3] == true)
+                        role.MeasuredPlayer = role.MeasureTarget;
+
+                    if (interact[0] == true)
+                        role.LastMeasured = DateTime.UtcNow;
+                    else if (interact[1] == true)
+                        role.LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                    return false;
+                }
 
                 return false;
             }
             else if (__instance == role.FlashButton && formerRole == RoleEnum.Grenadier)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-                var specials = system.specials.ToArray();
-                var dummyActive = system.dummy.IsActive;
-                var sabActive = specials.Any(s => s.IsActive);
+                var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
 
                 if (sabActive)
                     return false;
@@ -248,21 +201,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.FlashTimeRemaining = CustomGameOptions.GrenadeDuration;
-                
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.FlashSound, false, 1f);
-                } catch {}
-
                 role.Flash();
                 return false;
             }
             else if (__instance == role.CleanButton && formerRole == RoleEnum.Janitor)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
-                    return false;
-
-                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;
@@ -279,11 +223,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 if (CustomGameOptions.JaniCooldownsLinked)
                     role.LastKilled = DateTime.UtcNow;
-                
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.CleanSound, false, 1f);
-                } catch {}
 
                 return false;
             }
@@ -309,41 +248,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 writer.Write(position.z + 0.01f);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 SpawnVent(id, role, position, position.z + 0.01f);
-
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.MineSound, false, 1f);
-                } catch {}
-
                 return false;
             }
             else if (__instance == role.MorphButton && formerRole == RoleEnum.Morphling)
             {
-                if (role.MorphButton.graphic.sprite == SampleSprite)
-                {
-                    if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                        return false;
-                
-                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                    if (interact[3] == true)
-                    {
-                        role.SampledPlayer = role.ClosestPlayer;
-                        role.MorphButton.graphic.sprite = MorphSprite;
-                        role.MorphButton.SetTarget(null);
-
-                        if (role.MorphTimer() < 5f)
-                            role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
-                    }
-                    else if (interact[1] == true)
-                        role.LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
-                        
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
-                    } catch {}
-                }
-                else
+                if (__instance == role.MorphButton)
                 {
                     if (role.MorphTimer() != 0f)
                         return false;
@@ -357,30 +266,65 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     role.MorphTimeRemaining = CustomGameOptions.MorphlingDuration;
                     role.MorphedPlayer = role.SampledPlayer;
                     role.Morph();
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
-                    } catch {}
-                }
-
-                return false;
-            }
-            else if (__instance == role.TeleportButton && formerRole == RoleEnum.Teleporter)
-            {
-                if (role.Player.inVent)
                     return false;
-
-                if (role.TeleportButton.graphic.sprite == MarkSprite)
-                {
-                    role.TeleportPoint = PlayerControl.LocalPlayer.transform.position;
-                    role.TeleportButton.graphic.sprite = TeleportSprite;
-                    DestroyableSingleton<HudManager>.Instance.KillButton.SetTarget(null);
-
-                    if (role.TeleportTimer() < 5f)
-                        role.LastTeleport = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.TeleportCd);
                 }
-                else
+                else if (__instance == role.SampleButton)
+                {
+                    if (role.SampleTimer() != 0f)
+                        return false;
+
+                    if (Utils.IsTooFar(role.Player, role.ClosestTarget))
+                        return false;
+
+                    if (role.SampledPlayer == role.ClosestTarget)
+                        return false;
+
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer);
+
+                    if (interact[3] == true)
+                        role.SampledPlayer = role.ClosestTarget;
+                    
+                    if (interact[0] == true)
+                    {
+                        role.LastSampled = DateTime.UtcNow;
+
+                        if (CustomGameOptions.MorphCooldownsLinked)
+                            role.LastMorphed = DateTime.UtcNow;
+                    }
+                    else if (interact[1] == true)
+                    {
+                        role.LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                        if (CustomGameOptions.MorphCooldownsLinked)
+                            role.LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    }
+                }
+            }
+            else if (formerRole == RoleEnum.Teleporter)
+            {
+                if (__instance == role.TeleportButton)
+                {
+                    if (role.Player.inVent)
+                        return false;
+
+                    if (!role.CanMark)
+                        return false;
+
+                    if (role.MarkTimer() != 0f)
+                        return false;
+                    
+                    if (role.TeleportPoint == PlayerControl.LocalPlayer.transform.position)
+                        return false;
+
+                    role.TeleportPoint = PlayerControl.LocalPlayer.transform.position;
+                    role.LastMarked = DateTime.UtcNow;
+
+                    if (CustomGameOptions.TeleCooldownsLinked)
+                        role.LastTeleport = DateTime.UtcNow;
+
+                    return false;
+                }
+                else if (__instance == role.TeleportButton)
                 {
                     if (role.TeleportTimer() != 0f)
                         return false;
@@ -393,13 +337,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.LastTeleport = DateTime.UtcNow;
                     Teleporter.Teleport(role.Player);
-                }
 
-                return false;
+                    if (CustomGameOptions.TeleCooldownsLinked)
+                        role.LastMarked = DateTime.UtcNow;
+
+                    return false;
+                }
             }
             else if (__instance == role.FreezeButton && formerRole == RoleEnum.TimeMaster)
             {
                 if (role.FreezeTimer() != 0f)
+                    return false;
+
+                if (role.Frozen)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -411,9 +361,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 role.TimeFreeze();
                 return false;
             }
-            else if (__instance == role.DragDropButton && formerRole == RoleEnum.Undertaker)
+            else if (formerRole == RoleEnum.Undertaker)
             {
-                if (role.DragDropButton.graphic.sprite == Drag)
+                if (__instance == role.DragButton)
                 {
                     if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                         return false;
@@ -428,11 +378,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     writer.Write(playerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.CurrentlyDragging = role.CurrentTarget;
-                    KillButtonTarget.SetTarget(__instance, null, role);
-                    role.DragDropButton.graphic.sprite = TownOfUsReworked.DropSprite;
                     return false;
                 }
-                else
+                else if (__instance == role.DropButton)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
@@ -464,7 +412,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 if (role.InvisTimer() != 0f)
                     return false;
-                
+
+                if (role.IsInvis)
+                    return false;
+
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Invis);
@@ -472,11 +423,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.InvisTimeRemaining = CustomGameOptions.InvisDuration;
                 role.Invis();
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.InvisSound, false, 0.4f);
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Declare(Godfather gf, PlayerControl target)

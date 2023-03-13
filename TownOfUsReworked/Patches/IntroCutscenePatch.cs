@@ -47,7 +47,7 @@ namespace TownOfUsReworked.Patches
                 StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
             }
         }
-        
+
         [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
         public static class IntroCutscene_CoBegin_d__29
         {
@@ -59,19 +59,20 @@ namespace TownOfUsReworked.Patches
                 {
                     __instance.__4__this.TeamTitle.text = role.FactionName;
                     __instance.__4__this.TeamTitle.color = role.FactionColor;
-                    __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
+                    __instance.__4__this.TeamTitle.outlineColor = Color.black;
                     __instance.__4__this.RoleText.text = role.Name;
                     __instance.__4__this.RoleText.color = role.Color;
                     __instance.__4__this.YouAreText.color = role.Color;
-                    __instance.__4__this.RoleBlurbText.color = role.Color;
+                    __instance.__4__this.YouAreText.text = "You Are The";
                     __instance.__4__this.BackgroundBar.material.color = role.Color;
                     __instance.__4__this.ImpostorText.text = " ";
+                    __instance.__4__this.RoleBlurbText.color = role.Color;
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
 
                     if (role.IntroSound != "")
                     {
                         SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
-                        SoundEffectsManager.Play(role.IntroSound);
+                        //SoundEffectsManager.Play(role.IntroSound, role.SoundEnding);
                     }
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
@@ -132,7 +133,7 @@ namespace TownOfUsReworked.Patches
                 {
                     __instance.__4__this.TeamTitle.text = role.FactionName;
                     __instance.__4__this.TeamTitle.color = role.FactionColor;
-                    __instance.__4__this.TeamTitle.outlineColor = new Color32(0, 0, 0, 255);
+                    __instance.__4__this.TeamTitle.outlineColor = Color.black;
                     __instance.__4__this.BackgroundBar.material.color = role.Color;
                     __instance.__4__this.ImpostorText.text = " ";
                 }
@@ -180,13 +181,14 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.RoleText.text = role.Name;
                     __instance.__4__this.RoleText.color = role.Color;
                     __instance.__4__this.YouAreText.color = role.Color;
+                    __instance.__4__this.YouAreText.text = "You Are The";
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
                     __instance.__4__this.RoleBlurbText.color = role.Color;
 
                     if (role.IntroSound != "")
                     {
                         SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
-                        SoundEffectsManager.Play(role.IntroSound);
+                        //SoundEffectsManager.Play(role.IntroSound, role.SoundEnding);
                     }
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&

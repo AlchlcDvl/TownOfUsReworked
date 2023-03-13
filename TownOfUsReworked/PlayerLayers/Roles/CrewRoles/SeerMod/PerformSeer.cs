@@ -8,19 +8,22 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformSeer
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Seer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.RevealButton)
+            if (role.IsBlocked)
+                return false;
+
+            if (__instance == role.SeerButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.SeerButton))
                     return false;
 
                 if (role.SeerTimer() != 0f)
@@ -29,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -42,14 +45,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
                 }
                 
                 if (interact[0] == true)
-                    role.LastRevealed = DateTime.UtcNow;
+                    role.LastSeered = DateTime.UtcNow;
                 else if (interact[1] == true)
-                    role.LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    role.LastSeered.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

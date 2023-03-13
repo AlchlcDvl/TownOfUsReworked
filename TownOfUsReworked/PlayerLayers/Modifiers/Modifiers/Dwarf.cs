@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     {
         public Dwarf(PlayerControl player) : base(player)
         {
-           var fastText = CustomGameOptions.DwarfSpeed != 1 ? " with speed" : "";
+            var fastText = CustomGameOptions.DwarfSpeed != 1 ? " with speed" : "";
             Name = "Dwarf";
             TaskText = $"- You are tiny{fastText}.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             ModifierDescription = $"You are a Dwarf! You are small{fastText}!";
         }
 
-        public override bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             appearance = Player.GetDefaultAppearance();
             appearance.SpeedFactor = (Player.Data.IsDead ? CustomGameOptions.GhostSpeed : CustomGameOptions.PlayerSpeed) * CustomGameOptions.DwarfSpeed;

@@ -7,13 +7,13 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformInfect
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Plaguebearer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Plaguebearer>(PlayerControl.LocalPlayer);
 
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.Infect);
@@ -38,15 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                     writer2.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     role.InfectedPlayers.Add(role.ClosestPlayer.PlayerId);
-                    role.LastInfected = DateTime.UtcNow;
-            
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-                    } catch {}
                 }
                 
-                if (interact[3] == true)
+                if (interact[0] == true)
                     role.LastInfected = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastInfected.AddSeconds(CustomGameOptions.ProtectKCReset);
@@ -54,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

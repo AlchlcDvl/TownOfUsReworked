@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             AbilityDescription = "You are an Assassin! You can discreetly kill people by guessing what they are! Be careful though, as missing a shot can get you killed!";
 
             //Adds all the roles that have a non-zero chance of being in the game
-            if (!(PlayerControl.LocalPlayer.Is(Faction.Crew) && PlayerControl.LocalPlayer.Is(SubFaction.None)))
+            if (!PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.NotOnTheSameSide())
             {
                 ColorMapping.Add("Crewmate", Colors.Crew);
 
@@ -330,7 +330,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     ColorMapping.Add("Traitor", Colors.Traitor);
 
                 if (CustomGameOptions.FanaticOn > 0)
-                    ColorMapping.Add("Fanatic", Colors.Lovers);
+                    ColorMapping.Add("Fanatic", Colors.Fanatic);
 
                 if (CustomGameOptions.RivalsOn > 0)
                     ColorMapping.Add("Rival", Colors.Rivals);
@@ -350,9 +350,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
                 if (CustomGameOptions.TorchOn > 0)
                     ColorMapping.Add("Torch", Colors.Torch);
-
-                if (CustomGameOptions.LighterOn > 0)
-                    ColorMapping.Add("Lighter", Colors.Lighter);
 
                 if (CustomGameOptions.UnderdogOn > 0)
                     ColorMapping.Add("Underdog", Colors.Underdog);

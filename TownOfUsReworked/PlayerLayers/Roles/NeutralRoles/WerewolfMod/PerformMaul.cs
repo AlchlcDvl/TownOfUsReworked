@@ -7,13 +7,13 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformMaul
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Werewolf))
-                return false;
+                return true;
 
             var role = Role.GetRole<Werewolf>(PlayerControl.LocalPlayer);
 
@@ -28,16 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
-
-                if (interact[3] == true)
-                {
-                    role.Maul(role.Player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.Maul);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
+                role.Maul(role.Player);
                 
                 if (interact[0] == true)
                     role.LastMauled = DateTime.UtcNow;
@@ -49,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

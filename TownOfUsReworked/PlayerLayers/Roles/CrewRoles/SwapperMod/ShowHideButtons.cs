@@ -22,21 +22,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 return self;
 
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap1 playerid = {SwapVotes.Swap1.TargetPlayerId}");
+            Utils.LogSomething($"Swap1 playerid = {SwapVotes.Swap1.TargetPlayerId}");
             var swap1 = 0;
 
             if (self.TryGetValue(SwapVotes.Swap1.TargetPlayerId, out var value))
                 swap1 = value;
 
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap1 player has votes = {swap1}");
+            Utils.LogSomething($"Swap1 player has votes = {swap1}");
 
             var swap2 = 0;
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap2 playerid = {SwapVotes.Swap2.TargetPlayerId}");
+            Utils.LogSomething($"Swap2 playerid = {SwapVotes.Swap2.TargetPlayerId}");
 
             if (self.TryGetValue(SwapVotes.Swap2.TargetPlayerId, out var value2))
                 swap2 = value2;
 
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"Swap2 player has votes  = {swap2}");
+            Utils.LogSomething($"Swap2 player has votes = {swap2}");
             self[SwapVotes.Swap2.TargetPlayerId] = swap1;
             self[SwapVotes.Swap1.TargetPlayerId] = swap2;
             return self;
@@ -110,7 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 {
                     playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
                     playerVoteArea.SetDead(false, true);
-                    return true;
                 }
                 
                 return true;

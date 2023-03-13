@@ -11,12 +11,15 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
+using System.Collections.Generic;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class UpdateNames
     {
+        public static Dictionary<byte, string> PlayerNames = new Dictionary<byte, string>();
+
         [HarmonyPriority(Priority.Last)]
         private static void Postfix()
         {
@@ -24,10 +27,18 @@ namespace TownOfUsReworked.Patches
                 return;
 
             if (MeetingHud.Instance)
+            {
                 UpdateMeeting(MeetingHud.Instance);
+                return;
+            }
 
             foreach (var player in PlayerControl.AllPlayerControls)
-                (player.nameText().text, player.nameText().color) = UpdateGameName(player);
+            {
+                if (!PlayerNames.ContainsKey(player.PlayerId))
+                    PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
+
+                (player.NameText().text, player.NameText().color) = UpdateGameName(player);
+            }
         }
 
         private static void UpdateMeeting(MeetingHud __instance)
@@ -38,27 +49,28 @@ namespace TownOfUsReworked.Patches
 
         private static (string, Color) UpdateGameName(PlayerControl player)
         {
-            if (player.nameText().text != player.name)
-                player.nameText().text = player.name;
-            
-            var playerName = player.name;
             var blank = "";
-            
-            if (CustomGameOptions.NoNames || CamouflageUnCamouflage.IsCamoed)
-                player.nameText().text = blank;
-            
-            var name = player.nameText().text;
+
+            if ((CustomGameOptions.NoNames || player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) && player != PlayerControl.LocalPlayer)
+                return (blank, Color.clear);
+
+            var name = player.Data.PlayerName;
             var color = Color.white;
             var info = player.AllPlayerInfo();
             var localinfo = PlayerControl.LocalPlayer.AllPlayerInfo();
             var roleRevealed = false;
+
+            if (CamouflageUnCamouflage.IsCamoed && player != PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead)
+                name = Utils.GetRandomisedName();
+            else
+                name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
             if (player.CanDoTasks() && (PlayerControl.LocalPlayer == player || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
             {
                 if (info[0] != null)
                 {
                     var role = info[0] as Role;
-                    name += $"{(CustomGameOptions.NoNames || CamouflageUnCamouflage.IsCamoed ? playerName : blank)} ({role.TasksCompleted}/{role.TotalTasks})";
+                    name += $" ({role.TasksCompleted}/{role.TotalTasks})";
                     roleRevealed = true;
                 }
             }
@@ -101,9 +113,9 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (CustomGameOptions.ShowShielded == ShieldOptions.Medic || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
             {
-                var medic = info[0] as Medic;
+                var medic = localinfo[0] as Medic;
 
-                if (medic.ShieldedPlayer == player)
+                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == player)
                     name += " <color=#006600FF>✚</color>";
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -161,7 +173,7 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = executioner.Color;
-                    
+
                     name += " <color=#CCCCCCFF>§</color>";
                     player.myRend().material.SetColor("_VisorColor", executioner.Color);
                 }
@@ -192,7 +204,7 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = guardianAngel.Color;
-                    
+
                     name += " <color=#FFFFFFFF>★</color>";
                     player.myRend().material.SetColor("_VisorColor", guardianAngel.Color);
 
@@ -217,7 +229,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = whisperer.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", whisperer.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Sect);
                 }
                 else
                 {
@@ -251,7 +263,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = dracula.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", dracula.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Undead);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Jackal) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -271,7 +283,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = jackal.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", jackal.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Necromancer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -291,7 +303,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = necromancer.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", necromancer.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
 
@@ -320,7 +332,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = dracula.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", dracula.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Undead);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -348,7 +360,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = jackal.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", jackal.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -376,7 +388,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = necromancer.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", necromancer.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -404,7 +416,7 @@ namespace TownOfUsReworked.Patches
                     else
                         color = whisperer.SubFactionColor;
 
-                    player.myRend().material.SetColor("_VisorColor", whisperer.Color);
+                    player.myRend().material.SetColor("_VisorColor", Colors.Sect);
                 }
                 else
                 {
@@ -421,10 +433,31 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer))
+            {
+                var blackmailer = localinfo[0] as Blackmailer;
+
+                if (blackmailer.BlackmailedPlayer == player)
+                {
+                    name += " <color=#02A752FF>Φ</color>";
+                    color = blackmailer.Color;
+                    player.myRend().material.SetColor("_VisorColor", blackmailer.Color);
+                }
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Inspector))
+            {
+                var inspector = localinfo[0] as Inspector;
+
+                if (inspector.Inspected.Contains(player.PlayerId))
+                {
+                    name += $"\n";
+                    color = inspector.Color;
+                }
+            }
 
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                var lover = localinfo[0] as Objectifier;
+                var lover = localinfo[3] as Objectifier;
                 var otherLover = PlayerControl.LocalPlayer.GetOtherLover();
 
                 if (otherLover == player)
@@ -450,7 +483,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                var rival = localinfo[0] as Objectifier;
+                var rival = localinfo[3] as Objectifier;
                 var otherRival = PlayerControl.LocalPlayer.GetOtherRival();
 
                 if (otherRival == player)
@@ -685,7 +718,7 @@ namespace TownOfUsReworked.Patches
             }
 
             if (roleRevealed)
-                player.nameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
+                player.NameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
 
             return (name, color);
         }
@@ -698,12 +731,12 @@ namespace TownOfUsReworked.Patches
 
             if (player.NameText.text != playerName)
                 player.NameText.text = playerName;
-            
+
             if (CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind)
-                player.NameText.text = blank;
-            
-            var name = player.NameText.text;
+                return (blank, Color.clear);
+
             var color = Color.white;
+            var name = player.NameText.text;
             var localinfo = PlayerControl.LocalPlayer.AllPlayerInfo();
             var roleRevealed = false;
 
@@ -767,9 +800,9 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (CustomGameOptions.ShowShielded == ShieldOptions.Medic || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
             {
-                var medic = info[0] as Medic;
+                var medic = localinfo[0] as Medic;
 
-                if (medic.ShieldedPlayer == Utils.PlayerByVoteArea(player))
+                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == Utils.PlayerByVoteArea(player))
                     name += " <color=#006600FF>✚</color>";
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -815,7 +848,7 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = executioner.Color;
-                    
+
                     name += " <color=#CCCCCCFF>§</color>";
                 }
             }
@@ -844,7 +877,7 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = guardianAngel.Color;
-                    
+
                     name += " <color=#FFFFFFFF>★</color>";
                 }
             }
@@ -1056,7 +1089,7 @@ namespace TownOfUsReworked.Patches
 
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                var lover = localinfo[0] as Objectifier;
+                var lover = localinfo[3] as Objectifier;
                 var otherLover = PlayerControl.LocalPlayer.GetOtherLover();
 
                 if (otherLover == player)
@@ -1082,7 +1115,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                var rival = localinfo[0] as Objectifier;
+                var rival = localinfo[3] as Objectifier;
                 var otherRival = PlayerControl.LocalPlayer.GetOtherRival();
 
                 if (otherRival == player)
@@ -1285,7 +1318,7 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = role.FactionColor;
-                    
+
                     if (player.Is(ObjectifierEnum.Traitor))
                     {
                         var objectifier = info[3] as Objectifier;

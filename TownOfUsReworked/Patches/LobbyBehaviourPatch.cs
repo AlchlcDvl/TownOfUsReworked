@@ -17,8 +17,8 @@ namespace TownOfUsReworked.Patches
         public static void Postfix()
         {
             //Fix Grenadier and screwed blind in lobby
-            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = false;
-            
+            ((Renderer)HudManager.Instance.FullScreen).gameObject.active = false;
+
             foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Tracker))
             {
                 ((Tracker)role).TrackerArrows.Values.DestroyAll();

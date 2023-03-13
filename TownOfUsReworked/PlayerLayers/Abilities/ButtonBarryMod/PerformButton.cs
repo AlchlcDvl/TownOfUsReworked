@@ -5,29 +5,31 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformButton
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, AbilityEnum.ButtonBarry))
+                return true;
+
+            var ability = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
+
+            if (ability.Player.IsBlocked())
                 return false;
 
-            var role = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
-
-            if (__instance == role.ButtonButton)
+            if (__instance == ability.ButtonButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(ability.ButtonButton))
                     return false;
 
-                if (role.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies > 0)
+                if (ability.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies <= 0)
                     return false;
                 
-                if (role.StartTimer() != 0f)
+                if (ability.StartTimer() != 0f)
                     return false;
 
-                role.ButtonUsed = true;
-
+                ability.ButtonUsed = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.BarryButton);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -38,16 +40,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
                     MeetingRoomManager.Instance.reporter = PlayerControl.LocalPlayer;
                     MeetingRoomManager.Instance.target = null;
                     AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-
-                    if (Utils.TasksDone())
-                        return false;
-
-                    DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);
+                    HudManager.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);
                     PlayerControl.LocalPlayer.RpcStartMeeting(null);
                 }
+
+                return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

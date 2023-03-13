@@ -6,9 +6,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
         Poison,
         Warp,
         Conceal,
-        Gaze,
         Shapeshift,
         Detonate,
-        Confuse
+        Confuse,
+        Frame
     }
 }

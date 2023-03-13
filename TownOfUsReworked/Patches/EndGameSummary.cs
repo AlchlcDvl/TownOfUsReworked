@@ -57,7 +57,7 @@ namespace TownOfUsReworked.Patches
                         foreach (var role2 in role.RoleHistory)
                             summary += $"{role2.ColorString}{role2.Name}{endString} → ";
                     }
-                    
+
                     summary += $"{role.ColorString}{role.Name}{endString}";
                 }
 

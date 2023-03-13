@@ -25,16 +25,16 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentPatches
     {
-        public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,
-            [HarmonyArgument(2)] ref bool couldUse, ref float __result)
+        public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,  [HarmonyArgument(2)] ref bool couldUse,
+            ref float __result)
         {
             float num = float.MaxValue;
             PlayerControl playerControl = playerInfo.Object;
 
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
             {
-                couldUse = Utils.CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) &&
-                (playerControl.CanMove || playerControl.inVent);
+                couldUse = Utils.CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) && (playerControl.CanMove
+                    || playerControl.inVent);
             }
             else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek && playerControl.Data.IsImpostor())
                 couldUse = false;

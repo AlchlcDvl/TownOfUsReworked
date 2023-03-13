@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 
                 if (ovmessage != "")
                 {
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, ovmessage);
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, ovmessage);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
                     writer.Write(ovmessage);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

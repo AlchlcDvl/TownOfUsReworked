@@ -3,7 +3,6 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using AmongUs.GameOptions;
 using System.Linq;
 using TownOfUsReworked.Patches;
 
@@ -12,20 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDEverything
     {
-        public static Sprite Revive => TownOfUsReworked.ReviveSprite;
-        public static Sprite Bug => TownOfUsReworked.BugSprite;
-        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
-        public static Sprite Fix => TownOfUsReworked.EngineerFix;
-        public static Sprite Arrow => TownOfUsReworked.Arrow;
-        public static Sprite Medic => TownOfUsReworked.MedicSprite;
-        public static Sprite Examine => TownOfUsReworked.ExamineSprite;
-        public static Sprite Interrogate => TownOfUsReworked.SeerSprite;
-        public static Sprite Rewind => TownOfUsReworked.Rewind;
-        public static Sprite Track => TownOfUsReworked.TrackSprite;
-        public static Sprite Alert => TownOfUsReworked.AlertSprite;
-        public static Sprite Shoot => TownOfUsReworked.ShootSprite;
-        public static Sprite Mediate => TownOfUsReworked.MediateSprite;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
@@ -40,251 +25,50 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             if (copyRole == RoleEnum.Altruist)
             {
-                var data = PlayerControl.LocalPlayer.Data;
-                var isDead = data.IsDead;
-                var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-                var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
-                var allocs = Physics2D.OverlapCircleAll(truePosition, maxDistance, LayerMask.GetMask(new[] { "Players", "Ghost" }));
-                DeadBody closestBody = null;
-                var closestDistance = float.MaxValue;
-                var allBodies = Object.FindObjectsOfType<DeadBody>();
-
                 if (role.ReviveButton == null)
-                {
-                    role.ReviveButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.ReviveButton.graphic.enabled = true;
-                    role.ReviveButton.graphic.sprite = Revive;
-                    role.ReviveButton.gameObject.SetActive(false);
-                }
+                    role.ReviveButton = Utils.InstantiateButton();
 
-                foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
-                {
-                    var distance = Vector2.Distance(truePosition, body.TruePosition);
-
-                    if (!(distance < closestDistance))
-                        continue;
-
-                    closestBody = body;
-                    closestDistance = distance;
-                }
-                
-                role.ReviveButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.ReviveUsed);
-                KillButtonTarget.SetTarget(role.ReviveButton, closestBody, role);
-                role.ReviveButton.SetCoolDown(0f, 1f);
-                role.PrimaryButton = role.ReviveButton;
-
-                var renderer = role.ReviveButton.graphic;
-
-                if (role.CurrentTarget != null)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.ReviveButton.UpdateButton(role, "REVIVE", 0, 1, TownOfUsReworked.ReviveSprite, AbilityTypes.Dead, !role.ReviveUsed);
             }
             else if (copyRole == RoleEnum.Operative)
             {
                 if (role.BugButton == null)
-                {
-                    role.BugButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.BugButton.graphic.enabled = true;
-                    role.BugButton.graphic.sprite = Bug;
-                    role.BugButton.gameObject.SetActive(false);
-                }
+                    role.BugButton = Utils.InstantiateButton();
 
-                if (role.BugUsesText == null && role.BugUsesLeft > 0)
-                {
-                    role.BugUsesText = Object.Instantiate(role.BugButton.cooldownTimerText, role.BugButton.transform);
-                    role.BugUsesText.transform.localPosition = new Vector3(role.BugUsesText.transform.localPosition.x + 0.26f, role.BugUsesText.transform.localPosition.y + 0.29f,
-                        role.BugUsesText.transform.localPosition.z);
-                    role.BugUsesText.transform.localScale = role.BugUsesText.transform.localScale * 0.65f;
-                    role.BugUsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                    role.BugUsesText.fontStyle = TMPro.FontStyles.Bold;
-                    role.BugUsesText.gameObject.SetActive(false);
-                }
-
-                if (role.BugUsesText != null)
-                    role.BugUsesText.text = $"{role.BugUsesLeft}";
-
-                role.BugButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.BugButtonUsable);
-                role.BugUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.BugButtonUsable);
-                role.PrimaryButton = role.BugButton;
-
-                if (role.BugButtonUsable)
-                    role.BugButton.SetCoolDown(role.BugTimer(), CustomGameOptions.BugCooldown);
-
-                var renderer = role.BugButton.graphic;
-                
-                if (!role.BugButton.isCoolingDown && role.BugButtonUsable)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.BugButton.UpdateButton(role, "BUG", role.BugTimer(), CustomGameOptions.BugCooldown, TownOfUsReworked.BugSprite, AbilityTypes.Effect, true, role.BugUsesLeft,
+                    role.BugButtonUsable, role.BugButtonUsable);
             }
             else if (copyRole == RoleEnum.Chameleon)
             {
                 if (role.SwoopButton == null)
-                {
-                    role.SwoopButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.SwoopButton.graphic.enabled = true;
-                    role.SwoopButton.graphic.sprite = Placeholder;
-                    role.SwoopButton.gameObject.SetActive(false);
-                }
+                    role.SwoopButton = Utils.InstantiateButton();
 
-                role.SwoopButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.PrimaryButton = role.SwoopButton;
-
-                if (role.IsSwooped)
-                    role.SwoopButton.SetCoolDown(role.SwoopTimeRemaining, CustomGameOptions.SwoopDuration);
-                else
-                    role.SwoopButton.SetCoolDown(role.SwoopTimer(), CustomGameOptions.SwoopCooldown);
-
-                var renderer = role.SwoopButton.graphic;
-
-                if (role.IsSwooped || !role.SwoopButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.SwoopButton.UpdateButton(role, "SWOOP", role.SwoopTimer(), CustomGameOptions.SwoopCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Effect, null, true,
+                    !role.IsSwooped, role.IsSwooped, role.SwoopTimeRemaining, CustomGameOptions.SwoopDuration);
             }
             else if (copyRole == RoleEnum.Engineer)
             {
                 if (role.FixButton == null)
-                {
-                    role.FixButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.FixButton.graphic.enabled = true;
-                    role.FixButton.graphic.sprite = Fix;
-                    role.FixButton.gameObject.SetActive(false);
-                }
-
-                if (role.FixUsesText == null && role.FixUsesLeft > 0)
-                {
-                    role.FixUsesText = Object.Instantiate(__instance.KillButton.cooldownTimerText, __instance.KillButton.transform);
-                    role.FixUsesText.gameObject.SetActive(false);
-                    role.FixUsesText.transform.localPosition = new Vector3(role.FixUsesText.transform.localPosition.x + 0.26f, role.FixUsesText.transform.localPosition.y + 0.29f,
-                        role.FixUsesText.transform.localPosition.z);
-                    role.FixUsesText.transform.localScale = role.FixUsesText.transform.localScale * 0.65f;
-                    role.FixUsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                    role.FixUsesText.fontStyle = TMPro.FontStyles.Bold;
-                }
-
-                if (role.FixUsesText != null)
-                    role.FixUsesText.text = $"{role.FixUsesLeft}";
-                
-                role.FixButton.SetCoolDown(0f, 10f);
-                role.FixButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.FixButtonUsable);
-                role.PrimaryButton = role.FixButton;
-
-                if (!ShipStatus.Instance)
-                    return;
+                    role.FixButton = Utils.InstantiateButton();
 
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-
-                if (system == null)
-                    return;
-
-                var camouflager = Role.GetRoleValue<Camouflager>(RoleEnum.Camouflager);
-                var concealer = Role.GetRoleValue<Concealer>(RoleEnum.Concealer);
-                var shapeshifter = Role.GetRoleValue<Shapeshifter>(RoleEnum.Shapeshifter);
-
-                var specials = system.specials.ToArray();
-                var dummyActive = system.dummy.IsActive;
-                var active = specials.Any(s => s.IsActive) || camouflager.Camouflaged || concealer.Concealed || shapeshifter.Shapeshifted;
-                var renderer = role.FixButton.graphic;
-                
-                if (active && !dummyActive && role.FixButtonUsable)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                var dummyActive = (bool)system?.dummy.IsActive;
+                var active = (bool)system?.specials.ToArray().Any(s => s.IsActive);
+                role.FixButton.UpdateButton(role, "FIX", role.FixTimer(), CustomGameOptions.FixCooldown, TownOfUsReworked.EngineerFix, AbilityTypes.Effect, null, true,
+                    role.FixUsesLeft, role.FixButtonUsable, active && !dummyActive);
             }
             else if (copyRole == RoleEnum.Coroner)
             {
-                var data = PlayerControl.LocalPlayer.Data;
-                var isDead = data.IsDead;
-                var truePosition = PlayerControl.LocalPlayer.GetTruePosition();
-                var maxDistance = GameOptionsData.KillDistances[CustomGameOptions.InteractionDistance];
-                var flag = (CustomGameOptions.GhostTasksCountToWin || !data.IsDead) && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && PlayerControl.LocalPlayer.CanMove;
-                DeadBody closestBody = null;
-                var closestDistance = float.MaxValue;
-                var allBodies = Object.FindObjectsOfType<DeadBody>();
-
                 if (role.AutopsyButton == null)
-                {
-                    role.AutopsyButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.AutopsyButton.graphic.enabled = true;
-                    role.AutopsyButton.graphic.sprite = Placeholder;
-                    role.AutopsyButton.gameObject.SetActive(false);
-                }
+                    role.AutopsyButton = Utils.InstantiateButton();
+
+                role.AutopsyButton.UpdateButton(role, "AUTOPSY", role.AutopsyTimer(), 10, TownOfUsReworked.Placeholder, AbilityTypes.Dead);
 
                 if (role.CompareButton == null)
-                {
-                    role.CompareButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.CompareButton.graphic.enabled = true;
-                    role.CompareButton.graphic.sprite = Placeholder;
-                    role.CompareButton.gameObject.SetActive(false);
-                }
+                    role.CompareButton = Utils.InstantiateButton();
 
-                foreach (var body in allBodies.Where(x => Vector2.Distance(x.TruePosition, truePosition) <= maxDistance))
-                {
-                    var distance = Vector2.Distance(truePosition, body.TruePosition);
-
-                    if (!(distance < closestDistance))
-                        continue;
-
-                    closestBody = body;
-                    closestDistance = distance;
-                }
-
-                KillButtonTarget.SetTarget(role.AutopsyButton, closestBody, role);
-                role.AutopsyButton.SetCoolDown(0f, 1f);
-                role.AutopsyButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.PrimaryButton = role.AutopsyButton;
-                var renderer2 = role.AutopsyButton.graphic;
-
-                if (!role.AutopsyButton.isCoolingDown && role.CurrentTarget != null)
-                {
-                    renderer2.color = Palette.EnabledColor;
-                    renderer2.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer2.color = Palette.DisabledClear;
-                    renderer2.material.SetFloat("_Desat", 1f);
-                }
-
-                var renderer3 = role.CompareButton.graphic;
-
-                if (!role.CompareButton.isCoolingDown && role.ClosestPlayer != null)
-                {
-                    renderer3.color = Palette.EnabledColor;
-                    renderer3.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer3.color = Palette.DisabledClear;
-                    renderer3.material.SetFloat("_Desat", 1f);
-                }
+                role.CompareButton.UpdateButton(role, "COMPARE", role.CompareTimer(), CustomGameOptions.CompareCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, null,
+                    true, role.CompareUsesLeft, role.ReferenceBody != null, role.CompareButtonUsable);
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {
@@ -305,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                             var arrow = gameObj.AddComponent<ArrowBehaviour>();
                             gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                             var renderer = gameObj.AddComponent<SpriteRenderer>();
-                            renderer.sprite = Arrow;
+                            renderer.sprite = TownOfUsReworked.Arrow;
                             arrow.image = renderer;
                             gameObj.layer = 5;
                             role.BodyArrows.Add(body.ParentId, arrow);
@@ -326,327 +110,74 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Medic)
             {
                 if (role.ShieldButton == null)
-                {
-                    role.ShieldButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.ShieldButton.graphic.enabled = true;
-                    role.ShieldButton.graphic.sprite = Medic;
-                    role.ShieldButton.gameObject.SetActive(false);
-                }
+                    role.ShieldButton = Utils.InstantiateButton();
 
-                role.ShieldButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedAbility);
-                role.ShieldButton.SetCoolDown(0f, 1f);
-                Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
-                role.PrimaryButton = role.ShieldButton;
-                var renderer = role.ShieldButton.graphic;
-                
-                if (role.ClosestPlayer != null)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                var notShielded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != role.ShieldedPlayer).ToList();
+                role.ShieldButton.UpdateButton(role, "SHIELD", 0, 1, TownOfUsReworked.MedicSprite, AbilityTypes.Direct, notShielded, !role.UsedAbility);
             }
             else if (copyRole == RoleEnum.Detective)
             {
                 if (role.ExamineButton == null)
-                {
-                    role.ExamineButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.ExamineButton.graphic.enabled = true;
-                    role.ExamineButton.graphic.sprite = Examine;
-                    role.ExamineButton.gameObject.SetActive(false);
-                }
+                    role.ExamineButton = Utils.InstantiateButton();
 
-                role.ExamineButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.ExamineButton.SetCoolDown(role.ExamineTimer(), CustomGameOptions.ExamineCd);
-                Utils.SetTarget(ref role.ClosestPlayer, role.ExamineButton);
-                var renderer = role.ExamineButton.graphic;
-                role.PrimaryButton = role.ExamineButton;
-                
-                if (role.ClosestPlayer != null && !role.ExamineButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.ExamineButton.UpdateButton(role, "EXAMINE", role.ExamineTimer(), CustomGameOptions.ExamineCd, TownOfUsReworked.ExamineSprite, AbilityTypes.Direct);
             }
             else if (copyRole == RoleEnum.Inspector)
             {
                 if (role.InspectButton == null)
-                {
-                    role.InspectButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.InspectButton.graphic.enabled = true;
-                    role.InspectButton.graphic.sprite = Placeholder;
-                    role.InspectButton.gameObject.SetActive(false);
-                }
+                    role.InspectButton = Utils.InstantiateButton();
 
-                role.InspectButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.InspectButton.SetCoolDown(role.InspectTimer(), CustomGameOptions.InspectCooldown);
                 var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, role.InspectButton, notinspected);
-                var renderer = role.InspectButton.graphic;
-                role.PrimaryButton = role.InspectButton;
-                
-                if (role.ClosestPlayer != null && !role.InspectButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.InspectButton.UpdateButton(role, "INSPECT", role.InspectTimer(), CustomGameOptions.InspectCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+                    notinspected);
             }
             else if (copyRole == RoleEnum.Sheriff)
             {
                 if (role.InterrogateButton == null)
-                {
-                    role.InterrogateButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.InterrogateButton.graphic.enabled = true;
-                    role.InterrogateButton.graphic.sprite = Interrogate;
-                    role.InterrogateButton.gameObject.SetActive(false);
-                }
+                    role.InterrogateButton = Utils.InstantiateButton();
 
-                role.InterrogateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.InterrogateButton.SetCoolDown(role.InterrogateTimer(), CustomGameOptions.InterrogateCd);
                 var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, role.InterrogateButton, notInvestigated);
-                role.PrimaryButton = role.InterrogateButton;
-                var renderer = role.InterrogateButton.graphic;
-
-                if (role.ClosestPlayer != null && !role.InterrogateButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
-            }
-            else if (copyRole == RoleEnum.TimeLord)
-            {
-                if (role.RewindButton == null)
-                {
-                    role.RewindButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.RewindButton.graphic.enabled = true;
-                    role.RewindButton.graphic.sprite = Rewind;
-                    role.RewindButton.gameObject.SetActive(false);
-                }
-
-                if (role.RewindUsesText == null && role.RewindUsesLeft > 0)
-                {
-                    role.RewindUsesText = Object.Instantiate(role.RewindButton.cooldownTimerText, role.RewindButton.transform);
-                    role.RewindUsesText.transform.localPosition = new Vector3(role.RewindUsesText.transform.localPosition.x + 0.26f, role.RewindUsesText.transform.localPosition.y + 0.29f,
-                        role.RewindUsesText.transform.localPosition.z);
-                    role.RewindUsesText.transform.localScale = role.RewindUsesText.transform.localScale * 0.65f;
-                    role.RewindUsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                    role.RewindUsesText.fontStyle = TMPro.FontStyles.Bold;
-                    role.RewindUsesText.gameObject.SetActive(false);
-                }
-
-                if (role.RewindUsesText != null)
-                    role.RewindUsesText.text = $"{role.RewindUsesLeft}";
-
-                role.RewindUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RewindButtonUsable);
-                role.RewindButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RewindButtonUsable);
-                role.PrimaryButton = role.RewindButton;
-
-                if (role.RewindButtonUsable)
-                    role.RewindButton.SetCoolDown(role.TimeLordRewindTimer(), role.GetCooldown());
-
-                var renderer = role.RewindButton.graphic;
-                
-                if (!role.RewindButton.isCoolingDown && !RecordRewind.rewinding && role.RewindButtonUsable)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                    role.RewindUsesText.color = Palette.EnabledColor;
-                    role.RewindUsesText.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                    role.RewindUsesText.color = Palette.DisabledClear;
-                    role.RewindUsesText.material.SetFloat("_Desat", 0f);
-                }
+                role.InterrogateButton.UpdateButton(role, "REVEAL", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+                    notInvestigated);
             }
             else if (copyRole == RoleEnum.Tracker)
             {
                 if (role.TrackButton == null)
-                {
-                    role.TrackButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.TrackButton.graphic.enabled = true;
-                    role.TrackButton.graphic.sprite = Track;
-                    role.TrackButton.gameObject.SetActive(false);
-                }
+                    role.TrackButton = Utils.InstantiateButton();
 
-                if (role.TrackUsesText == null && role.TrackUsesLeft > 0)
-                {
-                    role.TrackUsesText = Object.Instantiate(role.TrackButton.cooldownTimerText, role.TrackButton.transform);
-                    role.TrackUsesText.transform.localPosition = new Vector3(role.TrackUsesText.transform.localPosition.x + 0.26f, role.TrackUsesText.transform.localPosition.y + 0.29f,
-                        role.TrackUsesText.transform.localPosition.z);
-                    role.TrackUsesText.transform.localScale = role.TrackUsesText.transform.localScale * 0.65f;
-                    role.TrackUsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                    role.TrackUsesText.fontStyle = TMPro.FontStyles.Bold;
-                    role.TrackUsesText.gameObject.SetActive(false);
-                }
-
-                if (role.TrackUsesText != null)
-                    role.TrackUsesText.text = $"{role.TrackUsesLeft}";
-
-                role.TrackButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.TrackButtonUsable);
-                role.TrackUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.TrackButtonUsable);
-                role.TrackButton.SetCoolDown(role.TrackerTimer(), CustomGameOptions.TrackCd);
-                var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.IsTracking(x)).ToList();
-                Utils.SetTarget(ref role.ClosestPlayer, role.TrackButton, notTracked);
-                role.PrimaryButton = role.TrackButton;
-                var renderer = role.TrackButton.graphic;
-                
-                if (role.ClosestPlayer != null && role.TrackButtonUsable && !role.TrackButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                    role.TrackUsesText.color = Palette.EnabledColor;
-                    role.TrackUsesText.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                    role.TrackUsesText.color = Palette.DisabledClear;
-                    role.TrackUsesText.material.SetFloat("_Desat", 1f);
-                }
+                var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.TrackerArrows.ContainsKey(x.PlayerId)).ToList();
+                role.TrackButton.UpdateButton(role, "REVEAL", role.TrackerTimer(), CustomGameOptions.TrackCd, TownOfUsReworked.TrackSprite, AbilityTypes.Direct,
+                    notTracked, role.TrackButtonUsable, role.TrackButtonUsable, false, 0, 1, true, role.TrackUsesLeft);
             }
             else if (copyRole == RoleEnum.VampireHunter)
             {
                 if (role.StakeButton == null)
-                {
-                    role.StakeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.StakeButton.graphic.enabled = true;
-                    role.StakeButton.graphic.sprite = Placeholder;
-                    role.StakeButton.gameObject.SetActive(false);
-                }
+                    role.StakeButton = Utils.InstantiateButton();
 
-                role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
-                role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
-                Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
-                role.PrimaryButton = role.StakeButton;
-                var renderer = role.StakeButton.graphic;
-                
-                if (role.ClosestPlayer != null && !role.StakeButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
             }
             else if (copyRole == RoleEnum.Veteran)
             {
                 if (role.AlertButton == null)
-                {
-                    role.AlertButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.AlertButton.graphic.enabled = true;
-                    role.AlertButton.graphic.sprite = Alert;
-                    role.AlertButton.gameObject.SetActive(false);
-                }
+                    role.AlertButton = Utils.InstantiateButton();
 
-                if (role.AlertUsesText == null && role.AlertUsesLeft > 0)
-                {
-                    role.AlertUsesText = Object.Instantiate(role.AlertButton.cooldownTimerText, role.AlertButton.transform);
-                    role.AlertUsesText.transform.localPosition = new Vector3(role.AlertUsesText.transform.localPosition.x + 0.26f, role.AlertUsesText.transform.localPosition.y + 0.29f,
-                        role.AlertUsesText.transform.localPosition.z);
-                    role.AlertUsesText.transform.localScale = role.AlertUsesText.transform.localScale * 0.65f;
-                    role.AlertUsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                    role.AlertUsesText.fontStyle = TMPro.FontStyles.Bold;
-                    role.AlertUsesText.gameObject.SetActive(false);
-                }
-
-                if (role.AlertUsesText != null)
-                    role.AlertUsesText.text = $"{role.AlertUsesLeft}";
-
-                role.AlertButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.AlertButtonUsable);
-                role.AlertUsesText.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.AlertButtonUsable);
-                role.PrimaryButton = role.AlertButton;
-
-                if (role.AlertButtonUsable)
-                {
-                    if (role.AlertEnabled)
-                        role.AlertButton.SetCoolDown(role.AlertTimeRemaining, CustomGameOptions.AlertDuration);
-                    else
-                        role.AlertButton.SetCoolDown(role.AlertTimer(), CustomGameOptions.AlertCd);
-                }
-
-                var renderer = role.AlertButton.graphic;
-                
-                if (!role.AlertButton.isCoolingDown && role.AlertButtonUsable && !role.OnAlert)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                    role.AlertUsesText.color = Palette.EnabledColor;
-                    role.AlertUsesText.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                    role.AlertUsesText.color = Palette.DisabledClear;
-                    role.AlertUsesText.material.SetFloat("_Desat", 1f);
-                }
+                role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, TownOfUsReworked.AlertSprite, AbilityTypes.Effect, null,
+                    role.AlertButtonUsable, role.AlertButtonUsable && !role.OnAlert, role.OnAlert, role.AlertTimeRemaining, CustomGameOptions.AlertDuration, true, role.AlertUsesLeft);
             }
             else if (copyRole == RoleEnum.Vigilante)
-            {
+                {
                 if (role.ShootButton == null)
-                {
-                    role.ShootButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.ShootButton.graphic.enabled = true;
-                    role.ShootButton.graphic.sprite = Shoot;
-                    role.ShootButton.gameObject.SetActive(false);
-                }
+                    role.ShootButton = Utils.InstantiateButton();
 
-                role.ShootButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.ShootButton.SetCoolDown(role.KillTimer(), CustomGameOptions.VigiKillCd);
-                Utils.SetTarget(ref role.ClosestPlayer, role.ShootButton);
-                var renderer = role.ShootButton.graphic;
-                role.PrimaryButton = role.ShootButton;
-                
-                if (role.ClosestPlayer != null && !role.ShootButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.ShootButton.UpdateButton(role, "SHOOT", role.KillTimer(), CustomGameOptions.VigiKillCd, TownOfUsReworked.ShootSprite, AbilityTypes.Direct, true,
+                    role.BulletsLeft, role.ShootButtonUsable, role.ShootButtonUsable);
             }
             else if (copyRole == RoleEnum.Medium)
             {
                 if (role.MediateButton == null)
-                {
-                    role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                    role.MediateButton.graphic.enabled = true;
-                    role.MediateButton.graphic.sprite = Mediate;
-                    role.MediateButton.gameObject.SetActive(false);
-                }
+                    role.MediateButton = Utils.InstantiateButton();
 
-                role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-                role.PrimaryButton = role.MediateButton;
+                role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, TownOfUsReworked.MediateSprite, AbilityTypes.Effect);
 
                 if (!PlayerControl.LocalPlayer.Data.IsDead)
                 {
@@ -673,20 +204,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         }
                     }
                 }
+            }
+            else if (copyRole == RoleEnum.Mystic)
+            {
+                if (role.RevealButton == null)
+                    role.RevealButton = Utils.InstantiateButton();
 
-                role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
-                var renderer = role.MediateButton.graphic;
+                role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            }
+            else if (copyRole == RoleEnum.Seer)
+            {
+                if (role.SeerButton == null)
+                    role.SeerButton = Utils.InstantiateButton();
 
-                if (!role.MediateButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-                else
-                {
-                    renderer.color = Palette.DisabledClear;
-                    renderer.material.SetFloat("_Desat", 1f);
-                }
+                role.SeerButton.UpdateButton(role, "REVEAL", role.SeerTimer(), CustomGameOptions.SeerCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
             }
         }
     }

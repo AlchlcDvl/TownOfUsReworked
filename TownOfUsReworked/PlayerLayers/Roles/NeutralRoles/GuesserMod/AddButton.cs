@@ -141,8 +141,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
                 var roleflag = playerRole != null && playerRole.Name == currentGuess;
                 var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
+                var sectflag = targetPlayer.IsPersuaded() && currentGuess == "Persuaded";
+                var reanimatedflag = targetPlayer.IsResurrected() && currentGuess == "Resurrected";
+                var undeadflag = targetPlayer.IsBitten() && currentGuess == "Bitten";
 
-                var flag = roleflag || recruitflag;
+                var flag = roleflag || recruitflag || sectflag || reanimatedflag || undeadflag;
                 var toDie = flag ? playerRole.Player : role.Player;
                 role.TargetGuessed = flag;
                 GuesserKill.RpcMurderPlayer(role, toDie, currentGuess);
@@ -162,10 +165,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 guesser.GuessedThisMeeting = false;
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Guesser))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Guesser) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var guesserRole = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);

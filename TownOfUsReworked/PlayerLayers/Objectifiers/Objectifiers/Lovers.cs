@@ -16,10 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = $"- Live to the final 3 with {OtherLover.name}";
+            TaskText = $"- Live to the final 3 with your Lover";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
-            ObjectifierDescription = $"You are a Lover! You are in love with {OtherLover.name}! Survive to the final 3 with your loved one!";
+            ObjectifierDescription = $"You are a Lover! You are in love! Survive to the final 3 with your loved one!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -77,13 +77,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 return false;
             }
 
-            return !(LoversDead() || IsDeadLover());
+            return LoversLose();
         }
 
         public bool LoverDead() => OtherLover == null || OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
 
-        public bool IsDeadLover() => Player.Data.IsDead || Player.Data.Disconnected;
+        public bool IsDeadLover() => Player == null || Player.Data.IsDead || Player.Data.Disconnected;
 
-        public bool LoversDead() => LoverDead() && IsDeadLover();
+        public bool LoversLose() => LoverDead() && IsDeadLover();
     }
 }

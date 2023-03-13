@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            //SoundManager.Instance.PlaySound(TownOfUsReworked.SerialKillerWin, false, 0.3f);
         }
     }
 }

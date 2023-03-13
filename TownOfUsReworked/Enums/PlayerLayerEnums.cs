@@ -5,7 +5,6 @@ namespace TownOfUsReworked.Enums
         Assassin,
         ButtonBarry,
         Insider,
-        Lighter,
         Multitasker,
         Ninja,
         Radar,
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.Enums
         Torch,
         Tunneler,
         Underdog,
-        
+
         None
     }
 
@@ -29,7 +28,7 @@ namespace TownOfUsReworked.Enums
         Rivals,
         Taskmaster,
         Traitor,
-        
+
         None
     }
 
@@ -139,7 +138,7 @@ namespace TownOfUsReworked.Enums
         Shy,
         VIP,
         Volatile,
-        
+
         None
     }
 }

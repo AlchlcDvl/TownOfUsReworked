@@ -11,13 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
         public static IEnumerator CleanCoroutine(DeadBody body, Godfather role)
         {
-            if (role.FormerRole == null)
+            if (role.FormerRole?.RoleType != RoleEnum.Janitor)
                 yield break;
 
-            if (role.FormerRole.RoleType != RoleEnum.Janitor)
-                yield break;
-
-            KillButtonTarget.SetTarget(role.CleanButton, null, role);
             var renderer = body.bodyRenderer;
             var backColor = renderer.material.GetColor(BackColor);
             var bodyColor = renderer.material.GetColor(BodyColor);

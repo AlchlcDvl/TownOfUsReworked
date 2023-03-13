@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
+using System.Collections.Generic;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
@@ -28,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            return player == null || player.Data.IsDead || player.Data.Disconnected;
+            return player == null || player.Data.IsDead || player.Data.Disconnected || player.NameText().text.Contains("\n");
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
@@ -162,6 +164,20 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     if (currentGuess != "Actor")
                     {
                         var actor = Role.GetRole<Actor>(targetPlayer);
+                        var results = Role.GetRoles(actor.PretendRoles);
+                        var names = new List<string>();
+
+                        foreach (var role in results)
+                            names.Add(role.Name);
+                        
+                        if (names.Contains(currentGuess))
+                        {
+                            actor.Guessed = true;
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                            writer.Write((byte)WinLoseRPC.ActorWin);
+                            writer.Write(targetPlayer.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        }
                     }
                 }
 

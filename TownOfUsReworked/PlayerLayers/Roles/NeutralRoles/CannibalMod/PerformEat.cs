@@ -7,15 +7,18 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformEat
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cannibal))
-                return false;
+                return true;
 
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
 
             if (__instance == role.EatButton)
             {
@@ -34,13 +37,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(role.CurrentTarget.ParentId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.EatSound, false, 0.4f);
                 role.LastEaten = DateTime.UtcNow;
                 Coroutines.Start(Coroutine.EatCoroutine(role.CurrentTarget, role));
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

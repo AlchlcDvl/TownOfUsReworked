@@ -8,13 +8,13 @@ using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformRevive
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Necromancer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Necromancer>(PlayerControl.LocalPlayer);
 
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                 if (interact[3] == true)
                     role.KillCount++;
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

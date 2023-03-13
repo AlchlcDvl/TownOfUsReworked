@@ -3,15 +3,12 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDConvert
     {
-        public static Sprite BiteSprite => TownOfUsReworked.BiteSprite;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
@@ -20,29 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
             if (role.BiteButton == null)
-            {
-                role.BiteButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.BiteButton.graphic.enabled = true;
-                role.BiteButton.graphic.sprite = BiteSprite;
-                role.BiteButton.gameObject.SetActive(false);
-            }
+                role.BiteButton = Utils.InstantiateButton();
 
-            role.BiteButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.BiteButton.SetCoolDown(role.ConvertTimer(), CustomGameOptions.BiteCd);
             var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.BiteButton, notVamp);
-            var renderer = role.BiteButton.graphic;
-            
-            if (role.ClosestPlayer != null && !role.BiteButton.isCoolingDown)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            role.BiteButton.UpdateButton(role, "BITE", role.ConvertTimer(), CustomGameOptions.BiteCd, TownOfUsReworked.BiteSprite, AbilityTypes.Direct, notVamp,
+                role.Converted.Count <= CustomGameOptions.AliveVampCount);
         }
     }
 }

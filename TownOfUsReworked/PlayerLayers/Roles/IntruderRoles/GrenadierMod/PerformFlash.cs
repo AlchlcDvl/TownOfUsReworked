@@ -1,0 +1,49 @@
+using HarmonyLib;
+using Hazel;
+using TownOfUsReworked.Enums;
+using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Classes;
+using System.Linq;
+
+namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
+{
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
+    public class PerformFlash
+    {
+        public static bool Prefix(AbilityButton __instance)
+        {
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Grenadier))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
+            var role = Role.GetRole<Grenadier>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
+
+            if (__instance == role.FlashButton)
+            {
+                var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+                var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
+
+                if (sabActive)
+                    return false;
+
+                if (role.FlashTimer() != 0f)
+                    return false;
+
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.FlashGrenade);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.TimeRemaining = CustomGameOptions.GrenadeDuration;
+                role.Flash();
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

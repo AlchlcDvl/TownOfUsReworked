@@ -29,11 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ReanimatedMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            
-            try
-            {
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-            } catch {}
         }
     }
 }

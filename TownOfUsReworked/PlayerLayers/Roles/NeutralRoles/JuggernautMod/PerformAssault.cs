@@ -6,13 +6,13 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAssault
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Juggernaut))
-                return false;
+                return true;
 
             var role = Role.GetRole<Juggernaut>(PlayerControl.LocalPlayer);
 
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                 if (role.KillTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                 if (interact[3] == true)
                     role.JuggKills += 1;
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

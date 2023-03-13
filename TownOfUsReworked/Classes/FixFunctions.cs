@@ -37,24 +37,6 @@ namespace TownOfUsReworked.Classes
             return false;
         }
 
-        public static bool FixCamo()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
-        public static bool FixConceal()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
-        public static bool FixShapeshift()
-        {
-            Utils.DefaultOutfitAll();
-            return false;
-        }
-
         public static bool FixSubOxygen()
         {
             SubmergedCompatibility.RepairOxygen();

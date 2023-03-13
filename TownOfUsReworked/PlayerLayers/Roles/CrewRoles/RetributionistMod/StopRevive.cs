@@ -27,9 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (ret.RevivedRole.RoleType == RoleEnum.Operative)
             {
                 if (ret.BuggedPlayers.Count == 0)
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
                 else if (ret.BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
                 else
                 {
                     string message = "Roles caught in your bugs:\n";
@@ -40,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     message.Remove(message.Length - 1, 1);
                     
                     //Ensures only the Retributionist-Operative sees this
-                    if (DestroyableSingleton<HudManager>.Instance)
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                    if (HudManager.Instance)
+                        HudManager.Instance.Chat.AddChat(ret.Player, message);
                 }
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Coroner)
@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 {
                     Killer = Utils.PlayerById(killer.KillerId),
                     Body = Utils.PlayerById(killer.PlayerId),
-                    KillAge = (float) (DateTime.UtcNow - killer.KillTime).TotalMilliseconds
+                    KillAge = (float)(DateTime.UtcNow - killer.KillTime).TotalMilliseconds
                 };
 
                 var reportMsg = BodyReport.ParseBodyReport(br);
@@ -74,13 +74,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     return;
 
                 //Send the message through chat only visible to the Retributionist-Coroner
-                if (DestroyableSingleton<HudManager>.Instance)
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
+                if (HudManager.Instance)
+                    HudManager.Instance.Chat.AddChat(ret.Player, reportMsg);
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
             else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
                 ret.Interrogated.Clear();
+            else if (ret.RevivedRole.RoleType == RoleEnum.Inspector)
+                ret.Inspected.Clear();
 
             ret.RevivedRole = null;
         }

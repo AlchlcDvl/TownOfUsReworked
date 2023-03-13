@@ -2,18 +2,9 @@ namespace TownOfUsReworked.Enums
 {
     public enum WinLoseRPC
     {
-        GlitchWin,
-        JuggernautWin,
-        ArsonistWin,
         JesterWin,
         ExecutionerWin,
-        PlaguebearerWin,
-        PestilenceWin,
-        WerewolfWin,
         CannibalWin,
-        MurdererWin,
-        SerialKillerWin,
-        CryomaniacWin,
         TrollWin,
         PhantomWin,
         GuesserWin,
@@ -31,6 +22,8 @@ namespace TownOfUsReworked.Enums
         ReanimatedWin,
 
         AllNKsWin,
+        NKWins,
+        InfectorsWin,
 
         LoveWin,
         TaskmasterWin,

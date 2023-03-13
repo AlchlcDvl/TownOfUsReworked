@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal string TaskText { get; set; } = "- None.";
         protected internal bool Hidden { get; set; } = false;
 
-
         protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
         public string PlayerName { get; set; }
@@ -45,14 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             set
             {
                 if (_player != null)
-                    _player.nameText().color = Color.white;
+                    _player.NameText().color = Color.white;
 
                 _player = value;
                 PlayerName = value.Data.PlayerName;
             }
         }
 
-        public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Objectifier other) => Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
@@ -75,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)ObjectifierType);
 
-        public static bool operator ==(Objectifier a, Objectifier b)
+        public static bool operator == (Objectifier a, Objectifier b)
         {
             if (a is null && b is null)
                 return true;
@@ -99,7 +97,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         
         public static T GetObjectifierValue<T>(ObjectifierEnum objEnum) where T : Objectifier => GetObjectifierValue(objEnum) as T;
 
-        public static bool operator !=(Objectifier a, Objectifier b) => !(a == b);
+        public static bool operator != (Objectifier a, Objectifier b) => !(a == b);
 
         public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.FirstOrDefault(x => x.Player == player);
 
@@ -110,14 +108,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
 
         public static T GenObjectifier<T>(Type type, PlayerControl player, int id, List<PlayerControl> players = null)
-		{
-			var objectifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable);
-			writer.Write(player.PlayerId);
-			writer.Write(id);
-			AmongUsClient.Instance.FinishRpcImmediately(writer);
-			return objectifier;
-		}
+        {
+            var objectifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable);
+            writer.Write(player.PlayerId);
+            writer.Write(id);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            return objectifier;
+        }
         
         [HarmonyPatch]
         public static class CheckEndGame
@@ -137,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                         return false;
                 }
 
-                return false;
+                return Utils.GameHasEnded();
             }
         }
     }

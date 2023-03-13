@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void MurderPlayer(Assassin assassin, PlayerVoteArea voteArea, PlayerControl player, string guess, bool checkLover = true)
         {
-            var hudManager = DestroyableSingleton<HudManager>.Instance;
+            var hudManager = HudManager.Instance;
             var assassinPlayer = assassin.Player;
 
             if (player != assassinPlayer && player.Is(ModifierEnum.Indomitable) && !player.Is(RoleEnum.Actor) && player == PlayerControl.LocalPlayer)
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             if (player.AmOwner)
             {
                 hudManager.ShadowQuad.gameObject.SetActive(false);
-                player.nameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+                player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 player.RpcSetScanner(false);
 
                 if (player.Is(RoleEnum.Swapper))
@@ -145,7 +145,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             foreach (var role in blackmailers)
             {
-                if (role.Blackmailed != null && voteArea.TargetPlayerId == role.Blackmailed.PlayerId)
+                if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId)
                 {
                     if (BlackmailMeetingUpdate.PrevXMark != null && BlackmailMeetingUpdate.PrevOverlay != null)
                     {

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {

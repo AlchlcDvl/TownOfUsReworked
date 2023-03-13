@@ -1,23 +1,21 @@
 using System;
-using Hazel;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using System.Linq;
 using Object = UnityEngine.Object;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Cannibal : Role
+    public class Cannibal : NeutralRole
     {
-        private KillButton _eatButton;
-        public DeadBody CurrentTarget { get; set; }
+        public AbilityButton EatButton;
+        public DeadBody CurrentTarget;
         public int EatNeed;
-        public string body => EatNeed == 1 ? "body" : "bodies";
+        private string body => EatNeed == 1 ? "body" : "bodies";
         public bool CannibalWin;
-        public DateTime LastEaten { get; set; }
+        public DateTime LastEaten;
         public Dictionary<byte, ArrowBehaviour> BodyArrows;
         public bool EatWin => EatNeed <= 0;
         
@@ -26,10 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Cannibal";
             StartText = "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
-            Faction = Faction.Neutral;
             AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
@@ -40,70 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.AllNeutralsWin() && NotDefective)
-            {
-                AllNeutralsWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return NotDefective;
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = team;
-        }
-
         public float EatTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -112,19 +43,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public KillButton EatButton
-        {
-            get => _eatButton;
-            set
-            {
-                _eatButton = value;
-                AddToAbilityButtons(value, this);
-            }
         }
 
         public void DestroyArrow(byte targetPlayerId)

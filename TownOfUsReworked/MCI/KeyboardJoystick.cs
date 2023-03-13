@@ -15,18 +15,18 @@ namespace TownOfUsReworked.MCI
             if (!GameStates.IsLocalGame)
                 return; //You must ensure you are only playing on local
 
-            if (Input.GetKeyDown(KeyCode.F5))
+            if (Input.GetKeyDown(KeyCode.F1))
             {
                 if (!GameStates.IsLobby)
                     return; //Don't try to add bots when you are playtesting
 
                 controllingFigure = PlayerControl.LocalPlayer.PlayerId;
 
-                if (PlayerControl.AllPlayerControls.Count >= 15 && !Input.GetKeyDown(KeyCode.F6))
-                    return; //Time to bypass limits using F6
+                if (PlayerControl.AllPlayerControls.Count >= 15 && TownOfUsReworked.LobbyCapped)
+                    return; //Toggle lobby limit
 
                 MCIUtils.CleanUpLoad();
-                MCIUtils.CreatePlayerInstance("Robot");
+                MCIUtils.CreatePlayerInstance();
 
                 if (!InstanceControl.MCIActive)
                     InstanceControl.MCIActive = true;
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.MCI
             if (!InstanceControl.MCIActive)
                 return;
 
-            if (Input.GetKeyDown(KeyCode.F9))
+            if (Input.GetKeyDown(KeyCode.F2))
             {
                 controllingFigure++;
 
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.MCI
                 InstanceControl.SwitchTo((byte)controllingFigure);
             }
 
-            if (Input.GetKeyDown(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F3))
             {
                 controllingFigure--;
 
@@ -54,15 +54,22 @@ namespace TownOfUsReworked.MCI
 
                 InstanceControl.SwitchTo((byte)controllingFigure);
             }
-            
-            if (Input.GetKeyDown(KeyCode.F8))
-            {
-                Role.NobodyWins = true;
-                Utils.EndGame();
-            }
-        
+
             if (Input.GetKeyDown(KeyCode.F4))
             {
+                if (GameStates.IsLobby)
+                    return;
+
+                Role.NobodyWins = true;
+                Utils.EndGame();
+                InstanceControl.MCIActive = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                if (GameStates.IsLobby)
+                    return;
+
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 79);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
@@ -77,20 +84,57 @@ namespace TownOfUsReworked.MCI
                 ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
                 Utils.DefaultOutfitAll();
             }
-            
-            if (Input.GetKeyDown(KeyCode.F2))
+
+            if (Input.GetKeyDown(KeyCode.F6))
             {
+                if (GameStates.IsLobby)
+                    return;
+
                 foreach (var task in PlayerControl.LocalPlayer.myTasks)
                     PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
             }
-        
-            if (Input.GetKeyDown(KeyCode.F12))
+
+            if (Input.GetKeyDown(KeyCode.F7))
             {
                 if (GameStates.IsLobby)
                     return;
 
                 HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
-                HudManager.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
+                HudManager.Instance.StartCoroutine(HudManager.Instance.CoShowIntro());
+            }
+
+            if (Input.GetKeyDown(KeyCode.F8))
+            {
+                if (!GameStates.IsLobby)
+                    return;
+
+                MCIUtils.RemoveAllPlayers();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                if (!GameStates.IsLobby)
+                    return;
+
+                TownOfUsReworked.LobbyCapped = !TownOfUsReworked.LobbyCapped;
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The lobby limit is now {(TownOfUsReworked.LobbyCapped ? "" : "un")}capped.");
+            }
+
+            if (Input.GetKeyDown(KeyCode.F10))
+            {
+                if (!GameStates.IsLobby)
+                    return;
+
+                MCIUtils.RemovePlayer((byte)(InstanceControl.clients.Count));
+            }
+
+            if (Input.GetKeyDown(KeyCode.F11))
+            {
+                if (!GameStates.IsLobby)
+                    return;
+
+                TownOfUsReworked.Persistence = !TownOfUsReworked.Persistence;
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The robots will now{(TownOfUsReworked.Persistence ? " " : " no longer ")}persist.");
             }
         }
     }

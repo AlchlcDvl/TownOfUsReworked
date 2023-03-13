@@ -13,19 +13,22 @@ using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformMediate
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
-                return false;
+                return true;
 
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.MediateButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.MediateButton))
                     return false;
 
                 if (role.MediateTimer() != 0f)
@@ -73,9 +76,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
                 return false;
             }
-            
-            //SoundManager.Instance.PlaySound(TownOfUsReworked.MediateSound, false, 0.4f);
-            return false;
+
+            return true;
         }
     }
 }

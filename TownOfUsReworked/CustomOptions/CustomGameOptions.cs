@@ -26,7 +26,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int EmergencyButtonCount => (int)Generate.EmergencyButtonCount.Get();
         public static int EmergencyButtonCooldown => (int)Generate.EmergencyButtonCooldown.Get();
         public static float InitialCooldowns => Generate.InitialCooldowns.Get();
-        //public static float ChatCooldown => Generate.ChatCooldown.Get();
+        public static float ReportDistance => Generate.ReportDistance.Get();
+        public static float ChatCooldown => Generate.ChatCooldown.Get();
         public static int DiscussionTime => (int)Generate.DiscussionTime.Get();
         public static int VotingTime => (int)Generate.VotingTime.Get();
         public static TaskBarMode TaskBarMode => (TaskBarMode)Generate.TaskBarMode.Get();
@@ -54,6 +55,8 @@ namespace TownOfUsReworked.CustomOptions
         public static bool EnableModifiers => Generate.EnableModifiers.Get();
         public static bool EnableObjectifiers => Generate.EnableObjectifiers.Get();
         public static bool VentTargetting => Generate.VentTargetting.Get();
+        public static float ReactorShake => Generate.ReactorShake.Get();
+        public static bool OxySlow => Generate.OxySlow.Get();
 
         //QOL Changes
         public static bool DeadSeeEverything => Generate.DeadSeeEverything.Get();
@@ -194,6 +197,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int DrunkardOn => (int)Generate.DrunkardOn.Get();
         public static int BountyHunterOn => (int)Generate.BountyHunterOn.Get();
         public static int ActorOn => (int)Generate.ActorOn.Get();
+        public static int AmbusherOn => (int)Generate.AmbusherOn.Get();
+        public static int CrusaderOn => (int)Generate.CrusaderOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -204,7 +209,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int SnitchOn => (int)Generate.SnitchOn.Get();
         public static int MultitaskerOn => (int)Generate.MultitaskerOn.Get();
         public static int TorchOn => (int)Generate.TorchOn.Get();
-        public static int LighterOn => (int)Generate.LighterOn.Get();
         public static int ButtonBarryOn => (int)Generate.ButtonBarryOn.Get();
         public static int TunnelerOn => (int)Generate.TunnelerOn.Get();
         public static int NinjaOn => (int)Generate.NinjaOn.Get();
@@ -261,7 +265,7 @@ namespace TownOfUsReworked.CustomOptions
 
         //Syndicate Options
         public static float SyndicateVision => Generate.SyndicateVision.Get();
-        public static bool AltImps => Generate.AltImps.Get();
+        public static bool AltImps => Generate.AltImps.Get() || IntruderCount == 0;
         public static SyndicateVentOptions SyndicateVent => (SyndicateVentOptions)Generate.SyndicateVent.Get();
         public static int SyndicateCount => (int)Generate.SyndicateCount.Get();
         public static bool CustomSynColors => Generate.CustomSynColors.Get();
@@ -424,6 +428,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int EngineerCount => (int)Generate.EngineerCount.Get();
         public static int MaxFixes => (int)Generate.MaxFixes.Get();
         public static bool UniqueEngineer => Generate.UniqueEngineer.Get();
+        public static float FixCooldown => Generate.FixCooldown.Get();
 
         //Escort Settings
         public static int EscortCount => (int)Generate.EscortCount.Get();
@@ -452,6 +457,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int TransportMaxUses => (int)Generate.TransportMaxUses.Get();
         public static int TransporterCount => (int)Generate.TransporterCount.Get();
         public static bool UniqueTransporter => Generate.UniqueTransporter.Get();
+        public static bool TransSelf => Generate.TransSelf.Get();
 
         //Crewmate Settings
         public static int CrewCount => (int)Generate.CrewCount.Get();
@@ -554,6 +560,8 @@ namespace TownOfUsReworked.CustomOptions
         public static bool ExeEjectScreen => Generate.ExeEjectScreen.Get();
         public static bool ExeVentSwitch => Generate.ExeSwitchVent.Get();
         public static bool UniqueExecutioner => Generate.UniqueExecutioner.Get();
+        public static int DoomCount => (int)Generate.DoomCount.Get();
+        public static float DoomCooldown => Generate.DoomCooldown.Get();
 
         //Guesser Settings
         public static int GuesserCount => (int)Generate.GuesserCount.Get();
@@ -720,8 +728,10 @@ namespace TownOfUsReworked.CustomOptions
         public static bool MorphlingVent => Generate.MorphlingVent.Get();
         public static int MorphlingCount => (int)Generate.MorphlingCount.Get();
         public static float MorphlingCd => Generate.MorphlingCooldown.Get();
+        public static float SampleCooldown => Generate.SampleCooldown.Get();
         public static float MorphlingDuration => Generate.MorphlingDuration.Get();
         public static bool UniqueMorphling => Generate.UniqueMorphling.Get();
+        public static bool MorphCooldownsLinked => Generate.MorphCooldownsLinked.Get();
 
         //Wraith Settings
         public static bool WraithVent => Generate.WraithVent.Get();
@@ -729,6 +739,12 @@ namespace TownOfUsReworked.CustomOptions
         public static float InvisDuration => Generate.InvisDuration.Get();
         public static int WraithCount => (int)Generate.WraithCount.Get();
         public static bool UniqueWraith => Generate.UniqueWraith.Get();
+
+        //Ambusher Settings
+        public static float AmbushCooldown => Generate.AmbushCooldown.Get();
+        public static float AmbushDuration => Generate.AmbushDuration.Get();
+        public static int AmbusherCount => (int)Generate.AmbusherCount.Get();
+        public static bool UniqueAmbusher => Generate.UniqueAmbusher.Get();
 
         //Poisoner Settings
         public static float PoisonCd => Generate.PoisonCooldown.Get();
@@ -739,8 +755,10 @@ namespace TownOfUsReworked.CustomOptions
         //Teleporter Settings
         public static bool TeleVent => Generate.TeleVent.Get();
         public static float TeleportCd => Generate.TeleportCd.Get();
+        public static float MarkCooldown => Generate.MarkCooldown.Get();
         public static int TeleporterCount => (int)Generate.TeleporterCount.Get();
         public static bool UniqueTeleporter => Generate.UniqueTeleporter.Get();
+        public static bool TeleCooldownsLinked => Generate.TeleCooldownsLinked.Get();
 
         //Consigliere Settings
         public static ConsigInfo ConsigInfo => (ConsigInfo)Generate.ConsigInfo.Get();
@@ -748,7 +766,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int ConsigliereCount => (int)Generate.ConsigCount.Get();
         public static bool UniqueConsigliere => Generate.UniqueConsigliere.Get();
 
-        //TM Settings
+        //Time Master Settings
         public static float FreezeDuration => Generate.FreezeDuration.Get();
         public static float FreezeCooldown => Generate.FreezeCooldown.Get();
         public static int TimeMasterCount => (int)Generate.TimeMasterCount.Get();
@@ -769,6 +787,8 @@ namespace TownOfUsReworked.CustomOptions
         public static float TimeToDisguise => Generate.TimeToDisguise.Get();
         public static DisguiserTargets DisguiseTarget => (DisguiserTargets)Generate.DisguiseTarget.Get();
         public static bool UniqueDisguiser => Generate.UniqueDisguiser.Get();
+        public static float MeasureCooldown => Generate.MeasureCooldown.Get();
+        public static bool DisgCooldownsLinked => Generate.DisgCooldownsLinked.Get();
 
         //Godfather Settings
         public static int GodfatherCount => (int)Generate.GodfatherCount.Get();
@@ -794,11 +814,18 @@ namespace TownOfUsReworked.CustomOptions
         public static float ChaosDriveFrameRadius => Generate.ChaosDriveFrameRadius.Get();
         public static bool UniqueFramer => Generate.UniqueFramer.Get();
 
-        //ShapeShifter Settings
+        //Shapeshifter Settings
         public static int ShapeshifterCount => (int)Generate.ShapeshifterCount.Get();
         public static float ShapeshiftCooldown => Generate.ShapeshiftCooldown.Get();
         public static float ShapeshiftDuration => Generate.ShapeshiftDuration.Get();
         public static bool UniqueShapeshifter => Generate.UniqueShapeshifter.Get();
+
+        //Crusader Settings
+        public static float CrusadeCooldown => Generate.CrusadeCooldown.Get();
+        public static float CrusadeDuration => Generate.CrusadeDuration.Get();
+        public static int CrusaderCount => (int)Generate.CrusaderCount.Get();
+        public static bool UniqueCrusader => Generate.UniqueCrusader.Get();
+        public static float ChaosDriveCrusadeRadius => Generate.ChaosDriveCrusadeRadius.Get();
 
         //Drunkard Settings
         public static int DrunkardCount => (int)Generate.DrunkardCount.Get();
@@ -809,8 +836,6 @@ namespace TownOfUsReworked.CustomOptions
 
         //Gorgon Settings
         public static float GazeCooldown => Generate.GazeCooldown.Get();
-        public static float GazeTime => Generate.GazeTime.Get();
-        public static float GazeDelay => Generate.GazeDelay.Get();
         public static int GorgonCount => (int)Generate.GorgonCount.Get();
         public static bool UniqueGorgon => Generate.UniqueGorgon.Get();
 
@@ -939,10 +964,6 @@ namespace TownOfUsReworked.CustomOptions
         //Radar Settings
         public static bool UniqueRadar => Generate.UniqueRadar.Get();
         public static int RadarCount => (int)Generate.RadarCount.Get();
-
-        //Lighter Settings
-        public static bool UniqueLighter => Generate.UniqueLighter.Get();
-        public static int LighterCount => (int)Generate.LighterCount.Get();
 
         //Indomitable Settings
         public static bool UniqueIndomitable => Generate.UniqueIndomitable.Get();
@@ -1106,8 +1127,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int ISMin => (int)Generate.ISMin.Get();
 
         //IK Settings
-        public static int IKMax => 0;
-        public static int IKMin => 0;
+        public static int IKMax => (int)Generate.IKMax.Get();
+        public static int IKMin => (int)Generate.IKMin.Get();
 
         //SD Settings
         public static int SDMax => (int)Generate.SDMax.Get();

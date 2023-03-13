@@ -5,17 +5,16 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformRecruit
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jackal))
-                return false;
+                return true;
 
             var role = Role.GetRole<Jackal>(PlayerControl.LocalPlayer);
 
@@ -30,8 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 if (role.RecruitTimer() != 0f)
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), !role.ClosestPlayer.Is(SubFaction.None),
-                    role.ClosestPlayer.Is(SubFaction.None));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, !role.ClosestPlayer.Is(SubFaction.None), role.ClosestPlayer.Is(SubFaction.None));
 
                 if (interact[3] == true)
                 {
@@ -50,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Recruit(Jackal jackRole, PlayerControl other)

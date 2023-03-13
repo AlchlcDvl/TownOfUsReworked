@@ -12,8 +12,8 @@ namespace TownOfUsReworked.Classes
         public static void Load()
         {
             SoundEffects = new Dictionary<string, AudioClip>();
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string[] resourceNames = assembly.GetManifestResourceNames();
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceNames = assembly.GetManifestResourceNames();
             SoundEffects.Clear();
 
             foreach (string resourceName in resourceNames)
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.Classes
                 SoundManager.Instance.StopSound(Get(path));
         }
 
-        public static void stopAll()
+        public static void StopAll()
         {
             if (SoundEffects == null)
                 return;

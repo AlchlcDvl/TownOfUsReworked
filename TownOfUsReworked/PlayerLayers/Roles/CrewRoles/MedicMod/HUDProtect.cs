@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
@@ -18,29 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
             if (role.ShieldButton == null)
-            {
-                role.ShieldButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.ShieldButton.graphic.enabled = true;
-                role.ShieldButton.graphic.sprite = Medic;
-                role.ShieldButton.gameObject.SetActive(false);
-            }
+                role.ShieldButton = Utils.InstantiateButton();
 
-            role.ShieldButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.UsedAbility);
-            role.ShieldButton.SetCoolDown(0f, 1f);
-            Utils.SetTarget(ref role.ClosestPlayer, role.ShieldButton);
-            role.PrimaryButton = role.ShieldButton;
-            var renderer = role.ShieldButton.graphic;
-            
-            if (role.ClosestPlayer != null)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            var notShielded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != role.ShieldedPlayer).ToList();
+            role.ShieldButton.UpdateButton(role, "SHIELD", 0, 1, TownOfUsReworked.MedicSprite, AbilityTypes.Direct, notShielded, !role.UsedAbility);
         }
     }
 }

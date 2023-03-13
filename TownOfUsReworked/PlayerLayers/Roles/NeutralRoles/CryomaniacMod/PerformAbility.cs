@@ -7,46 +7,45 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cryomaniac))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.FreezeButton && role.DousedAlive > 0)
+            if (role.IsBlocked)
+                return false;
+
+            if (__instance == role.FreezeButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (role.DousedAlive <= 0)
                     return false;
 
                 if (role.FreezeUsed)
                     return false;
-                
+
                 role.FreezeUsed = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.AllFreeze);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
             else if (__instance == role.DouseButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 if (role.DouseTimer() != 0f)
                     return false;
 
                 if (role.DousedPlayers.Contains(role.ClosestPlayer.PlayerId))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -66,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

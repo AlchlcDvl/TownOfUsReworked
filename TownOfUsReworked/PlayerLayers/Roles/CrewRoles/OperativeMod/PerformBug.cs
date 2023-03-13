@@ -2,23 +2,25 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
-using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformBug
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative))
-                return false;
+                return true;
 
             var role = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.BugButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.BugButton))
                     return false;
 
                 if (role.BugTimer() != 0f)
@@ -30,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

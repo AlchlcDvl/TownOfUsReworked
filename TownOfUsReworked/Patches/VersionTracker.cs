@@ -1,6 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TMPro;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
@@ -9,13 +10,13 @@ namespace TownOfUsReworked.Patches
     {
         private static void Postfix(VersionShower __instance)
         {
-            GameObject gameObject = GameObject.Find("bannerLogo_AmongUs");
+            var gameObject = GameObject.Find("bannerLogo_AmongUs");
 
             if (gameObject != null)
             {
                 var textMeshPro = UnityEngine.Object.Instantiate<TextMeshPro>(__instance.text);
                 textMeshPro.transform.position = new Vector3(0f, -0.3f, 0f);
-                textMeshPro.text = $"{TownOfUsReworked.versionFinal}\n<size=80%>Created by <color=#C50000>AlchlcDvl</color></size>";
+                textMeshPro.text = $"{TownOfUsReworked.versionFinal}\n<size=85%>Created by <color=#C50000FF>AlchlcDvl</color></size>";
                 textMeshPro.alignment = TextAlignmentOptions.Center;
                 textMeshPro.fontSize *= 0.75f;
                 textMeshPro.fontStyle = FontStyles.Bold;
@@ -30,12 +31,11 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void Postfix(PingTracker __instance)
         {
-            var position = __instance.GetComponent<AspectPosition>();
-            position.DistanceFromEdge = new Vector3(3.6f, 0.1f, 0);
-            position.AdjustPosition();
-
-            __instance.text.text = $"<color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color>\n<color=#0000FFFF>{TownOfUsReworked.versionFinal}</color>\n" +
-                $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (!MeetingHud.Instance ? "<color=#FF00FFFF>Reworked By: AlchlcDvl</color>" : "");
+            __instance.text.text = $"<color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color>\n" +
+                $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.versionFinal}</color>\n" : "")}" +
+                $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
+                $"Ping: {AmongUsClient.Instance.Ping}ms\n" +
+                (GameStates.IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? " Don't" : "")} Persist" : "");
         }
     }
 }

@@ -6,7 +6,7 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Phantom : Role
+    public class Phantom : NeutralRole
     {
         public bool Caught;
         public bool CompletedTasks;
@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Phantom";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
             RoleType = RoleEnum.Phantom;
-            Faction = Faction.Neutral;
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
         }
@@ -32,17 +29,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var color = new Color(1f, 1f, 1f, 0f);
 
             var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
             var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
             distPercent = Mathf.Max(0, distPercent - 1);
 
             var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
-            color.a = 0.07f + velocity / Player.MyPhysics.GhostSpeed * 0.13f;
+            color.a = 0.07f + velocity / Player.MyPhysics.TrueSpeed * 0.13f;
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
@@ -58,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             Player.myRend().color = color;
-            Player.nameText().color = new Color(0f, 0f, 0f, 0f);
+            Player.NameText().color = new Color(0f, 0f, 0f, 0f);
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
 

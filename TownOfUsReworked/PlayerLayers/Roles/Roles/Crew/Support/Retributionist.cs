@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using Hazel;
 using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Objects;
-using Reactor.Utilities.Extensions;
-using System.Reflection;
-using TMPro;
 using System.Linq;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Retributionist : Role
+    public class Retributionist : CrewRole
     {
         public Retributionist(PlayerControl player) : base(player)
         {
@@ -23,13 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can mimic the abilities of dead selective <color=#8BFDFDFF>Crew</color>.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
-            Faction = Faction.Crew;
-            FactionName = "Crew";
-            FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             RoleDescription = "Your are a Retributionist! You are a sorcerer who can mimic the skills of the true-hearted dead! Use your plethora of abilities to find all evildoers!";
-            Objectives = CrewWinCon;
             InspectorResults = InspectorResults.DealsWithDead;
             Inspected = new List<byte>();
             BodyArrows = new Dictionary<byte, ArrowBehaviour>();
@@ -39,6 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             OtherButtons = new List<GameObject>();
             ListOfActives = new List<bool>();
             Interrogated = new List<byte>();
+            Used = new List<byte>();
         }
 
         //Retributionist Stuff
@@ -47,104 +40,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Role RevivedRole;
         public PlayerControl Revived;
         public PlayerControl ClosestPlayer;
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsIntTraitor || IsIntFanatic) && Utils.IntrudersWin())
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsSynTraitor || IsSynFanatic) && Utils.SyndicateWins())
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.CrewWins() && NotDefective)
-            {
-                CrewWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CrewWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
-        }
+        public List<byte> Used;
 
         //Coroner Stuff
         public Dictionary<byte, ArrowBehaviour> BodyArrows;
-        private KillButton _autopsyButton;
-        private KillButton _compareButton;
+        public AbilityButton AutopsyButton;
+        public AbilityButton CompareButton;
+        public DateTime LastAutopsied;
+        public int CompareUsesLeft;
+        public bool CompareButtonUsable => CompareUsesLeft != 0;
+        public DeadPlayer ReferenceBody;
+        public DateTime LastCompared;
 
         public void DestroyCoronerArrow(byte targetPlayerId)
         {
@@ -155,43 +61,39 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (arrow.Value.gameObject != null)
                 GameObject.Destroy(arrow.Value.gameObject);
-                
+
             BodyArrows.Remove(arrow.Key);
         }
 
-        public KillButton AutopsyButton
+        public float CompareTimer()
         {
-            get => _autopsyButton;
-            set
-            {
-                _autopsyButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastCompared;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0f;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public KillButton CompareButton
+        public float AutopsyTimer()
         {
-            get => _compareButton;
-            set
-            {
-                _compareButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastAutopsied;
+            var num = 10000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0f;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Detective Stuff
-        public DateTime LastExamined { get; set; }
-        private KillButton _examineButton;
-
-        public KillButton ExamineButton
-        {
-            get => _examineButton;
-            set
-            {
-                _examineButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public DateTime LastExamined;
+        public AbilityButton ExamineButton;
 
         public float ExamineTimer()
         {
@@ -201,25 +103,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
-                
+                return 0f;
+
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Inspector Stuff
-        public DateTime LastInspected { get; set; }
+        public DateTime LastInspected;
         public List<byte> Inspected;
-        private KillButton _inspectButton;
-
-        public KillButton InspectButton
-        {
-            get => _inspectButton;
-            set
-            {
-                _inspectButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public AbilityButton InspectButton;
 
         public float InspectTimer()
         {
@@ -229,26 +121,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
-                
+                return 0f;
+
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Medium Stuff
-        public DateTime LastMediated { get; set; }
+        public DateTime LastMediated;
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
         public static Sprite Arrow => TownOfUsReworked.Arrow;
-        private KillButton _mediateButton;
-
-        public KillButton MediateButton
-        {
-            get => _mediateButton;
-            set
-            {
-                _mediateButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public AbilityButton MediateButton;
 
         public float MediateTimer()
         {
@@ -258,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -277,31 +159,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;
             }
-            
+
             MediatedPlayers.Add(playerId, arrow);
             Coroutines.Start(Utils.FlashCoroutine(Color));
         }
 
         //Operative Stuff
-        public static AssetBundle Bundle = LoadBundle();
-        public static Material BugMaterial = Bundle.LoadAsset<Material>("trap").DontUnload();
         public List<Bug> Bugs;
-        public DateTime LastBugged { get; set; }
+        public DateTime LastBugged;
         public List<RoleEnum> BuggedPlayers;
-        private KillButton _bugButton;
+        public AbilityButton BugButton;
         public int BugUsesLeft;
-        public TextMeshPro BugUsesText;
         public bool BugButtonUsable => BugUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.Operative;
-
-        public KillButton BugButton
-        {
-            get => _bugButton;
-            set
-            {
-                _bugButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
 
         public float BugTimer()
         {
@@ -311,33 +180,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public static AssetBundle LoadBundle()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream("TownOfUsReworked.Resources.Sounds.operativeshader");
-            var assets = stream.ReadFully();
-            return AssetBundle.LoadFromMemory(assets);
-        }
-
         //Sheriff Stuff
         public List<byte> Interrogated;
-        private KillButton _interrogateButton;
-        public DateTime LastInterrogated { get; set; }
-
-        public KillButton InterrogateButton
-        {
-            get => _interrogateButton;
-            set
-            {
-                _interrogateButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public AbilityButton InterrogateButton;
+        public DateTime LastInterrogated;
 
         public float InterrogateTimer()
         {
@@ -347,28 +198,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Tracker Stuff
         public Dictionary<byte, ArrowBehaviour> TrackerArrows;
-        public DateTime LastTracked { get; set; }
-        private KillButton _trackButton;
+        public DateTime LastTracked;
+        public AbilityButton TrackButton;
         public int TrackUsesLeft;
-        public TextMeshPro TrackUsesText;
         public bool TrackButtonUsable => TrackUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.Tracker;
-
-        public KillButton TrackButton
-        {
-            get => _trackButton;
-            set
-            {
-                _trackButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
 
         public float TrackerTimer()
         {
@@ -378,15 +218,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public bool IsTracking(PlayerControl player)
-        {
-            return TrackerArrows.ContainsKey(player.PlayerId);
-        }
+        public bool IsTracking(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
         
         public void DestroyTrackerArrow(byte targetPlayerId)
         {
@@ -402,18 +239,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Vigilante Stuff
-        public DateTime LastKilled { get; set; }
-        private KillButton _shootButton;
-
-        public KillButton ShootButton
-        {
-            get => _shootButton;
-            set
-            {
-                _shootButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public DateTime LastKilled;
+        public AbilityButton ShootButton;
+        public int BulletsLeft;
+        public bool ShootButtonUsable => BulletsLeft > 0;
 
         public float KillTimer()
         {
@@ -423,25 +252,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
         //Vampire Hunter Stuff
-        public DateTime LastStaked { get; set; }
-        private KillButton _stakeButton;
-        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && x.Is(SubFaction.Undead)) == 0;
-
-        public KillButton StakeButton
-        {
-            get => _stakeButton;
-            set
-            {
-                _stakeButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public DateTime LastStaked;
+        public AbilityButton StakeButton;
 
         public float StakeTimer()
         {
@@ -451,7 +269,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -461,20 +279,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastAlerted;
         public float AlertTimeRemaining;
         public bool OnAlert => AlertTimeRemaining > 0f;
-        private KillButton _alertButton;
+        public AbilityButton AlertButton;
         public int AlertUsesLeft;
-        public TextMeshPro AlertUsesText;
         public bool AlertButtonUsable => AlertUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.Veteran;
-
-        public KillButton AlertButton
-        {
-            get => _alertButton;
-            set
-            {
-                _alertButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
 
         public float AlertTimer()
         {
@@ -484,7 +291,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -493,6 +300,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             AlertEnabled = true;
             AlertTimeRemaining -= Time.deltaTime;
+
+            if (MeetingHud.Instance)
+                AlertTimeRemaining = 0f;
         }
 
         public void UnAlert()
@@ -505,88 +315,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool CurrentlyReviving = false;
         public DeadBody CurrentTarget = null;
         public bool ReviveUsed = false;
-        private KillButton _reviveButton;
-
-        public KillButton ReviveButton
-        {
-            get => _reviveButton;
-            set
-            {
-                _reviveButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+        public AbilityButton ReviveButton;
 
         //Medic Stuff
-        public bool UsedAbility { get; set; } = false;
-        public PlayerControl ShieldedPlayer { get; set; }
-        public PlayerControl exShielded { get; set; }
-        private KillButton _shieldButton;
-
-        public KillButton ShieldButton
-        {
-            get => _shieldButton;
-            set
-            {
-                _shieldButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        //Time Lord Stuff
-        public DateTime StartRewind { get; set; }
-        public DateTime FinishRewind { get; set; }
-        private KillButton _rewindButton;
-        public int RewindUsesLeft;
-        public TextMeshPro RewindUsesText;
-        public bool RewindButtonUsable => RewindUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.TimeLord;
-
-        public KillButton RewindButton
-        {
-            get => _rewindButton;
-            set
-            {
-                _rewindButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        public float TimeLordRewindTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            TimeSpan timespan;
-            float num;
-
-            if (RecordRewind.rewinding)
-            {
-                timespan = utcNow - StartRewind;
-                num = CustomGameOptions.RewindDuration * 1000f / 3f;
-            }
-            else
-            {
-                timespan = utcNow - FinishRewind;
-                num = Utils.GetModifiedCooldown(CustomGameOptions.RewindCooldown) * 1000f;
-            }
-
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float) timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public float GetCooldown()
-        {
-            return RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.RewindCooldown;
-        }
+        public bool UsedAbility = false;
+        public PlayerControl ShieldedPlayer;
+        public PlayerControl ExShielded;
+        public AbilityButton ShieldButton;
 
         //Chameleon Stuff
         public bool SwoopEnabled;
         public DateTime LastSwooped;
         public float SwoopTimeRemaining;
         public bool IsSwooped => SwoopTimeRemaining > 0f;
-        private KillButton _swoopButton;
+        public AbilityButton SwoopButton;
 
         public float SwoopTimer()
         {
@@ -596,7 +338,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -605,8 +347,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             SwoopEnabled = true;
             SwoopTimeRemaining -= Time.deltaTime;
-            
-            if (Player.Data.IsDead)
+
+            if (MeetingHud.Instance || Player.Data.IsDead)
                 SwoopTimeRemaining = 0f;
 
             var color = new Color32(0, 0, 0, 0);
@@ -626,18 +368,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 });
 
                 Player.myRend().color = color;
-                Player.nameText().color = new Color32(0, 0, 0, 0);
+                Player.NameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
-        }
-
-        public KillButton SwoopButton
-        {
-            get => _swoopButton;
-            set
-            {
-                _swoopButton = value;
-                AddToAbilityButtons(value, this);
             }
         }
 
@@ -650,19 +382,56 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Engineer Stuff
-        private KillButton _fixButton;
+        public AbilityButton FixButton;
         public int FixUsesLeft;
-        public TextMeshPro FixUsesText;
-        public bool FixButtonUsable => RewindUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.Engineer;
+        public bool FixButtonUsable => FixUsesLeft != 0 && RevivedRole?.RoleType == RoleEnum.Engineer;
+        public DateTime LastFixed;
 
-        public KillButton FixButton
+        public float FixTimer()
         {
-            get => _fixButton;
-            set
-            {
-                _fixButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastFixed;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.FixCooldown) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0f;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        //Mystic Stuff
+        public DateTime LastRevealed;
+        public AbilityButton RevealButton;
+
+        public float RevealTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastRevealed;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.RevealCooldown) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0f;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+        }
+
+        //Seer Stuff
+        public DateTime LastSeered;
+        public AbilityButton SeerButton;
+
+        public float SeerTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastSeered;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
+
+            if (flag2)
+                return 0f;
+
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

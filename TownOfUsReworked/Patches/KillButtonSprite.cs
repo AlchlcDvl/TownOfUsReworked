@@ -6,35 +6,9 @@ using UnityEngine;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.Start))]
-    public static class KillButtonAwake
-    {
-        public static void Prefix(KillButton __instance)
-        {
-            __instance.transform.Find("Text_TMP").gameObject.SetActive(false);
-        }
-    }
-
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class KillButtonSprite
     {
-        public static void Postfix(HudManager __instance)
-        {
-            if (!GameStates.IsInGame)
-                return;
-
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-            if (role == null)
-                return;
-
-            if (role.AbilityButtons.Count > 0)
-            {
-                if (Input.GetKeyDown(KeyCode.Q) && role.PrimaryButton != null)
-                    role.PrimaryButton.DoClick();
-            }
-        }
-
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
         class AbilityButtonUpdatePatch
         {
@@ -63,7 +37,7 @@ namespace TownOfUsReworked.Patches
                             ghostRole = true;
                     }
 
-                    HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance);
+                    HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && PlayerControl.LocalPlayer.Data.IsDead);
                 }
             }
         }

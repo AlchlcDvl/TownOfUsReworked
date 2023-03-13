@@ -7,19 +7,22 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformShift
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shifter))
-                return false;
+                return true;
 
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.ShiftButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.ShiftButton))
                     return false;
 
                 if (role.ShiftTimer() != 0f)
@@ -28,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -39,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Shift(role, role.ClosestPlayer);
                 }
-                
+
                 if (interact[0] == true)
                     role.LastShifted = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -48,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Shift(Shifter shifterRole, PlayerControl other)
@@ -130,10 +133,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     newRole = new Operative(shifter);
                     break;
 
-                case RoleEnum.Shifter:
-                    newRole = new Shifter(shifter);
-                    break;
-
                 case RoleEnum.TimeLord:
                     newRole = new TimeLord(shifter);
                     break;
@@ -149,17 +148,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 case RoleEnum.Vigilante:
                     newRole = new Vigilante(shifter);
                     break;
-                
+
+                case RoleEnum.Mystic:
+                    newRole = new Mystic(shifter);
+                    break;
+
+                case RoleEnum.Seer:
+                    newRole = new Seer(shifter);
+                    break;
+
+                case RoleEnum.Chameleon:
+                    newRole = new Chameleon(shifter);
+                    break;
+
+                case RoleEnum.Retributionist:
+                    newRole = new Retributionist(shifter);
+                    break;
+
                 default:
                     newRole = new Shifter(shifter);
                     break;
             }
-            
+
             newRole.RoleHistory.Add(shifterRole);
             newRole.RoleHistory.AddRange(shifterRole.RoleHistory);
             shifter.RegenTask();
             Role newRole2;
-            
+
             if (CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter)
                 newRole2 = new Shifter(other);
             else
@@ -167,9 +182,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             newRole2.RoleHistory.Add(role);
             newRole2.RoleHistory.AddRange(role.RoleHistory);
-
-            if (other.IsRecruit())
-                newRole2.IsRecruit = true;
+            newRole2.IsRecruit = role.IsRecruit;
+            newRole2.IsBitten = role.IsBitten;
+            newRole2.IsPersuaded = role.IsPersuaded;
+            newRole2.IsResurrected = role.IsResurrected;
+            newRole2.IsIntTraitor = role.IsIntTraitor;
+            newRole2.IsSynFanatic = role.IsSynFanatic;
+            newRole2.IsIntFanatic = role.IsIntFanatic;
+            newRole2.IsSynTraitor = role.IsSynTraitor;
 
             other.RegenTask();
         }

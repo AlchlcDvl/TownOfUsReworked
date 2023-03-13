@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             set
             {
                 if (_player != null)
-                    _player.nameText().color = new Color32(255, 255, 255, 255);
+                    _player.NameText().color = new Color32(255, 255, 255, 255);
                 
                 _player = value;
                 PlayerName = value.Data.PlayerName;
@@ -51,8 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Ability other) => Equals(Player, other.Player) && AbilityType == other.AbilityType;
-
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public override bool Equals(object obj)
         {
@@ -105,13 +103,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public static bool operator != (Ability a, Ability b) => !(a == b);
 
         public static T GenAbility<T>(Type type, PlayerControl player, int id)
-		{
-			var ability = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable);
-			writer.Write(player.PlayerId);
-			writer.Write(id);
-			AmongUsClient.Instance.FinishRpcImmediately(writer);
-			return ability;
-		}
+        {
+            var ability = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable);
+            writer.Write(player.PlayerId);
+            writer.Write(id);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            return ability;
+        }
     }
 }

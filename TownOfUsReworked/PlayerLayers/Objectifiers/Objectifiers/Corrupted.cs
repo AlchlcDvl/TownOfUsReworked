@@ -3,16 +3,15 @@ using TownOfUsReworked.Enums;
 using System;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Corrupted : Objectifier
     {
-        private KillButton _killButton;
-        public DateTime LastKilled { get; set; }
-        public bool CorruptedWin { get; set; }
+        public DateTime LastKilled;
+        public bool CorruptedWin;
         public PlayerControl ClosestPlayer;
+        public AbilityButton KillButton;
 
         public Corrupted(PlayerControl player) : base(player)
         {
@@ -24,16 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierDescription = "You are Corrupted! You are no longer Crew and feel the need to kill everyone!";
         }
 
-        public KillButton KillButton
-        {
-            get => _killButton;
-            set
-            {
-                _killButton = value;
-                var role = Role.GetRole(Player);
-                role.AddToAbilityButtons(value, role);
-            }
-        }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
@@ -62,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }

@@ -1,20 +1,20 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics
+namespace TownOfUsReworked.Cosmetics.CustomColors
 {
     [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
     public class SetPlayerMaterialPatch
     {
         public static bool Prefix([HarmonyArgument(0)] int colorId, [HarmonyArgument(1)] Renderer rend)
         {
-            var r = rend.gameObject.GetComponent<RainbowBehaviour>();
-            
+            var r = rend.gameObject.GetComponent<ColorBehaviour>();
+
             if (r == null)
-                r = rend.gameObject.AddComponent<RainbowBehaviour>();
+                r = rend.gameObject.AddComponent<ColorBehaviour>();
 
             r.AddRend(rend, colorId);
-            return !RainbowUtils.IsRainbow(colorId);
+            return !ColorUtils.IsChanging(colorId);
         }
     }
 
@@ -23,10 +23,10 @@ namespace TownOfUsReworked.Cosmetics
     {
         public static bool Prefix([HarmonyArgument(1)] Renderer rend)
         {
-            var r = rend.gameObject.GetComponent<RainbowBehaviour>();
+            var r = rend.gameObject.GetComponent<ColorBehaviour>();
 
             if (r == null)
-                r = rend.gameObject.AddComponent<RainbowBehaviour>();
+                r = rend.gameObject.AddComponent<ColorBehaviour>();
 
             r.AddRend(rend, 0);
             return true;

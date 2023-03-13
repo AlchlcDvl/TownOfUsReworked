@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,18 +12,21 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void PostfixPhysics(PlayerPhysics __instance)
         {
-            if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove && !__instance.myPlayer.Data.IsDead)
-                __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor;
+            if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+            {
+                __instance.body.velocity *= (__instance.myPlayer.GetAppearance().SpeedFactor * (__instance.myPlayer.Data.IsDead && !__instance.myPlayer.Is(RoleEnum.Phantom) ?
+                    CustomGameOptions.GhostSpeed : 1));
+            }
         }
 
         [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
         [HarmonyPostfix]
         public static void PostfixNetwork(CustomNetworkTransform __instance)
         {
-            if (!__instance.AmOwner && __instance.interpolateMovement != 0.0f && !__instance.gameObject.GetComponent<PlayerControl>().Data.IsDead)
+            if (!__instance.AmOwner && __instance.interpolateMovement != 0.0f)
             {
                 var player = __instance.gameObject.GetComponent<PlayerControl>();
-                __instance.body.velocity *= player.GetAppearance().SpeedFactor;
+                __instance.body.velocity *= (player.GetAppearance().SpeedFactor * (player.Data.IsDead && !player.Is(RoleEnum.Phantom) ? CustomGameOptions.GhostSpeed : 1));
             }
         }
     }

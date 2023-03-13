@@ -32,7 +32,7 @@ namespace TownOfUsReworked.Classes
         public static Dictionary<string, Type> InjectedTypes { get; private set; }
 
         private static MonoBehaviour _submarineStatus;
-        
+
         public static MonoBehaviour SubmarineStatus
         {
             get
@@ -151,7 +151,7 @@ namespace TownOfUsReworked.Classes
 
             SubmarineElevatorSystem = Types.First(t => t.Name == "SubmarineElevatorSystem");
             UpperDeckIsTargetFloor = AccessTools.Field(SubmarineElevatorSystem, "UpperDeckIsTargetFloor");
-            
+
             //I tried patching normally but it would never work
             Harmony _harmony = new Harmony("tou.submerged.patch");
             var exilerolechangePostfix = SymbolExtensions.GetMethodInfo(() => ExileRoleChangePostfix());
@@ -173,7 +173,7 @@ namespace TownOfUsReworked.Classes
 
             bool CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
             bool PlayerFloor = player.transform.position.y > -7f; //true is top, false is bottom
-            
+
             if (CurrentFloor != PlayerFloor)
                 ChangeFloor(CurrentFloor);
         }
@@ -222,19 +222,19 @@ namespace TownOfUsReworked.Classes
         {
             Coroutines.Start(waitMeeting(resetTimers));
             Coroutines.Start(waitMeeting(GhostRoleBegin));
-            
+
             SetPhantom.ExileControllerPostfix(ExileController.Instance);
             SetRevealer.ExileControllerPostfix(ExileController.Instance);
         }
 
         public static IEnumerator waitStart(Action next)
         {
-            while (DestroyableSingleton<HudManager>.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
+            while (HudManager.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
                 yield return null;
 
             yield return new WaitForSeconds(0.5f);
 
-            while (DestroyableSingleton<HudManager>.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
+            while (HudManager.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
                 yield return null;
 
             next();
@@ -247,7 +247,7 @@ namespace TownOfUsReworked.Classes
 
             yield return new WaitForSeconds(0.5f);
 
-            while (DestroyableSingleton<HudManager>.Instance.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
+            while (HudManager.Instance.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
                 yield return null;
 
             next();
@@ -325,7 +325,7 @@ namespace TownOfUsReworked.Classes
                     {
                         if (player.AmOwner) 
                             MoveDeadPlayerElevator(player);
-                        else    
+                        else
                             player.Collider.enabled = false;
 
                         Transform transform = __instance.transform;

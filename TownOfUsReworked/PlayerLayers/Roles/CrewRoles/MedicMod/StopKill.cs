@@ -1,4 +1,3 @@
-using HarmonyLib;
 using Reactor.Utilities;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
@@ -6,28 +5,16 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
     public class StopKill
     {
         public static void BreakShield(byte medicId, byte playerId, bool flag)
         {
             var role = Role.GetRole<Medic>(Utils.PlayerById(medicId));
 
-            if (PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded ||
-                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic))
+            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded || CustomGameOptions.NotificationShield ==
+                NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
+                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic)) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
                 Coroutines.Start(Utils.FlashCoroutine(role.Color));
-
-            if (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
-                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic))
-                Coroutines.Start(Utils.FlashCoroutine(role.Color));
-            
-            if (CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
-                Coroutines.Start(Utils.FlashCoroutine(role.Color));
-
-            try
-            {
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.AttemptSound, false, 1f);
-            } catch {}
 
             if (!flag)
                 return;
@@ -39,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 if (((Medic)role2).ShieldedPlayer.PlayerId == playerId)
                 {
                     ((Medic)role2).ShieldedPlayer = null;
-                    ((Medic)role2).exShielded = player;
+                    ((Medic)role2).ExShielded = player;
                     Utils.LogSomething(player.name + " Is Ex-Shielded");
                 }
             }

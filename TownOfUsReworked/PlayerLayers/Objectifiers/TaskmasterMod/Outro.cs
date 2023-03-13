@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {

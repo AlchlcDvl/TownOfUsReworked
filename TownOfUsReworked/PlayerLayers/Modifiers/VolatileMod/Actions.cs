@@ -24,25 +24,10 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 
                 if (_time >= CustomGameOptions.VolatileInterval)
                 {
-                    randomNumber = Random.RandomRangeInt(0, 4);
+                    randomNumber = Random.RandomRangeInt(0, 3);
                     _time -= CustomGameOptions.VolatileInterval;
 
                     if (randomNumber == 0)
-                    {
-                        //Uses a random ability
-                        var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                        if (role != null)
-                        {
-                            if (role.AbilityButtons.Count > 0)
-                            {
-                                otherNumber = Random.RandomRangeInt(0, role.AbilityButtons.Count);
-                                var button = role.AbilityButtons[otherNumber];
-                                button.DoClick();
-                            }
-                        }
-                    }
-                    else if (randomNumber == 1)
                     {
                         //Flashes
                         otherNumber = Random.RandomRangeInt(0, 256);
@@ -51,24 +36,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
                         Coroutines.Start(Utils.FlashCoroutine(flashColor));
                     }
-                    else if (randomNumber == 2)
+                    else if (randomNumber == 1)
                     {
                         //Fake someone killing you
                         otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
                         var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
                         __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
                     }
-                    /*else if (randomNumber == 3)
-                    {
-                        //Fake role sound effects
-                        otherNumber = Random.RandomRangeInt(0, SoundEffects.Sounds.Count);
-                        AudioClip sound = SoundEffects.Sounds[otherNumber];
-
-                        try
-                        {
-                            SoundManager.Instance.PlaySound(sound, false, 1f);
-                        } catch {}
-                    }*/
                 }
             }
         }

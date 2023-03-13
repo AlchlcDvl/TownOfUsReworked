@@ -4,95 +4,73 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static Sprite SampleSprite => TownOfUsReworked.SampleSprite;
-        public static Sprite MorphSprite => TownOfUsReworked.MorphSprite;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Morphling))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.MorphButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (role.MorphTimer() != 0f)
                     return false;
 
-                if (role.MorphButton.graphic.sprite == SampleSprite)
-                {
-                    if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                        return false;
-                
-                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                    if (interact[3] == true)
-                    {
-                        role.SampledPlayer = role.ClosestPlayer;
-                        role.MorphButton.graphic.sprite = MorphSprite;
-                        role.MorphButton.SetTarget(null);
-
-                        if (role.MorphTimer() < 5f)
-                            role.LastMorphed = DateTime.UtcNow.AddSeconds(5 - CustomGameOptions.MorphlingCd);
-                    }
-                    else if (interact[1] == true)
-                        role.LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
-                        
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.SampleSound, false, 1f);
-                    } catch {}
-                }
-                else
-                {
-                    if (role.MorphTimer() != 0f)
-                        return false;
-
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.Morph);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.SampledPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.TimeRemaining = CustomGameOptions.MorphlingDuration;
-                    role.MorphedPlayer = role.SampledPlayer;
-                    role.Morph();
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.MorphSound, false, 1f);
-                    } catch {}
-                }
-
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Morph);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(role.SampledPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                role.TimeRemaining = CustomGameOptions.MorphlingDuration;
+                role.MorphedPlayer = role.SampledPlayer;
+                role.Morph();
                 return false;
             }
-            else if (__instance == role.KillButton)
+            else if (__instance == role.SampleButton)
             {
-                if (role.KillTimer() != 0f)
+                if (role.SampleTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                if (role.SampledPlayer == role.ClosestTarget)
+                    return false;
 
-                if (interact[3] == true || interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
+
+                if (interact[3] == true)
+                    role.SampledPlayer = role.ClosestTarget;
+
+                if (interact[0] == true)
+                {
+                    role.LastSampled = DateTime.UtcNow;
+
+                    if (CustomGameOptions.MorphCooldownsLinked)
+                        role.LastMorphed = DateTime.UtcNow;
+                }
                 else if (interact[1] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+                {
+                    role.LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
-                return false;
+                    if (CustomGameOptions.MorphCooldownsLinked)
+                        role.LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
+                }
             }
 
-            return false;
+            return true;
         }
     }
 }

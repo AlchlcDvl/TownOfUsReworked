@@ -124,7 +124,7 @@ namespace TownOfUsReworked.CrowdedMod.Patches
                     __instance.CrewArea.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
 
                 var selectedAsString = opts.MaxPlayers.ToString();
-                
+
                 for (var i = 1; i < __instance.MaxPlayerButtons.Count - 1; i++)
                 {
                     __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text ==

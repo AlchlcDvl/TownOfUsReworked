@@ -53,9 +53,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             role.Guesses.Remove(targetId);
         }
 
-        public static void Prefix(MeetingHud __instance)
+        public static void Prefix()
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Guesser))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Guesser))
                 return;
 
             var assassin = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);

@@ -20,12 +20,12 @@ namespace TownOfUsReworked.MCI
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
             PlayerControl.LocalPlayer.moveable = false;
 
-            Object.Destroy(PlayerControl.LocalPlayer.lightSource);
-            HudManager.Instance.KillButton.buttonLabelText.gameObject.SetActive(false);
+            var light = PlayerControl.LocalPlayer.lightSource;
 
             //Setup new player
             var newPlayer = Utils.PlayerById(playerId);
             PlayerControl.LocalPlayer = newPlayer;
+            PlayerControl.LocalPlayer.lightSource = light;
             PlayerControl.LocalPlayer.moveable = true;
 
             AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
@@ -33,30 +33,31 @@ namespace TownOfUsReworked.MCI
 
             HudManager.Instance.SetHudActive(true);
 
-            //Hacky "fix" for twix and Det
+            //Hacky "fix" for twix, AD and Det
             HudManager.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
                     Object.Destroy(x.gameObject);
             });
 
-            HudManager.Instance.KillButton.transform.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
+            HudManager.Instance.AbilityButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
             {
-                if (x.gameObject.name == "KillTimer_TMP(Clone)")
+                if (x.gameObject.name == "AbilityButton(Clone)")
                     Object.Destroy(x.gameObject);
             });
 
-            HudManager.Instance.transform.GetComponentsInChildren<Transform>().ToList().ForEach((x) =>
+            HudManager.Instance.transform.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
             {
                 if (x.gameObject.name == "KillButton(Clone)")
                     Object.Destroy(x.gameObject);
+
+                if (x.gameObject.name == "AbilityButton(Clone)")
+                    Object.Destroy(x.gameObject);
             });
 
-            PlayerControl.LocalPlayer.lightSource = Object.Instantiate(PlayerControl.LocalPlayer.LightPrefab);
-            PlayerControl.LocalPlayer.lightSource.transform.SetParent(PlayerControl.LocalPlayer.transform);
-            PlayerControl.LocalPlayer.lightSource.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
-            PlayerControl.LocalPlayer.lightSource.Initialize(PlayerControl.LocalPlayer.Collider.offset * 0.5f);
-            
+            light.transform.SetParent(PlayerControl.LocalPlayer.transform);
+            light.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
+
             Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);

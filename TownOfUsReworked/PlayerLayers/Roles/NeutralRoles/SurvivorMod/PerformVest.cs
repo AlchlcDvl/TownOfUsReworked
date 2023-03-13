@@ -6,13 +6,13 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformVest
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Survivor))
-                return false;
+                return true;
 
             var role = Role.GetRole<Survivor>(PlayerControl.LocalPlayer);
 
@@ -34,12 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
                 writer.Write((byte)ActionsRPC.Vest);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.VestSound, false, 1f);
-                } catch {}
-
                 return false;
             }
 

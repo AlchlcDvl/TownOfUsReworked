@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
         {
             if (IsExempt(voteArea))
                 return;
-                
+
             var targetId = voteArea.TargetPlayerId;
             var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var newButton = Object.Instantiate(colorButton, voteArea.transform);
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Patches
                 renderer.sprite = LighterSprite;
             else if (ColorString == "darker")
                 renderer.sprite = DarkerSprite;
-                
+
             newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;

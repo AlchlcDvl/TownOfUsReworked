@@ -6,22 +6,16 @@ using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartMeetingPatch
     {
         public static int lettersGiven = 0;
         public static bool lettersExhausted = false;
         public static List<string> letters = new List<string>();
 
-        public static void Prefix(PlayerControl __instance)
+        public static void Prefix()
         {
-            if (__instance == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.BountyHunter))
-                return;
-            
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.BountyHunter) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var role = Role.GetRole<BountyHunter>(PlayerControl.LocalPlayer);
@@ -138,17 +132,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                         {31, "darker"},// macau
                         {32, "darker"},// tawny
                         {33, "lighter"},// gold
-                        {34, "lighter"},// rainbow
+                        {34, "lighter"},// panda
+                        {35, "darker"},// contrast
+                        {36, "lighter"},// chroma
+                        {37, "darker"},// mantle
+                        {38, "lighter"},// fire
+                        {39, "lighter"},// galaxy
+                        {40, "lighter"},// monochrome
+                        {41, "lighter"},// rainbow
                     };
 
-                    something = $"Your target is a {colors[role.TargetPlayer.CurrentOutfit.ColorId]} color!\n";
+                    something = $"Your target is a {colors[role.TargetPlayer.CurrentOutfit.ColorId]} color!";
                     role.ColorHintGiven = true;
                 }
             }
 
             //Ensures only the Bounty Hunter sees this
-            if (DestroyableSingleton<HudManager>.Instance && something != "")
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+            if (HudManager.Instance && something != "")
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
         }
     }
 }

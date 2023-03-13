@@ -6,21 +6,24 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformRevive
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Altruist))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
+                return true;
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.ReviveButton)
             {
+                if (!Utils.ButtonUsable(role.ReviveButton))
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 
@@ -36,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

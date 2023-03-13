@@ -2,15 +2,12 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDVest
     {
-        public static Sprite Vest => TownOfUsReworked.VestSprite;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Survivor))
@@ -19,50 +16,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             var role = Role.GetRole<Survivor>(PlayerControl.LocalPlayer);
 
             if (role.VestButton == null)
-            {
-                role.VestButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.VestButton.graphic.enabled = true;
-                role.VestButton.graphic.sprite = Vest;
-                role.VestButton.gameObject.SetActive(false);
-            }
+                role.VestButton = Utils.InstantiateButton();
 
-            if (role.UsesText == null && role.UsesLeft > 0)
-            {
-                role.UsesText = Object.Instantiate(__instance.KillButton.cooldownTimerText, __instance.KillButton.transform);
-                role.UsesText.transform.localPosition = new Vector3(role.UsesText.transform.localPosition.x + 0.26f, role.UsesText.transform.localPosition.y + 0.29f,
-                    role.UsesText.transform.localPosition.z);
-                role.UsesText.transform.localScale = role.UsesText.transform.localScale * 0.65f;
-                role.UsesText.alignment = TMPro.TextAlignmentOptions.Right;
-                role.UsesText.fontStyle = TMPro.FontStyles.Bold;
-                role.UsesText.gameObject.SetActive(false);
-            }
+            role.VestButton.gameObject.SetActive(Utils.SetActive(role.Player, role.RoleType));
 
-            if (role.UsesText != null)
-                role.UsesText.text = $"{role.UsesLeft}";
-
-            role.VestButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-
-            if (role.Vesting)
-                role.VestButton.SetCoolDown(role.TimeRemaining, CustomGameOptions.VestDuration);
-            else if (role.ButtonUsable)
-                role.VestButton.SetCoolDown(role.VestTimer(), CustomGameOptions.VestCd);
-
-            var renderer = role.VestButton.graphic;
-            
-            if (!role.Vesting  && !role.VestButton.isCoolingDown && role.ButtonUsable)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-                role.UsesText.color = Palette.EnabledColor;
-                role.UsesText.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-                role.UsesText.color = Palette.DisabledClear;
-                role.UsesText.material.SetFloat("_Desat", 1f);
-            }
+            role.VestButton.UpdateButton(role, "VEST", role.VestTimer(), CustomGameOptions.VestCd, TownOfUsReworked.VestSprite, AbilityTypes.Effect, role.Vesting, role.TimeRemaining,
+                CustomGameOptions.VestDuration, true, !role.Vesting);
         }
     }
 }

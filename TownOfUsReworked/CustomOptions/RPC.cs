@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
-using Reactor.Utilities;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.CustomOptions
 
         public static void ReceiveRpc(MessageReader reader)
         {
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo("Options received:");
+            Utils.LogSomething("Options received:");
 
             while (reader.BytesRemaining > 0)
             {
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.CustomOptions
 
                 customOption?.Set(value);
 
-                PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo($"{customOption?.Name} : {customOption}:");
+                Utils.LogSomething($"{customOption?.Name} : {customOption}:");
             }
         }
     }

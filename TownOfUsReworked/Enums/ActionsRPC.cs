@@ -55,7 +55,6 @@ namespace TownOfUsReworked.Enums
         EscRoleblock,
         ConsRoleblock,
         SetMimic,
-        RpcResetAnim,
         GlitchRoleblock,
         BypassKill,
         Ressurect,
@@ -67,6 +66,7 @@ namespace TownOfUsReworked.Enums
         NecromancerResurrect,
         WhisperConvert,
         Confuse,
-        Beam
+        Beam,
+        Frame
     }
 }

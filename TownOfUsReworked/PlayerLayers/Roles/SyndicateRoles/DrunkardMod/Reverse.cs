@@ -13,13 +13,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
         {
             private static List<PlayerControl> Confused = new List<PlayerControl>();
 
-            public static void ConfusedAll()
+            public static void ConfuseAll()
             {
                 Confused.Clear();
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player.Data.IsDead || player.Data.Disconnected || (player.Is(Faction.Syndicate) && CustomGameOptions.IntruderImmunity))
+                    if (player.Data.IsDead || player.Data.Disconnected || (player.Is(Faction.Syndicate) && CustomGameOptions.SyndicateImmunity) || player.Is(RoleEnum.Drunkard) ||
+                        player.Is(ModifierEnum.Drunk))
                         continue;
                     
                     Confused.Add(player);

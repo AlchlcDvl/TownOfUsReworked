@@ -16,7 +16,7 @@ namespace TownOfUsReworked.CrowdedMod.Patches
             {
                 if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(PlayerControl.LocalPlayer))
                     return;
-                    
+
                 if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
                     currentPage = Mathf.Clamp(currentPage - 1, 0, maxPages - 1);
                 else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.CrowdedMod.Patches
                     }
                     else
                         panel.gameObject.SetActive(false);
-                        
+
                     i++;
                 }
             }

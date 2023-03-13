@@ -10,15 +10,15 @@ using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformSteal
     {
         public static Sprite Sprite => TownOfUsReworked.Arrow;
         
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Thief))
-                return false;
+                return true;
 
             var role = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
             
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 if (role.KillTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), false, true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                 if (interact[3] == true)
                 {
@@ -54,16 +54,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 }
                 
                 if (interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
+                    role.LastStolen = DateTime.UtcNow;
                 else if (interact[1] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    role.LastStolen.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+                    role.LastStolen.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Steal(Thief thiefRole, PlayerControl other)
@@ -256,7 +256,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 
                 if (PlayerControl.LocalPlayer == other && other.Is(Faction.Intruder))
                 {
-                    DestroyableSingleton<HudManager>.Instance.SabotageButton.gameObject.SetActive(false);
+                    HudManager.Instance.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
                 }
                 
@@ -277,7 +277,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 if (other.AmOwner)
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
-                        player.nameText().color = Color.white;
+                        player.NameText().color = Color.white;
                 }
             }
 
@@ -312,6 +312,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                     }
                 }
             }
+
+            thiefRole.StealButton.gameObject.SetActive(false);
         }
     }
 }

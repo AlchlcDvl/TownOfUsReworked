@@ -2,7 +2,7 @@ using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.CustomOptions;
 using AmongUs.GameOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
@@ -11,15 +11,15 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(IGameOptions __instance, ref int __result)
         {
-            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+            if (GameStates.IsHnS)
                 return true;
-                
-            if (CustomGameOptions.GameMode == GameMode.AllAny)
+
+            if (GameStates.IsAA)
             {
                 var players = GameData.Instance.PlayerCount;
                 var impostors = 1;
                 var random = Random.RandomRangeInt(0, 100);
-                
+
                 if (players <= 6 )
                 {
                     if (random <= 5)
@@ -126,8 +126,8 @@ namespace TownOfUsReworked.Patches
                 __result = impostors;
                 return false;
             }
-            
-            __result = CustomGameOptions.IntruderCount;
+
+            __result = CustomGameOptions.IntruderCount == 0 ? CustomGameOptions.SyndicateCount : CustomGameOptions.IntruderCount;
             return true;
         }
     }

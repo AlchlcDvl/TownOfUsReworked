@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfUsReworked.Cosmetics
+namespace TownOfUsReworked.Cosmetics.CustomColors
 {
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
     public class PatchColours
@@ -10,26 +10,33 @@ namespace TownOfUsReworked.Cosmetics
         {
             var newResult = (int)name switch
             {
-                999983 => "Watermelon",
-                999984 => "Chocolate",
-                999985 => "Sky Blue",
-                999986 => "Beige",
-                999987 => "Magenta",
-                999988 => "Lilac",
-                999989 => "Turquoise",
-                999990 => "Olive",
-                999991 => "Azure",
-                999992 => "Plum",
-                999993 => "Jungle",
-                999994 => "Mint",
-                999995 => "Chartreuse",
-                999996 => "Macau",
-                999997 => "Tawny",
-                999998 => "Gold",
+                999976 => "Watermelon",
+                999977 => "Chocolate",
+                999978 => "Sky Blue",
+                999979 => "Beige",
+                999980 => "Magenta",
+                999981 => "Turquoise",
+                999982 => "Lilac",
+                999983 => "Olive",
+                999984 => "Azure",
+                999985 => "Plum",
+                999986 => "Jungle",
+                999987 => "Mint",
+                999988 => "Chartreuse",
+                999989 => "Macau",
+                999990 => "Tawny",
+                999991 => "Gold",
+                999992 => "Panda",
+                999993 => "Contrast",
+                999994 => "Chroma",
+                999995 => "Mantle",
+                999996 => "Fire",
+                999997 => "Galaxy",
+                999998 => "Monochrome",
                 999999 => "Rainbow",
                 _ => null
             };
-            
+
             if (newResult != null)
             {
                 __result = newResult;

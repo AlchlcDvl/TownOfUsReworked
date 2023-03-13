@@ -1,7 +1,4 @@
 using System.Collections;
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
@@ -13,8 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
         public static IEnumerator EatCoroutine(DeadBody body, Cannibal role)
         {
-            KillButtonTarget.SetTarget(DestroyableSingleton<HudManager>.Instance.KillButton, null, role);
-            role.Player.SetKillTimer(CustomGameOptions.CannibalCd);
             var renderer = body.bodyRenderer;
             var backColor = renderer.material.GetColor(BackColor);
             var bodyColor = renderer.material.GetColor(BodyColor);
@@ -32,12 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             Object.Destroy(body.gameObject);  
             role.EatNeed--;
-            
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Cannibal))
-            {
-                var bodyTxt = role.EatNeed == 1 ? "Body" : "Bodies";
-                PlayerControl.LocalPlayer.myTasks.ToArray()[0].Cast<ImportantTextTask>().Text = $"{role.ColorString}Role: Cannibal\nEat {role.EatNeed} {bodyTxt} to Win\nFake Tasks:</color>";
-            }
         }
     }
 }

@@ -4,22 +4,24 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
-using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Bomber))
-                return false;
+                return true;
 
             if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
 
             if (__instance == role.BombButton)
             {
@@ -30,10 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 role.LastPlaced = DateTime.UtcNow;
 
                 if (CustomGameOptions.BombCooldownsLinked)
-                {
-                    role.LastPlaced = DateTime.UtcNow;
-                    role.LastKilled = DateTime.UtcNow;
-                }
+                    role.LastDetonated = DateTime.UtcNow;
 
                 return false;
             }
@@ -49,10 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 role.LastDetonated = DateTime.UtcNow;
 
                 if (CustomGameOptions.BombCooldownsLinked)
-                {
                     role.LastPlaced = DateTime.UtcNow;
-                    role.LastKilled = DateTime.UtcNow;
-                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Detonate);
@@ -60,61 +56,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
-            else if (__instance == role.KillButton)
-            {
-                if (role.KillTimer() != 0f)
-                    return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
-
-                if (interact[3] == true && interact[0] == true)
-                {
-                    role.LastKilled = DateTime.UtcNow;
-
-                    if (CustomGameOptions.BombCooldownsLinked)
-                    {
-                        role.LastPlaced = DateTime.UtcNow;
-                        role.LastDetonated = DateTime.UtcNow;
-                    }
-                }
-                else if (interact[0] == true)
-                {
-                    role.LastKilled = DateTime.UtcNow;
-
-                    if (CustomGameOptions.BombCooldownsLinked)
-                    {
-                        role.LastPlaced = DateTime.UtcNow;
-                        role.LastDetonated = DateTime.UtcNow;
-                    }
-                }
-                else if (interact[1] == true)
-                {
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
-                    if (CustomGameOptions.BombCooldownsLinked)
-                    {
-                        role.LastPlaced.AddSeconds(CustomGameOptions.ProtectKCReset);
-                        role.LastDetonated.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    }
-                }
-                else if (interact[2] == true)
-                {
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
-                    if (CustomGameOptions.BombCooldownsLinked)
-                    {
-                        role.LastPlaced.AddSeconds(CustomGameOptions.VestKCReset);
-                        role.LastDetonated.AddSeconds(CustomGameOptions.VestKCReset);
-                    }
-                }
-                
-                return false;
-            }
-
-            return false;
+            return true;
         }
     }
 }

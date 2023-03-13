@@ -3,15 +3,12 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDStake
     {
-        public static Sprite Placeholder => TownOfUsReworked.Placeholder;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.VampireHunter))
@@ -20,29 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
 
             if (role.StakeButton == null)
-            {
-                role.StakeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.StakeButton.graphic.enabled = true;
-                role.StakeButton.graphic.sprite = Placeholder;
-                role.StakeButton.gameObject.SetActive(false);
-            }
+                role.StakeButton = Utils.InstantiateButton();
 
-            role.StakeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.VampsDead);
-            role.StakeButton.SetCoolDown(role.StakeTimer(), CustomGameOptions.StakeCooldown);
-            Utils.SetTarget(ref role.ClosestPlayer, role.StakeButton);
-            role.PrimaryButton = role.StakeButton;
-            var renderer = role.StakeButton.graphic;
-            
-            if (role.ClosestPlayer != null && !role.StakeButton.isCoolingDown)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
 
             if (role.VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -51,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
                 writer.Write((byte)TurnRPC.TurnVigilante);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                return;
             }
         }
     }

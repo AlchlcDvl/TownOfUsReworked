@@ -6,22 +6,25 @@ using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
+using Reactor.Utilities;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformRemember
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-        
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
+            if (role.IsBlocked)
                 return false;
 
             if (__instance == role.RememberButton)
@@ -37,17 +40,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.RememberSound, false, 1f);
-                } catch {}
-
                 Remember(role, player);
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Remember(Amnesiac amneRole, PlayerControl other)
@@ -60,10 +57,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             if (PlayerControl.LocalPlayer == amnesiac)
             {
-                var amnesiacRole = Role.GetRole<Amnesiac>(amnesiac);
-                amnesiacRole.BodyArrows.Values.DestroyAll();
-                amnesiacRole.BodyArrows.Clear();
-                amnesiacRole.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
+                amneRole.BodyArrows.Values.DestroyAll();
+                amneRole.BodyArrows.Clear();
+                amneRole.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
+                Coroutines.Start(Utils.FlashCoroutine(amneRole.Color));
             }
 
             switch (roleType)
@@ -331,6 +328,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 case RoleEnum.Wraith:
                     newRole = new Wraith(amnesiac);
                     break;
+
+                case RoleEnum.Chameleon:
+                    newRole = new Chameleon(amnesiac);
+                    break;
                 
                 default:
                     newRole = new Amnesiac(amnesiac);
@@ -339,6 +340,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             
             newRole.RoleHistory.Add(amneRole);
             newRole.RoleHistory.AddRange(amneRole.RoleHistory);
+            newRole.Faction = amneRole.Faction;
+            newRole.SubFaction = amneRole.SubFaction;
+            newRole.FactionColor = amneRole.FactionColor;
+            newRole.SubFactionColor = amneRole.SubFactionColor;
+            newRole.DeathReason = amneRole.DeathReason;
+            newRole.KilledBy = amneRole.KilledBy;
+            newRole.IsBitten = amneRole.IsBitten;
+            newRole.IsRecruit = amneRole.IsRecruit;
+            newRole.IsResurrected = amneRole.IsResurrected;
+            newRole.IsPersuaded = amneRole.IsPersuaded;
+            newRole.IsIntAlly = amneRole.IsIntAlly;
+            newRole.IsIntFanatic = amneRole.IsIntFanatic;
+            newRole.IsIntTraitor = amneRole.IsIntTraitor;
+            newRole.IsSynAlly = amneRole.IsSynAlly;
+            newRole.IsSynFanatic = amneRole.IsSynFanatic;
+            newRole.IsSynTraitor = amneRole.IsSynTraitor;
+            newRole.IsCrewAlly = amneRole.IsCrewAlly;
             amnesiac.RegenTask();
 
             if (ability == AbilityEnum.Snitch)
@@ -352,11 +370,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 if (other.AmOwner)
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
-                        player.nameText().color = Color.white;
+                        player.NameText().color = Color.white;
                 }
             }
 
-            if (amnesiac.Is(Faction.Intruder) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
+            if (amnesiac.Is(Faction.Intruder) || (amnesiac.Is(Faction.Syndicate) && CustomGameOptions.AltImps))
+                amnesiac.Data.RoleType = RoleTypes.Impostor;
+
+            if ((amnesiac.Is(Faction.Intruder) || amnesiac.Is(Faction.Syndicate)) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
             {
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {
@@ -369,7 +390,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = Sprite;
+                        renderer.sprite = TownOfUsReworked.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(amnesiac.PlayerId, arrow);
@@ -380,7 +401,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = Sprite;
+                        renderer.sprite = TownOfUsReworked.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.ImpArrows.Add(arrow);

@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         {
             var exiled = __instance.exiled?.Object;
 
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
                 return;
 
             if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer.Data.Disconnected)
@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 return;
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
-
             Revive(ret, ret.Revived);
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -61,6 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 return;
             
             ret.RevivedRole = Role.GetRole(revived);
+            ret.Used.Add(revived.PlayerId);
         }
     }
 }

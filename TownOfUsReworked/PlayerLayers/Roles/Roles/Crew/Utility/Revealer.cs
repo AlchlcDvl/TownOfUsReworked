@@ -6,7 +6,7 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Revealer : Role
+    public class Revealer : CrewRole
     {
         public bool Caught;
         public bool Revealed;
@@ -22,9 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Revealer";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
             RoleType = RoleEnum.Revealer;
-            Faction = Faction.Crew;
-            FactionName = "Crew";
-            FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = CU;
             ImpArrows = new List<ArrowBehaviour>();
@@ -32,12 +29,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RevealerArrows = new List<ArrowBehaviour>();
             RoleDescription = "You are now a Revealer! You are a ghostly apparition who wants revenge on the evildoers for killing you! Finish your tasks so that all living Crew are " + 
                 "notified of who's evil!";
-            Objectives = CrewWinCon;
             InspectorResults = InspectorResults.Ghostly;
         }
 
         public void Fade()
         {
+            if (Player == null || PlayerControl.LocalPlayer == null)
+                return;
+
             Faded = true;
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
@@ -53,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             distPercent = Mathf.Max(0, distPercent - 1);
 
             var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
-            color.a = 0.07f + velocity / Player.MyPhysics.GhostSpeed * 0.13f;
+            color.a = 0.07f + velocity / Player.MyPhysics.TrueSpeed * 0.13f;
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
@@ -69,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             Player.myRend().color = color;
-            Player.nameText().color = new Color(0f, 0f, 0f, 0f);
+            Player.NameText().color = new Color(0f, 0f, 0f, 0f);
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
     }

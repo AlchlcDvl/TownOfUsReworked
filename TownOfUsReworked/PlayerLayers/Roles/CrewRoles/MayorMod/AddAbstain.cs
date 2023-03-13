@@ -23,12 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         {
             public static void GenButton(Mayor role, MeetingHud __instance)
             {
-                var skip = __instance.SkipVoteButton;
-                role.Abstain = Object.Instantiate(skip, skip.transform.parent);
+                role.Abstain = Object.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);
                 role.Abstain.Parent = __instance;
                 role.Abstain.SetTargetPlayerId(251);
-                role.Abstain.transform.localPosition = skip.transform.localPosition + new Vector3(0f, -0.17f, 0f);
-                skip.transform.localPosition += new Vector3(0f, 0.20f, 0f);
+                role.Abstain.transform.localPosition = __instance.SkipVoteButton.transform.localPosition + new Vector3(0f, -0.17f, 0f);
+                __instance.SkipVoteButton.transform.localPosition += new Vector3(0f, 0.20f, 0f);
                 UpdateButton(role, __instance);
             }
 

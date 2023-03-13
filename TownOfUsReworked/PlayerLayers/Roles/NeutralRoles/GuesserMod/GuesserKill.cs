@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
         public static void MurderPlayer(Guesser assassin, PlayerVoteArea voteArea, PlayerControl player, string guess)
         {
-            var hudManager = DestroyableSingleton<HudManager>.Instance;
+            var hudManager = HudManager.Instance;
             var assassinPlayer = assassin.Player;
 
             try
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             if (player.AmOwner)
             {
                 hudManager.ShadowQuad.gameObject.SetActive(false);
-                player.nameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+                player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 player.RpcSetScanner(false);
 
                 if (player.Is(RoleEnum.Swapper))

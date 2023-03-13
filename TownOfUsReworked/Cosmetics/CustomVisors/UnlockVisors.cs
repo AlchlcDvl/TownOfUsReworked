@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 o.name
                 select o
             ).ToArray();
-                
+
             __result = array;
             return false;
         }

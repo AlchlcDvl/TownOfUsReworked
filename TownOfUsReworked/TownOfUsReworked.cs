@@ -13,7 +13,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
-using TownOfUsReworked.Cosmetics;
+using TownOfUsReworked.Cosmetics.CustomColors;
 using Reactor.Networking;
 using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
@@ -30,8 +30,10 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.1.19";
-        public static System.Version Version = System.Version.Parse(VersionString);
+        public const string VersionString = "0.0.2.2";
+        public static Version Version = System.Version.Parse(VersionString);
+
+        public TownOfUsReworked Instance;
 
         public const int MaxPlayers = 127;
         public const int MaxImpostors = 62;
@@ -53,7 +55,7 @@ namespace TownOfUsReworked
         public static string Visors = $"{Resources}Visors.";
         public static string Nameplates = $"{Resources}Nameplates.";
 
-        private static readonly Assembly myAssembly = Assembly.GetExecutingAssembly();
+        public static readonly Assembly assembly = Assembly.GetExecutingAssembly();
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
 
         public static Sprite JanitorClean;
@@ -129,10 +131,15 @@ namespace TownOfUsReworked
         public static Sprite SidekickSprite;
         public static Sprite HauntSprite;
         public static Sprite CorruptedKill;
+        public static Sprite IntruderKill;
+        public static Sprite Report;
+        public static Sprite Use;
+        public static Sprite Sabotage;
+        public static Sprite Shapeshift;
 
         public static Sprite LighterSprite;
+        public static Sprite Blocked;
         public static Sprite DarkerSprite;
-        public static Sprite Lock;
 
         public static Sprite SettingsButtonSprite;
         public static Sprite CrewSettingsButtonSprite;
@@ -160,6 +167,12 @@ namespace TownOfUsReworked
 
         public static GameObject CallPlateform;
 
+        public static Material Bomb;
+        public static Material Bug;
+
+        public static bool LobbyCapped = false;
+        public static bool Persistence = false;
+
         private Harmony _harmony;
         private Harmony Harmony { get; } = new (Id);
 
@@ -169,7 +182,6 @@ namespace TownOfUsReworked
         public override void Load()
         {
             _harmony = new Harmony("TownOfUsReworked");
-            Generate.GenerateAll();
 
             var maxImpostors = (Il2CppStructArray<int>) Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
             GameOptionsData.MaxImpostors = GameOptionsData.RecommendedImpostors = maxImpostors;
@@ -252,14 +264,19 @@ namespace TownOfUsReworked
             PromoteSprite = Utils.CreateSprite($"{Buttons}Promote.png");
             HauntSprite = Utils.CreateSprite($"{Buttons}Haunt.png");
             SidekickSprite = Utils.CreateSprite($"{Buttons}Sidekick.png");
+            IntruderKill = Utils.CreateSprite($"{Buttons}IntruderKill.png");
+            Report = Utils.CreateSprite($"{Buttons}Report.png");
+            Use = Utils.CreateSprite($"{Buttons}Use.png");
+            Sabotage = Utils.CreateSprite($"{Buttons}Sabotage.png");
+            Shapeshift = Utils.CreateSprite($"{Buttons}Shapeshift.png");
 
             //Misc Stuff
-            Lock = Utils.CreateSprite($"{Misc}Lock.png");
             BlackmailOverlaySprite = Utils.CreateSprite($"{Misc}BlackmailOverlay.png");
             LighterSprite = Utils.CreateSprite($"{Misc}Lighter.png");
             DarkerSprite = Utils.CreateSprite($"{Misc}Darker.png");
             Arrow = Utils.CreateSprite($"{Misc}Arrow.png");
             Footprint = Utils.CreateSprite($"{Misc}Footprint.png");
+            Blocked = Utils.CreateSprite($"{Misc}Blocked.png");
 
             //Settings buttons
             SettingsButtonSprite = Utils.CreateSprite($"{Misc}SettingsButton.png");
@@ -279,7 +296,7 @@ namespace TownOfUsReworked
             UpdateImage = Utils.CreateSprite($"{Misc}Update.png");
 
             //Better Aiship Resources
-            var resourceStream = myAssembly.GetManifestResourceStream($"{Misc}Airship");
+            var resourceStream = assembly.GetManifestResourceStream($"{Misc}Airship");
             var assetBundle = AssetBundle.LoadFromMemory(resourceStream.ReadFully());
 
             VaultSprite = assetBundle.LoadAsset<Sprite>("Vault").DontDestroy();
@@ -293,16 +310,14 @@ namespace TownOfUsReworked
 
             CallPlateform = assetBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
-            PalettePatch.Load();
-            ClassInjector.RegisterTypeInIl2Cpp<RainbowBehaviour>();
+            Bomb = AssetBundle.LoadFromMemory(assembly.GetManifestResourceStream($"{Misc}Bomber").ReadFully()).LoadAsset<Material>("bomb").DontUnload();
+            Bug = AssetBundle.LoadFromMemory(assembly.GetManifestResourceStream($"{Misc}Operative").ReadFully()).LoadAsset<Material>("trap").DontUnload();
 
-            // RegisterInIl2CppAttribute.Register();
             Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
             Port = Config.Bind("Custom", "Port", (ushort) 22023);
             var defaultRegions = ServerManager.DefaultRegions.ToList();
             var ip = Ip.Value;
 
-            //MessageWait = Config.Bind("Other", "MessageWait", 1);
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
             {
                 foreach (var address in Dns.GetHostAddresses(Ip.Value))
@@ -315,11 +330,20 @@ namespace TownOfUsReworked
                 }
             }
 
+            if (BepInExUpdater.UpdateRequired)
+            {
+                AddComponent<BepInExUpdater>();
+                return;
+            }
+
             ServerManager.DefaultRegions = defaultRegions.ToArray();
 
             _harmony.PatchAll();
             SubmergedCompatibility.Initialize();
             SoundEffectsManager.Load();
+            PalettePatch.Load();
+            ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
+            Generate.GenerateAll();
         }
     }
 }

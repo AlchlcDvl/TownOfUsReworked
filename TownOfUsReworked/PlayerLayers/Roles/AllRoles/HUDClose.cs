@@ -4,7 +4,6 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Objects;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
@@ -13,11 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
     public static class HUDClose
     {
         public static Sprite Hunt => TownOfUsReworked.WhisperSprite;
-        public static Sprite Measure => TownOfUsReworked.MeasureSprite;
-        public static Sprite Sample => TownOfUsReworked.SampleSprite;
-        public static Sprite Mark => TownOfUsReworked.MarkSprite;
-        public static Sprite Drag => TownOfUsReworked.DragSprite;
-        public static Sprite Poison => TownOfUsReworked.PoisonSprite;
 
         public static void Postfix(Object obj)
         {
@@ -55,6 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Coroner)role;
                 role2.LastCompared = DateTime.UtcNow;
+                role2.LastAutopsied = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Medium))
@@ -91,8 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (TimeLord)role;
                 role2.FinishRewind = DateTime.UtcNow;
-                role2.StartRewind = DateTime.UtcNow;
-                role2.StartRewind = role2.StartRewind.AddSeconds(-10.0f);
+                role2.StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Tracker))
@@ -145,18 +139,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     case RoleEnum.Chameleon:
                         role2.LastSwooped = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Detective:
                         role2.LastExamined = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Vigilante:
                         role2.LastKilled = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.VampireHunter:
                         role2.LastStaked = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Veteran:
                         role2.LastAlerted = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Tracker:
                         role2.LastTracked = DateTime.UtcNow;
 
@@ -168,19 +167,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                         }
 
                         break;
+
                     case RoleEnum.Sheriff:
                         role2.LastInterrogated = DateTime.UtcNow;
                         break;
-                    case RoleEnum.TimeLord:
-                        role2.FinishRewind = DateTime.UtcNow;
-                        role2.StartRewind = DateTime.UtcNow;
-                        role2.StartRewind = role2.StartRewind.AddSeconds(-10.0f);
-                        break;
+
                     case RoleEnum.Medium:
                         role2.LastMediated = DateTime.UtcNow;
                         role2.MediatedPlayers.Values.DestroyAll();
                         role2.MediatedPlayers.Clear();
                         break;
+
                     case RoleEnum.Operative:
                         role2.LastBugged = DateTime.UtcNow;
                         role2.BuggedPlayers.Clear();
@@ -189,9 +186,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                             BugExtentions.ClearBugs(role2.Bugs);
 
                         break;
+
                     case RoleEnum.Inspector:
                         role2.LastInspected = DateTime.UtcNow;
                         break;
+
                     default:
                         role2.RevivedRole = null;
                         break;
@@ -202,12 +201,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Blackmailer))
             {
                 var role2 = (Blackmailer)role;
-                role2.Blackmailed = null;
+
+                if (role2.Player == PlayerControl.LocalPlayer)
+                    role2.BlackmailedPlayer?.myRend().material.SetFloat("_Outline", 0f);
+
+                role2.BlackmailedPlayer = null;
                 role2.LastBlackmailed = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
-
-                if (role2.Player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                    role2.Blackmailed?.myRend().material.SetFloat("_Outline", 0f);
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Camouflager))
@@ -234,10 +234,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
             {
                 var role2 = (Disguiser)role;
-                role2.DisguiseButton.graphic.sprite = Measure;
-                role2.MeasuredPlayer = null;
                 role2.LastDisguised = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
+                role2.LastMeasured = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Godfather))
@@ -254,51 +253,57 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 switch (role2.FormerRole.RoleType)
                 {
                     case RoleEnum.Blackmailer:
-                        role2.Blackmailed = null;
+                        if (role2.Player == PlayerControl.LocalPlayer)
+                            role2.BlackmailedPlayer?.myRend().material.SetFloat("_Outline", 0f);
+
+                        role2.BlackmailedPlayer = null;
                         role2.LastBlackmailed = DateTime.UtcNow;
                         role2.LastKilled = DateTime.UtcNow;
-
-                        if (role2.Player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                            role2.Blackmailed?.myRend().material.SetFloat("_Outline", 0f);
-
                         break;
+
                     case RoleEnum.Camouflager:
                         role2.LastCamouflaged = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Consigliere:
                         role2.LastInvestigated = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Disguiser:
-                        role2.DisguiseButton.graphic.sprite = Measure;
-                        role2.MeasuredPlayer = null;
                         role2.LastDisguised = DateTime.UtcNow;
+                        role2.LastMeasured = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Grenadier:
                         role2.LastFlashed = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Miner:
                         role2.LastMined = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Janitor:
                         role2.LastCleaned = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Morphling:
-                        role2.MorphButton.graphic.sprite = Sample;
-                        role2.SampledPlayer = null;
                         role2.LastMorphed = DateTime.UtcNow;
+                        role2.LastSampled = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Teleporter:
-                        role2.TeleportButton.graphic.sprite = Mark;
                         role2.LastTeleport = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Undertaker:
-                        role2.DragDropButton.graphic.sprite = Drag;
                         role2.CurrentlyDragging = null;
                         role2.LastDragged = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.TimeMaster:
                         role2.LastFrozen = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Wraith:
                         role2.LastInvis = DateTime.UtcNow;
                         break;
@@ -341,16 +346,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Morphling))
             {
                 var role2 = (Morphling)role;
-                role2.SampledPlayer = null;
                 role2.LastMorphed = DateTime.UtcNow;
+                role2.LastSampled = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
-                role2.MorphButton.graphic.sprite = Sample;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Teleporter))
             {
                 var role2 = (Teleporter)role;
-                role2.TeleportButton.graphic.sprite = Mark;
                 role2.LastTeleport = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
             }
@@ -358,7 +361,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Undertaker))
             {
                 var role2 = (Undertaker)role;
-                role2.DragDropButton.graphic.sprite = Drag;
                 role2.CurrentlyDragging = null;
                 role2.LastDragged = DateTime.UtcNow;
                 role2.LastKilled = DateTime.UtcNow;
@@ -430,7 +432,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var role2 = (Poisoner)role;
                 role2.LastPoisoned = DateTime.UtcNow;
-                role2.PoisonButton.graphic.sprite = Poison;
 
                 if (Role.SyndicateHasChaosDrive)
                     role2.LastKilled = DateTime.UtcNow;
@@ -454,22 +455,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     case RoleEnum.Concealer:
                         role2.LastConcealed = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Framer:
                         role2.LastFramed = DateTime.UtcNow;
                         break;
-                    case RoleEnum.Gorgon:
-                        role2.LastGazed = DateTime.UtcNow;
-                        role2.Gazed.Clear();
-                        break;
+
                     case RoleEnum.Poisoner:
                         role2.LastPoisoned = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Shapeshifter:
                         role2.LastShapeshifted = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Warper:
                         role2.LastWarped = DateTime.UtcNow;
                         break;
+
                     case RoleEnum.Drunkard:
                         role2.LastConfused = DateTime.UtcNow;
                         break;
@@ -604,7 +606,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var role in Role.GetRoles(RoleEnum.Thief))
             {
                 var role2 = (Thief)role;
-                role2.LastKilled = DateTime.UtcNow;
+                role2.LastStolen = DateTime.UtcNow;
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Troll))
@@ -630,7 +632,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 var role2 = (BountyHunter)role;
                 role2.LastChecked = DateTime.UtcNow;
 
-                if (role2.TargetFound)
+                if (role2.TargetFound && role2.GuessButton.graphic.sprite != Hunt)
                     role2.GuessButton.graphic.sprite = Hunt;
             }
         }

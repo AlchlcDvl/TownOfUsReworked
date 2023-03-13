@@ -1,8 +1,7 @@
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Cosmetics;
+using TownOfUsReworked.Cosmetics.CustomColors;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
 
@@ -52,9 +51,9 @@ namespace TownOfUsReworked.Objects
             _spriteRenderer = _gameObject.AddComponent<SpriteRenderer>();
             _spriteRenderer.sprite = TownOfUsReworked.Footprint;
             _spriteRenderer.color = Color;
-            var modifier = Modifier.GetModifier(Player);
-            var size = modifier.TryGetModifiedAppearance(out var appearance) ? appearance.SizeFactor : new Vector3(1f, 1f, 1f);
-            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * (new Vector2(size.x, size.y) / 10f);
+            var appearance = Player.GetAppearance();
+            var size = appearance.SizeFactor;
+            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * new Vector2(size.x, size.y);
 
             _gameObject.SetActive(true);
         }
@@ -72,11 +71,21 @@ namespace TownOfUsReworked.Objects
 
             if (alpha < 0 || alpha > 1)
                 alpha = 0;
-            
-            if (RainbowUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) && !Grey)
-                Color = RainbowUtils.Rainbow;
+
+            if (ColorUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Rainbow;
+            else if (ColorUtils.IsChroma(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Chroma;
+            else if (ColorUtils.IsMantle(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Mantle;
+            else if (ColorUtils.IsMonochrome(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Monochrome;
+            else if (ColorUtils.IsFire(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Fire;
+            else if (ColorUtils.IsGalaxy(Player.GetDefaultOutfit().ColorId) && !Grey)
+                Color = ColorUtils.Galaxy;
             else if (Grey)
-                Color = new Color(0.2f, 0.2f, 0.2f, 1f);
+                Color = Color.grey;
             else
                 Color = Palette.PlayerColors[Player.GetDefaultOutfit().ColorId];
 

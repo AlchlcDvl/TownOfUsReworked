@@ -89,7 +89,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 traitorObj.former = traitorRole;
                 traitorRole.FactionColor = Colors.Intruder;
                 traitorObj.Objective = Role.IntrudersWinCon;
-                traitorRole.FactionName = "Intruder";
             }
             else if (turnSyndicate)
             {
@@ -100,7 +99,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 traitorObj.Color = Colors.Syndicate;
                 traitorObj.Objective = Role.SyndicateWinCon;
                 traitorRole.FactionColor = Colors.Syndicate;
-                traitorRole.FactionName = "Syndicate";
             }
 
             traitorObj.former = traitorRole;

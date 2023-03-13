@@ -4,14 +4,11 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartMeetingPatch
     {
-        public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo meetingTarget)
+        public static void Prefix()
         {
-            if (__instance == null)
-                return;
-
             foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
             {
                 var role = (Cryomaniac)cryo;
@@ -21,6 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                     foreach (var player in role.DousedPlayers)
                     {
                         var player2 = Utils.PlayerById(player);
+
+                        if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(RoleEnum.Pestilence))
+                            continue;
+
                         Utils.RpcMurderPlayer(role.Player, player2, false);
                     }
 

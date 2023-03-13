@@ -4,13 +4,11 @@ using TMPro;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.CustomOptions;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Guesser : Role
+    public class Guesser : NeutralRole
     {
         public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> MoarButtons = new Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)>();
         private Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>();
@@ -18,21 +16,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, string> Guesses = new Dictionary<byte, string>();
         public PlayerControl TargetPlayer;
         public bool TargetGuessed = false;
-        public bool GuessedThisMeeting { get; set; } = false;
-        public int RemainingGuesses { get; set; }
+        public bool GuessedThisMeeting = false;
+        public int RemainingGuesses;
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
-        public bool GuesserWins { get; set; }
+        public bool GuesserWins;
         public bool FactionHintGiven;
         public bool AlignmentHintGiven;
         public bool SubFactionHintGiven;
+        public bool Failed => !TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer == null || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
 
         public Guesser(PlayerControl player) : base(player)
         {
             Name = "Guesser";
             RoleType = RoleEnum.Guesser;
-            Faction = Faction.Neutral;
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
@@ -297,69 +293,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public void TurnAct()
         {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-            team.Add(TargetPlayer);
-            __instance.teamToShow = team;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.AllNeutralsWin() && NotDefective)
-            {
-                AllNeutralsWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return NotDefective;
+            var guess = Role.GetRole<Guesser>(Player);
+            var targetRole = Role.GetRole(guess.TargetPlayer);
+            var newRole  = new Actor(Player);
+            newRole.RoleUpdate(guess);
+            newRole.PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults;
+            Player.RegenTask();
         }
     }
 }

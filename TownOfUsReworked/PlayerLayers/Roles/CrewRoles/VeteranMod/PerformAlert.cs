@@ -6,19 +6,22 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAlert
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Veteran))
-                return false;
+                return true;
 
             var role = Role.GetRole<Veteran>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.AlertButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.AlertButton))
                     return false;
 
                 if (!role.ButtonUsable)
@@ -34,12 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
                 writer.Write((byte)ActionsRPC.Alert);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
-                } catch {}
-                
                 return false;
             }
 

@@ -12,7 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             {
                 var disguiser = (Disguiser)role;
 
-                if (disguiser.Disguised)
+                if (disguiser.DelayActive)
+                    disguiser.Delay();
+                else if (disguiser.Disguised)
                     disguiser.Disguise();
                 else if (disguiser.Enabled)
                     disguiser.UnDisguise();

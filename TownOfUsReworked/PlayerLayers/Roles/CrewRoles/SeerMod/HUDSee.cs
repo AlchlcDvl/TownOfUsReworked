@@ -8,10 +8,8 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDSeer
+    public class HUDSee
     {
-        public static Sprite Seer => TownOfUsReworked.Placeholder;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Seer))
@@ -19,30 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 
             var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
 
-            if (role.RevealButton == null)
-            {
-                role.RevealButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.RevealButton.graphic.enabled = true;
-                role.RevealButton.graphic.sprite = Seer;
-                role.RevealButton.gameObject.SetActive(false);
-            }
+            if (role.SeerButton == null)
+                role.SeerButton = Utils.InstantiateButton();
 
-            role.RevealButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.RevealButton.SetCoolDown(role.SeerTimer(), CustomGameOptions.SeerCooldown);
-            Utils.SetTarget(ref role.ClosestPlayer, role.RevealButton);
-            role.PrimaryButton = role.RevealButton;
-            var renderer = role.RevealButton.graphic;
-            
-            if (role.ClosestPlayer != null && !role.RevealButton.isCoolingDown)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            role.SeerButton.UpdateButton(role, "REVEAL", role.SeerTimer(), CustomGameOptions.SeerCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
 
             if (role.ChangedDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {

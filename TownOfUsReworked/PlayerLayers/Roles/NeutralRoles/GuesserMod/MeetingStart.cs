@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartMeetingPatch
     {
         public static int lettersGiven = 0;
@@ -14,15 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         public static string roleName = "";
         public static List<string> letters = new List<string>();
 
-        public static void Prefix(PlayerControl __instance)
+        public static void Prefix()
         {
-            if (__instance == null)
-                return;
-
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Guesser))
-                return;
-            
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Guesser))
                 return;
 
             var role = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
@@ -129,8 +123,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             }
 
             //Ensures only the Guesser sees this
-            if (DestroyableSingleton<HudManager>.Instance && something != "")
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+            if (HudManager.Instance && something != "")
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
         }
     }
 }

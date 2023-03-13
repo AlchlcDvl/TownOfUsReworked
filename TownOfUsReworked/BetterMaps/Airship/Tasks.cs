@@ -49,10 +49,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
             return Distance;
         }
 
-        public void Use(PlayerControl LocalPlayer)
-        {
-            OnClick();
-        }
+        public void Use(PlayerControl LocalPlayer) => OnClick();
 
         [HideFromIl2Cpp]
         public void SetOutline(bool On)
@@ -89,8 +86,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 Tasks component = CustomElectrical.GetComponent<Tasks>();
                 component.SetOutline(false);
 
-                if (component != null && ((!Player.Data.IsDead && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && Player.CanMove) ||
-                    !Player.inVent))
+                if (component != null && ((!Player.Data.IsDead && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && Player.CanMove) || !Player.inVent))
                 {
                     float Distance = component.CanUse(Player.Data, out bool CanUse);
 

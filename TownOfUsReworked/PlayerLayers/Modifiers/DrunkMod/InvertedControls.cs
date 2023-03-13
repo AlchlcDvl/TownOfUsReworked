@@ -6,34 +6,34 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.DrunkMod
 {
-    public class InvertedControls
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+    public static class InvertedControls
     {
         public static float _time = 0f;
+        public static bool reversed = false;
 
-        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-        public static class PlayerPhysics_FixedUpdate
+        public static void Postfix(PlayerPhysics __instance)
         {
-            public static void Postfix(PlayerPhysics __instance)
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Drunk) && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove && __instance.AmOwner &&
+                !MeetingHud.Instance)
             {
-                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Drunk) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !MeetingHud.Instance)
+                _time += Time.deltaTime;
+
+                if (CustomGameOptions.DrunkControlsSwap)
                 {
-                    _time += Time.deltaTime;
-
-                    if (CustomGameOptions.DrunkControlsSwap)
+                    if (_time > CustomGameOptions.DrunkInterval)
                     {
-                        if (_time > CustomGameOptions.DrunkInterval)
-                        {
-                            if (__instance.AmOwner)
-                                __instance.body.velocity *= -1;
-
-                            _time -= CustomGameOptions.DrunkInterval;
-                        }
-                    }
-                    else
-                    {
-                        if (__instance.AmOwner)
+                        if (__instance.AmOwner && !reversed)
                             __instance.body.velocity *= -1;
+
+                        _time -= CustomGameOptions.DrunkInterval;
+                        reversed = !reversed;
                     }
+                }
+                else
+                {
+                    if (__instance.AmOwner)
+                        __instance.body.velocity *= -1;
                 }
             }
         }

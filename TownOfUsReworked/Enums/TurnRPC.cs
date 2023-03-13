@@ -12,9 +12,9 @@ namespace TownOfUsReworked.Enums
         TurnSheriff,
         TurnTraitorBetrayer,
         TurnFanaticBetrayer,
-        ExeToJest,
-        GAToSurv,
-        GuessToAct,
-        BHToTroll
+        TurnJest,
+        TurnSurv,
+        TurnAct,
+        TurnTroll
     }
 }

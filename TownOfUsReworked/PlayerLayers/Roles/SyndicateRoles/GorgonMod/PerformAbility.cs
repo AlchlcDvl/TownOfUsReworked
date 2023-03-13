@@ -7,13 +7,13 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Gorgon))
-                return false;
+                return true;
 
             if (!Utils.ButtonUsable(__instance))
                 return false;
@@ -28,23 +28,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true && interact[0] == true)
+                if (interact[3] == true)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Gaze);
                     writer.Write(role.Player.PlayerId);
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.Gazed.Add((role.ClosestPlayer, 0, false));
-                    role.LastGazed = DateTime.UtcNow;
-
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-                    } catch {}
+                    role.Gazed.Add(role.ClosestPlayer.PlayerId);
                 }
+
+                if (interact[0] == true)
+                    role.LastGazed = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastGazed.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
@@ -52,27 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 
                 return false;
             }
-            else if (__instance == role.KillButton)
-            {
-                if (role.KillTimer() != 0f)
-                    return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
-
-                if (interact[3] == true || interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
-                else if (interact[1] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-                
-                return false;
-            }
-            
-            return false;
+            return true;
         }
     }
 }

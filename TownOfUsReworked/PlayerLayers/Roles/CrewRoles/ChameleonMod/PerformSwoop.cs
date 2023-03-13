@@ -6,22 +6,28 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformSwoop
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Chameleon))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
+                return true;
 
             var role = Role.GetRole<Chameleon>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.SwoopButton)
             {
+                if (!Utils.ButtonUsable(role.SwoopButton))
+                    return false;
+
                 if (role.SwoopTimer() != 0f)
+                    return false;
+
+                if (role.IsSwooped)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.SwoopDuration;
@@ -34,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

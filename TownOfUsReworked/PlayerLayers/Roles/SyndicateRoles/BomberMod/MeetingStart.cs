@@ -2,7 +2,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
     {
         public static void Postfix(MeetingHud __instance)
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.Is(RoleEnum.Bomber))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Bomber) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);

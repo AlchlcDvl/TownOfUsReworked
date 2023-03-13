@@ -2,28 +2,29 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Cosmetics;
+using TownOfUsReworked.Cosmetics.CustomColors;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformTrack
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
-                return false;
+                return true;
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.TrackButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.TrackButton))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -32,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                 if (role.TrackerTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -41,28 +42,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = TownOfUsReworked.Arrow;
+                    var Grey = CamouflageUnCamouflage.IsCamoed;
 
-                    if (!CamouflageUnCamouflage.IsCamoed)
-                    {
-                        if (RainbowUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
-                            renderer.color = RainbowUtils.Rainbow;
-                        else
-                            renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
-                    }
-                    else
+                    if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Rainbow;
+                    else if (ColorUtils.IsChroma(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Chroma;
+                    else if (ColorUtils.IsMonochrome(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Monochrome;
+                    else if (ColorUtils.IsMantle(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Mantle;
+                    else if (ColorUtils.IsFire(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Fire;
+                    else if (ColorUtils.IsGalaxy(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Galaxy;
+                    else if (Grey)
                         renderer.color = Color.gray;
+                    else
+                        renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
 
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     arrow.target = target.transform.position;
                     role.TrackerArrows.Add(target.PlayerId, arrow);
                     role.UsesLeft--;
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
-                    } catch {}
                 }
                 
                 if (interact[0] == true)
@@ -73,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                 return false;
             }
             
-            return false;
+            return true;
         }
     }
 }

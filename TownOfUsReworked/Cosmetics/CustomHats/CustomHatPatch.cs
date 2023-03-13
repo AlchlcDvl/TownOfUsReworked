@@ -29,7 +29,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                     foreach (var data in AuthorDatas)
                     {
                         HatID++;
-                        allHats.Add(CreateHat(data.Id, data.Name, data.Adaptive, data.Artist, data.NoBounce, null, null, null));
+                        allHats.Add(CreateHat(data.Id, data.Name, data.Adaptive, data.Artist, data.NoBounce, data.ClimbId, data.FlippedId));
                         _customHatsLoaded = true;
                     }
 
@@ -39,27 +39,38 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 }
             }
 
-            private static HatData CreateHat(string id, string hatName, bool altshader, string author, bool bounce, Sprite climb = null, Sprite floor = null, Sprite leftimage = null)
+            private static HatData CreateHat(string id, string hatName, bool altshader, string author, bool bounce, string climbid, string leftimageid)
             {
-				//Borrowed from Other Roles to get hats alt shaders to work
+                //Borrowed from Other Roles to get hats alt shaders to work
                 if (MagicShader == null)
                 {
-                    Material hatShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
+                    var hatShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
                     MagicShader = hatShader;
                 }
 
-                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Hats}{id}.png");
-                var mainImg = stream.ReadFully();
-                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                Utils.LoadImage(tex2D, mainImg, false);
-                var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-
+                var sprite = GetSprite(id);
                 var a = ScriptableObject.CreateInstance<HatViewData>();
                 var b = new AddressableLoadWrapper<HatViewData>();
                 a.MainImage = sprite;
-                a.FloorImage = floor;
-                a.LeftMainImage = leftimage;
-                a.ClimbImage = climb;
+
+                if (climbid != null && climbid != "")
+                {
+                    var climb = GetSprite(climbid);
+                    a.ClimbImage = climb;
+                }
+                else
+                    a.ClimbImage = null;
+
+                if (leftimageid != null && leftimageid != "")
+                {
+                    var leftimage = GetSprite(leftimageid);
+                    a.LeftMainImage = leftimage;
+                }
+                else
+                    a.LeftMainImage = null;
+
+                a.FloorImage = null;
+                a.LeftFloorImage = null;
 
                 if (altshader)
                     a.AltShader = MagicShader;
@@ -78,6 +89,16 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 newHat.ChipOffset = new Vector2(-0.1f, 0.4f);
                 return newHat;
             }
+        }
+
+        private static Sprite GetSprite(string name)
+        {
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Hats}{name}.png");
+            var mainImg = stream.ReadFully();
+            var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            Utils.LoadImage(tex2D, mainImg, false);
+            var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
+            return sprite;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 if (gf.FormerRole == null || gf.FormerRole?.RoleType == RoleEnum.Impostor || !gf.WasMafioso)
                     continue;
-                
+
                 var formerRole = gf.FormerRole.RoleType;
 
                 if (formerRole == RoleEnum.Grenadier)
@@ -28,7 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 }
                 else if (formerRole == RoleEnum.Disguiser)
                 {
-                    if (gf.Disguised)
+                    if (gf.DelayActive)
+                        gf.Delay();
+                    else if (gf.Disguised)
                         gf.Disguise();
                     else if (gf.DisguiserEnabled)
                         gf.UnDisguise();

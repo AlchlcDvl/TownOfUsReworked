@@ -1,17 +1,15 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Altruist : Role
+    public class Altruist : CrewRole
     {
         public bool CurrentlyReviving = false;
         public DeadBody CurrentTarget = null;
         public bool ReviveUsed = false;
-        private KillButton _reviveButton;
+        public AbilityButton ReviveButton;
         
         public Altruist(PlayerControl player) : base(player)
         {
@@ -21,117 +19,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "during your revive, both you and\nyour target will be pronounced dead.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
-            Faction = Faction.Crew;
-            FactionName = "Crew";
-            FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;
             RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
                 " to revive someone and a meeting being called will kill both you and your target.";
-            Objectives = CrewWinCon;
             InspectorResults = InspectorResults.MeddlesWithDead;
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
-        public KillButton ReviveButton
-        {
-            get => _reviveButton;
-            set
-            {
-                _reviveButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsIntTraitor || IsIntFanatic) && Utils.IntrudersWin())
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsSynTraitor || IsSynFanatic) && Utils.SyndicateWins())
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.CrewWins() && NotDefective)
-            {
-                CrewWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CrewWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
     }
 }

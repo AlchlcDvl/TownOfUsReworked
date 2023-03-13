@@ -11,8 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDMediate
     {
-        public static Sprite Mediate => TownOfUsReworked.MediateSprite;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
@@ -21,15 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
             if (role.MediateButton == null)
-            {
-                role.MediateButton = UnityEngine.Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.MediateButton.graphic.enabled = true;
-                role.MediateButton.graphic.sprite = Mediate;
-                role.MediateButton.gameObject.SetActive(false);
-            }
+                role.MediateButton = Utils.InstantiateButton();
 
-            role.MediateButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.PrimaryButton = role.MediateButton;
+            role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, TownOfUsReworked.MediateSprite, AbilityTypes.Effect);
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -55,20 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                         }
                     }
                 }
-            }
-
-            role.MediateButton.SetCoolDown(role.MediateTimer(), CustomGameOptions.MediateCooldown);
-            var renderer = role.MediateButton.graphic;
-
-            if (!role.MediateButton.isCoolingDown)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
             }
         }
     }

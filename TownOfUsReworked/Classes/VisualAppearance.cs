@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Classes
 {
     public class VisualAppearance
     {
-        public float SpeedFactor { get; set; } = 1.0f;
-        public Vector3 SizeFactor { get; set; } = new Vector3(0.7f, 0.7f, 1.0f);
+        public float SpeedFactor = 1f;
+        public Vector3 SizeFactor = new Vector3(0.7f, 0.7f, 1f);
     }
 }

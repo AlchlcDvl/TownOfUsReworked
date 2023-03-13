@@ -1,6 +1,5 @@
 using HarmonyLib;
 using Hazel;
-using UnityEngine;
 using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Enums;
@@ -10,13 +9,13 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformWhisper
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Whisperer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Whisperer>(PlayerControl.LocalPlayer);
 
@@ -33,12 +32,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Whisper(Whisperer role)
         {
-            Vector2 truePosition = role.Player.GetTruePosition();
+            var truePosition = role.Player.GetTruePosition();
             var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
             closestPlayers.Remove(role.Player);
 

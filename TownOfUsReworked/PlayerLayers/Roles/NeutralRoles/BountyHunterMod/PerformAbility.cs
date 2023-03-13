@@ -9,71 +9,82 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformKill
     {
-        public static Sprite Guess => TownOfUsReworked.Placeholder;
-        public static Sprite Hunt => TownOfUsReworked.WhisperSprite;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.BountyHunter))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<BountyHunter>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.GuessButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 if (role.CheckTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), role.TargetFound && role.GuessButton.graphic.sprite == Hunt);
-
-                if (interact[3] == true)
+                if (role.ClosestPlayer != role.TargetPlayer)
                 {
-                    if (role.GuessButton.graphic.sprite == Guess)
-                    {
-                        if (role.ClosestPlayer != role.TargetPlayer)
-                        {
-                            Coroutines.Start(Utils.FlashCoroutine(Color.red));
-                            role.UsesLeft--;
-                        }
-                        else
-                        {
-                            role.TargetFound = true;
-                            Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                        }
-                    }
+                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    role.UsesLeft--;
+                }
+                else
+                {
+                    role.TargetFound = true;
+                    Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
 
-                if (interact[0] == true)
-                    role.LastChecked = DateTime.UtcNow;
-                else if (interact[1] == true)
-                    role.LastChecked.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
-                    role.LastChecked.AddSeconds(CustomGameOptions.VestKCReset);
-
-                if (role.GuessButton.graphic.sprite == Hunt && role.TargetFound)
+                return false;
+            }
+            else if (__instance == role.HuntButton)
+            {
+                if (role.ClosestPlayer != role.TargetPlayer && !role.TargetKilled)
                 {
-                    Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, true);
+                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    Utils.RpcMurderPlayer(role.Player, role.Player, true);
+                    role.LastChecked = DateTime.UtcNow;
+                }
+                else if (role.ClosestPlayer == role.TargetPlayer && !role.TargetKilled)
+                {
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
+
+                    if (interact[3] == false)
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, true);
+
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.BountyHunterWin);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.TargetKilled = true;
-                    return false;
+                    role.LastChecked = DateTime.UtcNow;
+                    role.Kaboom();
+                }
+                else
+                {
+                    var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
+
+                    if (interact[0] == true || interact[3] ==true)
+                        role.LastChecked = DateTime.UtcNow;
+                    else if (interact[1] == true)
+                        role.LastChecked.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    else if (interact[2] == true)
+                        role.LastChecked.AddSeconds(CustomGameOptions.VestKCReset);
                 }
 
                 return false;
             }
             
-            return false;
+            return true;
         }
     }
 }

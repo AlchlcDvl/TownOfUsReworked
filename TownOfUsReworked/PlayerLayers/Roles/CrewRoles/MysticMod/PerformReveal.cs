@@ -8,19 +8,22 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformReveal
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mystic))
-                return false;
+                return true;
 
             var role = Role.GetRole<Mystic>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.RevealButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.RevealButton))
                     return false;
 
                 if (role.RevealTimer() != 0f)
@@ -29,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
                 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -47,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

@@ -11,21 +11,24 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbility
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Coroner))
-                return false;
-
-            if (!Utils.ButtonUsable(__instance))
-                return false;
+                return true;
 
             var role = Role.GetRole<Coroner>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.AutopsyButton)
             {
+                if (!Utils.ButtonUsable(role.AutopsyButton))
+                    return false;
+
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 
@@ -39,23 +42,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                     killed = matches[0];
 
                 if (killed == null)
+                {
+                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
                     return false;
+                }
 
                 role.ReferenceBody = killed;
+                role.UsesLeft = CustomGameOptions.CompareLimit;
+                role.LastAutopsied = DateTime.UtcNow;
+                Coroutines.Start(Utils.FlashCoroutine(role.Color));
                 return false;
             }
             else if (__instance == role.CompareButton)
             {
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (!Utils.ButtonUsable(role.CompareButton))
                     return false;
-                
+
                 if (role.ReferenceBody == null)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 if (role.CompareTimer() != 0f)
                     return false;
-                
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -63,6 +75,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                         Coroutines.Start(Utils.FlashCoroutine(Color.red));
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
+
+                    role.UsesLeft--;
                 }
 
                 if (interact[0] == true)
@@ -73,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

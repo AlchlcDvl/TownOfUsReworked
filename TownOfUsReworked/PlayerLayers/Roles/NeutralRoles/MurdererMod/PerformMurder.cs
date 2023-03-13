@@ -6,13 +6,13 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformMurder
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Murderer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);
 
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
                 if (role.KillTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                 if (interact[3] == true || interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

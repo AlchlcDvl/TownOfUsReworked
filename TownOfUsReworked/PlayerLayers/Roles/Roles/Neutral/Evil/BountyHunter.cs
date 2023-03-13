@@ -2,13 +2,12 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using Random = UnityEngine.Random;
 using System;
-using TMPro;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class BountyHunter : Role
+    public class BountyHunter : NeutralRole
     {
         public PlayerControl TargetPlayer = null;
         public PlayerControl ClosestPlayer;
@@ -17,9 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool LetterHintGiven;
         public bool TargetFound;
         public DateTime LastChecked;
-        private KillButton _guessButton;
+        public AbilityButton GuessButton;
+        public AbilityButton HuntButton;
+        public bool ButtonUsable => UsesLeft > 0;
+        public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer == null || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         public int UsesLeft;
-        public TextMeshPro UsesText;
 
         public BountyHunter(PlayerControl player) : base(player)
         {
@@ -28,23 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Find And Kill your target.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
             RoleType = RoleEnum.BountyHunter;
-            Faction = Faction.Neutral;
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             RoleDescription = "You are a Bounty Hunter! You are an assassin who is in pursuit of a target! Find and kill them at all costs!";
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
-        }
-
-        public KillButton GuessButton
-        {
-            get => _guessButton;
-            set
-            {
-                _guessButton = value;
-                AddToAbilityButtons(value, this);
-            }
         }
 
         public float CheckTimer()
@@ -55,73 +43,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public void Kaboom()
         {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
+            var allPlayers = new List<PlayerControl>();
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.Data.Disconnected || player.Data.IsDead || player == Player)
+                    continue;
                 
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-            __instance.teamToShow = team;
+                allPlayers.Add(player);
+                PlayerControl unfortunate1 = null;
+                PlayerControl unfortunate2 = null;
+
+                while (unfortunate1 == null || unfortunate2 == null || unfortunate1 == unfortunate2)
+                {
+                    var target1 = Random.RandomRangeInt(0, allPlayers.Count);
+                    var target2 = Random.RandomRangeInt(0, allPlayers.Count);
+
+                    unfortunate1 = allPlayers[target1];
+                    unfortunate2 = allPlayers[target2];
+                }
+
+                Utils.RpcMurderPlayer(unfortunate1, unfortunate2, true);
+                Utils.RpcMurderPlayer(unfortunate2, unfortunate2, true);
+            }
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public void TurnTroll()
         {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.AllNeutralsWin() && NotDefective)
-            {
-                AllNeutralsWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return NotDefective;
+            var bh = Role.GetRole(Player);
+            var newRole = new Troll(Player);
+            newRole.RoleUpdate(bh);
+            Player.RegenTask();
         }
     }
 }

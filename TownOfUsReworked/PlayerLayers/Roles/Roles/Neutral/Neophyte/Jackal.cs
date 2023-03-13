@@ -1,4 +1,3 @@
-using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
@@ -7,23 +6,22 @@ using System.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Jackal : Role
+    public class Jackal : NeutralRole
     {
         public PlayerControl EvilRecruit = null;
         public PlayerControl GoodRecruit = null;
         public PlayerControl BackupRecruit = null;
         public PlayerControl ClosestPlayer;
-        private KillButton _recruitButton;
+        public AbilityButton RecruitButton;
         public bool HasRecruited = false;
-        public bool RecruitsDead => (EvilRecruit == null && GoodRecruit == null) || ((EvilRecruit != null && EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) &&
-            (GoodRecruit != null && GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead));
-        public DateTime LastRecruited { get; set; }
+        public bool RecruitsDead => (EvilRecruit == null || GoodRecruit == null || ((EvilRecruit != null && EvilRecruit.Data.IsDead || EvilRecruit.Data.Disconnected) &&
+            (GoodRecruit != null && GoodRecruit.Data.Disconnected || GoodRecruit.Data.IsDead))) && BackupRecruit == null;
+        public DateTime LastRecruited;
         public List<byte> Recruited;
 
         public Jackal(PlayerControl player) : base(player)
         {
             Name = "Jackal";
-            Faction = Faction.Neutral;
             RoleType = RoleEnum.Jackal;
             StartText = "Gain A Majority";
             AbilitiesText = "- You can recruit one player into joining your organisation.\n- You start off with 2 recruits. 1 of them is always <color=#8BFDFDFF>Crew</color>" + 
@@ -31,12 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
             SubFaction = SubFaction.Cabal;
             SubFactionColor = Colors.Cabal;
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
             RoleDescription = "You are a Jackal! You are a greedy double agent sent from a rival company! Use your recruits to your advantage and take over the mission!";
-            SubFactionName = "Cabal";
             Recruited = new List<byte>();
             Recruited.Add(Player.PlayerId);
         }
@@ -49,46 +44,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            
-            return false;
-        }
-
-        public KillButton RecruitButton
-        {
-            get => _recruitButton;
-            set
-            {
-                _recruitButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            var jackTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            jackTeam.Add(PlayerControl.LocalPlayer);
-            jackTeam.Add(GoodRecruit);
-            jackTeam.Add(EvilRecruit);
-            __instance.teamToShow = jackTeam;
         }
     }
 }

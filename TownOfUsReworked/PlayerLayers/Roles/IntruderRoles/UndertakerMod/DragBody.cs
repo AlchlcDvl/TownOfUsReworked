@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3) + body.myCollider.offset;
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
-            //AD says - idk ¯\_(ツ)_/¯
+            //AD: idk ¯\_(ツ)_/¯
             if (SubmergedCompatibility.isSubmerged())
             {
                 if (newPos.y > -7f)
@@ -49,6 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             var material = body.bodyRenderer.material;
             material.SetColor("_OutlineColor", Color.green);
             material.SetFloat("_Outline", 1f);
+            __instance.moveable = true;
         }
     }
 }

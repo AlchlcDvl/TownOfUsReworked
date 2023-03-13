@@ -65,8 +65,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state, [HarmonyArgument(1)] ref bool canUse,
-            [HarmonyArgument(2)] ref bool couldUse)
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse)
         {
             if (__state)
                 playerInfo.IsDead = true;
@@ -237,5 +236,4 @@ namespace TownOfUsReworked.Patches
         }
     }
     #endregion
-
 }

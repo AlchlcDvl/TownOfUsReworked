@@ -6,7 +6,7 @@ using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.Cosmetics
 {
-    internal static class Loader
+    public static class Loader
     {
         private static string json = "metadata.json";
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;

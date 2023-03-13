@@ -2,21 +2,22 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using System;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Executioner : Role
+    public class Executioner : NeutralRole
     {
         public PlayerControl TargetPlayer = null;
         public bool TargetVotedOut;
-        public List<byte> ToDoom = new List<byte>();
+        public List<byte> ToDoom;
         public bool HasDoomed = false;
-        private KillButton _doomButton;
+        public AbilityButton DoomButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastDoomed;
+        public int MaxUses;
+        public bool CanDoom => TargetVotedOut && !HasDoomed && MaxUses > 0 && ToDoom.Count > 0;
+        public bool Failed => !TargetVotedOut && (TargetPlayer == null || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
 
         public Executioner(PlayerControl player) : base(player)
         {
@@ -25,23 +26,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Eject your target.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             RoleType = RoleEnum.Executioner;
-            Faction = Faction.Neutral;
-            FactionName = "Neutral";
-            FactionColor = Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-            team.Add(TargetPlayer);
-            __instance.teamToShow = team;
+            ToDoom = new List<byte>();
+            MaxUses = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
         }
 
         public void SetDoomed(MeetingHud __instance)
@@ -53,88 +42,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var state in __instance.playerStates)
             {
-                if (state.AmDead || Utils.PlayerById(state.TargetPlayerId).Data.Disconnected || state.VotedFor != Player.PlayerId || state.TargetPlayerId == Player.PlayerId)
+                if (state.AmDead || Utils.PlayerByVoteArea(state).Data.Disconnected || state.VotedFor != TargetPlayer.PlayerId || state.TargetPlayerId == Player.PlayerId)
                     continue;
                 
                 ToDoom.Add(state.TargetPlayerId);
             }
         }
 
-        public KillButton DoomButton
-        {
-            get => _doomButton;
-            set
-            {
-                _doomButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        public float HauntTimer()
+        public float DoomTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timeSpan = utcNow - LastDoomed;
-            var num = CustomGameOptions.HauntCooldown * 1000f;
+            var num = CustomGameOptions.DoomCooldown * 1000f;
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public void TurnJest()
         {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.AllNeutralsWin() && NotDefective)
-            {
-                AllNeutralsWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.AllNeutralsWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return NotDefective;
+            var exe = Role.GetRole<Executioner>(Player);
+            var newRole = new Jester(Player);
+            newRole.RoleUpdate(exe);
+            Player.RegenTask();
         }
     }
 }

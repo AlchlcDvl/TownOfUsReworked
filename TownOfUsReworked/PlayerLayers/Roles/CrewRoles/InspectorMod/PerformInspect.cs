@@ -3,25 +3,25 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using Il2CppSystem.Collections.Generic;
-using Random = UnityEngine.Random;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformInspect
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Inspector))
-                return false;
+                return true;
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.InspectButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.InspectButton))
                     return false;
 
                 if (role.InspectTimer() != 0f)
@@ -33,17 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 if (role.Inspected.Contains(role.ClosestPlayer.PlayerId))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
-                {
                     role.Inspected.Add(role.ClosestPlayer.PlayerId);
-
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-                    } catch {}
-                }
                 
                 if (interact[0] == true)
                     role.LastInspected = DateTime.UtcNow;
@@ -53,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 return false;
             }
             
-            return false;
+            return true;
         }
     }
 }

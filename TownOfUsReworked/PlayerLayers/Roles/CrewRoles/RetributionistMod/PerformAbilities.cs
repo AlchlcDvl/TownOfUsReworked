@@ -11,31 +11,32 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
-using TownOfUsReworked.Cosmetics;
+using TownOfUsReworked.Cosmetics.CustomColors;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformAbilities
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
+                return true;
+
+            if (!Utils.ButtonUsable(__instance))
                 return false;
 
             var role = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (role.RevivedRole == null)
                 return false;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-            
             var revivedRole = role.RevivedRole?.RoleType;
 
             if (__instance == role.ReviveButton && revivedRole == RoleEnum.Altruist)
@@ -51,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 writer.Write((byte)RetributionistActionsRPC.AltruistRevive);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);        
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Coroutines.Start(Coroutine.RetributionistRevive(role.CurrentTarget, role));
                 return false;
             }
@@ -60,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true && interact[0] == true)
                 {
@@ -72,11 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.ShieldedPlayer = role.ClosestPlayer;
                     role.UsedAbility = true;
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.ProtectSound, false, 1f);
-                    } catch {}
                 }
 
                 return false;
@@ -92,18 +88,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (role.Inspected.Contains(role.ClosestPlayer.PlayerId))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
-                {
                     role.Inspected.Add(role.ClosestPlayer.PlayerId);
-            
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.PhantomWin, false, 1f);
-                    } catch {}
-                }
-                
+
                 if (interact[0] == true)
                     role.LastInspected = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -126,16 +115,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.FixUsesLeft--;
 
-                var camouflager = Role.GetRoleValue(RoleEnum.Camouflager);
-                var camo = (Camouflager)camouflager;
-                var concealer = Role.GetRoleValue(RoleEnum.Concealer);
-                var conc = (Concealer)concealer;
-                var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
-                var ss = (Shapeshifter)shapeshifter;
-
                 switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                 {
-                    case 0:
                     case 1:
                         var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
 
@@ -157,15 +138,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         if (lights2.IsActive)
                             return FixFunctions.FixLights(lights2);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
                     case 2:
@@ -184,17 +156,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         if (lights3.IsActive)
                             return FixFunctions.FixLights(lights3);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
+                    case 0:
                     case 3:
                         var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
@@ -216,15 +180,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         if (lights1.IsActive)
                             return FixFunctions.FixLights(lights1);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
                     case 4:
@@ -242,15 +197,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                         if (lights4.IsActive)
                             return FixFunctions.FixLights(lights4);
-
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -276,14 +222,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                                 return FixFunctions.FixSubOxygen();
                         }
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
+                        break;
 
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
+                    case 6:
+                        var comms6 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
+                        if (comms6.IsActive)
+                            return FixFunctions.FixComms();
+
+                        var reactor6 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+
+                        if (reactor6.IsActive)
+                            return FixFunctions.FixReactor(SystemTypes.Laboratory);
+
+                        var oxygen6 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+
+                        if (oxygen6.IsActive)
+                            return FixFunctions.FixOxygen();
+
+                        var lights6 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+
+                        if (lights6.IsActive)
+                            return FixFunctions.FixLights(lights6);
 
                         break;
                 }
@@ -293,12 +253,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 writer.Write((byte)RetributionistActionsRPC.EngineerFix);
                 writer.Write(PlayerControl.LocalPlayer.NetId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.FixSound, false, 1f);
-                } catch {}
-
                 return false;
             }
             else if (__instance == role.ExamineButton && revivedRole == RoleEnum.Detective)
@@ -308,8 +262,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -326,7 +280,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
-                
+
                 if (interact[0] == true)
                     role.LastExamined = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -405,12 +359,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-            
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                     role.Interrogated.Add(role.ClosestPlayer.PlayerId);
-                
+
                 if (interact[0] == true)
                     role.LastInterrogated = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -428,28 +382,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
-            else if (__instance == role.RewindButton && revivedRole == RoleEnum.TimeLord)
-            {
-                if (!role.RewindButtonUsable)
-                    return false;
-
-                if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
-                    return false;
-
-                role.RewindUsesLeft--;
-                StartStop.StartRewind(role);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RetributionistAction);
-                writer.Write((byte)RetributionistActionsRPC.Rewind);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-        
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
-                } catch {}
-
-                return false;
-            }
             else if (__instance == role.TrackButton && revivedRole == RoleEnum.Tracker)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
@@ -458,7 +390,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (role.TrackerTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
                 if (interact[3] == true)
                 {
@@ -467,30 +399,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = TownOfUsReworked.Arrow;
+                    var Grey = CamouflageUnCamouflage.IsCamoed;
 
-                    if (!CamouflageUnCamouflage.IsCamoed)
-                    {
-                        if (RainbowUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
-                            renderer.color = RainbowUtils.Rainbow;
-                        else
-                            renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
-                    }
-                    else
+                    if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Rainbow;
+                    else if (ColorUtils.IsChroma(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Chroma;
+                    else if (ColorUtils.IsMonochrome(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Monochrome;
+                    else if (ColorUtils.IsMantle(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Mantle;
+                    else if (ColorUtils.IsFire(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Fire;
+                    else if (ColorUtils.IsGalaxy(target.GetDefaultOutfit().ColorId) && !Grey)
+                        renderer.color = ColorUtils.Galaxy;
+                    else if (Grey)
                         renderer.color = Color.gray;
+                    else
+                        renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
 
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     arrow.target = target.transform.position;
                     role.TrackerArrows.Add(target.PlayerId, arrow);
                     role.TrackUsesLeft--;
-                    
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.TrackSound, false, 1f);
-                    } catch {}
                 }
-                
+
                 if (interact[0] == true)
                     role.LastTracked = DateTime.UtcNow;
                 else if (interact[1] == true)
@@ -506,14 +441,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (role.StakeTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), role.ClosestPlayer.Is(SubFaction.Undead));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, role.ClosestPlayer.Is(SubFaction.Undead));
 
-                if (interact[3] == true && interact[0] == true)
-                    role.LastStaked = DateTime.UtcNow;
-                else if (interact[0] == true)
+                if (interact[3] == true || interact[0] == true)
                     role.LastStaked = DateTime.UtcNow;
                 else if (interact[1] == true)
                     role.LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2] == true)
+                    role.LastStaked.AddSeconds(CustomGameOptions.VestCd);
 
                 return false;
             }
@@ -533,16 +468,62 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 writer.Write((byte)RetributionistActionsRPC.Alert);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                
-                try
+                return false;
+            }
+            else if (__instance == role.RevealButton && revivedRole == RoleEnum.Mystic)
+            {
+                if (role.RevealTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
+
+                if (interact[3] == true)
                 {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.AlertSound, false, 1f);
-                } catch {}
-                
+                    if ((!role.ClosestPlayer.Is(SubFaction.None) && !role.ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || role.ClosestPlayer.IsFramed())
+                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    else
+                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                }
+
+                if (interact[0] == true)
+                    role.LastRevealed = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                return false;
+            }
+            else if (__instance == role.SeerButton && revivedRole == RoleEnum.Seer)
+            {
+                if (role.SeerTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
+
+                if (interact[3] == true)
+                {
+                    var targetRoleCount = Role.GetRole(role.ClosestPlayer).RoleHistory.Count;
+
+                    if (targetRoleCount > 0 || role.ClosestPlayer.IsFramed())
+                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    else
+                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                }
+
+                if (interact[0] == true)
+                    role.LastRevealed = DateTime.UtcNow;
+                else if (interact[1] == true)
+                    role.LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
+
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

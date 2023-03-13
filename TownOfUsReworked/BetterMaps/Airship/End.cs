@@ -25,9 +25,6 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
     public static class EndGameCommons
     {
-        public static void ResetGlobalVariable()
-        {
-            SpawnInMinigamePatch.GameStarted = false;
-        }
+        public static void ResetGlobalVariable() => SpawnInMinigamePatch.GameStarted = false;
     }
 }

@@ -7,6 +7,8 @@ namespace TownOfUsReworked.Cosmetics
         public string Artist { get; set; }
         public bool Adaptive { get; set; }
         public bool NoBounce { get; set; }
+        public string ClimbId { get; set; }
+        public string FlippedId { get; set; }
     }
 
     public class NameplateMetadataElement

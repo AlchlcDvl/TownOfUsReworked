@@ -29,9 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-
-            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-            SoundEffectsManager.Play("CrewWin");
         }
     }
 }

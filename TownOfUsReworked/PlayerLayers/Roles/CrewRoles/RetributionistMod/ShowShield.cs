@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
@@ -22,14 +21,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (ret.RevivedRole?.RoleType != RoleEnum.Medic)
                     continue;
 
-                var exPlayer = ret.exShielded;
+                var exPlayer = ret.ExShielded;
 
                 if (exPlayer != null)
                 {
                     Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
                     exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
                     exPlayer.myRend().material.SetFloat("_Outline", 0f);
-                    ret.exShielded = null;
+                    ret.ExShielded = null;
                     continue;
                 }
 
@@ -40,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (player.Data.IsDead || ret.Player.Data.IsDead || ret.Player.Data.Disconnected)
                 {
-                    StopKill.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
+                    RetributionistMod.StopKill.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
                     continue;
                 }
 
@@ -53,15 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     player.myRend().material.SetColor("_VisorColor", ProtectedColor);
                     player.myRend().material.SetFloat("_Outline", 1f);
                     player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
-
-                    if (!MeetingHud.Instance)
-                        continue;
-
-                    SpriteRenderer icon = MeetingHud.Instance.playerStates.FirstOrDefault(v => v.TargetPlayerId == player.PlayerId).GAIcon;
-                    icon.gameObject.SetActive(true);
-                    icon.enabled = true;
-                    icon.sprite = TownOfUsReworked.MedicSprite;
-                    icon.transform.localScale = Vector2.one / 4;
                 }
             }
         }

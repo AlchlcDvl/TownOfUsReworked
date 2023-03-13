@@ -1,18 +1,16 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Hazel;
-using Il2CppSystem.Collections.Generic;
-using TMPro;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Engineer : Role
+    public class Engineer : CrewRole
     {
-        private KillButton _fixButton;
+        public AbilityButton FixButton;
         public int UsesLeft;
-        public TextMeshPro UsesText;
-        public bool ButtonUsable => UsesLeft != 0;
+        public bool ButtonUsable => UsesLeft > 0;
+        public DateTime LastFixed;
 
         public Engineer(PlayerControl player) : base(player)
         {
@@ -21,119 +19,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = $"- You can fix sabotages at any time during the game.\n- You can vent.\n- You have {UsesLeft} fixes left.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
-            Faction = Faction.Crew;
-            FactionName = "Crew";
-            FactionColor = Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            IntroSound = "EngineerIntro";
-            Objectives = CrewWinCon;
             RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
                 " the systems you spent blood, sweat and tears to make. Make them pay.";
             UsesLeft = CustomGameOptions.MaxFixes;
             InspectorResults = InspectorResults.DifferentLens;
         }
 
-        public KillButton FixButton
+        public float FixTimer()
         {
-            get => _fixButton;
-            set
-            {
-                _fixButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
+            var utcNow = DateTime.UtcNow;
+            var timeSpan = utcNow - LastFixed;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.FixCooldown) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
+            if (flag2)
+                return 0f;
 
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsIntTraitor || IsIntFanatic) && Utils.IntrudersWin())
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsSynTraitor || IsSynFanatic) && Utils.SyndicateWins())
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.CrewWins() && NotDefective)
-            {
-                CrewWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CrewWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
     }
 }

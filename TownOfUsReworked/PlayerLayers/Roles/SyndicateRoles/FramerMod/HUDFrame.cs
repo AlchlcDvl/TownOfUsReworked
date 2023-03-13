@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
     public class HUDFramer
     {
         public static Sprite FrameSprite => TownOfUsReworked.Placeholder;
-        public static Sprite Kill => TownOfUsReworked.SyndicateKill;
 
         public static void Postfix(HudManager __instance)
         {
@@ -21,54 +20,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
 
             if (role.FrameButton == null)
-            {
-                role.FrameButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.FrameButton.graphic.enabled = true;
-                role.FrameButton.graphic.sprite = FrameSprite;
-                role.FrameButton.gameObject.SetActive(false);
-            }
+                role.FrameButton = Utils.InstantiateButton();
 
-            if (role.KillButton == null)
-            {
-                role.KillButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.KillButton.graphic.enabled = true;
-                role.KillButton.graphic.sprite = Kill;
-                role.KillButton.gameObject.SetActive(false);
-            }
-
-            role.FrameButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.FrameButton, notFramed);
-            role.FrameButton.SetCoolDown(role.FrameTimer(), CustomGameOptions.FrameCooldown);
-
-            role.KillButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && Role.SyndicateHasChaosDrive);
-            role.KillButton.SetCoolDown(role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown);
-            var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.KillButton, notSyndicate);
-            var renderer = role.KillButton.graphic;
-            var renderer2 = role.FrameButton.graphic;
-            
-            if (role.ClosestPlayer != null)
-            {
-                if (!role.KillButton.isCoolingDown)
-                {
-                    renderer.color = Palette.EnabledColor;
-                    renderer.material.SetFloat("_Desat", 0f);
-                }
-
-                if (!role.FrameButton.isCoolingDown)
-                {
-                    renderer2.color = Palette.EnabledColor;
-                    renderer2.material.SetFloat("_Desat", 0f);
-                }
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-                renderer2.color = Palette.DisabledClear;
-                renderer2.material.SetFloat("_Desat", 1f);
-            }
+            role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, TownOfUsReworked.Placeholder, Role.SyndicateHasChaosDrive ? AbilityTypes.Effect
+                : AbilityTypes.Direct, notFramed);
         }
     }
 }

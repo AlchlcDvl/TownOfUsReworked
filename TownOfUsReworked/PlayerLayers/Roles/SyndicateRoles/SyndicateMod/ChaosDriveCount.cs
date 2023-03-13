@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 
             if (!Role.SyndicateHasChaosDrive && message != "")
             {
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
                 writer.Write(message);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -18,8 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
         public class MeetingHudStart
         {
-            public static Sprite Letter => TownOfUsReworked.BlackmailLetterSprite;
-
             public static void Postfix(MeetingHud __instance)
             {
                 shookAlready = false;
@@ -27,19 +25,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                 foreach (var role in blackmailers)
                 {
-                    if (role.Blackmailed?.PlayerId == PlayerControl.LocalPlayer.PlayerId && !role.Blackmailed.Data.IsDead)
+                    if (role.BlackmailedPlayer?.PlayerId == PlayerControl.LocalPlayer.PlayerId && !role.BlackmailedPlayer.Data.IsDead)
                         Coroutines.Start(BlackmailShhh());
 
-                    if (role.Blackmailed != null && !role.Blackmailed.Data.IsDead)
+                    if (role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead)
                     {
-                        var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.Blackmailed.PlayerId);
+                        var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
 
                         playerState.XMark.gameObject.SetActive(true);
 
                         if (PrevXMark == null)
                             PrevXMark = playerState.XMark.sprite;
 
-                        playerState.XMark.sprite = Letter;
+                        playerState.XMark.sprite = TownOfUsReworked.BlackmailLetterSprite;
                         playerState.XMark.transform.localScale = playerState.XMark.transform.localScale * 0.75f;
                         playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
@@ -71,13 +69,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             public static void Postfix(MeetingHud __instance)
             {
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
+                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>();
 
                 foreach (var role in blackmailers)
                 {
-                    if (role.Blackmailed != null && !role.Blackmailed.Data.IsDead)
+                    if (role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead)
                     {
-                        var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.Blackmailed.PlayerId);
+                        var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
                         playerState.Overlay.gameObject.SetActive(true);
 
                         if (PrevOverlay == null)
@@ -100,11 +98,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         {
             public static bool Prefix(TextBoxTMP __instance)
             {
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
+                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>();
 
                 foreach (var role in blackmailers)
                 {
-                    if (MeetingHud.Instance && role.Blackmailed != null && !role.Blackmailed.Data.IsDead && role.Blackmailed.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                    if (MeetingHud.Instance && role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead && role.BlackmailedPlayer == PlayerControl.LocalPlayer)
                         return false;
                 }
                 

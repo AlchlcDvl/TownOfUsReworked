@@ -1,132 +1,80 @@
-using TownOfUsReworked.Enums;
 using System;
-using Il2CppSystem.Collections.Generic;
+using UnityEngine;
+using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Crusader : Role
+    public class Crusader : SyndicateRole
     {
-        public PlayerControl ClosestPlayer = null;
-        public DateTime LastKilled { get; set; }
-        private KillButton _killButton;
+        public bool Enabled;
+        public DateTime LastCrusaded;
+        public float TimeRemaining;
+        public bool OnCrusade => TimeRemaining > 0f;
+        public PlayerControl CrusadedPlayer;
+        public PlayerControl ClosestCrusade;
+        public AbilityButton CrusadeButton;
 
         public Crusader(PlayerControl player) : base(player)
         {
             Name = "Crusader";
-            Faction = Faction.Syndicate;
+            StartText = "Ambush";
+            AbilitiesText = $"- You can crusade players.\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then.";
+            Color = CustomGameOptions.CustomIntColors ? Colors.Crusader : Colors.Syndicate;
             RoleType = RoleEnum.Crusader;
-            StartText = "Wreck Everyone With A Passion";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
-            FactionName = "Syndicate";
-            FactionColor = Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            Objectives = SyndicateWinCon;
-            RoleDescription = "You are an Crusader! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
+            RoleDescription = "You are a Crusader! You are a religious fanatic who wants to purge the mission! Perform your crusades and cleanse this world of evil!";
+            InspectorResults = InspectorResults.SeeksToProtect;
         }
 
-        public float KillTimer()
+        public float CrusadeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
+            var timeSpan = utcNow - LastCrusaded;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
+            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
 
-        public KillButton KillButton
+        public void Crusade()
         {
-            get => _killButton;
-            set
-            {
-                _killButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
+
+            if (Player.Data.IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || MeetingHud.Instance)
+                TimeRemaining = 0f;
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public void UnCrusade()
         {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
-                    team.Add(player);
-            }
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-                team.Add(jackal.Player);
-                team.Add(jackal.GoodRecruit);
-            }
-
-            __instance.teamToShow = team;
+            Enabled = false;
+            LastCrusaded = DateTime.UtcNow;
+            CrusadedPlayer = null;
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public void Crusade(PlayerControl player2)
         {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
+            var closestPlayers = Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius);
 
-            if (IsRecruit && Utils.CabalWin())
+            foreach (var player in closestPlayers)
             {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.SyndicateWins() && NotDefective)
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
+                Utils.Spread(player2, player);
 
-            return false;
+                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player))
+                    continue;
+                    
+                if (!player.Is(RoleEnum.Pestilence))
+                    Utils.RpcMurderPlayer(player2, player, false);
+                
+                if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
+                    Utils.RpcMurderPlayer(player, player2, false);
+            }
         }
     }
 }

@@ -16,10 +16,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Rival";
             SymbolName = "α";
-            TaskText = $"- Get {OtherRival.name} killed and then live to the final 2.";
+            TaskText = $"- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
-            ObjectifierDescription = $"You are a Rival! You are in competition with {OtherRival.name}! Kill {OtherRival.name} and survive to the final 2!";
+            ObjectifierDescription = $"You are a Rival! You are in competition with your Rival! Kill them and survive to the final 2!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             foreach (var player in canHaveObjectifiers)
                 all.Add(player);
 
-            if (all.Count < 3)
+            if (all.Count < 4)
                 return;
 
             PlayerControl firstRival = null;
@@ -83,9 +83,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return false;
         }
 
-        public bool RivalDead() => OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
+        public bool RivalDead() => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
 
-        public bool IsDeadRival() => Player.Data.IsDead || Player.Data.Disconnected;
+        public bool IsDeadRival() => Player == null || Player.Data.IsDead || Player.Data.Disconnected;
 
         public bool BothRivalsDead() => IsDeadRival() && RivalDead();
 

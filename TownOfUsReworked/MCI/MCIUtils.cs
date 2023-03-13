@@ -1,5 +1,6 @@
 using InnerNet;
 using UnityEngine;
+using System.Linq;
 
 namespace TownOfUsReworked.MCI
 {
@@ -27,7 +28,7 @@ namespace TownOfUsReworked.MCI
             } 
         }
 
-        public static PlayerControl CreatePlayerInstance(string name, int id = -1)
+        public static PlayerControl CreatePlayerInstance()
         {
             PlatformSpecificData samplePSD = new()
             {
@@ -35,7 +36,8 @@ namespace TownOfUsReworked.MCI
                 PlatformName = "Robot"
             };
 
-            int sampleId = id;
+            int sampleId = -1;
+            var name = "Robot";
 
             if (sampleId == -1)
                 sampleId = AvailableId();
@@ -45,7 +47,7 @@ namespace TownOfUsReworked.MCI
             AmongUsClient.Instance.CreatePlayer(sampleC);
             AmongUsClient.Instance.allClients.Add(sampleC);
 
-            sampleC.Character.SetName(name + $" {{{sampleC.Character.PlayerId}:{sampleId}}}");
+            sampleC.Character.SetName(name + $" {sampleC.Character.PlayerId}");
             sampleC.Character.SetSkin(HatManager.Instance.allSkins[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
             sampleC.Character.SetHat(HatManager.Instance.allHats[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
             sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
@@ -53,6 +55,24 @@ namespace TownOfUsReworked.MCI
             InstanceControl.clients.Add(sampleId, sampleC);
             InstanceControl.PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
             return sampleC.Character;
+        }
+
+        public static void RemovePlayer(byte id)
+        {
+            int clientId = InstanceControl.clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
+            InstanceControl.clients.Remove(clientId, out ClientData outputData);
+            InstanceControl.PlayerIdClientId.Remove(id);
+            AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
+            AmongUsClient.Instance.allClients.Remove(outputData);
+        }
+
+        public static void RemoveAllPlayers()
+        {
+            foreach (byte playerId in InstanceControl.PlayerIdClientId.Keys)
+                RemovePlayer(playerId);
+
+            InstanceControl.MCIActive = false;
+            InstanceControl.SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
         }
     }
 }

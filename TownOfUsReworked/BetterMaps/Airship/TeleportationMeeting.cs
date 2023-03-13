@@ -21,20 +21,21 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             if (CustomGameOptions.AddTeleporters)
             {
-                if (!TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f && UnityEngine.Object.FindObjectOfType<AirshipStatus>() != null)
+                if (!TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f && UnityEngine.Object.FindObjectOfType<AirshipStatus>()
+                    != null)
                     Coroutines.Start(CoTeleportPlayer(__instance));
             }
         }
 
         private static IEnumerator Fade(bool fadeAway, bool enableAfterFade)
         {
-            DestroyableSingleton<HudManager>.Instance.FullScreen.enabled = true;
+            HudManager.Instance.FullScreen.enabled = true;
 
             if (fadeAway)
             {
                 for (float i = 1; i >= 0; i -= Time.deltaTime)
                 {
-                    DestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0, 0, 0, i);
+                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
                     yield return null;
                 }
             }
@@ -42,7 +43,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
             {
                 for (float i = 0; i <= 1; i += Time.deltaTime)
                 {
-                    DestroyableSingleton<HudManager>.Instance.FullScreen.color = new Color(0, 0, 0, i);
+                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
                     yield return null;
                 }
             }

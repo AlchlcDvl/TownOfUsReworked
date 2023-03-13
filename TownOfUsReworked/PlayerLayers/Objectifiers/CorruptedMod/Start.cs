@@ -2,8 +2,6 @@ using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
@@ -15,13 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
             foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
             {
                 var corrupted = (Corrupted)role;
-                corrupted.LastKilled = DateTime.UtcNow;
-                corrupted.LastKilled = corrupted.LastKilled.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
-
-                var role2 = Role.GetRole(corrupted.Player);
-
-                if (corrupted.Player.Is(Faction.Crew))
-                    role2.Faction = Faction.Neutral;
+                corrupted.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
             }
         }
     }

@@ -87,7 +87,7 @@ namespace TownOfUsReworked.Classes
 
             ModUpdater.InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>((p) => { ModUpdater.SetPopupText(info); })));
         }
-        
+
         public static void ClearOldVersions()
         {
             //Removes any old versions (Denoted by the suffix `.old`)
@@ -120,7 +120,7 @@ namespace TownOfUsReworked.Classes
                 HttpClient http = new HttpClient();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
                 var response = await http.GetAsync(new System.Uri(githubURI), HttpCompletionOption.ResponseContentRead);
-                
+
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
                     Utils.LogSomething("Server returned no data: " + response.StatusCode.ToString());
@@ -180,7 +180,7 @@ namespace TownOfUsReworked.Classes
                             updateTOUURI = asset.browser_download_url;
                         else if (updateType == "Submerged")
                             updateSubmergedURI = asset.browser_download_url;
-                        
+
                         return true;
                     }
                 }
@@ -247,7 +247,7 @@ namespace TownOfUsReworked.Classes
             {
                 Utils.LogSomething(ex);
             }
-            
+
             ShowPopup("Update wasn't successful\nTry again later,\nor update manually.");
             return false;
         }

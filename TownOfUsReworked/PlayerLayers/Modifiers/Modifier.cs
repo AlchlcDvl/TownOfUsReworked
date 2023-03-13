@@ -33,14 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         protected internal string TaskText { get; set; } = "- None";
         protected internal bool Hidden { get; set; } = false;
 
-        public virtual bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            appearance = Player.GetDefaultAppearance();
-            appearance.SpeedFactor = Player.Data.IsDead ? CustomGameOptions.GhostSpeed : CustomGameOptions.PlayerSpeed;
-            appearance.SizeFactor = new Vector3(1f, 1f, 1f);
-            return true;
-        }
-
         public string PlayerName { get; set; }
         private PlayerControl _player { get; set; }
 
@@ -49,14 +41,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             get => _player;
             set
             {
-                if (_player != null) _player.nameText().color = Color.white;
+                if (_player != null) _player.NameText().color = Color.white;
 
                 _player = value;
                 PlayerName = value.Data.PlayerName;
             }
         }
 
-        public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
 
         private bool Equals(Modifier other) => Equals(Player, other.Player) && ModifierType == other.ModifierType;
@@ -97,13 +88,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public static Modifier GetModifier(PlayerVoteArea area) => GetModifier(Utils.PlayerByVoteArea(area));
 
         public static T GenModifier<T>(Type type, PlayerControl player, int id)
-		{
-			var modifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable);
-			writer.Write(player.PlayerId);
-			writer.Write(id);
-			AmongUsClient.Instance.FinishRpcImmediately(writer);
-			return modifier;
-		}
+        {
+            var modifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable);
+            writer.Write(player.PlayerId);
+            writer.Write(id);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            return modifier;
+        }
     }
 }

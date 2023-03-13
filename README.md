@@ -1,4 +1,4 @@
-### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development. The official builds will also be posted here until the mod is ready. Please be patient.***
+### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
 ### ***Also Also Note: This README page is currently under editing, most things here are either missing or subject to change.***
 
@@ -98,12 +98,15 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Credits & Resources**](#credits--resources)
 
+[**License**](#license)
+
 -----------------------
 
 # Releases
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2022.12.14 (s & e) | v0.0.2dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev19 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
@@ -120,6 +123,52 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.2dev2</summary>
+    <ul> <li>Update: Updated to v2023.2.28</li> </ul>
+    <ul> <li>Addition: New colors</li> </ul>
+    <ul> <li>Addition: Better sabotages</li> </ul>
+    <ul> <li>Addition: Some more settings for game customisation</li> </ul>
+    <ul> <li>Addition: Version control - Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby</li> </ul>
+    <ul> <li>Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions</li> </ul>
+    <ul> <li>Improvement: Camouflages are now a little more fun now</li> </ul>
+    <ul> <li>Improvement: Ability uses now appear a little differently than how they used to originally</li> </ul>
+    <ul> <li>Buff: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)</li> </ul>
+    <ul> <li>Nerf: Retributionist can only use a dead player once</li> </ul>
+    <ul> <li>Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles</li> </ul>
+    <ul> <li>Critical Fix: Fixed All Any nulling roles when not a single role is turned on</li> </ul>
+    <ul> <li>Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode</li> </ul>
+    <ul> <li>Critical Fix: Roleblocks actually work now!</li> </ul>
+    <ul> <li>Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities</li> </ul>
+    <ul> <li>Vanilla Fix: Fixed Report button being visible in lobby</li> </ul>
+    <ul> <li>Visual Fix: Fixed footprints sometimes being stupidly small</li> </ul>
+    <ul> <li>Visual Fix: Corrected some more color names</li> </ul>
+    <ul> <li>Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored</li> </ul>
+    <ul> <li>Visual Fix: Fixed kill buttons not having text</li> </ul>
+    <ul> <li>Visual Fix: Fixed all nks winning not having a win screen</li> </ul>
+    <ul> <li>Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown</li> </ul>
+    <ul> <li>Role Fix: Fixed Retributionist being unable to use a Mystic or Seer</li> </ul>
+    <ul> <li>Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on</li> </ul>
+    <ul> <li>Role Fix: Fixed Retributionist unable to interact sometimes</li> </ul>
+    <ul> <li>Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld</li> </ul>
+    <ul> <li>Role Fix: Fixed Time Master's time freeze not stopping</li> </ul>
+    <ul> <li>Role Fix: Fixed Drunkard's invert controls staying inverted forever</li> </ul>
+    <ul> <li>ROle Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active</li> </ul>
+    <ul> <li>Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right</li> </ul>
+    <ul> <li>Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates</li> </ul>
+    <ul> <li>Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed the bug where alive Overlords did not win together</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions</li> </ul>
+    <ul> <li>Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation</li> </ul>
+    <ul> <li>Code Change: Player HUDs were redone again</li> </ul>
+    <ul> <li>Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little</li> </ul>
+    <ul> <li>Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh</li> </ul>
+    <ul> <li>Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates</li> </ul>
+    <ul> <li>Removed: Lighter ability</li> </ul>
+  </details>
   <details>
     <summary>v0.0.1dev19</summary>
     <ul> <li>Addition: New 'Default' preset for those who want to reset their settings to default</li> </ul>
@@ -329,7 +378,7 @@ Delete these files and you're good to go!
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Role/Modifier/Objectifier/Ability | The percentage probability of the specified type appearing in game | Percentage | 0% |
-| Role/Modifier/Objectifier/Ability Count | How many instances of a Role/Modifier/Objectifier/Ability should spawn in Custom Mode | Number | 1 |
+| Role/Modifier/Objectifier/Ability Count | How many instances of the specified type should spawn in Custom Mode | Number | 1 |
 | Role/Modifier/Objectifier/Ability Is Unique In All Any | Dictates whether only one of the specified type should spawn in All Any | Toggle | Off |
 
 -----------------------
@@ -438,7 +487,27 @@ The Inspector can check players for their roles. Upon being checked, the targets
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 5s |
+| Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 25s |
+
+### Inspector Results
+- Meddles With Dead - Janitor, Undertaker, Altruist, Necromancer
+- Deals With Dead - Coroner, Amnesiac, Cannibal, Retributionist
+- Seeks To Protect - Guardian Angel, Survivor, Veteran, Medic, Crusader
+- Leads The Group - Mayor, Godfather, Rebel, Pestilence
+- Brings Chaos - Jackal, Swapper, Shifter, Camouflager, Thief
+- Likes To Explore - Teleporter, Warper, Beamer, Transporter
+- Is Basic - Crewmate, Impostor, Murderer, Anarchist
+- Different Lens - Glitch, Agent, Medium, Engineer, Time Lord, Time Master
+- Has Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector
+- Meddles With Others - Escort, Consort, Jester, Executioner, Actor
+- Touches People - Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
+- Unseen - Chameleon, Wraith, Poisoner, Gorgon, Concealer
+- Uses Guns - Vigilante, Bounty Hunter, Guesser, Mafioso
+- Tracks Others - Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
+- Is Aggressive - Werewolf, Juggernaut, Sidekick, Serial Killer
+- Causes Confusion - Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
+- Drops Items - Bomber, Operative, Grenadier
+- Ghostly - Revealer, Phantom
 
 ## Mayor
 ### **Alignment: Crew (Sovereign)**
@@ -1263,7 +1332,7 @@ The Wraith can temporarily turn invisible.
 ## Anarchist
 ### **Alignment: Syndicate (Utility)**
 
-Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. With the Chaos Drive, the Anarchist's kill cooldown decreases.
+Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.
 
 ## Concealer
 ### **Alignment: Syndicate (Disruption)**
@@ -1280,7 +1349,7 @@ The Concealer can make everyone invisible for a short while, allowing sneaky kil
 ## Crusader
 ### **Alignment: Syndicate (Killing)**
 
-The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Ambusher's target. With the Chaos Drive, attempting to interact with the Crysader's target will cause the target to kill everyone withing a certain range, including the crusade target themselves.
+The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves.
 
 ### Game Options
 
@@ -1322,8 +1391,6 @@ The Gorgon can stone gaze people to freeze them in place. Upon getting gazed, th
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
-| Gaze Timer | The duration on the Gorgon's gaze | Time | 10s |
-| Gaze Delay | The delay on the Gorgon's gaze acting on the player | Time | 5s |
 
 ## Poisoner
 ### **Alignment: Syndicate (Disruption)**
@@ -1473,7 +1540,7 @@ The Rivals cannot do anything to each other and must get the other one killed.
 
 ## Corrupted
 ### Applied to: Crew
-### **Win Condition: **Kill everyone.**
+### **Win Condition: Kill everyone.**
 
 The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button.
 
@@ -1512,6 +1579,11 @@ They have the same amount of meetings as a regular player.
 |------|-------------|------|---------|
 | Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Percentage | 0% |
 
+## Insider
+### **Applied To: Crew**
+
+The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.
+
 ## Coward
 ### Applied To: Everyone
 
@@ -1528,6 +1600,27 @@ Killing the Diseased increases the killer's kill cooldown.
 |------|-------------|------|---------|
 | Kill Multiplier | How much the Kill Cooldown of the killer is increased by | Factor | 3x |
 
+## Professional
+### **Applied To: Assassins**
+
+You have one extra life used when you guess incorrectly.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Professional knows who they are on game start | Whether a player knows they are a Professional at the start of a game | Toggle | True |
+
+## Indomitable
+
+You cannot be guessed/assassinated in meetings.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Indomitable knows who they are on game start | Whether a player knows they are Indomitable at the start of a game | Toggle | False |
+
 ## Drunk
 ### Applied To: Everyone
 
@@ -1540,8 +1633,24 @@ The Drunk player's controls are inverted.
 | Drunk Controls Revese Over Time | Just to make people hate Drunk even more | Toggle | False |
 | Reverse Control Interval | How much time must pass before the controls reverse | Time | 10s |
 
+## Shy
+### **Applied To: Everyone**
+
+Anyone with this modifier loses their ability to call emergency meetings.
+
+## VIP
+
+Everyone is alerted of the VIP's death through a flash.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| VIP knows who they are on game start | Self descriptive | Toggle | True |
+
+
 ## Dwarf
-### Applied To: Everyone
+### **Applied To: Everyone**
 
 The Dwarf travels at increased speed and has a much smaller body.
 
@@ -1553,7 +1662,7 @@ The Dwarf travels at increased speed and has a much smaller body.
 | Dwarf Scale | How small the Dwarf is in comparison to normal | Factor | 0.5x |
 
 ## Giant
-### Applied To: Everyone
+### **Applied To: Everyone**
 
 The Giant is a gigantic player that has a decreased walk speed.
 
@@ -1565,7 +1674,7 @@ The Giant is a gigantic player that has a decreased walk speed.
 | Giant Scale | How big the Giant is in comparison to normal | Factor | 1.5x |
 
 ## Volatile
-### Applied To: Everyone
+### **Applied To: Everyone**
 
 You see and hear things and might lash out on others.
 
@@ -1832,26 +1941,13 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 - Tawny - Darker
 - Gold - Lighter
 - Rainbow - Lighter
-
-## Inspector Results
-- Meddles With Dead - Janitor, Undertaker, Altruist, Necromancer
-- Deals With Dead - Coroner, Amnesiac, Cannibal, Retributionist
-- Seeks To Protect - Guardian Angel, Survivor, Veteran, Medic, Crusader
-- Leads The Group - Mayor, Godfather, Rebel, Pestilence
-- Brings Chaos - Jackal, Swapper, Shifter, Camouflager, Thief
-- Likes To Explore - Teleporter, Warper, Beamer, Transporter
-- Is Basic - Crewmate, Impostor, Murderer, Anarchist
-- Different Lens - Glitch, Agent, Medium, Engineer, Time Lord, Time Master
-- Has Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector
-- Meddles With Others - Escort, Consort, Jester, Executioner, Actor
-- Touches People - Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
-- Unseen - Chameleon, Wraith, Poisoner, Gorgon, Concealer
-- Uses Guns - Vigilante, Bounty Hunter, Guesser, Mafioso
-- Tracks Others - Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
-- Is Aggressive - Werewolf, Juggernaut, Sidekick, Serial Killer
-- Causes Confusion - Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
-- Drops Items - Bomber, Operative, Grenadier
-- Ghostly - Revealer, Phantom
+- Panda - Lighter
+- Contrast - Darker
+- Chroma - Darker
+- Galaxy - Lighter
+- Fire - Lighter
+- Monochrome - Lighter
+- Mantle - Darker
 
 ## Factions
 
@@ -1884,7 +1980,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 **Undead**
 - This subfaction is led by the Dracula
 - There is a limit of how many can be alive in the subfaction
-- Attempting to interact with a Vampire Hunter will force them to kill you.
+- Attempting to interact with a Vampire Hunter as an Undead will force them to kill you.
 
 **Sect**
 - This subfaction is led by the Whisperer
@@ -1913,25 +2009,32 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the CustomColors\
-[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and some code\
+[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and a lot of code that I shamelessly yoinked\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the code for custom cosmetics\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Coroner, Poisoner and Cannibal roles, partially for Tracker role and bug fixes\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
 [Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
-[Pixabay](https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=83775) - For a lot of the sounds effects\
 [TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas\
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod\
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod\
 [Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas and icons for some buttons
+
+-----------------------
+
+# License
+This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.
+
+-----------------------
+
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>
 <p align="center">© Innersloth LLC.</p>

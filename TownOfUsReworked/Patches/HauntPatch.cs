@@ -26,16 +26,16 @@ namespace TownOfUsReworked.Patches
 
             if (role != null)
                 objectiveString += role.Name;
-            
+
             if (objectifier != null)
-                objectiveString += $" {objectifier.SymbolName}";
-            
+                objectiveString += $" {objectifier.GetColoredSymbol()}";
+
             if (modifier != null)
                 otherString += $" {modifier.Name}";
-            
+
             if (ability != null)
                 otherString += $" {ability.Name}";
-            
+
             var String = objectiveString;
 
             if (otherString.Length != 0)

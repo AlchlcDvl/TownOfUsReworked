@@ -1,20 +1,18 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
-using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Chameleon : Role
+    public class Chameleon : CrewRole
     {
         public bool Enabled;
         public DateTime LastSwooped;
         public float TimeRemaining;
         public bool IsSwooped => TimeRemaining > 0f;
-        private KillButton _swoopButton;
+        public AbilityButton SwoopButton;
 
         public Chameleon(PlayerControl player) : base(player)
         {
@@ -24,12 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             LastSwooped = DateTime.UtcNow;
             RoleType = RoleEnum.Chameleon;
-            Faction = Faction.Crew;
-            FactionName = "Crew";
-            FactionColor = Colors.Crew;
             AlignmentName = CS;
             RoleDescription = "Your are a Chameleon! You are capable of blending into the environment. Use this to stalk players who think are evil!";
-            Objectives = CrewWinCon;
             InspectorResults = InspectorResults.Unseen;
         }
 
@@ -41,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -50,8 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            
-            if (Player.Data.IsDead)
+
+            if (MeetingHud.Instance || Player.Data.IsDead)
                 TimeRemaining = 0f;
 
             var color = new Color32(0, 0, 0, 0);
@@ -71,18 +65,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 });
 
                 Player.myRend().color = color;
-                Player.nameText().color = new Color32(0, 0, 0, 0);
+                Player.NameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
-        }
-
-        public KillButton SwoopButton
-        {
-            get => _swoopButton;
-            set
-            {
-                _swoopButton = value;
-                AddToAbilityButtons(value, this);
             }
         }
 
@@ -92,98 +76,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastSwooped = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
             Player.myRend().color = new Color32(255, 255, 255, 255);
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsIntTraitor || IsIntFanatic) && Utils.IntrudersWin())
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if ((IsSynTraitor || IsSynFanatic) && Utils.SyndicateWins())
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.CrewWins() && NotDefective)
-            {
-                CrewWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CrewWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
     }
 }

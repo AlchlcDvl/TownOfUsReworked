@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 
         public static IEnumerator CleanCoroutine(DeadBody body, Janitor role)
         {
-            KillButtonTarget.SetTarget(DestroyableSingleton<HudManager>.Instance.KillButton, null, role);
             role.Player.SetKillTimer(CustomGameOptions.JanitorCleanCd);
             var renderer = body.bodyRenderer;
             var backColor = renderer.material.GetColor(BackColor);

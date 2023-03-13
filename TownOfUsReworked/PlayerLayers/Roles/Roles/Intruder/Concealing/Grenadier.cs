@@ -4,26 +4,22 @@ using System.Linq;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Hazel;
 using Il2CppSystem.Collections.Generic;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Grenadier : Role
+    public class Grenadier : IntruderRole
     {
-        private KillButton _flashButton;
+        public AbilityButton FlashButton;
         public bool Enabled = false;
         public DateTime LastFlashed;
         public float TimeRemaining;
-        public static List<PlayerControl> closestPlayers = null;
-        static readonly Color normalVision = new Color32(212, 212, 212, 0);
-        static readonly Color dimVision = new Color32(212, 212, 212, 51);
-        static readonly Color blindVision = new Color32(212, 212, 212, 255);
-        public List<PlayerControl> flashedPlayers = new List<PlayerControl>();
+        public static List<PlayerControl> ClosestPlayers;
+        static readonly Color NormalVision = new Color32(212, 212, 212, 0);
+        static readonly Color DimVision = new Color32(212, 212, 212, 51);
+        static readonly Color BlindVision = new Color32(212, 212, 212, 255);
+        public List<PlayerControl> FlashedPlayers;
         public bool Flashed => TimeRemaining > 0f;
-        private KillButton _killButton;
-        public DateTime LastKilled { get; set; }
-        public PlayerControl ClosestPlayer = null;
 
         public Grenadier(PlayerControl player) : base(player)
         {
@@ -33,47 +29,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
             RoleType = RoleEnum.Grenadier;
-            Faction = Faction.Intruder;
-            FactionName = "Intruder";
-            FactionColor = Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName ="Intruder (Concealing)";
-            Objectives = IntrudersWinCon;
             RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
             InspectorResults = InspectorResults.DropsItems;
-        }
-
-        public float KillTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.IntKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public KillButton KillButton
-        {
-            get => _killButton;
-            set
-            {
-                _killButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        public KillButton FlashButton
-        {
-            get => _flashButton;
-            set
-            {
-                _flashButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            ClosestPlayers = null;
+            FlashedPlayers = new List<PlayerControl>();
         }
 
         public float FlashTimer()
@@ -84,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }
@@ -93,8 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (Enabled != true)
             {
-                closestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
-                flashedPlayers = closestPlayers;
+                ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
+                FlashedPlayers = ClosestPlayers;
             }
 
             Enabled = true;
@@ -102,202 +63,76 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-            var specials = system.specials.ToArray();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = specials.Any(s => s.IsActive);
+            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
 
-            foreach (var player in closestPlayers)
+            if (sabActive || dummyActive)
+                return;
+
+            foreach (var player in ClosestPlayers)
             {
                 if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 {
-                    if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f && (!sabActive || dummyActive))
+                    ((Renderer)HudManager.Instance.FullScreen).enabled = true;
+                    ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
+
+                    if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
-                        float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * -2.0f;
+                        float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(normalVision, blindVision, fade);
-                        }
+                            HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
                         else if (ShouldPlayerBeDimmed(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(normalVision, dimVision, fade);
-
-                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
-                                MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
-                        }
+                            HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
                         else
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
-                        }
+                            HudManager.Instance.FullScreen.color = NormalVision;
                     }
-                    else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f && (!sabActive || dummyActive))
+                    else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
-                        if (ShouldPlayerBeBlinded(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = blindVision;
-                        }
-                        else if (ShouldPlayerBeDimmed(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = dimVision;
+                        ((Renderer)HudManager.Instance.FullScreen).enabled = true;
+                        ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
 
-                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
-                                MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
-                        }
+                        if (ShouldPlayerBeBlinded(player))
+                            HudManager.Instance.FullScreen.color = BlindVision;
+                        else if (ShouldPlayerBeDimmed(player))
+                            HudManager.Instance.FullScreen.color = DimVision;
                         else
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
-                        }
+                            HudManager.Instance.FullScreen.color = NormalVision;
                     }
-                    else if (TimeRemaining < 0.5f && (!sabActive || dummyActive))
+                    else if (TimeRemaining < 0.5f)
                     {
                         float fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(blindVision, normalVision, fade2);
-                        }
+                            HudManager.Instance.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
                         else if (ShouldPlayerBeDimmed(player))
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = Color32.Lerp(dimVision, normalVision, fade2);
-
-                            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
-                                MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
-                        }
+                            HudManager.Instance.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
                         else
-                        {
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                            DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
-                        }
+                            HudManager.Instance.FullScreen.color = NormalVision;
                     }
                     else
                     {
-                        ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-                        ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).gameObject.active = true;
-                        DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
-                        TimeRemaining = 0.0f;
+                        HudManager.Instance.FullScreen.color = NormalVision;
+                        TimeRemaining = 0f;
                     }
                 }
             }
 
-            if (TimeRemaining > 0.5f)
-            {
-                if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
-                    MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
-            }
+            if (MeetingHud.Instance)
+                TimeRemaining = 0f;
         }
 
-        private static bool ShouldPlayerBeDimmed(PlayerControl player)
-        {
-            return (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
-        }
+        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
 
-        private static bool ShouldPlayerBeBlinded(PlayerControl player)
-        {
-            return !player.Is(Faction.Intruder) && !player.Data.IsDead && !MeetingHud.Instance;
-        }
+        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || MeetingHud.Instance);
 
         public void UnFlash()
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            ((Renderer)DestroyableSingleton<HudManager>.Instance.FullScreen).enabled = true;
-            DestroyableSingleton<HudManager>.Instance.FullScreen.color = normalVision;
-            flashedPlayers.Clear();
-        }
-
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
-                    team.Add(player);
-            }
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-                team.Add(jackal.Player);
-                team.Add(jackal.GoodRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.IntrudersWin() && NotDefective)
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
+            ((Renderer)HudManager.Instance.FullScreen).enabled = true;
+            HudManager.Instance.FullScreen.color = NormalVision;
+            FlashedPlayers.Clear();
         }
     }
 }

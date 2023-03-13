@@ -30,8 +30,8 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Where(x => (!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) &&
-                !x.Is(RoleAlignment.NeutralEvil)) || x.IsRecruit()).Count();
+            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Where(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) &&
+                !x.Is(RoleAlignment.NeutralEvil)) || x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected)).Count();
             var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";
             var IsAre = totalEvilsCount > 1 ? "are" : "is";
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Patches
 
             role.DeathReason = DeathReasonEnum.Ejected;
             role.KilledBy = " ";
-            
+
             foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
             {
                 var exe = (Executioner)role2;
@@ -74,7 +74,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                     ejectString = $"{player.name} was ejected.";
-                    
+
                 __instance.completeString = ejectString;
             }
             else

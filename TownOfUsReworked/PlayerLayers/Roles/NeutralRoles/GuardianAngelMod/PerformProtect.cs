@@ -6,21 +6,21 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformProtect
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.GuardianAngel))
                 return true;
 
-            if (!PlayerControl.LocalPlayer.CanMove)
-                return false;
-
             if (PlayerControl.LocalPlayer.Data.IsDead && !CustomGameOptions.ProtectBeyondTheGrave)
-                return false;
+                return true;
 
             var role = Role.GetRole<GuardianAngel>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
 
             if (__instance == role.ProtectButton)
             {

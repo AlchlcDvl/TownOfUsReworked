@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
@@ -30,11 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            
-            try
-            {
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.WerewolfWin, false, 1f);
-            } catch {}
         }
     }
 }

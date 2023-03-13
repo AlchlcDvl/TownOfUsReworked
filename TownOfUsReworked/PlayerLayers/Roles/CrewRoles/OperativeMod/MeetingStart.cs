@@ -12,27 +12,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
     {
         public static void Postfix(MeetingHud __instance)
         {
-            if (PlayerControl.LocalPlayer.Data.IsDead || !PlayerControl.LocalPlayer.Is(RoleEnum.Operative))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var opRole = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
 
             if (opRole.BuggedPlayers.Count == 0)
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
             else if (opRole.BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
             else
             {
-                string message = "Roles caught in your bugs:\n";
+                string message = "The following roles triggered your bug:\n";
+                int position = 0;
 
                 foreach (RoleEnum role in opRole.BuggedPlayers.OrderBy(x => Guid.NewGuid()))
-                    message += $" {role},";
+                {
+                    if (position < opRole.BuggedPlayers.Count - 1)
+                        message += $" {role},";
+                    else
+                        message += $" and {role}.";
 
-                message.Remove(message.Length - 1, 1);
+                    position++;
+                }
 
                 //Ensures only the Operative sees this
-                if (DestroyableSingleton<HudManager>.Instance)
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                if (HudManager.Instance)
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
             }
         }
     }

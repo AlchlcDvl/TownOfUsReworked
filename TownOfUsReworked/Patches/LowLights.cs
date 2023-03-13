@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
 
                 return false;
             }
-            
+
             if (player == null || player.IsDead)
             {
                 __result = __instance.MaxLightRadius;
@@ -39,26 +39,25 @@ namespace TownOfUsReworked.Patches
 
             var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
 
-            if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(Faction.Syndicate) ||
-                (player._object.Is(Faction.Neutral) && CustomGameOptions.LightsAffectNeutrals))
+            if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(AbilityEnum.Torch))
             {
                 __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
                 return false;
             }
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (player._object.Is(Faction.Syndicate))
             {
-                if (player._object.Is(AbilityEnum.Torch))
-                    __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, 1) * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-                    
+                __result = __instance.MaxLightRadius * CustomGameOptions.SyndicateVision;
+                return false;
+            }
+
+            if (player._object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)
+            {
+                __result = __instance.MaxLightRadius * CustomGameOptions.NeutralVision;
                 return false;
             }
 
             var t = switchSystem.Value / 255f;
-            
-            if (player._object.Is(AbilityEnum.Torch))
-                t = 1;
-
             __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * CustomGameOptions.CrewVision;
             return false;
         }

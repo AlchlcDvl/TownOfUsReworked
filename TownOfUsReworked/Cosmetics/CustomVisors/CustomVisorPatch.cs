@@ -47,15 +47,9 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                     MagicShader = visorShader;
                 }
 
-                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{id}.png");
-                var mainImg = stream.ReadFully();
-                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                Utils.LoadImage(tex2D, mainImg, false);
-                var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-
                 var a = ScriptableObject.CreateInstance<VisorViewData>();
                 var b = new AddressableLoadWrapper<VisorViewData>();
-                a.IdleFrame = sprite;
+                a.IdleFrame = GetSprite(id);
 
                 if (altshader == true)
                     a.AltShader = MagicShader;
@@ -71,6 +65,16 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 newVisor.ChipOffset = new Vector2(0f, 0.2f);
                 return newVisor;
             }
+        }
+
+        private static Sprite GetSprite(string name)
+        {
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{name}.png");
+            var mainImg = stream.ReadFully();
+            var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            Utils.LoadImage(tex2D, mainImg, false);
+            var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
+            return sprite;
         }
     }
 }

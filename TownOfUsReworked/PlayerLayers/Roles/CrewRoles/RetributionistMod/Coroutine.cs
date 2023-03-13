@@ -28,14 +28,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             var parentId = target.ParentId;
             var position = target.TruePosition;
 
-            var revived = new List<PlayerControl>();
-
             if (AmongUsClient.Instance.AmHost)
                 Utils.RpcMurderPlayer(role.Player, role.Player, false);
 
             if (CustomGameOptions.AltruistTargetBody)
             {
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (var deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == parentId)
                         deadBody.gameObject.Destroy();
@@ -86,16 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
-            revived.Add(player);
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
-
-            if (PlayerControl.LocalPlayer == player)
-            {
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
-                } catch {}
-            }
 
             if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
@@ -109,9 +98,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
-                revived.Add(lover);
 
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (var deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == lover.PlayerId)
                         deadBody.gameObject.Destroy();
@@ -122,17 +110,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 loverRole.KilledBy = " By " + role.PlayerName;
             }
 
-            if (revived.Any(x => x.AmOwner))
-            {
+            if (Minigame.Instance)
                 Minigame.Instance.Close();
-                Minigame.Instance.Close();
-            }
 
             role.ReviveUsed = true;
             Utils.Spread(role.Player, player);
 
-            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) ||
-                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo))
+            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
+                !PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen)))
             {
                 var gameObj = new GameObject();
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();

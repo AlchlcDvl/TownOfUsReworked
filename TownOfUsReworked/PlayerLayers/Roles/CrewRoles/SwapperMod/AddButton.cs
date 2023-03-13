@@ -77,14 +77,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     writer2.Write(sbyte.MaxValue);
                     writer2.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                    return;
                 }
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.SetSwaps);
-                writer.Write(SwapVotes.Swap1.TargetPlayerId);
-                writer.Write(SwapVotes.Swap2.TargetPlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.SetSwaps);
+                    writer.Write(SwapVotes.Swap1.TargetPlayerId);
+                    writer.Write(SwapVotes.Swap2.TargetPlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
 
             return Listener;

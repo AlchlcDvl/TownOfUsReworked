@@ -4,7 +4,6 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using InnerNet;
-using Reactor.Utilities;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 return;
 
             var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-            __instance.TimerText.text = "Can Vote: " + role.VoteBank + " time(s) | " + __instance.TimerText.text;
+            __instance.TimerText.text = $"Can Vote: {role.VoteBank} time(s) | {__instance.TimerText.text}";
         }
 
         public static Dictionary<byte, int> CalculateAllVotes(MeetingHud __instance)
@@ -41,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
                 var playerVoteArea = __instance.playerStates[i];
-                if (!playerVoteArea.DidVote || playerVoteArea.AmDead || playerVoteArea.VotedFor == PlayerVoteArea.MissedVote ||
-                    playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
+
+                if (!playerVoteArea.DidVote || playerVoteArea.AmDead || playerVoteArea.VotedFor == PlayerVoteArea.MissedVote || playerVoteArea.VotedFor == PlayerVoteArea.DeadVote)
                     continue;
 
                 if (dictionary.TryGetValue(playerVoteArea.VotedFor, out var num))
@@ -176,14 +175,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 if (playerVoteArea.AmDead)
                     return false;
 
-                if (PlayerControl.LocalPlayer.PlayerId == srcPlayerId)
-                {
-                    try
-                    {
-                        //SoundManager.Instance.PlaySound(TownOfUsReworked.VoteLockSound, false, 1f);
-                    } catch {}
-                }
-
                 var role = Role.GetRole<Mayor>(player);
 
                 if (playerVoteArea.DidVote)
@@ -197,7 +188,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 __instance.Cast<InnerNetObject>().SetDirtyBit(1U);
                 __instance.CheckForEndVoting();
-
                 return false;
             }
         }

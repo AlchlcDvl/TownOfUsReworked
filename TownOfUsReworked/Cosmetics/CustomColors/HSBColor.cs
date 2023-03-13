@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics
+namespace TownOfUsReworked.Cosmetics.CustomColors
 {
     [Serializable]
     public struct HSBColor
@@ -139,7 +139,7 @@ namespace TownOfUsReworked.Cosmetics
 
         public Color ToColor() => ToColor(this);
 
-        public override string ToString() => "H:" + h + " S:" + s + " B:" + b;
+        public override string ToString() => $"H: {h} S: {s} B: {b}";
 
         public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
         {

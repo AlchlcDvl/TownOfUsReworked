@@ -4,25 +4,31 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformTransport
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
-                return false;
+                return true;
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.TransportButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(role.TransportButton))
                     return false;
 
                 if (role.TransportTimer() != 0f)
                     return false;
 
-                if (role.TransportList == null && role.ButtonUsable)
+                if (!role.ButtonUsable)
+                    return false;
+
+                if (role.TransportList == null)
                 {
                     role.PressedButton = true;
                     role.MenuClick = true;
@@ -31,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

@@ -24,12 +24,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
                     if (CustomGameOptions.NewSpawns)
                     {
-                        Spawn = AddSpawn(Location: new Vector3(-8.808f, 12.710f, 0.013f), name: StringNames.VaultRoom,
-                            Sprite: TownOfUsReworked.VaultSprite, Rollover: TownOfUsReworked.VaultAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
-                        Spawn = AddSpawn(Location: new Vector3(-19.278f, -1.033f, 0), name: StringNames.Cockpit,
-                            Sprite: TownOfUsReworked.CokpitSprite, Rollover: TownOfUsReworked.CokpitAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
-                        Spawn = AddSpawn(Location: new Vector3(29.041f, -6.336f, 0), name: StringNames.Medical,
-                            Sprite: TownOfUsReworked.MedicalSprite, Rollover: TownOfUsReworked.MedicalAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(-8.808f, 12.710f, 0.013f), name: StringNames.VaultRoom, Sprite: TownOfUsReworked.VaultSprite, Rollover:
+                            TownOfUsReworked.VaultAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(-19.278f, -1.033f, 0), name: StringNames.Cockpit, Sprite: TownOfUsReworked.CokpitSprite, Rollover:
+                            TownOfUsReworked.CokpitAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(29.041f, -6.336f, 0), name: StringNames.Medical, Sprite: TownOfUsReworked.MedicalSprite, Rollover:
+                            TownOfUsReworked.MedicalAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
 
                         __instance.Locations = Spawn;
                     }
@@ -37,15 +37,9 @@ namespace TownOfUsReworked.BetterMaps.Airship
                     if ((byte)CustomGameOptions.SpawnType != 0)
                     {
                         if ((byte)CustomGameOptions.SpawnType == 1)
-                        {
-                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] {CustomGameOptions.NewSpawns ? Spawn[7] : Spawn[3],
-                                Spawn[2], Spawn[5]};
-                        }
+                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] {CustomGameOptions.NewSpawns ? Spawn[7] : Spawn[3], Spawn[2], Spawn[5]};
                         else if ((byte)CustomGameOptions.SpawnType == 2)
-                        {
-                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] {Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]],
-                                Spawn[SpawnPoints[2]]};
-                        }
+                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] {Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]], Spawn[SpawnPoints[2]]};
                     }
 
                     return true;
@@ -57,8 +51,8 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 return false;
             }
 
-            public static SpawnInMinigame.SpawnLocation[] AddSpawn(Vector3 Location, StringNames name, Sprite Sprite, AnimationClip Rollover,
-                AudioClip RolloverSfx, SpawnInMinigame.SpawnLocation[] array)
+            public static SpawnInMinigame.SpawnLocation[] AddSpawn(Vector3 Location, StringNames name, Sprite Sprite, AnimationClip Rollover, AudioClip RolloverSfx,
+                SpawnInMinigame.SpawnLocation[] array)
             {
                 Array.Resize(ref array, array.Length + 1);
 

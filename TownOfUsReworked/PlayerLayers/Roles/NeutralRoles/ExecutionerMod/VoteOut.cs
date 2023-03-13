@@ -24,13 +24,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
                 if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Player.Data.IsDead))
                     continue;
 
-                if (player.PlayerId == exe.TargetPlayer.PlayerId)
+                if (player == exe.TargetPlayer)
                 {
+                    exe.TargetVotedOut = true;
+                    exe.SetDoomed(MeetingHud.Instance);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ExecutionerWin);
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    exe.TargetVotedOut = true;
                 }
             }        
         }

@@ -38,53 +38,51 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
-        protected internal Color32 Color { get; set; } = Colors.Role;
-        protected internal Color32 FactionColor { get; set; } = Colors.Faction;
-        protected internal Color32 SubFactionColor { get; set; } = Colors.SubFaction;
-        protected internal RoleEnum RoleType { get; set; } = RoleEnum.None;
-        protected internal Faction Faction { get; set; } = Faction.None;
-        protected internal RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
-        protected internal SubFaction SubFaction { get; set; } = SubFaction.None;
-        protected internal InspectorResults InspectorResults { get; set; } = InspectorResults.None;
-        protected internal string IntroSound { get; set; } = "";
-        protected internal List<Role> RoleHistory { get; set; } = new List<Role>();
-        protected internal List<KillButton> AbilityButtons { get; set; } = new List<KillButton>();
-        protected internal KillButton PrimaryButton { get; set; } = null;
-        protected internal KillButton SecondaryButton { get; set; } = null;
-        protected internal KillButton TertiaryButton { get; set; } = null;
-        protected internal KillButton QuartnaryButton { get; set; } = null;
+        protected internal Color32 Color = Colors.Role;
+        protected internal Color32 FactionColor = Colors.Faction;
+        protected internal Color32 SubFactionColor = Colors.SubFaction;
+        protected internal RoleEnum RoleType = RoleEnum.None;
+        protected internal Faction Faction = Faction.None;
+        protected internal RoleAlignment RoleAlignment = RoleAlignment.None;
+        protected internal SubFaction SubFaction = SubFaction.None;
+        protected internal InspectorResults InspectorResults = InspectorResults.None;
+        protected internal string IntroSound = "";
+        protected internal List<Role> RoleHistory = new List<Role>();
 
-        protected internal string StartText { get; set; } = "Woah The Game Started";
-        protected internal string AbilitiesText { get; set; } = " - None.";
+        protected internal string StartText = "Woah The Game Started";
+        protected internal string AbilitiesText = "- None.";
 
-        protected internal string Name { get; set; } = "Roleless";
-        protected internal string AlignmentName { get; set; } = "None";
-        protected internal string FactionName { get; set; } = "None";
-        protected internal string SubFactionName { get; set; } = "None";
+        protected internal string Name = "Roleless";
+        protected internal string AlignmentName = "None";
+        protected internal string FactionName => $"{Faction}";
+        protected internal string SubFactionName => $"{SubFaction}";
 
-        protected internal string RoleDescription { get; set; } = "You are a role!";
+        protected internal string RoleDescription = "You are a role!";
 
-        protected internal string Objectives { get; set; } = "- None.";
+        protected internal string Objectives = "- None.";
 
-        protected internal string KilledBy { get; set; } = "";
-        protected internal DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
+        protected internal string KilledBy = "";
+        protected internal DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
 
-        protected internal bool RoleBlockImmune { get; set; } = false;
-        protected internal bool IsBlocked { get; set; } = false;
+        protected internal bool RoleBlockImmune = false;
+        protected internal bool IsBlocked = false;
 
-        protected internal bool Base { get; set; } = false;
+        protected internal bool Base = false;
 
-        protected internal bool IsRecruit { get; set; } = false;
-        protected internal bool IsResurrected { get; set; } = false;
-        protected internal bool IsPersuaded { get; set; } = false;
-        protected internal bool IsBitten { get; set; } = false;
-        protected internal bool IsIntTraitor { get; set; } = false;
-        protected internal bool IsIntAlly { get; set; } = false;
-        protected internal bool IsIntFanatic { get; set; } = false;
-        protected internal bool IsSynTraitor { get; set; } = false;
-        protected internal bool IsSynAlly { get; set; } = false;
-        protected internal bool IsSynFanatic { get; set; } = false;
-        protected internal bool IsCrewAlly { get; set; } = false;
+        protected internal HauntMenuMinigame HauntMenu;
+        protected internal AbilityButton SpectateButton;
+
+        protected internal bool IsRecruit = false;
+        protected internal bool IsResurrected = false;
+        protected internal bool IsPersuaded = false;
+        protected internal bool IsBitten = false;
+        protected internal bool IsIntTraitor = false;
+        protected internal bool IsIntAlly = false;
+        protected internal bool IsIntFanatic = false;
+        protected internal bool IsSynTraitor = false;
+        protected internal bool IsSynAlly = false;
+        protected internal bool IsSynFanatic = false;
+        protected internal bool IsCrewAlly = false;
         protected internal bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
             !IsSynFanatic && !IsCrewAlly;
 
@@ -181,6 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
 
         private PlayerControl _player { get; set; }
+        public string PlayerName { get; set; }
 
         public PlayerControl Player
         {
@@ -188,7 +187,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             set
             {
                 if (_player != null)
-                    _player.nameText().color = new Color32(255, 255, 255, 255);
+                    _player.NameText().color = new Color32(255, 255, 255, 255);
                 
                 _player = value;
                 PlayerName = value.Data.PlayerName;
@@ -199,11 +198,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
         protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
         protected internal bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
-
-        public bool Local => PlayerControl.LocalPlayer.PlayerId == Player.PlayerId;
-
-        public static uint NetId => PlayerControl.LocalPlayer.NetId;
-        public string PlayerName { get; set; }
 
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
@@ -227,42 +221,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)RoleType);
 
-        public void AddToAbilityButtons(KillButton button, Role role)
-        {
-            if (!role.AbilityButtons.Contains(button))
-                role.AbilityButtons.Add(button);
-        }
-
         public static void SetColors()
         {
-            
             LightDarkColors.Clear();
-            LightDarkColors.Add(0, "darker"); //Red
-            LightDarkColors.Add(1, "darker"); //Blue
-            LightDarkColors.Add(2, "darker"); //Green
-            LightDarkColors.Add(3, "lighter"); //Pink
-            LightDarkColors.Add(4, "lighter"); //Orange
-            LightDarkColors.Add(5, "lighter"); //Yellow
-            LightDarkColors.Add(6, "darker"); //Black
-            LightDarkColors.Add(7, "lighter"); //White
-            LightDarkColors.Add(8, "darker"); //Purple
-            LightDarkColors.Add(9, "darker"); //Brown
-            LightDarkColors.Add(10, "lighter"); //Cyan
-            LightDarkColors.Add(11, "lighter"); //Lime
-            LightDarkColors.Add(12, "darker"); //Maroon
-            LightDarkColors.Add(13, "lighter"); //Rose
-            LightDarkColors.Add(14, "lighter"); //Banana
-            LightDarkColors.Add(15, "darker"); //Grey
-            LightDarkColors.Add(16, "darker"); //Tan
-            LightDarkColors.Add(17, "lighter"); //Coral
-            LightDarkColors.Add(18, "darker"); //Watermelon
-            LightDarkColors.Add(19, "darker"); //Chocolate
-            LightDarkColors.Add(20, "lighter"); //Sky Blue
-            LightDarkColors.Add(21, "lighter"); //Biege
-            LightDarkColors.Add(22, "lighter"); //Hot Pink
-            LightDarkColors.Add(23, "lighter"); //Turquoise
-            LightDarkColors.Add(24, "lighter"); //Lilac
-            LightDarkColors.Add(25, "darker"); //Olive
+            LightDarkColors.Add(0, "darker"); // Red
+            LightDarkColors.Add(1, "darker"); // Blue
+            LightDarkColors.Add(2, "darker"); // Green
+            LightDarkColors.Add(3, "lighter"); // Pink
+            LightDarkColors.Add(4, "lighter"); // Orange
+            LightDarkColors.Add(5, "lighter"); // Yellow
+            LightDarkColors.Add(6, "darker"); // Black
+            LightDarkColors.Add(7, "lighter"); // White
+            LightDarkColors.Add(8, "darker"); // Purple
+            LightDarkColors.Add(9, "darker"); // Brown
+            LightDarkColors.Add(10, "lighter"); // Cyan
+            LightDarkColors.Add(11, "lighter"); // Lime
+            LightDarkColors.Add(12, "darker"); // Maroon
+            LightDarkColors.Add(13, "lighter"); // Rose
+            LightDarkColors.Add(14, "lighter"); // Banana
+            LightDarkColors.Add(15, "darker"); // Grey
+            LightDarkColors.Add(16, "darker"); // Tan
+            LightDarkColors.Add(17, "lighter"); // Coral
+            LightDarkColors.Add(18, "darker"); // Watermelon
+            LightDarkColors.Add(19, "darker"); // Chocolate
+            LightDarkColors.Add(20, "lighter"); // Sky Blue
+            LightDarkColors.Add(21, "lighter"); // Biege
+            LightDarkColors.Add(22, "lighter"); // Hot Pink
+            LightDarkColors.Add(23, "lighter"); // Turquoise
+            LightDarkColors.Add(24, "lighter"); // Lilac
+            LightDarkColors.Add(25, "darker"); // Olive
             LightDarkColors.Add(26, "lighter"); //Azure
             LightDarkColors.Add(27, "darker"); // Plum
             LightDarkColors.Add(28, "darker"); // Jungle
@@ -271,20 +258,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(31, "darker"); // Macau
             LightDarkColors.Add(32, "darker"); // Tawny
             LightDarkColors.Add(33, "lighter"); // Gold
-            LightDarkColors.Add(34, "lighter"); // Rainbow
+            LightDarkColors.Add(34, "lighter"); // Panda
+            LightDarkColors.Add(35, "darker"); // Contrast
+            LightDarkColors.Add(36, "darker"); // Chroma
+            LightDarkColors.Add(37, "darker"); // Mantle
+            LightDarkColors.Add(38, "lighter"); // Fire
+            LightDarkColors.Add(39, "lighter"); // Galaxy
+            LightDarkColors.Add(40, "lighter"); // Monochrome
+            LightDarkColors.Add(41, "lighter"); // Rainbow
         }
 
         internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public static T GenRole<T>(Type type, PlayerControl player, int id)
-		{
-			var role = (T)((object)Activator.CreateInstance(type, new object[] { player }));
-			var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable);
-			writer.Write(player.PlayerId);
-			writer.Write(id);
-			AmongUsClient.Instance.FinishRpcImmediately(writer);
-			return role;
-		}
+        {
+            var role = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable);
+            writer.Write(player.PlayerId);
+            writer.Write(id);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            return role;
+        }
         
         public static Role GetRole(PlayerControl player)
         {
@@ -341,15 +335,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype);
+        public static IEnumerable<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype && x.NotDefective);
 
-        public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction);
+        public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && x.NotDefective);
 
-        public static IEnumerable<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra);
+        public static IEnumerable<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && x.NotDefective);
 
         public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction);
 
         public static IEnumerable<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results);
+
+        public static IEnumerable<Role> GetRoles(string name) => AllRoles.Where(x => x.Name == name);
         
         [HarmonyPatch]
         public static class CheckEndGame
@@ -418,7 +414,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             return false;
                     }
 
-                    return false;
+                    return Utils.GameHasEnded();
                 }
             }
         }
@@ -432,25 +428,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     return;
 
                 var player = __instance.__4__this;
-                var text = player.GetTaskList();
 
                 try
                 {
-                    var firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
+                    foreach (var task2 in player.myTasks.ToArray())
+                    {
+                        var importantTextTask = task2.Cast<ImportantTextTask>();
 
-                    if (firstText.Text.Contains("Sabotage and kill everyone"))
-                        player.myTasks.Remove(firstText);
-
-                    firstText = player.myTasks.ToArray()[0].Cast<ImportantTextTask>();
-                    
-                    if (firstText.Text.Contains("Fake"))
-                        player.myTasks.Remove(firstText);
+                        if (importantTextTask.Text.Contains("Sabotage and kill everyone") || importantTextTask.Text.Contains("Fake Tasks") || importantTextTask.Text.Contains("Role") ||
+                            importantTextTask.Text.Contains("tasks to win!"))
+                            player.myTasks.Remove(importantTextTask);
+                    }
                 } catch {}
 
                 var task = new GameObject("DetailTask").AddComponent<ImportantTextTask>();
                 task.transform.SetParent(player.transform, false);
-                task.Text = text;
+                task.Text = player.GetTaskList();
                 player.myTasks.Insert(0, task);
+                player.RegenTask();
             }
         }
     }

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
     {
         private static bool Prefix(MapBehaviour __instance)
         {
-            return !PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage);
+            return PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage;
         }
     }
 }

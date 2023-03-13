@@ -1,24 +1,25 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformConvert
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Dracula))
-                return false;
+                return true;
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
 
             if (__instance == role.BiteButton)
             {
@@ -31,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 if (role.ConvertTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.VampireHunter), false, true, Role.GetRoleValue(RoleEnum.Pestilence));
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, false, true);
 
                 if (interact[3] == true)
                 {
@@ -41,7 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                     writer3.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer3);
                     Convert(role, role.ClosestPlayer);
-                    return false;
                 }
 
                 if (interact[0] == true)
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 return false;
             }
 
-            return false;
+            return true;
         }
 
         public static void Convert(Dracula dracRole, PlayerControl other)

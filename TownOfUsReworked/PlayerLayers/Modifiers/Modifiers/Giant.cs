@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             ModifierDescription = $"You are a Giant! You are big{slowText}!";
         }
 
-        public override bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             appearance = Player.GetDefaultAppearance();
             appearance.SpeedFactor = (Player.Data.IsDead ? CustomGameOptions.GhostSpeed : CustomGameOptions.PlayerSpeed) * CustomGameOptions.GiantSpeed;

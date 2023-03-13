@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
             if (!CustomGameOptions.AppearanceAnimation)
                 playerControl.CurrentOutfitType = PlayerOutfitType.Default;
         }
-        
+
         [HarmonyPostfix]
         public static void Postfix(GameData.PlayerInfo kInfo, GameData.PlayerInfo vInfo)
         {

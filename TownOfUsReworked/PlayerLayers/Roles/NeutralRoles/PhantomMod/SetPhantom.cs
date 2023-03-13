@@ -37,10 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
                 var former = Role.GetRole(PlayerControl.LocalPlayer);
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
                 var role = new Phantom(PlayerControl.LocalPlayer);
                 role.Player.RegenTask();
-                role.RoleHistory.AddRange(former.RoleHistory);
+                role.RoleUpdate(former);
 
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();

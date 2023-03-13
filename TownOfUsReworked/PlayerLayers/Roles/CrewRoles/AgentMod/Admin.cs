@@ -4,6 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TMPro;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
@@ -30,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             colorMapping.Sort();
             var useCompactText = icons.Count > 2 * area.MaxWidth;
 
-            for (var i = 0;i < colorMapping.Count;i++)
+            for (var i = 0; i < colorMapping.Count; i++)
             {
                 var icon = icons[i];
                 var sprite = icon.GetComponent<SpriteRenderer>();
@@ -38,6 +39,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
                 if (SubmergedCompatibility.Loaded)
                     sprite.color = new Color(1, 1, 1, 1);
+
+                if (CamouflageUnCamouflage.IsCamoed)
+                    sprite.color = Color.grey;
 
                 if (sprite != null)
                     PlayerMaterial.SetColors(colorMapping[i], sprite);
@@ -53,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
                     if(useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);
-					else if (i / area.MaxWidth == 0)
+                    else if (i / area.MaxWidth == 0)
                         text.transform.localPosition = new Vector3(0, -area.YOffset, -20);
                     else
                         text.transform.localPosition = new Vector3(0, area.YOffset, -20);
@@ -78,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 var objectsInRoom = room.roomArea.OverlapCollider(__instance.filter, __instance.buffer);
                 var colorMap = new List<int>();
 
-                for (var i = 0;i < objectsInRoom;i++)
+                for (var i = 0; i < objectsInRoom; i++)
                 {
                     var collider = __instance.buffer[i];
 

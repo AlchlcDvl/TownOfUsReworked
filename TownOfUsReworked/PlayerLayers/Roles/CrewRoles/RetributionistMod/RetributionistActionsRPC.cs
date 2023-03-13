@@ -4,7 +4,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     {
         EngineerFix,
         Protect,
-        Rewind,
         AltruistRevive,
         Alert,
         Transport,

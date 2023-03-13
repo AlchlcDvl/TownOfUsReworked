@@ -9,7 +9,7 @@ namespace TownOfUsReworked.Patches
     public class ChatControlPatch
     {
         public static int CurrentHistorySelection = -1;
-        
+
         public static void Prefix()
         {
             if (AmongUsClient.Instance.AmHost && DataManager.Settings.multiplayer.ChatMode == InnerNet.QuickChatModes.QuickChatOnly)
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.Patches
                 ClipboardHelper.PutClipboardString(__instance.TextArea.text);
                 __instance.TextArea.SetText("");
             }
-            
+
             if (Input.GetKeyDown(KeyCode.UpArrow) && ChatCommands.ChatHistory.Count > 0)
             {
                 CurrentHistorySelection = Mathf.Clamp(--CurrentHistorySelection, 0, ChatCommands.ChatHistory.Count - 1);

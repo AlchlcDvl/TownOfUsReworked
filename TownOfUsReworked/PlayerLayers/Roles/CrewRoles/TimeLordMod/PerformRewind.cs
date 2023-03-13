@@ -5,22 +5,22 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformRewind
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord))
-                return false;
+                return true;
 
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
+
+            if (role.IsBlocked)
+                return false;
             
             if (__instance == role.RewindButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
-                if (!role.ButtonUsable)
+                if (!Utils.ButtonUsable(role.RewindButton))
                     return false;
 
                 if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
@@ -31,16 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Rewind);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
-        
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.RewindSound, false, 1f);
-                } catch {}
-
                 return false;
             }
             
-            return false;
+            return true;
         }
     }
 }

@@ -8,8 +8,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Betrayer : Role
     {
-        private KillButton _killButton;
-        public DateTime LastKilled { get; set; }
+        public AbilityButton KillButton;
+        public DateTime LastKilled;
         public PlayerControl ClosestPlayer = null;
 
         public Betrayer(PlayerControl player) : base(player)
@@ -31,19 +31,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public KillButton KillButton
-        {
-            get => _killButton;
-            set
-            {
-                _killButton = value;
-                AddToAbilityButtons(value, this);
-            }
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)

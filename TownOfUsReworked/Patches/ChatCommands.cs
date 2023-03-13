@@ -62,9 +62,10 @@ namespace TownOfUsReworked.Patches
                 coloursDict.Add(31, "Macau");
                 coloursDict.Add(32, "Tawny");
                 coloursDict.Add(33, "Gold");
-                coloursDict.Add(34, "Rainbow");
+                coloursDict.Add(34, "Chroma");
+                coloursDict.Add(35, "Rainbow");
 
-                var hudManager = DestroyableSingleton<HudManager>.Instance.Chat;
+                var hudManager = HudManager.Instance.Chat;
                 string text = hudManager.TextArea.text;
                 string otherText = text;
                 text = text.ToLower();
@@ -132,7 +133,7 @@ namespace TownOfUsReworked.Patches
                         else
                             hudManager.AddChat(PlayerControl.LocalPlayer, "You can't do that.");
                     }
-                    //Abbreviations help                    
+                    //Abbreviations help
                     else if (text == "/abbreviations" || text == "/abbreviations " || text == "/ab" || text == "/ab ")
                     {
                         chatHandled = true;
@@ -411,12 +412,12 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "cont";
                         else
                             abbreviation = "Invalid input.";
-                        
+
                         if (abbreviation == "Invalid input.")
                             chatText = abbreviation;
                         else
                             chatText = $"The abbreviation for {tempText} is {abbreviation}!";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Credits
@@ -427,10 +428,10 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, "Mod Creator: slushiegoose");
                         hudManager.AddChat(player, "Continued By: polus.gg");
                         hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, tix and MyDragonBreath");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator and MyDragonBreath");
                         hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
-                    //Name help                    
+                    //Name help
                     else if (text == "/setname" || text == "/setname ")
                     {
                         chatHandled = true;
@@ -450,7 +451,7 @@ namespace TownOfUsReworked.Patches
                             hudManager.AddChat(player, "Name changed!");
                         }
                     }
-                    //Colour help                    
+                    //Colour help
                     else if (text == "/colour" || text == "/color" || text == "/colour " || text == "/color ")
                     {
                         chatHandled = true;
@@ -470,8 +471,9 @@ namespace TownOfUsReworked.Patches
 
                         if (!Int32.TryParse(inputText, out col))
                         {
-                            hudManager.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID, go into the color" +
-                                " selection screen and count the number of colors starting from 0 to the position of the color you want to pick. The range of colors is from 0 to 59 meaning Red to Rainbow.");
+                            hudManager.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID," +
+                                " go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick. The range of colors is from 0" +
+                                " to 41 meaning Red to Rainbow.");
                         }
                         else
                         {
@@ -480,7 +482,7 @@ namespace TownOfUsReworked.Patches
                             hudManager.AddChat(player, colourSpelling + " changed!");
                         }
                     }
-                    //Kick help                    
+                    //Kick help
                     else if (text == "/kick" || text == "/kick ")
                     {
                         chatHandled = true;
@@ -518,7 +520,7 @@ namespace TownOfUsReworked.Patches
                             }
                         }
                     }
-                    //Ban help                    
+                    //Ban help
                     else if (text == "/ban" || text == "/ban ")
                     {
                         chatHandled = true;
@@ -539,13 +541,13 @@ namespace TownOfUsReworked.Patches
                                 AmongUsClient.Instance.KickPlayer(client.Id, true);
                         }
                     }
-                    //RoleInfo help                    
+                    //RoleInfo help
                     else if (text == "/roleinfo" || text == "/roleinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /roleinfo <role name or role abbreviation>");
                     }
-                    //AlignmentInfo help                    
+                    //AlignmentInfo help
                     else if (text == "/alignmentinfo" || text == "/alignmentinfo ")
                     {
                         chatHandled = true;
@@ -791,7 +793,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "The Werewolf can kill all players within a certain radius.";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
@@ -822,7 +824,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
@@ -961,7 +963,7 @@ namespace TownOfUsReworked.Patches
                         {
                             chatText = "The Assassin can kill players during a meeting by guessing their target's role. Be careful though, as guessing incorrectly " +
                                 "will kill you instead.";
-                            
+
                             if (inputText == "ass")
                                 chatText += " I know what you tried to look up. ;)";
                         }
@@ -994,7 +996,7 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
@@ -1035,34 +1037,34 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
-                    //ModifierInfo help                    
+                    //ModifierInfo help
                     else if (text == "/modifierinfo" || text == "/modifierinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /modifierinfo <modifier name>");
                     }
-                    //ObjectifierInfo help                    
+                    //ObjectifierInfo help
                     else if (text == "/objectifierinfo" || text == "/objectifierinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
                     }
-                    //AbilityInfo help                    
+                    //AbilityInfo help
                     else if (text == "/abilityinfo" || text == "/abilityinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /abilityinfo <ability name>");
                     }
-                    //FactionInfo help                    
+                    //FactionInfo help
                     else if (text == "/factioninfo" || text == "/factioninfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /factioninfo <faction name>");
                     }
-                    //Quote help                    
+                    //Quote help
                     else if (text == "/quote" || text == "/quote ")
                     {
                         chatHandled = true;
@@ -1099,11 +1101,13 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "coroner" || inputText == "cor")
                             chatText = "A body? Where? I must perform an autopsy for *ahem* research.";
                         else if (inputText == "crewmate" || inputText == "crew")
-                            chatText = "Life's great mate, I totally am not jealous at the fact that others are better than me.";
+                            chatText = "I once made a pencil using erasers. Just like me, it was pointless.";
                         else if (inputText == "cryomaniac" || inputText == "cryo")
                             chatText = "Turn the AC up!";
-                        else if (inputText == "detective" || inputText == "det")
+                        else if (inputText == "detective")
                             chatText = "I am skilled in identifying blood. *Looks at a body* Yup, that's definitely blood.";
+                        else if (inputText == "det")
+                            chatText = "I showed AD how to make ONE ROLE....AND HE FUCKING EXPLODED.";
                         else if (inputText == "disguiser" || inputText == "disg")
                             chatText = "Here, wear this for me please. I promise I won't do anything to you.";
                         else if (inputText == "dracula" || inputText == "drac")
@@ -1200,7 +1204,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "AWOOOOOOOOOOOOOOOOOOOO";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Incorrect command
@@ -1224,7 +1228,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/mystate"))
                     {
                         chatHandled = true;
-                        
+
                         var role = Role.GetRole(player);
                         var modifier = Modifier.GetModifier(player);
                         var ability = Ability.GetAbility(player);
@@ -1323,56 +1327,56 @@ namespace TownOfUsReworked.Patches
 
                             hudManager.AddChat(player, role.RoleDescription);
                         }
-                        
+
                         if (modifier != null)
                         {
                             if (!modifier.Hidden)
                                 hudManager.AddChat(player, modifier.ModifierDescription);
                         }
-                        
+
                         if (objectifier != null)
                         {
                             if (!objectifier.Hidden)
                                 hudManager.AddChat(player, objectifier.ObjectifierDescription);
                         }
-                        
+
                         if (ability != null)
                         {
                             if (!ability.Hidden)
                                 hudManager.AddChat(player, ability.AbilityDescription);
                         }
                     }
-                    //RoleInfo help                    
+                    //RoleInfo help
                     else if (text == "/roleinfo" || text == "/roleinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /roleinfo <role name>");
                     }
-                    //ModifierInfo help                    
+                    //ModifierInfo help
                     else if (text == "/modifierinfo" || text == "/modifierinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /modifierinfo <modifier name>");
                     }
-                    //ObjectifierInfo help                    
+                    //ObjectifierInfo help
                     else if (text == "/objectifierinfo" || text == "/objectifierinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /objectifierinfo <objectifier name>");
                     }
-                    //AbilityInfo help                    
+                    //AbilityInfo help
                     else if (text == "/abilityinfo" || text == "/abilityinfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /abilityinfo <ability name>");
                     }
-                    //FactionInfo help                    
+                    //FactionInfo help
                     else if (text == "/factioninfo" || text == "/factioninfo ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /factioninfo <faction name>");
                     }
-                    //AlignmentInfo help                    
+                    //AlignmentInfo help
                     else if (text == "/alignmentinfo" || text == "/alignmentinfo ")
                     {
                         chatHandled = true;
@@ -1627,7 +1631,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "The Werewolf can kill all players within a certain radius.";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
@@ -1658,7 +1662,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
@@ -1742,7 +1746,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "Syndicate (Disruption) roles are roles that a designed to change the flow of the game, via changing some mechanic.";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
@@ -1784,7 +1788,7 @@ namespace TownOfUsReworked.Patches
                             chatText = "The Volatile player player cannot distinguish sounds and hallucinations from reality, causing them to see, hear and feel things at random";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding abilities
@@ -1797,7 +1801,7 @@ namespace TownOfUsReworked.Patches
                         {
                             chatText = "The Assassin can kill players during a meeting by guessing their target's role. Be careful though, as guessing incorrectly " +
                                 "will kill you instead.";
-                            
+
                             if (inputText == "ass")
                                 chatText += " I know what you tried to look up. ;)";
                         }
@@ -1830,7 +1834,7 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
@@ -1871,7 +1875,7 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     //Credits
@@ -1882,7 +1886,7 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, "Mod Creator: slushiegoose");
                         hudManager.AddChat(player, "Continued By: polus.gg");
                         hudManager.AddChat(player, "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H");
-                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, tix and MyDragonBreath");
+                        hudManager.AddChat(player, "With Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator and MyDragonBreath");
                         hudManager.AddChat(player, "Remaining credits are on the GitHub!");
                     }
                     //Quotes
@@ -1890,7 +1894,7 @@ namespace TownOfUsReworked.Patches
                     {
                         chatHandled = true;
                         inputText = text.Substring(7);
-                        
+
                         if (inputText == "agent" || inputText == "ag")
                             chatText = "Hippity hoppity, your privacy is now my property.";
                         else if (inputText == "altruist" || inputText == "alt")
@@ -2023,10 +2027,10 @@ namespace TownOfUsReworked.Patches
                             chatText = "AWOOOOOOOOOOOOOOOOOOOO";
                         else
                             chatText = "Invalid input.";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
-                    //Abbreviations help                    
+                    //Abbreviations help
                     else if (text == "/abbreviations" || text == "/abbreviations ")
                     {
                         chatHandled = true;
@@ -2309,12 +2313,12 @@ namespace TownOfUsReworked.Patches
                             abbreviation = "cont";
                         else
                             abbreviation = "Invalid input.";
-                        
+
                         if (abbreviation == "Invalid input.")
                             chatText = abbreviation;
                         else
                             chatText = "The abbreviation for " + inputText + " is " + abbreviation + "!";
-                        
+
                         hudManager.AddChat(player, chatText);
                     }
                     else if (text == "/whisper" || text == "/w")
@@ -2342,7 +2346,7 @@ namespace TownOfUsReworked.Patches
 
                             var whispered = Utils.PlayerById(id1);
                             var whispered2 = Utils.PlayerById(id2);
-                            
+
                             if (whispered != null)
                             {
                                 if (whispered.Data.IsDead)
@@ -2394,7 +2398,7 @@ namespace TownOfUsReworked.Patches
                     hudManager.TextArea.Clear();
                     hudManager.quickChatMenu.ResetGlyphs();
                 }
-                
+
                 return !chatHandled;
             }
         }

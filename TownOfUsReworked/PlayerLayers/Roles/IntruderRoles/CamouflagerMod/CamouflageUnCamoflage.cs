@@ -16,6 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
         [HarmonyPriority(Priority.Last)]
         public static void Postfix(HudManager __instance)
         {
+            if (GameStates.IsLobby || GameStates.IsEnded)
+                return;
+
             CamouflagerEnabled = false;
             CommsEnabled = false;
 
@@ -69,10 +72,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                             }
 
                             break;
-                            
+
                         case 1:
                             HqHudSystemType comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
-                            
+
                             if (comms2.IsActive)
                             {
                                 CommsEnabled = true;

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.CustomOptions
 {
     public static class Patches
     {
-        static string[] Menus = {"Game", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability"};
+        static string[] Menus = { "Game", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
 
         public static Export ExportButton;
         public static Import ImportButton;

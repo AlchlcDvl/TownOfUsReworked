@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
@@ -10,8 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HUDRecruit
     {
-        public static Sprite Recruit => TownOfUsReworked.RecruitSprite;
-
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Jackal))
@@ -23,17 +20,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 return;
 
             if (role.RecruitButton == null)
-            {
-                role.RecruitButton = Object.Instantiate(__instance.KillButton, __instance.UseButton.transform.parent);
-                role.RecruitButton.graphic.enabled = true;
-                role.RecruitButton.graphic.sprite = Recruit;
-                role.RecruitButton.gameObject.SetActive(false);
-            }
+                role.RecruitButton = Utils.InstantiateButton();
 
-            role.RecruitButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && role.RecruitsDead);
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.RecruitButton, notRecruited);
-            role.RecruitButton.SetCoolDown(role.RecruitTimer(), CustomGameOptions.RecruitCooldown);
+            role.RecruitButton.UpdateButton(role, "RECRUIT", role.RecruitTimer(), CustomGameOptions.RecruitCooldown, TownOfUsReworked.RecruitSprite, AbilityTypes.Direct, notRecruited, 
+                role.RecruitsDead && !role.HasRecruited);
         }
     }
 }

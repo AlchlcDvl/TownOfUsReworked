@@ -1,4 +1,3 @@
-using TownOfUsReworked.PlayerLayers.Roles;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
@@ -7,40 +6,43 @@ using System;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformKill
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Corrupted))
+                return true;
+
+            var objectifier = Objectifier.GetObjectifier<Corrupted>(PlayerControl.LocalPlayer);
+
+            if (objectifier.Player.IsBlocked())
                 return false;
 
-            var role = Objectifier.GetObjectifier<Corrupted>(PlayerControl.LocalPlayer);
-
-            if (__instance == role.KillButton)
+            if (__instance == objectifier.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
+                if (!Utils.ButtonUsable(objectifier.KillButton))
                     return false;
 
-                if (role.KillTimer() != 0f)
+                if (objectifier.KillTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                if (Utils.IsTooFar(objectifier.Player, objectifier.ClosestPlayer))
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, Role.GetRoleValue(RoleEnum.Pestilence), true);
+                var interact = Utils.Interact(objectifier.Player, objectifier.ClosestPlayer, true);
 
-                if (interact[3] == true && interact[0] == true)
-                    role.LastKilled = DateTime.UtcNow;
+                if (interact[3] == true || interact[0] == true)
+                    objectifier.LastKilled = DateTime.UtcNow;
                 else if (interact[1] == true)
-                    role.LastKilled = role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                    objectifier.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
                 else if (interact[2] == true)
-                    role.LastKilled = role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+                    objectifier.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
                 
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

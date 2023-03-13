@@ -111,7 +111,7 @@ namespace TownOfUsReworked.Patches
                     player.MyPhysics.ResetAnimState();
             }
         }
-        
+
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch
         {

@@ -3,47 +3,47 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformFix
     {
-        public static bool Prefix(KillButton __instance)
+        public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Engineer))
-                return false;
+                return true;
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
+            if (role.IsBlocked)
+                return false;
+
             if (__instance == role.FixButton)
             {
+                if (!Utils.ButtonUsable(role.FixButton))
+                    return false;
+
                 if (!role.ButtonUsable)
                     return false;
 
-                if (!Utils.ButtonUsable(__instance))
+                var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+
+                if (system == null)
                     return false;
 
-                var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-                var specials = system.specials.ToArray();
                 var dummyActive = system.dummy.IsActive;
-                var sabActive = specials.Any(s => s.IsActive);
+                var sabActive = system.specials.ToArray().Any(s => s.IsActive);
 
                 if (!sabActive || dummyActive)
                     return false;
 
                 role.UsesLeft--;
-
-                var camouflager = Role.GetRoleValue(RoleEnum.Camouflager);
-                var camo = (Camouflager)camouflager;
-                var concealer = Role.GetRoleValue(RoleEnum.Concealer);
-                var conc = (Concealer)concealer;
-                var shapeshifter = Role.GetRoleValue(RoleEnum.Shapeshifter);
-                var ss = (Shapeshifter)shapeshifter;
+                role.LastFixed = DateTime.UtcNow;
 
                 switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                 {
-                    case 0:
                     case 1:
                         var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
 
@@ -65,15 +65,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         if (lights2.IsActive)
                             return FixFunctions.FixLights(lights2);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
                     case 2:
@@ -92,17 +83,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         if (lights3.IsActive)
                             return FixFunctions.FixLights(lights3);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
+                    case 0:
                     case 3:
                         var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
@@ -124,15 +107,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         if (lights1.IsActive)
                             return FixFunctions.FixLights(lights1);
 
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
-
                         break;
 
                     case 4:
@@ -150,15 +124,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
                         if (lights4.IsActive)
                             return FixFunctions.FixLights(lights4);
-
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -181,20 +146,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         if (comms5.IsActive)
                             return FixFunctions.FixComms();
 
-                        foreach (PlayerTask i in PlayerControl.LocalPlayer.myTasks)
+                        foreach (var i in PlayerControl.LocalPlayer.myTasks)
                         {
                             if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
                                 return FixFunctions.FixSubOxygen();
                         }
-
-                        if (camo.Camouflaged)
-                            return FixFunctions.FixCamo();
-
-                        if (conc.Concealed)
-                            return FixFunctions.FixCamo();
-
-                        if (ss.Shapeshifted)
-                            return FixFunctions.FixCamo();
 
                         break;
 
@@ -224,12 +180,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.EngineerFix);
-                writer.Write(PlayerControl.LocalPlayer.NetId);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

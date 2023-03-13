@@ -2,15 +2,14 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
-using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class ButtonBarry : Ability
     {
-        private KillButton _buttonButton;
         public bool ButtonUsed;
-        public DateTime LastButtoned { get; set; }
+        public AbilityButton ButtonButton;
+        public DateTime LastButtoned;
 
         public ButtonBarry(PlayerControl player) : base(player)
         {
@@ -21,17 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             AbilityDescription = "You are a Button Barry! You are paranoid of those around you and can call a meeting from anywhere at the cost of your vision!";
         }
 
-        public KillButton ButtonButton
-        {
-            get => _buttonButton;
-            set
-            {
-                _buttonButton = value;
-                var role = Role.GetRole(Player);
-                role.AddToAbilityButtons(value, role);
-            }
-        }
-        
         public float StartTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -40,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
         }

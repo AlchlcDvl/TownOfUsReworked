@@ -3,16 +3,12 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDDouseAndFreeze
     {
-        public static Sprite Freeze => TownOfUsReworked.CryoFreezeSprite;
-        public static Sprite Douse => TownOfUsReworked.DouseSprite;
-        
         public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cryomaniac))
@@ -21,52 +17,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
 
             if (role.FreezeButton == null)
-            {
-                role.FreezeButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.FreezeButton.graphic.enabled = true;
-                role.FreezeButton.graphic.sprite = Freeze;
-                role.FreezeButton.gameObject.SetActive(false);
-            }
+                role.FreezeButton = Utils.InstantiateButton();
 
             if (role.DouseButton == null)
-            {
-                role.DouseButton = Object.Instantiate(__instance.KillButton, __instance.KillButton.transform.parent);
-                role.DouseButton.graphic.enabled = true;
-                role.DouseButton.graphic.sprite = Douse;
-                role.DouseButton.gameObject.SetActive(false);
-            }
+                role.DouseButton = Utils.InstantiateButton();
 
-            role.FreezeButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance) && !role.FreezeUsed && role.DousedAlive > 0);
-            role.DouseButton.gameObject.SetActive(Utils.SetActive(role.Player, __instance));
-            role.FreezeButton.SetCoolDown(0f, 1f);
-            role.DouseButton.SetCoolDown(role.DouseTimer(), CustomGameOptions.CryoDouseCooldown);
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
-            Utils.SetTarget(ref role.ClosestPlayer, role.DouseButton, notDoused);
-            var renderer2 = role.FreezeButton.graphic;
-
-            if (!role.FreezeButton.isCoolingDown && role.FreezeButton.isActiveAndEnabled && !role.FreezeUsed && role.DousedAlive > 0)
-            {
-                renderer2.color = Palette.EnabledColor;
-                renderer2.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer2.color = Palette.DisabledClear;
-                renderer2.material.SetFloat("_Desat", 1f);
-            }
-
-            var renderer = role.DouseButton.graphic;
-
-            if (!role.DouseButton.isCoolingDown && role.DouseButton.isActiveAndEnabled && role.ClosestPlayer != null)
-            {
-                renderer.color = Palette.EnabledColor;
-                renderer.material.SetFloat("_Desat", 0f);
-            }
-            else
-            {
-                renderer.color = Palette.DisabledClear;
-                renderer.material.SetFloat("_Desat", 1f);
-            }
+            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.CryoDouseCooldown, TownOfUsReworked.DouseSprite, AbilityTypes.Direct, notDoused);
+            role.FreezeButton.UpdateButton(role, "FREEZE", 0, 1, TownOfUsReworked.CryoFreezeSprite, AbilityTypes.Effect, role.DousedAlive > 0 && !role.FreezeUsed);
         }
     }
 }

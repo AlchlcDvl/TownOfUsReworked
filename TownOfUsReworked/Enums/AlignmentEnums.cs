@@ -49,7 +49,7 @@ namespace TownOfUsReworked.Enums
         Cabal,
         Reanimated,
         Sect,
-        
+
         None
     }
 }

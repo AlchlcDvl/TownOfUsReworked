@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Classes
         {
             var count = list.Count;
             var last = count - 1;
-            
+
             for (var i = 0; i <= last; ++i)
             {
                 var r = Random.Range(i, count);
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.Classes
         {
             var count = list.Count;
             var last = count - 1;
-            
+
             for (var i = 0; i <= last; ++i)
             {
                 var r = Random.Range(i, count);
@@ -62,6 +62,17 @@ namespace TownOfUsReworked.Classes
             list.RemoveAt(0);
             list.Shuffle();
             return item;
+        }
+
+        public static void Replace<T>(this System.Collections.Generic.List<T> list, T item1, T item2)
+        {
+            var item = list.Find(x => x.GetType() == item1.GetType());
+
+            if (item == null)
+                return;
+
+            var index = list.IndexOf(item1);
+            list[index] = item2;
         }
     }
 }

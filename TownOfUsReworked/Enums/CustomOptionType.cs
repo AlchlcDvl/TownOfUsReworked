@@ -7,7 +7,8 @@ namespace TownOfUsReworked.Enums
         Number,
         String,
         Button,
-        Menu
+        Menu,
+        Nested
     }
 
     public enum MultiMenu

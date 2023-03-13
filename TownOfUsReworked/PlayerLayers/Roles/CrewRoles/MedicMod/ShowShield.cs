@@ -16,14 +16,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             foreach (var role in Role.GetRoles(RoleEnum.Medic))
             {
                 var medic = (Medic)role;
-                var exPlayer = medic.exShielded;
+                var exPlayer = medic.ExShielded;
 
                 if (exPlayer != null)
                 {
                     Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
                     exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
                     exPlayer.myRend().material.SetFloat("_Outline", 0f);
-                    medic.exShielded = null;
+                    medic.ExShielded = null;
                     continue;
                 }
 
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 var showShielded = CustomGameOptions.ShowShielded;
 
                 if (showShielded == ShieldOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == player.PlayerId && (showShielded == ShieldOptions.Self ||
-                    showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic ||
+                    showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer == medic.Player && (showShielded == ShieldOptions.Medic ||
                     showShielded == ShieldOptions.SelfAndMedic)))
                 {
                     player.myRend().material.SetColor("_VisorColor", ProtectedColor);

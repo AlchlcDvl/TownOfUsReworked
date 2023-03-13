@@ -37,7 +37,6 @@ namespace TownOfUsReworked.BetterMaps.Polus
         public static Vent AdminVent;
         public static Vent SpeciVent;
         public static Vent BathroomVent;
-        public static Vent BelowLabVent;
 
         public static Console TempCold;
 

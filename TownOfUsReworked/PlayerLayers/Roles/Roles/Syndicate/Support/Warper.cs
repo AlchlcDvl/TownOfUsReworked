@@ -14,13 +14,10 @@ using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Warper : Role
+    public class Warper : SyndicateRole
     {
-        private KillButton _warpButton;
-        public DateTime LastWarped { get; set; }
-        public DateTime LastKilled { get; set; }
-        private KillButton _killButton;
-        public PlayerControl ClosestPlayer = null;
+        public AbilityButton WarpButton;
+        public DateTime LastWarped;
 
         public Warper(PlayerControl player) : base(player)
         {
@@ -29,34 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Separate the Crew";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
             RoleType = RoleEnum.Warper;
-            Faction = Faction.Syndicate;
-            FactionColor = Colors.Syndicate;
-            FactionName = "Syndicate";
             AlignmentName = SSu;
-            IntroSound = "WarperIntro";
-        }
-
-        public float KillTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
-        }
-
-        public KillButton KillButton
-        {
-            get => _killButton;
-            set
-            {
-                _killButton = value;
-                AddToAbilityButtons(value, this);
-            }
+            //IntroSound = "WarperIntro";
         }
 
         public void Warp()
@@ -319,30 +290,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return destination;
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
-        {
-            if (Player != PlayerControl.LocalPlayer)
-                return;
-                
-            var team = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
-                    team.Add(player);
-            }
-
-            if (IsRecruit)
-            {
-                var jackal = Player.GetJackal();
-                team.Add(jackal.Player);
-                team.Add(jackal.GoodRecruit);
-            }
-
-            __instance.teamToShow = team;
-        }
-
         public float WarpTimer()
         {
             var utcNow = DateTime.UtcNow;
@@ -351,73 +298,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
 
             if (flag2)
-                return 0;
+                return 0f;
 
             return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
-        }
-        
-        public KillButton WarpButton
-        {
-            get => _warpButton;
-            set
-            {
-                _warpButton = value;
-                AddToAbilityButtons(value, this);
-            }
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && Utils.CabalWin())
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && Utils.SectWin())
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && Utils.UndeadWin())
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && Utils.ReanimatedWin())
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (Utils.SyndicateWins() && NotDefective)
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
     }
 }
