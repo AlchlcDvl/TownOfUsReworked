@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Grenadier))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Grenadier>(PlayerControl.LocalPlayer);
 
             if (__instance == role.FlashButton)

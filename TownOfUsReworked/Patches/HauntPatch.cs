@@ -1,9 +1,10 @@
 using HarmonyLib;
-using AmongUs.GameOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -12,7 +13,10 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+            if (GameStates.IsHnS)
+                return true;
+
+            if (!CustomGameOptions.DeadSeeEverything)
                 return true;
 
             var role = Role.GetRole(__instance.HauntTarget);

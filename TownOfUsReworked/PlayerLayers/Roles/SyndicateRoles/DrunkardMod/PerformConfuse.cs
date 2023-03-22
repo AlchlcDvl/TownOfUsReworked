@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Drunkard))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Drunkard>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ConfuseButton)

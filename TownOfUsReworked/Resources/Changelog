@@ -1,36 +1,7 @@
 Changelog
-- New Role: Ambusher [Intruder (Killing)]
-- New Role: Crusader [Syndicate (Killing)]
-- New Role: Ghoul [Intruder (Utility)]
-- New Role: Beamer [Syndicate (Support)]
-- New Role: Banshee [Syndicate (Utility)]
-- New Role: Betrayer [Neutral (Proselyte)]
-- Addition: New keybind settings
-- Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)
-- Addition: Added setting pages for easier browsing while in lobby
-- Addition: Added a semi functioning profanity filter to the /setname chat command
-- Update: Merged features from v4.0.3 of Town Of Us
-- Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels
-- Critical Fix: Fixed Crew roles not spawning under certain conditions
-- Visual Fix: All buttons now have consistent fonts
-- Visual Fix: Fixed the Report button lighting up incorrectly
-- Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up
-- Bug Fix: Fixed Button Barry being unable to spawn
-- Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up
-- Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound
-- Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively
-- Role Fix: Fixed Executioner being unable to doom players
-- Role Fix: Fixed Glitch being unable to mimic players
-- Role Fix: Fixed Arsonist breaking the game
-- Role Fix: Fixed Transporter's button not lighting up or working properly
-- Role Fix: Fixed Guardian Angels randomly bugging out
-- Role Fix: Fixed winning Neutrals becoming Phantom when they are the first dead neutral
-- Role Fix: Fixed the limits on Necromancer not decreasing properly
-- Role Fix: Fixed Godfather-Undertaker being unable to drag bodies
-- Role Fix: Fixed Revealer and Phantom being unable to leave vents
-- Role Fix: Fixed Phantom and Revealer clicking themselves into losing
-- Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities
-- Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks
-- Role Fix: Fixed Rebel-Poisoner from not being able to poison players
-- Removed: Vanilla setting tabs since their options have been moved into custom settings
-- Removed: BepInEx updater because...just no
+- Addition: Added a zooming button for dead players
+- Code Change: Changed how games end to squash bugs; past, present and future
+- Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end
+- Critical Fix: Fixed games not ending correctly again
+- Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills
+- Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op

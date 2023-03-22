@@ -18,13 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             if (__instance == role.SwoopButton)
             {
-                if (!Utils.ButtonUsable(role.SwoopButton))
-                    return false;
-
                 if (role.SwoopTimer() != 0f)
-                    return false;
-
-                if (role.IsSwooped)
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.SwoopDuration;

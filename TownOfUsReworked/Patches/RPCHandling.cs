@@ -2997,6 +2997,7 @@ namespace TownOfUsReworked.Patches
         private static void ResetEverything()
         {
             Role.NobodyWins = false;
+            Objectifier.NobodyWins = false;
 
             Role.CrewWin = false;
             Role.SyndicateWin = false;
@@ -3007,11 +3008,29 @@ namespace TownOfUsReworked.Patches
             Role.CabalWin = false;
             Role.SectWin = false;
             Role.ReanimatedWin = false;
+            Role.InfectorsWin = false;
 
             Role.NKWins = false;
 
+            Role.GlitchWins = false;
+            Role.WerewolfWins = false;
+            Role.JuggernautWins = false;
+            Role.ArsonistWins = false;
+            Role.MurdererWins = false;
+            Role.SerialKillerWins = false;
+
+            Role.PhantomWins = false;
+
+            Objectifier.LoveWins = false;
+            Objectifier.RivalWins = false;
+            Objectifier.TaskmasterWins = false;
+            Objectifier.OverlordWins = false;
+            Objectifier.CorruptedWins = false;
+
             Role.SyndicateHasChaosDrive = false;
             Role.ChaosDriveMeetingTimerCount = 0;
+
+            MeetingPatches.MeetingCount = 0;
 
             RecordRewind.points.Clear();
             Murder.KilledPlayers.Clear();
@@ -3982,13 +4001,13 @@ namespace TownOfUsReworked.Patches
 
                                     case RetributionistActionsRPC.Interrogate:
                                         var ret6 = Utils.PlayerById(reader.ReadByte());
-                                        var target = Utils.PlayerById(reader.ReadByte());
+                                        var interrogated = Utils.PlayerById(reader.ReadByte());
                                         var retRole6 = Role.GetRole<Retributionist>(ret6);
 
                                         if (retRole6.RevivedRole.RoleType != RoleEnum.Sheriff)
                                             break;
 
-                                        retRole6.Interrogated.Add(target.PlayerId);
+                                        retRole6.Interrogated.Add(interrogated.PlayerId);
                                         retRole6.LastInterrogated = DateTime.UtcNow;
                                         break;
 
@@ -4270,9 +4289,9 @@ namespace TownOfUsReworked.Patches
 
                             case ActionsRPC.BypassKill:
                                 var killer = Utils.PlayerById(reader.ReadByte());
-                                var TargetPlayer = Utils.PlayerById(reader.ReadByte());
+                                var target = Utils.PlayerById(reader.ReadByte());
                                 var lunge = reader.ReadBoolean();
-                                Utils.MurderPlayer(killer, TargetPlayer, lunge);
+                                Utils.MurderPlayer(killer, target, lunge);
                                 break;
 
                             case ActionsRPC.AssassinKill:
@@ -4280,6 +4299,67 @@ namespace TownOfUsReworked.Patches
                                 var guessString = reader.ReadString();
                                 var assassin = Ability.GetAbilityValue<Assassin>(AbilityEnum.Assassin);
                                 AssassinKill.MurderPlayer(assassin, toDie, guessString);
+                                break;
+
+                            case ActionsRPC.AddConversions:
+                                var converter = Utils.PlayerById(reader.ReadByte());
+                                var converted = Utils.PlayerById(reader.ReadByte());
+                                var converterRole = Role.GetRole(converter);
+                                var convertedRole = Role.GetRole(converted);
+
+                                if (converter.Is(SubFaction.Undead))
+                                {
+                                    var drac2 = (Dracula)converterRole;
+
+                                    if (converted.Is(RoleEnum.Dracula))
+                                    {
+                                        var drac3 = (Dracula)convertedRole;
+                                        drac2.Converted.AddRange(drac3.Converted);
+                                        drac3.Converted.AddRange(drac2.Converted);
+                                    }
+                                    else
+                                        drac2.Converted.Add(converted.PlayerId);
+                                }
+                                else if (converter.Is(SubFaction.Reanimated))
+                                {
+                                    var necro = (Necromancer)converterRole;
+
+                                    if (converted.Is(RoleEnum.Necromancer))
+                                    {
+                                        var necro2 = (Necromancer)convertedRole;
+                                        necro.Resurrected.AddRange(necro2.Resurrected);
+                                        necro2.Resurrected.AddRange(necro.Resurrected);
+                                    }
+                                    else
+                                        necro.Resurrected.Add(converted.PlayerId);
+                                }
+                                else if (converter.Is(SubFaction.Cabal))
+                                {
+                                    var jack = (Jackal)converterRole;
+
+                                    if (converted.Is(RoleEnum.Jackal))
+                                    {
+                                        var jack2 = (Jackal)convertedRole;
+                                        jack.Recruited.AddRange(jack2.Recruited);
+                                        jack2.Recruited.AddRange(jack.Recruited);
+                                    }
+                                    else
+                                        jack.Recruited.Add(converted.PlayerId);
+                                }
+                                else if (converter.Is(SubFaction.Sect))
+                                {
+                                    var whisp1 = (Whisperer)converterRole;
+
+                                    if (converted.Is(RoleEnum.Whisperer))
+                                    {
+                                        var whisp2 = (Whisperer)convertedRole;
+                                        whisp1.Persuaded.AddRange(whisp2.Persuaded);
+                                        whisp2.Persuaded.AddRange(whisp1.Persuaded);
+                                    }
+                                    else
+                                        whisp1.Persuaded.Add(converted.PlayerId);
+                                }
+
                                 break;
 
                             case ActionsRPC.GuesserKill:
@@ -4722,6 +4802,7 @@ namespace TownOfUsReworked.Patches
 
                             case WinLoseRPC.NobodyWins:
                                 Role.NobodyWins = true;
+                                Objectifier.NobodyWins = true;
                                 break;
 
                             case WinLoseRPC.AllNeutralsWin:
@@ -4730,10 +4811,6 @@ namespace TownOfUsReworked.Patches
 
                             case WinLoseRPC.AllNKsWin:
                                 Role.NKWins = true;
-                                break;
-
-                            case WinLoseRPC.Stalemate:
-                                Role.NobodyWins = true;
                                 break;
 
                             case WinLoseRPC.SameNKWins:
@@ -4816,27 +4893,50 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case WinLoseRPC.CorruptedWin:
-                                Objectifier.GetObjectifier<Corrupted>(Utils.PlayerById(reader.ReadByte())).CorruptedWin = true;
+                                Objectifier.CorruptedWins = true;
+
+                                if (reader.ReadBoolean())
+                                {
+                                    foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+                                        corr.Winner = true;
+                                }
+                                else
+                                    Objectifier.GetObjectifier(Utils.PlayerById(reader.ReadByte())).Winner = true;
+
                                 break;
 
                             case WinLoseRPC.LoveWin:
-                                Objectifier.GetObjectifier<Lovers>(Utils.PlayerById(reader.ReadByte())).LoveWins = true;
+                                Objectifier.LoveWins = true;
+                                var lover = Objectifier.GetObjectifier<Lovers>(Utils.PlayerById(reader.ReadByte()));
+                                lover.Winner = true;
+                                Objectifier.GetObjectifier(lover.OtherLover).Winner = true;
                                 break;
 
                             case WinLoseRPC.OverlordWin:
-                                Objectifier.GetObjectifier<Overlord>(Utils.PlayerById(reader.ReadByte())).OverlordWins = true;
+                                Objectifier.OverlordWins = true;
+
+                                foreach (Overlord ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord))
+                                    ov.Winner = true;
+
                                 break;
 
                             case WinLoseRPC.TaskmasterWin:
-                                Objectifier.GetObjectifier<Taskmaster>(Utils.PlayerById(reader.ReadByte())).TaskmasterWins = true;
+                                Objectifier.TaskmasterWins = true;
+                                var tm = Objectifier.GetObjectifier<Taskmaster>(Utils.PlayerById(reader.ReadByte()));
+                                tm.Winner = true;
                                 break;
 
                             case WinLoseRPC.RivalWin:
-                                Objectifier.GetObjectifier<Rivals>(Utils.PlayerById(reader.ReadByte())).RivalWins = true;
+                                Objectifier.RivalWins = true;
+                                var rival = Objectifier.GetObjectifier<Rivals>(Utils.PlayerById(reader.ReadByte()));
+                                rival.Winner = true;
                                 break;
 
                             case WinLoseRPC.PhantomWin:
-                                Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte())).CompletedTasks = true;
+                                Role.PhantomWins = true;
+                                var phantom3 = Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte()));
+                                phantom3.CompletedTasks = true;
+                                phantom3.Winner = true;
                                 break;
                         }
 

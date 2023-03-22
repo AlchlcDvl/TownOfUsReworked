@@ -9,7 +9,7 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
-    public class Ability : PlayerLayer
+    public abstract class Ability : PlayerLayer
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
         public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();

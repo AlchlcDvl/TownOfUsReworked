@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
             if (__instance == role.AutopsyButton)
             {
-                if (!Utils.ButtonUsable(role.AutopsyButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 
@@ -52,9 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             }
             else if (__instance == role.CompareButton)
             {
-                if (!Utils.ButtonUsable(role.CompareButton))
-                    return false;
-
                 if (role.ReferenceBody == null)
                     return false;
 

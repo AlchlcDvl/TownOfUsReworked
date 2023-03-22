@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 
             if (__instance == role.InfectButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

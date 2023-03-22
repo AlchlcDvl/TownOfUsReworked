@@ -130,8 +130,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     !GameStates.IsInGame)
                     return true;
 
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
+                if (__instance == HudManager.Instance.AbilityButton)
+                    return true;
 
                 PlayerControl.LocalPlayer.RegenTask();
                 var role = Role.GetRole(PlayerControl.LocalPlayer);

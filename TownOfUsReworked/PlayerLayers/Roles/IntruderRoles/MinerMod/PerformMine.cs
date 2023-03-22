@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Miner))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
 
             if (__instance == role.MineButton)

@@ -1270,6 +1270,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CorruptedCount;
         public static CustomNumberOption CorruptedKillCooldown;
         public static CustomToggleOption UniqueCorrupted;
+        public static CustomToggleOption AllCorruptedWin;
 
         //Corrupted Options
         public static CustomHeaderOption Overlord;
@@ -2556,6 +2557,7 @@ namespace TownOfUsReworked.CustomOptions
             CorruptedCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Count", 1, 1, 14, 1);
             UniqueCorrupted = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Is Unique In All Any", false);
             CorruptedKillCooldown = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Kill Cooldown", 25f, 1f, 60f, 1f, CooldownFormat);
+            AllCorruptedWin = new CustomToggleOption(num++, MultiMenu.objectifier, "All <color=#4545FFFF>Corrupted</color> Win Together", false);
 
             Fanatic = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>");
             FanaticCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Count", 1, 1, 14, 1);

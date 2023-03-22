@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Glitch))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
 
             if (__instance == role.HackButton)
@@ -75,9 +72,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             }
             else if (__instance == role.MimicButton)
             {
-                if (!Utils.ButtonUsable(role.MimicButton))
-                    return false;
-
                 if (role.MimicTimer() != 0f)
                     return false;
 

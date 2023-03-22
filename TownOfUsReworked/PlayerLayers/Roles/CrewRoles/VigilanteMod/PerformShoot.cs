@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
             if (__instance == role.ShootButton)
             {
-                if (!Utils.ButtonUsable(role.ShootButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
@@ -47,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     else
                     {
                         if (CustomGameOptions.MisfireKillsInno || role.ClosestPlayer.IsFramed())
-                            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, !role.Player.Is(AbilityEnum.Ninja));
+                            Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
                         
                         if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
@@ -63,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                             role.KilledInno = true;
 
                         if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
-                            Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer, false);
+                            Utils.RpcMurderPlayer(role.Player, role.Player);
                         else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
                             role.PreMeetingDie = true;
                         else if (CustomGameOptions.VigiOptions == VigiOptions.PostMeeting)

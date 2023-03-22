@@ -13,17 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Ghoul))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Ghoul>(PlayerControl.LocalPlayer);
 
             if (__instance == role.MarkButton)
             {
                 if (role.MarkTimer() != 0f)
-                    return false;
-
-                if (!Utils.ButtonUsable(role.MarkButton))
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestMark))

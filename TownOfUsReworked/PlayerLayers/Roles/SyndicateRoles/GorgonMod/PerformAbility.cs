@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Gorgon))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Gorgon>(PlayerControl.LocalPlayer);
 
             if (__instance == role.GazeButton)

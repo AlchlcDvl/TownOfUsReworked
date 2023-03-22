@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             if (__instance == role.BlackmailButton)
             {
-                if (!Utils.ButtonUsable(role.BlackmailButton))
-                    return false;
-
                 if (role.BlackmailTimer() != 0f)
                     return false;
 

@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Bomber))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
 
             if (__instance == role.BombButton)

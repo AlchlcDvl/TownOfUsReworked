@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 
             if (__instance == role.SeerButton)
             {
-                if (!Utils.ButtonUsable(role.SeerButton))
-                    return false;
-
                 if (role.SeerTimer() != 0f)
                     return false;
 

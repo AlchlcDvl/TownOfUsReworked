@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Poisoner))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Poisoner>(PlayerControl.LocalPlayer);
             
             if (__instance == role.PoisonButton)

@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (__instance == role.BiteButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
@@ -61,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             if (dracRole.Converted.Count >= CustomGameOptions.AliveVampCount)
             {
-                Utils.RpcMurderPlayer(drac, other, !drac.Is(AbilityEnum.Ninja));
+                Utils.RpcMurderPlayer(drac, other);
                 return;
             }
 
@@ -82,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 drac2.Converted.AddRange(dracRole.Converted);
             }
             else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(drac, other, !drac.Is(AbilityEnum.Ninja));
+                Utils.RpcMurderPlayer(drac, other);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
                 Coroutines.Start(Utils.FlashCoroutine(dracRole.Color));

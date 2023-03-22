@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using System.Linq;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Patches;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 {
@@ -14,18 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
             if (__instance == null)
                 return;
 
-            var overlord2 = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)x).IsAlive && !((Overlord)x).OverlordWins);
+            var overlord2 = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)x).IsAlive);
 
             if (overlord2 == null)
                 return;
-
-            foreach (var ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord))
-            {
-                var overlord = (Overlord)ov;
-
-                if (overlord.IsAlive && !overlord.OverlordWins)
-                    overlord.OverlordMeetingCount += 1;
-            }
 
             var overlord3 = (Overlord)overlord2;
 
@@ -33,9 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
             {
                 var ovmessage = "";
 
-                if (overlord3.OverlordMeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
+                if (MeetingPatches.MeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
                     ovmessage = "This is the last meeting to find and kill the Overlord. Should you fail, you will all lose!";
-                else if (overlord3.OverlordMeetingCount < CustomGameOptions.OverlordMeetingWinCount - 1)
+                else if (MeetingPatches.MeetingCount < CustomGameOptions.OverlordMeetingWinCount - 1)
                     ovmessage = "There seems to be an Overlord bent on dominating the mission! Kill them before they are successful!";
 
                 if (ovmessage != "")

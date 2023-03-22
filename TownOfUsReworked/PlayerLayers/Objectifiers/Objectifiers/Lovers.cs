@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Lovers : Objectifier
     {
         public PlayerControl OtherLover { get; set; }
-        public bool LoveWins { get; set; }
 
         public Lovers(PlayerControl player) : base(player)
         {
@@ -63,26 +62,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Utils.LoversWin(Player))
-            {
-                LoveWins = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.LoveWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return LoversLose();
-        }
-
         public bool LoverDead() => OtherLover == null || OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
 
         public bool IsDeadLover() => Player == null || Player.Data.IsDead || Player.Data.Disconnected;
 
         public bool LoversLose() => LoverDead() && IsDeadLover();
+
+        public bool LoversAlive() => OtherLover != null && Player != null && !OtherLover.Data.IsDead && !Player.Data.IsDead && !OtherLover.Data.Disconnected && !Player.Data.Disconnected;
     }
 }

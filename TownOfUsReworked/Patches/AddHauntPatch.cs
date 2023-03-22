@@ -22,6 +22,12 @@ namespace TownOfUsReworked.Patches
             {
                 var ghoul = (Ghoul)role;
 
+                if (ghoul.Caught)
+                {
+                    ghoul.MarkedPlayer = null;
+                    continue;
+                }
+
                 if (ghoul.MarkedPlayer != null && !(ghoul.MarkedPlayer.Data.IsDead || ghoul.MarkedPlayer.Data.Disconnected))
                     ghoul.MarkedPlayer.Exiled();
             }

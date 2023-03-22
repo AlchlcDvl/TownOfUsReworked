@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Undertaker))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
 
             if (__instance == role.DragButton)

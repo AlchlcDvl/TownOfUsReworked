@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 
             if (__instance == role.VestButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (!role.ButtonUsable)
                     return false;
 

@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Arsonist))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
             if (__instance == role.IgniteButton && role.DousedAlive > 0)

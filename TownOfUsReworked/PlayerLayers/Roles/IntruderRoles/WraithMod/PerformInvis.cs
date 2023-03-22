@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Wraith))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Wraith>(PlayerControl.LocalPlayer);
 
             if (__instance == role.InvisButton)

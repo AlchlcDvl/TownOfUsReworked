@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Janitor))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Janitor>(PlayerControl.LocalPlayer);
 
             if (__instance == role.CleanButton)

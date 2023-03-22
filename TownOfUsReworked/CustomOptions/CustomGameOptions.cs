@@ -1096,6 +1096,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int CorruptedCount => (int)Generate.CorruptedCount.Get();
         public static bool UniqueCorrupted => Generate.UniqueCorrupted.Get();
         public static float CorruptedKillCooldown => Generate.CorruptedKillCooldown.Get();
+        public static bool AllCorruptedWin => Generate.AllCorruptedWin.Get();
 
         //NB Settings
         public static int NBMax => (int)Generate.NBMax.Get();

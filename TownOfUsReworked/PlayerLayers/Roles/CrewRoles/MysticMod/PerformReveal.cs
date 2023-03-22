@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 
             if (__instance == role.RevealButton)
             {
-                if (!Utils.ButtonUsable(role.RevealButton))
-                    return false;
-
                 if (role.RevealTimer() != 0f)
                     return false;
 

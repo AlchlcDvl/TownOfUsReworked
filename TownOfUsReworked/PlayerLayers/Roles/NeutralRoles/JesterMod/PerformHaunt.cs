@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 
             if (__instance == role.HauntButton)
             {
-                if (!Utils.ButtonUsable(role.HauntButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

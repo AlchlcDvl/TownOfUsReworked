@@ -9,10 +9,11 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
 using HarmonyLib;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Role : PlayerLayer
+    public abstract class Role : PlayerLayer
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
         public static List<GameObject> Buttons = new List<GameObject>();
@@ -43,6 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static bool CryomaniacWins;
         public static bool MurdererWins;
         public static bool WerewolfWins;
+
+        public static bool PhantomWins;
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
@@ -75,6 +78,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool Base = false;
 
         protected internal AbilityButton SpectateButton;
+
+        protected internal AbilityButton ZoomButton;
+        protected internal bool Zooming = false;
 
         protected internal bool IsRecruit = false;
         protected internal bool IsResurrected = false;
@@ -301,11 +307,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (Utils.NoOneWins())
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable, -1);
-                    writer.Write((byte)WinLoseRPC.Stalemate);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                    writer.Write((byte)WinLoseRPC.NobodyWins);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     Role.NobodyWins = true;
+                    Objectifier.NobodyWins = true;
                     return true;
                 }
                 else if ((Utils.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)

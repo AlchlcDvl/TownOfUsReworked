@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Concealer))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Concealer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ConcealButton)

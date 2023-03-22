@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (Player.Data.IsDead|| Player.Data.Disconnected)
+            if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
             if ((IsRecruit || RoleType == RoleEnum.Jackal) && Utils.CabalWin())

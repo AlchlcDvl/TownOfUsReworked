@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Necromancer))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Necromancer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ResurrectButton)

@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             if (__instance == role.ShiftButton)
             {
-                if (!Utils.ButtonUsable(role.ShiftButton))
-                    return false;
-
                 if (role.ShiftTimer() != 0f)
                     return false;
 
@@ -60,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
-                Utils.RpcMurderPlayer(shifter, shifter, false);
+                Utils.RpcMurderPlayer(shifter, shifter);
                 return;
             }
 

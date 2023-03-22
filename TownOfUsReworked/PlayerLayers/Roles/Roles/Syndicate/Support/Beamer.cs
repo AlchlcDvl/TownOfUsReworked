@@ -167,5 +167,242 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var undertaker in undertakers)
                 ((Undertaker)undertaker).CurrentlyDragging = null;
         }
+
+        public void BeamListUpdate(HudManager __instance)
+        {
+            
+
+            if (PressedButton && BeamList == null && !IsBlocked)
+            {
+                BeamPlayer1 = null;
+                BeamPlayer2 = null;
+                __instance.Chat.SetVisible(false);
+                BeamList = Object.Instantiate(__instance.Chat);
+                BeamList.transform.SetParent(Camera.main.transform);
+                BeamList.SetVisible(true);
+                BeamList.Toggle();
+                BeamList.TextBubble.enabled = false;
+                BeamList.TextBubble.gameObject.SetActive(false);
+                BeamList.TextArea.enabled = false;
+                BeamList.TextArea.gameObject.SetActive(false);
+                BeamList.BanButton.enabled = false;
+                BeamList.BanButton.gameObject.SetActive(false);
+                BeamList.CharCount.enabled = false;
+                BeamList.CharCount.gameObject.SetActive(false);
+                BeamList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                BeamList.OpenKeyboardButton.Destroy();
+                BeamList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                BeamList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                BeamList.BackgroundImage.enabled = false;
+
+                foreach (var rend in BeamList.Content.GetComponentsInChildren<SpriteRenderer>())
+                {
+                    if (rend.name == "SendButton" || rend.name == "QuickChatButton")
+                    {
+                        rend.enabled = false;
+                        rend.gameObject.SetActive(false);
+                    }
+                }
+
+                foreach (var bubble in BeamList.chatBubPool.activeChildren)
+                {
+                    bubble.enabled = false;
+                    bubble.gameObject.SetActive(false);
+                }
+
+                BeamList.chatBubPool.activeChildren.Clear();
+
+                foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => (x != PlayerControl.LocalPlayer || (x == PlayerControl.LocalPlayer &&
+                    CustomGameOptions.TransSelf)) && !x.Data.Disconnected))
+                {
+                    if (!player.Data.IsDead)
+                        BeamList.AddChat(player, "Click Here");
+                    else
+                    {
+                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
+
+                        foreach (var body in deadBodies)
+                        {
+                            if (body.ParentId == player.PlayerId)
+                            {
+                                player.Data.IsDead = false;
+                                BeamList.AddChat(player, "Click Here");
+                                player.Data.IsDead = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (BeamList != null)
+            {
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
+
+                if (MapBehaviour.Instance)
+                    MapBehaviour.Instance.Close();
+
+                if (!BeamList.IsOpen || MeetingHud.Instance || Input.GetKeyInt(KeyCode.Escape) || PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    BeamList.Toggle();
+                    BeamList.SetVisible(false);
+                    BeamList = null;
+                    PressedButton = false;
+                    BeamPlayer1 = null;
+                }
+                else
+                {
+                    foreach (var bubble in BeamList.chatBubPool.activeChildren)
+                    {
+                        if (BeamTimer() == 0f && BeamList != null)
+                        {
+                            Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
+                            Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
+
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
+                            {
+                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                                {
+                                    if (!Input.GetMouseButtonDown(0) && LastMouse)
+                                    {
+                                        LastMouse = false;
+
+                                        foreach (var player in PlayerControl.AllPlayerControls)
+                                        {
+                                            if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
+                                            {
+                                                if (BeamPlayer1 == null)
+                                                {
+                                                    BeamPlayer1 = player;
+                                                    bubble.Cast<ChatBubble>().Background.color = Colors.Beamer;
+                                                }
+                                                else if (player.PlayerId == BeamPlayer1.PlayerId)
+                                                {
+                                                    BeamPlayer1 = null;
+                                                    bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
+                                                }
+                                                else
+                                                {
+                                                    PressedButton = false;
+                                                    BeamList.Toggle();
+                                                    BeamList.SetVisible(false);
+                                                    BeamList = null;
+                                                    BeamPlayer2 = player;
+
+                                                    if (!UnbeamablePlayers.ContainsKey(BeamPlayer1.PlayerId) && !UnbeamablePlayers.ContainsKey(BeamPlayer2.PlayerId))
+                                                    {
+                                                        var interaction = Utils.Interact(Player, BeamPlayer1);
+                                                        var interaction2 = Utils.Interact(Player, BeamPlayer2);
+
+                                                        Utils.Spread(Player, BeamPlayer1);
+                                                        Utils.Spread(Player, BeamPlayer2);
+
+                                                        if (BeamPlayer1.Is(RoleEnum.Pestilence) || BeamPlayer1.IsOnAlert())
+                                                        {
+                                                            if (Player.IsShielded())
+                                                            {
+                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                                                                    SendOption.Reliable);
+                                                                writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                                writer2.Write(Player.PlayerId);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+                                                                if (CustomGameOptions.ShieldBreaks)
+                                                                    LastBeamed = DateTime.UtcNow;
+
+                                                                StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                                return;
+                                                            }
+                                                            else if (!Player.IsProtected())
+                                                            {
+                                                                Coroutines.Start(Beamer.BeamPlayers(BeamPlayer1.PlayerId, Player.PlayerId, true));
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                    SendOption.Reliable);
+                                                                write2.Write((byte)ActionsRPC.Beam);
+                                                                write2.Write(BeamPlayer1.PlayerId);
+                                                                write2.Write(Player.PlayerId);
+                                                                write2.Write(true);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                                return;
+                                                            }
+
+                                                            LastBeamed = DateTime.UtcNow;
+                                                            return;
+                                                        }
+                                                        else if (BeamPlayer2.Is(RoleEnum.Pestilence) || BeamPlayer2.IsOnAlert())
+                                                        {
+                                                            if (Player.IsShielded())
+                                                            {
+                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                    SendOption.Reliable);
+                                                                writer2.Write((byte)ActionsRPC.Beam);
+                                                                writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                                writer2.Write(Player.PlayerId);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+                                                                if (CustomGameOptions.ShieldBreaks)
+                                                                    LastBeamed = DateTime.UtcNow;
+
+                                                                StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                                return;
+                                                            }
+                                                            else if (!Player.IsProtected())
+                                                            {
+                                                                Coroutines.Start(Beamer.BeamPlayers(BeamPlayer2.PlayerId, Player.PlayerId, true));
+                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                    SendOption.Reliable);
+                                                                write2.Write((byte)ActionsRPC.Beam);
+                                                                write2.Write(BeamPlayer2.PlayerId);
+                                                                write2.Write(Player.PlayerId);
+                                                                write2.Write(true);
+                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                                return;
+                                                            }
+
+                                                            LastBeamed = DateTime.UtcNow;
+                                                            return;
+                                                        }
+
+                                                        LastBeamed = DateTime.UtcNow;
+                                                        Coroutines.Start(Beamer.BeamPlayers(BeamPlayer1.PlayerId, BeamPlayer2.PlayerId, false));
+                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                                        write.Write((byte)ActionsRPC.Beam);
+                                                        write.Write(BeamPlayer1.PlayerId);
+                                                        write.Write(BeamPlayer2.PlayerId);
+                                                        write.Write(false);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write);
+                                                    }
+                                                    else
+                                                        (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+
+                                                    BeamPlayer1 = null;
+                                                    BeamPlayer2 = null;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!Input.GetMouseButtonDown(0) && LastMouse)
+                    {
+                        if (MenuClick)
+                            MenuClick = false;
+                        else
+                        {
+                            BeamList.Toggle();
+                            BeamList.SetVisible(false);
+                            BeamList = null;
+                            PressedButton = false;
+                            BeamPlayer1 = null;
+                        }
+                    }
+
+                    LastMouse = Input.GetMouseButtonDown(0);
+                }
+            }
+        }
     }
 }

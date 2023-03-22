@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Corrupted : Objectifier
     {
         public DateTime LastKilled;
-        public bool CorruptedWin;
         public PlayerControl ClosestPlayer;
         public AbilityButton KillButton;
 
@@ -20,26 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = "- Kill everyone!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
-        }
-
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (Utils.CorruptedWin())
-            {
-                CorruptedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CorruptedWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
 
         public float KillTimer()

@@ -26,9 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
             if (role.RevivedRole == null)

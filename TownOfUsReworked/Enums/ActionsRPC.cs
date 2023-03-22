@@ -72,6 +72,7 @@ namespace TownOfUsReworked.Enums
         Ambush,
         Crusade,
         Scream,
+        AddConversions,
         Mark
     }
 }

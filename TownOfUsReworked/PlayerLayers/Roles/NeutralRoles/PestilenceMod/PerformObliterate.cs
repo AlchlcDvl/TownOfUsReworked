@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 
             if (__instance == role.ObliterateButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

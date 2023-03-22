@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
 
             if (__instance == role.BeamButton)
             {
-                if (!Utils.ButtonUsable(role.BeamButton))
-                    return false;
-
                 if (role.BeamTimer() != 0f)
                     return false;
 

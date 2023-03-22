@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consigliere))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
             if (__instance == role.InvestigateButton)

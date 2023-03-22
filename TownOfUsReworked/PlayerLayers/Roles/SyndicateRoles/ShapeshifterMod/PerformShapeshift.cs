@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Shapeshifter))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Shapeshifter>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ShapeshiftButton)

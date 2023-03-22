@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Corrupted && ((Corrupted)x).CorruptedWin);
+            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Corrupted && x.Winner && Objectifier.CorruptedWins);
 
             if (obj == null)
                 return;

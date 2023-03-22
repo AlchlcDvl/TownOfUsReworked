@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Rebel))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
             
             if (__instance == role.DeclareButton && !role.HasDeclared)

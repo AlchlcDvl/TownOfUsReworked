@@ -49,22 +49,18 @@ namespace TownOfUsReworked.Patches
                 ((Coroner)role).BodyArrows.Clear();
             }
 
-            foreach (var role in Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Taskmaster))
+            foreach (var obj in Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Taskmaster))
+                ((Taskmaster)obj).ImpArrows.DestroyAll();
+
+            foreach (var ab in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
             {
-                ((Taskmaster)role).ImpArrows.DestroyAll();
-                ((Taskmaster)role).TMArrows.Values.DestroyAll();
-                ((Taskmaster)role).TMArrows.Clear();
+                ((Snitch)ab).ImpArrows.DestroyAll();
+                ((Snitch)ab).SnitchArrows.Values.DestroyAll();
+                ((Snitch)ab).SnitchArrows.Clear();
             }
 
-            foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
-            {
-                ((Snitch)role).ImpArrows.DestroyAll();
-                ((Snitch)role).SnitchArrows.Values.DestroyAll();
-                ((Snitch)role).SnitchArrows.Clear();
-            }
-
-            foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
-                ((Radar)role).RadarArrow.DestroyAll();
+            foreach (var ab in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
+                ((Radar)ab).RadarArrow.DestroyAll();
 
             Role.RoleDictionary.Clear();
             Modifier.ModifierDictionary.Clear();

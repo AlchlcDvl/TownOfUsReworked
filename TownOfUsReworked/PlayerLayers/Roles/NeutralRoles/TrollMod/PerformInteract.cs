@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 
             if (__instance == role.InteractButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.InteractTimer() != 0f)
                     return false;
 

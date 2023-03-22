@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             if (__instance == role.FixButton)
             {
-                if (!Utils.ButtonUsable(role.FixButton))
-                    return false;
-
                 if (!role.ButtonUsable)
                     return false;
 

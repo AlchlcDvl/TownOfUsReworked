@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             
             if (__instance == role.RewindButton)
             {
-                if (!Utils.ButtonUsable(role.RewindButton))
-                    return false;
-
                 if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
                     return false;
 

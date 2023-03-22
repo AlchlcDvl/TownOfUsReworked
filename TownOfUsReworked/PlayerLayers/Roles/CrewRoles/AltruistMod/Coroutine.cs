@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var position = target.TruePosition;
 
             if (AmongUsClient.Instance.AmHost)
-                Utils.RpcMurderPlayer(role.Player, role.Player, false);
+                Utils.RpcMurderPlayer(role.Player, role.Player);
 
             if (PlayerControl.LocalPlayer.PlayerId == parentId)
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));

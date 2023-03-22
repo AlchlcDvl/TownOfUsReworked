@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.BountyHunter))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<BountyHunter>(PlayerControl.LocalPlayer);
 
             if (__instance == role.GuessButton)
@@ -48,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 if (role.ClosestPlayer != role.TargetPlayer && !role.TargetKilled)
                 {
                     Coroutines.Start(Utils.FlashCoroutine(Color.red));
-                    Utils.RpcMurderPlayer(role.Player, role.Player, true);
+                    Utils.RpcMurderPlayer(role.Player, role.Player);
                     role.LastChecked = DateTime.UtcNow;
                 }
                 else if (role.ClosestPlayer == role.TargetPlayer && !role.TargetKilled)
@@ -56,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                     if (interact[3] == false)
-                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, true);
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.BountyHunterWin);

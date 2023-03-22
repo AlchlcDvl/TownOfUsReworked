@@ -1,6 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -9,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (!Role.NobodyWins)
+            if (!Role.NobodyWins && !Objectifier.NobodyWins)
                 return;
 
             __instance.BackgroundBar.material.color = Colors.Stalemate;

@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
                     swapper.ListOfActives.Clear();
                     swapper.MoarButtons.Clear();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.SetSwaps);
                     writer.Write(sbyte.MaxValue);
                     writer.Write(sbyte.MaxValue);
@@ -183,7 +183,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     if (SwapVotes.Swap2 == voteArea)
                         SwapVotes.Swap2 = null;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.SetSwaps);
                     writer.Write(sbyte.MaxValue);
                     writer.Write(sbyte.MaxValue);

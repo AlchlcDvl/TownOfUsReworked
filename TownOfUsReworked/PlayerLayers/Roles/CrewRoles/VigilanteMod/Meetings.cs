@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     var role = (Vigilante)vigi;
 
                     if (role.PreMeetingDie)
-                        Utils.RpcMurderPlayer(role.Player, role.Player, false);
+                        Utils.RpcMurderPlayer(role.Player, role.Player);
                     
                     return;
                 }

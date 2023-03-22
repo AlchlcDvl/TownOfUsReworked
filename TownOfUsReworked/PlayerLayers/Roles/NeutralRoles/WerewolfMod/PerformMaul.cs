@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
 
             if (__instance == role.MaulButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.MaulTimer() != 0f)
                     return false;
 

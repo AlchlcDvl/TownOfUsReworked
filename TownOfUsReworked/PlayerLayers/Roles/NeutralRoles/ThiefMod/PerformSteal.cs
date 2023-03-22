@@ -21,10 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             var role = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
             
             if (__instance == role.StealButton)
-            {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-                
+            {                
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
@@ -37,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 {
                     if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
                         role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
-                        Utils.RpcMurderPlayer(role.Player, role.Player, true);
+                        Utils.RpcMurderPlayer(role.Player, role.Player);
                     else
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -46,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         writer.Write(role.ClosestPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
-                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, true);
+                        Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
                         Steal(role, role.ClosestPlayer);
                     }
                 }

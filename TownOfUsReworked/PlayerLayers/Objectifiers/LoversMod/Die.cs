@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                     otherLover.Exiled();
             }
             else if (AmongUsClient.Instance.AmHost && !otherLover.Is(RoleEnum.Pestilence))
-                Utils.RpcMurderPlayer(otherLover, otherLover, false);
+                Utils.RpcMurderPlayer(otherLover, otherLover);
 
             return true;
         }

@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 
             if (__instance == objectifier.KillButton)
             {
-                if (!Utils.ButtonUsable(objectifier.KillButton))
-                    return false;
-
                 if (objectifier.KillTimer() != 0f)
                     return false;
 

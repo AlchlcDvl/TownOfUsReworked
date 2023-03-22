@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Teleporter))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Teleporter>(PlayerControl.LocalPlayer);
 
             if (__instance == role.MarkButton)

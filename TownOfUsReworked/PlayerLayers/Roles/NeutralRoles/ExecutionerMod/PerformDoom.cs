@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
             if (__instance == role.DoomButton)
             {
-                if (!Utils.ButtonUsable(role.DoomButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

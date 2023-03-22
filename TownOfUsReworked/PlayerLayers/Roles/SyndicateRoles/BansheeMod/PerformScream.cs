@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Banshee))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Banshee>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ScreamButton)

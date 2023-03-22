@@ -62,6 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 
             if (CompletedTasks)
             {
+                PhantomWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.PhantomWin);
                 writer.Write(Player.PlayerId);

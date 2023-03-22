@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Rivals : Objectifier
     {
         public PlayerControl OtherRival { get; set; }
-        public bool RivalWins { get; set; }
 
         public Rivals(PlayerControl player) : base(player)
         {
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
         {
-            List<PlayerControl> all = new List<PlayerControl>();
+            List<PlayerControl> all = new();
 
             foreach (var player in canHaveObjectifiers)
                 all.Add(player);
@@ -61,25 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             writer.Write(firstRival.PlayerId);
             writer.Write(secondRival.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (BothRivalsDead())
-                return true;
-
-            if (Utils.RivalsWin(Player))
-            {
-                RivalWins = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.RivalWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
 
         public bool RivalDead() => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;

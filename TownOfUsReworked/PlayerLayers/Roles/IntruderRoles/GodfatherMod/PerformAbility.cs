@@ -22,9 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             var role = Role.GetRole<Godfather>(PlayerControl.LocalPlayer);
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             if (__instance == role.DeclareButton && !role.HasDeclared)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestTarget))

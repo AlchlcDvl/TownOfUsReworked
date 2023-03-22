@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Lovers && ((Lovers)x).LoveWins);
+            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Lovers && x.Winner && Objectifier.LoveWins);
 
             if (obj == null)
                 return;

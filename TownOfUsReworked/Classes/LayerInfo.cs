@@ -54,23 +54,21 @@ namespace TownOfUsReworked.Classes
             private static string SSuDescription = "Syndicate (Support) roles have miscellaneous abilities. They are detrimental to the Syndicate's cause and if" +
                 " used right, can greatly affect how the game continues.";
             private static string SDDescription = "Syndicate (Disruption) roles are designed to change the flow of the game, via changing some mechanic.";
-            private static string SyKDescription = "You are a Syndicate (Killing) role! It's your job to ensure that the crew dies while you achieve your ulterior motives.";
-            private static string SPDescription = "You are a Syndicate (Power) role! You are a powerful role who's only goal is to chaos and destruction. Ensure that the crew cannot get " +
-                "their wits and information in order!";
+            private static string SyKDescription = "Syndicate (Killing) roles are powerful killers unique ways to rack up body counts.";
+            private static string SPDescription = "Syndicate (Power) roles are powerful disruptors with a knack for chaos and destruction.";
 
             private static string CrewObjective = "Finish your tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, Neutral Killers, Proselytes and Neophytes.";
-            private static string CPDescription = "You are a Crew (Protective) role! You have the capability to stop someone from losing their life, and quite possibly" +
-                    " even gain information from the dead!";
+            private static string CPDescription = "Crew (Protective) roles have the capability to stop someone from losing their life or bring back the dead.";
             private static string CIDescription = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, " +
                 "Crew (Investigative) roles can deduce who is good and who is not.";
             private static string CUDescription = "Crew (Utility) roles usually don't appear under regaular spawn conditions.";
             private static string CSDescription = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying " +
                 "attention, your chances of winning will be severely decreased because of them.";
-            private static string CADescription = "You are a Crew (Auditor) role! You have a special goal. Find and eliminate those who stray from their path!";
-            private static string CKDescription = "You are a Crew (Killing) role! You have no aversion to killing for the better good, even if it costs your life! Elimiate the evildoers" +
-                " and save the Crew!";
-            private static string CSvDescription = "You are a Crew (Sovereign) role! You are a democrat who has no issues with influencing the ballots to get what you want! Stay in power" +
-                " get rid of any and all evildoers who threaten your position!";
+            private static string CADescription = "Crew (Auditor) roles are special roles that spawn under certain conditions. They exist for the demise of rival subfactions.";
+            private static string CKDescription = "Crew (Killing) roles have no aversion to killing like the rest of the Crew and if left alone and potentially wreck the chances of " +
+                "evil subfactions winning.";
+            private static string CSvDescription = "Crew (Sovereign) roles are democratic roles with powers over votes. They are the most powerful during a meeting, so avoid too many " + 
+                "meetings while they are active.";
 
             private static string NBDescription = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain " +
                 "condition is fulfilled by the end of the game.";
@@ -487,11 +485,20 @@ namespace TownOfUsReworked.Classes
             AllRoles.Add(new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
                 "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...", "Get ejected."));
             AllRoles.Add(new RoleInfo("Juggernaut", "Jugg", "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill " +
-                "cooldown no longer decreases and instead gives them other buffs, like bypassing protections.", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
-            AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
-            AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
-            AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
-            AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
+                "cooldown no longer decreases and instead gives them other buffs, like bypassing protections.", RoleAlignment.NeutralKill, Faction.Neutral, "The doctor told me bones grow" +
+                " stronger when recieving damage. But then why did he kick me out when I picked up a hammer?", "Assault anyone who can oppose them."));
+            AllRoles.Add(new RoleInfo("Revealer", "Rev", "The Revealer can reveal evils if they finish all their tasks. Upon finishing all of their tasks, Intruders, Syndicate and " +
+                "sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal evils and are once again " +
+                "a normal ghost.", RoleAlignment.CrewUtil, Faction.Crew, "I have no idea who I am or what I do, the only thing I see is bad guys who I must reveal."));
+            AllRoles.Add(new RoleInfo("Murderer", "Murd", "The Murderer is a simple Neutral Killer with no special abilities.", RoleAlignment.NeutralKill, Faction.Neutral, "I like my " +
+                "women like how I like my knives, sharp and painful.", "Murder anyone who can oppose them."));
+            AllRoles.Add(new RoleInfo("Necromancer", "Necro", "The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's " +
+                "team, the Reanimated. There is a limit to how many times can the Necromancer can kill and revive players.", RoleAlignment.NeutralNeo, Faction.Neutral, "I like the dead," +
+                " they do a lot of things I like. For example, staying dead.", "Resurrect the dead and kill off anyone who can oppose them."));
+            AllRoles.Add(new RoleInfo("Pestilence", "Pest", "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn " +
+                "in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed " +
+                "(usually).", RoleAlignment.NeutralPros, Faction.Neutral, "I am the god of disease, nothing can kill me. *voice from the distance* Ejections can!", "Obliterate anyone " +
+                "who can oppose them."));
             AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
             AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
             AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));

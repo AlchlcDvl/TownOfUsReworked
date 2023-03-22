@@ -124,6 +124,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 loverRole.KilledBy = " By " + role.PlayerName;
                 loverRole.SubFaction = SubFaction.Reanimated;
                 loverRole.IsResurrected = true;
+                role.Resurrected.Add(lover.PlayerId);
             }
 
             if (Minigame.Instance)

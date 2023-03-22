@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         Mediate,
         Interrogate,
         Stake,
-        BypassKill,
         Swoop,
         RetributionistRevive,
         RetributionistReviveSet

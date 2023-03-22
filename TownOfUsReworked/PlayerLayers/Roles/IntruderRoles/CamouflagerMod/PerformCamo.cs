@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
             if (__instance == role.CamouflageButton)
             {
-                if (!Utils.ButtonUsable(role.CamouflageButton))
-                    return false;
-
                 if (role.CamouflageTimer() != 0f)
                     return false;
 

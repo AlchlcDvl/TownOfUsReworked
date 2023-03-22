@@ -1,7 +1,6 @@
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -9,7 +8,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public int OverlordMeetingCount = 0;
         public bool IsAlive => !(Player.Data.IsDead || Player.Data.Disconnected);
-        public bool OverlordWins { get; set; }
         public bool MeetingCountAchieved => OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive;
 
         public Overlord(PlayerControl player) : base(player)
@@ -20,25 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Overlord;
             Hidden = !CustomGameOptions.OverlordKnows;
-        }
-
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-                
-            if (MeetingCountAchieved)
-            {
-                OverlordWins = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.OverlordWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
         }
     }
 }

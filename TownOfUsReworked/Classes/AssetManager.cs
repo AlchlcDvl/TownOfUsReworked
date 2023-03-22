@@ -96,6 +96,8 @@ namespace TownOfUsReworked.Classes
         public static Sprite Reveal;
         public static Sprite Inspect;
         public static Sprite Stake;
+        public static Sprite Plus;
+        public static Sprite Minus;
 
         public static Sprite Lighter;
         public static Sprite Blocked;
@@ -302,6 +304,8 @@ namespace TownOfUsReworked.Classes
             Arrow = Utils.CreateSprite($"{TownOfUsReworked.Misc}Arrow");
             Footprint = Utils.CreateSprite($"{TownOfUsReworked.Misc}Footprint");
             Blocked = Utils.CreateSprite($"{TownOfUsReworked.Misc}Blocked");
+            Plus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Plus");
+            Minus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Minus");
 
             //Settings buttons
             SettingsButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}SettingsButton");

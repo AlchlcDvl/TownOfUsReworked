@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Framer))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.FrameButton)

@@ -6,12 +6,14 @@ using Object = UnityEngine.Object;
 using Hazel;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
 {
-    class MeetingPatches
+    public class MeetingPatches
     {
         private static GameData.PlayerInfo voteTarget = null;
+        public static int MeetingCount = 0;
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
         public class CamoMeetings
@@ -85,12 +87,18 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+        [HarmonyPriority(Priority.First)]
         public class MeetingHUD_Start
         {
             public static void Postfix(MeetingHud __instance)
             {
                 foreach (var player in PlayerControl.AllPlayerControls)
                     player.MyPhysics.ResetAnimState();
+
+                MeetingCount++;
+
+                foreach (var role in Role.AllRoles)
+                    role.Zooming = false;
             }
         }
 

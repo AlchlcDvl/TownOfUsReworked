@@ -566,12 +566,12 @@ The Operative can place bugs around the map. When players enter the range of the
 ## Retributionist
 ### **Alignment: Crew (Support)**
 
-The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to ressurect and use for the following round from the dead. They can choose to use each dead players as many times as they wish. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
+The Retributionist can resurrect dead crewmates. During meetings, the Retributionist can select who they are going to ressurect and use for the following round from the dead. They can choose to use each dead players only once. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
 
 ## Revealer
 ### **Alignment: Crew (Utility)**
 
-The Revealer is a dead Crewmate that can reveal Intruders if they finish all their tasks. Upon finishing all of their tasks, Intruders and sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal Intruders and are once again a normal ghost.
+The Revealer can reveal evils if they finish all their tasks. Upon finishing all of their tasks, Intruders, Syndicate and sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.
 
 ### Game Options
 

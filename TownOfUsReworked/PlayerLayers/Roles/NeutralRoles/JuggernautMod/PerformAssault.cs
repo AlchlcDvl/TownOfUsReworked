@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
 {
@@ -18,19 +19,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
 
             if (__instance == role.AssaultButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 if (role.KillTimer() != 0f)
                     return false;
 
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer, true, false, role.JuggKills >= 4);
 
                 if (interact[3] == true)
                     role.JuggKills += 1;
+                
+                if (role.JuggKills == 4)
+                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
                 
                 if (interact[0] == true)
                     role.LastKilled = DateTime.UtcNow;

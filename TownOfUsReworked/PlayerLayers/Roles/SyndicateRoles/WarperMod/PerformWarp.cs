@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Warper))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
             if (__instance == role.WarpButton)

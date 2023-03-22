@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.SerialKiller))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
 
             if (__instance == role.BloodlustButton)

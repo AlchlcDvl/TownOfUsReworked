@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             if (__instance == role.ReviveButton)
             {
-                if (!Utils.ButtonUsable(role.ReviveButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
 

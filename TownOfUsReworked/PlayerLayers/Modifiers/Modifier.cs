@@ -7,7 +7,7 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
-    public class Modifier : PlayerLayer
+    public abstract class Modifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Modifier> ModifierDictionary = new Dictionary<byte, Modifier>();
         public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();

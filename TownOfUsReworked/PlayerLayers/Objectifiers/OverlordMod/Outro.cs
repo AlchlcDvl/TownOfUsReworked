@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)x).OverlordWins);
+            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Overlord && x.Winner && Objectifier.OverlordWins);
 
             if (obj == null)
                 return;

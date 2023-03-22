@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             if (__instance == role.InspectButton)
             {
-                if (!Utils.ButtonUsable(role.InspectButton))
-                    return false;
-
                 if (role.InspectTimer() != 0f)
                     return false;
 

@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Morphling))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
 
             if (__instance == role.MorphButton)

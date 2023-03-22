@@ -33,7 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             __instance.KillButton.gameObject.SetActive(false);
             __instance.AbilityButton.gameObject.SetActive(false);
-
             var role = Role.GetRole(local);
 
             if (role == null)
@@ -60,9 +59,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 __instance.ImpostorVentButton.graphic.sprite = Vent;
                 __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(role.FactionColor);
                 __instance.ImpostorVentButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
-
-                if (local.Is(RoleEnum.Revealer) || local.Is(RoleEnum.Phantom) || local.Is(RoleEnum.Banshee) || local.Is(RoleEnum.Ghoul))
-                    __instance.ImpostorVentButton.gameObject.SetActive(local.inVent);
             }
 
             var Report = __instance.ReportButton.graphic.sprite;
@@ -130,10 +126,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             
             if (local.Data.IsDead)
             {
-                if (role.SpectateButton = null)
+                var ghostRole = false;
+
+                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+                {
+                    if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
+                        ghostRole = true;
+                }
+                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
+                {
+                    if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
+                        ghostRole = true;
+                }
+                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
+                {
+                    if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
+                        ghostRole = true;
+                }
+                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
+                {
+                    if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
+                        ghostRole = true;
+                }
+
+                if (role.SpectateButton == null)
                     role.SpectateButton = Utils.InstantiateButton();
-                
-                role.SpectateButton.UpdateButton(role, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, true, true, false, 0, 1, false, 0, true);
+
+                role.SpectateButton.UpdateButton(role, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
+                    false, 0, !ghostRole);
+
+                if (role.ZoomButton == null)
+                    role.ZoomButton = Utils.InstantiateButton();
+
+                role.ZoomButton.UpdateButton(role, "SPECTATE", 0, 1, role.Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
+                    false, 0, 1, false, 0, !ghostRole);
             }
         }
     }

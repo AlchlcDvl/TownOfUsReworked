@@ -4,6 +4,9 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
+using System.Linq;
+using Hazel;
+
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Glitch : NeutralRole, IVisualAlteration
@@ -132,6 +135,54 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             appearance = Player.GetDefaultAppearance();
             return false;
+        }
+
+        public void MimicListUpdate(HudManager __instance)
+        {
+            if (MimicList != null)
+            {
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
+
+                if (!MimicList.IsOpen || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    MimicList.Toggle();
+                    MimicList.SetVisible(false);
+                    MimicList = null;
+                }
+                else
+                {
+                    foreach (var bubble in MimicList.chatBubPool.activeChildren)
+                    {
+                        if (!IsUsingMimic && MimicList != null)
+                        {
+                            var ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
+                            var ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
+
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                            {
+                                if (!Input.GetMouseButtonDown(0) && LastMouse)
+                                {
+                                    LastMouse = false;
+                                    MimicList.Toggle();
+                                    MimicList.SetVisible(false);
+                                    MimicList = null;
+                                    MimicTarget = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                    writer.Write((byte)ActionsRPC.SetMimic);
+                                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                                    writer.Write(MimicTarget.PlayerId);
+                                    TimeRemaining2 = CustomGameOptions.MimicDuration;
+                                    Mimic();
+                                    break;
+                                }
+
+                                LastMouse = Input.GetMouseButtonDown(0);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

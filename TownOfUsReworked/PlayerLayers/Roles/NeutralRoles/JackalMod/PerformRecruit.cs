@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
             if (__instance == role.RecruitButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.RecruitTimer() != 0f)
                     return false;
                 
@@ -74,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 jackal.Recruited.AddRange(jackRole.Recruited);
             }
             else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(jack, other, true);
+                Utils.RpcMurderPlayer(jack, other);
 
             jackRole.HasRecruited = true;
             jackRole.RecruitButton.gameObject.SetActive(false);

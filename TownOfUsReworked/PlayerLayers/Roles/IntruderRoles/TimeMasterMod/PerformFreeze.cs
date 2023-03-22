@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeMaster))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<TimeMaster>(PlayerControl.LocalPlayer);
 
             if (__instance == role.FreezeButton)

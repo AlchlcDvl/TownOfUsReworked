@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
             if (__instance == role.StakeButton)
             {
-                if (!Utils.ButtonUsable(role.StakeButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

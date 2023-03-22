@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 
             if (__instance == role.BlockButton)
             {
-                if (!Utils.ButtonUsable(role.BlockButton))
-                    return false;
-
                 if (role.RoleblockTimer() != 0f)
                     return false;
 

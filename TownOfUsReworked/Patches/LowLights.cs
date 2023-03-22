@@ -37,8 +37,6 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
 
-            var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
             if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(AbilityEnum.Torch))
             {
                 __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
@@ -57,8 +55,10 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
 
+            var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
             var t = switchSystem.Value / 255f;
-            __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * CustomGameOptions.CrewVision;
+            __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * (player._object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision :
+                CustomGameOptions.CrewVision);
             return false;
         }
     }

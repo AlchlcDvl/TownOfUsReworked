@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
             if (__instance == role.ExamineButton)
             {
-                if (!Utils.ButtonUsable(role.ExamineButton))
-                    return false;
-
                 if (role.ExamineTimer() != 0f)
                     return false;
 

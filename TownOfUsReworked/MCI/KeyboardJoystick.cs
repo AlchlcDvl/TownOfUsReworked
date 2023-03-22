@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.MCI
@@ -61,6 +62,7 @@ namespace TownOfUsReworked.MCI
                     return;
 
                 Role.NobodyWins = true;
+                Objectifier.NobodyWins = true;
                 Utils.EndGame();
                 InstanceControl.MCIActive = false;
             }

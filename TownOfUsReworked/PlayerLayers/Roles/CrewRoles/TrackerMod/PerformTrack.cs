@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
             if (__instance == role.TrackButton)
             {
-                if (!Utils.ButtonUsable(role.TrackButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

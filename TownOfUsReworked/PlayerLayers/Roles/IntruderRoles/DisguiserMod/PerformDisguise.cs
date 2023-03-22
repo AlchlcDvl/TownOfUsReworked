@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Disguiser))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Disguiser>(PlayerControl.LocalPlayer);
 
             if (__instance == role.DisguiseButton)
@@ -26,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestTarget))
-                    return false;
-                
-                if (role.Disguised || role.DelayActive)
                     return false;
 
                 if (role.ClosestTarget == role.MeasuredPlayer)

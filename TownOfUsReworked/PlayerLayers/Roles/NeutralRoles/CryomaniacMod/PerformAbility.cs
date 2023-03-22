@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cryomaniac))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
 
             if (__instance == role.FreezeButton)

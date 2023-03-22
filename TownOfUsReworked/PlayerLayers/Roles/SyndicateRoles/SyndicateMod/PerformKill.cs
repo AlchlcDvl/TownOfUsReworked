@@ -24,9 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 
             if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(role.KillButton))
-                    return false;
-
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 

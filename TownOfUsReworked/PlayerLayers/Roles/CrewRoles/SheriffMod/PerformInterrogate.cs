@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
             if (__instance == role.InterrogateButton)
             {
-                if (!Utils.ButtonUsable(role.InterrogateButton))
-                    return false;
-
                 if (role.InterrogateTimer() != 0f)
                     return false;
 

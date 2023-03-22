@@ -13,9 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medic))
                 return true;
 
-            if (!Utils.ButtonUsable(__instance))
-                return false;
-
             var role = Role.GetRole<Medic>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ShieldButton)

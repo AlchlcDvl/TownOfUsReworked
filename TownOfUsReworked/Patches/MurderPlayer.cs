@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
 
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
-            Utils.RpcMurderPlayer(__instance, target, !__instance.Is(AbilityEnum.Ninja));
+            Utils.RpcMurderPlayer(__instance, target);
             return false;
         }
 

@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 
             if (__instance == role.WhisperButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.WhisperTimer() != 0f)
                     return false;
 
@@ -92,6 +89,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                     }
                     else if (!Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
                         Utils.RpcMurderPlayer(role.Player, Utils.PlayerById(playerConversion.Item1), false);
+                    else  if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
+                    {
+                        if (Utils.PlayerById(playerConversion.Item1).Is(RoleEnum.Whisperer))
+                        {
+                            var targetRole = Role.GetRole<Whisperer>(Utils.PlayerById(playerConversion.Item1));
+                            role.Persuaded.AddRange(targetRole.Persuaded);
+                            targetRole.Persuaded.AddRange(role.Persuaded);
+                        }
+                        else
+                            role.Persuaded.Add(playerConversion.Item1);
+
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                        writer.Write((byte)ActionsRPC.AddConversions);
+                        writer.Write(role.Player.PlayerId);
+                        writer.Write(playerConversion.Item1);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
                 }
             }
             

@@ -4,12 +4,10 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Object = UnityEngine.Object;
-using System.Collections.Generic;
 using System.Linq;
 using System;
 using Hazel;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {
@@ -25,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
             if (__instance == role.MediateButton)
             {
-                if (!Utils.ButtonUsable(role.MediateButton))
-                    return false;
-
                 if (role.MediateTimer() != 0f)
                     return false;
 
