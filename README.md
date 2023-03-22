@@ -101,7 +101,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
-| 2023.2.28 (s & e) | v0.0.2dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev3/ToU-Rew-v0.0.2-dev3.zip) |
+| 2023.2.28 (s & e) | v0.0.2dev4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev4/TownOfUsReworked.zip) |
+| 2023.2.28 (s & e) | v0.0.2dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev3/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev19 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
@@ -117,6 +118,53 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.2dev4</summary>
+    <ul> <li>Addition: Added a zooming button for dead players</li> </ul>
+    <ul> <li>Code Change: Changed how games end to squash bugs; past, present and future</li> </ul>
+    <ul> <li>Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end</li> </ul>
+    <ul> <li>Critical Fix: Fixed games not ending correctly again</li> </ul>
+    <ul> <li>Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills</li> </ul>
+    <ul> <li>Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op</li> </ul>
+  </details>
+  <details>
+    <summary>v0.0.2dev3</summary>
+    <ul> <li>New Role: Ambusher [Intruder (Killing)]</li> </ul>
+    <ul> <li>New Role: Crusader [Syndicate (Killing)]</li> </ul>
+    <ul> <li>New Role: Ghoul [Intruder (Utility)]</li> </ul>
+    <ul> <li>New Role: Beamer [Syndicate (Support)]</li> </ul>
+    <ul> <li>New Role: Banshee [Syndicate (Utility)]</li> </ul>
+    <ul> <li>New Role: Betrayer [Neutral (Proselyte)]</li> </ul>
+    <ul> <li>Addition: New keybind settings</li> </ul>
+    <ul> <li>Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)</li> </ul>
+    <ul> <li>Addition: Added setting pages for easier browsing while in lobby</li> </ul>
+    <ul> <li>Addition: Added a semi functioning profanity filter to the /setname chat command</li> </ul>
+    <ul> <li>Update: Merged features from v4.0.3 of Town Of Us</li> </ul>
+    <ul> <li>Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels</li> </ul>
+    <ul> <li>Critical Fix: Fixed Crew roles not spawning under certain conditions</li> </ul>
+    <ul> <li>Visual Fix: All buttons now have consistent fonts</li> </ul>
+    <ul> <li>Visual Fix: Fixed the Report button lighting up incorrectly</li> </ul>
+    <ul> <li>Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up</li> </ul>
+    <ul> <li>Bug Fix: Fixed Button Barry being unable to spawn</li> </ul>
+    <ul> <li>Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up</li> </ul>
+    <ul> <li>Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound</li> </ul>
+    <ul> <li>Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively</li> </ul>
+    <ul> <li>Role Fix: Fixed Executioner being unable to doom players</li> </ul>
+    <ul> <li>Role Fix: Fixed Glitch being unable to mimic players</li> </ul>
+    <ul> <li>Role Fix: Fixed Arsonist breaking the game</li> </ul>
+    <ul> <li>Role Fix: Fixed Transporter's button not lighting up or working properly</li> </ul>
+    <ul> <li>Role Fix: Fixed Guardian Angels randomly bugging out</li> </ul>
+    <ul> <li>Role Fix: Fixed winning Neutrals becoming Phantom when they are the first dead neutral</li> </ul>
+    <ul> <li>Role Fix: Fixed the limits on Necromancer not decreasing properly</li> </ul>
+    <ul> <li>Role Fix: Fixed Godfather-Undertaker being unable to drag bodies</li> </ul>
+    <ul> <li>Role Fix: Fixed Revealer and Phantom being unable to leave vents</li> </ul>
+    <ul> <li>Role Fix: Fixed Phantom and Revealer clicking themselves into losing</li> </ul>
+    <ul> <li>Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities</li> </ul>
+    <ul> <li>Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks</li> </ul>
+    <ul> <li>Role Fix: Fixed Rebel-Poisoner from not being able to poison players</li> </ul>
+    <ul> <li>Removed: Vanilla setting tabs since their options have been moved into custom settings</li> </ul>
+    <ul> <li>Removed: BepInEx updater because...just no</li> </ul>
+  </details>
   <details>
     <summary>v0.0.2dev2</summary>
     <ul> <li>Update: Updated to v2023.2.28</li> </ul>
