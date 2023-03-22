@@ -170,8 +170,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void BeamListUpdate(HudManager __instance)
         {
-            
-
             if (PressedButton && BeamList == null && !IsBlocked)
             {
                 BeamPlayer1 = null;

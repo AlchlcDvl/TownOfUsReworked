@@ -164,12 +164,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && ObjectifierType == ObjectifierEnum.Overlord)
+            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)this).IsAlive)
             {
                 OverlordWins = true;
 
                 foreach (Overlord ov in GetObjectifiers(ObjectifierEnum.Overlord))
-                    ov.Winner = true;
+                {
+                    if (ov.IsAlive)
+                        ov.Winner = true;
+                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.OverlordWin);

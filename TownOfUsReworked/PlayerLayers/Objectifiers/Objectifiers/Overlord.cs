@@ -6,9 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Overlord : Objectifier
     {
-        public int OverlordMeetingCount = 0;
         public bool IsAlive => !(Player.Data.IsDead || Player.Data.Disconnected);
-        public bool MeetingCountAchieved => OverlordMeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive;
 
         public Overlord(PlayerControl player) : base(player)
         {
