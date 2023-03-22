@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            //IntroSound = "AmnesiacIntro";
-            RoleDescription = "Your are an Amnesiac! You know when players die and need to find a dead player. You cannot win as your current role and" +
-                " instead need to win as the role you become after finding a dead body.";
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
             BodyArrows = new Dictionary<byte, ArrowBehaviour>();
             InspectorResults = InspectorResults.DealsWithDead;

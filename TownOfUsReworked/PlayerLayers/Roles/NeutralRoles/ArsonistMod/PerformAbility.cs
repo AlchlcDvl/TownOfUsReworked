@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
             var role = Role.GetRole<Arsonist>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.IgniteButton && role.DousedAlive > 0)
             {
                 if (role.IgniteTimer() != 0f)

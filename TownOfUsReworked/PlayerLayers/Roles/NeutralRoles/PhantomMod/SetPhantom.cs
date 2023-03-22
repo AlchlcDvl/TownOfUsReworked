@@ -40,14 +40,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 var role = new Phantom(PlayerControl.LocalPlayer);
                 role.Player.RegenTask();
                 role.RoleUpdate(former);
-
                 RemoveTasks(PlayerControl.LocalPlayer);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-
                 Utils.LogSomething("Becoming");
-
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PhantomDied, SendOption.Reliable);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -102,6 +98,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                     normalPlayerTask.taskStep = 0;
 
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
+                        normalPlayerTask.taskStep = 1;
+
+                    if ((normalPlayerTask.TaskType == TaskTypes.EmptyGarbage || normalPlayerTask.TaskType == TaskTypes.EmptyChute)
+                        && (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3 ||
+                        GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4))
                         normalPlayerTask.taskStep = 1;
 
                     if (updateArrow)

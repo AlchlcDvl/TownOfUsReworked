@@ -28,8 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
-            RoleDescription = "You are a Consigliere! You are a corrupt Inspector who is so capable of finding someone's identity. Help your mate assassinate or prioritise others" +
-                " by revealing players for who they really are!";
             Investigated = new List<byte>();
         }
 

@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = $"- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
-            ObjectifierDescription = $"You are a Rival! You are in competition with your Rival! Kill them and survive to the final 2!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)

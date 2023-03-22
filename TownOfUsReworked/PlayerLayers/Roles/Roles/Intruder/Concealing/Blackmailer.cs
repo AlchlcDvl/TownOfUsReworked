@@ -24,8 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
-            RoleDescription = "You are a Blackmailer! You can choose to silent the crew to ensure no information gets into the wrong hands. Be careful though, as you cannot blackmail" +
-                " yourself so the others will get wise to your identity pretty quickly.";
             InspectorResults = InspectorResults.HasInformation;
             BlackmailedPlayer = null;
         }

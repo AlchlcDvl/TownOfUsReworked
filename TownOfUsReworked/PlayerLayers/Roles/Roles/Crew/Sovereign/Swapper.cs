@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Swapper;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
-            RoleDescription = "Your are a Swapper! You are the creator of the voting system! Use this fact to swap the votes against 2 players to ensure the crucial players live!";
             InspectorResults = InspectorResults.BringsChaos;
             MoarButtons = new List<GameObject>();
             ListOfActives = new List<bool>();

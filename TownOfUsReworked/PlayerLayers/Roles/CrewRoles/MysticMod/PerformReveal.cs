@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 
             var role = Role.GetRole<Mystic>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.RevealButton)
             {
                 if (!Utils.ButtonUsable(role.RevealButton))

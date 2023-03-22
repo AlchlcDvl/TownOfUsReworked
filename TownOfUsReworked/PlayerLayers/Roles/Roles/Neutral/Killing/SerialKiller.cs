@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton BloodlustButton;
         public AbilityButton StabButton;
         public bool Enabled;
-        public bool SerialKillerWins;
         public PlayerControl ClosestPlayer;
         public DateTime LastLusted;
         public DateTime LastKilled;

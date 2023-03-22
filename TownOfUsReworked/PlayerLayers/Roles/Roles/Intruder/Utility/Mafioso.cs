@@ -20,8 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;
-            RoleDescription = "You have become a Mafioso! You are the successor to the leader of the Intruders. When the Godfather dies, you will become the new" +
-                " Godfather and will inherit stronger variations of your former role.";
         }
 
         public void TurnGodfather()

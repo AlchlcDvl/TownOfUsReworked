@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.FreezeButton)
             {
                 if (role.DousedAlive <= 0)

@@ -20,15 +20,11 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new List<CustomButtonOption>();
 
-        protected internal Export(int id) : base(id, MultiMenu.main, "Save Custom Settings")
-        {
-            Do = ToDo;
-        }
+        protected internal Export(int id) : base(id, MultiMenu.main, "Save Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
-
             var togglePrefab = Object.FindObjectOfType<ToggleOption>();
 
             foreach (var button in SlotButtons)
@@ -40,10 +36,9 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
+                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-
                     button.Setting = toggle;
                     button.OptionCreated();
                     options.Add(toggle);
@@ -53,10 +48,7 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro)
-        {
-            Coroutines.Start(CancelCoro(flashCoro));
-        }
+        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
         protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
@@ -99,14 +91,11 @@ namespace TownOfUsReworked.CustomOptions
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
-
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
-
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
             var i = 0;
-
             OldButtons = __instance.Children.ToList();
 
             foreach (var option in __instance.Children)

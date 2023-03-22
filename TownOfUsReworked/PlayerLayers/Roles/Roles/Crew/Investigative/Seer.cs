@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             AbilitiesText = "- You can investigate players to see if their roles have changed.\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
                 "Sheriff</color>.";
-            RoleDescription = "You are a Seer! You have the power to view a player's background and know if they changed their positions! Use this power to find all unsavoury people!";
             InspectorResults = InspectorResults.TouchesPeople;
         }
 

@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Interrogated = new List<byte>();
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CI;
-            RoleDescription = "You are a Sheriff! You are a law enforcement officer who can investigate players to see if they are capable of harming the Crew or not!";
             InspectorResults = InspectorResults.HasInformation;
         }
 

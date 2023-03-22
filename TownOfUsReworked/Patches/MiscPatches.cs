@@ -12,28 +12,13 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.InitializeOptions))]
         public class EnableMapImps
         {
-            private static void Prefix(ref GameSettingMenu __instance)
-            {
-                __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
-            }
-        }
-
-        [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
-        public static class StopLoadingMainMenu
-        {
-            public static bool Prefix()
-            {
-                return !BepInExUpdater.UpdateRequired;
-            }
+            private static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
         public static class UpdatePatch
         {
-            public static void Prefix(GameStartManager __instance)
-            {
-                __instance.MinPlayers = 1;
-            }
+            public static void Prefix(GameStartManager __instance) => __instance.MinPlayers = 1;
         }
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
@@ -42,31 +27,11 @@ namespace TownOfUsReworked.Patches
         {
             public static ExileController lastExiled;
             
-            public static void Prefix(ExileController __instance)
-            {
-                lastExiled = __instance;
-            }
+            public static void Prefix(ExileController __instance) => lastExiled = __instance;
         }
 
         //Vent and kill shit
         //Yes thank you Discussions - AD
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ToggleHighlight))]
-        class ToggleHighlightPatch
-        {
-            public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] bool active, [HarmonyArgument(1)] RoleTeamTypes team)
-            {
-                var player = PlayerControl.LocalPlayer;
-                bool isActive = Utils.CanInteract(player);
-
-                if (isActive)
-                {
-                    var role = Role.GetRole(player); 
-                    var color = role != null ? role.Color : new Color32(255, 255, 255, 255);
-                    ((Renderer)__instance.cosmetics.currentBodySprite.BodySprite).material.SetColor("_OutlineColor", color);
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
         class SetVentOutlinePatch
         {
@@ -138,10 +103,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(StatsManager), nameof(StatsManager.AmBanned), MethodType.Getter)]
         public class AmBanned
         {
-            public static void Postfix(out bool __result)
-            {
-                __result = false;
-            }
+            public static void Postfix(out bool __result) => __result = false;
         }
     }
 }

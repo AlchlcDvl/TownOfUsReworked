@@ -34,22 +34,16 @@ namespace TownOfUsReworked.CustomOptions
             Set(Value);
         }
 
-        public override string ToString()
-        {
-            return Format(Value);
-        }
+        public override string ToString() => Format(Value);
 
-        public virtual void OptionCreated()
-        {
-            Setting.name = Setting.gameObject.name = Name;
-        }
+        public virtual void OptionCreated() => Setting.name = Setting.gameObject.name = Name;
 
         protected internal void Set(object value, bool SendRpc = true)
         {
             Value = value;
 
             if (Setting != null && AmongUsClient.Instance.AmHost && SendRpc)
-                Rpc.SendRpc(this);
+                RPC.SendRPC(this);
 
             if (Setting is ToggleOption toggle)
             {

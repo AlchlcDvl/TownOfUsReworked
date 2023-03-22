@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
                 role.PoisonButton = Utils.InstantiateButton();
 
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != role.PoisonedPlayer).ToList();
-            role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? TownOfUsReworked.PoisonedSprite :
-                TownOfUsReworked.PoisonSprite, AbilityTypes.Direct, notSyn, true, !role.Poisoned, role.Poisoned && !Role.SyndicateHasChaosDrive, role.TimeRemaining,
+            role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? AssetManager.Poisoned :
+                AssetManager.Poison, AbilityTypes.Direct, "Secondary", notSyn, true, !role.Poisoned, role.Poisoned && !Role.SyndicateHasChaosDrive, role.TimeRemaining,
                 CustomGameOptions.PoisonDuration);
         }
     }

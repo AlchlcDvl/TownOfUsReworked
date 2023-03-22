@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.VIP : Colors.Modifier;
             ModifierType = ModifierEnum.VIP;
             Hidden = !CustomGameOptions.VIPKnows;
-            ModifierDescription = "You are a VIP! When you are killed, everyone will be alerted about it while also revealing your role!";
         }
     }
 }

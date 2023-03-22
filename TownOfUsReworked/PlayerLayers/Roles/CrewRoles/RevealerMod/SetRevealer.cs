@@ -7,6 +7,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Patches;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
@@ -31,26 +32,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
 
-            if (exiled == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Is(RoleEnum.Jester))
-                return;
-
             if (PlayerControl.LocalPlayer != WillBeRevealer)
                 return;
 
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
             {
                 var former = Role.GetRole(PlayerControl.LocalPlayer);
-                Role.RoleDictionary.Remove(PlayerControl.LocalPlayer.PlayerId);
                 var role = new Revealer(PlayerControl.LocalPlayer);
                 role.Player.RegenTask();
-                role.RoleHistory.AddRange(former.RoleHistory);
                 role.FormerRole = former;
-
                 RemoveTasks(PlayerControl.LocalPlayer);
+                role.RoleUpdate(former);
                 PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
-
                 PlayerControl.LocalPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RevealerDied, SendOption.Reliable);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -105,6 +99,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     normalPlayerTask.taskStep = 0;
 
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
+                        normalPlayerTask.taskStep = 1;
+
+                    if ((normalPlayerTask.TaskType == TaskTypes.EmptyGarbage || normalPlayerTask.TaskType == TaskTypes.EmptyChute) &&
+                        (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3 ||
+                        GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4))
                         normalPlayerTask.taskStep = 1;
 
                     if (updateArrow)

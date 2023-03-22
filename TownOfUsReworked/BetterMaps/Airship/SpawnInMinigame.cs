@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
@@ -24,12 +25,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
                     if (CustomGameOptions.NewSpawns)
                     {
-                        Spawn = AddSpawn(Location: new Vector3(-8.808f, 12.710f, 0.013f), name: StringNames.VaultRoom, Sprite: TownOfUsReworked.VaultSprite, Rollover:
-                            TownOfUsReworked.VaultAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
-                        Spawn = AddSpawn(Location: new Vector3(-19.278f, -1.033f, 0), name: StringNames.Cockpit, Sprite: TownOfUsReworked.CokpitSprite, Rollover:
-                            TownOfUsReworked.CokpitAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
-                        Spawn = AddSpawn(Location: new Vector3(29.041f, -6.336f, 0), name: StringNames.Medical, Sprite: TownOfUsReworked.MedicalSprite, Rollover:
-                            TownOfUsReworked.MedicalAnim, RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(-8.808f, 12.710f, 0.013f), name: StringNames.VaultRoom, Sprite: AssetManager.Vault, Rollover: AssetManager.VaultAnim,
+                            RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(-19.278f, -1.033f, 0), name: StringNames.Cockpit, Sprite: AssetManager.Cokpit, Rollover: AssetManager.CokpitAnim,
+                            RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
+                        Spawn = AddSpawn(Location: new Vector3(29.041f, -6.336f, 0), name: StringNames.Medical, Sprite: AssetManager.Medical, Rollover: AssetManager.MedicalAnim,
+                            RolloverSfx: Spawn[0].RolloverSfx, array: Spawn);
 
                         __instance.Locations = Spawn;
                     }

@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
                 role.KillButton = Utils.InstantiateButton();
 
             var notSyndicate = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
-            role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, TownOfUsReworked.SyndicateKill, AbilityTypes.Direct,
+            role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, AssetManager.SyndicateKill, AbilityTypes.Direct, "ActionSecondary",
                 notSyndicate, Role.SyndicateHasChaosDrive || PlayerControl.LocalPlayer.Is(RoleEnum.Anarchist) || PlayerControl.LocalPlayer.Is(RoleEnum.Sidekick));
         }
     }

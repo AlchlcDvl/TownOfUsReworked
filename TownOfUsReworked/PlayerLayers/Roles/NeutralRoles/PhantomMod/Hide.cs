@@ -11,12 +11,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     {
         public static void Postfix(HudManager __instance)
         {
+            if (GameStates.IsEnded || GameStates.IsLobby)
+                return;
+
             foreach (var role in Role.GetRoles(RoleEnum.Phantom))
             {
                 var phantom = (Phantom)role;
 
                 if (role.Player.Data.Disconnected)
-                    return;
+                    continue;
                 
                 var caught = phantom.Caught;
 

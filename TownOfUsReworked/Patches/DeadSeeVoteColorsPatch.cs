@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)] int index, [HarmonyArgument(2)] Transform parent)
         {
-            SpriteRenderer spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+            var spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
             var insiderFlag = false;
             var deadFlag = CustomGameOptions.DeadSeeEverything && PlayerControl.LocalPlayer.Data.IsDead;
 

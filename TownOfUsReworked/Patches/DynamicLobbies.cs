@@ -31,19 +31,13 @@ namespace TownOfUsReworked.Patches
                 DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
             }
 
-            public static void Postfix(InnerNet.InnerNetClient __instance, [HarmonyArgument(0)] GameOptionsData settings)
-            {
-                settings.MaxPlayers = ChatCommands.LobbyLimit;
-            }
+            public static void Postfix(InnerNet.InnerNetClient __instance, [HarmonyArgument(0)] GameOptionsData settings) => settings.MaxPlayers = ChatCommands.LobbyLimit;
         }
 
         [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
         public static class InnerNetClientJoinPatch
         {
-            public static void Prefix(InnerNet.InnerNetClient __instance)
-            {
-                DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
-            }
+            public static void Prefix(InnerNet.InnerNetClient __instance) => DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]

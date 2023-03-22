@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public bool MurdWins;
         public AbilityButton MurderButton;
 
         public Murderer(PlayerControl player) : base(player)

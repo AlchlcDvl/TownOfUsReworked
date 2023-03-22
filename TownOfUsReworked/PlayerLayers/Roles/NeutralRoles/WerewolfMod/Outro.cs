@@ -11,12 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Werewolf && ((Werewolf)x).WWWins);
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins && x.Winner);
 
             if (role == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);

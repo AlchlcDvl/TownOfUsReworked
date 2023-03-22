@@ -35,7 +35,7 @@ namespace TownOfUsReworked.Patches
                 $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.versionFinal}</color>\n" : "")}" +
                 $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
                 $"Ping: {AmongUsClient.Instance.Ping}ms\n" +
-                (GameStates.IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? " Don't" : "")} Persist" : "");
+                (GameStates.IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "");
         }
     }
 }

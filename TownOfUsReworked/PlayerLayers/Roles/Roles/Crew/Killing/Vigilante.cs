@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;
-            RoleDescription = "You are a Vigilante! You are a militant cop who has taken the law into their own hands! Kill of the evils, but not the Crew!";
             InspectorResults = InspectorResults.UsesGuns;
             UsesLeft = CustomGameOptions.VigiBulletCount;
         }

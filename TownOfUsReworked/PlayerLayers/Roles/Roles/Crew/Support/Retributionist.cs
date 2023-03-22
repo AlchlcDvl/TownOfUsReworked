@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            RoleDescription = "Your are a Retributionist! You are a sorcerer who can mimic the skills of the true-hearted dead! Use your plethora of abilities to find all evildoers!";
             InspectorResults = InspectorResults.DealsWithDead;
             Inspected = new List<byte>();
             BodyArrows = new Dictionary<byte, ArrowBehaviour>();
@@ -129,7 +128,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Medium Stuff
         public DateTime LastMediated;
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
-        public static Sprite Arrow => TownOfUsReworked.Arrow;
         public AbilityButton MediateButton;
 
         public float MediateTimer()
@@ -150,11 +148,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var gameObj = new UnityEngine.GameObject();
             var arrow = gameObj.AddComponent<ArrowBehaviour>();
 
-            if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId || CustomGameOptions.ShowMediumToDead)
+            if (Player == PlayerControl.LocalPlayer || CustomGameOptions.ShowMediumToDead)
             {
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = Arrow;
+                renderer.sprite = AssetManager.Arrow;
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;

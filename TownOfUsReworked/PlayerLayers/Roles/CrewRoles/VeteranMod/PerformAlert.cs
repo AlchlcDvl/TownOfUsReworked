@@ -16,14 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 
             var role = Role.GetRole<Veteran>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.AlertButton)
             {
-                if (!Utils.ButtonUsable(role.AlertButton))
-                    return false;
-
                 if (!role.ButtonUsable)
                     return false;
 

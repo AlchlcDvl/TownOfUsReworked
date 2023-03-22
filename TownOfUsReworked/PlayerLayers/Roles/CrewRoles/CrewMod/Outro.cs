@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             if (role == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
@@ -29,6 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CrewMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
+            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+            SoundManager.Instance.PlaySound(__instance.CrewStinger, false);
         }
     }
 }

@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.InterrogateButton)
             {
                 if (!Utils.ButtonUsable(role.InterrogateButton))

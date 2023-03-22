@@ -4,7 +4,6 @@ using Reactor.Utilities;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
@@ -42,6 +41,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                         otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
                         var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
                         __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
+                    }
+                    else if (randomNumber == 2)
+                    {
+                        //Hearing things
+                        otherNumber = Random.RandomRangeInt(0, AssetManager.Sounds.Count);
+                        var sound = AssetManager.Sounds[otherNumber];
+                        AssetManager.Play(sound);
                     }
                 }
             }

@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 
             var role = Role.GetRole<Janitor>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.CleanButton)
             {
                 if (role.CleanTimer() != 0f)

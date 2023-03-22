@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
             var role = Role.GetRole<Shifter>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.ShiftButton)
             {
                 if (!Utils.ButtonUsable(role.ShiftButton))

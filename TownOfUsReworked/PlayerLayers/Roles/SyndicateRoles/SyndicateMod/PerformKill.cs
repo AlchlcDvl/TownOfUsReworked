@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
                 return false;
 
-            var role = Role.GetRole<SyndicateRole>(PlayerControl.LocalPlayer);
-
-            if (role.IsBlocked)
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
                 return false;
+
+            var role = Role.GetRole<SyndicateRole>(PlayerControl.LocalPlayer);
 
             if (__instance == role.KillButton)
             {

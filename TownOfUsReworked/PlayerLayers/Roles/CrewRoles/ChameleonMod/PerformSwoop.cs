@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 
             var role = Role.GetRole<Chameleon>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.SwoopButton)
             {
                 if (!Utils.ButtonUsable(role.SwoopButton))

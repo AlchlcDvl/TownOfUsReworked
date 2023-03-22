@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName ="Intruder (Concealing)";
-            RoleDescription = "You are a Grenadier! Disable the crew with your flashbangs and ensure they can never see you or your mates kill again!";
             InspectorResults = InspectorResults.DropsItems;
             ClosestPlayers = null;
             FlashedPlayers = new List<PlayerControl>();

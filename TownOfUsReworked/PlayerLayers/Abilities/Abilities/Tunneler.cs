@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
             AbilityType = AbilityEnum.Tunneler;
             Hidden = !CustomGameOptions.TunnelerKnows;
-            AbilityDescription = "You are a Tunneler! Finish your tasks so you can sqeeze your way through vents!";
         }
     }
 }

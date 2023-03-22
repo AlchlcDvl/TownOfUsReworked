@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.BlackmailedPlayer != player).ToList();
             role.BlackmailButton.UpdateButton(role, role.Blackmailed ? "BLACKMAILED" : "BLACKMAIL", role.BlackmailTimer(), CustomGameOptions.BlackmailCd, role.Blackmailed ?
-                TownOfUsReworked.BlackmailLetterSprite : TownOfUsReworked.BlackmailSprite, AbilityTypes.Direct, notBlackmailed);
+                AssetManager.BlackmailLetter : AssetManager.Blackmail, AbilityTypes.Direct, "Secondary", notBlackmailed);
         }
     }
 }

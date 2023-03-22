@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
             if (role.MurderButton == null)
                 role.MurderButton = Utils.InstantiateButton();
 
-            role.MurderButton.UpdateButton(role, "MURDER", role.KillTimer(), CustomGameOptions.MurdKCD, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.MurderButton.UpdateButton(role, "MURDER", role.KillTimer(), CustomGameOptions.MurdKCD, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

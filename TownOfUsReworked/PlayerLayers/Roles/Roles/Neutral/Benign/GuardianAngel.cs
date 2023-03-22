@@ -30,8 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             AbilitiesText = $"- You can protect your target from death for a short while.";
-            RoleDescription = $"You are a Guardian Angel! You are an overprotective being from the heavens whose only job is to see your chosen live. Keep your target" +
-                " alive at all costs even if they lose!";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 

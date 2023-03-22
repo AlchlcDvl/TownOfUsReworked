@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
-            RoleDescription = "You are a Jester! You are a suicidal lunatic who wants to be thrown out of the airlock. Get yourself ejected at all costs!";
             ToHaunt = new List<byte>();
             MaxUses = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
         }

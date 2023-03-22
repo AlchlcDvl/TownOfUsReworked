@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 
             var role = Role.GetRole<Wraith>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.InvisButton)
             {
                 if (role.InvisTimer() != 0f)

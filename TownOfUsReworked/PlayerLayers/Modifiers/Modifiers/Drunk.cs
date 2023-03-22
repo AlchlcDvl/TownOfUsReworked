@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- Your controls are inverted.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
             ModifierType = ModifierEnum.Drunk;
-            ModifierDescription = "You are Drunk! You drunk so much booze that you are unable to walk straight. Your controls are reversed!";
         }
     }
 }

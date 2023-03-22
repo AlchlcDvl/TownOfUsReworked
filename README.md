@@ -8,8 +8,6 @@ An Among Us mod that adds a bunch of roles, modifiers, objectifiers, abilities a
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
------------------------
-
 # ***Contents***
 
 [**Contents**](#contents)
@@ -28,50 +26,49 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) | [Other](#other-roles) |
-|------------------------------|-------------------------------|---------------------|----------------------------|-----------------------|
-| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) | [Betrayer](betrayer) |
-| [Blackmailer](#blackmailer) | [Beamer](#beamer) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |  |
-| [Camouflager](#camouflager) | [Bomber](#bomber) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |  |
-| [Consigliere](#consigliere) | [Concealer](#concealer) | [Coroner](#coroner) | [Bounty Hunter](#bounty-hunter) |  |
-| [Consort](#consort) | [Crusader](#crusader) | [Crewmate](#crewmate) | [Cannibal](#cannibal) |  |
-| [Disguiser](#disguiser) | [Drunkard](#drunkard) | [Detective](#detective) | [Cryomaniac](#cryomaniac) |  |
-| [Godfather](#godfather) | [Framer](#framer) | [Engineer](#engineer) | [Dracula](#dracula) |  |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Escort](#escort) | [Executioner](#executioner) |  |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Inspector](#inspector) | [Glitch](#glitch) |  |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Mayor](#mayor) | [Guardian Angel](#guardian-angel) |  |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medic](#medic) | [Guesser](#guesser) |  |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Medium](#medium) | [Jackal](#jackal) |  |
-| [Morphling](#morphling) | [Warper](#warper) | [Mystic](#mystic) | [Jester](#jester) |  |
-| [Teleporter](#teleporter) |  | [Operative](#operative) | [Juggernaut](#juggernaut) |  |
-| [Time Master](#time-master) |  | [Retributionist](#retributionist) | [Murderer](#murderer) |  |
-| [Undertaker](#undertaker) |  | [Revealer](#revealer) | [Necromancer](#necromancer) |  |
-| [Wraith](#wraith) |  | [Seer](#seer) | [Pestilence](#pestilence) |  |
-|  |  | [Sheriff](#sheriff) | [Phantom](#phantom) |  |
-|  |  | [Shifter](#shifter) | [Plaguebearer](#plaguebearer) |  |
-|  |  | [Swapper](#swapper) | [Serial Killer](#serial-killer) |  |
-|  |  | [Time Lord](#time-lord) | [Survivor](#survivor) |  |
-|  |  | [Tracker](#tracker) | [Thief](#thief) |  |
-|  |  | [Transporter](#transporter) | [Werewolf](#werewolf) |  |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Whisperer](#whisperer) |  |
-|  |  | [Veteran](#veteran) |  |  |
-|  |  | [Vigilante](#vigilante) |  |  |
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
+|------------------------------|-------------------------------|---------------------|----------------------------|
+| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
+| [Blackmailer](#blackmailer) | [Banshee](#banshee) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
+| [Camouflager](#camouflager) | [Beamer](#beamer) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
+| [Consigliere](#consigliere) | [Bomber](#bomber) | [Coroner](#coroner) | [Betrayer](betrayer) |
+| [Consort](#consort) | [Concealer](#concealer) | [Crewmate](#crewmate) | [Bounty Hunter](#bounty-hunter) |
+| [Disguiser](#disguiser) | [Crusader](#crusader) | [Detective](#detective) | [Cannibal](#cannibal) |
+| [Ghoul](#ghoul) | [Drunkard](#drunkard) | [Engineer](#engineer) | [Cryomaniac](#cryomaniac) |
+| [Godfather](#godfather) | [Framer](#framer) | [Escort](#escort) | [Dracula](#dracula) |
+| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Inspector](#inspector) | [Executioner](#executioner) |
+| [Impostor](#impostor) | [Poisoner](#poisoner) | [Mayor](#mayor) | [Glitch](#glitch) |
+| [Janitor](#janitor) | [Rebel](#rebel) | [Medic](#medic) | [Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medium](#medium) | [Guesser](#guesser) |
+| [Miner](#miner) | [Sidekick](#sidekick) | [Mystic](#mystic) | [Jackal](#jackal) |
+| [Morphling](#morphling) | [Warper](#warper) | [Operative](#operative) | [Jester](#jester) |
+| [Teleporter](#teleporter) |  | [Retributionist](#retributionist) | [Juggernaut](#juggernaut) |
+| [Time Master](#time-master) |  | [Revealer](#revealer) | [Murderer](#murderer) |
+| [Undertaker](#undertaker) |  | [Seer](#seer) | [Necromancer](#necromancer) |
+| [Wraith](#wraith) |  | [Sheriff](#sheriff) | [Pestilence](#pestilence) |
+|  |  | [Shifter](#shifter) | [Phantom](#phantom) |
+|  |  | [Swapper](#swapper) | [Plaguebearer](#plaguebearer) |
+|  |  | [Time Lord](#time-lord) | [Serial Killer](#serial-killer) |
+|  |  | [Tracker](#tracker) | [Survivor](#survivor) |
+|  |  | [Transporter](#transporter) | [Thief](#thief) |
+|  |  | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf) |
+|  |  | [Veteran](#veteran) | [Whisperer](#whisperer) |
+|  |  | [Vigilante](#vigilante) |  |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |-------------------------|-------------------------|-------------------------------|
 | [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
 | [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
 | [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
-| [Drunk](#drunk) | [Lighter](#lighter) | [Lovers](#lovers) |
-| [Dwarf](#dwarf) | [Multitasker](#multitasker) | [Overlord](#overlord) |
-| [Flincher](#flincher) | [Ninja](#ninja) | [Rivals](#rivals) |
-| [Giant](#giant) | [Radar](#radar) | [Taskmaster](#taskmaster) |
-| [Indomitable](#indomitable) | [Ruthless](#ruthless) | [Traitor](#traitor) |
-| [Professional](#professional) | [Snitch](#snitch) |  |
-| [Shy](#shy) | [Tiebreaker](#tiebreaker) |  |
-| [VIP](#vip) | [Torch](#torch) |  |
-| [Volatile](#volatile) | [Tunneler](#tunneler) |  |
-|  | [Underdog](#underdog) |  |
+| [Drunk](#drunk) | [Multitasker](#multitasker) | [Lovers](#lovers) |
+| [Dwarf](#dwarf) | [Ninja](#ninja) | [Overlord](#overlord) |
+| [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
+| [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
+| [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
+| [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
+| [Shy](#shy) | [Torch](#torch) |  |
+| [VIP](#vip) | [Tunneler](#tunneler) |  |
+| [Volatile](#volatile) | [Underdog](#underdog) |  |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
@@ -100,13 +97,12 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**License**](#license)
 
------------------------
-
 # Releases
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
-| 2022.12.14 (s & e) | v0.0.2dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip) |
+| 2023.2.28 (s & e) | v0.0.2dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev3/ToU-Rew-v0.0.2-dev3.zip) |
+| 2023.2.28 (s & e) | v0.0.2dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev19 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
 | 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
@@ -116,8 +112,6 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev13 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar) |
-
------------------------
 
 # Changelogs
 
@@ -291,8 +285,6 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
   </details>
 </details>
 
------------------------
-
 # Installation
 
 ## Requirements 
@@ -362,15 +354,11 @@ A first launch may take up to 5 minutes, so be patient if it doesn't launch imme
 ## Issues
 If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
 
------------------------
-
 # Uninstallation
 
 Delete these files and you're good to go!
 
 ![image](https://user-images.githubusercontent.com/56699741/201765022-a784c89f-23c7-448f-9ca2-6359fbaecb24.png)
-
------------------------
 
 # Common Settings
 ## Each role, modifier, objectifier and ability has this setting:
@@ -380,8 +368,6 @@ Delete these files and you're good to go!
 | Role/Modifier/Objectifier/Ability | The percentage probability of the specified type appearing in game | Percentage | 0% |
 | Role/Modifier/Objectifier/Ability Count | How many instances of the specified type should spawn in Custom Mode | Number | 1 |
 | Role/Modifier/Objectifier/Ability Is Unique In All Any | Dictates whether only one of the specified type should spawn in All Any | Toggle | Off |
-
------------------------
 
 # Roles
 
@@ -421,7 +407,7 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 ## Coroner
 ### **Alignment: Crew (Investigative)**
 
-The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
+The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
 
 ### Game Options
 
@@ -715,7 +701,7 @@ The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew,
 ## Vigilante
 ### **Alignment: Crew (Killing)**
 
-The Vigilante is a Crewmate that has the ability to eliminate the Intruder using their kill button. However, if they kill a Crewmate or a Neutral player they can't kill, they instead die themselves.
+The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.
 
 ### Game Options
 
@@ -727,15 +713,13 @@ The Vigilante is a Crewmate that has the ability to eliminate the Intruder using
 | How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
 | Shoot Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
 
------------------------
-
 # Neutral Roles
 
 ## Actor
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Get guessed as your target role.
+### Win Condition: Get guessed as a role in your target role list.
 
-The Actor gets a list of roles at the start of the game. The Actor must pretend to be and get guessed as one of the roles in order to win.
+The Actor gets a list of roles at the start of the game. This list of roles depends on which roles are present in the game so that it's easier for the Actor to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.
 
 ### Game Options
 
@@ -812,7 +796,7 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Freeze all non-Neutral Benign roles.
 
-The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's douseing in gasoline and ignite. Freezing players doesn not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill.
+The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill.
 
 ### Game Options
 
@@ -823,7 +807,7 @@ The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's
 
 ## Dracula
 ### **Alignment: Neutral (Neophyte)**
-### Win Condition: Convert the Crew to gain a majority.
+### Win Condition: Convert or kill anyone who can oppose them.
 
 The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
 
@@ -837,7 +821,7 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 
 ## Executioner
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Eject your target.
+### Win Condition: Live to see your target get ejected.
 
 The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's target, by default, is always non-Crew Sovereign Crew. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies before ejected, the Executioner turns into a Jester.
 
@@ -862,7 +846,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 ### **Alignment: Neutral (Killing)**
 ### Win Condition: Erase the data of all non-Neutral Benign roles.
 
-The Glitch has 2 abilities. The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, which results in them looking exactly like the other person. The Glitch can kill normally.
+The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, which results in them looking exactly like the other person. The Glitch can kill normally.
 
 ### Game Options
 
@@ -1120,8 +1104,6 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 | Whisperer Can Vent | Toggles the Necromancer's ability to vent | Toggle | False |
 | Persuaded Can Vent | Whether the Whisperer's Sect Can Vent, overriding their role's vent settings | Toggle | False |
 
------------------------
-
 # Intruder Roles
 
 ## Ambusher
@@ -1199,6 +1181,17 @@ The Disguiser can disguise into other players. At the beginning of each, they ca
 | Disguise Duration | How long the disguise lasts for | Time | 10s |
 | Disguise Delay | The time it takes for the disguise to take place | Time | 25s |
 | Disguise Targets | Who can be disguised by the Disguiser | String | Everyone |
+
+## Ghoul
+### **Alignment: Intruder (Utility)**
+
+Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Mark Cooldown | The cooldown of the Ghoul's Mark button | Time | 25s |
 
 ## Godfather
 ### **Alignment: Intruder (Support)**
@@ -1325,14 +1318,23 @@ The Wraith can temporarily turn invisible.
 | Invisibility Duration | How duration of the Wraith's invisibility | Time | 10s |
 | Wraith can Vent | Whether the Wraith can Vent | Toggle | False |
 
------------------------
-
 # Syndicate Roles
 
 ## Anarchist
 ### **Alignment: Syndicate (Utility)**
 
 Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.
+
+## Banshee
+### **Alignment: Syndicate (Utility)**
+
+The Banshee can block every non-Syndicate player every once in a while.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Scream Cooldown | The cooldown of the Banshee's Scream button | Time | 25s |
 
 ## Concealer
 ### **Alignment: Syndicate (Disruption)**
@@ -1445,8 +1447,6 @@ The Warper can teleport everyone to a random vent every now and then. With the C
 |------|-------------|------|---------|
 | Warp Cooldown | The cooldown on the Warper's Warp button | Time | 25s |
 
------------------------
-
 # Objectifiers
 Objectifiers are basically a second objective for the player. They can either choose to win the regular way, or win via their Objectifier's condition.
 
@@ -1549,8 +1549,6 @@ The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of th
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Corrupted Kill Cooldown | Self descriptive | Time | 10s |
-
------------------------
 
 # Modifiers
 Modifiers are passive afflictions that change a player's gameplay.
@@ -1684,8 +1682,6 @@ You see and hear things and might lash out on others.
 |------|-------------|------|---------|
 | Volatile | The percentage probability of the Volatile appearing | Percentage | 0% |
 
------------------------
-
 # Abilities
 Abilities give you extra perks on top of your role's regular powers.
 
@@ -1727,25 +1723,13 @@ If any vote is a draw, the Tiebreaker's vote will go through. If they voted anot
 ## Torch
 ### Applied To: Non-Killers
 
-The Torch's vision doesn't get reduced when the lights are sabotaged.
+The Torch's has high vision that cannot be affected by lights.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Torch | The percentage probability of the Torch appearing | Percentage | 0% |
-
-## Lighter
-### **Alignment: Positive**
-### Applied To: Everyone
-
-The Lighter's vision is increased.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Lighter | The percentage probability of the Lighter appearing | Percentage | 0% |
 
 ## Radar
 ### Applied To: Everyone
@@ -1810,8 +1794,6 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Ninja knows who they are on game start | Whether the Ninja knows who they are | Toggle | True |
-
------------------------
 
 # Custom Game Settings
 
@@ -1887,8 +1869,6 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 | Enable Custom Neutral Colors | Whether all Neutral roles will have their colors unique or not | Toggle | False |
 | Enable Custom Modifier Colors | Whether all Modifier will have their colors unique or not | Toggle | True |
 
------------------------
-
 # Extras
 
 ## New Colors!
@@ -1899,8 +1879,6 @@ Custom hats, nameplates and visors have been added, made by some very talented a
 
 ## Bug / Suggestions
 If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/cd27aDQDY9) or create a ticket on GitHub.
-
------------------------
 
 # Game Info
 
@@ -2032,8 +2010,6 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 
 # License
 This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.
-
------------------------
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

@@ -39,7 +39,7 @@ namespace TownOfUsReworked.Patches
             else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek && playerControl.Data.IsImpostor())
                 couldUse = false;
             else
-                couldUse = true;
+                couldUse = canUse;
 
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
@@ -122,9 +122,7 @@ namespace TownOfUsReworked.Patches
                 return CustomGameOptions.TrollVentSwitch;
             else if (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorVent)
                 return CustomGameOptions.ActVentSwitch;
-            else if (player.Is(RoleEnum.Phantom))
-                return false;
-            else if (player.Is(RoleEnum.Revealer))
+            else if (player.Is(RoleEnum.Phantom) || player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Banshee) || player.Is(RoleEnum.Ghoul))
                 return false;
             else
                 return true;

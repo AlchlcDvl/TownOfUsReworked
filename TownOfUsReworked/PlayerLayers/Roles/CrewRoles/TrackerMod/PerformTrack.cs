@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.TrackButton)
             {
                 if (!Utils.ButtonUsable(role.TrackButton))
@@ -42,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = TownOfUsReworked.Arrow;
+                    renderer.sprite = AssetManager.Arrow;
                     var Grey = CamouflageUnCamouflage.IsCamoed;
 
                     if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)

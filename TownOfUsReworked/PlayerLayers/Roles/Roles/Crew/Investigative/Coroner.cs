@@ -35,10 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             BodyArrows = new Dictionary<byte, ArrowBehaviour>();
             Reported = new List<byte>();
-            RoleDescription = "You are a Coroner! You are an expert in revealing information from dead bodies and are so skilled to the point you even know when someone dies!" +
-                " Your strong skill makes you a very tempting target for evils so be careful when revealing information.";
             InspectorResults = InspectorResults.DealsWithDead;
-            //IntroSound = "CoronerIntro";
             UsesLeft = 0;
         }
 

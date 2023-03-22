@@ -3,7 +3,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {

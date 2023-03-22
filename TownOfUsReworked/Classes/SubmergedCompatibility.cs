@@ -14,6 +14,8 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod;
 using Hazel;
 
 namespace TownOfUsReworked.Classes
@@ -166,13 +168,13 @@ namespace TownOfUsReworked.Classes
             if (!isSubmerged())
                 return;
 
-            Tuple<bool, object> elevator = GetPlayerElevator(player);
+            var elevator = GetPlayerElevator(player);
 
             if (!elevator.Item1)
                 return;
 
-            bool CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
-            bool PlayerFloor = player.transform.position.y > -7f; //true is top, false is bottom
+            var CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
+            var PlayerFloor = player.transform.position.y > -7f; //true is top, false is bottom
 
             if (CurrentFloor != PlayerFloor)
                 ChangeFloor(CurrentFloor);
@@ -183,18 +185,18 @@ namespace TownOfUsReworked.Classes
             if (!isSubmerged())
                 return;
 
-            Tuple<bool, object> elevator = GetPlayerElevator(player);
+            var elevator = GetPlayerElevator(player);
 
             if (!elevator.Item1)
                 return;
 
-            int MovementStage = (int)GetMovementStageFromTime.Invoke(elevator.Item2, null);
+            var MovementStage = (int)GetMovementStageFromTime.Invoke(elevator.Item2, null);
 
             if (MovementStage >= 5)
             {
                 //Fade to clear
-                bool topfloortarget = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
-                bool topintendedtarget = player.transform.position.y > -7f; //true is top, false is bottom
+                var topfloortarget = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
+                var topintendedtarget = player.transform.position.y > -7f; //true is top, false is bottom
 
                 if (topfloortarget != topintendedtarget)
                     ChangeFloor(!topintendedtarget);
@@ -225,6 +227,8 @@ namespace TownOfUsReworked.Classes
 
             SetPhantom.ExileControllerPostfix(ExileController.Instance);
             SetRevealer.ExileControllerPostfix(ExileController.Instance);
+            SetGhoul.ExileControllerPostfix(ExileController.Instance);
+            SetBanshee.ExileControllerPostfix(ExileController.Instance);
         }
 
         public static IEnumerator waitStart(Action next)
@@ -287,12 +291,51 @@ namespace TownOfUsReworked.Classes
                     PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
                 }
             }
-            
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var phantom = Role.GetRole<Phantom>(PlayerControl.LocalPlayer);
+                if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
+                {
+                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
-                if (!phantom.Caught)
+                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
+                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
+                    ChangeFloor(startingVent.transform.position.y > -7f);
+
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
+                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer2.Write(startingVent.transform.position.x);
+                    writer2.Write(startingVent.transform.position.y);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
+                }
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
+            {
+                if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
+                {
+                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
+                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
+                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+
+                    ChangeFloor(startingVent.transform.position.y > -7f);
+
+                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
+                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer2.Write(startingVent.transform.position.x);
+                    writer2.Write(startingVent.transform.position.y);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
+                }
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
+            {
+                if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
                 {
                     var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -317,7 +360,7 @@ namespace TownOfUsReworked.Classes
         {
             if (Loaded && __instance.myPlayer.Data.IsDead)
             {
-                PlayerControl player = __instance.myPlayer;
+                var player = __instance.myPlayer;
 
                 if (player.Is(RoleEnum.Phantom))
                 {
@@ -328,8 +371,8 @@ namespace TownOfUsReworked.Classes
                         else
                             player.Collider.enabled = false;
 
-                        Transform transform = __instance.transform;
-                        Vector3 position = transform.position;
+                        var transform = __instance.transform;
+                        var position = transform.position;
                         position.z = position.y/1000;
 
                         transform.position = position;
@@ -345,8 +388,42 @@ namespace TownOfUsReworked.Classes
                         else
                             player.Collider.enabled = false;
 
-                        Transform transform = __instance.transform;
-                        Vector3 position = transform.position;
+                        var transform = __instance.transform;
+                        var position = transform.position;
+                        position.z = position.y / 1000;
+
+                        transform.position = position;
+                        __instance.myPlayer.gameObject.layer = 8;
+                    }
+                }
+                else if (player.Is(RoleEnum.Banshee))
+                {
+                    if (!Role.GetRole<Banshee>(player).Caught)
+                    {
+                        if (player.AmOwner)
+                            MoveDeadPlayerElevator(player);
+                        else
+                            player.Collider.enabled = false;
+
+                        var transform = __instance.transform;
+                        var position = transform.position;
+                        position.z = position.y / 1000;
+
+                        transform.position = position;
+                        __instance.myPlayer.gameObject.layer = 8;
+                    }
+                }
+                else if (player.Is(RoleEnum.Ghoul))
+                {
+                    if (!Role.GetRole<Ghoul>(player).Caught)
+                    {
+                        if (player.AmOwner)
+                            MoveDeadPlayerElevator(player);
+                        else
+                            player.Collider.enabled = false;
+
+                        var transform = __instance.transform;
+                        var position = transform.position;
                         position.z = position.y / 1000;
 
                         transform.position = position;
@@ -360,7 +437,7 @@ namespace TownOfUsReworked.Classes
             if (!Loaded)
                 return obj.AddComponent<MissingSubmergedBehaviour>();
 
-            bool validType = InjectedTypes.TryGetValue(typeName, out Type type);
+            var validType = InjectedTypes.TryGetValue(typeName, out Type type);
             return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
         }
 
@@ -377,7 +454,7 @@ namespace TownOfUsReworked.Classes
             if (!Loaded)
                 return;
 
-            MonoBehaviour _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
+            var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
@@ -399,8 +476,7 @@ namespace TownOfUsReworked.Classes
             {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
-            }
-            catch (System.NullReferenceException) {}
+            } catch (System.NullReferenceException) {}
         }
 
         public static bool isSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;

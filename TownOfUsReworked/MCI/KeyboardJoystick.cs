@@ -134,7 +134,7 @@ namespace TownOfUsReworked.MCI
                     return;
 
                 TownOfUsReworked.Persistence = !TownOfUsReworked.Persistence;
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The robots will now{(TownOfUsReworked.Persistence ? " " : " no longer ")}persist.");
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The robots will now{(TownOfUsReworked.Persistence ? "" : " no longer")} persist.");
             }
         }
     }

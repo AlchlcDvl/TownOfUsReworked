@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.MediateButton)
             {
                 if (!Utils.ButtonUsable(role.MediateButton))
@@ -35,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                     return false;
 
                 role.LastMediated = DateTime.UtcNow;
-                List<DeadPlayer> PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
+                var PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
 
                 if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
                     PlayersDead.Reverse();
@@ -61,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 else
                 {
                     PlayersDead.Shuffle();
-                    var dead = PlayersDead[Random.RandomRangeInt(0, PlayersDead.Count)];
+                    var dead = PlayersDead[Random.RandomRangeInt(0, PlayersDead.Count - 1)];
 
                     if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
                     {

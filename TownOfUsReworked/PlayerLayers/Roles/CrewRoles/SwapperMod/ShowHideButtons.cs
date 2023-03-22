@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -13,7 +12,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
-    public class ShowHideButtons
+    public class ShowHideSwapButtons
     {
         public static Dictionary<byte, int> CalculateVotes(MeetingHud __instance)
         {
@@ -22,21 +21,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 return self;
 
-            Utils.LogSomething($"Swap1 playerid = {SwapVotes.Swap1.TargetPlayerId}");
+            foreach (var swapper in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Swapper))
+            {
+                if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
+                    return self;
+            }
+
+            PlayerControl swapPlayer1 = null;
+            PlayerControl swapPlayer2 = null;
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == SwapVotes.Swap1.TargetPlayerId)
+                    swapPlayer1 = player;
+
+                if (player.PlayerId == SwapVotes.Swap2.TargetPlayerId)
+                    swapPlayer2 = player;
+            }
+
+            if (swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
+                return self;
+
             var swap1 = 0;
 
             if (self.TryGetValue(SwapVotes.Swap1.TargetPlayerId, out var value))
                 swap1 = value;
 
-            Utils.LogSomething($"Swap1 player has votes = {swap1}");
-
             var swap2 = 0;
-            Utils.LogSomething($"Swap2 playerid = {SwapVotes.Swap2.TargetPlayerId}");
 
             if (self.TryGetValue(SwapVotes.Swap2.TargetPlayerId, out var value2))
                 swap2 = value2;
 
-            Utils.LogSomething($"Swap2 player has votes = {swap2}");
             self[SwapVotes.Swap2.TargetPlayerId] = swap1;
             self[SwapVotes.Swap1.TargetPlayerId] = swap2;
             return self;
@@ -54,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                 foreach (var button in swapper.MoarButtons.Where(button => button != null))
                 {
-                    if (button.GetComponent<SpriteRenderer>().sprite == AddButton.DisabledSprite)
+                    if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
                         button.SetActive(false);
 
                     button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();

@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            RoleDescription = $"You are a Cannibal! You have an everlasting hunger for the dead. Eat {EatNeed} {body} to win!";
             Objectives = $"- Eat {EatNeed} {body}.";
             BodyArrows = new Dictionary<byte, ArrowBehaviour>();
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :

@@ -7,10 +7,9 @@ namespace TownOfUsReworked.Patches
 {
     internal class MedScan
     {
-        [HarmonyPatch(typeof(MedScanMinigame))]
+        [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]
         private static class MedScanMinigamePatch
         {
-            [HarmonyPatch(nameof(MedScanMinigame.Begin))]
             private static void Postfix(MedScanMinigame __instance)
             {
                 var oldHeightFeet = 3f;
@@ -38,6 +37,9 @@ namespace TownOfUsReworked.Patches
                     newHeightInch += 12 * newHeightFeet;
                     newHeightFeet--;
                 }
+
+                if (newHeightFeet < 0f)
+                    newHeightFeet = 0f;
 
                 while (newHeightInch >= 12)
                 {

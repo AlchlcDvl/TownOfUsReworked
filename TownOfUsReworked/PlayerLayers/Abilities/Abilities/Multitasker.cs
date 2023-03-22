@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- Your task windows are transparent.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Multitasker : Colors.Ability;
             AbilityType = AbilityEnum.Multitasker;
-            AbilityDescription = "You are a Multitasker! You are able to keep track of people around you while doing tasks!";
         }
     }
 }

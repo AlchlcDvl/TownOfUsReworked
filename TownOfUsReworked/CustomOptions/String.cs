@@ -1,4 +1,3 @@
-using UnityEngine;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.CustomOptions
@@ -9,11 +8,6 @@ namespace TownOfUsReworked.CustomOptions
         {
             Values = values;
             Format = value => Values[(int)value];
-        }
-
-        protected internal CustomStringOption(bool indent, int id, MultiMenu menu, string name, string[] values) : this(id, menu, name, values)
-        {
-            Indent = indent;
         }
 
         protected string[] Values { get; set; }

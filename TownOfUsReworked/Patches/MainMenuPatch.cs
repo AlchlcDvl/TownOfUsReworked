@@ -11,7 +11,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public static class MainMenuPatch
     {
-        public static Sprite Sprite => TownOfUsReworked.ToUBanner;
         private static AnnouncementPopUp popUp;
 
         static void Postfix(MainMenuManager __instance)
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.Patches
             var tourewLogo = new GameObject("bannerLogo_TownOfUsReworked");
             tourewLogo.transform.position = Vector3.up;
             var renderer = tourewLogo.AddComponent<SpriteRenderer>();
-            renderer.sprite = Sprite;
+            renderer.sprite = AssetManager.ToUBanner;
 
             var InvButton = GameObject.Find("InventoryButton");
 
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.Patches
 
             var discObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
-            iconrenderer1.sprite = TownOfUsReworked.DiscordImage;
+            iconrenderer1.sprite = AssetManager.DiscordImage;
 
             var button1 = discObj.GetComponent<PassiveButton>();
             button1.OnClick = new ButtonClickedEvent();
@@ -44,7 +43,7 @@ namespace TownOfUsReworked.Patches
 
             var announceObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer2 = announceObj.GetComponent<SpriteRenderer>();
-            iconrenderer2.sprite = TownOfUsReworked.UpdateImage;
+            iconrenderer2.sprite = AssetManager.UpdateImage;
 
             var button2 = announceObj.GetComponent<PassiveButton>();
             button2.OnClick = new ButtonClickedEvent();
@@ -55,7 +54,7 @@ namespace TownOfUsReworked.Patches
 
                 popUp = Object.Instantiate(Object.FindObjectOfType<AnnouncementPopUp>(true));
                 popUp.gameObject.SetActive(true);
-                Assets.InnerNet.Announcement changesAnnouncement = new Assets.InnerNet.Announcement();
+                var changesAnnouncement = new Assets.InnerNet.Announcement();
                 changesAnnouncement.Id = "tourewChanges";
                 changesAnnouncement.Language = 0;
                 changesAnnouncement.Number = 500;

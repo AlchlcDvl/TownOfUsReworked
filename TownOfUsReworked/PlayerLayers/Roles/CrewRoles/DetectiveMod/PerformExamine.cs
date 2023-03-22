@@ -19,9 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
             var role = Role.GetRole<Detective>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.ExamineButton)
             {
                 if (!Utils.ButtonUsable(role.ExamineButton))

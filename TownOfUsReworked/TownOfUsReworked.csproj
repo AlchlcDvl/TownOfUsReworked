@@ -1,39 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<RootNamespace>TownOfUsReworked</RootNamespace>
-		<TargetFramework>net6.0</TargetFramework>
-		<Version>0.0.2.2</Version>
-		<DebugType>embedded</DebugType>
-		<Description>Town of Us but even better! (hopefully)</Description>
-		<LangVersion>latest</LangVersion>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Authors>AlchlcDvl</Authors>
-	</PropertyGroup>
+    <PropertyGroup>
+      <RootNamespace>TownOfUsReworked</RootNamespace>
+      <TargetFramework>net6.0</TargetFramework>
+      <Version>0.0.2.3</Version>
+      <DebugType>embedded</DebugType>
+      <Description>Town of Us but even better! (hopefully)</Description>
+      <LangVersion>latest</LangVersion>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <Authors>Reworked</Authors>
+    </PropertyGroup>
 
-  	<ItemGroup>
-    	<PackageReference Include="GitInfo" Version="2.3.0">
-      		<PrivateAssets>all</PrivateAssets>
-      		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    	</PackageReference>
-  	</ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="GitInfo" Version="2.3.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+      </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Reactor" Version="2.1.0" />
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.664" />
-		<PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.2.28" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.AutoPlugin" Version="1.1.0" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.0.1" PrivateAssets="all" />
-		<PackageReference Include="System.Text.Json" Version="6.0.3" PrivateAssets="all" />
-	</ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Reactor" Version="2.1.0" />
+      <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.668" />
+      <PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.2.28" PrivateAssets="all" />
+      <PackageReference Include="BepInEx.AutoPlugin" Version="1.1.0" PrivateAssets="all" />
+      <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.0.1" PrivateAssets="all" />
+      <PackageReference Include="System.Text.Json" Version="6.0.7" PrivateAssets="all" />
+		  <PackageReference Include="Samboy063.Cpp2IL.Core" Version="2022.1.0-development.866" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Resources\*" />
-		<EmbeddedResource Include="Resources\Hats\**" />
-		<EmbeddedResource Include="Resources\Sounds\**" />
-		<EmbeddedResource Include="Resources\Misc\**" />
-		<EmbeddedResource Include="Resources\Buttons\**" />
-		<EmbeddedResource Include="Resources\Presets\**" />
-		<EmbeddedResource Include="Resources\Nameplates\**" />
-		<EmbeddedResource Include="Resources\Visors\**" />
-	</ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\*" />
+      <EmbeddedResource Include="Resources\Hats\**" />
+      <EmbeddedResource Include="Resources\Sounds\**" />
+      <EmbeddedResource Include="Resources\Misc\**" />
+      <EmbeddedResource Include="Resources\Buttons\**" />
+      <EmbeddedResource Include="Resources\Presets\**" />
+      <EmbeddedResource Include="Resources\Nameplates\**" />
+      <EmbeddedResource Include="Resources\Visors\**" />
+    </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             if (role.WarpButton == null)
                 role.WarpButton = Utils.InstantiateButton();
 
-            role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, TownOfUsReworked.WarpSprite, AbilityTypes.Effect);
+            role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, AssetManager.Warp, AbilityTypes.Effect, "Secondary");
         }
     }
 }

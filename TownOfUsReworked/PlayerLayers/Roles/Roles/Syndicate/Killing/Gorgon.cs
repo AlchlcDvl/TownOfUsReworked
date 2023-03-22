@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Gorgon;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            RoleDescription = "You are a Gorgon! Use your gaze of stone to freeze players in place and await their deaths!";
         }
 
         public float GazeTimer()

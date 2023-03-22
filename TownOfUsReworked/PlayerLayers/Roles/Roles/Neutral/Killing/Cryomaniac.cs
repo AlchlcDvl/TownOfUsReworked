@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton FreezeButton;
         public AbilityButton DouseButton;
-        public bool CryoWins;
         public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers;
         public bool FreezeUsed;
@@ -32,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            RoleDescription = "You are a Cryomaniac! You are a crazed murderer who loves the cold. You must douse everyone in coolant and freeze them all if you want to win!";
             DousedPlayers = new List<byte>();
         }
 

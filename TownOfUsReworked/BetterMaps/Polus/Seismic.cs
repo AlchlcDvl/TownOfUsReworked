@@ -13,7 +13,6 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 __instance.Countdown = CustomGameOptions.SeismicTimer;
                 __instance.UserConsolePairs.Clear();
                 __instance.IsDirty = true;
-
                 return false;
             }
 

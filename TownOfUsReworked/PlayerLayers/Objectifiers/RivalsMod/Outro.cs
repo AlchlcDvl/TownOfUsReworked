@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
             if (obj == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);

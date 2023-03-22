@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
             if (role.RevealButton == null)
                 role.RevealButton = Utils.InstantiateButton();
 
-            role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary");
 
             if (role.ConvertedDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {

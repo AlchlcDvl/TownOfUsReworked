@@ -66,19 +66,18 @@ namespace TownOfUsReworked.Patches
                 coloursDict.Add(35, "Rainbow");
 
                 var hudManager = HudManager.Instance.Chat;
-                string text = hudManager.TextArea.text;
-                string otherText = text;
+                var text = hudManager.TextArea.text;
+                var otherText = text;
                 text = text.ToLower();
-                string inputText = "";
-                string chatText = "";
-                bool chatHandled = false;
-                int EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ?
-                    PlayerControl.AllPlayerControls._size / 2 : CustomGameOptions.CannibalBodyCount;
-                string getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-                string setColor = TownOfUsReworked.isTest ? " /setcolour or /setcolor," : "";
-                string whisper = CustomGameOptions.Whispers ? " /whisper," : "";
-                string kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? " /kick, /ban, /clearlobby, /size," : "";
-                //TownOfUsReworked.MessageWait.Value = (int)CustomGameOptions.ChatCooldown;
+                var inputText = "";
+                var chatText = "";
+                var chatHandled = false;
+                var EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
+                    CustomGameOptions.CannibalBodyCount;
+                var getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
+                var setColor = TownOfUsReworked.isTest ? " /setcolour or /setcolor," : "";
+                var whisper = CustomGameOptions.Whispers ? " /whisper," : "";
+                var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? " /kick, /ban, /clearlobby, /size," : "";
 
                 var player = PlayerControl.LocalPlayer;
 
@@ -101,8 +100,8 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, $"Welcome to Town Of Us Reworked {TownOfUsReworked.versionFinal}!");
                         hudManager.AddChat(player, "Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code.");
                         hudManager.AddChat(player, "Credits to the parties have already been given (good luck to those who want to try to cancel me for no reason). This mod has " +
-                            "several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique" + 
-                            " a player's experience will be each game. If I've missed someone, let me know via Discord.");
+                            "several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique a player's experience will be each" +
+                            " game. If I've missed someone, let me know via Discord.");
                         hudManager.AddChat(player, "Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page at " +
                             "\nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
                     }
@@ -116,12 +115,12 @@ namespace TownOfUsReworked.Patches
                                 hudManager.AddChat(PlayerControl.LocalPlayer, "Invalid Size\nUsage: /size <amount>");
                             else
                             {
-                                LobbyLimit = Math.Clamp(LobbyLimit, 4, 15);
+                                LobbyLimit = Math.Clamp(LobbyLimit, 1, 127);
 
                                 if (LobbyLimit != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
                                 {
                                     GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = LobbyLimit;
-                                    DestroyableSingleton<GameStartManager>.Instance.LastPlayerCount = LobbyLimit;
+                                    GameStartManager.Instance.LastPlayerCount = LobbyLimit;
                                     PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions)); 
                                     // TODO Maybe simpler?? 
                                     hudManager.AddChat(PlayerControl.LocalPlayer, $"Lobby size changed to {LobbyLimit} players.");
@@ -442,9 +441,15 @@ namespace TownOfUsReworked.Patches
                     {
                         chatHandled = true;
                         inputText = otherText.Substring(9);
+                        //As much as I hate to do this, people will take advatage of this function so we're better off doing this early
+                        string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
 
                         if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[a-zA-Z0-9]+$"))
                             hudManager.AddChat(player, "Name contains disallowed characters.");
+                        else if (profanities.Any(x => inputText.ToLower().Contains(x)))
+                            hudManager.AddChat(player, "Name contains unaccepted words.");
+                        else if (inputText.Length > 20)
+                            hudManager.AddChat(player, "Name is too long.");
                         else
                         {
                             player.RpcSetName(inputText);
@@ -461,15 +466,10 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/color ") || text.StartsWith("/colour "))
                     {
                         chatHandled = true;
-                        int col;
                         inputText = text.StartsWith("/colour ") ? text.Substring(7) : text.Substring(6);
-                        string colourSpelling = text.StartsWith("/colour ") ? "Colour" : "Color";
-                        var colorString = "";
+                        var colourSpelling = text.StartsWith("/colour ") ? "Colour" : "Color";
 
-                        foreach (var color in coloursDict)
-                            colorString += color + " ";
-
-                        if (!Int32.TryParse(inputText, out col))
+                        if (!Int32.TryParse(inputText, out var col))
                         {
                             hudManager.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID," +
                                 " go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick. The range of colors is from 0" +
@@ -531,7 +531,7 @@ namespace TownOfUsReworked.Patches
                     {
                         chatHandled = true;
                         inputText = text.Substring(5);
-                        PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(inputText));
+                        var target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(inputText));
 
                         if (target != null && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
                         {
@@ -559,21 +559,7 @@ namespace TownOfUsReworked.Patches
                         chatHandled = true;
                         inputText = text.Substring(10);
 
-                        if (inputText == "agent" || inputText == "ag")
-                        {
-                            chatText = "The Agent gains more information when on Admin Table. On Admin Table, the Agent can see the colors of every person on the map." +
-                                " Be careful when killing anyone, chances are that there is an Agent watching your every move.";
-                        }
-                        else if (inputText == "altruist" || inputText == "alt")
-                        {
-                            chatText = "The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, " +
-                                "risking sacrificing themselves for the revival of another player. If enabled, the dead body disappears, so only they Altruist's body" +
-                                " remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted. If a revive is " + 
-                                "successful, and you were one of the few who aided in the death of the revived player, kill them quick before your identity is revealed.";
-                        }
-                        else if (inputText == "amnesiac" || inputText == "amne")
-                            chatText = "The Amnesiac is essentially roleless and cannot win without remembering a role from someone who has died.";
-                        else if (inputText == "anarchist" || inputText == "ana")
+                        if (inputText == "anarchist" || inputText == "ana")
                             chatText = "The Anarchist is just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
                         else if (inputText == "arsonist" || inputText == "arso")
                         {
@@ -801,30 +787,8 @@ namespace TownOfUsReworked.Patches
                     {
                         chatHandled = true;
                         inputText = text.Substring(13);
-
-                        if (inputText == "crew")
-                        {
-                            chatText = "The Crew is the uninformed majority of the game. They are the \"good guys\". The Crew wins if Intruders, " +
-                                "Syndicate, and all Neutral Killers, Neophytes and Proselytes are dead or if they all finish their tasks.";
-                        }
-                        else if (inputText == "intruder" || inputText == "int")
-                        {
-                            chatText = "Intruders are the main \"bad guys\" of the game. They are an informed minority of the game. All roles have the " +
-                                "capability to kill and sabotage, making them a pain to deal with.";
-                        }
-                        else if (inputText == "syndicate" || inputText == "syn")
-                        {
-                            chatText = "Syndicate is an \"evil\" faction that is an informed minority of the game. They have special abilities specifically " +
-                                "geared towards slowing down the progress of other or causing chaos. Syndicate members, unless they are Syndicate (Killing), " +
-                                "cannot kill by default. Instead they gain the ability to kill by obtaining a powerup called the Chaos Drive. The Chaos Drive " +
-                                "not only boosts the holder's abilities but also gives them the ability to kill if they didn't already. If the holder can already " +
-                                "kill, their kill power is increased instead.";
-                        }
-                        else if (inputText == "neutral" || inputText == "neut")
-                            chatText = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
-                        else
-                            chatText = "Invalid input.";
-
+                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => inputText.ToLower() == $"{x.Faction}".ToLower() || inputText.ToLower() == x.FactionShort.ToLower(),
+                            LayerInfo.AllRoles[0]).FactionInfoMessage();
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
@@ -832,83 +796,8 @@ namespace TownOfUsReworked.Patches
                     {
                         chatHandled = true;
                         inputText = text.Substring(15);
-
-                        if (inputText == "crew investigative" || inputText == "ci")
-                        {
-                            chatText = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, " +
-                                "Crew (Investigative) roles can deduce who is good and who is not.";
-                        }
-                        else if (inputText == "intruder support" || inputText == "is")
-                        {
-                            chatText = "Intruder (Support) roles are roles with miscellaneous abilities. These roles can delay players' chances of winning by" +
-                                " either gaining enough info to stop them or forcing players to do things they can't.";
-                        }
-                        else if (inputText == "intruder concealing" || inputText == "ic")
-                        {
-                            chatText = "Intruder (Concealing) roles are roles that specialise in hiding information from others. If there is no new " +
-                                "information, it's probably their work.";
-                        }
-                        else if (inputText == "neutral benign" || inputText == "nb")
-                        {
-                            chatText = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain " +
-                                "condition is fulfilled by the end of the game.";
-                        }
-                        else if (inputText == "crew protective" || inputText == "cp")
-                        {
-                            chatText = "Crew (Protective) roles are roles that have have the capability to protect. In doing so, their targets are " +
-                                "spared from final death and might even bring useful information from the dead.";
-                        }
-                        else if (inputText == "syndicate utility" || inputText == "su")
-                            chatText = "Syndicate (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "neutral killing" || inputText == "nk")
-                        {
-                            chatText = "Neutral (Killing) roles are roles that have the ability to kill and do not side with anyone. Each role has a special way" +
-                                " to kill and gain large body counts in one go. Steer clear of them if you don't want to die.";
-                        }
-                        else if (inputText == "neutral evil" || inputText == "ne")
-                        {
-                            chatText = "Neutral (Evil) roles are roles whose objectives clash with those of other roles. They have miscellaneous win conditions" +
-                                " that end the game. As such, you need to ensure they don't have a chance at winning.";
-                        }
-                        else if (inputText == "syndicate support" || inputText == "ssu")
-                        {
-                            chatText = "Syndicate (Support) roles are roles with miscellaneous abilities. They are detrimental to the Syndicate's cause and if" +
-                                " used right, can greatly affect how the game continues.";
-                        }
-                        else if (inputText == "crew support" || inputText == "cs")
-                        {
-                            chatText = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying " +
-                                "attention, your chances of winning will be severely decreased because of them.";
-                        }
-                        else if (inputText == "crew utility" || inputText == "cu")
-                            chatText = "Crew (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "neutral proselyte" || inputText == "np")
-                        {
-                            chatText = "Neutral (Proselyte) roles are roles that do not spawn at the start of the game. Instead you are converted into them." +
-                                " Neutral (Proselyte) roles exist to help the leader Neutral (Neophyte) role gain a fast majority.";
-                        }
-                        else if (inputText == "intruder deception" || inputText == "id")
-                        {
-                            chatText = "Intruder (Deception) roles are roles that are built to spread misinformation. Never trust your eyes, for the killer you " +
-                                "see in front of you might not be the one who they seem to be.";
-                        }
-                        else if (inputText == "neutral neophyte" || inputText == "nn")
-                        {
-                            chatText = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily" +
-                                " overrun you with their numbers.";
-                        }
-                        else if (inputText == "syndicate killing" || inputText == "syk")
-                        {
-                            chatText = "Syndicate (Killing) roles are roles that specialise in providing body count to the Syndicate. They do not have ways to " +
-                                "kill a lot of players at once, but their attacks can be very powerful.";
-                        }
-                        else if (inputText == "intruder utility" || inputText == "iu")
-                            chatText = "Intruder (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "syndicate disruption" || inputText == "sd")
-                            chatText = "Syndicate (Disruption) roles are roles that a designed to change the flow of the game, via changing some mechanic.";
-                        else
-                            chatText = "Invalid input.";
-                        
+                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => x.Alignment.ToLower() == inputText || x.AlignmentShort.ToLower() == inputText.ToLower(),
+                            LayerInfo.AllRoles[0])?.AlignmentInfoMessage();
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
@@ -1076,22 +965,16 @@ namespace TownOfUsReworked.Patches
                         chatHandled = true;
                         inputText = text.Substring(7);
                         
-                        if (inputText == "agent" || inputText == "ag")
-                            chatText = "Hippity hoppity, your privacy is now my property.";
-                        else if (inputText == "altruist" || inputText == "alt")
-                            chatText = "I know what I have to do but I don't know if I have the strength to do it.";
-                        else if (inputText == "amnesiac" || inputText == "amne")
-                            chatText = "I forgor :skull:";
-                        else if (inputText == "anarchist" || inputText == "ana")
+                        if (inputText == "anarchist" || inputText == "ana")
                             chatText = "My job is that I have no job and those things over there are the only things I'm good at breaking.";
                         else if (inputText == "arsonist" || inputText == "arso")
-                            chatText = "I like my meat well done.";
+                            chatText = "";
                         else if (inputText == "blackmailer" || inputText == "bm")
                             chatText = "How am I a good Blackmailer? Well for starters, I just tell people that I know their secrets and they believe me right away.";
                         else if (inputText == "camouflager" || inputText == "camo")
                             chatText = "Catch me? Yeah, good luck with that.";
                         else if (inputText == "cannibal" || inputText == "cann")
-                            chatText = "How do you survive with no food but with a lot of people? Improvise, adapt, overcome.";
+                            chatText = "";
                         else if (inputText == "concealer" || inputText == "conc")
                             chatText = "I swear I'm turning schizophrenic, people are appearing and disappearing in front of me.";
                         else if (inputText == "consigliere" || inputText == "consig")
@@ -1116,12 +999,10 @@ namespace TownOfUsReworked.Patches
                             chatText = "There's nothing my 11 PhDs can't solve.";
                         else if (inputText == "mafioso" || inputText == "mafi")
                             chatText = "Yes, boss. Got it, boss.";
-                        else if (inputText == "escort" || inputText == "esc")
-                            chatText = "Today, I will make you a man.";
                         else if (inputText == "executioner" || inputText == "exe")
-                            chatText = "Source: trust me bro.";
+                            chatText = "";
                         else if (inputText == "glitch" || inputText == "gli")
-                            chatText = "Hippity hoppity, your code is now my property.";
+                            chatText = "";
                         else if (inputText == "godfather" || inputText == "gf")
                             chatText = "I'm going to make an offer that they can't refuse.";
                         else if (inputText == "gorgon" || inputText == "gorg")
@@ -1130,32 +1011,22 @@ namespace TownOfUsReworked.Patches
                             chatText = "All I see is white, but that's fine.";
                         else if (inputText == "impostor" || inputText == "imp")
                             chatText = "They have a better life than I have, all I've got is a knife.";
-                        else if (inputText == "inspector" || inputText == "insp")
-                            chatText = "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME.";
                         else if (inputText == "investigator" || inputText == "inv")
                             chatText = "I swear I'm not a stalker.";
                         else if (inputText == "guardian angel" || inputText == "ga")
-                            chatText = "Hush child...Mama's here.";
+                            chatText = "";
                         else if (inputText == "janitor" || inputText == "jani")
                             chatText = "I'm the guy that cleans up messes....by making even more messes. No need to thank me.";
                         else if (inputText == "jester" || inputText == "jest")
-                            chatText = "Hehehe I wonder if I do this...";
+                            chatText = "";
                         else if (inputText == "juggernaut" || inputText == "jugg")
                             chatText = "Strength is the pinnacle of mankind. Gotta get those proteins in.";
-                        else if (inputText == "mayor")
-                            chatText = "Um, those votes are legitimate. No, I'm not rigging the votes.";
-                        else if (inputText == "medic")
-                            chatText = "Where does it hurt?";
-                        else if (inputText == "medium" || inputText == "med")
-                            chatText = "The voices...they are telling me that...my breath stinks?";
                         else if (inputText == "miner" || inputText == "mine")
                             chatText = "Dig, dig, diggin' some rave, the only thing you'll be diggin' is your own grave.";
                         else if (inputText == "morphling" || inputText == "morph")
                             chatText = "*Casually observing the chaos over Green seeing Red kill.* It was me.";
                         else if (inputText == "murderer" || inputText == "murd")
                             chatText = "Ugh, my knife is getting rusty, I guess I've found my whetstone.";
-                        else if (inputText == "operative" || inputText == "op")
-                            chatText = "The only thing you need to find out information is good placement and amazing levels of prediction.";
                         else if (inputText == "pestilence" || inputText == "pest")
                             chatText = "You pathetic mortals cannot kill me, the demigod of disease. No...stop. NO. NO. DON'T THROW ME INTO THE LAVA. NOOOOOOOOOOOOOOOOOOO.";
                         else if (inputText == "plaguebearer" || inputText == "pb")
@@ -1166,36 +1037,20 @@ namespace TownOfUsReworked.Patches
                             chatText = "My knife, WHERE'S MY KNIFE?!";
                         else if (inputText == "shapeshifter" || inputText == "ss")
                             chatText = "Everyone! We will be playing dress up! TOGETHER!";
-                        else if (inputText == "sheriff" || inputText == "sher")
-                            chatText = "Guys I promise I'm not an Executioner, I checked Blue and they're sus.";
                         else if (inputText == "shifter" || inputText == "shift")
                             chatText = "GET BACK HERE I WANT YOUR ROLE.";
                         else if (inputText == "survivor" || inputText == "surv")
                             chatText = "Hey listen man, I mind my own business and you do you. Everyone wins!";
-                        else if (inputText == "swapper" || inputText == "swap")
-                            chatText = "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it.";
                         else if (inputText == "teleporter" || inputText == "tele")
                             chatText = "He's here, he's there, he's everywhere. Who are ya gonna call? Psychic friend fr-";
                         else if (inputText == "thief")
                             chatText = "Now it's mine.";
-                        else if (inputText == "time lord" || inputText == "tl")
-                            chatText = "What's better than an Altruist? An Altruist that dosent suicide!";
                         else if (inputText == "time master" || inputText == "tm")
                             chatText = "That darn Time Lord, I will make him pay for taking away my position.";
-                        else if (inputText == "tracker" || inputText == "track")
-                            chatText = "I only took up this job because the others were full.";
-                        else if (inputText == "transporter" || inputText == "trans")
-                            chatText = "You're here and you're there. Where will you go? That's for me to be.";
                         else if (inputText == "troll")
                             chatText = "Kill me.";
                         else if (inputText == "undertaker" || inputText == "ut")
                             chatText = "The Janitor was on a strike so I exist now.";
-                        else if (inputText == "vampire hunter" || inputText == "vh")
-                            chatText = "The Dracula could be anywhere! He could be you! He could be me! He could even be- *gets voted off*";
-                        else if (inputText == "veteran" || inputText == "vet")
-                            chatText = "Touch me, I dare you.";
-                        else if (inputText == "vigilante" || inputText == "vig")
-                            chatText = "I AM THE HAND OF JUSTICE.";
                         else if (inputText == "warper" || inputText == "warp")
                             chatText = "Wap wap.";
                         else if (inputText == "wraith")
@@ -1235,116 +1090,16 @@ namespace TownOfUsReworked.Patches
                         var objectifier = Objectifier.GetObjectifier(player);
 
                         if (role != null)
-                        {
-                            switch (role.Faction)
-                            {
-                                case Faction.Syndicate:
-                                    hudManager.AddChat(player, Role.SyndicateFactionDescription);
-                                    hudManager.AddChat(player, Role.SyndicateObjective);
-                                    break;
-                                case Faction.Intruder:
-                                    hudManager.AddChat(player, Role.IntrudersFactionDescription);
-                                    hudManager.AddChat(player, Role.IntrudersObjective);
-                                    break;
-                                case Faction.Crew:
-                                    hudManager.AddChat(player, Role.CrewFactionDescription);
-                                    hudManager.AddChat(player, Role.CrewObjective);
-                                    break;
-                                case Faction.Neutral:
-                                    hudManager.AddChat(player, Role.NeutralFactionDescription);
-                                    break;
-                            }
+                            hudManager.AddChat(player, LayerInfo.AllRoles.FirstOrDefault(x => x.Name == role.Name)?.RoleInfoMessage());
 
-                            switch (role.RoleAlignment)
-                            {
-                                case RoleAlignment.CrewSupport:
-                                    hudManager.AddChat(player, Role.CSDescription);
-                                    break;
-                                case RoleAlignment.CrewInvest:
-                                    hudManager.AddChat(player, Role.CIDescription);
-                                    break;
-                                case RoleAlignment.CrewKill:
-                                    hudManager.AddChat(player, Role.CKDescription);
-                                    break;
-                                case RoleAlignment.CrewProt:
-                                    hudManager.AddChat(player, Role.CPDescription);
-                                    break;
-                                case RoleAlignment.CrewSov:
-                                    hudManager.AddChat(player, Role.CSvDescription);
-                                    break;
-                                case RoleAlignment.CrewAudit:
-                                    hudManager.AddChat(player, Role.CADescription);
-                                    break;
-                                case RoleAlignment.CrewUtil:
-                                    hudManager.AddChat(player, Role.CUDescription);
-                                    break;
-                                case RoleAlignment.IntruderSupport:
-                                    hudManager.AddChat(player, Role.ISDescription);
-                                    break;
-                                case RoleAlignment.IntruderConceal:
-                                    hudManager.AddChat(player, Role.ICDescription);
-                                    break;
-                                case RoleAlignment.IntruderDecep:
-                                    hudManager.AddChat(player, Role.IDDescription);
-                                    break;
-                                case RoleAlignment.IntruderKill:
-                                    hudManager.AddChat(player, Role.IKDescription);
-                                    break;
-                                case RoleAlignment.IntruderUtil:
-                                    hudManager.AddChat(player, Role.IUDescription);
-                                    break;
-                                case RoleAlignment.NeutralKill:
-                                    hudManager.AddChat(player, Role.NKDescription);
-                                    break;
-                                case RoleAlignment.NeutralNeo:
-                                    hudManager.AddChat(player, Role.NNDescription);
-                                    break;
-                                case RoleAlignment.NeutralEvil:
-                                    hudManager.AddChat(player, Role.NEDescription);
-                                    break;
-                                case RoleAlignment.NeutralBen:
-                                    hudManager.AddChat(player, Role.NBDescription);
-                                    break;
-                                case RoleAlignment.NeutralPros:
-                                    hudManager.AddChat(player, Role.NPDescription);
-                                    break;
-                                case RoleAlignment.SyndicateKill:
-                                    hudManager.AddChat(player, Role.SyKDescription);
-                                    break;
-                                case RoleAlignment.SyndicateSupport:
-                                    hudManager.AddChat(player, Role.SSuDescription);
-                                    break;
-                                case RoleAlignment.SyndicateDisruption:
-                                    hudManager.AddChat(player, Role.SDDescription);
-                                    break;
-                                case RoleAlignment.SyndicatePower:
-                                    hudManager.AddChat(player, Role.SPDescription);
-                                    break;
-                                case RoleAlignment.SyndicateUtil:
-                                    hudManager.AddChat(player, Role.SUDescription);
-                                    break;
-                            }
+                        if (modifier != null && !modifier.Hidden)
+                            hudManager.AddChat(player, LayerInfo.AllModifiers.FirstOrDefault(x => x.Name == modifier.Name).InfoMessage());
 
-                            hudManager.AddChat(player, role.RoleDescription);
-                        }
+                        if (objectifier != null && !objectifier.Hidden)
+                            hudManager.AddChat(player, LayerInfo.AllObjectifiers.FirstOrDefault(x => x.Name == objectifier.Name).InfoMessage());
 
-                        if (modifier != null)
-                        {
-                            if (!modifier.Hidden)
-                                hudManager.AddChat(player, modifier.ModifierDescription);
-                        }
-
-                        if (objectifier != null)
-                        {
-                            if (!objectifier.Hidden)
-                                hudManager.AddChat(player, objectifier.ObjectifierDescription);
-                        }
-
-                        if (ability != null)
-                        {
-                            if (!ability.Hidden)
-                                hudManager.AddChat(player, ability.AbilityDescription);
-                        }
+                        if (ability != null && !ability.Hidden)
+                            hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name).InfoMessage());
                     }
                     //RoleInfo help
                     else if (text == "/roleinfo" || text == "/roleinfo ")
@@ -2317,7 +2072,7 @@ namespace TownOfUsReworked.Patches
                         if (abbreviation == "Invalid input.")
                             chatText = abbreviation;
                         else
-                            chatText = "The abbreviation for " + inputText + " is " + abbreviation + "!";
+                            chatText = $"The abbreviation for {inputText} is {abbreviation}!";
 
                         hudManager.AddChat(player, chatText);
                     }

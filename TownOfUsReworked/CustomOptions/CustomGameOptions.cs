@@ -2,6 +2,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod;
@@ -199,6 +200,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int ActorOn => (int)Generate.ActorOn.Get();
         public static int AmbusherOn => (int)Generate.AmbusherOn.Get();
         public static int CrusaderOn => (int)Generate.CrusaderOn.Get();
+        public static int BansheeOn => (int)Generate.BansheeOn.Get();
+        public static int GhoulOn => (int)Generate.GhoulOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -300,6 +303,7 @@ namespace TownOfUsReworked.CustomOptions
         //Agent Settings
         public static int AgentCount => (int)Generate.AgentCount.Get();
         public static bool UniqueAgent => Generate.UniqueAgent.Get();
+        public static AdminDeadPlayers WhoSeesDead => (AdminDeadPlayers)Generate.WhoSeesDead.Get();
 
         //Detective Settings
         public static int DetectiveCount => (int)Generate.DetectiveCount.Get();
@@ -343,6 +347,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool RevealerRevealsNeutrals => Generate.RevealerRevealsNeutrals.Get();
         public static bool RevealerRevealsCrew => Generate.RevealerRevealsCrew.Get();
         public static bool RevealerRevealsTraitor => Generate.RevealerRevealsTraitor.Get();
+        public static bool RevealerRevealsFanatic => Generate.RevealerRevealsFanatic.Get();
         public static bool RevealerRevealsRoles => Generate.RevealerRevealsRoles.Get();
 
         //Sheriff Settings
@@ -687,6 +692,9 @@ namespace TownOfUsReworked.CustomOptions
         public static bool PestSpawn => Generate.PestSpawn.Get();
         public static bool PestVent => Generate.PestVent.Get();
 
+        //Ghoul Settings
+        public static float GhoulMarkCd => Generate.GhoulMarkCd.Get();
+
         //Janitor Settings
         public static float JanitorCleanCd => Generate.JanitorCleanCd.Get();
         public static int JanitorCount => (int)Generate.JanitorCount.Get();
@@ -839,6 +847,10 @@ namespace TownOfUsReworked.CustomOptions
         public static int GorgonCount => (int)Generate.GorgonCount.Get();
         public static bool UniqueGorgon => Generate.UniqueGorgon.Get();
 
+        //Banshee Settings
+        public static float ScreamCooldown => Generate.ScreamCooldown.Get();
+        public static float ScreamDuration => Generate.ScreamDuration.Get();
+
         //Bomber Settings
         public static float BombCooldown => Generate.BombCooldown.Get();
         public static float DetonateCooldown => Generate.DetonateCooldown.Get();
@@ -872,6 +884,11 @@ namespace TownOfUsReworked.CustomOptions
         public static float BeamCooldown => Generate.BeamCooldown.Get();
         public static int BeamerCount => (int)Generate.BeamerCount.Get();
         public static bool UniqueBeamer => Generate.UniqueBeamer.Get();
+        public static bool BeamSelf => Generate.BeamSelf.Get();
+
+        //Betrayer Settings
+        public static float BetrayerKillCooldown => Generate.BetrayerKillCooldown.Get();
+        public static bool BetrayerVent => Generate.BetrayerVent.Get();
 
         //Modifier Settings
         public static bool CustomModifierColors => Generate.CustomModifierColors.Get();
@@ -895,6 +912,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool SnitchSeesRoles => Generate.SnitchSeesRoles.Get();
         public static bool SnitchSeestargetsInMeeting => Generate.SnitchSeestargetsInMeeting.Get();
         public static bool SnitchSeesTraitor => Generate.SnitchSeesTraitor.Get();
+        public static bool SnitchSeesFanatic => Generate.SnitchSeesFanatic.Get();
         public static bool SnitchKnows => Generate.SnitchKnows.Get();
         public static int SnitchTasksRemaining => (int)Generate.SnitchTasksRemaining.Get();
         public static bool UniqueSnitch => Generate.UniqueSnitch.Get();
@@ -1088,7 +1106,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int NKMax => (int)Generate.NKMax.Get();
         public static int NKMin => (int)Generate.NKMin.Get();
         public static bool NKHasImpVision => Generate.NKHasImpVision.Get();
-        public static NKsKnow NKsKnow => (NKsKnow)Generate.NKsKnow.Get();
+        public static bool NKsKnow => Generate.NKsKnow.Get();
 
         //CSv Settings
         public static int CSvMax => (int)Generate.CSvMax.Get();

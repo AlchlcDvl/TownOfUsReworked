@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
-            RoleDescription = "You are a Janitor! You are a sanitation expert who got swept up with the wrong company. Clean up everyone's messes to ensure nothing goes wrong!";
             InspectorResults = InspectorResults.MeddlesWithDead;
         }
         

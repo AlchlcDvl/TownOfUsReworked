@@ -14,12 +14,20 @@ namespace TownOfUsReworked.Enums
 
         SetPhantom,
         SetRevealer,
+        SetBanshee,
+        SetGhoul,
 
         PhantomDied,
         CatchPhantom,
 
         CatchRevealer,
         RevealerDied,
+
+        CatchGhoul,
+        GhoulDied,
+
+        BansheeDied,
+        CatchBanshee,
 
         SetGoodRecruit,
         SetEvilRecruit,
@@ -28,7 +36,7 @@ namespace TownOfUsReworked.Enums
         SetGATarget,
         SetGuessTarget,
         SetBHTarget,
-        SetActorVariables,
+        SetActPretendList,
 
         Action,
         WinLose,
@@ -51,6 +59,9 @@ namespace TownOfUsReworked.Enums
         SendChat,
         Whisper,
         Guess,
+        LoveRivalChat,
+        FactionComms,
+        SubFactionComms,
 
         SetSpawn,
         SetSpawnAirship,

@@ -4,6 +4,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         All,
         NonCrew,
-        ImpsOnly
+        EvilsOnly
     }
 }

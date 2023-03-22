@@ -11,9 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
             {
-                var caught = Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught;
-
-                if (!caught)
+                if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
                 {
                     __instance.Close();
                     return false;

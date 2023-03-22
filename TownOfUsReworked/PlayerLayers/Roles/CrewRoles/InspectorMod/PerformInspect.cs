@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.InspectButton)
             {
                 if (!Utils.ButtonUsable(role.InspectButton))

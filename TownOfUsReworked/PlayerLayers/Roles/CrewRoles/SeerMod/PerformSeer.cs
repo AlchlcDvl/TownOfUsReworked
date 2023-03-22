@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 
             var role = Role.GetRole<Seer>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.SeerButton)
             {
                 if (!Utils.ButtonUsable(role.SeerButton))

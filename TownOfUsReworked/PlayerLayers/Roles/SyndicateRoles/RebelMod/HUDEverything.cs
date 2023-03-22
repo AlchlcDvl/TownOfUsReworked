@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 role.DeclareButton = Utils.InstantiateButton();
 
             var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !x.Is(RoleEnum.Gorgon)).ToList();
-            role.DeclareButton.UpdateButton(role, "SIDEKICK", 0, 1, TownOfUsReworked.SidekickSprite, AbilityTypes.Direct, Syn, !role.HasDeclared);
+            role.DeclareButton.UpdateButton(role, "SIDEKICK", 0, 1, AssetManager.Sidekick, AbilityTypes.Direct, "Secondary", Syn, !role.HasDeclared);
 
             if (role.FormerRole == null || !role.WasSidekick || role.FormerRole?.RoleType == RoleEnum.Anarchist)
                 return;
@@ -32,8 +32,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 if (role.ConcealButton == null)
                     role.ConcealButton = Utils.InstantiateButton();
 
-                role.ConcealButton.UpdateButton(role, "CONCEAL", role.ConcealTimer(), CustomGameOptions.ConcealCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Effect,
-                    null, true, !role.Concealed, role.Concealed, role.ConcealTimeRemaining, CustomGameOptions.ConcealDuration);
+                role.ConcealButton.UpdateButton(role, "CONCEAL", role.ConcealTimer(), CustomGameOptions.ConcealCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", null,
+                    true, !role.Concealed, role.Concealed, role.ConcealTimeRemaining, CustomGameOptions.ConcealDuration);
             }
             else if (formerRole == RoleEnum.Framer)
             {
@@ -41,15 +41,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     role.FrameButton = Utils.InstantiateButton();
 
                 var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
-                role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, TownOfUsReworked.Placeholder, Role.SyndicateHasChaosDrive ?
-                    AbilityTypes.Effect : AbilityTypes.Direct, notFramed);
+                role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, AssetManager.Placeholder, Role.SyndicateHasChaosDrive ?
+                    AbilityTypes.Effect : AbilityTypes.Direct, "Secondary", notFramed);
             }
             else if (formerRole == RoleEnum.Shapeshifter)
             {
                 if (role.ShapeshiftButton == null)
                     role.ShapeshiftButton = Utils.InstantiateButton();
 
-                role.ShapeshiftButton.UpdateButton(role, "SHAPESHIFT", role.ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, TownOfUsReworked.Shapeshift, AbilityTypes.Effect, 
+                role.ShapeshiftButton.UpdateButton(role, "SHAPESHIFT", role.ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary", 
                     role.Shapeshifted, role.ShapeshiftTimeRemaining, CustomGameOptions.ShapeshiftDuration);
             }
             else if (formerRole == RoleEnum.Warper)
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 if (role.WarpButton == null)
                     role.WarpButton = Utils.InstantiateButton();
 
-                role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, TownOfUsReworked.WarpSprite, AbilityTypes.Effect);
+                role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, AssetManager.Warp, AbilityTypes.Effect, "Secondary");
             }
             else if (formerRole == RoleEnum.Poisoner)
             {
@@ -65,8 +65,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     role.PoisonButton = Utils.InstantiateButton();
 
                 var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != role.PoisonedPlayer).ToList();
-                role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? TownOfUsReworked.PoisonedSprite :
-                    TownOfUsReworked.PoisonSprite, AbilityTypes.Direct, notSyn, true, !role.Poisoned, role.Poisoned && !Role.SyndicateHasChaosDrive, role.PoisonTimeRemaining,
+                role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? AssetManager.Poisoned :
+                    AssetManager.Poison, AbilityTypes.Direct, "Secondary", notSyn, true, !role.Poisoned, role.Poisoned && !Role.SyndicateHasChaosDrive, role.PoisonTimeRemaining,
                     CustomGameOptions.PoisonDuration);
             }
             else if (formerRole == RoleEnum.Bomber)
@@ -74,12 +74,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 if (role.BombButton == null)
                     role.BombButton = Utils.InstantiateButton();
 
-                role.BombButton.UpdateButton(role, "PLANT", role.BombTimer(), CustomGameOptions.BombCooldown, TownOfUsReworked.PlantSprite, AbilityTypes.Effect);
+                role.BombButton.UpdateButton(role, "PLANT", role.BombTimer(), CustomGameOptions.BombCooldown, AssetManager.Plant, AbilityTypes.Effect, "Secondary");
 
                 if (role.DetonateButton == null)
                     role.DetonateButton = Utils.InstantiateButton();
 
-                role.BombButton.UpdateButton(role, "DETONATE", role.DetonateTimer(), CustomGameOptions.DetonateCooldown, TownOfUsReworked.DetonateSprite, AbilityTypes.Effect,
+                role.DetonateButton.UpdateButton(role, "DETONATE", role.DetonateTimer(), CustomGameOptions.DetonateCooldown, AssetManager.Detonate, AbilityTypes.Effect, "Tertiary",
                     role.Bombs.Count > 0);
             }
             else if (formerRole == RoleEnum.Drunkard)
@@ -87,8 +87,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 if (role.ConfuseButton == null)
                     role.ConfuseButton = Utils.InstantiateButton();
 
-                role.ConfuseButton.UpdateButton(role, "CONFUSE", role.DrunkTimer(), CustomGameOptions.ConfuseCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Effect, role.Confused,
-                    role.ConfuseTimeRemaining, CustomGameOptions.ConfuseDuration, true, !role.Confused);
+                role.ConfuseButton.UpdateButton(role, "CONFUSE", role.DrunkTimer(), CustomGameOptions.ConfuseCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary",
+                    role.Confused, role.ConfuseTimeRemaining, CustomGameOptions.ConfuseDuration, true, !role.Confused);
             }
         }
     }

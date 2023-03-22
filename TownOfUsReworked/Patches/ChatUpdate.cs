@@ -24,6 +24,15 @@ namespace TownOfUsReworked.Patches
                 else
                     _time += Time.deltaTime;
 
+                foreach (var bubble in __instance.Chat.chatBubPool.activeChildren)
+                {
+                    if (bubble.Cast<ChatBubble>().NameText != null)
+                    {
+                        bubble.Cast<ChatBubble>().NameText.alignment = TMPro.TextAlignmentOptions.Left;
+                        bubble.Cast<ChatBubble>().TextArea.alignment = TMPro.TextAlignmentOptions.TopLeft;
+                    }
+                }
+
                 if (GameStates.IsLobby)
                     return;
 

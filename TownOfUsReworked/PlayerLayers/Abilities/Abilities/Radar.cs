@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
             RadarArrow = new List<ArrowBehaviour>();
-            AbilityDescription = "You are a Radar! You know where the player closes to you is! Use this to get rid of anyone who's tailing you!";
         }
     }
 }

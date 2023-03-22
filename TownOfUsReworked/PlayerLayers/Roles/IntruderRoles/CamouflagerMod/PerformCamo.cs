@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.CamouflageButton)
             {
                 if (!Utils.ButtonUsable(role.CamouflageButton))

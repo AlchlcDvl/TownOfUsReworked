@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
             var role = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.BugButton)
             {
                 if (!Utils.ButtonUsable(role.BugButton))

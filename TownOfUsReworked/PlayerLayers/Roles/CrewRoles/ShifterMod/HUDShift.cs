@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             if (role.ShiftButton == null)
                 role.ShiftButton = Utils.InstantiateButton();
 
-            role.ShiftButton.UpdateButton(role, "SHIFT", role.ShiftTimer(), CustomGameOptions.ShifterCd, TownOfUsReworked.Shift, AbilityTypes.Direct);
+            role.ShiftButton.UpdateButton(role, "SHIFT", role.ShiftTimer(), CustomGameOptions.ShifterCd, AssetManager.Shift, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

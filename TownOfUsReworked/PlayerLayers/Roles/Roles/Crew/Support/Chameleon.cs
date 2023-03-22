@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastSwooped = DateTime.UtcNow;
             RoleType = RoleEnum.Chameleon;
             AlignmentName = CS;
-            RoleDescription = "Your are a Chameleon! You are capable of blending into the environment. Use this to stalk players who think are evil!";
             InspectorResults = InspectorResults.Unseen;
         }
 

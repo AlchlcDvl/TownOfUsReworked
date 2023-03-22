@@ -29,6 +29,8 @@ using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
 using Reactor.Networking.Extensions;
 using AmongUs.GameOptions;
+using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 using Coroutine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod.Coroutine;
 using Random = UnityEngine.Random;
@@ -85,6 +87,8 @@ namespace TownOfUsReworked.Patches
 
         private static bool PhantomOn;
         private static bool RevealerOn;
+        private static bool BansheeOn;
+        private static bool GhoulOn;
 
         private static void Sort(List<(Type, int, int, bool)> items, int max, int min)
         {
@@ -385,6 +389,8 @@ namespace TownOfUsReworked.Patches
 
             PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
             RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
+            BansheeOn = Utils.Check(CustomGameOptions.BansheeOn);
+            GhoulOn = Utils.Check(CustomGameOptions.GhoulOn);
 
             var num = 0;
 
@@ -1937,45 +1943,65 @@ namespace TownOfUsReworked.Patches
             Utils.LogSomething("Role Spawn Done");
 
             var toChooseFromNeut = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && !x.Is(ObjectifierEnum.Allied)).ToList();
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
 
             if (PhantomOn && toChooseFromNeut.Count != 0)
             {
                 var rand = Random.RandomRangeInt(0, toChooseFromNeut.Count);
                 var pc = toChooseFromNeut[rand];
-
                 SetPhantom.WillBePhantom = pc;
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                 writer.Write(pc.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             else
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                 writer.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
 
-            var toChooseFromCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Traitor) &&
-                !x.Is(ObjectifierEnum.Corrupted) && !x.Is(ObjectifierEnum.Fanatic)).ToList();
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            var toChooseFromSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate)).ToList();
+            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
+
+            if (BansheeOn && toChooseFromSyn.Count != 0)
+            {
+                var rand = Random.RandomRangeInt(0, toChooseFromSyn.Count);
+                var pc = toChooseFromSyn[rand];
+                SetBanshee.WillBeBanshee = pc;
+                writer3.Write(pc.PlayerId);
+            }
+            else
+                writer3.Write(byte.MaxValue);
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer3);
+
+            var toChooseFromCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Traitor) && !x.Is(ObjectifierEnum.Corrupted) &&
+                !x.Is(ObjectifierEnum.Fanatic)).ToList();
+            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
 
             if (RevealerOn && toChooseFromCrew.Count != 0)
             {
                 var rand = Random.RandomRangeInt(0, toChooseFromCrew.Count);
                 var pc = toChooseFromCrew[rand];
-
                 SetRevealer.WillBeRevealer = pc;
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-                writer.Write(pc.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                writer2.Write(pc.PlayerId);
             }
             else
+                writer2.Write(byte.MaxValue);
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+            var toChooseFromInt = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)).ToList();
+            var writer4 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
+
+            if (GhoulOn && toChooseFromInt.Count != 0)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-                writer.Write(byte.MaxValue);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                var rand = Random.RandomRangeInt(0, toChooseFromInt.Count);
+                var pc = toChooseFromInt[rand];
+                SetGhoul.WillBeGhoul = pc;
+                writer4.Write(pc.PlayerId);
             }
+            else
+                writer4.Write(byte.MaxValue);
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer4);
 
             Utils.LogSomething("Role Gen End");
         }
@@ -2167,6 +2193,19 @@ namespace TownOfUsReworked.Patches
                 Utils.LogSomething("Ninja Done");
             }
 
+            if (CustomGameOptions.ButtonBarryOn > 0)
+            {
+                num = GameStates.IsCustom ? CustomGameOptions.ButtonBarryCount : 1;
+
+                while (num > 0)
+                {
+                    AllAbilities.Add((typeof(ButtonBarry), CustomGameOptions.ButtonBarryOn, 15, CustomGameOptions.UniqueButtonBarry));
+                    num--;
+                }
+
+                Utils.LogSomething("Button Barry Done");
+            }
+
             var allCount = PlayerControl.AllPlayerControls.Count;
             Sort(AllAbilities, CustomGameOptions.MaxAbilities, CustomGameOptions.MinAbilities);
             AllAbilities.Shuffle();
@@ -2234,7 +2273,7 @@ namespace TownOfUsReworked.Patches
                 int[] NonEvil = { 7 };
                 int[] Evil = { 8 };
                 int[] Tasked = { 2, 4 };
-                int[] Global = { 5, 6 };
+                int[] Global = { 5, 6, 15 };
                 int[] Tunneler = { 9 };
 
                 if (canHaveSnitch.Count > 0 && Snitch.Contains(id))
@@ -2890,11 +2929,10 @@ namespace TownOfUsReworked.Patches
                             act.PretendRoles = pretendRoles[actNum];
                         }
 
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetActorVariables, SendOption.Reliable);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetActPretendList, SendOption.Reliable);
                         writer.Write(act.Player.PlayerId);
                         writer.Write((byte)act.PretendRoles);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        //Utils.LogSomething($"Pretend Target = {act.TargetPlayer.name}");
                     }
                 }
 
@@ -2982,6 +3020,8 @@ namespace TownOfUsReworked.Patches
             Role.SetColors();
 
             UpdateNames.PlayerNames.Clear();
+            AssetManager.LoadAndReload();
+            LayerInfo.LoadInfo();
 
             MiscPatches.ExileControllerPatch.lastExiled = null;
         }
@@ -3014,7 +3054,7 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
-        public static class HandleRpc
+        public static class HandleRPC
         {
             public static void Postfix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
             {
@@ -3351,6 +3391,9 @@ namespace TownOfUsReworked.Patches
                             case 14:
                                 new Ninja(player3);
                                 break;
+                            case 15:
+                                new ButtonBarry(player3);
+                                break;
                         }
 
                         break;
@@ -3478,6 +3521,16 @@ namespace TownOfUsReworked.Patches
                         SetPhantom.WillBePhantom = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
                         break;
 
+                    case CustomRPC.SetBanshee:
+                        readByte = reader.ReadByte();
+                        SetBanshee.WillBeBanshee = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
+                        break;
+
+                    case CustomRPC.SetGhoul:
+                        readByte = reader.ReadByte();
+                        SetGhoul.WillBeGhoul = readByte == byte.MaxValue ? null : Utils.PlayerById(readByte);
+                        break;
+
                     case CustomRPC.RevealerDied:
                         var revealer = Utils.PlayerById(reader.ReadByte());
                         var former = Role.GetRole(revealer);
@@ -3487,9 +3540,10 @@ namespace TownOfUsReworked.Patches
                         revealerRole.RoleUpdate(former);
                         revealer.gameObject.layer = LayerMask.NameToLayer("Players");
                         SetRevealer.RemoveTasks(revealer);
-
-                        if (!PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
                             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                            PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+
+                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
 
                         break;
 
@@ -3501,10 +3555,27 @@ namespace TownOfUsReworked.Patches
                         phantomRole.RoleUpdate(phantomFormer);
                         phantom.gameObject.layer = LayerMask.NameToLayer("Players");
                         SetPhantom.RemoveTasks(phantom);
+                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                        break;
 
-                        if (!PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                            PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                    case CustomRPC.BansheeDied:
+                        var banshee = Utils.PlayerById(reader.ReadByte());
+                        var bansheeFormer = Role.GetRole(banshee);
+                        var bansheeRole = new Banshee(banshee);
+                        banshee.RegenTask();
+                        bansheeRole.RoleUpdate(bansheeFormer);
+                        banshee.gameObject.layer = LayerMask.NameToLayer("Players");
+                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                        break;
 
+                    case CustomRPC.GhoulDied:
+                        var ghoul = Utils.PlayerById(reader.ReadByte());
+                        var ghoulFormer = Role.GetRole(ghoul);
+                        var ghoulRole = new Ghoul(ghoul);
+                        ghoul.RegenTask();
+                        ghoulRole.RoleUpdate(ghoulFormer);
+                        ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
+                        PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
                         break;
 
                     case CustomRPC.Whisper:
@@ -3527,6 +3598,14 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.CatchPhantom:
                         Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                        break;
+
+                    case CustomRPC.CatchBanshee:
+                        Role.GetRole<Banshee>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                        break;
+
+                    case CustomRPC.CatchGhoul:
+                        Role.GetRole<Ghoul>(Utils.PlayerById(reader.ReadByte())).Caught = true;
                         break;
 
                     case CustomRPC.Start:
@@ -3572,7 +3651,7 @@ namespace TownOfUsReworked.Patches
                         bhRole.TargetPlayer = bhTarget;
                         break;
 
-                    case CustomRPC.SetActorVariables:
+                    case CustomRPC.SetActPretendList:
                         var act = Utils.PlayerById(reader.ReadByte());
                         var targetRoles = reader.ReadByte();
                         var actRole = Role.GetRole<Actor>(act);
@@ -3675,7 +3754,7 @@ namespace TownOfUsReworked.Patches
                             // Enough bytes left to read
                             revision = reader.ReadByte();
                             // GUID
-                            byte[] gbytes = reader.ReadBytes(16);
+                            var gbytes = reader.ReadBytes(16);
                             guid = new Guid(gbytes);
                         }
                         else
@@ -3728,7 +3807,7 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.SyncCustomSettings:
-                        Rpc.ReceiveRpc(reader);
+                        CustomOptions.RPC.ReceiveRPC(reader);
                         break;
 
                     case CustomRPC.SetSettings:
@@ -3754,7 +3833,6 @@ namespace TownOfUsReworked.Patches
                         GameOptionsManager.Instance.currentNormalGameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
                         GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
                         GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                        //GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = CustomGameOptions.LobbySize;
 
                         if (CustomGameOptions.AutoAdjustSettings)
                             RandomMap.AdjustSettings(readByte);
@@ -3775,7 +3853,9 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case ActionsRPC.RevealerFinished:
-                                HighlightImpostors.UpdateMeeting(MeetingHud.Instance);
+                                var revealer2 = Utils.PlayerById(reader.ReadByte());
+                                var revealerRole2 = Role.GetRole<Revealer>(revealer2);
+                                revealerRole2.CompletedTasks = true;
                                 break;
 
                             case ActionsRPC.AllFreeze:
@@ -4191,7 +4271,8 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.BypassKill:
                                 var killer = Utils.PlayerById(reader.ReadByte());
                                 var TargetPlayer = Utils.PlayerById(reader.ReadByte());
-                                Utils.MurderPlayer(killer, TargetPlayer, !killer.Is(AbilityEnum.Ninja));
+                                var lunge = reader.ReadBoolean();
+                                Utils.MurderPlayer(killer, TargetPlayer, lunge);
                                 break;
 
                             case ActionsRPC.AssassinKill:
@@ -4223,6 +4304,31 @@ namespace TownOfUsReworked.Patches
                                 morphRole.TimeRemaining = CustomGameOptions.MorphlingDuration;
                                 morphRole.MorphedPlayer = morphTarget;
                                 morphRole.Morph();
+                                break;
+
+                            case ActionsRPC.Scream:
+                                var banshee2 = Utils.PlayerById(reader.ReadByte());
+                                var bansheeRole2 = Role.GetRole<Banshee>(banshee2);
+                                bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDuration;
+                                bansheeRole2.Scream();
+
+                                foreach (var player8 in PlayerControl.AllPlayerControls)
+                                {
+                                    if (!player8.Data.IsDead && !player8.Data.Disconnected && !player8.Is(Faction.Syndicate))
+                                    {
+                                        var targetRole4 = Role.GetRole(player8);
+                                        targetRole4.IsBlocked = !targetRole4.RoleBlockImmune;
+                                        bansheeRole2.Blocked.Add(player8.PlayerId);
+                                    }
+                                }
+
+                                break;
+
+                            case ActionsRPC.Mark:
+                                var ghoul2 = Utils.PlayerById(reader.ReadByte());
+                                var marked = Utils.PlayerById(reader.ReadByte());
+                                var ghoulRole2 = Role.GetRole<Ghoul>(ghoul2);
+                                ghoulRole2.MarkedPlayer = marked;
                                 break;
 
                             case ActionsRPC.Disguise:
@@ -4295,6 +4401,15 @@ namespace TownOfUsReworked.Patches
                                 survRole.Vest();
                                 break;
 
+                            case ActionsRPC.Ambush:
+                                var amb = Utils.PlayerById(reader.ReadByte());
+                                var ambushed = Utils.PlayerById(reader.ReadByte());
+                                var ambRole = Role.GetRole<Ambusher>(amb);
+                                ambRole.TimeRemaining = CustomGameOptions.VestDuration;
+                                ambRole.AmbushedPlayer = ambushed;
+                                ambRole.Ambush();
+                                break;
+
                             case ActionsRPC.GAProtect:
                                 var ga2 = Utils.PlayerById(reader.ReadByte());
                                 var ga2Role = Role.GetRole<GuardianAngel>(ga2);
@@ -4306,9 +4421,19 @@ namespace TownOfUsReworked.Patches
                                 Coroutines.Start(Transporter.TransportPlayers(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean()));
                                 break;
 
+                            case ActionsRPC.Beam:
+                                Coroutines.Start(Beamer.BeamPlayers(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean()));
+                                break;
+
                             case ActionsRPC.SetUntransportable:
                                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
                                     Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+
+                                break;
+
+                            case ActionsRPC.SetUnbeamable:
+                                if (PlayerControl.LocalPlayer.Is(RoleEnum.Beamer))
+                                    Role.GetRole<Beamer>(PlayerControl.LocalPlayer).UnbeamablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
 
                                 break;
 
@@ -4611,58 +4736,55 @@ namespace TownOfUsReworked.Patches
                                 Role.NobodyWins = true;
                                 break;
 
-                            case WinLoseRPC.NKWins:
-                                var nkPlayer = Utils.PlayerById(reader.ReadByte());
-                                var nkRole = Role.GetRole(nkPlayer);
+                            case WinLoseRPC.SameNKWins:
+                            case WinLoseRPC.SoloNKWins:
+                                var nkRole = Role.GetRole(Utils.PlayerById(reader.ReadByte()));
 
                                 switch (nkRole.RoleType)
                                 {
                                     case RoleEnum.Glitch:
-                                        ((Glitch)nkRole).GlitchWins = true;
+                                        Role.GlitchWins = true;
                                         break;
 
                                     case RoleEnum.Arsonist:
-                                        ((Arsonist)nkRole).ArsonistWins = true;
+                                        Role.ArsonistWins = true;
                                         break;
 
                                     case RoleEnum.Cryomaniac:
-                                        ((Cryomaniac)nkRole).CryoWins = true;
+                                        Role.CryomaniacWins = true;
                                         break;
 
                                     case RoleEnum.Juggernaut:
-                                        ((Juggernaut)nkRole).JuggernautWins = true;
+                                        Role.JuggernautWins = true;
                                         break;
 
                                     case RoleEnum.Murderer:
-                                        ((Murderer)nkRole).MurdWins = true;
+                                        Role.MurdererWins = true;
                                         break;
 
                                     case RoleEnum.Werewolf:
-                                        ((Werewolf)nkRole).WWWins = true;
+                                        Role.WerewolfWins = true;
                                         break;
 
                                     case RoleEnum.SerialKiller:
-                                        ((SerialKiller)nkRole).SerialKillerWins = true;
+                                        Role.SerialKillerWins = true;
                                         break;
                                 }
 
+                                if ((WinLoseRPC)id7 == WinLoseRPC.SameNKWins)
+                                {
+                                    foreach (var role in Role.GetRoles(nkRole.RoleType))
+                                    {
+                                        if (!role.Player.Data.Disconnected && role.NotDefective)
+                                            role.Winner = true;
+                                    }
+                                }
+
+                                nkRole.Winner = true;
                                 break;
 
                             case WinLoseRPC.InfectorsWin:
-                                var infector = Utils.PlayerById(reader.ReadByte());
-                                var infectRole = Role.GetRole(infector);
-
-                                switch (infectRole.RoleType)
-                                {
-                                    case RoleEnum.Plaguebearer:
-                                        ((Plaguebearer)infectRole).PlaguebearerWins = true;
-                                        break;
-
-                                    case RoleEnum.Pestilence:
-                                        ((Pestilence)infectRole).PestilenceWins = true;
-                                        break;
-                                }
-
+                                Role.InfectorsWin = true;
                                 break;
 
                             case WinLoseRPC.JesterWin:
@@ -4718,13 +4840,14 @@ namespace TownOfUsReworked.Patches
                                 break;
                         }
 
+                        Utils.EndGame();
                         break;
                 }
             }
         }
 
         [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
-        public static class RpcSetRole
+        public static class RPCSetRole
         {
             public static void Postfix()
             {

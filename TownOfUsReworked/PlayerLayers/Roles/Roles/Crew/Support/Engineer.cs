@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Engineer : CrewRole
     {
         public AbilityButton FixButton;
-        public int UsesLeft;
+        public int UsesLeft = CustomGameOptions.MaxFixes;
         public bool ButtonUsable => UsesLeft > 0;
         public DateTime LastFixed;
 
@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            RoleDescription = "You are an Engineer! You must ensure that your place is in tiptop condition. Those pesky Intruders keep destroying" +
-                " the systems you spent blood, sweat and tears to make. Make them pay.";
-            UsesLeft = CustomGameOptions.MaxFixes;
             InspectorResults = InspectorResults.DifferentLens;
         }
 

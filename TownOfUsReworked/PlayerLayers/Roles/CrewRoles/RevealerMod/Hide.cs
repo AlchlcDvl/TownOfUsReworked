@@ -11,6 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         public static void Postfix(HudManager __instance)
         {
+            if (GameStates.IsEnded || GameStates.IsLobby)
+                return;
+
             foreach (var role in Role.GetRoles(RoleEnum.Revealer))
             {
                 var haunter = (Revealer)role;

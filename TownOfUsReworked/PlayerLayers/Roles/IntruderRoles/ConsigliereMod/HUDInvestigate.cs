@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId) && !(x.Is(Faction.Intruder) &&
                 CustomGameOptions.FactionSeeRoles)).ToList();
-            role.InvestigateButton.UpdateButton(role, "INVESTIGATE", role.ConsigliereTimer(), CustomGameOptions.ConsigCd, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+            role.InvestigateButton.UpdateButton(role, "INVESTIGATE", role.ConsigliereTimer(), CustomGameOptions.ConsigCd, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary",
                 notInvestigated);
         }
     }

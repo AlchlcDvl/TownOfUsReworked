@@ -17,6 +17,9 @@ namespace TownOfUsReworked.Patches
             if (__instance == null || MeetingHud.Instance || !PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
+            if (__instance == PlayerControl.LocalPlayer)
+                return;
+
             var taskinfos = __instance.Data.Tasks.ToArray();
             var tasksLeft = taskinfos.Count(x => !x.Complete);
 
@@ -33,10 +36,11 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Revealer))
             {
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.ImpsOnly && !PlayerControl.LocalPlayer.Is(Faction.Intruder))
+                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
+                    PlayerControl.LocalPlayer.Is(Faction.Syndicate)))
                     return;
 
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
+                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Is(Faction.Intruder)||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral)))
                     return;
 
@@ -45,6 +49,28 @@ namespace TownOfUsReworked.Patches
                     var role = Role.GetRole<Revealer>(__instance);
                     role.Caught = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchRevealer, SendOption.Reliable);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            else if (__instance.Is(RoleEnum.Banshee))
+            {
+                if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                {
+                    var role = Role.GetRole<Banshee>(__instance);
+                    role.Caught = true;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchBanshee, SendOption.Reliable);
+                    writer.Write(role.Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            else if (__instance.Is(RoleEnum.Ghoul))
+            {
+                if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
+                {
+                    var role = Role.GetRole<Ghoul>(__instance);
+                    role.Caught = true;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchGhoul, SendOption.Reliable);
                     writer.Write(role.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

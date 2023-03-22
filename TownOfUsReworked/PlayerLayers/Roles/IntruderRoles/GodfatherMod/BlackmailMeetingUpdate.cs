@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections;
 using Reactor.Utilities;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -38,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                         if (PrevXMark == null)
                             PrevXMark = playerState.XMark.sprite;
 
-                        playerState.XMark.sprite = TownOfUsReworked.BlackmailLetterSprite;
+                        playerState.XMark.sprite = AssetManager.BlackmailLetter;
                         playerState.XMark.transform.localScale = playerState.XMark.transform.localScale * 0.75f;
                         playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset,
                             playerState.XMark.transform.localPosition.y + LetterYOffset, playerState.XMark.transform.localPosition.z);
@@ -66,8 +67,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
         public class MeetingHud_Update
         {
-            public static Sprite Overlay => TownOfUsReworked.BlackmailOverlaySprite;
-
             public static void Postfix(MeetingHud __instance)
             {
                 var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Godfather && ((Godfather)x).FormerRole?.RoleType == RoleEnum.Blackmailer).Cast<Godfather>();
@@ -82,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                         if (PrevOverlay == null)
                             PrevOverlay = playerState.Overlay.sprite;
 
-                        playerState.Overlay.sprite = Overlay;
+                        playerState.Overlay.sprite = AssetManager.BlackmailOverlay;
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && shookAlready == false)
                         {

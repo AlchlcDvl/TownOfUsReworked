@@ -2,7 +2,6 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using UnityEngine;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
             if (role.SeerButton == null)
                 role.SeerButton = Utils.InstantiateButton();
 
-            role.SeerButton.UpdateButton(role, "REVEAL", role.SeerTimer(), CustomGameOptions.SeerCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.SeerButton.UpdateButton(role, "SEER", role.SeerTimer(), CustomGameOptions.SeerCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
 
             if (role.ChangedDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {

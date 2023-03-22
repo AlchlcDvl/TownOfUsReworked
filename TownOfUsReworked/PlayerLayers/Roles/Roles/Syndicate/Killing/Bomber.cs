@@ -25,8 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            RoleDescription = "You are a Bomber! You are a powerful demolitionist who can get a large number of body counts by detonating bombs placed at key points on the map. Be careful" + 
-                " though, as any unfortunate Syndicate in the bomb's radius will also die. Perfectly timed detonations are key to victory!";
             Bombs = new List<Bomb>();
         }
 

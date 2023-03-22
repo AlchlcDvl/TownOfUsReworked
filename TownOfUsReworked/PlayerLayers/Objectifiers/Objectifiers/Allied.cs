@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = Objective;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Allied;
-            ObjectifierDescription = $"You are Allied! You are no longer a Neutral and win with the {Side}!";
         }
     }
 }

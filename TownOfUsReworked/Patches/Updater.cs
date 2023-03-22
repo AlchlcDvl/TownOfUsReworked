@@ -9,9 +9,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public class ModUpdaterButton
     {
-        public static Sprite TOUUpdateSprite => TownOfUsReworked.UpdateTOUButton;
-        public static Sprite SubmergedUpdateSprite => TownOfUsReworked.UpdateSubmergedButton;
-
         private static void Prefix(MainMenuManager __instance)
         {
             //Check if there's a ToU-Rew update
@@ -31,7 +28,7 @@ namespace TownOfUsReworked.Patches
                     SpriteRenderer touButtonSprite = touButton.GetComponent<SpriteRenderer>();
                     passiveTOUButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
 
-                    touButtonSprite.sprite = TOUUpdateSprite;
+                    touButtonSprite.sprite = AssetManager.UpdateTOUButton;
 
                     //Add onClick event to run the update on button click
                     passiveTOUButton.OnClick.AddListener((Action) (() =>
@@ -67,7 +64,7 @@ namespace TownOfUsReworked.Patches
                     SpriteRenderer submergedButtonSprite = submergedButton.GetComponent<SpriteRenderer>();
                     passiveSubmergedButton.OnClick = new UnityEngine.UI.Button.ButtonClickedEvent();
 
-                    submergedButtonSprite.sprite = SubmergedUpdateSprite;
+                    submergedButtonSprite.sprite = AssetManager.UpdateSubmergedButton;
 
                     //Add onClick event to run the update on button click
                     passiveSubmergedButton.OnClick.AddListener((Action) (() =>

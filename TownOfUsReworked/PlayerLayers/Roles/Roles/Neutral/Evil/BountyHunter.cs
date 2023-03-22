@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.BountyHunter;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
-            RoleDescription = "You are a Bounty Hunter! You are an assassin who is in pursuit of a target! Find and kill them at all costs!";
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
         }
 

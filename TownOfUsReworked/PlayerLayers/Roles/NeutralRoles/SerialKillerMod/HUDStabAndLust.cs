@@ -21,9 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             if (role.StabButton == null)
                 role.StabButton = Utils.InstantiateButton();
 
-            role.BloodlustButton.UpdateButton(role, "BLOODLUST", role.LustTimer(), CustomGameOptions.BloodlustCd, TownOfUsReworked.Placeholder, AbilityTypes.Effect, role.Lusted,
+            role.BloodlustButton.UpdateButton(role, "BLOODLUST", role.LustTimer(), CustomGameOptions.BloodlustCd, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", role.Lusted,
                 role.TimeRemaining, CustomGameOptions.BloodlustDuration, true, !role.Lusted);
-            role.StabButton.UpdateButton(role, "STAB", role.KillTimer(), CustomGameOptions.LustKillCd, TownOfUsReworked.StabSprite, AbilityTypes.Direct);
+            role.StabButton.UpdateButton(role, "STAB", role.KillTimer(), CustomGameOptions.LustKillCd, AssetManager.Stab, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

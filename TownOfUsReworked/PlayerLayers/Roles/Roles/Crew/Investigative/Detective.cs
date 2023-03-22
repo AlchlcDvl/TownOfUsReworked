@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Detective;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            RoleDescription = "You are a Detective! You have a special skill in identifying blood and tracking others. Use these skills to your advantage to catch killers in the act!";
             InspectorResults = InspectorResults.HasInformation;
         }
 

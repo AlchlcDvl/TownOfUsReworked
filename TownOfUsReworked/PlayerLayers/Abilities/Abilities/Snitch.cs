@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Hidden = !CustomGameOptions.SnitchKnows;
             ImpArrows = new List<ArrowBehaviour>();
             SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
-            AbilityDescription = "You are a Snitch! Finish your tasks to find who all the evil players are!";
         }
         
         public void DestroyArrow(byte targetPlayerId)

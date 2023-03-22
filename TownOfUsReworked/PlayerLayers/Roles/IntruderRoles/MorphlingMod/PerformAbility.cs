@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.MorphButton)
             {
                 if (role.MorphTimer() != 0f)

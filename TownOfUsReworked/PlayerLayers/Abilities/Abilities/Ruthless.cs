@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
             AbilityType = AbilityEnum.Ruthless;
             Hidden = !CustomGameOptions.RuthlessKnows;
-            AbilityDescription = "You are Ruthless! No form of protection can stop you killing!";
         }
     }
 }

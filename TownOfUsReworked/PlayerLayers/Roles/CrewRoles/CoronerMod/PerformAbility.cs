@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
             var role = Role.GetRole<Coroner>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.AutopsyButton)
             {
                 if (!Utils.ButtonUsable(role.AutopsyButton))

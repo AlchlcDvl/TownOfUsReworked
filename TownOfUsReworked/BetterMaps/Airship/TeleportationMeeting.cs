@@ -49,7 +49,15 @@ namespace TownOfUsReworked.BetterMaps.Airship
             }
 
             if (enableAfterFade)
-                HudManager.Instance.FullScreen.enabled = false;
+            {
+                var fs = false;
+                var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+
+                if (reactor.IsActive)
+                    fs = true;
+
+                HudManager.Instance.FullScreen.enabled = fs;
+            }
         }
 
         private static IEnumerator CoTeleportPlayer(PlayerControl instance)

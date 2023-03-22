@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = "- Kill everyone!";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
-            ObjectifierDescription = "You are Corrupted! You are no longer Crew and feel the need to kill everyone!";
         }
 
 

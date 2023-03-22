@@ -3,7 +3,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using Reactor.Utilities;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -11,10 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public Role former;
         public bool Turned = false;
-        public string Side;
         public string Objective;
-        public Faction Side2;
-        public bool Betray => PlayerControl.AllPlayerControls.ToArray().Where(x => Turned && x.Is(Side2) && x != Player).Count() == 0;
+        public Faction Side = Faction.Crew;
+        public bool Betray => Side == Faction.Intruder ? Utils.LastImp() : (Side == Faction.Syndicate ? Utils.LastSyn() : false);
 
         public Fanatic(PlayerControl player) : base(player)
         {
@@ -26,9 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
-            ObjectifierDescription = "You are a Fanatic! You are a crazed masochist who wants to side with whoever attacked you!" + (Turned
-                ? $" You care currently siding with the {Side}."
-                : "");
         }
 
         public static void TurnFanatic(PlayerControl fanatic, Faction faction)
@@ -57,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 fanaticRole.FactionColor = Colors.Intruder;
             }
 
-            fanatic2.Side2 = faction;
+            fanatic2.Side = faction;
             fanatic.RegenTask();
         }
 
@@ -72,6 +67,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             betrayer.RoleUpdate(role);
             betrayer.Objectives = role.Objectives;
             Player.RegenTask();
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

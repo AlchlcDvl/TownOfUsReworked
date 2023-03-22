@@ -27,8 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.RewindMaxUses;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;
-            RoleDescription = "Your are a Time Lord! You are a minor diety with some control over time! You can rewind time to warp players back to their original positions, possibly " +
-                "reviving them in the process!";
             InspectorResults = InspectorResults.DifferentLens;
             RoleBlockImmune = true;
         }

@@ -21,20 +21,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                 role.InfectButton = Utils.InstantiateButton();
 
             var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.InfectedPlayers.Contains(player.PlayerId)).ToList();
-            role.InfectButton.UpdateButton(role, "INFECT", role.InfectTimer(), CustomGameOptions.InfectCd, TownOfUsReworked.InfectSprite, AbilityTypes.Direct, notInfected);
+            role.InfectButton.UpdateButton(role, "INFECT", role.InfectTimer(), CustomGameOptions.InfectCd, AssetManager.Infect, AbilityTypes.Direct, "ActionSecondary", notInfected);
 
             if (role.CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !role.Player.Data.IsDead)
             {
-                var transform = role.CanTransform;
-                
-                if (transform)
-                {
-                    role.TurnPestilence();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                    writer.Write((byte)TurnRPC.TurnPestilence);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                role.TurnPestilence();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnPestilence);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
     }

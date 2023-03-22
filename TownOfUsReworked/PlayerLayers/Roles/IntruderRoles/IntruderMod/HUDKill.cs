@@ -22,8 +22,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (role.KillButton == null)
                 role.KillButton = Utils.InstantiateButton();
 
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
+            {
+                role.KillButton.gameObject.SetActive(false);
+                return;
+            }
+
             var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
-            role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.IntKillCooldown, TownOfUsReworked.IntruderKill, AbilityTypes.Direct, notImp);
+            role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.IntKillCooldown, AssetManager.IntruderKill, AbilityTypes.Direct, "ActionSecondary", notImp);
         }
     }
 }

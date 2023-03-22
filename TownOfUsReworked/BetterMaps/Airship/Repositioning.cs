@@ -9,11 +9,11 @@ namespace TownOfUsReworked.BetterMaps.Airship
     {
         public static void Postfix(AirshipStatus __instance)
         {
-            MapConsole AdminTable = Object.FindObjectOfType<MapConsole>();
+            var AdminTable = Object.FindObjectOfType<MapConsole>();
 
             if ((byte)CustomGameOptions.MoveAdmin != 0)
             {
-                GameObject MapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
+                var MapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
                 if ((byte)CustomGameOptions.MoveAdmin == 1)
                 {
@@ -27,8 +27,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
                     MapFloating.transform.rotation = Quaternion.Euler(new Vector3(0.000f, 0.000f, 350f));
                     MapFloating.transform.localScale = new Vector3(1f, 1f, 1f);
                 }
-
-                if ((byte)CustomGameOptions.MoveAdmin == 2)
+                else if ((byte)CustomGameOptions.MoveAdmin == 2)
                 {
                     // New Admin
                     AdminTable.transform.position = new Vector3(5.078f, 3.4f, 1f);
@@ -40,7 +39,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             if ((byte)CustomGameOptions.MoveElectrical != 0)
             {
-                GameObject Electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
+                var Electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
 
                 if ((byte)CustomGameOptions.MoveElectrical == 1)
                 {
@@ -49,13 +48,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
                     Electrical.transform.localScale = new Vector3(0.909f, 0.818f, 1f);
 
                     // Support
-                    GameObject OriginalSupport = GameObject.Find("Vault/cockpit_comms");
-                    GameObject SupportElectrical = Object.Instantiate(OriginalSupport, OriginalSupport.transform);
+                    var OriginalSupport = GameObject.Find("Vault/cockpit_comms");
+                    var SupportElectrical = Object.Instantiate(OriginalSupport, OriginalSupport.transform);
                     SupportElectrical.transform.position = new Vector2(-8.792f, 13.242f);
                     SupportElectrical.transform.localScale = new Vector3(1f, 1f, 1f);
                 }
-
-                if ((byte)CustomGameOptions.MoveElectrical == 2)
+                else if ((byte)CustomGameOptions.MoveElectrical == 2)
                 {
                     // Light
                     Electrical.transform.position = new Vector2(19.339f, -3.665f);
@@ -65,25 +63,25 @@ namespace TownOfUsReworked.BetterMaps.Airship
             if (CustomGameOptions.MoveVitals)
             {
                 // Vitals
-                GameObject Vitals = GameObject.Find("Medbay/panel_vitals");
+                var Vitals = GameObject.Find("Medbay/panel_vitals");
                 Vitals.transform.position = new Vector2(24.55f, -4.780f);
 
                 // Download Medbay
-                GameObject MedbayDownload = GameObject.Find("Medbay/panel_data");
+                var MedbayDownload = GameObject.Find("Medbay/panel_data");
                 MedbayDownload.transform.position = new Vector2(25.240f, -7.938f);
             }
 
             if (CustomGameOptions.MoveFuel)
             {
                 // Cargo gas
-                GameObject Fuel = GameObject.Find("Storage/task_gas");
+                var Fuel = GameObject.Find("Storage/task_gas");
                 Fuel.transform.position = new Vector2(36.070f, 1.897f);
             }
 
             if (CustomGameOptions.MoveDivert)
             {
                 // Divert
-                GameObject DivertRecieve = GameObject.Find("HallwayMain/DivertRecieve");
+                var DivertRecieve = GameObject.Find("HallwayMain/DivertRecieve");
                 DivertRecieve.transform.position = new Vector2(13.35f, -1.659f);
             }
         }

@@ -23,8 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
-            RoleDescription = "You are a Concealer! You can turn everyone invisible to everyone else but themselves by making them unable to see things properly. " +
-                "Use this to get away from crime scenes as fast as possible!";
             InspectorResults = InspectorResults.Unseen;
         }
 

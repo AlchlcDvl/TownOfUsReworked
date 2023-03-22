@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
-            AbilityDescription = "You are an Assassin! You can discreetly kill people by guessing what they are! Be careful though, as missing a shot can get you killed!";
 
             //Adds all the roles that have a non-zero chance of being in the game
             if (!PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.NotOnTheSameSide())

@@ -11,9 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Sabotage And Kill Everyone";
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;
-            //IntroSound = TownOfUsReworked.ImpostorIntro;
             Base = true;
-            RoleDescription = "You are an Impostor! Your role is the base role for the Intruder faction. You have no special abilities and should probably just kill normally.";
         }
     }
 }

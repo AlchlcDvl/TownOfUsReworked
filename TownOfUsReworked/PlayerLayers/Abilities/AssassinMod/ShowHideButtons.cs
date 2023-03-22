@@ -37,9 +37,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var role2 = Role.GetRole(role.Player);
                 role2.DeathReason = DeathReasonEnum.Guessed;
                 role2.KilledBy = " Via Misfire";
-                return;
             }
+            else
+                HideTarget(role, targetId);
+        }
 
+        public static void HideTarget(Assassin role, byte targetId)
+        {
             var (cycleBack, cycleForward, guess, guessText) = role.Buttons[targetId];
 
             if (cycleBack == null || cycleForward == null)

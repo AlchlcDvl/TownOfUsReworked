@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
-            RoleDescription = "You are an Executioner! You are a crazed stalker who only wants to see your target get ejected. Eject them at all costs!";
             ToDoom = new List<byte>();
             MaxUses = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
         }

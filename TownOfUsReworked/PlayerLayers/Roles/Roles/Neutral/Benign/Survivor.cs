@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NB;
             Objectives = "- Live to the end of the game.";
             InspectorResults = InspectorResults.SeeksToProtect;
-            RoleDescription = "You are a Survivor! You care not for who lives or dies, you just want to live! Do whatever it takes to survive, even it's with the bad guys.";
         }
 
         public float VestTimer()

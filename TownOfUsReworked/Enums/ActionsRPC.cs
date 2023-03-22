@@ -35,6 +35,7 @@ namespace TownOfUsReworked.Enums
         BaitReport,
         Transport,
         SetUntransportable,
+        SetUnbeamable,
         Mediate,
         Vest,
         GAProtect,
@@ -67,6 +68,10 @@ namespace TownOfUsReworked.Enums
         WhisperConvert,
         Confuse,
         Beam,
-        Frame
+        Frame,
+        Ambush,
+        Crusade,
+        Scream,
+        Mark
     }
 }

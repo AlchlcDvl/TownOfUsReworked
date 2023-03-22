@@ -4,6 +4,7 @@ using HarmonyLib;
 using UnityEngine;
 using Reactor.Utilities.Attributes;
 using Il2CppInterop.Runtime.Attributes;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
@@ -24,7 +25,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             renderer = gameObject.AddComponent<SpriteRenderer>();
             renderer.material = new Material(Shader.Find("Sprites/Outline"));
-            renderer.sprite = TownOfUsReworked.TaskSprite;
+            renderer.sprite = AssetManager.Task;
             SetOutline(false);
             collider = gameObject.AddComponent<BoxCollider2D>();
             collider.isTrigger = false;
@@ -35,15 +36,15 @@ namespace TownOfUsReworked.BetterMaps.Airship
         [HideFromIl2Cpp]
         public float CanUse(GameData.PlayerInfo PC, out bool CanUse)
         {
-            PlayerControl Player = PC.Object;
-            Vector2 truePosition = Player.GetTruePosition();
-            CanUse = (!PC.IsDead && Player.CanMove && !CallPlateform.PlateformIsUsed && !UnityEngine.Object.FindObjectOfType<MovingPlatformBehaviour>().InUse);
-            float Distance = float.MaxValue;
+            var Player = PC.Object;
+            var truePosition = Player.GetTruePosition();
+            CanUse = !PC.IsDead && Player.CanMove && !CallPlateform.PlateformIsUsed && !UnityEngine.Object.FindObjectOfType<MovingPlatformBehaviour>().InUse;
+            var Distance = float.MaxValue;
 
             if (CanUse)
             {
                 Distance = Vector2.Distance(truePosition, transform.position);
-                CanUse &= (Distance <= UsableDistance);
+                CanUse &= Distance <= UsableDistance;
             }
 
             return Distance;
@@ -64,14 +65,14 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         public static void CreateThisTask(Vector3 Position, Vector3 Rotation, Action OnClick)
         {
-            GameObject CallPlateform = new GameObject("Call Plateform");
+            var CallPlateform = new GameObject("Call Plateform");
             CallPlateform.transform.position = Position;
             CallPlateform.transform.localRotation = Quaternion.Euler(Rotation);
             CallPlateform.transform.localScale = new Vector3(1f, 1f, 2f);
             CallPlateform.layer = 12;
             CallPlateform.SetActive(true);
 
-            Tasks CallPlateformTasks = CallPlateform.AddComponent<Tasks>();
+            var CallPlateformTasks = CallPlateform.AddComponent<Tasks>();
             CallPlateformTasks.Id = 1;
             CallPlateformTasks.OnClick = OnClick;
             AllCustomPlateform.Add(CallPlateform);
@@ -83,12 +84,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             foreach (var CustomElectrical in AllCustomPlateform)
             {
-                Tasks component = CustomElectrical.GetComponent<Tasks>();
+                var component = CustomElectrical.GetComponent<Tasks>();
                 component.SetOutline(false);
 
                 if (component != null && ((!Player.Data.IsDead && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && Player.CanMove) || !Player.inVent))
                 {
-                    float Distance = component.CanUse(Player.Data, out bool CanUse);
+                    var Distance = component.CanUse(Player.Data, out bool CanUse);
 
                     if (CanUse && Distance < component.UsableDistance)
                     {

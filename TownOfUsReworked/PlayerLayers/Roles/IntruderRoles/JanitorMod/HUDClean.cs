@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             if (role.CleanButton == null)
                 role.CleanButton = Utils.InstantiateButton();
 
-            role.CleanButton.UpdateButton(role, "CLEAN", role.CleanTimer(), CustomGameOptions.JanitorCleanCd, TownOfUsReworked.JanitorClean, AbilityTypes.Dead);
+            role.CleanButton.UpdateButton(role, "CLEAN", role.CleanTimer(), CustomGameOptions.JanitorCleanCd, AssetManager.Clean, AbilityTypes.Dead, "Secondary");
         }
     }
 }

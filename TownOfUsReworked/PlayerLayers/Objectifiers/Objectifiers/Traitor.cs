@@ -1,19 +1,18 @@
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Traitor : Objectifier
     {
         public Role former;
-        public string Side;
         public bool Turned = false;
         public string Objective;
-        public Faction Side2;
-        public bool Betray => PlayerControl.AllPlayerControls.ToArray().Where(x => Turned && x.Is(Side2) && x != Player).Count() == 0;
+        public Faction Side = Faction.Crew;
+        public bool Betray => Side == Faction.Intruder ? Utils.LastImp() : (Side == Faction.Syndicate ? Utils.LastSyn() : false);
 
         public Traitor(PlayerControl player) : base(player)
         {
@@ -25,9 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Traitor;
             Hidden = !CustomGameOptions.TraitorKnows && !Turned;
-            ObjectifierDescription = "You are a Traitor! You are an indifferent Crew who just wants to be done with this mission, one way or another!" + (Turned
-                ? $" You care currently siding with the {Side}."
-                : "");
         }
 
         public void TurnBetrayer()
@@ -41,6 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             betrayer.RoleUpdate(role);
             betrayer.Objectives = role.Objectives;
             Player.RegenTask();
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

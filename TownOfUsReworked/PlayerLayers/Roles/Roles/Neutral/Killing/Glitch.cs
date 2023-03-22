@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool MimicEnabled;
         public bool HackEnabled;
         public PlayerControl MimicTarget;
-        public bool GlitchWins;
         public bool LastMouse;
         public bool PressedButton;
         public bool MenuClick;
@@ -41,9 +40,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "to kill you.";
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            //IntroSound = "GlitchIntro";
-            RoleDescription = "You are a Glitch! You are an otherworldly being who only seeks destruction. Mess with the player's systems so that they are " +
-                "unable to oppose you and mimic others to frame them! Do not let anyone live.";
         }
 
         public float HackTimer()

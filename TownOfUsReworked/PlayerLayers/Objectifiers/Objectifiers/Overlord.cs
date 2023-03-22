@@ -20,8 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Overlord;
             Hidden = !CustomGameOptions.OverlordKnows;
-            ObjectifierDescription = $"You are an Overlord! You are a patient insurgent who must survive for {CustomGameOptions.OverlordMeetingWinCount} meetings to successfully take " +
-                "over the Crew's mission!";
         }
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)

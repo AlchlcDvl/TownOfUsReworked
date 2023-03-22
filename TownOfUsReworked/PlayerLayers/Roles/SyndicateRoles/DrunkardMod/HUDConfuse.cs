@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
             if (role.ConfuseButton == null)
                 role.ConfuseButton = Utils.InstantiateButton();
 
-            role.ConfuseButton.UpdateButton(role, "CONFUSE", role.DrunkTimer(), CustomGameOptions.ConfuseCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Effect, role.Confused,
+            role.ConfuseButton.UpdateButton(role, "CONFUSE", role.DrunkTimer(), CustomGameOptions.ConfuseCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", role.Confused,
                 role.TimeRemaining, CustomGameOptions.ConfuseDuration, true, !role.Confused);
         }
     }

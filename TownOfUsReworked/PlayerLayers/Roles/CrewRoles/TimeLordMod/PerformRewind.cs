@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 return true;
 
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
-
-            if (role.IsBlocked)
-                return false;
             
             if (__instance == role.RewindButton)
             {

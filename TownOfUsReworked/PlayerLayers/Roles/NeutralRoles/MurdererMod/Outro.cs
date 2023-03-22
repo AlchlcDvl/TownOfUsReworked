@@ -11,12 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Murderer && ((Murderer)x).MurdWins);
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Murderer && Role.MurdererWins && x.Winner);
 
             if (role == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);

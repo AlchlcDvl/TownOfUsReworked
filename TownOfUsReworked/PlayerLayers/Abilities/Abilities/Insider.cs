@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Insider : Colors.Ability;
             AbilityType = AbilityEnum.Insider;
             Hidden = !CustomGameOptions.InsiderKnows;
-            AbilityDescription = "You are the Insider! Finish your tasks to be able to see who's voting who!";
         }
     }
 }

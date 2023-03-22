@@ -19,7 +19,7 @@ namespace TownOfUsReworked.Enums
         IsAggressive, //Werewolf, Juggernaut, Sidekick, Serial Killer
         CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
         DropsItems, //Bomber, Operative, Grenadier
-        Ghostly, //Revealer, Phantom
+        Ghostly, //Revealer, Phantom, Banshee, Ghoul
         None
     }
 }

@@ -10,15 +10,14 @@ using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class UpdateArrows
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
         private static DateTime _time = DateTime.UnixEpoch;
         private static float Interval => CustomGameOptions.UpdateInterval;
         public static bool CamoedLastTick = false;
 
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix(HudManager __instance)
         {
             if (Coroutine.Arrow != null)
             {

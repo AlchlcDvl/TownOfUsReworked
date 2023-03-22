@@ -15,9 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 
             var ability = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
 
-            if (ability.Player.IsBlocked())
-                return false;
-
             if (__instance == ability.ButtonButton)
             {
                 if (!Utils.ButtonUsable(ability.ButtonButton))

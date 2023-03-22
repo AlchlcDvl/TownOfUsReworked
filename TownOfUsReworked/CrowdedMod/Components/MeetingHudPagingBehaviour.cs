@@ -37,7 +37,6 @@ namespace TownOfUsReworked.CrowdedMod.Components
                 if (i >= PageIndex * MaxPerPage && i < (PageIndex + 1) * MaxPerPage)
                 {
                     button.gameObject.SetActive(true);
-
                     var relativeIndex = i % MaxPerPage;
                     var row = relativeIndex / 3;
                     var buttonTransform = button.transform;

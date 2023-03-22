@@ -11,12 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Juggernaut && ((Juggernaut)x).JuggernautWins);
+            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Juggernaut && Role.JuggernautWins && x.Winner);
 
             if (role == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
@@ -29,6 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
+            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+            AssetManager.Play("JuggernautWin");
         }
     }
 }

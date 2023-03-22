@@ -49,7 +49,7 @@ namespace TownOfUsReworked.Objects
             _gameObject.transform.SetParent(Player.transform.parent);
 
             _spriteRenderer = _gameObject.AddComponent<SpriteRenderer>();
-            _spriteRenderer.sprite = TownOfUsReworked.Footprint;
+            _spriteRenderer.sprite = AssetManager.Footprint;
             _spriteRenderer.color = Color;
             var appearance = Player.GetAppearance();
             var size = appearance.SizeFactor;

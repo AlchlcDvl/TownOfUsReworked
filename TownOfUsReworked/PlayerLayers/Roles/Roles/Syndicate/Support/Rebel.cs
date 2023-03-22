@@ -30,8 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
-            RoleDescription = "You are a Rebel! You are the leader of the Syndicate. You can promote a fellow Syndicate into becoming your Sidekick." +
-                " When you die, the Sidekick will become the new Rebel and will inherit stronger variations of their former role.";
         }
 
         //Rebel Stuff

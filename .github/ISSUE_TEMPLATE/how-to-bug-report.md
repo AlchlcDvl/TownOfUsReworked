@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 **Versions**
@@ -23,6 +22,8 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Additional context**
-Add any other context about the problem here.
+**Logs**
 It is also preferable you turn on logs for the mod and attach the log file along with the bug report for easier bug fixing on my end.
+
+**Additional context**
+Add any other context about the problem here. Like condition of the game prior to the error or your theory on what might be the issue. Any help is appreciated.

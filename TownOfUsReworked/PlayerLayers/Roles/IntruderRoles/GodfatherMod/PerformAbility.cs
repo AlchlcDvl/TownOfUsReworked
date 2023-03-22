@@ -402,7 +402,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     var body = role.CurrentlyDragging;
                     body.bodyRenderer.material.SetFloat("_Outline", 0f);
                     role.CurrentlyDragging = null;
-                    __instance.graphic.sprite = TownOfUsReworked.DragSprite;
                     role.LastDragged = DateTime.UtcNow;
                     body.transform.position = position;
                     return false;

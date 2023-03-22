@@ -25,11 +25,8 @@ namespace TownOfUsReworked.Patches
 
                 var map = (byte)CustomGameOptions.Map == 3 ? (byte)4 : ((byte)CustomGameOptions.Map == 4 ? (byte)5 : (byte)CustomGameOptions.Map);
 
-                if (CustomGameOptions.RandomMapEnabled)
-                {
+                if (CustomGameOptions.RandomMapEnabled || (map == 5 && !SubmergedCompatibility.Loaded))
                     map = GetRandomMap();
-                    GameOptionsManager.Instance.currentNormalGameOptions.MapId = map;
-                }
 
                 GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                 GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
@@ -63,6 +60,7 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.AutoAdjustSettings)
                     AdjustSettings(map);
             }
+
             return true;
         }
 

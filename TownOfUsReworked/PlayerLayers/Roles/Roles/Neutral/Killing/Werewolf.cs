@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastMauled;
-        public bool WWWins;
         public bool CanMaul;
         public AbilityButton MaulButton;
 

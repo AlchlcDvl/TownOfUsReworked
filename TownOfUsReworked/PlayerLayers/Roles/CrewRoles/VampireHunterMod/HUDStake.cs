@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             if (role.StakeButton == null)
                 role.StakeButton = Utils.InstantiateButton();
 
-            role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary");
 
             if (role.VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {

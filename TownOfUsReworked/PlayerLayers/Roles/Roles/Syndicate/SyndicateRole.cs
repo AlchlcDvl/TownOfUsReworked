@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Syndicate;
             Color = Colors.Syndicate;
             Objectives = SyndicateWinCon;
+            BaseFaction = Faction.Syndicate;
         }
 
         public float KillTimer()

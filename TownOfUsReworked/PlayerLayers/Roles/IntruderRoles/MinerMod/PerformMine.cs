@@ -23,9 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 
             var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.MineButton)
             {
                 if (!role.CanPlace)

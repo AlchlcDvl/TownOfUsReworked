@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
-            RoleDescription = "You are a Framer! This means that you are unrivalled in the art of gaslighting. Framed players always appear to be evil, regardless of their role!";
             Framed = new List<byte>();
         }
 

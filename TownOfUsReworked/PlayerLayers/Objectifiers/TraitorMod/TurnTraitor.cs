@@ -14,17 +14,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
     public class SetTraitor
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-
         public static void Postfix(PlayerControl __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Traitor))
                 return;
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
-                return;
-
-            var traitor = Role.GetRole(PlayerControl.LocalPlayer);
+            var traitor = Objectifier.GetObjectifier<Traitor>(PlayerControl.LocalPlayer);
 
             if (traitor.TasksDone)
             {
@@ -38,6 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 
         public static void TurnTraitor(PlayerControl traitor)
         {
+            if (!traitor.Is(ObjectifierEnum.Traitor))
+                return;
+
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
             var traitorRole = Role.GetRole(traitor);
 
@@ -84,7 +82,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 traitorRole.Faction = Faction.Intruder;
                 traitorObj.Color = Colors.Intruder;
-                traitorObj.Side = "Intruders";
                 traitorRole.IsIntTraitor = true;
                 traitorObj.former = traitorRole;
                 traitorRole.FactionColor = Colors.Intruder;
@@ -94,7 +91,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             {
                 traitorRole.Faction = Faction.Syndicate;
                 traitorRole.IsSynTraitor = true;
-                traitorObj.Side = "Syndicate";
                 traitorObj.former = traitorRole;
                 traitorObj.Color = Colors.Syndicate;
                 traitorObj.Objective = Role.SyndicateWinCon;
@@ -102,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             }
 
             traitorObj.former = traitorRole;
-            traitorObj.Side2 = traitorRole.Faction;
+            traitorObj.Side = traitorRole.Faction;
             traitorObj.Turned = true;
             traitor.RegenTask();
 
@@ -120,7 +116,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = traitor.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = AssetManager.Arrow;
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     snitchAbility.ImpArrows.Add(arrow);
@@ -137,7 +133,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = traitor.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = AssetManager.Arrow;
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     revealerRole.ImpArrows.Add(arrow);

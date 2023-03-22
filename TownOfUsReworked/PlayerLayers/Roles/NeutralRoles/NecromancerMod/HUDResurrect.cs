@@ -22,11 +22,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 role.KillButton = Utils.InstantiateButton();
 
             role.ResurrectButton.UpdateButton(role, "RESURRECT", role.ResurrectTimer(), CustomGameOptions.ResurrectCooldown + (CustomGameOptions.ResurrectCooldownIncrease *
-                role.ResurrectedCount), TownOfUsReworked.RessurectSprite, AbilityTypes.Dead, null, role.ResurrectButtonUsable, true, role.IsResurrecting, role.TimeRemaining, 
+                role.ResurrectedCount), AssetManager.Ressurect, AbilityTypes.Dead, "ActionSecondary", null, role.ResurrectButtonUsable, true, role.IsResurrecting, role.TimeRemaining, 
                 CustomGameOptions.NecroResurrectDuration, role.ResurrectButtonUsable, role.ResurrectUsesLeft);
 
             role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.NecroKillCooldown + (CustomGameOptions.NecroKillCooldownIncrease * role.KillCount),
-                TownOfUsReworked.IntruderKill, AbilityTypes.Direct, null, true, role.KillUsesLeft, role.KillButtonUsable);
+                AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null, true, role.KillUsesLeft, role.KillButtonUsable);
         }
     }
 }

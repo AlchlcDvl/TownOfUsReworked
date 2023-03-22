@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
             if (role.AssaultButton == null)
                 role.AssaultButton = Utils.InstantiateButton();
 
-            role.AssaultButton.UpdateButton(role, "ASSAULT", role.KillTimer(), CustomGameOptions.JuggKillCooldown, TownOfUsReworked.AssaultSprite, AbilityTypes.Direct);
+            role.AssaultButton.UpdateButton(role, "ASSAULT", role.KillTimer(), CustomGameOptions.JuggKillCooldown, AssetManager.Assault, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

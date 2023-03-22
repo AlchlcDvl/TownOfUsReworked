@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.FixButton)
             {
                 if (!Utils.ButtonUsable(role.FixButton))

@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastMediated;
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
-        public static Sprite Arrow => TownOfUsReworked.Arrow;
         public AbilityButton MediateButton;
         
         public Medium(PlayerControl player) : base(player)
@@ -26,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MediatedPlayers = new Dictionary<byte, ArrowBehaviour>();
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            RoleDescription = "You are a Medium! You can mediate the dead, which reveals the spirits of the dead to you! Use their movements and information to find the evils!";
             InspectorResults = InspectorResults.DifferentLens;
         }
 
@@ -52,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = Arrow;
+                renderer.sprite = AssetManager.Arrow;
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;

@@ -19,14 +19,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             if (role.MorphButton == null)
                 role.MorphButton = Utils.InstantiateButton();
 
-            role.MorphButton.UpdateButton(role, "MORPH", role.MorphTimer(), CustomGameOptions.MorphlingCd, TownOfUsReworked.MorphSprite, AbilityTypes.Effect, role.Morphed,
+            role.MorphButton.UpdateButton(role, "MORPH", role.MorphTimer(), CustomGameOptions.MorphlingCd, AssetManager.Morph, AbilityTypes.Effect, "Secondary", role.Morphed,
                 role.TimeRemaining, CustomGameOptions.MorphlingDuration, role.SampledPlayer != null, !role.Morphed);
 
             if (role.SampleButton == null)
                 role.SampleButton = Utils.InstantiateButton();
 
             var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => role.SampledPlayer?.PlayerId != x.PlayerId).ToList();
-            role.SampleButton.UpdateButton(role, "SAMPLE", role.SampleTimer(), CustomGameOptions.SampleCooldown, TownOfUsReworked.SampleSprite, AbilityTypes.Direct, notSampled);
+            role.SampleButton.UpdateButton(role, "SAMPLE", role.SampleTimer(), CustomGameOptions.SampleCooldown, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", notSampled);
         }
     }
 }

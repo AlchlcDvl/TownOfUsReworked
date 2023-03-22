@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- You cannot call meetings.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Shy : Colors.Modifier;
             ModifierType = ModifierEnum.Shy;
-            ModifierDescription = "You are Shy! You are often have stage fright during meetings, so you cannot muster up the courage to call a meeting!";
         }
     }
 }

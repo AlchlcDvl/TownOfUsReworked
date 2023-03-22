@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
             if (role.ProtectButton == null)
                 role.ProtectButton = Utils.InstantiateButton();
             
-            role.ProtectButton.UpdateButton(role, "PROTECT", role.ProtectTimer(), CustomGameOptions.ProtectCd, TownOfUsReworked.ProtectSprite, AbilityTypes.Effect, null,
+            role.ProtectButton.UpdateButton(role, "PROTECT", role.ProtectTimer(), CustomGameOptions.ProtectCd, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", null,
                 role.ButtonUsable && role.TargetAlive, !role.Protecting, role.Protecting, role.TimeRemaining, CustomGameOptions.ProtectDuration, role.ButtonUsable, role.UsesLeft,
                 CustomGameOptions.ProtectBeyondTheGrave);
 

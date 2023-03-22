@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.ReviveButton)
             {
                 if (!Utils.ButtonUsable(role.ReviveButton))

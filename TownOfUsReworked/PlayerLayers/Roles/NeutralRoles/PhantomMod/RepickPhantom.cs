@@ -23,13 +23,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             if (toChooseFrom.Count == 0)
                 return;
 
-            var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
-            var pc = toChooseFrom[rand];
+            var hasWon = true;
 
-            SetPhantom.WillBePhantom = pc;
+            while (hasWon)
+            {
+                var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
+                var pc = toChooseFrom[rand];
+                SetPhantom.WillBePhantom = pc;
+
+                var role = Role.GetRole(pc);
+
+                if (role.Is(RoleEnum.Troll))
+                    hasWon = ((Troll)role).Killed;
+                else if (role.Is(RoleEnum.Jester))
+                    hasWon = ((Jester)role).VotedOut;
+                else if (role.Is(RoleEnum.Executioner))
+                    hasWon = ((Executioner)role).TargetVotedOut;
+                else if (role.Is(RoleEnum.BountyHunter))
+                    hasWon = ((BountyHunter)role).TargetKilled;
+                else if (role.Is(RoleEnum.Cannibal))
+                    hasWon = ((Cannibal)role).EatWin;
+                else if (role.Is(RoleEnum.Guesser))
+                    hasWon = ((Guesser)role).TargetGuessed;
+                else if (role.Is(RoleEnum.Actor))
+                    hasWon = ((Actor)role).Guessed;
+                else
+                    hasWon = false;
+            }
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
-            writer.Write(pc.PlayerId);
+            writer.Write(SetPhantom.WillBePhantom.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
     }

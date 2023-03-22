@@ -47,7 +47,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         private static void UsePlateforRpc(MovingPlatformBehaviour Plateform, bool isLeft)
         {
-            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.None, -1);
+            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.None);
             messageWriter.Write(isLeft);
             AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
             Coroutines.Start(UsePlatform(Plateform, isLeft));
@@ -60,8 +60,8 @@ namespace TownOfUsReworked.BetterMaps.Airship
             Plateform.transform.localPosition = (Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition);
             Plateform.IsDirty = true;
 
-            Vector3 sourcePos = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
-            Vector3 targetPos = (!Plateform.IsLeft) ? Plateform.LeftPosition : Plateform.RightPosition;
+            var sourcePos = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
+            var targetPos = (!Plateform.IsLeft) ? Plateform.LeftPosition : Plateform.RightPosition;
             yield return Effects.Wait(0.1f);
 
             yield return Effects.Slide3D(Plateform.transform, sourcePos, targetPos, PlayerControl.LocalPlayer.MyPhysics.Speed);
@@ -80,16 +80,16 @@ namespace TownOfUsReworked.BetterMaps.Airship
         public static bool Prefix(ref float __result, PlatformConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo pc, [HarmonyArgument(1)] out bool canUse, [HarmonyArgument(2)]
             out bool couldUse)
         {
-            float num = float.MaxValue;
-            PlayerControl @object = pc.Object;
+            var num = float.MaxValue;
+            var @object = pc.Object;
             couldUse = (!CallPlateform.PlateformIsUsed && !pc.IsDead && @object.CanMove && !__instance.Platform.InUse && Vector2.Distance(__instance.Platform.transform.position,
                 __instance.transform.position) < 2f);
             canUse = couldUse;
 
             if (canUse)
             {
-                Vector2 truePosition = @object.GetTruePosition();
-                Vector3 position = __instance.transform.position;
+                var truePosition = @object.GetTruePosition();
+                var position = __instance.transform.position;
                 num = Vector2.Distance(truePosition, position);
                 canUse &= (num <= __instance.UsableDistance && !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShipOnlyMask, false));
             }

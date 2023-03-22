@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             if (role.StealButton == null)
                 role.StealButton = Utils.InstantiateButton();
 
-            role.StealButton.UpdateButton(role, "STEAL", role.KillTimer(), CustomGameOptions.ThiefKillCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.StealButton.UpdateButton(role, "STEAL", role.KillTimer(), CustomGameOptions.ThiefKillCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             if (objectifier == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
@@ -29,7 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            //SoundManager.Instance.PlaySound(TownOfUsReworked.TaskmasterWin, false, 0.3f);
         }
     }
 }

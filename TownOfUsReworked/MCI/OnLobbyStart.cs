@@ -16,8 +16,11 @@ namespace TownOfUsReworked.MCI
                 InstanceControl.clients.Clear();
                 InstanceControl.PlayerIdClientId.Clear();
 
-                for (int i = 0; i < count; i++)
-                    MCIUtils.CreatePlayerInstance();
+                if (TownOfUsReworked.Persistence)
+                {
+                    for (int i = 0; i < count; i++)
+                        MCIUtils.CreatePlayerInstance();
+                }
             }
         }
     }

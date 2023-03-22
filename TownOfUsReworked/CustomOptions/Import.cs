@@ -19,18 +19,12 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new List<CustomButtonOption>();
 
-        protected internal Import(int id) : base(id, MultiMenu.main, "Load Custom Settings")
-        {
-            Do = ToDo;
-        }
+        protected internal Import(int id) : base(id, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
-
             var togglePrefab = Object.FindObjectOfType<ToggleOption>();
-            var numberPrefab = Object.FindObjectOfType<NumberOption>();
-            var stringPrefab = Object.FindObjectOfType<StringOption>();
 
             foreach (var button in SlotButtons)
             {
@@ -41,10 +35,9 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
+                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-
                     button.Setting = toggle;
                     button.OptionCreated();
                     options.Add(toggle);
@@ -165,7 +158,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
             }
 
-            Rpc.SendRpc();
+            RPC.SendRPC();
             Cancel(FlashGreen);
         }
 

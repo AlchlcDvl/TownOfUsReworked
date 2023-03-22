@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You can call a button from anywhere.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
-            AbilityDescription = "You are a Button Barry! You are paranoid of those around you and can call a meeting from anywhere at the cost of your vision!";
         }
 
         public float StartTimer()

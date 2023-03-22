@@ -34,10 +34,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             [HarmonyPrefix]
             [HarmonyPatch]
-            public static void Prefix(ShipStatus __instance)
-            {
-                ApplyChanges(__instance);
-            }
+            public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
@@ -45,10 +42,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             [HarmonyPrefix]
             [HarmonyPatch]
-            public static void Prefix(ShipStatus __instance)
-            {
-                ApplyChanges(__instance);
-            }
+            public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]

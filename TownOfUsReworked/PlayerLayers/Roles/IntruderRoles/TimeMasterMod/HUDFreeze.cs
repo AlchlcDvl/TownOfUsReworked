@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             if (role.FreezeButton == null)
                 role.FreezeButton = Utils.InstantiateButton();
 
-            role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, TownOfUsReworked.TimeFreezeSprite, AbilityTypes.Effect,
-                null, true, !role.Frozen, role.Frozen, role.TimeRemaining, CustomGameOptions.FreezeDuration);
+            role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, AssetManager.TimeFreeze, AbilityTypes.Effect, "Secondary", role.Frozen,
+                role.TimeRemaining, CustomGameOptions.FreezeDuration, true, !role.Frozen);
         }
     }
 }

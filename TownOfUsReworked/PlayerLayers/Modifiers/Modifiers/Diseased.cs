@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Diseased : Colors.Modifier;
             ModifierType = ModifierEnum.Diseased;
             Hidden = !CustomGameOptions.DiseasedKnows;
-            ModifierDescription = "You are Diseased! When you are killed, you pass on your sickness to your killer, causing them to have an increased cooldown!";
         }
     }
 }

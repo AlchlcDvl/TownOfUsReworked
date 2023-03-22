@@ -1,44 +1,36 @@
 Changelog
-- Update: Updated to v2023.2.28
-- Addition: New colors
-- Addition: Better sabotages
-- Addition: Some more settings for game customisation
-- Addition: Version control - Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby
-- Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions
-- Improvement: Camouflages are now a little more fun now
-- Improvement: Ability uses now appear a little differently than how they used to originally
-- Buff: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)
-- Nerf: Retributionist can only use a dead player once
-- Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles
-- Critical Fix: Fixed All Any nulling roles when not a single role is turned on
-- Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode
-- Critical Fix: Roleblocks actually work now!
-- Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities
-- Vanilla Fix: Fixed Report button being visible in lobby
-- Visual Fix: Fixed footprints sometimes being stupidly small
-- Visual Fix: Corrected some more color names
-- Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored
-- Visual Fix: Fixed kill buttons not having text
-- Visual Fix: Fixed all nks winning not having a win screen
-- Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side
-- Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown
-- Role Fix: Fixed Retributionist being unable to use a Mystic or Seer
-- Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on
-- Role Fix: Fixed Retributionist unable to interact sometimes
-- Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld
-- Role Fix: Fixed Time Master's time freeze not stopping
-- Role Fix: Fixed Drunkard's invert controls staying inverted forever
-- Role Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active
-- Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right
-- Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates
-- Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works
-- Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win
-- Objectifier Fix: Fixed the bug where alive Overlords did not win together
-- Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in
-- Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions
-- Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation
-- Code Change: Player HUDs were redone again
-- Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little
-- Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh
-- Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates
-- Removed: Lighter ability
+- New Role: Ambusher [Intruder (Killing)]
+- New Role: Crusader [Syndicate (Killing)]
+- New Role: Ghoul [Intruder (Utility)]
+- New Role: Beamer [Syndicate (Support)]
+- New Role: Banshee [Syndicate (Utility)]
+- New Role: Betrayer [Neutral (Proselyte)]
+- Addition: New keybind settings
+- Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)
+- Addition: Added setting pages for easier browsing while in lobby
+- Addition: Added a semi functioning profanity filter to the /setname chat command
+- Update: Merged features from v4.0.3 of Town Of Us
+- Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels
+- Critical Fix: Fixed Crew roles not spawning under certain conditions
+- Visual Fix: All buttons now have consistent fonts
+- Visual Fix: Fixed the Report button lighting up incorrectly
+- Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up
+- Bug Fix: Fixed Button Barry being unable to spawn
+- Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up
+- Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound
+- Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively
+- Role Fix: Fixed Executioner being unable to doom players
+- Role Fix: Fixed Glitch being unable to mimic players
+- Role Fix: Fixed Arsonist breaking the game
+- Role Fix: Fixed Transporter's button not lighting up or working properly
+- Role Fix: Fixed Guardian Angels randomly bugging out
+- Role Fix: Fixed winning Neutrals becoming Phantom when they are the first dead neutral
+- Role Fix: Fixed the limits on Necromancer not decreasing properly
+- Role Fix: Fixed Godfather-Undertaker being unable to drag bodies
+- Role Fix: Fixed Revealer and Phantom being unable to leave vents
+- Role Fix: Fixed Phantom and Revealer clicking themselves into losing
+- Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities
+- Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks
+- Role Fix: Fixed Rebel-Poisoner from not being able to poison players
+- Removed: Vanilla setting tabs since their options have been moved into custom settings
+- Removed: BepInEx updater because...just no

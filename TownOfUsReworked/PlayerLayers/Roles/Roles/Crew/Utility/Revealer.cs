@@ -27,8 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ImpArrows = new List<ArrowBehaviour>();
             RevealerTargets = new List<PlayerControl>();
             RevealerArrows = new List<ArrowBehaviour>();
-            RoleDescription = "You are now a Revealer! You are a ghostly apparition who wants revenge on the evildoers for killing you! Finish your tasks so that all living Crew are " + 
-                "notified of who's evil!";
             InspectorResults = InspectorResults.Ghostly;
         }
 

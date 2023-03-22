@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             if (role.CamouflageButton == null)
                 role.CamouflageButton = Utils.InstantiateButton();
 
-            role.CamouflageButton.UpdateButton(role, "CAMOUFLAGE", role.CamouflageTimer(), CustomGameOptions.CamouflagerCd, TownOfUsReworked.Camouflage, AbilityTypes.Effect,
+            role.CamouflageButton.UpdateButton(role, "CAMOUFLAGE", role.CamouflageTimer(), CustomGameOptions.CamouflagerCd, AssetManager.Camouflage, AbilityTypes.Effect, "Secondary",
                 null, true, !role.Camouflaged, role.Camouflaged, role.TimeRemaining, CustomGameOptions.CamouflagerDuration);
         }
     }

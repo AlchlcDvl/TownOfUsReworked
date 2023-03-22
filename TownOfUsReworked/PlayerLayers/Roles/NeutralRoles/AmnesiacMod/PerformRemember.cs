@@ -24,9 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.RememberButton)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
@@ -375,7 +372,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             }
 
             if (amnesiac.Is(Faction.Intruder) || (amnesiac.Is(Faction.Syndicate) && CustomGameOptions.AltImps))
-                amnesiac.Data.RoleType = RoleTypes.Impostor;
+                amnesiac.Data.Role.TeamType = RoleTeamTypes.Impostor;
 
             if ((amnesiac.Is(Faction.Intruder) || amnesiac.Is(Faction.Syndicate)) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
             {
@@ -390,7 +387,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = TownOfUsReworked.Arrow;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(amnesiac.PlayerId, arrow);
@@ -401,7 +398,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = TownOfUsReworked.Arrow;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.ImpArrows.Add(arrow);

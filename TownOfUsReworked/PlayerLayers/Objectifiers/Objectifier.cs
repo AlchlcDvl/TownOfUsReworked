@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using Hazel;
 using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
-    public abstract class Objectifier
+    public class Objectifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
         public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
 
-        protected Objectifier(PlayerControl player)
+        protected Objectifier(PlayerControl player) : base(player)
         {
             Player = player;
 
@@ -23,39 +21,17 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 ObjectifierDictionary.Remove(player.PlayerId);
 
             ObjectifierDictionary.Add(player.PlayerId, this);
+            Color = Colors.Objectifier;
         }
 
-        protected internal Color Color { get; set; } = Colors.Objectifier;
-        protected internal ObjectifierEnum ObjectifierType { get; set; } = ObjectifierEnum.None;
-        protected internal string Name { get; set; } = "Objectifierless";
-        protected internal string SymbolName { get; set; } = ":";
-        protected internal string ObjectifierDescription { get; set; } = "You are an objectifier!";
-        protected internal string TaskText { get; set; } = "- None.";
-        protected internal bool Hidden { get; set; } = false;
+        protected internal ObjectifierEnum ObjectifierType = ObjectifierEnum.None;
+        protected internal string SymbolName = ":";
+        protected internal string TaskText = "- None.";
+        protected internal bool Hidden = false;
 
         protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
-        public string PlayerName { get; set; }
-        private PlayerControl _player { get; set; }
-
-        public PlayerControl Player
-        {
-            get => _player;
-            set
-            {
-                if (_player != null)
-                    _player.NameText().color = Color.white;
-
-                _player = value;
-                PlayerName = value.Data.PlayerName;
-            }
-        }
-
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
-
         private bool Equals(Objectifier other) => Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
-
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public override bool Equals(object obj)
         {

@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
             if (role.ObliterateButton == null)
                 role.ObliterateButton = Utils.InstantiateButton();
 
-            role.ObliterateButton.UpdateButton(role, "OBLITERATE", role.KillTimer(), CustomGameOptions.PestKillCd, TownOfUsReworked.ObliterateSprite, AbilityTypes.Direct);
+            role.ObliterateButton.UpdateButton(role, "OBLITERATE", role.KillTimer(), CustomGameOptions.PestKillCd, AssetManager.Obliterate, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

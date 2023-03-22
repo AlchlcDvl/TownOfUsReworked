@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
                 role.HauntButton = Utils.InstantiateButton();
 
             var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => role.ToHaunt.Contains(x.PlayerId)).ToList();
-            role.HauntButton.UpdateButton(role, "HAUNT", role.HauntTimer(), CustomGameOptions.HauntCooldown, TownOfUsReworked.HauntSprite, AbilityTypes.Direct, ToBeHaunted, 
+            role.HauntButton.UpdateButton(role, "HAUNT", role.HauntTimer(), CustomGameOptions.HauntCooldown, AssetManager.Haunt, AbilityTypes.Direct, "ActionSecondary", ToBeHaunted, 
                 !role.HasHaunted && role.CanHaunt, role.CanHaunt, false, 0, 1, true, role.MaxUses, true);
         }
     }

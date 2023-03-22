@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                 role.GazeButton = Utils.InstantiateButton();
 
             var notGazed = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && !role.Gazed.Contains(x.PlayerId)).ToList();
-            role.GazeButton.UpdateButton(role, "GAZE", role.GazeTimer(), CustomGameOptions.GazeCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, notGazed);
+            role.GazeButton.UpdateButton(role, "GAZE", role.GazeTimer(), CustomGameOptions.GazeCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", notGazed);
 
             foreach (var id in role.Gazed)
             {

@@ -22,9 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 
             var role = Role.GetRole<BountyHunter>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.GuessButton)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))

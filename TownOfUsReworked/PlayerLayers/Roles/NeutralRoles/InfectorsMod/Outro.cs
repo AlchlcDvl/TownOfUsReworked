@@ -11,13 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Plaguebearer && ((Plaguebearer)x).PlaguebearerWins) ||
-                (x.RoleType == RoleEnum.Pestilence && ((Pestilence)x).PestilenceWins));
+            var role = Role.AllRoles.FirstOrDefault(x => (x.RoleType == RoleEnum.Plaguebearer|| x.RoleType == RoleEnum.Pestilence) && Role.InfectorsWin);
 
             if (role == null)
                 return;
 
-            PoolablePlayer[] array = Object.FindObjectsOfType<PoolablePlayer>();
+            var array = Object.FindObjectsOfType<PoolablePlayer>();
 
             foreach (var player in array)
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);

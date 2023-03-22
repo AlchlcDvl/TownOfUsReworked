@@ -1,20 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using Hazel;
-using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
-    public abstract class Modifier
+    public class Modifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Modifier> ModifierDictionary = new Dictionary<byte, Modifier>();
+        public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
 
-        protected Modifier(PlayerControl player)
+        protected Modifier(PlayerControl player) : base(player)
         {
             Player = player;
 
@@ -22,33 +20,12 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
                 ModifierDictionary.Remove(player.PlayerId);
 
             ModifierDictionary.Add(player.PlayerId, this);
+            Color = Colors.Modifier;
         }
 
-        public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
-
-        protected internal Color Color { get; set; } = Colors.Modifier;
-        protected internal ModifierEnum ModifierType { get; set; } = ModifierEnum.None;
-        protected internal string Name { get; set; } = "Modifierless";
-        protected internal string ModifierDescription { get; set; } = "You are a modifier!";
-        protected internal string TaskText { get; set; } = "- None";
-        protected internal bool Hidden { get; set; } = false;
-
-        public string PlayerName { get; set; }
-        private PlayerControl _player { get; set; }
-
-        public PlayerControl Player
-        {
-            get => _player;
-            set
-            {
-                if (_player != null) _player.NameText().color = Color.white;
-
-                _player = value;
-                PlayerName = value.Data.PlayerName;
-            }
-        }
-
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+        protected internal ModifierEnum ModifierType = ModifierEnum.None;
+        protected internal string TaskText = "- None";
+        protected internal bool Hidden = false;
 
         private bool Equals(Modifier other) => Equals(Player, other.Player) && ModifierType == other.ModifierType;
 

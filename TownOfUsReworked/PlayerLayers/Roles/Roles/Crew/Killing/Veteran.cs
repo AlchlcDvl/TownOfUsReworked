@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.MaxAlerts;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;
-            RoleDescription = "You are a Veteran! You are a paranoid war hero who can kill whoever dares to come close! Surprise the evils with your capabilities!";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 

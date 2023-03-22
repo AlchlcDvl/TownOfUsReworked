@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
             if (role.BlockButton == null)
                 role.BlockButton = Utils.InstantiateButton();
 
-            role.BlockButton.UpdateButton(role, "BLOCK", role.RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, null,
-                true, !role.Blocking, role.Blocking, role.TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+            role.BlockButton.UpdateButton(role, "BLOCK", role.RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, AssetManager.EscortRoleblock, AbilityTypes.Direct, "ActionSecondary",
+                null, true, !role.Blocking, role.Blocking, role.TimeRemaining, CustomGameOptions.EscRoleblockDuration);
         }
     }
 }

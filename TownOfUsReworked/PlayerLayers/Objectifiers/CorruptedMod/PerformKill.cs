@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 
             var objectifier = Objectifier.GetObjectifier<Corrupted>(PlayerControl.LocalPlayer);
 
-            if (objectifier.Player.IsBlocked())
-                return false;
-
             if (__instance == objectifier.KillButton)
             {
                 if (!Utils.ButtonUsable(objectifier.KillButton))

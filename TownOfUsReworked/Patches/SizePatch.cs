@@ -9,7 +9,6 @@ namespace TownOfUsReworked.Patches
     public static class SizePatch
     {
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        [HarmonyPostfix]
         public static void Postfix(HudManager __instance)
         {
             if (GameStates.IsLobby)

@@ -13,8 +13,8 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        public static Sprite LighterSprite => TownOfUsReworked.LighterSprite;
-        public static Sprite DarkerSprite => TownOfUsReworked.DarkerSprite;
+        public static Sprite LighterSprite => AssetManager.Lighter;
+        public static Sprite DarkerSprite => AssetManager.Darker;
 
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
@@ -68,6 +68,9 @@ namespace TownOfUsReworked.Patches
                 foreach (var voteArea in __instance.playerStates)
                     GenButton(voteArea);
             }
+
+            foreach (var player in PlayerControl.AllPlayerControls)
+                player.RegenTask();
         }
     }
 }

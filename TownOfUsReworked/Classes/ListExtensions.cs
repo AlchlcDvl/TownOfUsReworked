@@ -74,5 +74,14 @@ namespace TownOfUsReworked.Classes
             var index = list.IndexOf(item1);
             list[index] = item2;
         }
+
+        public static void RemoveRange<T>(this System.Collections.Generic.List<T> list, System.Collections.Generic.List<T> list2)
+        {
+            foreach (var item in list2)
+            {
+                if (list.Contains(item))
+                    list.Remove(item);
+            }
+        }
     }
 }

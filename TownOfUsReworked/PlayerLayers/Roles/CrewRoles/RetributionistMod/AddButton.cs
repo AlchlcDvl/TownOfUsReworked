@@ -12,9 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        private static Sprite ActiveSprite => TownOfUsReworked.MeetingPlaceholder;
-        public static Sprite DisabledSprite => TownOfUsReworked.MeetingPlaceholder;
-
         public static void GenButton(Retributionist role, int index, bool canRevive)
         {
             if (!canRevive)
@@ -30,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             var renderer = newButton.GetComponent<SpriteRenderer>();
             var passive = newButton.GetComponent<PassiveButton>();
 
-            renderer.sprite = DisabledSprite;
+            renderer.sprite = AssetManager.SwapperSwitchDisabled;
             newButton.transform.position = confirmButton.transform.position - new Vector3(-0.95f, 0.03f, -1.3f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
@@ -46,10 +43,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         {
             void Listener()
             {
-                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == DisabledSprite)
-                    return;
+                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
+                {
+                    int active = 0;
 
-                role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? DisabledSprite : ActiveSprite;
+                    for (var i = 0; i < role.ListOfActives.Count; i++)
+                    {
+                        if (role.ListOfActives[i])
+                            active = i;
+                    }
+
+                    role.OtherButtons[active].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[active] ? AssetManager.SwapperSwitchDisabled : AssetManager.SwapperSwitch;
+                    role.ListOfActives[active] = !role.ListOfActives[active];
+                }
+
+                role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? AssetManager.SwapperSwitchDisabled : AssetManager.SwapperSwitch;
                 role.ListOfActives[index] = !role.ListOfActives[index];
                 SetRevive.Imitate = null;
 

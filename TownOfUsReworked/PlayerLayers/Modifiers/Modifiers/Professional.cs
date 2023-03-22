@@ -15,8 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Professional : Colors.Modifier;
             ModifierType = ModifierEnum.Professional;
             Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
-            ModifierDescription = "You are a Professional! You are so good at your job at guessing that you are able to recover from a mistake! Be careful though, these kinds of " +
-                "mistakes can only happen once.";
         }
     }
 }

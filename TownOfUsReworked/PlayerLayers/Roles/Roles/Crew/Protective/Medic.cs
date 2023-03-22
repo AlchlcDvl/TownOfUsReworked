@@ -24,9 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ExShielded = null;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;
-            //IntroSound = "MedicIntro";
-            //SoundEnding = ".mp3";
-            RoleDescription = "Your are a Medic! You are an onboard doctor who can shield a player to stop them from dying! If they are attacked, you will be notified by default.";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
     }

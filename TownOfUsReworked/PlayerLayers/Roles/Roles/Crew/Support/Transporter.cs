@@ -42,8 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.TransportMaxUses;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            RoleDescription = "Your are a Transporter! You are an inventor who's created a machine that forcully warps the locations of 2 players! Use this to to whisk away" +
-                "high priority Crew!";
             InspectorResults = InspectorResults.LikesToExplore;
             UntransportablePlayers = new Dictionary<byte, DateTime>();
         }
@@ -76,6 +74,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (body.ParentId == TP1.PlayerId)
                         Player1Body = body;
                 }
+
+                if (Player1Body == null)
+                    yield break;
             }
 
             if (TP2.Data.IsDead)
@@ -85,6 +86,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (body.ParentId == TP2.PlayerId)
                         Player2Body = body;
                 }
+
+                if (Player2Body == null)
+                    yield break;
             }
 
             if (TP1.inVent && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)

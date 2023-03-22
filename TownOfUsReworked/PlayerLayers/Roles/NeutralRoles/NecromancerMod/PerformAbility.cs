@@ -16,14 +16,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Necromancer))
                 return true;
 
+            if (!Utils.ButtonUsable(__instance))
+                return false;
+
             var role = Role.GetRole<Necromancer>(PlayerControl.LocalPlayer);
 
             if (__instance == role.ResurrectButton)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
-                    return false;
-
-                if (!Utils.ButtonUsable(__instance))
                     return false;
 
                 var playerId = role.CurrentTarget.ParentId;
@@ -36,6 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);        
                 Coroutines.Start(Coroutine.NecromancerResurrect(role.CurrentTarget, role));
                 role.ResurrectedCount++;
+                role.ResurrectUsesLeft--;
                 role.TimeRemaining = CustomGameOptions.NecroResurrectDuration;
                 role.Resurrect();
 
@@ -46,9 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             }
             else if (__instance == role.KillButton)
             {
-                if (!Utils.ButtonUsable(__instance))
-                    return false;
-
                 if (role.KillTimer() != 0f)
                     return false;
 
@@ -58,7 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
                 if (interact[3] == true)
+                {
                     role.KillCount++;
+                    role.KillUsesLeft--;
+                }
                 
                 if (interact[0] == true)
                 {

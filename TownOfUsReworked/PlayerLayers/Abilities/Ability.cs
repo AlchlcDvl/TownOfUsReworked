@@ -9,11 +9,12 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
-    public abstract class Ability
+    public class Ability : PlayerLayer
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
+        public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
 
-        protected Ability(PlayerControl player)
+        protected Ability(PlayerControl player) : base(player)
         {
             Player = player;
 
@@ -21,34 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 AbilityDictionary.Remove(player.PlayerId);
 
             AbilityDictionary.Add(player.PlayerId, this);
+            Color = Colors.Ability;
         }
 
-        public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
-
-        protected internal string Name { get; set; }
-        protected internal string AbilityDescription { get; set; }
-        protected internal string TaskText { get; set; }
-        protected internal Color Color { get; set; }
-        protected internal AbilityEnum AbilityType { get; set; }
-        protected internal bool Hidden { get; set; } = false;
-
-        private PlayerControl _player { get; set; }
-        public string PlayerName { get; set; }
-
-        public PlayerControl Player
-        {
-            get => _player;
-            set
-            {
-                if (_player != null)
-                    _player.NameText().color = new Color32(255, 255, 255, 255);
-                
-                _player = value;
-                PlayerName = value.Data.PlayerName;
-            }
-        }
-        
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+        protected internal string TaskText;
+        protected internal AbilityEnum AbilityType;
+        protected internal bool Hidden = false;
 
         private bool Equals(Ability other) => Equals(Player, other.Player) && AbilityType == other.AbilityType;
 

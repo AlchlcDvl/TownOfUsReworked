@@ -7,11 +7,9 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
     internal sealed class Hauntpatch
     {
-        [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
-        [HarmonyPrefix]
         public static bool Prefix(HauntMenuMinigame __instance)
         {
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)

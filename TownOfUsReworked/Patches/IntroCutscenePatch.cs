@@ -69,12 +69,6 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.RoleBlurbText.color = role.Color;
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
 
-                    if (role.IntroSound != "")
-                    {
-                        SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
-                        //SoundEffectsManager.Play(role.IntroSound, role.SoundEnding);
-                    }
-
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
                         PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
                         (CustomGameOptions.CustomNeutColors && PlayerControl.LocalPlayer.Is(Faction.Neutral)));
@@ -185,10 +179,11 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.RoleBlurbText.text = role.StartText;
                     __instance.__4__this.RoleBlurbText.color = role.Color;
 
-                    if (role.IntroSound != "")
+                    if (AssetManager.Sounds.Contains(role.IntroSound) && !role.IntroPlayed)
                     {
                         SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
-                        //SoundEffectsManager.Play(role.IntroSound, role.SoundEnding);
+                        AssetManager.Play(role.IntroSound);
+                        role.IntroPlayed = true;
                     }
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&

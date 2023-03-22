@@ -10,12 +10,6 @@ namespace TownOfUsReworked.Patches
     {
         public static int CurrentHistorySelection = -1;
 
-        public static void Prefix()
-        {
-            if (AmongUsClient.Instance.AmHost && DataManager.Settings.multiplayer.ChatMode == InnerNet.QuickChatModes.QuickChatOnly)
-                DataManager.Settings.multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
-        }
-
         public static void Postfix(ChatController __instance)
         {
             if (!__instance.TextArea.hasFocus)

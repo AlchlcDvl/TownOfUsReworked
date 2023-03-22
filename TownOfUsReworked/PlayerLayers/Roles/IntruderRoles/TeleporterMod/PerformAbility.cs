@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 
             var role = Role.GetRole<Teleporter>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.MarkButton)
             {
                 if (!role.CanMark)

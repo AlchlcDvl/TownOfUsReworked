@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
             if (role.AlertButton == null)
                 role.AlertButton = Utils.InstantiateButton();
 
-            role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, TownOfUsReworked.AlertSprite, AbilityTypes.Effect, null,
-                role.ButtonUsable, role.ButtonUsable && !role.OnAlert, role.OnAlert, role.TimeRemaining, CustomGameOptions.AlertDuration, true, role.UsesLeft);
+            role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", null, role.ButtonUsable,
+                role.ButtonUsable && !role.OnAlert, role.OnAlert, role.TimeRemaining, CustomGameOptions.AlertDuration, true, role.UsesLeft);
         }
     }
 }

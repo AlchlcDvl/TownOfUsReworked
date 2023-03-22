@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TMPro;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
@@ -24,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             }
         }
 
-        public static void UpdateBlips(CounterArea area, List<int> colorMapping)
+        public static void UpdateBlips(CounterArea area, List<int> colorMapping, bool isAgent)
         {
             area.UpdateCount(colorMapping.Count);
             var icons = area.myIcons.ToArray();
@@ -44,7 +45,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     sprite.color = Color.grey;
 
                 if (sprite != null)
-                    PlayerMaterial.SetColors(colorMapping[i], sprite);
+                {
+                    if (isAgent)
+                        PlayerMaterial.SetColors(colorMapping[i], sprite);
+                    else
+                        PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
+                }
                 
                 if (text != null)
                 {
@@ -55,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     //Show second row numbers above player icons
                     //Show all icons on player icons when there are three rows
 
-                    if(useCompactText)
+                    if (useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);
                     else if (i / area.MaxWidth == 0)
                         text.transform.localPosition = new Vector3(0, -area.YOffset, -20);
@@ -65,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             }
         }
 
-        public static void UpdateBlips(MapCountOverlay __instance)
+        public static void UpdateBlips(MapCountOverlay __instance, bool isAgent)
         {
             var rooms = ShipStatus.Instance.FastRooms;
 
@@ -86,30 +92,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 {
                     var collider = __instance.buffer[i];
 
-                    if (collider.tag == "DeadBody")
+                    var player = collider.GetComponent<PlayerControl>();
+                    var data = player?.Data;
+
+                    if (collider.tag == "DeadBody" && ((isAgent && CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Agent) || (!isAgent && CustomGameOptions.WhoSeesDead ==
+                        AdminDeadPlayers.EveryoneButAgent) || CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Everyone || (PlayerControl.LocalPlayer.Data.IsDead &&
+                        CustomGameOptions.DeadSeeEverything)))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
                         colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
                         continue;
                     }
 
-                    var player = collider.GetComponent<PlayerControl>();
-                    var data = player?.Data;
-
-                    if (data != null && !data.Disconnected && !data.IsDead)
+                    if (data != null && !data.Disconnected && !data.IsDead && !colorMap.Contains(data.DefaultOutfit.ColorId))
                         colorMap.Add(data.DefaultOutfit.ColorId);
                 }
                 
-                UpdateBlips(area, colorMap);
+                UpdateBlips(area, colorMap, isAgent);
             }
         }
 
         public static bool Prefix(MapCountOverlay __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
+            var isAgent = localPlayer.Is(RoleEnum.Agent) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
 
-            if (!localPlayer.Is(RoleEnum.Agent))
-                return true;
+            if (!isAgent)
+            {
+                var isRet = localPlayer.Is(RoleEnum.Retributionist);
+
+                if (isRet)
+                {
+                    var retRole = Role.GetRole<Retributionist>(localPlayer);
+                    isAgent = retRole.RevivedRole?.RoleType == RoleEnum.Agent;
+                }
+            }
 
             __instance.timer += Time.deltaTime;
 
@@ -123,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 SetSabotaged(__instance, sabotaged);
 
             if (!sabotaged)
-                UpdateBlips(__instance);
+                UpdateBlips(__instance, isAgent);
             
             return false;
         }

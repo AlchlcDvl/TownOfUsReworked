@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public bool PestilenceWins;
         public AbilityButton ObliterateButton;
 
         public Pestilence(PlayerControl owner) : base(owner)

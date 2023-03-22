@@ -13,8 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
     public class PerformSteal
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-        
         public static bool Prefix(AbilityButton __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Thief))
@@ -294,7 +292,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = Sprite;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(thief.PlayerId, arrow);
@@ -305,7 +303,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = Sprite;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitchRole.ImpArrows.Add(arrow);

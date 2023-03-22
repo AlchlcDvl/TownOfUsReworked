@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
             AlignmentName = IK;
-            RoleDescription = "You are a Ambusher! You are a patient killer who can strike at any given moment! Kill as many people as possible using your skill and dominate the game!";
             InspectorResults = InspectorResults.TracksOthers;
         }
 

@@ -21,9 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 
             var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.DragButton)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
@@ -54,7 +51,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                     else
                         position.z = -0.0273f;
                 }
-                
+
+                position.y -= 0.3636f;
                 writer.Write(position);
                 writer.Write(position.z);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

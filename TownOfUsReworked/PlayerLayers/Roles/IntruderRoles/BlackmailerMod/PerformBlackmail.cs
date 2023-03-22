@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
             var role = Role.GetRole<Blackmailer>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.BlackmailButton)
             {
                 if (!Utils.ButtonUsable(role.BlackmailButton))

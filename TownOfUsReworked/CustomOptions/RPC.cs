@@ -6,9 +6,9 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
-    public static class Rpc
+    public static class RPC
     {
-        public static void SendRpc(CustomOption optionn = null)
+        public static void SendRPC(CustomOption optionn = null)
         {
             List<CustomOption> options;
 
@@ -17,15 +17,18 @@ namespace TownOfUsReworked.CustomOptions
             else
                 options = CustomOption.AllOptions;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SyncCustomSettings, SendOption.Reliable);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable);
 
             foreach (var option in options)
             {
                 if (writer.Position > 1000)
                 {
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.SyncCustomSettings, SendOption.Reliable);
+                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable);
                 }
+
+                if (option.Type == CustomOptionType.Header)
+                    continue;
 
                 writer.Write(option.ID);
 
@@ -40,7 +43,7 @@ namespace TownOfUsReworked.CustomOptions
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        public static void ReceiveRpc(MessageReader reader)
+        public static void ReceiveRPC(MessageReader reader)
         {
             Utils.LogSomething("Options received:");
 

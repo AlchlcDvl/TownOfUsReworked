@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             if (!role.TargetPlayer.Data.IsDead && !role.TargetPlayer.Data.Disconnected)
                 return;
 
-            if (!role.TargetVotedOut && (role.TargetPlayer.Data.IsDead || role.TargetPlayer.Data.Disconnected) && !role.Player.Data.IsDead)
+            if (role.Failed && !role.Player.Data.IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnJest);
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
                     role.DoomButton = Utils.InstantiateButton();
 
                 var toBeDoomed = PlayerControl.AllPlayerControls.ToArray().Where(x => role.ToDoom.Contains(x.PlayerId)).ToList();
-                role.DoomButton.UpdateButton(role, "DOOM", role.DoomTimer(), CustomGameOptions.DoomCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, toBeDoomed,
+                role.DoomButton.UpdateButton(role, "DOOM", role.DoomTimer(), CustomGameOptions.DoomCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", toBeDoomed,
                     role.TargetVotedOut && role.CanDoom, role.CanDoom, false, 0, 1, true, role.MaxUses);
             }
         }

@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 
             var role = Role.GetRole<Transporter>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.TransportButton)
             {
                 if (!Utils.ButtonUsable(role.TransportButton))

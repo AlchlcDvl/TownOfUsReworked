@@ -21,8 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Altruist;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;
-            RoleDescription = "Your are an Altruist! You can revive a dead person if you find their body. Be careful though, because it takes time" +
-                " to revive someone and a meeting being called will kill both you and your target.";
             InspectorResults = InspectorResults.MeddlesWithDead;
         }
     }

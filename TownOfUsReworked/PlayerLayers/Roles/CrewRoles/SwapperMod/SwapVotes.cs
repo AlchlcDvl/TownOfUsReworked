@@ -41,15 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 Utils.LogSomething(Swap1 == null ? "null" : Swap1.ToString());
                 Utils.LogSomething(Swap2 == null ? "null" : Swap2.ToString());
 
-                if (!((Swap1 != null) & (Swap2 != null)))
-                    return;
-
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if ((player.Data.IsDead || player.Data.Disconnected) && player.Is(RoleEnum.Swapper))
-                        return;
-                }
-
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                 {
                     var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
@@ -57,6 +48,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     foreach (var button in swapper.MoarButtons.Where(button => button != null))
                         button.SetActive(false);
                 }
+                
+                if (Swap1 == null || Swap2 == null)
+                    return;
+
+                foreach (var swapper in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Swapper))
+                {
+                    if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
+                        return;
+                }
+
+                PlayerControl swapPlayer1 = null;
+                PlayerControl swapPlayer2 = null;
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.PlayerId == Swap1.TargetPlayerId)
+                        swapPlayer1 = player;
+
+                    if (player.PlayerId == Swap2.TargetPlayerId)
+                        swapPlayer2 = player;
+                }
+
+                if (swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
+                    return;
 
                 var pool1 = Swap1.PlayerIcon.transform;
                 var name1 = Swap1.NameText.transform;

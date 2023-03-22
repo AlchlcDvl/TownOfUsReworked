@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.VampireHunter;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = CA;
-            RoleDescription = "You are a Vampire Hunter! You are a vengeful priest on the hunt for the Undead! Use your expertise in the field and track down the Undead!";
             InspectorResults = InspectorResults.TracksOthers;
         }
 

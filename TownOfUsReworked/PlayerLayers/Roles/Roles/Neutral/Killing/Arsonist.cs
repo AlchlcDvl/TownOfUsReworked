@@ -13,14 +13,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton IgniteButton;
         public AbilityButton DouseButton;
-        public bool ArsonistWins = false;
         public bool LastKiller => PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))).ToList().Count() == 0;
         public PlayerControl ClosestPlayer = null;
-        public List<byte> DousedPlayers;
+        public List<byte> DousedPlayers = new List<byte>();
         public DateTime LastDoused;
         public DateTime LastIgnited;
-        public int DousedAlive => DousedPlayers.Count(x => Utils.PlayerById(x) != null && Utils.PlayerById(x).Data != null && !Utils.PlayerById(x).Data.IsDead);
+        public int DousedAlive => DousedPlayers.Count;
 
         public Arsonist(PlayerControl player) : base(player)
         {
@@ -32,9 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
-            RoleDescription = "You are an Arsonist! This means that you do not kill directly and instead, bide your time by dousing other players" +
-                " and igniting them later for mass murder. Be careful though, as you need be next to someone to ignite and if anyone sees you ignite," +
-                $" you are done for. There are currently {DousedAlive} players doused.";
             DousedPlayers = new List<byte>();
         }
 
@@ -66,8 +62,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Ignite()
         {
-            Utils.LogSomething("Ignite 1");
-
             foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
             {
                 var arso2 = (Arsonist)arso;
@@ -76,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var player = Utils.PlayerById(playerId);
 
-                    if (player == null || player.Data.Disconnected || player.Data.IsDead || player.Is(RoleEnum.Pestilence))
+                    if (player == null || player.Data.Disconnected || player.Data.IsDead || player.Is(RoleEnum.Pestilence) || player.IsProtected())
                         continue;
 
                     Utils.RpcMurderPlayer(Player, player, false);
@@ -84,8 +78,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 arso2.DousedPlayers.Clear();
             }
-            
-            Utils.LogSomething("Ignite 2");
         }
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)

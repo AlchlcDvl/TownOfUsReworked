@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tiebreaker : Colors.Ability;
             AbilityType = AbilityEnum.Tiebreaker;
             Hidden = !CustomGameOptions.TiebreakerKnows;
-            AbilityDescription = "You are the tiebreaker! Your vote is what breaks locks so use your power wisely!";
         }
     }
 }

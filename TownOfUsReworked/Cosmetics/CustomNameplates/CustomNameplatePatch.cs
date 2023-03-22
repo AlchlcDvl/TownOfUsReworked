@@ -37,7 +37,7 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
 
             private static NamePlateData CreateNamePlate(string id, string nameplateName, string author)
             {
-                var sprite = Utils.CreateSprite($"{TownOfUsReworked.Nameplates}{id}.png");
+                var sprite = Utils.CreateSprite($"{TownOfUsReworked.Nameplates}{id}");
 
                 var a = ScriptableObject.CreateInstance<NamePlateViewData>();
                 var b = new AddressableLoadWrapper<NamePlateViewData>();

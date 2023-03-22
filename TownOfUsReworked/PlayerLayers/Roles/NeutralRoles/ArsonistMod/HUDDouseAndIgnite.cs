@@ -20,13 +20,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 role.DouseButton = Utils.InstantiateButton();
 
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
-            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.DouseCd, TownOfUsReworked.IgniteSprite, AbilityTypes.Direct, notDoused);
+            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.DouseCd, AssetManager.Douse, AbilityTypes.Direct, "ActionSecondary", notDoused);
 
             if (role.IgniteButton == null)
                 role.IgniteButton = Utils.InstantiateButton();
 
             role.IgniteButton.UpdateButton(role, "IGNITE", role.LastKiller && CustomGameOptions.ArsoLastKillerBoost ? 0 : role.IgniteTimer(), CustomGameOptions.IgniteCd,
-                TownOfUsReworked.IgniteSprite, AbilityTypes.Effect, role.DousedAlive > 0);
+                AssetManager.Ignite, AbilityTypes.Effect, "Secondary", role.DousedAlive > 0);
         }
     }
 }

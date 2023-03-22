@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
             if (role.ExamineButton == null)
                 role.ExamineButton = Utils.InstantiateButton();
 
-            role.ExamineButton.UpdateButton(role, "EXAMINE", role.ExamineTimer(), CustomGameOptions.ExamineCd, TownOfUsReworked.ExamineSprite, AbilityTypes.Direct);
+            role.ExamineButton.UpdateButton(role, "EXAMINE", role.ExamineTimer(), CustomGameOptions.ExamineCd, AssetManager.Examine, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

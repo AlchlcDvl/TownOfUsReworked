@@ -85,15 +85,6 @@ namespace TownOfUsReworked.CrowdedMod.Patches
             }
         }
 
-        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
-        public static class GameSettingMenu_OnEnable // Credits to https://github.com/Galster-dev/GameSettingsUnlocker
-        {
-            public static void Prefix(ref GameSettingMenu __instance)
-            {
-                __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
-            }
-        }
-
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
         public static class GameOptionsMenu_Start
         {

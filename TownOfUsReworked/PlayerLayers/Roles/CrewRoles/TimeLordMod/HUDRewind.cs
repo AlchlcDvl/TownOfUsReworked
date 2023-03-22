@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             if (role.RewindButton == null)
                 role.RewindButton = Utils.InstantiateButton();
 
-            role.RewindButton.UpdateButton(role, "BUG", role.TimeLordRewindTimer(), role.GetCooldown(), TownOfUsReworked.Rewind, AbilityTypes.Effect, true, role.UsesLeft,
+            role.RewindButton.UpdateButton(role, "TIMER", role.TimeLordRewindTimer(), role.GetCooldown(), AssetManager.Rewind, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
                 role.ButtonUsable, role.ButtonUsable && !RecordRewind.rewinding);
         }
     }

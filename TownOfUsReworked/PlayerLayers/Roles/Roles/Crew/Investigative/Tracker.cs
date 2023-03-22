@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            RoleDescription = "You are a Tracker! You can place bugs on players that update you on their locations. Find out who's lying about where they are!";
             InspectorResults = InspectorResults.TracksOthers;
         }
 

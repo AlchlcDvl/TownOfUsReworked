@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFactionColor = Colors.Cabal;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
-            RoleDescription = "You are a Jackal! You are a greedy double agent sent from a rival company! Use your recruits to your advantage and take over the mission!";
             Recruited = new List<byte>();
             Recruited.Add(Player.PlayerId);
         }

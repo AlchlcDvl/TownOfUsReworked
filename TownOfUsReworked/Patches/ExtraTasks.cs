@@ -7,10 +7,7 @@ namespace TownOfUsReworked.Patches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-        public static void Postfix(LogicGameFlowNormal __instance, ref bool __result)
-        {
-            __result = false;
-        }
+        public static void Postfix(LogicGameFlowNormal __instance, ref bool __result) => __result = false;
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]

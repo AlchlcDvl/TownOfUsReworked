@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Intruder;
             Color = Colors.Intruder;
             Objectives = IntrudersWinCon;
+            BaseFaction = Faction.Intruder;
         }
 
         public float KillTimer()

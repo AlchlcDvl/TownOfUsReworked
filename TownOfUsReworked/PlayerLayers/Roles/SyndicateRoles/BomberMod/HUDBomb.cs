@@ -18,12 +18,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             if (role.BombButton == null)
                 role.BombButton = Utils.InstantiateButton();
 
-            role.BombButton.UpdateButton(role, "PLANT", role.BombTimer(), CustomGameOptions.BombCooldown, TownOfUsReworked.PlantSprite, AbilityTypes.Effect);
+            role.BombButton.UpdateButton(role, "PLANT", role.BombTimer(), CustomGameOptions.BombCooldown, AssetManager.Plant, AbilityTypes.Effect, "Secondary");
 
             if (role.DetonateButton == null)
                 role.DetonateButton = Utils.InstantiateButton();
 
-            role.BombButton.UpdateButton(role, "DETONATE", role.DetonateTimer(), CustomGameOptions.DetonateCooldown, TownOfUsReworked.DetonateSprite, AbilityTypes.Effect,
+            role.DetonateButton.UpdateButton(role, "DETONATE", role.DetonateTimer(), CustomGameOptions.DetonateCooldown, AssetManager.Detonate, AbilityTypes.Effect, "Tertiary",
                 role.Bombs.Count > 0);
         }
     }

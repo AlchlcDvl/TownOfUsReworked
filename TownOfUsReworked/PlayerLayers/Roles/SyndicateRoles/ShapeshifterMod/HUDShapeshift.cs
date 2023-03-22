@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             if (role.ShapeshiftButton == null)
                 role.ShapeshiftButton = Utils.InstantiateButton();
 
-            role.ShapeshiftButton.UpdateButton(role, "SHAPESHIFT", role.ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, TownOfUsReworked.Shapeshift, AbilityTypes.Effect, 
+            role.ShapeshiftButton.UpdateButton(role, "SHAPESHIFT", role.ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary", 
                 role.Shapeshifted, role.TimeRemaining, CustomGameOptions.ShapeshiftDuration);
         }
     }

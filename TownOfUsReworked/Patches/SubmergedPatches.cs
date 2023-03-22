@@ -39,6 +39,20 @@ namespace TownOfUsReworked.Patches
                         else 
                             __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
                     }
+                    else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
+                    {
+                        if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
+                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
+                        else 
+                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
+                    }
+                    else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
+                    {
+                        if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
+                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
+                        else 
+                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
+                    }
                 }
             }
         }
@@ -47,20 +61,14 @@ namespace TownOfUsReworked.Patches
         [HarmonyPriority(Priority.Low)] //Mke sure it occurs after other patches
         public static class SubmergedPhysicsPatch
         {
-            public static void Postfix(PlayerPhysics __instance)
-            {
-                SubmergedCompatibility.Ghostrolefix(__instance);
-            }
+            public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
         [HarmonyPriority(Priority.Low)] //make sure it occurs after other patches
         public static class SubmergedLateUpdatePhysicsPatch
         {
-            public static void Postfix(PlayerPhysics __instance)
-            {
-                SubmergedCompatibility.Ghostrolefix(__instance);
-            }
+            public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);
         }
     }
 }

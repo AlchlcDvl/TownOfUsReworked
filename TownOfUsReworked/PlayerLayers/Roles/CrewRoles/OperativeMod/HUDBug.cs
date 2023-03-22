@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             if (role.BugButton == null)
                 role.BugButton = Utils.InstantiateButton();
 
-            role.BugButton.UpdateButton(role, "BUG", role.BugTimer(), CustomGameOptions.BugCooldown, TownOfUsReworked.BugSprite, AbilityTypes.Effect, true, role.UsesLeft,
-                role.ButtonUsable, role.ButtonUsable);
+            role.BugButton.UpdateButton(role, "BUG", role.BugTimer(), CustomGameOptions.BugCooldown, AssetManager.Bug, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
+                role.ButtonUsable);
         }
     }
 }

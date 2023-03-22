@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.StakeButton)
             {
                 if (!Utils.ButtonUsable(role.StakeButton))

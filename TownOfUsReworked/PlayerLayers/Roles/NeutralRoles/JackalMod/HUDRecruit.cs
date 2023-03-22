@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 role.RecruitButton = Utils.InstantiateButton();
 
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
-            role.RecruitButton.UpdateButton(role, "RECRUIT", role.RecruitTimer(), CustomGameOptions.RecruitCooldown, TownOfUsReworked.RecruitSprite, AbilityTypes.Direct, notRecruited, 
-                role.RecruitsDead && !role.HasRecruited);
+            role.RecruitButton.UpdateButton(role, "RECRUIT", role.RecruitTimer(), CustomGameOptions.RecruitCooldown, AssetManager.Recruit, AbilityTypes.Direct, "ActionSecondary",
+                notRecruited, role.RecruitsDead && !role.HasRecruited);
         }
     }
 }

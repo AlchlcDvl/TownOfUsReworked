@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = $"- You are tiny{fastText}.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
             ModifierType = ModifierEnum.Dwarf;
-            ModifierDescription = $"You are a Dwarf! You are small{fastText}!";
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

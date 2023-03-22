@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
                 return false;
 
-            var role = Role.GetRole<IntruderRole>(PlayerControl.LocalPlayer);
-
-            if (role.IsBlocked)
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
                 return false;
+
+            var role = Role.GetRole<IntruderRole>(PlayerControl.LocalPlayer);
 
             if (__instance == role.KillButton)
             {
@@ -31,9 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     return false;
 
                 if (role.KillTimer() != 0f)
-                    return false;
-
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);

@@ -22,7 +22,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
                 return true;
 
             if (reason == DeathReason.Exile)
-                otherLover.Exiled();
+            {
+                if (!otherLover.Is(RoleEnum.Pestilence))
+                    otherLover.Exiled();
+            }
             else if (AmongUsClient.Instance.AmHost && !otherLover.Is(RoleEnum.Pestilence))
                 Utils.RpcMurderPlayer(otherLover, otherLover, false);
 

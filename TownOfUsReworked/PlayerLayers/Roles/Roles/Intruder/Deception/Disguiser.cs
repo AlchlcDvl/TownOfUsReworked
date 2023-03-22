@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
-            RoleDescription = "You are a Disguiser! Cause some chaos by changing people's appearances and fooling everyone around you!";
         }
 
         public void Disguise()

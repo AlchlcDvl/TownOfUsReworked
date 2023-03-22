@@ -25,8 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
-            RoleDescription = "You are a Camouflager! You can choose to disrupt everyone's vision, causing them to be unable to recognise others. Use this to your " +
-                "advantage and kill while unsuspected in front of everyone!";
             InspectorResults = InspectorResults.BringsChaos;
         }
 

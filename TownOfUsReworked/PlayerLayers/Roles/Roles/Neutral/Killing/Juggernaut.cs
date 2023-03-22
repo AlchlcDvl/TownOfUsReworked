@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public bool JuggernautWins;
         public int JuggKills;
         public AbilityButton AssaultButton;
 

@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = (bool)system?.dummy.IsActive;
             var active = (bool)system?.specials.ToArray().Any(s => s.IsActive);
-            role.FixButton.UpdateButton(role, "FIX", role.FixTimer(), CustomGameOptions.FixCooldown, TownOfUsReworked.EngineerFix, AbilityTypes.Effect, null, true,
-                role.UsesLeft, role.ButtonUsable, active && !dummyActive);
+            role.FixButton.UpdateButton(role, "FIX", role.FixTimer(), CustomGameOptions.FixCooldown, AssetManager.Fix, AbilityTypes.Effect, "ActionSecondary", null, true, role.UsesLeft,
+                role.ButtonUsable, active && !dummyActive);
         }
     }
 }

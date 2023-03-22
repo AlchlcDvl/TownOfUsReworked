@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             if (role.ReviveButton == null)
                 role.ReviveButton = Utils.InstantiateButton();
 
-            role.ReviveButton.UpdateButton(role, "REVIVE", 0, 1, TownOfUsReworked.ReviveSprite, AbilityTypes.Dead, !role.ReviveUsed);
+            role.ReviveButton.UpdateButton(role, "REVIVE", 0, 1, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", !role.ReviveUsed);
         }
     }
 }

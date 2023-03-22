@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.EatButton)
             {
                 if (!Utils.ButtonUsable(__instance))

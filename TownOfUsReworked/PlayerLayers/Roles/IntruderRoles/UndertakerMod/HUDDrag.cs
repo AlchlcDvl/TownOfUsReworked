@@ -18,13 +18,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             if (role.DragButton == null)
                 role.DragButton = Utils.InstantiateButton();
 
-            role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, TownOfUsReworked.DragSprite, AbilityTypes.Dead,
-                role.CurrentlyDragging == null);
+            role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, AssetManager.Drag, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging == null);
 
             if (role.DropButton == null)
                 role.DropButton = Utils.InstantiateButton();
 
-            role.DropButton.UpdateButton(role, "DROP", 0, 1, TownOfUsReworked.DropSprite, AbilityTypes.Dead, role.CurrentlyDragging != null);
+            role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging != null);
         }
     }
 }

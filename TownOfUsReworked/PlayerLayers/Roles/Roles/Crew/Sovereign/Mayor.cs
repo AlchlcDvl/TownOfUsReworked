@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             VoteBank = CustomGameOptions.MayorVoteBank;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
-            RoleDescription = "Your are a Mayor! You are the Crew who can forge votes to gain the upper hand! Save your votes to dump them on someone who you think is an evildoer!";
             InspectorResults = InspectorResults.LeadsTheGroup;
             ExtraVotes = new List<byte>();
         }

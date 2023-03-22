@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             if (role.RememberButton == null)
                 role.RememberButton = Utils.InstantiateButton();
 
-            role.RememberButton.UpdateButton(role, "REMEMBER", 0, 1, TownOfUsReworked.RememberSprite, AbilityTypes.Dead);
+            role.RememberButton.UpdateButton(role, "REMEMBER", 0, 1, AssetManager.Remember, AbilityTypes.Dead, "ActionSecondary");
 
             if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = TownOfUsReworked.Arrow;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         role.BodyArrows.Add(body.ParentId, arrow);

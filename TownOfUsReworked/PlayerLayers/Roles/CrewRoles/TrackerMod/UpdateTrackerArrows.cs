@@ -9,14 +9,13 @@ using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class UpdateTrackerArrows
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
         private static DateTime _time = DateTime.UnixEpoch;
         private static float Interval => CustomGameOptions.UpdateInterval;
 
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix(HudManager __instance)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return;

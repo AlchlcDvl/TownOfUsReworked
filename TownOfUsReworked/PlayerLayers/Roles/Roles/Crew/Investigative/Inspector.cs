@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             Inspected = new List<byte>();
-            RoleDescription = "You are an Inspector! You can inspect players to see a role list of what they could be. If someone's claim is not in that list, they are not Crew.";
             InspectorResults = InspectorResults.HasInformation;
         }
 

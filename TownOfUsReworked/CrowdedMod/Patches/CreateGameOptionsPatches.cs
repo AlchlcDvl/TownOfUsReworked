@@ -138,10 +138,7 @@ namespace TownOfUsReworked.CrowdedMod.Patches
         [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
         public static class CreateOptionsPicker_UpdateImpostorsButtons
         {
-            public static bool Prefix()
-            {
-                return false;
-            }
+            public static bool Prefix() => false;
         }
     }
 }

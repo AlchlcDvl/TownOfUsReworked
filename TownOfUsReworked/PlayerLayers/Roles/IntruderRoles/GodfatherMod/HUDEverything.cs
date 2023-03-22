@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 role.DeclareButton = Utils.InstantiateButton();
 
             var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Consort)).ToList();
-            role.DeclareButton.UpdateButton(role, "PROMOTE", 0, 1, TownOfUsReworked.PromoteSprite, AbilityTypes.Direct, Imp, !role.HasDeclared);
+            role.DeclareButton.UpdateButton(role, "PROMOTE", 0, 1, AssetManager.Promote, AbilityTypes.Direct, "Secondary", Imp, !role.HasDeclared);
 
             if (!role.WasMafioso || role.FormerRole == null || role.FormerRole?.RoleType == RoleEnum.Impostor)
                 return;
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => role.BlackmailedPlayer != player).ToList();
                 role.BlackmailButton.UpdateButton(role, role.Blackmailed ? "BLACKMAILED" : "BLACKMAIL", role.BlackmailTimer(), CustomGameOptions.BlackmailCd, role.Blackmailed ?
-                    TownOfUsReworked.BlackmailLetterSprite : TownOfUsReworked.BlackmailSprite, AbilityTypes.Direct, notBlackmailed);
+                    AssetManager.BlackmailLetter : AssetManager.Blackmail, AbilityTypes.Direct, "Secondary", notBlackmailed);
             }
             else if (formerRole == RoleEnum.Consigliere)
             {
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId) && !(x.Is(Faction.Intruder) &&
                     CustomGameOptions.FactionSeeRoles)).ToList();
-                role.InvestigateButton.UpdateButton(role, "INVESTIGATE", role.ConsigliereTimer(), CustomGameOptions.ConsigCd, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+                role.InvestigateButton.UpdateButton(role, "INVESTIGATE", role.ConsigliereTimer(), CustomGameOptions.ConsigCd, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary",
                     notInvestigated);
             }
             else if (formerRole == RoleEnum.Camouflager)
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.CamouflageButton == null)
                     role.CamouflageButton = Utils.InstantiateButton();
 
-                role.CamouflageButton.UpdateButton(role, "CAMOUFLAGE", role.CamouflageTimer(), CustomGameOptions.CamouflagerCd, TownOfUsReworked.Camouflage, AbilityTypes.Effect,
+                role.CamouflageButton.UpdateButton(role, "CAMOUFLAGE", role.CamouflageTimer(), CustomGameOptions.CamouflagerCd, AssetManager.Camouflage, AbilityTypes.Effect, "Secondary",
                     null, true, !role.Camouflaged, role.Camouflaged, role.CamoTimeRemaining, CustomGameOptions.CamouflagerDuration);
             }
             else if (formerRole == RoleEnum.Disguiser)
@@ -71,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.MeasuredPlayer != null && targets.Contains(role.MeasuredPlayer))
                     targets.Remove(role.MeasuredPlayer);
 
-                role.DisguiseButton.UpdateButton(role, "DISGUISE", role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown, TownOfUsReworked.DisguiseSprite, AbilityTypes.Direct,
+                role.DisguiseButton.UpdateButton(role, "DISGUISE", role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown, AssetManager.Disguise, AbilityTypes.Direct, "Secondary",
                     targets, role.MeasuredPlayer != null, true, role.DelayActive || role.Disguised, role.DelayActive ? role.DisguiserTimeRemaining2 : role.DisguiserTimeRemaining,
                     role.DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration);
 
@@ -79,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     role.MeasureButton = Utils.InstantiateButton();
 
                 var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => role.MeasuredPlayer != x).ToList();
-                role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, TownOfUsReworked.MeasureSprite, AbilityTypes.Direct, 
+                role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", 
                     notMeasured);
             }
             else if (formerRole == RoleEnum.Grenadier)
@@ -90,8 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
                 var dummyActive = (bool)system?.dummy.IsActive;
                 var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
-                role.FlashButton.SetEffectTarget(role, !sabActive && !dummyActive);
-                role.FlashButton.UpdateButton(role, "FLASH", role.FlashTimer(), CustomGameOptions.GrenadeCd, TownOfUsReworked.FlashSprite, AbilityTypes.Effect, null, true,
+                role.FlashButton.UpdateButton(role, "FLASH", role.FlashTimer(), CustomGameOptions.GrenadeCd, AssetManager.Flash, AbilityTypes.Effect, "Secondary", null, true,
                     !sabActive && !dummyActive && !role.Flashed, role.Flashed, role.FlashTimeRemaining, CustomGameOptions.GrenadeDuration);
             }
             else if (formerRole == RoleEnum.Janitor)
@@ -99,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.CleanButton == null)
                     role.CleanButton = Utils.InstantiateButton();
 
-                role.CleanButton.UpdateButton(role, "CLEAN", role.CleanTimer(), CustomGameOptions.JanitorCleanCd, TownOfUsReworked.JanitorClean, AbilityTypes.Dead);
+                role.CleanButton.UpdateButton(role, "CLEAN", role.CleanTimer(), CustomGameOptions.JanitorCleanCd, AssetManager.Clean, AbilityTypes.Dead, "Secondary");
             }
             else if (formerRole == RoleEnum.Miner)
             {
@@ -109,31 +108,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 var hits = Physics2D.OverlapBoxAll(PlayerControl.LocalPlayer.transform.position, Utils.GetSize(), 0);
                 hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
                 role.CanPlace = hits.Count == 0 && PlayerControl.LocalPlayer.moveable && !SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1;
-                role.MineButton.SetEffectTarget(role, role.CanPlace);
-                role.MineButton.UpdateButton(role, "MINE", role.MineTimer(), CustomGameOptions.MineCd, TownOfUsReworked.MineSprite, AbilityTypes.Effect, null, true,
-                    role.CanPlace);
+                role.MineButton.UpdateButton(role, "MINE", role.MineTimer(), CustomGameOptions.MineCd, AssetManager.Mine, AbilityTypes.Effect, "Secondary", null, true, role.CanPlace);
             }
             else if (formerRole == RoleEnum.Morphling)
             {
                 if (role.MorphButton == null)
                     role.MorphButton = Utils.InstantiateButton();
 
-                role.MorphButton.UpdateButton(role, "MORPH", role.MorphTimer(), CustomGameOptions.MorphlingCd, TownOfUsReworked.MorphSprite, AbilityTypes.Effect, role.Morphed,
+                role.MorphButton.UpdateButton(role, "MORPH", role.MorphTimer(), CustomGameOptions.MorphlingCd, AssetManager.Morph, AbilityTypes.Effect, "Secondary", role.Morphed,
                     role.MorphTimeRemaining, CustomGameOptions.MorphlingDuration, role.SampledPlayer != null, !role.Morphed);
 
                 if (role.SampleButton == null)
                     role.SampleButton = Utils.InstantiateButton();
 
                 var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => role.SampledPlayer?.PlayerId != x.PlayerId).ToList();
-                role.SampleButton.UpdateButton(role, "SAMPLE", role.SampleTimer(), CustomGameOptions.SampleCooldown, TownOfUsReworked.SampleSprite, AbilityTypes.Direct,
-                    notSampled);
+                role.SampleButton.UpdateButton(role, "SAMPLE", role.SampleTimer(), CustomGameOptions.SampleCooldown, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", notSampled);
             }
             else if (formerRole == RoleEnum.Teleporter)
             {
                 if (role.TeleportButton == null)
                     role.TeleportButton = Utils.InstantiateButton();
 
-                role.TeleportButton.UpdateButton(role, "TELEPORT", role.TeleportTimer(), CustomGameOptions.TeleportCd, TownOfUsReworked.TeleportSprite, AbilityTypes.Effect, null,
+                role.TeleportButton.UpdateButton(role, "TELEPORT", role.TeleportTimer(), CustomGameOptions.TeleportCd, AssetManager.Teleport, AbilityTypes.Effect, "Secondary", null,
                     role.TeleportPoint != new Vector3(0, 0, 0));
 
                 if (role.MarkButton == null)
@@ -143,8 +139,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
                 role.CanMark = hits.Count == 0 && PlayerControl.LocalPlayer.moveable && !SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1 && role.TeleportPoint !=
                     PlayerControl.LocalPlayer.transform.position;
-                role.MarkButton.SetEffectTarget(role, role.CanMark);
-                role.MarkButton.UpdateButton(role, "MARK", role.MarkTimer(), CustomGameOptions.MarkCooldown, TownOfUsReworked.MarkSprite, AbilityTypes.Effect, null, true,
+                role.MarkButton.UpdateButton(role, "MARK", role.MarkTimer(), CustomGameOptions.MarkCooldown, AssetManager.Mark, AbilityTypes.Effect, "Tertiary", null, true,
                     role.CanMark);
             }
             else if (formerRole == RoleEnum.TimeMaster)
@@ -152,7 +147,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.FreezeButton == null)
                     role.FreezeButton = Utils.InstantiateButton();
 
-                role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, TownOfUsReworked.TimeFreezeSprite, AbilityTypes.Effect,
+                role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, AssetManager.TimeFreeze, AbilityTypes.Effect, "Secondary",
                     null, true, !role.Frozen, role.Frozen, role.FreezeTimeRemaining, CustomGameOptions.FreezeDuration);
             }
             else if (formerRole == RoleEnum.Undertaker)
@@ -160,21 +155,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.DragButton == null)
                     role.DragButton = Utils.InstantiateButton();
 
-                role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, TownOfUsReworked.DragSprite, AbilityTypes.Dead,
-                    role.CurrentlyDragging == null);
+                role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, AssetManager.Drag, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging == null);
 
                 if (role.DropButton == null)
                     role.DropButton = Utils.InstantiateButton();
 
-                role.DropButton.UpdateButton(role, "DROP", 0, 1, TownOfUsReworked.DropSprite, AbilityTypes.Dead, role.CurrentlyDragging != null);
+                role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging != null);
             }
             else if (formerRole == RoleEnum.Wraith)
             {
                 if (role.InvisButton == null)
                     role.InvisButton = Utils.InstantiateButton();
 
-                role.InvisButton.UpdateButton(role, "INVIS", role.InvisTimer(), CustomGameOptions.InvisCd, TownOfUsReworked.InvisSprite, AbilityTypes.Effect,
-                    null, true, !role.IsInvis, role.IsInvis, role.InvisTimeRemaining, CustomGameOptions.InvisDuration);
+                role.InvisButton.UpdateButton(role, "INVIS", role.InvisTimer(), CustomGameOptions.InvisCd, AssetManager.Invis, AbilityTypes.Effect, "Secondary", null, true,
+                    !role.IsInvis, role.IsInvis, role.InvisTimeRemaining, CustomGameOptions.InvisDuration);
             }
         }
     }

@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             if (role.EatButton == null)
                 role.EatButton = Utils.InstantiateButton();
 
-            role.EatButton.UpdateButton(role, "EAT", role.EatTimer(), CustomGameOptions.CannibalCd, TownOfUsReworked.CannibalEat, AbilityTypes.Dead);
+            role.EatButton.UpdateButton(role, "EAT", role.EatTimer(), CustomGameOptions.CannibalCd, AssetManager.Eat, AbilityTypes.Dead, "ActionSecondary");
 
             if (CustomGameOptions.EatArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = TownOfUsReworked.Arrow;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         role.BodyArrows.Add(body.ParentId, arrow);

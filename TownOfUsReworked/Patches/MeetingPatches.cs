@@ -115,10 +115,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         class StartMeetingPatch
         {
-            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget)
-            {
-                voteTarget = meetingTarget;
-            }
+            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) => voteTarget = meetingTarget;
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]

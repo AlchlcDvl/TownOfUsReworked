@@ -23,8 +23,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                 role.DouseButton = Utils.InstantiateButton();
 
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
-            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.CryoDouseCooldown, TownOfUsReworked.DouseSprite, AbilityTypes.Direct, notDoused);
-            role.FreezeButton.UpdateButton(role, "FREEZE", 0, 1, TownOfUsReworked.CryoFreezeSprite, AbilityTypes.Effect, role.DousedAlive > 0 && !role.FreezeUsed);
+            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.CryoDouseCooldown, AssetManager.Douse, AbilityTypes.Direct, "ActionSecondary", notDoused);
+            role.FreezeButton.UpdateButton(role, "FREEZE", 0, 1, AssetManager.CryoFreeze, AbilityTypes.Effect, "Secondary", role.DousedAlive > 0 && !role.FreezeUsed);
         }
     }
 }

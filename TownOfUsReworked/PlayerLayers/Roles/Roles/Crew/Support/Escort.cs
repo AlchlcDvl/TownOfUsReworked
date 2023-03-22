@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            RoleDescription = "You are an Escort! You can have a little bit of \"fun time\" with players to ensure they are unable to kill anyone.";
             RoleBlockImmune = true;
             InspectorResults = InspectorResults.MeddlesWithOthers;
         }

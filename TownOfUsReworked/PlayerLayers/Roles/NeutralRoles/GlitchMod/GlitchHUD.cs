@@ -27,11 +27,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             if (role.MimicButton == null)
                 role.MimicButton = Utils.InstantiateButton();
 
-            role.MimicButton.UpdateButton(role, "MIMIC", role.MimicTimer(), CustomGameOptions.MimicCooldown, TownOfUsReworked.MimicSprite, AbilityTypes.Effect, role.IsUsingMimic,
-                role.TimeRemaining, CustomGameOptions.MimicDuration, true, !role.IsUsingMimic);
-            role.HackButton.UpdateButton(role, "HACK", role.HackTimer(), CustomGameOptions.HackCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, role.IsUsingHack,
+            role.MimicButton.UpdateButton(role, "MIMIC", role.MimicTimer(), CustomGameOptions.MimicCooldown, AssetManager.Mimic, AbilityTypes.Effect, "Secondary", role.IsUsingMimic,
+                role.TimeRemaining2, CustomGameOptions.MimicDuration, true, !role.IsUsingMimic);
+            role.HackButton.UpdateButton(role, "HACK", role.HackTimer(), CustomGameOptions.HackCooldown, AssetManager.Hack, AbilityTypes.Direct, "Tertiary", role.IsUsingHack,
                 role.TimeRemaining, CustomGameOptions.HackDuration, true, !role.IsUsingHack);
-            role.KillButton.UpdateButton(role, "NEUTRALISE", role.KillTimer(), CustomGameOptions.GlitchKillCooldown, TownOfUsReworked.EraseDataSprite, AbilityTypes.Direct);
+            role.KillButton.UpdateButton(role, "NEUTRALISE", role.KillTimer(), CustomGameOptions.GlitchKillCooldown, AssetManager.Neutralise, AbilityTypes.Direct, "ActionSecondary");
 
             if (role.MimicList != null)
             {
@@ -50,30 +50,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     {
                         if (!role.IsUsingMimic && role.MimicList != null)
                         {
-                            Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
-                            Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
+                            var ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
+                            var ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
 
-                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
                             {
-                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                                if (!Input.GetMouseButtonDown(0) && role.LastMouse)
                                 {
-                                    if (!Input.GetMouseButtonDown(0) && role.LastMouse)
-                                    {
-                                        role.LastMouse = false;
-                                        role.MimicList.Toggle();
-                                        role.MimicList.SetVisible(false);
-                                        role.MimicList = null;
-                                        role.MimicTarget = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text);
-                                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                                        writer.Write((byte)ActionsRPC.SetMimic);
-                                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                                        writer.Write(role.ClosestPlayer.PlayerId);
-                                        role.Mimic();
-                                        break;
-                                    }
-                                    
-                                    role.LastMouse = Input.GetMouseButtonDown(0);
+                                    role.LastMouse = false;
+                                    role.MimicList.Toggle();
+                                    role.MimicList.SetVisible(false);
+                                    role.MimicList = null;
+                                    role.MimicTarget = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text);
+                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                    writer.Write((byte)ActionsRPC.SetMimic);
+                                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                                    writer.Write(role.MimicTarget.PlayerId);
+                                    role.TimeRemaining2 = CustomGameOptions.MimicDuration;
+                                    role.Mimic();
+                                    break;
                                 }
+
+                                role.LastMouse = Input.GetMouseButtonDown(0);
                             }
                         }
                     }

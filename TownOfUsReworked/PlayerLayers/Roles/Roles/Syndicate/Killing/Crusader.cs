@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            RoleDescription = "You are a Crusader! You are a religious fanatic who wants to purge the mission! Perform your crusades and cleanse this world of evil!";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 
@@ -58,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             CrusadedPlayer = null;
         }
 
-        public void Crusade(PlayerControl player2)
+        public void RadialCrusade(PlayerControl player2)
         {
             var closestPlayers = Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius);
 
@@ -69,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player))
                     continue;
                     
-                if (!player.Is(RoleEnum.Pestilence))
+                if (!player.Is(RoleEnum.Pestilence) && !player.IsOnAlert())
                     Utils.RpcMurderPlayer(player2, player, false);
                 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))

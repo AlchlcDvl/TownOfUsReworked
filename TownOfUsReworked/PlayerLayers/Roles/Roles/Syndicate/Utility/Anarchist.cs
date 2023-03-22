@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SU;
             Base = true;
-            RoleDescription = "You are an Anarchist! Your role is the base role for the Syndicate faction. You have no special abilities aside from being able to kill.";
         }
     }
 }

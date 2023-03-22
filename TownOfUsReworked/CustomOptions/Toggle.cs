@@ -4,15 +4,8 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomToggleOption : CustomOption
     {
-        protected internal CustomToggleOption(int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value)
-        {
-            Format = val => (bool) val ? "On" : "Off";
-        }
-
-        protected internal CustomToggleOption(bool indent, int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value)
-        {
-            Indent = indent;
-        }
+        protected internal CustomToggleOption(int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = val => (bool)val ?
+            "On" : "Off";
 
         protected internal bool Get() => (bool)Value;
 

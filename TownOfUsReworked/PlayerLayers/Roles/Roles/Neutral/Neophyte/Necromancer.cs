@@ -36,8 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
-            RoleDescription = "Your are a Necromancer! You can revive a dead person if you find their body. Be careful though, because it takes time" +
-                " to revive someone and a meeting being called will kill both you and your target.";
             Objectives = "- Resurrect the dead into helping you gain control of the crew.";
             SubFaction = SubFaction.Reanimated;
             SubFactionColor = Colors.Reanimated;

@@ -2,6 +2,8 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
+using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -12,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Faction = Faction.Neutral;
             FactionColor = Colors.Neutral;
             Color = Colors.Neutral;
+            BaseFaction = Faction.Neutral;
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
@@ -61,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if ((Player.Data.IsDead && RoleType != RoleEnum.Phantom) || (!Player.Data.IsDead && RoleType == RoleEnum.Phantom) || Player.Data.Disconnected)
+            if (Player.Data.IsDead|| Player.Data.Disconnected)
                 return true;
 
             if ((IsRecruit || RoleType == RoleEnum.Jackal) && Utils.CabalWin())
@@ -127,7 +130,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsIntAlly && Utils.IntrudersWin())
+            else if ((IsIntAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Intruder)) && Utils.IntrudersWin())
             {
                 IntruderWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -136,7 +139,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsSynAlly && Utils.SyndicateWins())
+            else if ((IsSynAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Syndicate)) && Utils.SyndicateWins())
             {
                 SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -145,10 +148,51 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.NKWins(RoleType) && NotDefective && RoleAlignment == RoleAlignment.NeutralKill)
+            else if (NotDefective && RoleAlignment == RoleAlignment.NeutralKill && (Utils.SameNKWins(RoleType) || Utils.SoloNKWins(RoleType, Player)))
             {
+                switch (RoleType)
+                {
+                    case RoleEnum.Glitch:
+                        GlitchWins = true;
+                        break;
+
+                    case RoleEnum.Arsonist:
+                        ArsonistWins = true;
+                        break;
+
+                    case RoleEnum.Cryomaniac:
+                        CryomaniacWins = true;
+                        break;
+
+                    case RoleEnum.Juggernaut:
+                        JuggernautWins = true;
+                        break;
+
+                    case RoleEnum.Murderer:
+                        MurdererWins = true;
+                        break;
+
+                    case RoleEnum.Werewolf:
+                        WerewolfWins = true;
+                        break;
+
+                    case RoleEnum.SerialKiller:
+                        SerialKillerWins = true;
+                        break;
+                }
+                
+                if (CustomGameOptions.NoSolo == NoSolo.SameNKs)
+                {
+                    foreach (var role in GetRoles(RoleType))
+                    {
+                        if (!role.Player.Data.Disconnected && role.NotDefective)
+                            role.Winner = true;
+                    }
+                }
+
+                Winner = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.NKWins);
+                writer.Write((byte)(CustomGameOptions.NoSolo == NoSolo.SameNKs ? WinLoseRPC.SameNKWins : WinLoseRPC.SoloNKWins));
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
@@ -156,15 +200,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Utils.PestOrPBWins() && NotDefective && (RoleType == RoleEnum.Plaguebearer || RoleType == RoleEnum.Pestilence))
             {
+                InfectorsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.InfectorsWin);
-                writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 return false;
             }
 
-            var flag = (RoleAlignment != RoleAlignment.NeutralKill && RoleAlignment != RoleAlignment.NeutralNeo && RoleType != RoleEnum.Pestilence) ? NotDefective : false;
+            var flag = RoleAlignment != RoleAlignment.NeutralKill && RoleAlignment != RoleAlignment.NeutralNeo && RoleType != RoleEnum.Pestilence && RoleType != RoleEnum.Betrayer ?
+                NotDefective : false;
             return flag;
         }
     }

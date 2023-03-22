@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
                 role.InterrogateButton = Utils.InstantiateButton();
 
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
-            role.InterrogateButton.UpdateButton(role, "INTERROGATE", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, TownOfUsReworked.Placeholder,
-                AbilityTypes.Direct, notInvestigated);
+            role.InterrogateButton.UpdateButton(role, "INTERROGATE", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, AssetManager.Interrogate, AbilityTypes.Direct, "ActionSecondary",
+                notInvestigated);
         }
     }
 }

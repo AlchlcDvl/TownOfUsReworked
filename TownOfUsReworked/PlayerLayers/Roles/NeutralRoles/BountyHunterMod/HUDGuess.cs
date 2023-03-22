@@ -25,11 +25,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
             if (role.HuntButton == null)
                 role.HuntButton = Utils.InstantiateButton();
 
-            role.GuessButton.UpdateButton(role, "GUESS", role.CheckTimer(), CustomGameOptions.BountyHunterCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, true,
-                role.UsesLeft, role.ButtonUsable, role.ButtonUsable);
-            role.HuntButton.UpdateButton(role, "HUNT", role.CheckTimer(), CustomGameOptions.BountyHunterCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+            role.GuessButton.UpdateButton(role, "GUESS", role.CheckTimer(), CustomGameOptions.BountyHunterCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", true,
+                role.UsesLeft, role.ButtonUsable && !role.TargetFound, role.ButtonUsable);
+            role.HuntButton.UpdateButton(role, "HUNT", role.CheckTimer(), CustomGameOptions.BountyHunterCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary",
                 role.TargetFound);
-            
+
             if (role.Failed && !role.Player.Data.IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);

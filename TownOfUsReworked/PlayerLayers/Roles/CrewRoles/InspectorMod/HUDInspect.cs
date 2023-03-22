@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
                 role.InspectButton = Utils.InstantiateButton();
 
             var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
-            role.InspectButton.UpdateButton(role, "INSPECT", role.InspectTimer(), CustomGameOptions.InspectCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct,
+            role.InspectButton.UpdateButton(role, "INSPECT", role.InspectTimer(), CustomGameOptions.InspectCooldown, AssetManager.Inspect, AbilityTypes.Direct, "ActionSecondary",
                 notinspected);
         }
     }

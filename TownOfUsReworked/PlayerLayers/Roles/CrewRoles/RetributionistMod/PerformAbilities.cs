@@ -31,9 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var role = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (role.RevivedRole == null)
                 return false;
 
@@ -399,7 +396,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = TownOfUsReworked.Arrow;
+                    renderer.sprite = AssetManager.Arrow;
                     var Grey = CamouflageUnCamouflage.IsCamoed;
 
                     if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)

@@ -20,6 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
+            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+            SoundManager.Instance.PlaySound(__instance.DisconnectStinger, false);
         }
     }
 }

@@ -20,9 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.BombButton)
             {
                 if (role.BombTimer() != 0f)

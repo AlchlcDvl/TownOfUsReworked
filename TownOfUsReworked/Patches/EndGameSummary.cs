@@ -9,17 +9,15 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using AmongUs.GameOptions;
+using TMPro;
 
 namespace TownOfUsReworked.Patches
 {
     static class AdditionalTempData
     {
-        public static List<PlayerRoleInfo> playerRoles = new List<PlayerRoleInfo>();
+        public static List<PlayerRoleInfo> PlayerRoles = new List<PlayerRoleInfo>();
 
-        public static void clear()
-        {
-            playerRoles.Clear();
-        }
+        public static void Clear() => PlayerRoles.Clear();
 
         internal class PlayerRoleInfo
         {
@@ -33,7 +31,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] EndGameResult endGameResult)
         {
-            AdditionalTempData.clear();
+            AdditionalTempData.Clear();
 
             //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             //AD says - Done.
@@ -107,8 +105,7 @@ namespace TownOfUsReworked.Patches
                     summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
 
                 summary += " | " + playerControl.DeathReason();
-
-                AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Role = summary });
+                AdditionalTempData.PlayerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Role = summary });
             }
         }
     }
@@ -121,31 +118,30 @@ namespace TownOfUsReworked.Patches
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
                 return;
 
-            GameObject bonusText = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
+            var bonusText = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
             bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f, __instance.WinText.transform.position.z);
             bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
-            TMPro.TMP_Text textRenderer = bonusText.GetComponent<TMPro.TMP_Text>();
+            var textRenderer = bonusText.GetComponent<TMP_Text>();
             textRenderer.text = "";
 
             var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
-            GameObject roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
+            var roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
             roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f); 
             roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
 
             var roleSummaryText = new StringBuilder();
             var winnersText = new StringBuilder();
             var losersText = new StringBuilder();
-            var winners = TempData.winners;
 
             var winnerCount = 0;
             var loserCount = 0;
 
             roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
-            roleSummaryText.AppendLine(" ");
+            roleSummaryText.AppendLine();
             winnersText.AppendLine("<size=105%><b>Winners</b></size> -");
             losersText.AppendLine("<size=105%><b>Losers</b></size> -");
 
-            foreach (var data in AdditionalTempData.playerRoles)
+            foreach (var data in AdditionalTempData.PlayerRoles)
             {
                 var role = string.Join(" ", data.Role);
                 var dataString = $"<size=75%>{data.PlayerName} - {role}</size>";
@@ -168,10 +164,12 @@ namespace TownOfUsReworked.Patches
             if (loserCount == 0)
                 losersText.AppendLine("<size=75%>No One Lost</size>");
 
-            winnersText.AppendLine();
+            roleSummaryText.Append(winnersText);
+            roleSummaryText.AppendLine();
+            roleSummaryText.Append(losersText);
 
-            TMPro.TMP_Text roleSummaryTextMesh = roleSummary.GetComponent<TMPro.TMP_Text>();
-            roleSummaryTextMesh.alignment = TMPro.TextAlignmentOptions.TopLeft;
+            var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
+            roleSummaryTextMesh.alignment = TextAlignmentOptions.TopLeft;
             roleSummaryTextMesh.color = Color.white;
             roleSummaryTextMesh.fontSizeMin = 1.5f;
             roleSummaryTextMesh.fontSizeMax = 1.5f;
@@ -179,8 +177,8 @@ namespace TownOfUsReworked.Patches
 
             var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
             roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
-            roleSummaryTextMesh.text = roleSummaryText.ToString() + winnersText.ToString() + losersText.ToString();
-            AdditionalTempData.clear();
+            roleSummaryTextMesh.text = roleSummaryText.ToString();
+            AdditionalTempData.Clear();
         }
     }
 }

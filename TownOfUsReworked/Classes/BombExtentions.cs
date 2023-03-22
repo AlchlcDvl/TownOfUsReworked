@@ -51,7 +51,7 @@ namespace TownOfUsReworked.Classes
             BombPref.transform.localScale = new Vector3(range * ShipStatus.Instance.MaxLightRadius * 2f, range * ShipStatus.Instance.MaxLightRadius * 2f, range * 2f *
                 ShipStatus.Instance.MaxLightRadius);
             GameObject.Destroy(BombPref.GetComponent<SphereCollider>());
-            BombPref.GetComponent<MeshRenderer>().material = TownOfUsReworked.Bomb;
+            BombPref.GetComponent<MeshRenderer>().material = AssetManager.BombMaterial;
             BombPref.transform.position = location;
             var BombScript = new Bomb();
             BombScript.Transform = BombPref.transform;

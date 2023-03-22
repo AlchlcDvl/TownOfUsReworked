@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Underdog : Colors.Ability;
             AbilityType = AbilityEnum.Underdog;
             Hidden = !CustomGameOptions.UnderdogKnows;
-            AbilityDescription = "You are an Underdog! You have a powerful comback power to save your faction!";
         }
     }
 }

@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FactionColor = Colors.Crew;
             Color = Colors.Crew;
             Objectives = CrewWinCon;
+            BaseFaction = Faction.Crew;
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)

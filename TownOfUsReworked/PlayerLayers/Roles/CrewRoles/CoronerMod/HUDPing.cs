@@ -22,12 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             if (role.AutopsyButton == null)
                 role.AutopsyButton = Utils.InstantiateButton();
 
-            role.AutopsyButton.UpdateButton(role, "AUTOPSY", role.AutopsyTimer(), 10, TownOfUsReworked.Placeholder, AbilityTypes.Dead);
+            role.AutopsyButton.UpdateButton(role, "AUTOPSY", role.AutopsyTimer(), 10, AssetManager.Placeholder, AbilityTypes.Dead, "ActionSecondary");
 
             if (role.CompareButton == null)
                 role.CompareButton = Utils.InstantiateButton();
 
-            role.CompareButton.UpdateButton(role, "COMPARE", role.CompareTimer(), CustomGameOptions.CompareCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct, null,
+            role.CompareButton.UpdateButton(role, "COMPARE", role.CompareTimer(), CustomGameOptions.CompareCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null,
                 true, role.UsesLeft, role.ReferenceBody != null, role.ButtonUsable);
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = TownOfUsReworked.Arrow;
+                        renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         role.BodyArrows.Add(body.ParentId, arrow);

@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = $"- Live to the final 3 with your Lover";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
-            ObjectifierDescription = $"You are a Lover! You are in love! Survive to the final 3 with your loved one!";
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)

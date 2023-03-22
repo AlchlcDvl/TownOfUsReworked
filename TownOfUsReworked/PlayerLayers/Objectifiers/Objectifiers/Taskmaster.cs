@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
-            ObjectifierDescription = "You are a Taskmaster! You are a master of completion who wants to do everything in the ship! Finish your tasks before the game ends!";
             ImpArrows = new List<ArrowBehaviour>();
             TMArrows = new Dictionary<byte, ArrowBehaviour>();
         }

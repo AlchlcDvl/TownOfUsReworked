@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
             if (role.ConcealButton == null)
                 role.ConcealButton = Utils.InstantiateButton();
 
-            role.ConcealButton.UpdateButton(role, "CONCEAL", role.ConcealTimer(), CustomGameOptions.ConcealCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Effect,
+            role.ConcealButton.UpdateButton(role, "CONCEAL", role.ConcealTimer(), CustomGameOptions.ConcealCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary",
                 null, true, !role.Concealed, role.Concealed, role.TimeRemaining, CustomGameOptions.ConcealDuration);
         }
     }

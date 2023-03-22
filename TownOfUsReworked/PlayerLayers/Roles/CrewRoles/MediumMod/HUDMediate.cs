@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             if (role.MediateButton == null)
                 role.MediateButton = Utils.InstantiateButton();
 
-            role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, TownOfUsReworked.MediateSprite, AbilityTypes.Effect);
+            role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, AssetManager.Mediate, AbilityTypes.Effect, "ActionSecondary");
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {

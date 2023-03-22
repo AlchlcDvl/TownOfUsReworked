@@ -18,9 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.BiteButton)
             {
                 if (!Utils.ButtonUsable(__instance))

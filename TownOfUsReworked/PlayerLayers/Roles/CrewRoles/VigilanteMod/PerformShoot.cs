@@ -17,9 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
             var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
 
-            if (role.IsBlocked)
-                return false;
-
             if (__instance == role.ShootButton)
             {
                 if (!Utils.ButtonUsable(role.ShootButton))

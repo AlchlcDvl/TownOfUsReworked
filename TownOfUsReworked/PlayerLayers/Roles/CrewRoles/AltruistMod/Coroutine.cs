@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
     {
         public static ArrowBehaviour Arrow;
         public static PlayerControl Target;
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
 
         public static IEnumerator AltruistRevive(DeadBody target, Altruist role)
         {
@@ -130,7 +129,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = Sprite;
+                renderer.sprite = AssetManager.Arrow;
                 Arrow.image = renderer;
                 gameObj.layer = 5;
                 Target = player;

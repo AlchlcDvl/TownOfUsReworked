@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             if (role.MeasuredPlayer != null && targets.Contains(role.MeasuredPlayer))
                 targets.Remove(role.MeasuredPlayer);
 
-            role.DisguiseButton.UpdateButton(role, "DISGUISE", role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown, TownOfUsReworked.DisguiseSprite, AbilityTypes.Direct,
+            role.DisguiseButton.UpdateButton(role, "DISGUISE", role.DisguiseTimer(), CustomGameOptions.DisguiseCooldown, AssetManager.Disguise, AbilityTypes.Direct, "Secondary",
                 targets, role.MeasuredPlayer != null, true, role.DelayActive || role.Disguised, role.DelayActive ? role.TimeRemaining2 : role.TimeRemaining, role.DelayActive ?
                 CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration);
 
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 role.MeasureButton = Utils.InstantiateButton();
 
             var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => role.MeasuredPlayer != x).ToList();
-            role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, TownOfUsReworked.MeasureSprite, AbilityTypes.Direct, 
+            role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", 
                 notMeasured);
         }
     }

@@ -141,6 +141,7 @@ namespace TownOfUsReworked.CustomOptions
         //IU Role Spawn
         public static CustomHeaderOption IntruderUtilityRoles;
         public static CustomNumberOption ImpostorOn;
+        public static CustomNumberOption GhoulOn;
 
         //SSu Role Spawn
         public static CustomHeaderOption SyndicateSupportRoles;
@@ -165,6 +166,7 @@ namespace TownOfUsReworked.CustomOptions
         //SU Role Spawn
         public static CustomHeaderOption SyndicateUtilityRoles;
         public static CustomNumberOption AnarchistOn;
+        public static CustomNumberOption BansheeOn;
 
         //Modifier Spawn
         public static CustomHeaderOption Modifiers;
@@ -263,8 +265,8 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption CustomEject;
 
         //Better Skeld Options
-        public static CustomHeaderOption BetterSkeldSettings;
         public static CustomToggleOption SkeldVentImprovements;
+        public static CustomHeaderOption BetterSkeld;
 
         //Better Airship Options
         public static CustomHeaderOption BetterAirshipSettings;
@@ -338,7 +340,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CAMin;
 
         //Mystic Options
-        public static CustomHeaderOption Mystic;
+        public static CustomHeaderOption MysticSettings;
         public static CustomToggleOption UniqueMystic;
         public static CustomNumberOption MysticCount;
         public static CustomNumberOption RevealCooldown;
@@ -501,6 +503,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomHeaderOption Agent;
         public static CustomToggleOption UniqueAgent;
         public static CustomNumberOption AgentCount;
+        public static CustomStringOption WhoSeesDead;
         
         //CP Options
         public static CustomHeaderOption CrewProtectiveSettings;
@@ -712,6 +715,10 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomHeaderOption Impostor;
         public static CustomNumberOption ImpCount;
 
+        //Ghoul Options
+        public static CustomHeaderOption Ghoul;
+        public static CustomNumberOption GhoulMarkCd;
+
         //Syndicate Options
         public static CustomHeaderOption SyndicateSettings;
         public static CustomToggleOption CustomSynColors;
@@ -806,6 +813,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption BeamerCount;
         public static CustomToggleOption UniqueBeamer;
         public static CustomNumberOption BeamCooldown;
+        public static CustomToggleOption BeamSelf;
 
         //Rebel Options
         public static CustomHeaderOption Rebel;
@@ -828,6 +836,11 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomHeaderOption Anarchist;
         public static CustomNumberOption AnarchistCount;
         public static CustomNumberOption ChaosDriveCooldownDecrease;
+
+        //Banshee Options
+        public static CustomHeaderOption Banshee;
+        public static CustomNumberOption ScreamCooldown;
+        public static CustomNumberOption ScreamDuration;
 
         //SP Options
         public static CustomHeaderOption SyndicatePowerSettings;
@@ -986,7 +999,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption NKMax;
         public static CustomNumberOption NKMin;
         public static CustomToggleOption NKHasImpVision;
-        public static CustomStringOption NKsKnow;
+        public static CustomToggleOption NKsKnow;
 
         //Glitch Options
         public static CustomHeaderOption Glitch;
@@ -1121,6 +1134,11 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption PlayersAlerted;
         public static CustomNumberOption PestKillCooldown;
         public static CustomToggleOption PestVent;
+
+        //Betrayer Options
+        public static CustomHeaderOption Betrayer;
+        public static CustomNumberOption BetrayerKillCooldown;
+        public static CustomToggleOption BetrayerVent;
 
         //Ability Options
         public static CustomHeaderOption AbilitySettings;
@@ -1366,1196 +1384,1222 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption VolatileKnows;
         public static CustomToggleOption UniqueVolatile;
 
+        //For Testing
+        public static CustomNestedOption ExampleNested;
+        public static CustomToggleOption ExampleToggle;
+        public static CustomNumberOption ExampleNumber;
+        public static CustomStringOption ExampleString;
+
         public static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
         public static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
+        public static Func<object, string> DistanceFormat { get; } = value => $"{value:0.0#}m";
         public static Func<object, string> MultiplierFormat { get; } = value => $"{value:0.0#}x";
 
         public static void GenerateAll()
         {
-            var num = 0;
-
             Patches.ExportButton = new Export(-1);
             Patches.ImportButton = new Import(-1);
             Patches.PresetButton = new Presets(-1);
 
-            GlobalSettings = new CustomHeaderOption(num++, MultiMenu.main, "Global Settings");
-            PlayerSpeed = new CustomNumberOption(true, num++, MultiMenu.main, "Player Speed", 1.5f, 0.25f, 10f, 0.25f, MultiplierFormat);
-            GhostSpeed = new CustomNumberOption(true, num++, MultiMenu.main, "Ghost Speed", 3f, 0.25f, 10f, 0.25f, MultiplierFormat);
-            InteractionDistance = new CustomNumberOption(true, num++, MultiMenu.main, "Interaction Distance", 1f, 0.1f, 5f, 0.1f, MultiplierFormat);
-            EmergencyButtonCount = new CustomNumberOption(true, num++, MultiMenu.main, "Emergency Count", 1, 0, 100, 1);
-            EmergencyButtonCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Emergency Button Cooldown", 20f, 0f, 300f, 5f, CooldownFormat);
-            DiscussionTime = new CustomNumberOption(true, num++, MultiMenu.main, "Discussion Time", 30f, 0f, 300f, 5f, CooldownFormat);
-            VotingTime = new CustomNumberOption(true, num++, MultiMenu.main, "Voting Time", 60f, 5f, 600f, 15f, CooldownFormat);
-            TaskBarMode = new CustomStringOption(true, num++, MultiMenu.main, "Taskbar Updates", new[] { "Normal", "Meeting Only", "Invisible" });
-            ConfirmEjects = new CustomToggleOption(true, num++, MultiMenu.main, "Confirm Ejects", false);
-            EjectionRevealsRole = new CustomToggleOption(true, num++, MultiMenu.main, "Ejection Reveals <color=#FFD700FF>Roles</color>", false);
-            InitialCooldowns = new CustomNumberOption(true, num++, MultiMenu.main, "Game Start Cooldowns", 10f, 10f, 30f, 2.5f, CooldownFormat);
-            ReportDistance = new CustomNumberOption(true, num++, MultiMenu.main, "Player Report Distance", 5f, 1f, 10f, 0.5f, MultiplierFormat);
-            ChatCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Chat Cooldown", 3f, 0f, 3f, 0.1f, CooldownFormat);
+            var num = 0;
+
+            /*ExampleNested = new CustomNestedOption(num++, MultiMenu.main, "Example Nested Option");
+            ExampleToggle = new CustomToggleOption(num++, MultiMenu.external, "Example Toggle Option");
+            ExampleNumber = new CustomNumberOption(num++, MultiMenu.external, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
+            ExampleString = new CustomStringOption(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
+            ExampleNested.AddOptions(ExampleNumber, ExampleString, ExampleToggle);*/
+
+            GlobalSettings = new CustomHeaderOption(num, MultiMenu.main, "Global Settings");
+            PlayerSpeed = new CustomNumberOption(num++, MultiMenu.main, "Player Speed", 1.5f, 0.25f, 10f, 0.25f, MultiplierFormat);
+            GhostSpeed = new CustomNumberOption(num++, MultiMenu.main, "Ghost Speed", 3f, 0.25f, 10f, 0.25f, MultiplierFormat);
+            InteractionDistance = new CustomNumberOption(num++, MultiMenu.main, "Interaction Distance", 2f, 0.1f, 5f, 0.1f, DistanceFormat);
+            EmergencyButtonCount = new CustomNumberOption(num++, MultiMenu.main, "Emergency Button Count", 1, 0, 100, 1);
+            EmergencyButtonCooldown = new CustomNumberOption(num++, MultiMenu.main, "Emergency Button Cooldown", 20f, 0f, 300f, 5f, CooldownFormat);
+            DiscussionTime = new CustomNumberOption(num++, MultiMenu.main, "Discussion Time", 30f, 0f, 300f, 5f, CooldownFormat);
+            VotingTime = new CustomNumberOption(num++, MultiMenu.main, "Voting Time", 60f, 5f, 600f, 15f, CooldownFormat);
+            TaskBarMode = new CustomStringOption(num++, MultiMenu.main, "Taskbar Updates", new[] { "Normal", "Meeting Only", "Invisible" });
+            ConfirmEjects = new CustomToggleOption(num++, MultiMenu.main, "Confirm Ejects", false);
+            EjectionRevealsRole = new CustomToggleOption(num++, MultiMenu.main, "Ejection Reveals <color=#FFD700FF>Roles</color>", false);
+            InitialCooldowns = new CustomNumberOption(num++, MultiMenu.main, "Game Start Cooldowns", 10f, 10f, 30f, 2.5f, CooldownFormat);
+            ReportDistance = new CustomNumberOption(num++, MultiMenu.main, "Player Report Distance", 5f, 1f, 20f, 0.5f, DistanceFormat);
+            ChatCooldown = new CustomNumberOption(num++, MultiMenu.main, "Chat Cooldown", 3f, 0f, 3f, 0.1f, CooldownFormat);
 
             GameModeSettings = new CustomHeaderOption(num++, MultiMenu.main, "Game Mode Settings");
-            GameMode = new CustomStringOption(true, num++, MultiMenu.main, "Game Mode", new[] { "Classic", "All Any", "Killing Only", "Custom", "Vanilla" });
+            GameMode = new CustomStringOption(num++, MultiMenu.main, "Game Mode", new[] { "Classic", "All Any", "Killing Only", "Custom", "Vanilla" });
 
             KillingOnlySettings = new CustomHeaderOption(num++, MultiMenu.main, "<color=#1D7CF2FF>Killing</color> Only Mode Settings");
-            NeutralRoles = new CustomNumberOption(true, num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> Count", 1, 0f, 13, 1);
-            AddArsonist = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#EE7600FF>Arsonist</color>", false);
-            AddCryomaniac = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#642DEAFF>Cryomaniac</color>", false);
-            AddPlaguebearer = new CustomToggleOption(true, num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
+            NeutralRoles = new CustomNumberOption(num++, MultiMenu.main, "<color=#B3B3B3FF>Neutral</color> Count", 1, 0, 13, 1);
+            AddArsonist = new CustomToggleOption(num++, MultiMenu.main, "Add <color=#EE7600FF>Arsonist</color>", false);
+            AddCryomaniac = new CustomToggleOption(num++, MultiMenu.main, "Add <color=#642DEAFF>Cryomaniac</color>", false);
+            AddPlaguebearer = new CustomToggleOption(num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
 
             AllAnySettings = new CustomHeaderOption(num++, MultiMenu.main, "All Any Mode Settings");
-            EnableUniques = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Uniques", false);
+            EnableUniques = new CustomToggleOption(num++, MultiMenu.main, "Enable Uniques", false);
 
             GameModifiers = new CustomHeaderOption(num++, MultiMenu.main, "Game Modifiers");
-            ColourblindComms = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Comms", true);
-            MeetingColourblind = new CustomToggleOption(true, num++, MultiMenu.main, "Camouflaged Meetings", false);
-            WhoCanVent = new CustomStringOption(true, num++, MultiMenu.main, "Serial Venters", new[] { "Default", "Everyone", "No One" });
-            ParallelMedScans = new CustomToggleOption(true, num++, MultiMenu.main, "Parallel Medbay Scans", false);
-            AnonymousVoting = new CustomToggleOption(true, num++, MultiMenu.main, "Anonymous Voting", true);
-            SkipButtonDisable = new CustomStringOption(true, num++, MultiMenu.main, "No Skipping", new[] { "Never", "Emergency", "Always" });
-            FactionSeeRoles = new CustomToggleOption(true, num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team", true);
-            VisualTasks = new CustomToggleOption(true, num++, MultiMenu.main, "Tasks Can Be Visualised", false);
-            LocationReports = new CustomToggleOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Location", false);
-            RoleFactionReports = new CustomStringOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Role/Faction", new [] { "Roles", "Factions", "Never" });
-            KillerReports = new CustomToggleOption(true, num++, MultiMenu.main, "Body Reports Now Display The Body's Killer's Role", false);
-            NoNames = new CustomToggleOption(true, num++, MultiMenu.main, "No Player Names", false);
-            Whispers = new CustomToggleOption(true, num++, MultiMenu.main, "PSSST *Whispers*", true);
-            WhispersAnnouncement = new CustomToggleOption(true, num++, MultiMenu.main, "Everyone Is Alerted To Whispers", true);
-            AppearanceAnimation = new CustomToggleOption(true, num++, MultiMenu.main, "Kill Animations Show Morphed Player", true);
-            LighterDarker = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Lighter Darker Colors", true);
-            RandomSpawns = new CustomToggleOption(true, num++, MultiMenu.main, "Enable Random Player Spawns", false);
-            EnableAbilities = new CustomToggleOption(true, num++, MultiMenu.main, "Enable <color=#FF9900FF>Abilities</color>", true);
-            EnableModifiers = new CustomToggleOption(true, num++, MultiMenu.main, "Enable <color=#7F7F7FFF>Modifiers</color>", true);
-            EnableObjectifiers = new CustomToggleOption(true, num++, MultiMenu.main, "Enable <color=#DD585BFF>Objectifiers</color>", true);
-            VentTargetting = new CustomToggleOption(true, num++, MultiMenu.main, "Players In Vents Can Be Targetted", true);
-            OxySlow = new CustomToggleOption(true, num++, MultiMenu.main, "Oxygen Sabotage Slows Down Players", true);
-            ReactorShake = new CustomNumberOption(true, num++, MultiMenu.main, "Reactor Sabotage Shakes The Screen By", 20f, 0f, 100f, 1f, PercentFormat);
+            ColourblindComms = new CustomToggleOption(num++, MultiMenu.main, "Camouflaged Comms");
+            MeetingColourblind = new CustomToggleOption(num++, MultiMenu.main, "Camouflaged Meetings", false);
+            WhoCanVent = new CustomStringOption(num++, MultiMenu.main, "Serial Venters", new[] { "Default", "Everyone", "No One" });
+            ParallelMedScans = new CustomToggleOption(num++, MultiMenu.main, "Parallel Medbay Scans", false);
+            AnonymousVoting = new CustomToggleOption(num++, MultiMenu.main, "Anonymous Voting");
+            SkipButtonDisable = new CustomStringOption(num++, MultiMenu.main, "No Skipping", new[] { "Never", "Emergency", "Always" });
+            FactionSeeRoles = new CustomToggleOption(num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team");
+            VisualTasks = new CustomToggleOption(num++, MultiMenu.main, "Tasks Can Be Visualised", false);
+            LocationReports = new CustomToggleOption(num++, MultiMenu.main, "Body Reports Now Display The Body's Location", false);
+            RoleFactionReports = new CustomStringOption(num++, MultiMenu.main, "Body Reports Now Display The Body's Role/Faction", new [] { "Roles", "Factions", "Never" });
+            KillerReports = new CustomToggleOption(num++, MultiMenu.main, "Body Reports Now Display The Body's Killer's Role", false);
+            NoNames = new CustomToggleOption(num++, MultiMenu.main, "No Player Names", false);
+            Whispers = new CustomToggleOption(num++, MultiMenu.main, "PSSST *Whispers*");
+            WhispersAnnouncement = new CustomToggleOption(num++, MultiMenu.main, "Everyone Is Alerted To Whispers");
+            AppearanceAnimation = new CustomToggleOption(num++, MultiMenu.main, "Kill Animations Show Morphed Player");
+            RandomSpawns = new CustomToggleOption(num++, MultiMenu.main, "Enable Random Player Spawns", false);
+            EnableAbilities = new CustomToggleOption(num++, MultiMenu.main, "Enable <color=#FF9900FF>Abilities</color>");
+            EnableModifiers = new CustomToggleOption(num++, MultiMenu.main, "Enable <color=#7F7F7FFF>Modifiers</color>");
+            EnableObjectifiers = new CustomToggleOption(num++, MultiMenu.main, "Enable <color=#DD585BFF>Objectifiers</color>");
+            VentTargetting = new CustomToggleOption(num++, MultiMenu.main, "Players In Vents Can Be Targetted");
+            OxySlow = new CustomToggleOption(num++, MultiMenu.main, "Oxygen Sabotage Slows Down Players");
+            ReactorShake = new CustomNumberOption(num++, MultiMenu.main, "Reactor Sabotage Shakes The Screen By", 20f, 0f, 100f, 1f, PercentFormat);
 
             QualityChanges = new CustomHeaderOption(num++, MultiMenu.main, "Quality Additions");
-            DeadSeeEverything = new CustomToggleOption(true, num++, MultiMenu.main, "Dead Can See Everyone's <color=#FFD700FF>Roles</color> && Votes", true);
-            DisableLevels = new CustomToggleOption(true, num++, MultiMenu.main, "Disable Level Icons", false);
-            WhiteNameplates = new CustomToggleOption(true, num++, MultiMenu.main, "Disable Player Nameplates", false);
-            SeeTasks = new CustomToggleOption(true, num++, MultiMenu.main, "See Tasks During The Game", true);
-            CustomEject = new CustomToggleOption(true, num++, MultiMenu.main, "Custom Ejection Messages", true);
+            DeadSeeEverything = new CustomToggleOption(num++, MultiMenu.main, "Dead Can See Everyone's <color=#FFD700FF>Roles</color> & Votes");
+            DisableLevels = new CustomToggleOption(num++, MultiMenu.main, "Disable Level Icons", false);
+            WhiteNameplates = new CustomToggleOption(num++, MultiMenu.main, "Disable Player Nameplates", false);
+            SeeTasks = new CustomToggleOption(num++, MultiMenu.main, "See Tasks During The Game");
+            CustomEject = new CustomToggleOption(num++, MultiMenu.main, "Custom Ejection Messages");
+            LighterDarker = new CustomToggleOption(num++, MultiMenu.main, "Enable Lighter Darker Colors");
 
             MapSettings = new CustomHeaderOption(num++, MultiMenu.main, "Map Settings");
-            Map = new CustomStringOption(true, num++, MultiMenu.main, "Map", new[] { "Skeld", "Mira HQ", "Polus", "Airship", "Submerged" });
-            RandomMapEnabled = new CustomToggleOption(true, num++, MultiMenu.main, "Choose Random Map", false);
-            RandomMapSkeld = new CustomNumberOption(true, num++, MultiMenu.main, "Skeld Chance", 0f, 0f, 100f, 10f, PercentFormat);
-            RandomMapMira = new CustomNumberOption(true, num++, MultiMenu.main, "Mira Chance", 0f, 0f, 100f, 10f, PercentFormat);
-            RandomMapPolus = new CustomNumberOption(true, num++, MultiMenu.main, "Polus Chance", 0f, 0f, 100f, 10f, PercentFormat);
-            RandomMapAirship = new CustomNumberOption(true, num++, MultiMenu.main, "Airship Chance", 0f, 0f, 100f, 10f, PercentFormat);
-            RandomMapSubmerged = new CustomNumberOption(true, num++, MultiMenu.main, "Submerged Chance", 0f, 0f, 100f, 10f, PercentFormat);
-            AutoAdjustSettings = new CustomToggleOption(true, num++, MultiMenu.main, "Auto Adjust Settings", false);
-            SmallMapHalfVision = new CustomToggleOption(true, num++, MultiMenu.main, "Half Vision On Skeld/Mira HQ", false);
-            SmallMapDecreasedCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Mira HQ Decreased Cooldowns", 0f, 0f, 15f, 2.5f, CooldownFormat);
-            LargeMapIncreasedCooldown = new CustomNumberOption(true, num++, MultiMenu.main, "Airship/Submerged Increased Cooldowns", 0f, 0f, 15f, 2.5f, CooldownFormat);
-            SmallMapIncreasedShortTasks = new CustomNumberOption(true, num++, MultiMenu.main, "Skeld/Mira HQ Increased Short Tasks", 0, 0, 5, 1);
-            SmallMapIncreasedLongTasks = new CustomNumberOption(true, num++, MultiMenu.main, "Skeld/Mira HQ Increased Long Tasks", 0, 0, 3, 1);
-            LargeMapDecreasedShortTasks = new CustomNumberOption(true, num++, MultiMenu.main, "Airship/Submerged Decreased Short Tasks", 0, 0, 5, 1);
-            LargeMapDecreasedLongTasks = new CustomNumberOption(true, num++, MultiMenu.main, "Airship/Submerged Decreased Long Tasks", 0, 0, 3, 1);
+            Map = new CustomStringOption(num++, MultiMenu.main, "Map", new[] { "Skeld", "Mira HQ", "Polus", "Airship", "Submerged" });
+            RandomMapEnabled = new CustomToggleOption(num++, MultiMenu.main, "Choose Random Map", false);
+            RandomMapSkeld = new CustomNumberOption(num++, MultiMenu.main, "Skeld Chance", 0f, 0f, 100f, 10f, PercentFormat);
+            RandomMapMira = new CustomNumberOption(num++, MultiMenu.main, "Mira Chance", 0f, 0f, 100f, 10f, PercentFormat);
+            RandomMapPolus = new CustomNumberOption(num++, MultiMenu.main, "Polus Chance", 0f, 0f, 100f, 10f, PercentFormat);
+            RandomMapAirship = new CustomNumberOption(num++, MultiMenu.main, "Airship Chance", 0f, 0f, 100f, 10f, PercentFormat);
+            RandomMapSubmerged = new CustomNumberOption(num++, MultiMenu.main, "Submerged Chance", 0f, 0f, 100f, 10f, PercentFormat);
+            AutoAdjustSettings = new CustomToggleOption(num++, MultiMenu.main, "Auto Adjust Settings", false);
+            SmallMapHalfVision = new CustomToggleOption(num++, MultiMenu.main, "Half Vision On Skeld/Mira HQ", false);
+            SmallMapDecreasedCooldown = new CustomNumberOption(num++, MultiMenu.main, "Mira HQ Decreased Cooldowns", 0f, 0f, 15f, 2.5f, CooldownFormat);
+            LargeMapIncreasedCooldown = new CustomNumberOption(num++, MultiMenu.main, "Airship/Submerged Increased Cooldowns", 0f, 0f, 15f, 2.5f, CooldownFormat);
+            SmallMapIncreasedShortTasks = new CustomNumberOption(num++, MultiMenu.main, "Skeld/Mira HQ Increased Short Tasks", 0, 0, 5, 1);
+            SmallMapIncreasedLongTasks = new CustomNumberOption(num++, MultiMenu.main, "Skeld/Mira HQ Increased Long Tasks", 0, 0, 3, 1);
+            LargeMapDecreasedShortTasks = new CustomNumberOption(num++, MultiMenu.main, "Airship/Submerged Decreased Short Tasks", 0, 0, 5, 1);
+            LargeMapDecreasedLongTasks = new CustomNumberOption(num++, MultiMenu.main, "Airship/Submerged Decreased Long Tasks", 0, 0, 3, 1);
 
-            BetterSkeldSettings = new CustomHeaderOption(num++, MultiMenu.main, "Skeld Settings");
-            SkeldVentImprovements = new CustomToggleOption(true, num++, MultiMenu.main, "Changed Vent Layout", false);
-            //ReactorTimer = new CustomNumberOption(true, num++, MultiMenu.main, "Reactor Meltdown Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
-            //OxygenTimer = new CustomNumberOption(true, num++, MultiMenu.main, "Oxygen Depletion Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
+            BetterSkeld = new CustomHeaderOption(num++, MultiMenu.main, "Better Skeld Settings");
+            SkeldVentImprovements = new CustomToggleOption(num++, MultiMenu.main, "Changed Vent Layout", false);
 
             BetterPolusSettings = new CustomHeaderOption(num++, MultiMenu.main, "Polus Settings");
-            PolusVentImprovements = new CustomToggleOption(true, num++, MultiMenu.main, "Changed Vent Layout", false);
-            VitalsLab = new CustomToggleOption(true, num++, MultiMenu.main, "Vitals Moved To Lab", false);
-            ColdTempDeathValley = new CustomToggleOption(true, num++, MultiMenu.main, "Cold Temp Moved To Death Valley", false);
-            WifiChartCourseSwap = new CustomToggleOption(true, num++, MultiMenu.main, "Reboot Wifi And Chart Course Swapped", false);
-            SeismicTimer = new CustomNumberOption(true, num++, MultiMenu.main, "Seimic Stabliser Malfunction Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
+            PolusVentImprovements = new CustomToggleOption(num++, MultiMenu.main, "Changed Vent Layout", false);
+            VitalsLab = new CustomToggleOption(num++, MultiMenu.main, "Vitals Moved To Lab", false);
+            ColdTempDeathValley = new CustomToggleOption(num++, MultiMenu.main, "Cold Temp Moved To Death Valley", false);
+            WifiChartCourseSwap = new CustomToggleOption(num++, MultiMenu.main, "Reboot Wifi And Chart Course Swapped", false);
+            SeismicTimer = new CustomNumberOption(num++, MultiMenu.main, "Seimic Stabliser Malfunction Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
 
             BetterAirshipSettings = new CustomHeaderOption(num++, MultiMenu.main, "Airship Settings");
-            NewSpawns = new CustomToggleOption(true, num++, MultiMenu.main, "Add New Spawns", false);
-            SpawnType = new CustomStringOption(true, num++, MultiMenu.main, "Spawn Type", new [] { "Normal", "Fixed", "Random Synchronised" });
-            MeetingSpawnChoice = new CustomToggleOption(true, num++, MultiMenu.main, "Spawn Near Meeting Table After A Meeting", false);
-            CallPlatform = new CustomToggleOption(true, num++, MultiMenu.main, "Add Call Platform Button", false);
-            AddTeleporters = new CustomToggleOption(true, num++, MultiMenu.main, "Add Meeting To Security Room Teleporter", false);
-            MoveVitals = new CustomToggleOption(true, num++, MultiMenu.main, "Move Vitals", false);
-            MoveFuel = new CustomToggleOption(true, num++, MultiMenu.main, "Move Fuel", false);
-            MoveDivert = new CustomToggleOption(true, num++, MultiMenu.main, "Move Divert", false);
-            MoveAdmin = new CustomStringOption(true, num++, MultiMenu.main, "Move Admin", new [] { "Don't Move", "Right Of Cockpit", "Main Hall" });
-            MoveElectrical = new CustomStringOption(true, num++, MultiMenu.main, "Move Electrical Outlet", new [] { "Don't Move", "Vault", "Electrical" });
-            //CrashTimer = new CustomNumberOption(true, num++, MultiMenu.main, "Crash Course Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
+            NewSpawns = new CustomToggleOption(num++, MultiMenu.main, "Add New Spawns", false);
+            SpawnType = new CustomStringOption(num++, MultiMenu.main, "Spawn Type", new [] { "Normal", "Fixed", "Random Synchronised" });
+            MeetingSpawnChoice = new CustomToggleOption(num++, MultiMenu.main, "Spawn Near Meeting Table After A Meeting", false);
+            CallPlatform = new CustomToggleOption(num++, MultiMenu.main, "Add Call Platform Button", false);
+            AddTeleporters = new CustomToggleOption(num++, MultiMenu.main, "Add Meeting To Security Room Teleporter", false);
+            MoveVitals = new CustomToggleOption(num++, MultiMenu.main, "Move Vitals", false);
+            MoveFuel = new CustomToggleOption(num++, MultiMenu.main, "Move Fuel", false);
+            MoveDivert = new CustomToggleOption(num++, MultiMenu.main, "Move Divert", false);
+            MoveAdmin = new CustomStringOption(num++, MultiMenu.main, "Move Admin", new [] { "Don't Move", "Right Of Cockpit", "Main Hall" });
+            MoveElectrical = new CustomStringOption(num++, MultiMenu.main, "Move Electrical Outlet", new [] { "Don't Move", "Vault", "Electrical" });
 
             CrewAuditorRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>");
-            MysticOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>", 0, 0, 100, 10, PercentFormat);
-            VampireHunterOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color>", 0, 0, 100, 10, PercentFormat);
+            MysticOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>", 0, 0, 100, 10, PercentFormat);
+            VampireHunterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewInvestigativeRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>");
-            AgentOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>", 0, 0, 100, 10, PercentFormat);
-            CoronerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
-            DetectiveOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
-            InspectorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
-            MediumOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>", 0, 0, 100, 10, PercentFormat);
-            OperativeOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", 0, 0, 100, 10, PercentFormat);
-            SeerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#71368AFF>Seer</color>", 0, 0, 100, 10, PercentFormat);
-            SheriffOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>", 0, 0, 100, 10, PercentFormat);
-            TrackerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#009900FF>Tracker</color>", 0, 0, 100, 10, PercentFormat);
+            AgentOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>", 0, 0, 100, 10, PercentFormat);
+            CoronerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
+            DetectiveOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
+            InspectorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
+            MediumOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>", 0, 0, 100, 10, PercentFormat);
+            OperativeOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", 0, 0, 100, 10, PercentFormat);
+            SeerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#71368AFF>Seer</color>", 0, 0, 100, 10, PercentFormat);
+            SheriffOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>", 0, 0, 100, 10, PercentFormat);
+            TrackerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewKillingRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
-            VeteranOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#998040FF>Veteran</color>", 0, 0, 100, 10, PercentFormat);
-            VigilanteOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color>", 0, 0, 100, 10, PercentFormat);
+            VeteranOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color>", 0, 0, 100, 10, PercentFormat);
+            VigilanteOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewProtectiveRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>");
-            AltruistOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>", 0, 0, 100, 10, PercentFormat);
-            MedicOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#006600FF>Medic</color>", 0, 0, 100, 10, PercentFormat);
-            TimeLordOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color>", 0, 0, 100, 10, PercentFormat);
+            AltruistOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>", 0, 0, 100, 10, PercentFormat);
+            MedicOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color>", 0, 0, 100, 10, PercentFormat);
+            TimeLordOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewSovereignRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>");
-            MayorOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color>", 0, 0, 100, 10, PercentFormat);
-            SwapperOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color>", 0, 0, 100, 10, PercentFormat);
+            MayorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color>", 0, 0, 100, 10, PercentFormat);
+            SwapperOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewSupportRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
-            ChameleonOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>", 0, 0, 100, 10, PercentFormat);
-            EngineerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>", 0, 0, 100, 10, PercentFormat);
-            EscortOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#803333FF>Escort</color>", 0, 0, 100, 10, PercentFormat);
-            RetributionistOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color>", 0, 0, 100, 10, PercentFormat);
-            ShifterOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>", 0, 0, 100, 10, PercentFormat);
-            TransporterOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color>", 0, 0, 100, 10, PercentFormat);
+            ChameleonOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>", 0, 0, 100, 10, PercentFormat);
+            EngineerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>", 0, 0, 100, 10, PercentFormat);
+            EscortOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color>", 0, 0, 100, 10, PercentFormat);
+            RetributionistOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color>", 0, 0, 100, 10, PercentFormat);
+            ShifterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>", 0, 0, 100, 10, PercentFormat);
+            TransporterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewUtilityRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
-            CrewmateOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color>", 0, 0, 100, 10, PercentFormat);
-            RevealerOn = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>", 0, 0, 100, 10, PercentFormat);
+            CrewmateOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color>", 0, 0, 100, 10, PercentFormat);
+            RevealerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralBenignRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>");
-            AmnesiacOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color>", 0, 0, 100, 10, PercentFormat);
-            GuardianAngelOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color>", 0, 0, 100, 10, PercentFormat);
-            SurvivorOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color>", 0, 0, 100, 10, PercentFormat);
-            ThiefOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color>", 0, 0, 100, 10, PercentFormat);
+            AmnesiacOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color>", 0, 0, 100, 10, PercentFormat);
+            GuardianAngelOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color>", 0, 0, 100, 10, PercentFormat);
+            SurvivorOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color>", 0, 0, 100, 10, PercentFormat);
+            ThiefOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralEvilRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>");
-            ActorOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>", 0, 0, 100, 10, PercentFormat);
-            BountyHunterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color>", 0, 0, 100, 10, PercentFormat);
-            CannibalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>", 0, 0, 100, 10, PercentFormat);
-            ExecutionerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0, 0, 100, 10, PercentFormat);
-            GuesserOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>", 0, 0, 100, 10, PercentFormat);
-            JesterOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0, 0, 100, 10, PercentFormat);
-            TrollOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0, 0, 100, 10, PercentFormat);
+            ActorOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>", 0, 0, 100, 10, PercentFormat);
+            BountyHunterOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color>", 0, 0, 100, 10, PercentFormat);
+            CannibalOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>", 0, 0, 100, 10, PercentFormat);
+            ExecutionerOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>", 0, 0, 100, 10, PercentFormat);
+            GuesserOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>", 0, 0, 100, 10, PercentFormat);
+            JesterOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>", 0, 0, 100, 10, PercentFormat);
+            TrollOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralKillingRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
-            ArsonistOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>", 0, 0, 100, 10, PercentFormat);
-            CryomaniacOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>", 0, 0, 100, 10, PercentFormat);
-            GlitchOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color>", 0, 0, 100, 10, PercentFormat);
-            JuggernautOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color>", 0, 0, 100, 10, PercentFormat);
-            MurdererOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color>", 0, 0, 100, 10, PercentFormat);
-            PlaguebearerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color>", 0, 0, 100, 10, PercentFormat);
-            SerialKillerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color>", 0, 0, 100, 10, PercentFormat);
-            WerewolfOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color>", 0, 0, 100, 10, PercentFormat);
+            ArsonistOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>", 0, 0, 100, 10, PercentFormat);
+            CryomaniacOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>", 0, 0, 100, 10, PercentFormat);
+            GlitchOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color>", 0, 0, 100, 10, PercentFormat);
+            JuggernautOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color>", 0, 0, 100, 10, PercentFormat);
+            MurdererOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color>", 0, 0, 100, 10, PercentFormat);
+            PlaguebearerOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color>", 0, 0, 100, 10, PercentFormat);
+            SerialKillerOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color>", 0, 0, 100, 10, PercentFormat);
+            WerewolfOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralNeophyteRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>");
-            DraculaOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color>", 0, 0, 100, 10, PercentFormat);
-            JackalOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>", 0, 0, 100, 10, PercentFormat);
-            NecromancerOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color>", 0, 0, 100, 10, PercentFormat);
-            WhispererOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>", 0, 0, 100, 10, PercentFormat);
+            DraculaOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color>", 0, 0, 100, 10, PercentFormat);
+            JackalOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>", 0, 0, 100, 10, PercentFormat);
+            NecromancerOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color>", 0, 0, 100, 10, PercentFormat);
+            WhispererOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralNeophyteRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> <color=#FFD700FF>Roles</color>");
-            PhantomOn = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
+            PhantomOn = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderConcealingRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>");
-            BlackmailerOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color>", 0, 0, 100, 10, PercentFormat);
-            CamouflagerOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color>", 0, 0, 100, 10, PercentFormat);
-            GrenadierOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color>", 0, 0, 100, 10, PercentFormat);
-            JanitorOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color>", 0, 0, 100, 10, PercentFormat);
-            UndertakerOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color>", 0, 0, 100, 10, PercentFormat);
+            BlackmailerOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color>", 0, 0, 100, 10, PercentFormat);
+            CamouflagerOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color>", 0, 0, 100, 10, PercentFormat);
+            GrenadierOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color>", 0, 0, 100, 10, PercentFormat);
+            JanitorOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color>", 0, 0, 100, 10, PercentFormat);
+            UndertakerOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderDeceptionRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>");
-            DisguiserOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color>", 0, 0, 100, 10, PercentFormat);
-            MorphlingOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color>", 0, 0, 100, 10, PercentFormat);
-            WraithOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color>", 0, 0, 100, 10, PercentFormat);
+            DisguiserOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color>", 0, 0, 100, 10, PercentFormat);
+            MorphlingOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color>", 0, 0, 100, 10, PercentFormat);
+            WraithOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderKillingRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
-            AmbusherOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color>", 0, 0, 100, 10, PercentFormat);
+            AmbusherOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderSupportRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
-            ConsigliereOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color>", 0, 0, 100, 10, PercentFormat);
-            ConsortOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#801780FF>Consort</color>", 0, 0, 100, 10, PercentFormat);
-            GodfatherOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color>", 0, 0, 100, 10, PercentFormat);
-            MinerOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color>", 0, 0, 100, 10, PercentFormat);
-            TeleporterOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color>", 0, 0, 100, 10, PercentFormat);
-            TimeMasterOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color>", 0, 0, 100, 10, PercentFormat);
+            ConsigliereOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color>", 0, 0, 100, 10, PercentFormat);
+            ConsortOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#801780FF>Consort</color>", 0, 0, 100, 10, PercentFormat);
+            GodfatherOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color>", 0, 0, 100, 10, PercentFormat);
+            MinerOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color>", 0, 0, 100, 10, PercentFormat);
+            TeleporterOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color>", 0, 0, 100, 10, PercentFormat);
+            TimeMasterOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderUtilityRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
-            ImpostorOn = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>", 0, 0, 100, 10, PercentFormat);
+            GhoulOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#F1C40FFF>Ghoul</color>", 0, 0, 100, 10, PercentFormat);
+            ImpostorOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateDisruptionRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>");
-            ConcealerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0, 0, 100, 10, PercentFormat);
-            DrunkardOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>", 0, 0, 100, 10, PercentFormat);
-            FramerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>", 0, 0, 100, 10, PercentFormat);
-            PoisonerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>", 0, 0, 100, 10, PercentFormat);
-            ShapeshifterOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>", 0, 0, 100, 10, PercentFormat);
+            ConcealerOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>", 0, 0, 100, 10, PercentFormat);
+            DrunkardOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>", 0, 0, 100, 10, PercentFormat);
+            FramerOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>", 0, 0, 100, 10, PercentFormat);
+            PoisonerOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>", 0, 0, 100, 10, PercentFormat);
+            ShapeshifterOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateKillingRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
-            BomberOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color>", 0, 0, 100, 10, PercentFormat);
-            CrusaderOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color>", 0, 0, 100, 10, PercentFormat);
-            GorgonOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>", 0, 0, 100, 10, PercentFormat);
+            BomberOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color>", 0, 0, 100, 10, PercentFormat);
+            CrusaderOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color>", 0, 0, 100, 10, PercentFormat);
+            GorgonOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateSupportRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
-            BeamerOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>", 0, 0, 100, 10, PercentFormat);
-            RebelOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>", 0, 0, 100, 10, PercentFormat);
-            WarperOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>", 0, 0, 100, 10, PercentFormat);
+            BeamerOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>", 0, 0, 100, 10, PercentFormat);
+            RebelOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>", 0, 0, 100, 10, PercentFormat);
+            WarperOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateUtilityRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
-            AnarchistOn = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color>", 0, 0, 100, 10, PercentFormat);
-
-            Objectifiers = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifiers</color>");
-            AlliedOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>", 0, 0, 100, 10, PercentFormat);
-            CorruptedOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>", 0, 0, 100, 10, PercentFormat);
-            FanaticOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>", 0, 0, 100, 10, PercentFormat);
-            LoversOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>", 0, 0, 100, 10, PercentFormat);
-            OverlordOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>", 0, 0, 100, 10, PercentFormat);
-            RivalsOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>", 0, 0, 100, 10, PercentFormat);
-            TaskmasterOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>", 0, 0, 100, 10, PercentFormat);
-            TraitorOn = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>", 0, 0, 100, 10, PercentFormat);
-
-            Abilities = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Abilities</color>");
-            ButtonBarryOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>", 0, 0, 100, 10, PercentFormat);
-            CrewAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
-            InsiderOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>", 0, 0, 100, 10, PercentFormat);
-            IntruderAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
-            MultitaskerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>", 0, 0, 100, 10, PercentFormat);
-            NeutralAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
-            NinjaOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color>", 0, 0, 100, 10, PercentFormat);
-            RadarOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>", 0, 0, 100, 10, PercentFormat);
-            RuthlessOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>", 0, 0, 100, 10, PercentFormat);
-            SnitchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>", 0, 0, 100, 10, PercentFormat);
-            SyndicateAssassinOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
-            TiebreakerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>", 0, 0, 100, 10, PercentFormat);
-            TorchOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>", 0, 0, 100, 10, PercentFormat);
-            TunnelerOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>", 0, 0, 100, 10, PercentFormat);
-            UnderdogOn = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>", 0, 0, 100, 10, PercentFormat);
+            AnarchistOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color>", 0, 0, 100, 10, PercentFormat);
+            BansheeOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#E67E22FF>Banshee</color>", 0, 0, 100, 10, PercentFormat);
 
             Modifiers = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#7F7F7FFF>Modifiers</color>");
-            BaitOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>", 0, 0, 100, 10, PercentFormat);
-            CowardOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color>", 0, 0, 100, 10, PercentFormat);
-            DiseasedOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>", 0, 0, 100, 10, PercentFormat);
-            DrunkOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color>", 0, 0, 100, 10, PercentFormat);
-            DwarfOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>", 0, 0, 100, 10, PercentFormat);
-            FlincherOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>", 0, 0, 100, 10, PercentFormat);
-            GiantOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>", 0, 0, 100, 10, PercentFormat);
-            IndomitableOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color>", 0, 0, 100, 10, PercentFormat);
-            ProfessionalOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color>", 0, 0, 100, 10, PercentFormat);
-            ShyOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color>", 0, 0, 100, 10, PercentFormat);
-            VIPOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>", 0, 0, 100, 10, PercentFormat);
-            VolatileOn = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>", 0, 0, 100, 10, PercentFormat);
+            BaitOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>", 0, 0, 100, 10, PercentFormat);
+            CowardOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color>", 0, 0, 100, 10, PercentFormat);
+            DiseasedOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>", 0, 0, 100, 10, PercentFormat);
+            DrunkOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color>", 0, 0, 100, 10, PercentFormat);
+            DwarfOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>", 0, 0, 100, 10, PercentFormat);
+            FlincherOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>", 0, 0, 100, 10, PercentFormat);
+            GiantOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>", 0, 0, 100, 10, PercentFormat);
+            IndomitableOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color>", 0, 0, 100, 10, PercentFormat);
+            ProfessionalOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color>", 0, 0, 100, 10, PercentFormat);
+            ShyOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color>", 0, 0, 100, 10, PercentFormat);
+            VIPOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>", 0, 0, 100, 10, PercentFormat);
+            VolatileOn = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>", 0, 0, 100, 10, PercentFormat);
+
+            Objectifiers = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifiers</color>");
+            AlliedOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>", 0, 0, 100, 10, PercentFormat);
+            CorruptedOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>", 0, 0, 100, 10, PercentFormat);
+            FanaticOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>", 0, 0, 100, 10, PercentFormat);
+            LoversOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>", 0, 0, 100, 10, PercentFormat);
+            OverlordOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>", 0, 0, 100, 10, PercentFormat);
+            RivalsOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>", 0, 0, 100, 10, PercentFormat);
+            TaskmasterOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>", 0, 0, 100, 10, PercentFormat);
+            TraitorOn = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>", 0, 0, 100, 10, PercentFormat);
+
+            Abilities = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Abilities</color>");
+            ButtonBarryOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>", 0, 0, 100, 10, PercentFormat);
+            CrewAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
+            InsiderOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>", 0, 0, 100, 10, PercentFormat);
+            IntruderAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
+            MultitaskerOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>", 0, 0, 100, 10, PercentFormat);
+            NeutralAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
+            NinjaOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color>", 0, 0, 100, 10, PercentFormat);
+            RadarOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>", 0, 0, 100, 10, PercentFormat);
+            RuthlessOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>", 0, 0, 100, 10, PercentFormat);
+            SnitchOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>", 0, 0, 100, 10, PercentFormat);
+            SyndicateAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
+            TiebreakerOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>", 0, 0, 100, 10, PercentFormat);
+            TorchOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>", 0, 0, 100, 10, PercentFormat);
+            TunnelerOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>", 0, 0, 100, 10, PercentFormat);
+            UnderdogOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Settings");
-            CustomCrewColors = new CustomToggleOption(true, num++, MultiMenu.crew, "Enable Custom <color=#8BFDFDFF>Crew</color> Colors", true);
-            ShortTasks = new CustomNumberOption(true, num++, MultiMenu.crew, "Short Task Count", 1, 0, 100, 1);
-            LongTasks = new CustomNumberOption(true, num++, MultiMenu.crew, "Long Task Count", 1, 0, 100, 1);
-            CommonTasks = new CustomNumberOption(true, num++, MultiMenu.crew, "Common Task Count", 1, 0, 100, 1);
-            GhostTasksCountToWin = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Ghost Tasks Count To Win", true);
-            CrewVision = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            CrewMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
-            CrewMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
-            CrewVent = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Can Vent", false);
+            CustomCrewColors = new CustomToggleOption(num++, MultiMenu.crew, "Enable Custom <color=#8BFDFDFF>Crew</color> Colors");
+            ShortTasks = new CustomNumberOption(num++, MultiMenu.crew, "Short Task Count", 1, 0, 100, 1);
+            LongTasks = new CustomNumberOption(num++, MultiMenu.crew, "Long Task Count", 1, 0, 100, 1);
+            CommonTasks = new CustomNumberOption(num++, MultiMenu.crew, "Common Task Count", 1, 0, 100, 1);
+            GhostTasksCountToWin = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Ghost Tasks Count To Win");
+            CrewVision = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            CrewMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
+            CrewMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
+            CrewVent = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Can Vent", false);
 
             CrewAuditorSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings");
-            CAMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CAMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CAMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CAMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
-            Mystic = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>");
-            MysticCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Count", 1, 1, 14, 1);
-            UniqueMystic = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Is Unique In All Any", false);
-            RevealCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Reveal Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            MysticSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>");
+            MysticCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Count", 1, 1, 14, 1);
+            UniqueMystic = new CustomToggleOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Is Unique In All Any", false);
+            RevealCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Reveal Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             VampireHunter = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color>");
-            VampireHunterCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color> Count", 1, 1, 14, 1);
-            UniqueVampireHunter = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color> Is Unique In All Any", false);
-            StakeCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Stake Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            VampireHunterCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color> Count", 1, 1, 14, 1);
+            UniqueVampireHunter = new CustomToggleOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color> Is Unique In All Any", false);
+            StakeCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Stake Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             CrewInvestigativeSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings");
-            CIMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CIMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CIMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CIMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Agent = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>");
-            AgentCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Count", 1, 1, 14, 1);
-            UniqueAgent = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Is Unique In All Any", false);
+            AgentCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Count", 1, 1, 14, 1);
+            UniqueAgent = new CustomToggleOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Is Unique In All Any", false);
+            WhoSeesDead = new CustomStringOption(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Agent", "Everyone But Agent", "Everyone" });
 
             Coroner = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
-            CoronerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
-            UniqueCoroner = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
-            CoronerArrowDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Dead Body Arrow Duration", 0.1f, 0f, 2f, 0.05f, CooldownFormat);
-            CoronerReportRole = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Role", false);
-            CoronerReportName = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
-            CoronerKillerNameTime = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
-            CompareCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            CompareLimit = new CustomNumberOption(true, num++, MultiMenu.crew, "Compare Limit", 5, 1, 15, 1);
+            CoronerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
+            UniqueCoroner = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
+            CoronerArrowDuration = new CustomNumberOption(num++, MultiMenu.crew, "Dead Body Arrow Duration", 0.1f, 0f, 2f, 0.05f, CooldownFormat);
+            CoronerReportRole = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Role", false);
+            CoronerReportName = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
+            CoronerKillerNameTime = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
+            CompareCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            CompareLimit = new CustomNumberOption(num++, MultiMenu.crew, "Compare Limit", 5, 1, 15, 1);
 
             Detective = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>");
-            DetectiveCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Count", 1, 1, 14, 1);
-            UniqueDetective = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Is Unique In All Any", false);
-            ExamineCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Examine Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
-            RecentKill = new CustomNumberOption(true, num++, MultiMenu.crew, "Bloody Player Duration", 25f, 5f, 60f, 2.5f, CooldownFormat);
-            FootprintInterval = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat);
-            FootprintDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Footprint Duration", 10f, 0.5f, 10f, 0.5f, CooldownFormat);
-            AnonymousFootPrint = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous Footprint", false);
-            VentFootprintVisible = new CustomToggleOption(true, num++, MultiMenu.crew, "Footprints Are Visible Near Vents", false);
+            DetectiveCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Count", 1, 1, 14, 1);
+            UniqueDetective = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Is Unique In All Any", false);
+            ExamineCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Examine Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
+            RecentKill = new CustomNumberOption(num++, MultiMenu.crew, "Bloody Player Duration", 25f, 5f, 60f, 2.5f, CooldownFormat);
+            FootprintInterval = new CustomNumberOption(num++, MultiMenu.crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat);
+            FootprintDuration = new CustomNumberOption(num++, MultiMenu.crew, "Footprint Duration", 10f, 0.5f, 10f, 0.5f, CooldownFormat);
+            AnonymousFootPrint = new CustomToggleOption(num++, MultiMenu.crew, "Anonymous Footprint", false);
+            VentFootprintVisible = new CustomToggleOption(num++, MultiMenu.crew, "Footprints Are Visible Near Vents", false);
 
             Inspector = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>");
-            InspectorCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Count", 1, 1, 14, 1);
-            UniqueInspector = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Is Unique In All Any", false);
-            InspectCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Inspect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            InspectorCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Count", 1, 1, 14, 1);
+            UniqueInspector = new CustomToggleOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color> Is Unique In All Any", false);
+            InspectCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Inspect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             Medium = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color>");
-            MediumCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Count", 1, 1, 14, 1);
-            UniqueMedium = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Is Unique In All Any", false);
-            MediateCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Mediate Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
-            MediateDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Mediate Duration", 10f, 1f, 20f, 1f, CooldownFormat);
-            ShowMediatePlayer = new CustomToggleOption(true, num++, MultiMenu.crew, "Reveal Appearance Of Mediate Target", true);
-            ShowMediumToDead = new CustomToggleOption(true, num++, MultiMenu.crew, "Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target", true);
-            DeadRevealed = new CustomStringOption(true, num++, MultiMenu.crew, "Who Is Revealed With Mediate", new[] { "Oldest Dead", "Newest Dead", "All Dead", "Random" });
+            MediumCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Count", 1, 1, 14, 1);
+            UniqueMedium = new CustomToggleOption(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Is Unique In All Any", false);
+            MediateCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Mediate Cooldown", 10f, 1f, 20f, 1f, CooldownFormat);
+            //MediateDuration = new CustomNumberOption(num++, MultiMenu.crew, "Mediate Duration", 10f, 1f, 20f, 1f, CooldownFormat);
+            ShowMediatePlayer = new CustomToggleOption(num++, MultiMenu.crew, "Reveal Appearance Of Mediate Target");
+            ShowMediumToDead = new CustomToggleOption(num++, MultiMenu.crew, "Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target");
+            DeadRevealed = new CustomStringOption(num++, MultiMenu.crew, "Who Is Revealed With Mediate", new[] { "Oldest Dead", "Newest Dead", "All Dead", "Random" });
 
             Seer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#71368AFF>Seer</color>");
-            SeerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#71368AFF>Seer</color> Count", 1, 1, 14, 1);
-            UniqueSeer = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#71368AFF>Seer</color> Is Unique In All Any", false);
-            SeerCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Seer Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            SeerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#71368AFF>Seer</color> Count", 1, 1, 14, 1);
+            UniqueSeer = new CustomToggleOption(num++, MultiMenu.crew, "<color=#71368AFF>Seer</color> Is Unique In All Any", false);
+            SeerCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Seer Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             Sheriff = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>");
-            SheriffCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Count", 1, 1, 14, 1);
-            UniqueSheriff = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Is Unique In All Any", false);
-            InterrogateCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Interrogate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            NeutEvilRed = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> Show Evil", false);
-            NeutKillingRed = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color> Show Evil", false);
+            SheriffCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Count", 1, 1, 14, 1);
+            UniqueSheriff = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Is Unique In All Any", false);
+            InterrogateCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Interrogate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            NeutEvilRed = new CustomToggleOption(num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> Show Evil", false);
+            NeutKillingRed = new CustomToggleOption(num++, MultiMenu.crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color> Show Evil", false);
 
             Tracker = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color>");
-            TrackerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Count", 1, 1, 14, 1);
-            UniqueTracker = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Is Unique In All Any", false);
-            UpdateInterval = new CustomNumberOption(true, num++, MultiMenu.crew, "Arrow Update Interval", 5f, 0f, 15f, 0.5f, CooldownFormat);
-            TrackCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Track Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ResetOnNewRound = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Arrows Reset After Each Round", false);
-            MaxTracks = new CustomNumberOption(true, num++, MultiMenu.crew, "Maximum Number Of Tracking Bugs Per Round", 5, 1, 15, 1);
+            TrackerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Count", 1, 1, 14, 1);
+            UniqueTracker = new CustomToggleOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Is Unique In All Any", false);
+            UpdateInterval = new CustomNumberOption(num++, MultiMenu.crew, "Arrow Update Interval", 5f, 0f, 15f, 0.5f, CooldownFormat);
+            TrackCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Track Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ResetOnNewRound = new CustomToggleOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Arrows Reset After Each Round", false);
+            MaxTracks = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Tracking Bugs Per Round", 5, 1, 15, 1);
 
             Operative = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>");
-            OperativeCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Count", 1, 1, 14, 1);
-            UniqueOperative = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Is Unique In All Any", false);
-            MinAmountOfTimeInBug = new CustomNumberOption(true, num++, MultiMenu.crew, "Min Amount Of Time In Bug To Register", 0f, 0f, 15f, 0.5f, CooldownFormat);
-            BugCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            BugsRemoveOnNewRound = new CustomToggleOption(true, num++, MultiMenu.crew, "Bugs Are Removed Each Round", true);
-            MaxBugs = new CustomNumberOption(true, num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1);
-            BugRange = new CustomNumberOption(true, num++, MultiMenu.crew, "Bug Range", 0.25f, 0.05f, 1f, 0.05f, MultiplierFormat);
-            MinAmountOfPlayersInBug = new CustomNumberOption(true, num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 3, 1, 5, 1);
+            OperativeCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Count", 1, 1, 14, 1);
+            UniqueOperative = new CustomToggleOption(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Is Unique In All Any", false);
+            MinAmountOfTimeInBug = new CustomNumberOption(num++, MultiMenu.crew, "Min Amount Of Time In Bug Range To Trigger", 0f, 0f, 15f, 0.5f, DistanceFormat);
+            BugCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BugsRemoveOnNewRound = new CustomToggleOption(num++, MultiMenu.crew, "Bugs Are Removed Each Round");
+            MaxBugs = new CustomNumberOption(num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1);
+            BugRange = new CustomNumberOption(num++, MultiMenu.crew, "Bug Range", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
+            MinAmountOfPlayersInBug = new CustomNumberOption(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 3, 1, 5, 1);
 
             CrewKillingSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings");
-            CKMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CKMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CKMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CKMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Veteran = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color>");
-            VeteranCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Count", 1, 1, 14, 1);
-            UniqueVeteran = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Is Unique In All Any", false);
-            AlertCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Alert Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            AlertDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Alert Duration", 10f, 5f, 30f, 1f, CooldownFormat);
-            MaxAlerts = new CustomNumberOption(true, num++, MultiMenu.crew, "Number Of Alerts", 5, 1, 15, 1);
+            VeteranCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Count", 1, 1, 14, 1);
+            UniqueVeteran = new CustomToggleOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Is Unique In All Any", false);
+            AlertCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Alert Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            AlertDuration = new CustomNumberOption(num++, MultiMenu.crew, "Alert Duration", 10f, 5f, 30f, 1f, CooldownFormat);
+            MaxAlerts = new CustomNumberOption(num++, MultiMenu.crew, "Number Of Alerts", 5, 1, 15, 1);
 
             Vigilante = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color>");
-            VigilanteCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Count", 1, 1, 14, 1);
-            UniqueVigilante = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Is Unique In All Any", false);
-            MisfireKillsInno = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Misfire Kills The Innocent Target", true);
-            VigiKillAgain = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent", true);
-            RoundOneNoShot = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round", true);
-            VigiNotifOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] { "Never", "Flash", "Message" });
-            VigiOptions = new CustomStringOption(true, num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Pre-Meeting", "Post-Meeting" });
-            VigiKillCd = new CustomNumberOption(true, num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            VigiBulletCount = new CustomNumberOption(true, num++, MultiMenu.crew, "Maximum Number Of Bullets", 5, 1, 15, 1);
+            VigilanteCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Count", 1, 1, 14, 1);
+            UniqueVigilante = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Is Unique In All Any", false);
+            MisfireKillsInno = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Misfire Kills The Innocent Target");
+            VigiKillAgain = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent");
+            RoundOneNoShot = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round");
+            VigiNotifOptions = new CustomStringOption(num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] { "Never", "Flash", "Message" });
+            VigiOptions = new CustomStringOption(num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Pre-Meeting", "Post-Meeting" });
+            VigiKillCd = new CustomNumberOption(num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            VigiBulletCount = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Bullets", 5, 1, 15, 1);
 
             CrewProtectiveSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings");
-            CPMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CPMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CPMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CPMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Altruist = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>");
-            AltruistCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Count", 1, 1, 14, 1);
-            UniqueAltruist = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Is Unique In All Any", false);
-            AltReviveDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Revive Duration", 10f, 1f, 15f, 1f, CooldownFormat);
-            AltruistTargetBody = new CustomToggleOption(true, num++, MultiMenu.crew, "Target's Body Disappears On Beginning Of Revive", false);
+            AltruistCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Count", 1, 1, 14, 1);
+            UniqueAltruist = new CustomToggleOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Is Unique In All Any", false);
+            AltReviveDuration = new CustomNumberOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Revive Duration", 10f, 1f, 15f, 1f, CooldownFormat);
+            AltruistTargetBody = new CustomToggleOption(num++, MultiMenu.crew, "Target's Body Disappears On Beginning Of Revive", false);
 
             Medic = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color>");
-            MedicCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Count", 1, 1, 14, 1);
-            UniqueMedic = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Is Unique In All Any", false);
-            ShowShielded = new CustomStringOption(true, num++, MultiMenu.crew, "Show Shielded Player", new[] { "Self", "Medic", "Self+Medic", "Everyone" });
-            WhoGetsNotification = new CustomStringOption(true, num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self+Medic", "Everyone", "Nobody" });
-            ShieldBreaks = new CustomToggleOption(true, num++, MultiMenu.crew, "Shield Breaks On Murder Attempt", false);
+            MedicCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Count", 1, 1, 14, 1);
+            UniqueMedic = new CustomToggleOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Is Unique In All Any", false);
+            ShowShielded = new CustomStringOption(num++, MultiMenu.crew, "Show Shielded Player", new[] { "Self", "Medic", "Self+Medic", "Everyone" });
+            WhoGetsNotification = new CustomStringOption(num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self+Medic", "Everyone", "Nobody" });
+            ShieldBreaks = new CustomToggleOption(num++, MultiMenu.crew, "Shield Breaks On Murder Attempt", false);
 
             TimeLord = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color>");
-            TimeLordCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> Count", 1, 1, 14, 1);
-            UniqueTimeLord = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> Is Unique In All Any", false);
-            RewindRevive = new CustomToggleOption(true, num++, MultiMenu.crew, "Revive During Rewind", false);
-            TLImmunity = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> To Rewind And Freeze", false);
-            RewindDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Rewind Duration", 2f, 0.5f, 10f, 0.5f, CooldownFormat);
-            RewindCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Rewind Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            RewindMaxUses = new CustomNumberOption(true, num++, MultiMenu.crew, "Maximum Number Of Rewinds", 5, 1, 15, 1);
+            TimeLordCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> Count", 1, 1, 14, 1);
+            UniqueTimeLord = new CustomToggleOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> Is Unique In All Any", false);
+            RewindRevive = new CustomToggleOption(num++, MultiMenu.crew, "Revive During Rewind", false);
+            TLImmunity = new CustomToggleOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color> To Rewind And Freeze", false);
+            RewindDuration = new CustomNumberOption(num++, MultiMenu.crew, "Rewind Duration", 2f, 0.5f, 10f, 0.5f, CooldownFormat);
+            RewindCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Rewind Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            RewindMaxUses = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Rewinds", 5, 1, 15, 1);
 
             CrewSovereignSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings");
-            CSvMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSvMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSvMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSvMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Mayor = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color>");
-            MayorCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Count", 1, 1, 14, 1);
-            UniqueMayor = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Is Unique In All Any", false);
-            MayorVoteBank = new CustomNumberOption(true, num++, MultiMenu.crew, "Initial <color=#704FA8FF>Mayor</color> Vote Bank", 2, 0, 10, 1);
-            MayorAnonymous = new CustomToggleOption(true, num++, MultiMenu.crew, "Anonymous <color=#704FA8FF>Mayor</color> Votes", false);
-            MayorButton = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Can Button", true);
+            MayorCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Count", 1, 1, 14, 1);
+            UniqueMayor = new CustomToggleOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Is Unique In All Any", false);
+            MayorVoteBank = new CustomNumberOption(num++, MultiMenu.crew, "Initial <color=#704FA8FF>Mayor</color> Vote Bank", 2, 0, 10, 1);
+            MayorAnonymous = new CustomToggleOption(num++, MultiMenu.crew, "Anonymous <color=#704FA8FF>Mayor</color> Votes", false);
+            MayorButton = new CustomToggleOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Can Button");
 
             Swapper = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color>");
-            SwapperCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Count", 1, 1, 14, 1);
-            UniqueSwapper = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Is Unique In All Any", false);
-            SwapperButton = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Button", true);
-            SwapAfterVoting = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Swap After Voting", false);
-            SwapSelf = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Swap Themself", false);
+            SwapperCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Count", 1, 1, 14, 1);
+            UniqueSwapper = new CustomToggleOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Is Unique In All Any", false);
+            SwapperButton = new CustomToggleOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Button");
+            SwapAfterVoting = new CustomToggleOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Swap After Voting", false);
+            SwapSelf = new CustomToggleOption(num++, MultiMenu.crew, "<color=#66E666FF>Swapper</color> Can Swap Themself", false);
 
             CrewSupportSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings");
-            CSMax = new CustomNumberOption(true, num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSMin = new CustomNumberOption(true, num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Chameleon = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>");
-            ChameleonCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Count", 1, 1, 14, 1);
-            UniqueChameleon = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Is Unique In All Any", false);
-            SwoopCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Swoop Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            SwoopDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Swoop Duration", 10f, 5f, 30f, 1f, CooldownFormat);
+            ChameleonCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Count", 1, 1, 14, 1);
+            UniqueChameleon = new CustomToggleOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Is Unique In All Any", false);
+            SwoopCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Swoop Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            SwoopDuration = new CustomNumberOption(num++, MultiMenu.crew, "Swoop Duration", 10f, 5f, 30f, 1f, CooldownFormat);
 
             Engineer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>");
-            EngineerCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Count", 1, 1, 14, 1);
-            UniqueEngineer = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Is Unique In All Any", false);
-            MaxFixes = new CustomNumberOption(true, num++, MultiMenu.crew, "Maximum Number Of Fixes", 1, 1, 14, 1);
-            FixCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Fix Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            EngineerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Count", 1, 1, 14, 1);
+            UniqueEngineer = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Is Unique In All Any", false);
+            MaxFixes = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Fixes", 1, 1, 14, 1);
+            FixCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Fix Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             Escort = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color>");
-            EscortCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Count", 1, 1, 14, 1);
-            UniqueEscort = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Is Unique In All Any", false);
-            EscRoleblockCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            EscRoleblockDuration = new CustomNumberOption(true, num++, MultiMenu.crew, "Roleblock Duration", 10f, 5f, 30f, 1f, CooldownFormat);
+            EscortCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Count", 1, 1, 14, 1);
+            UniqueEscort = new CustomToggleOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Is Unique In All Any", false);
+            EscRoleblockCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            EscRoleblockDuration = new CustomNumberOption(num++, MultiMenu.crew, "Roleblock Duration", 10f, 5f, 30f, 1f, CooldownFormat);
 
             Retributionist = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color>");
-            RetributionistCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Count", 1, 1, 14, 1);
-            UniqueRetributionist = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Is Unique In All Any", false);
+            RetributionistCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Count", 1, 1, 14, 1);
+            UniqueRetributionist = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Is Unique In All Any", false);
 
             Shifter = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>");
-            ShifterCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Count", 1, 1, 14, 1);
-            UniqueShifter = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Is Unique In All Any", false);
-            ShifterCd = new CustomNumberOption(true, num++, MultiMenu.crew, "Shift Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ShiftedBecomes = new CustomStringOption(true, num++, MultiMenu.crew, "Shifted Becomes", new[] { "Shifter", "Crewmate" });
+            ShifterCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Count", 1, 1, 14, 1);
+            UniqueShifter = new CustomToggleOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color> Is Unique In All Any", false);
+            ShifterCd = new CustomNumberOption(num++, MultiMenu.crew, "Shift Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ShiftedBecomes = new CustomStringOption(num++, MultiMenu.crew, "Shifted Becomes", new[] { "Shifter", "Crewmate" });
 
             Transporter = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color>");
-            TransporterCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Count", 1, 1, 14, 1);
-            UniqueTransporter = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Is Unique In All Any", false);
-            TransportCooldown = new CustomNumberOption(true, num++, MultiMenu.crew, "Transport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            TransportMaxUses = new CustomNumberOption(true, num++, MultiMenu.crew, "Maximum Number Of Transports", 5, 1, 15, 1);
-            TransSelf = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves", false);
+            TransporterCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Count", 1, 1, 14, 1);
+            UniqueTransporter = new CustomToggleOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Is Unique In All Any", false);
+            TransportCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Transport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            TransportMaxUses = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Transports", 5, 1, 15, 1);
+            TransSelf = new CustomToggleOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves", false);
 
             CrewUtilitySettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings");
 
             Crewmate = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color>");
-            CrewCount = new CustomNumberOption(true, num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color> Count", 1, 1, 14, 1);
+            CrewCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color> Count", 1, 1, 14, 1);
 
             Revealer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>");
-            RevealerTasksRemainingClicked = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
-            RevealerTasksRemainingAlert = new CustomNumberOption(true, num++, MultiMenu.crew, "Tasks Remaining When Revealed", 1, 1, 5, 1);
-            RevealerRevealsNeutrals = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
-            RevealerRevealsCrew = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
-            RevealerRevealsRoles = new CustomToggleOption(true, num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals Exact <color=#FFD700FF>Roles</color>", false);
-            RevealerCanBeClickedBy = new CustomStringOption(true, num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non-Crew", "Imps Only" });
+            RevealerTasksRemainingClicked = new CustomNumberOption(num++, MultiMenu.crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
+            RevealerTasksRemainingAlert = new CustomNumberOption(num++, MultiMenu.crew, "Tasks Remaining When Revealed", 1, 1, 5, 1);
+            RevealerRevealsNeutrals = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
+            RevealerRevealsCrew = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
+            RevealerRevealsRoles = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals Exact <color=#FFD700FF>Roles</color>", false);
+            RevealerCanBeClickedBy = new CustomStringOption(num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non-Crew", "Evils Only" });
 
             NeutralSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
-            CustomNeutColors = new CustomToggleOption(true, num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors", true);
-            NeutralVision = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            LightsAffectNeutrals = new CustomToggleOption(true, num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision", true);
-            NeutralMax = new CustomNumberOption(true, num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            NeutralMin = new CustomNumberOption(true, num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            NoSolo = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
+            CustomNeutColors = new CustomToggleOption(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors");
+            NeutralVision = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            LightsAffectNeutrals = new CustomToggleOption(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision");
+            NeutralMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            NeutralMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            NoSolo = new CustomStringOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
 
             NeutralBenignSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> Settings");
-            NBMax = new CustomNumberOption(true, num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NBMin = new CustomNumberOption(true, num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            VigiKillsNB = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false);
+            NBMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NBMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            VigiKillsNB = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false);
 
             Amnesiac = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color>");
-            AmnesiacCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Count", 1, 1, 14, 1);
-            UniqueAmnesiac = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Is Unique In All Any", false);
-            RememberArrows = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Gets Arrows To Dead Bodies", false);
-            RememberArrowDelay = new CustomNumberOption(true, num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, CooldownFormat);
-            AmneVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Hide In Vents", false);
-            AmneSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Switch Vents", false);
-            AmneTurnAssassin = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Become <color=#073763FF>Assassin</color>", false);
+            AmnesiacCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Count", 1, 1, 14, 1);
+            UniqueAmnesiac = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Is Unique In All Any", false);
+            RememberArrows = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Gets Arrows To Dead Bodies", false);
+            RememberArrowDelay = new CustomNumberOption(num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, CooldownFormat);
+            AmneVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Hide In Vents", false);
+            AmneSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Switch Vents", false);
+            AmneTurnAssassin = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Can Become <color=#073763FF>Assassin</color>", false);
 
             GuardianAngel = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color>");
-            GuardianAngelCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Count", 1, 1, 14, 1);
-            UniqueGuardianAngel = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Is Unique In All Any", false);
-            ProtectCd = new CustomNumberOption(true, num++, MultiMenu.neutral, "Protect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ProtectDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Protect Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            ProtectKCReset = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Reset When Protected", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
-            MaxProtects = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maximum Number Of Protects", 5, 1, 15, 1);
-            ShowProtect = new CustomStringOption(true, num++, MultiMenu.neutral, "Show Protected Player", new[] { "Self", "Guardian Angel", "Self+GA", "Everyone" });
-            GATargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#FFFFFFFF>Guardian Angel</color> Exists", false);
-            ProtectBeyondTheGrave = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Protect After Death", false);
-            GAKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Knows Target's <color=#FFD700FF>Role</color>", false);
-            GAVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Hide In Vents", false);
-            GASwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Switch Vents", false);
+            GuardianAngelCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Count", 1, 1, 14, 1);
+            UniqueGuardianAngel = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Is Unique In All Any", false);
+            ProtectCd = new CustomNumberOption(num++, MultiMenu.neutral, "Protect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ProtectDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Protect Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            ProtectKCReset = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown Reset When Protected", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
+            MaxProtects = new CustomNumberOption(num++, MultiMenu.neutral, "Maximum Number Of Protects", 5, 1, 15, 1);
+            ShowProtect = new CustomStringOption(num++, MultiMenu.neutral, "Show Protected Player", new[] { "Self", "Guardian Angel", "Self+GA", "Everyone" });
+            GATargetKnows = new CustomToggleOption(num++, MultiMenu.neutral, "Target Knows <color=#FFFFFFFF>Guardian Angel</color> Exists", false);
+            ProtectBeyondTheGrave = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Protect After Death", false);
+            GAKnowsTargetRole = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Knows Target's <color=#FFD700FF>Role</color>", false);
+            GAVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Hide In Vents", false);
+            GASwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Switch Vents", false);
 
             Survivor = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color>");
-            SurvivorCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Count", 1, 1, 14, 1);
-            UniqueSurvivor = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Is Unique In All Any", false);
-            VestCd = new CustomNumberOption(true, num++, MultiMenu.neutral, "Vest Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            VestDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Vest Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            VestKCReset = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Reset On Attack", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
-            MaxVests = new CustomNumberOption(true, num++, MultiMenu.neutral, "Number Of Vests", 5, 1, 15, 1);
-            SurvVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Can Hide In Vents", false);
-            SurvSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Can Switch Vents", false);
+            SurvivorCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Count", 1, 1, 14, 1);
+            UniqueSurvivor = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Is Unique In All Any", false);
+            VestCd = new CustomNumberOption(num++, MultiMenu.neutral, "Vest Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            VestDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Vest Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            VestKCReset = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown Reset On Attack", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
+            MaxVests = new CustomNumberOption(num++, MultiMenu.neutral, "Number Of Vests", 5, 1, 15, 1);
+            SurvVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Can Hide In Vents", false);
+            SurvSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#DDDD00FF>Survivor</color> Can Switch Vents", false);
 
             Thief = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color>");
-            ThiefCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Count", 1, 1, 14, 1);
-            UniqueThief = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Is Unique In All Any", false);
-            ThiefKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ThiefSteals = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Assigns <color=#80FF00FF>Thief</color> <color=#FFD700FF>Role</color> To Target", false);
-            ThiefVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Can Vent", false);
+            ThiefCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Count", 1, 1, 14, 1);
+            UniqueThief = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Is Unique In All Any", false);
+            ThiefKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ThiefSteals = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Assigns <color=#80FF00FF>Thief</color> <color=#FFD700FF>Role</color> To Target", false);
+            ThiefVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#80FF00FF>Thief</color> Can Vent", false);
 
             NeutralEvilSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> Settings");
-            NEMax = new CustomNumberOption(true, num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NEMin = new CustomNumberOption(true, num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NEMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NEMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Actor = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>");
-            ActorCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Count", 1, 1, 14, 1);
-            UniqueActor= new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Is Unique In All Any", false);
-            ActorButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Button", true);
-            ActorVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Hide In Vents", false);
-            ActSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Switch Vents", false);
-            VigiKillsActor = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false);
+            ActorCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Count", 1, 1, 14, 1);
+            UniqueActor= new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Is Unique In All Any", false);
+            ActorButton = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Button");
+            ActorVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Hide In Vents", false);
+            ActSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Switch Vents", false);
+            VigiKillsActor = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false);
 
             BountyHunter = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color>");
-            BHCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Count", 1, 1, 14, 1);
-            UniqueBountyHunter = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Is Unique In All Any", false);
-            BountyHunterCooldown= new CustomNumberOption(true, num++, MultiMenu.neutral, "Guess Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            BountyHunterGuesses = new CustomNumberOption(true, num++, MultiMenu.neutral, "Guess Count", 5, 1, 15, 1);
-            BHVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Vent", false);
-            VigiKillsBH = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>", false);
+            BHCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Count", 1, 1, 14, 1);
+            UniqueBountyHunter = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Is Unique In All Any", false);
+            BountyHunterCooldown= new CustomNumberOption(num++, MultiMenu.neutral, "Guess Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BountyHunterGuesses = new CustomNumberOption(num++, MultiMenu.neutral, "Guess Count", 5, 1, 15, 1);
+            BHVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Vent", false);
+            VigiKillsBH = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>", false);
 
             Cannibal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>"); 
-            CannibalCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Count", 1, 1, 14, 1);
-            UniqueCannibal = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Is Unique In All Any", false);
-            CannibalCd = new CustomNumberOption(true, num++, MultiMenu.neutral, "Eat Cooldown", 10f, 10f, 60f, 2.5f, CooldownFormat);
-            CannibalBodyCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Number Of Bodies To Eat", 1, 1, 5, 1);
-            CannibalVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Can Vent", false);
-            EatArrows = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies", false);
-            EatArrowDelay = new CustomNumberOption(true, num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, CooldownFormat);
-            VigiKillsCannibal = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>", false);
+            CannibalCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Count", 1, 1, 14, 1);
+            UniqueCannibal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Is Unique In All Any", false);
+            CannibalCd = new CustomNumberOption(num++, MultiMenu.neutral, "Eat Cooldown", 10f, 10f, 60f, 2.5f, MultiplierFormat);
+            CannibalBodyCount = new CustomNumberOption(num++, MultiMenu.neutral, "Number Of Bodies To Eat", 1, 1, 5, 1);
+            CannibalVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Can Vent", false);
+            EatArrows = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies", false);
+            EatArrowDelay = new CustomNumberOption(num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, MultiplierFormat);
+            VigiKillsCannibal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>", false);
 
             Executioner = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>");
-            ExecutionerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Count", 1, 1, 14, 1);
-            UniqueExecutioner = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Is Unique In All Any", false);
-            DoomCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Doom Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            DoomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Doom Count", 5, 1, 14, 1);
-            ExecutionerButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Button", true);
-            ExeVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Hide In Vents", false);
-            ExeSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Switch Vents", false);
-            ExeTargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#CCCCCCFF>Executioner</color> Exists", false);
-            ExeKnowsTargetRole = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Knows Target's <color=#FFD700FF>Role</color>", false);
-            ExeEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>", false);
-            ExeCanHaveIntruderTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#FF0000FF>Intruder</color> Targets", false);
-            ExeCanHaveSyndicateTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#008000FF>Syndicate</color> Targets", false);
-            ExeCanHaveNeutralTargets = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#B3B3B3FF>Neutral</color> Targets", false);
-            ExeCanWinBeyondDeath = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Win After Death", false);
-            VigiKillsExecutioner = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>", false);
+            ExecutionerCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Count", 1, 1, 14, 1);
+            UniqueExecutioner = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Is Unique In All Any", false);
+            DoomCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Doom Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            DoomCount = new CustomNumberOption(num++, MultiMenu.neutral, "Doom Count", 5, 1, 14, 1);
+            ExecutionerButton = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Button");
+            ExeVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Hide In Vents", false);
+            ExeSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Switch Vents", false);
+            ExeTargetKnows = new CustomToggleOption(num++, MultiMenu.neutral, "Target Knows <color=#CCCCCCFF>Executioner</color> Exists", false);
+            ExeKnowsTargetRole = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Knows Target's <color=#FFD700FF>Role</color>", false);
+            ExeEjectScreen = new CustomToggleOption(num++, MultiMenu.neutral, "Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>", false);
+            ExeCanHaveIntruderTargets = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#FF0000FF>Intruder</color> Targets", false);
+            ExeCanHaveSyndicateTargets = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#008000FF>Syndicate</color> Targets", false);
+            ExeCanHaveNeutralTargets = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#B3B3B3FF>Neutral</color> Targets", false);
+            ExeCanWinBeyondDeath = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Win After Death", false);
+            VigiKillsExecutioner = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>", false);
 
             Guesser = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>");
-            GuesserCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Count", 1, 1, 14, 1);
-            UniqueGuesser = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Is Unique In All Any", false);
-            GuesserButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Button", true);
-            GuessVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Hide In Vents", false);
-            GuessSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Switch Vents", false);
-            GuessTargetKnows = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target Knows <color=#EEE5BEFF>Guesser</color> Exists", false);
-            MultipleGuesses = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times", true);
-            GuessCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Number Of Guesses", 1, 1, 14, 1);
-            GuesserAfterVoting = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false);
-            VigiKillsGuesser = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false);
+            GuesserCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Count", 1, 1, 14, 1);
+            UniqueGuesser = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Is Unique In All Any", false);
+            GuesserButton = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Button");
+            GuessVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Hide In Vents", false);
+            GuessSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Switch Vents", false);
+            GuessTargetKnows = new CustomToggleOption(num++, MultiMenu.neutral, "Target Knows <color=#EEE5BEFF>Guesser</color> Exists", false);
+            MultipleGuesses = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times");
+            GuessCount = new CustomNumberOption(num++, MultiMenu.neutral, "Number Of Guesses", 1, 1, 14, 1);
+            GuesserAfterVoting = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false);
+            VigiKillsGuesser = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false);
 
             Jester = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>");
-            JesterCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Count", 1, 1, 14, 1);
-            UniqueJester= new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Is Unique In All Any", false);
-            JesterButton = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Button", true);
-            HauntCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Haunt Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            HauntCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Haunt Count", 5, 1, 14, 1);
-            JesterVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Hide In Vents", false);
-            JestSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Switch Vents", false);
-            JestEjectScreen = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
-            VigiKillsJester = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false);
+            JesterCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Count", 1, 1, 14, 1);
+            UniqueJester= new CustomToggleOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Is Unique In All Any", false);
+            JesterButton = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Button");
+            HauntCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Haunt Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            HauntCount = new CustomNumberOption(num++, MultiMenu.neutral, "Haunt Count", 5, 1, 14, 1);
+            JesterVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Hide In Vents", false);
+            JestSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Switch Vents", false);
+            JestEjectScreen = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
+            VigiKillsJester = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false);
 
             Troll = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color>");
-            TrollCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Count", 1, 1, 14, 1);
-            UniqueTroll = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Is Unique In All Any", false);
-            InteractCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Interact Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            TrollVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Can Vent", false);
-            TrollSwitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Can Switch Vents", false);
+            TrollCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Count", 1, 1, 14, 1);
+            UniqueTroll = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Is Unique In All Any", false);
+            InteractCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Interact Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            TrollVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Can Vent", false);
+            TrollSwitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#678D36FF>Troll</color> Can Switch Vents", false);
 
             NeutralKillingSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> Settings");
-            NKMax = new CustomNumberOption(true, num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NKMin = new CustomNumberOption(true, num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NKHasImpVision = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
-            NKsKnow = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know And Can Win With Each Other", new[] { "Never", "Same <color=#FFD700FF>Roles</color>", "All NKs" });
+            NKMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NKMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NKHasImpVision = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision");
+            NKsKnow = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", false);
 
             Arsonist = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>");
-            ArsonistCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Count", 1, 1, 14, 1);
-            UniqueArsonist = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Is Unique In All Any", false);
-            DouseCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            IgniteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Ignite Cooldown", 25f, 5f, 60f, 2.5f, CooldownFormat);
-            ArsoLastKillerBoost = new CustomToggleOption(true, num++, MultiMenu.neutral, "Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer", false);
-            ArsoCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Douse And Ignite Cooldowns Are Linked", false);
-            ArsoVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Can Vent", false);
+            ArsonistCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Count", 1, 1, 14, 1);
+            UniqueArsonist = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Is Unique In All Any", false);
+            DouseCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            IgniteCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Ignite Cooldown", 25f, 5f, 60f, 2.5f, CooldownFormat);
+            ArsoLastKillerBoost = new CustomToggleOption(num++, MultiMenu.neutral, "Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer", false);
+            ArsoCooldownsLinked = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Douse And Ignite Cooldowns Are Linked", false);
+            ArsoVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Can Vent", false);
 
             Cryomaniac = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color>");
-            CryomaniacCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Count", 1, 1, 14, 1);
-            UniqueCryomaniac = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Is Unique In All Any", false);
-            CryoDouseCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            CryoVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Can Vent", false);
+            CryomaniacCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Count", 1, 1, 14, 1);
+            UniqueCryomaniac = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Is Unique In All Any", false);
+            CryoDouseCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            CryoVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Can Vent", false);
 
             Glitch = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color>");
-            GlitchCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Count", 1, 1, 14, 1);
-            UniqueGlitch = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Is Unique In All Any", false);
-            MimicCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Mimic Cooldown", 25f, 10f, 120f, 2.5f, CooldownFormat);
-            HackCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Hack Cooldown", 25f, 10f, 120f, 2.5f, CooldownFormat);
-            MimicDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Mimic Duration", 10f, 1f, 30f, 1f, CooldownFormat);
-            HackDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Hack Duration", 10f, 1f, 30f, 1f, CooldownFormat);
-            GlitchKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Kill Cooldown", 25f, 10f, 120f, 2.5f, CooldownFormat);
-            GlitchVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Can Vent", false);
+            GlitchCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Count", 1, 1, 14, 1);
+            UniqueGlitch = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Is Unique In All Any", false);
+            MimicCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Mimic Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            HackCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Hack Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            MimicDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Mimic Duration", 10f, 1f, 30f, 1f, CooldownFormat);
+            HackDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Hack Duration", 10f, 1f, 30f, 1f, CooldownFormat);
+            GlitchKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Neutralise Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            GlitchVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color> Can Vent", false);
 
             Juggernaut = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color>");
-            JuggernautCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Count", 1, 1, 14, 1);
-            UniqueJuggernaut = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Is Unique In All Any", false);
-            JuggKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Kill Cooldown", 25f, 10f, 120f, 2.5f, CooldownFormat);
-            JuggKillBonus = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            JuggVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Can Vent", false);
+            JuggernautCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Count", 1, 1, 14, 1);
+            UniqueJuggernaut = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Is Unique In All Any", false);
+            JuggKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Assault Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            JuggKillBonus = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            JuggVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#A12B56FF>Juggernaut</color> Can Vent", false);
 
             Murderer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color>");
-            MurdCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Count", 1, 1, 14, 1);
-            UniqueMurderer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Is Unique In All Any", false);
-            MurdKillCooldownOption = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            MurdVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Can Vent", false);
+            MurdCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Count", 1, 1, 14, 1);
+            UniqueMurderer = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Is Unique In All Any", false);
+            MurdKillCooldownOption = new CustomNumberOption(num++, MultiMenu.neutral, "Murder Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            MurdVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#6F7BEAFF>Murderer</color> Can Vent", false);
 
             Plaguebearer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color>");
-            PlaguebearerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Count", 1, 1, 14, 1);
-            UniquePlaguebearer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Is Unique In All Any", false);
-            InfectCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Infect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            PBVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Can Vent", false);
+            PlaguebearerCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Count", 1, 1, 14, 1);
+            UniquePlaguebearer = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Is Unique In All Any", false);
+            InfectCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Infect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            PBVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Can Vent", false);
 
             SerialKiller = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color>");
-            SKCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Count", 1, 1, 14, 1);
-            UniqueSerialKiller = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Is Unique In All Any", false);
-            BloodlustCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bloodlust Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            BloodlustDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bloodlust Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            LustKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Stab Cooldown", 10f, 0.5f, 15f, 0.5f, CooldownFormat);
-            SKVentOptions = new CustomStringOption(true, num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Can Vent", new[] { "Always", "Bloodlust", "No Lust", "Never" });
+            SKCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Count", 1, 1, 14, 1);
+            UniqueSerialKiller = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Is Unique In All Any", false);
+            BloodlustCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Bloodlust Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BloodlustDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Bloodlust Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            LustKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Stab Cooldown", 10f, 0.5f, 15f, 0.5f, CooldownFormat);
+            SKVentOptions = new CustomStringOption(num++, MultiMenu.neutral, "<color=#336EFFFF>Serial Killer</color> Can Vent", new[] { "Always", "Bloodlust", "No Lust", "Never" });
 
             Werewolf = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color>");
-            WerewolfCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Count", 1, 1, 14, 1);
-            UniqueWerewolf = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Is Unique In All Any", false);
-            MaulCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maul Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
-            MaulRadius = new CustomNumberOption(true, num++, MultiMenu.neutral, "Maul Radius", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            WerewolfVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", false);
+            WerewolfCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Count", 1, 1, 14, 1);
+            UniqueWerewolf = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Is Unique In All Any", false);
+            MaulCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Maul Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
+            MaulRadius = new CustomNumberOption(num++, MultiMenu.neutral, "Maul Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            WerewolfVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", false);
 
             NeutralNeophyteSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Settings");
-            NNMax = new CustomNumberOption(true, num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NNMin = new CustomNumberOption(true, num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NNMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NNMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Dracula = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color>");
-            DraculaCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Count", 1, 1, 14, 1);
-            UniqueDracula = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Is Unique In All Any", false);
-            BiteCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            DracVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Can Vent", false);
-            AliveVampCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Alive <color=#7B8968FF>Undead</color> Count", 3, 1, 14, 1);
-            UndeadVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Undead Can Vent", false);
+            DraculaCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Count", 1, 1, 14, 1);
+            UniqueDracula = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Is Unique In All Any", false);
+            BiteCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            DracVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Can Vent", false);
+            AliveVampCount = new CustomNumberOption(num++, MultiMenu.neutral, "Alive <color=#7B8968FF>Undead</color> Count", 3, 1, 14, 1);
+            UndeadVent = new CustomToggleOption(num++, MultiMenu.neutral, "Undead Can Vent", false);
 
             Jackal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color>");
-            JackalCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Count", 1, 1, 14, 1);
-            UniqueJackal = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Is Unique In All Any", false);
-            RecruitCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Recruit Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            JackalVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Can Vent", false);
-            RecruitVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Recruits Can Vent", false);
+            JackalCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Count", 1, 1, 14, 1);
+            UniqueJackal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Is Unique In All Any", false);
+            RecruitCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Recruit Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            JackalVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#45076AFF>Jackal</color> Can Vent", false);
+            RecruitVent = new CustomToggleOption(num++, MultiMenu.neutral, "Recruits Can Vent", false);
 
             Necromancer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color>");
-            NecromancerCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Count", 1, 1, 14, 1);
-            UniqueNecromancer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Is Unique In All Any", false);
-            ResurrectCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ResurrectCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            ResurrectCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Resurrect Count", 5, 1, 14, 1);
-            NecroKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            NecroKillCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            NecroKillCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "Kill Count", 5, 1, 14, 1);
-            KillResurrectCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked", false);
-            NecromancerTargetBody = new CustomToggleOption(true, num++, MultiMenu.neutral, "Target's Body Disappears On Beginning Of Resurrect", false);
-            NecroResurrectDuration = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat);
-            NecroVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Can Vent", false);
-            ResurrectVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Resurrected Can Vent", false);
+            NecromancerCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Count", 1, 1, 14, 1);
+            UniqueNecromancer = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Is Unique In All Any", false);
+            ResurrectCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Resurrect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ResurrectCooldownIncrease = new CustomNumberOption(num++, MultiMenu.neutral, "Resurrect Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            ResurrectCount = new CustomNumberOption(num++, MultiMenu.neutral, "Resurrect Count", 5, 1, 14, 1);
+            NecroKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            NecroKillCooldownIncrease = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            NecroKillCount = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Count", 5, 1, 14, 1);
+            KillResurrectCooldownsLinked = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Kill And Resurrect Cooldowns Are Linked", false);
+            NecromancerTargetBody = new CustomToggleOption(num++, MultiMenu.neutral, "Target's Body Disappears On Beginning Of Resurrect", false);
+            NecroResurrectDuration = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat);
+            NecroVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#BF5FFFFF>Necromancer</color> Can Vent", false);
+            ResurrectVent = new CustomToggleOption(num++, MultiMenu.neutral, "Resurrected Can Vent", false);
 
             Whisperer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color>");
-            WhispererCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Count", 1, 1, 14, 1);
-            UniqueWhisperer = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Is Unique In All Any", false);
-            WhisperCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            WhisperCooldownIncrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            WhisperRadius = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Radius", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            InitialWhisperRate = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat);
-            WhisperRateDecreases = new CustomToggleOption(true, num++, MultiMenu.neutral, "Whisper Rate Decrease Each Whisper", false);
-            WhisperRateDecrease = new CustomNumberOption(true, num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, PercentFormat);
-            WhispVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false);
-            PersuadedVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "Persuaded Can Vent", false);
+            WhispererCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Count", 1, 1, 14, 1);
+            UniqueWhisperer = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Is Unique In All Any", false);
+            WhisperCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            WhisperCooldownIncrease = new CustomNumberOption(num++, MultiMenu.neutral, "Whisper Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            WhisperRadius = new CustomNumberOption(num++, MultiMenu.neutral, "Whisper Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            InitialWhisperRate = new CustomNumberOption(num++, MultiMenu.neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat);
+            WhisperRateDecreases = new CustomToggleOption(num++, MultiMenu.neutral, "Whisper Rate Decrease Each Whisper", false);
+            WhisperRateDecrease = new CustomNumberOption(num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, CooldownFormat);
+            WhispVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false);
+            PersuadedVent = new CustomToggleOption(num++, MultiMenu.neutral, "Persuaded Can Vent", false);
 
             NeutralProselyteSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> Settings");
 
+            Betrayer = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#11806AFF>Betrayer</color>");
+            BetrayerKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#11806AFF>Betrayer</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BetrayerVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#11806AFF>Betrayer</color> Can Vent");
+
             Pestilence = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color>");
-            PestSpawn = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false);
-            PlayersAlerted = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Transform Alerts Everyone", false);
-            PestKillCooldown = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            PestVent = new CustomToggleOption(true, num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Vent", false);
+            PestSpawn = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false);
+            PlayersAlerted = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Transform Alerts Everyone", false);
+            PestKillCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            PestVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Vent", false);
 
             Phantom = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
-            PhantomCount = new CustomNumberOption(true, num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
-            PhantomTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
-            PhantomPlayersAlerted = new CustomToggleOption(true, num++, MultiMenu.neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false);
+            PhantomCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#662962FF>Phantom</color> Count", 1, 1, 14, 1);
+            PhantomTasksRemaining = new CustomNumberOption(num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
+            PhantomPlayersAlerted = new CustomToggleOption(num++, MultiMenu.neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false);
 
             IntruderSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Settings");
-            CustomIntColors = new CustomToggleOption(true, num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
-            IntruderCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Count", 1, 0, 4, 1);
-            IntruderVision = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            IntruderKillCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            IntruderSabotageCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Sabotage Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            IntrudersVent = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Vent", true);
-            IntrudersCanSabotage = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Sabotage", true);
-            IntruderMax = new CustomNumberOption(true, num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            IntruderMin = new CustomNumberOption(true, num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            CustomIntColors = new CustomToggleOption(num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors");
+            IntruderCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Count", 1, 0, 4, 1);
+            IntruderVision = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            IntruderKillCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            //IntruderSabotageCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Sabotage Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            IntrudersVent = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Vent");
+            IntrudersCanSabotage = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Sabotage");
+            IntruderMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            IntruderMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
 
             IntruderConcealingSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings");
-            ICMax = new CustomNumberOption(true, num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            ICMin = new CustomNumberOption(true, num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            ICMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            ICMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Blackmailer = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color>");
-            BlackmailerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Count", 1, 1, 14, 1);
-            UniqueBlackmailer = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Is Unique In All Any", false);
-            BlackmailCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Blackmail Cooldown", 10f, 1f, 15f, 1f, CooldownFormat);
-            WhispersNotPrivate = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers", true);
+            BlackmailerCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Count", 1, 1, 14, 1);
+            UniqueBlackmailer = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Is Unique In All Any", false);
+            BlackmailCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Blackmail Cooldown", 10f, 1f, 15f, 1f, CooldownFormat);
+            WhispersNotPrivate = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers");
 
             Camouflager = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color>");
-            CamouflagerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Count", 1, 1, 14, 1);
-            UniqueCamouflager = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Is Unique In All Any", false);
-            CamouflagerCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Camouflage Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            CamouflagerDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Camouflage Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            CamoHideSize = new CustomToggleOption(true, num++, MultiMenu.intruder, "Camouflage Hides Player Size", false);
-            CamoHideSpeed = new CustomToggleOption(true, num++, MultiMenu.intruder, "Camouflage Hides Player Speed", false);
+            CamouflagerCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Count", 1, 1, 14, 1);
+            UniqueCamouflager = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Is Unique In All Any", false);
+            CamouflagerCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Camouflage Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            CamouflagerDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Camouflage Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            CamoHideSize = new CustomToggleOption(num++, MultiMenu.intruder, "Camouflage Hides Player Size", false);
+            CamoHideSpeed = new CustomToggleOption(num++, MultiMenu.intruder, "Camouflage Hides Player Speed", false);
 
             Grenadier = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color>");
-            GrenadierCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Count", 1, 1, 14, 1);
-            UniqueGrenadier = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Is Unique In All Any", false);
-            GrenadeCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Flash Grenade Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            GrenadeDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Flash Grenade Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            FlashRadius = new CustomNumberOption(true, num++, MultiMenu.intruder, "Flash Radius", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            GrenadierIndicators = new CustomToggleOption(true, num++, MultiMenu.intruder, "Indicate Flashed Players", false);
-            GrenadierVent = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Can Vent", false);
+            GrenadierCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Count", 1, 1, 14, 1);
+            UniqueGrenadier = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Is Unique In All Any", false);
+            GrenadeCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Flash Grenade Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            GrenadeDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Flash Grenade Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            FlashRadius = new CustomNumberOption(num++, MultiMenu.intruder, "Flash Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            GrenadierIndicators = new CustomToggleOption(num++, MultiMenu.intruder, "Indicate Flashed Players", false);
+            GrenadierVent = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Can Vent", false);
 
             Janitor = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color>");
-            JanitorCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Count", 1, 1, 14, 1);
-            UniqueJanitor = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Is Unique In All Any", false);
-            JanitorCleanCd = new CustomNumberOption (true, num++, MultiMenu.intruder, "Clean Cooldown", 25f, 0f, 40f, 2.5f, CooldownFormat);
-            JaniCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Kill And Clean Cooldowns Are Linked", false);
-            SoloBoost = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Has Lower Cooldown When Solo", false);
+            JanitorCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Count", 1, 1, 14, 1);
+            UniqueJanitor = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Is Unique In All Any", false);
+            JanitorCleanCd = new CustomNumberOption (num++, MultiMenu.intruder, "Clean Cooldown", 25f, 0f, 40f, 2.5f, CooldownFormat);
+            JaniCooldownsLinked = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Kill And Clean Cooldowns Are Linked", false);
+            SoloBoost = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Has Lower Cooldown When Solo", false);
 
             Undertaker = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color>");
-            UndertakerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Count", 1, 1, 14, 1);
-            UniqueUndertaker = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Is Unique In All Any", false);
-            DragCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Drag Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            DragModifier = new CustomNumberOption(true, num++, MultiMenu.intruder, "Drag Speed", 0.1f, 0.5f, 2f, 0.5f, MultiplierFormat);
-            UndertakerVentOptions = new CustomStringOption(true, num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Can Vent", new[] { "Never", "Body", "Bodyless", "Always" });
+            UndertakerCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Count", 1, 1, 14, 1);
+            UniqueUndertaker = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Is Unique In All Any", false);
+            DragCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Drag Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            DragModifier = new CustomNumberOption(num++, MultiMenu.intruder, "Drag Speed", 0.1f, 0.5f, 2f, 0.5f, MultiplierFormat);
+            UndertakerVentOptions = new CustomStringOption(num++, MultiMenu.intruder, "<color=#005643FF>Undertaker</color> Can Vent", new[] { "Never", "Body", "Bodyless", "Always" });
 
             IntruderDeceptionSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> Settings");
-            IDMax = new CustomNumberOption(true, num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            IDMin = new CustomNumberOption(true, num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            IDMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            IDMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Disguiser = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color>");
-            DisguiserCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Count", 1, 1, 14, 1);
-            UniqueDisguiser = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Is Unique In All Any", false);
-            DisguiseCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Disguise Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
-            TimeToDisguise = new CustomNumberOption(true, num++, MultiMenu.intruder, "Delay Before Disguising", 5f, 2.5f, 15f, 2.5f, CooldownFormat);
-            DisguiseDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Disguise Duration", 10f, 2.5f, 20f, 2.5f, CooldownFormat);
-            MeasureCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Measure Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
-            DisgCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Measure And Disguise Cooldowns Are Linked", false);
-            DisguiseTarget = new CustomStringOption(true, num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Can Disguise", new[] { "Only Intruders", "Non Intruders", "Everyone" });
+            DisguiserCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Count", 1, 1, 14, 1);
+            UniqueDisguiser = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Is Unique In All Any", false);
+            DisguiseCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Disguise Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
+            TimeToDisguise = new CustomNumberOption(num++, MultiMenu.intruder, "Delay Before Disguising", 5f, 2.5f, 15f, 2.5f, CooldownFormat);
+            DisguiseDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Disguise Duration", 10f, 2.5f, 20f, 2.5f, CooldownFormat);
+            MeasureCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Measure Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
+            DisgCooldownsLinked = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Measure And Disguise Cooldowns Are Linked", false);
+            DisguiseTarget = new CustomStringOption(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Can Disguise", new[] { "Everyone", "Only Intruders", "Non Intruders" });
 
             Morphling = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color>");
-            MorphlingCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Count", 1, 1, 14, 1);
-            UniqueMorphling = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Is Unique In All Any", false);
-            MorphlingCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Morph Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            MorphlingDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Morph Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            SampleCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Sample Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
-            MorphCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Sample And Morph Cooldowns Are Linked", false);
-            MorphlingVent = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Can Vent", false);
+            MorphlingCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Count", 1, 1, 14, 1);
+            UniqueMorphling = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Is Unique In All Any", false);
+            MorphlingCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Morph Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            MorphlingDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Morph Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            SampleCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Sample Cooldown", 30f, 10f, 60f, 2.5f, CooldownFormat);
+            MorphCooldownsLinked = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Sample And Morph Cooldowns Are Linked", false);
+            MorphlingVent = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#BB45B0FF>Morphling</color> Can Vent", false);
 
             Wraith = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color>");
-            WraithCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Count", 1, 1, 14, 1);
-            UniqueWraith = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Is Unique In All Any", false);
-            InvisCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Invis Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            InvisDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Invis Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            WraithVent = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Can Vent", false);
+            WraithCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Count", 1, 1, 14, 1);
+            UniqueWraith = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Is Unique In All Any", false);
+            InvisCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Invis Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            InvisDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Invis Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            WraithVent = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#5C4F75FF>Wraith</color> Can Vent", false);
 
             IntruderKillingSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> <color=#1D7CF2FF>Killing</color> Settings");
-            IKMax = new CustomNumberOption(true, num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            IKMin = new CustomNumberOption(true, num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            IKMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            IKMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Ambusher = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color>");
-            AmbusherCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color> Count", 1, 1, 14, 1);
-            UniqueAmbusher = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color> Is Unique In All Any", false);
-            AmbushCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ambush Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            AmbushDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ambush Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            AmbusherCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color> Count", 1, 1, 14, 1);
+            UniqueAmbusher = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color> Is Unique In All Any", false);
+            AmbushCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Ambush Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            AmbushDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Ambush Duration", 10f, 5f, 15f, 1f, CooldownFormat);
 
             IntruderSupportSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings");
-            ISMax = new CustomNumberOption(true, num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            ISMin = new CustomNumberOption(true, num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            ISMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            ISMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Consigliere = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color>");
-            ConsigCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color> Count", 1, 1, 14, 1);
-            UniqueConsigliere = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color> Is Unique In All Any", false);
-            InvestigateCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Reveal Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ConsigInfo = new CustomStringOption(true, num++, MultiMenu.intruder, "Info That <color=#FFFF99FF>Consigliere</color> Sees", new[] { "Role", "Faction" });
+            ConsigCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color> Count", 1, 1, 14, 1);
+            UniqueConsigliere = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color> Is Unique In All Any", false);
+            InvestigateCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Reveal Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ConsigInfo = new CustomStringOption(num++, MultiMenu.intruder, "Info That <color=#FFFF99FF>Consigliere</color> Sees", new[] { "Role", "Faction" });
 
             Consort = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#801780FF>Consort</color>");
-            ConsortCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#801780FF>Consort</color> Count", 1, 1, 14, 1);
-            UniqueConsort = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#801780FF>Consort</color> Is Unique In All Any", false);
-            ConsRoleblockCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ConsRoleblockDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Roleblock Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ConsortCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#801780FF>Consort</color> Count", 1, 1, 14, 1);
+            UniqueConsort = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#801780FF>Consort</color> Is Unique In All Any", false);
+            ConsRoleblockCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            ConsRoleblockDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Roleblock Duration", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
             Godfather = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color>");
-            GodfatherCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Count", 1, 1, 14, 1);
-            UniqueGodfather = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Is Unique In All Any", false);
-            MafiosoAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.intruder, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
-            PromotedMafiosoCanPromote = new CustomToggleOption(true, num++, MultiMenu.intruder, "Promoted <color=#404C08FF>Godfather</color> Can Declare Others", false);
+            GodfatherCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Count", 1, 1, 14, 1);
+            UniqueGodfather = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#404C08FF>Godfather</color> Is Unique In All Any", false);
+            MafiosoAbilityCooldownDecrease = new CustomNumberOption(num++, MultiMenu.intruder, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
+            PromotedMafiosoCanPromote = new CustomToggleOption(num++, MultiMenu.intruder, "Promoted <color=#404C08FF>Godfather</color> Can Declare Others", false);
 
             Miner = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color>");
-            MinerCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color> Count", 1, 1, 14, 1);
-            UniqueMiner = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color> Is Unique In All Any", false);
-            MineCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Mine Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            MinerCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color> Count", 1, 1, 14, 1);
+            UniqueMiner = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#AA7632FF>Miner</color> Is Unique In All Any", false);
+            MineCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Mine Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
 
             Teleporter = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color>");
-            TeleporterCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Count", 1, 1, 14, 1);
-            UniqueTeleporter = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Is Unique In All Any", false);
-            TeleportCd = new CustomNumberOption(true, num++, MultiMenu.intruder, "Teleport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            MarkCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            TeleCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Mark And Teleport Cooldowns Are Linked", false);
-            TeleVent = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Can Vent", false);
+            TeleporterCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Count", 1, 1, 14, 1);
+            UniqueTeleporter = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Is Unique In All Any", false);
+            TeleportCd = new CustomNumberOption(num++, MultiMenu.intruder, "Teleport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            MarkCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            TeleCooldownsLinked = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Mark And Teleport Cooldowns Are Linked", false);
+            TeleVent = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#6AA84FFF>Teleporter</color> Can Vent", false);
 
             TimeMaster = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color>");
-            TimeMasterCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Count", 1, 1, 14, 1);
-            UniqueTimeMaster = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Unique In All Any", false);
-            TMImmunity = new CustomToggleOption(true, num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Immune To Freeze And Rewind", false);
-            IntruderImmunity = new CustomToggleOption(true, num++, MultiMenu.intruder, "Other <color=#FF0000FF>Intruders</color> Are Immune To Freeze", false);
-            FreezeCooldown = new CustomNumberOption(true, num++, MultiMenu.intruder, "Freeze Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
-            FreezeDuration = new CustomNumberOption(true, num++, MultiMenu.intruder, "Freeze Duration", 20.0f, 5f, 60f, 5f, CooldownFormat);
+            TimeMasterCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Count", 1, 1, 14, 1);
+            UniqueTimeMaster = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Unique In All Any", false);
+            TMImmunity = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#0000A7FF>Time Master</color> Is Immune To Freeze And Rewind", false);
+            IntruderImmunity = new CustomToggleOption(num++, MultiMenu.intruder, "Other <color=#FF0000FF>Intruders</color> Are Immune To Freeze", false);
+            FreezeCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Freeze Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
+            FreezeDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Freeze Duration", 10f, 1f, 30f, 1f, CooldownFormat);
 
             IntruderUtilitySettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color> Settings");
 
+            Ghoul = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#F1C40FFF>Ghoul</color>");
+            GhoulMarkCd = new CustomNumberOption(num++, MultiMenu.intruder, "Mark Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
+
             Impostor = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color>");
-            ImpCount = new CustomNumberOption(true, num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> Count", 1, 1, 14, 1);
+            ImpCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> Count", 1, 1, 14, 1);
 
             SyndicateSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Settings");
-            CustomSynColors = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors", true);
-            SyndicateCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Count", 1, 0, 4, 1);
-            SyndicateVision = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            ChaosDriveMeetingCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Number Of Meetings Required For Chaos Drive Spawn", 3, 1, 4, 1);
-            ChaosDriveKillCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Holder Kill Cooldown", 15f, 10f, 45f, 2.5f, CooldownFormat);
-            SyndicateVent = new CustomStringOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Can Vent", new[] { "Always", "Chaos Drive", "Never" });
-            AltImps = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Replaces <color=#FF0000FF>Intruders</color>", false);
-            SyndicateMax = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            SyndicateMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            CustomSynColors = new CustomToggleOption(num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors");
+            SyndicateCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Count", 1, 0, 4, 1);
+            SyndicateVision = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            ChaosDriveMeetingCount = new CustomNumberOption(num++, MultiMenu.syndicate, "Number Of Meetings Required For Chaos Drive Spawn", 3, 1, 4, 1);
+            ChaosDriveKillCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Holder Kill Cooldown", 15f, 10f, 45f, 2.5f, CooldownFormat);
+            SyndicateVent = new CustomStringOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Can Vent", new[] { "Always", "Chaos Drive", "Never" });
+            AltImps = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Replaces <color=#FF0000FF>Intruders</color>", false);
+            SyndicateMax = new CustomNumberOption(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
+            SyndicateMin = new CustomNumberOption(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
 
             SyndicateDisruptionSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Settings");
-            SDMax = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SDMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SDMax = new CustomNumberOption(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SDMin = new CustomNumberOption(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Concealer = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>");
-            ConcealerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color> Count", 1, 1, 14, 1);
-            UniqueConcealer = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color> Is Unique In All Any", false);
-            ConcealCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Conceal Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            ConcealDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Conceal Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            ConcealerCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color> Count", 1, 1, 14, 1);
+            UniqueConcealer = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color> Is Unique In All Any", false);
+            ConcealCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Conceal Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            ConcealDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Conceal Duration", 10f, 5f, 15f, 1f, CooldownFormat);
 
             Drunkard = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color>");
-            DrunkardCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Count", 1, 1, 14, 1);
-            UniqueDrunkard = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Is Unique In All Any", false);
-            SyndicateImmunity = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Other <color=#008000FF>Syndicate</color> Are Immune To Confuse", false);
-            ConfuseCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Confuse Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
-            ConfuseDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Confuse Duration", 20.0f, 5f, 60f, 5f, CooldownFormat);
+            DrunkardCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Count", 1, 1, 14, 1);
+            UniqueDrunkard = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#1E300BFF>Drunkard</color> Is Unique In All Any", false);
+            SyndicateImmunity = new CustomToggleOption(num++, MultiMenu.syndicate, "Other <color=#008000FF>Syndicate</color> Are Immune To Confuse", false);
+            ConfuseCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Confuse Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
+            ConfuseDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Confuse Duration", 20.0f, 5f, 60f, 5f, CooldownFormat);
 
             Framer = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>");
-            FramerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Count", 1, 1, 14, 1);
-            UniqueFramer = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Is Unique In All Any", false);
-            FrameCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Frame Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            ChaosDriveFrameRadius = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Frame Radius", 0.25f, 0.05f, 1f, 0.05f, MultiplierFormat);
+            FramerCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Count", 1, 1, 14, 1);
+            UniqueFramer = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Is Unique In All Any", false);
+            FrameCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Frame Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            ChaosDriveFrameRadius = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Frame Radius", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
 
             Poisoner = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>");
-            PoisonerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Count", 1, 1, 14, 1);
-            UniquePoisoner = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Is Unique In All Any", false);
-            PoisonCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Poison Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            PoisonDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Poison Kill Delay", 5f, 1f, 15f, 1f, CooldownFormat);
+            PoisonerCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Count", 1, 1, 14, 1);
+            UniquePoisoner = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color> Is Unique In All Any", false);
+            PoisonCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Poison Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            PoisonDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Poison Kill Delay", 5f, 1f, 15f, 1f, CooldownFormat);
 
             Shapeshifter = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color>");
-            ShapeshifterCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color> Count", 1, 1, 14, 1);
-            UniqueShapeshifter = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color> Is Unique In All Any", false);
-            ShapeshiftCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Shapeshift Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            ShapeshiftDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Shapeshift Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            ShapeshifterCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color> Count", 1, 1, 14, 1);
+            UniqueShapeshifter = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#311C45FF>Shapeshifter</color> Is Unique In All Any", false);
+            ShapeshiftCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Shapeshift Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            ShapeshiftDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Shapeshift Duration", 10f, 5f, 15f, 1f, CooldownFormat);
 
             SyndicateKillingSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Settings");
-            SyKMax = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SyKMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SyKMax = new CustomNumberOption(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SyKMin = new CustomNumberOption(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Bomber = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color>");
-            BomberCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
-            UniqueBomber = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Is Unique In All Any", false);
-            BombCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            DetonateCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Detonation Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            BombCooldownsLinked = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Place And Detonate Cooldowns Are Linked", false);
-            BombsRemoveOnNewRound = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Bombs Are Cleared Every Meeting", false);
-            BombsDetonateOnMeetingStart = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Bombs Detonate Everytime A Meeting Is Called", false);
-            BombRange = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Bomb Radius", 0.25f, 0.05f, 1f, 0.05f, MultiplierFormat);
-            ChaosDriveBombRange = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Bomb Radius Increase", 0.1f, 0.05f, 0.25f, 0.05f, MultiplierFormat);
+            BomberCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
+            UniqueBomber = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Is Unique In All Any", false);
+            BombCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Bomb Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            DetonateCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Detonation Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            BombCooldownsLinked = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Place And Detonate Cooldowns Are Linked", false);
+            BombsRemoveOnNewRound = new CustomToggleOption(num++, MultiMenu.syndicate, "Bombs Are Cleared Every Meeting", false);
+            BombsDetonateOnMeetingStart = new CustomToggleOption(num++, MultiMenu.syndicate, "Bombs Detonate Everytime A Meeting Is Called", false);
+            BombRange = new CustomNumberOption(num++, MultiMenu.syndicate, "Bomb Radius", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
+            ChaosDriveBombRange = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Bomb Radius Increase", 0.1f, 0.05f, 0.25f, 0.05f, DistanceFormat);
 
             Crusader = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color>");
-            CrusaderCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Count", 1, 1, 14, 1);
-            UniqueCrusader = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Is Unique In All Any", false);
-            CrusadeCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Crusade Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
-            CrusadeDuration = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Crusade Duration", 10f, 5f, 15f, 1f, CooldownFormat);
-            ChaosDriveCrusadeRadius = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Crusade Radius", 0.1f, 0.05f, 0.25f, 0.05f, MultiplierFormat);
+            CrusaderCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Count", 1, 1, 14, 1);
+            UniqueCrusader = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Is Unique In All Any", false);
+            CrusadeCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Crusade Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            CrusadeDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Crusade Duration", 10f, 5f, 15f, 1f, CooldownFormat);
+            ChaosDriveCrusadeRadius = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Crusade Radius", 0.1f, 0.05f, 0.25f, 0.05f, DistanceFormat);
 
             Gorgon = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color>");
-            GorgonCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Count", 1, 1, 14, 1);
-            UniqueGorgon = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Is Unique In All Any", false);
-            GazeCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Gaze Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            GorgonCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Count", 1, 1, 14, 1);
+            UniqueGorgon = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#7E4D00FF>Gorgon</color> Is Unique In All Any", false);
+            GazeCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Gaze Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
 
             SyndicateSupportSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings");
-            SSuMax = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SSuMin = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SSuMax = new CustomNumberOption(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SSuMin = new CustomNumberOption(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Beamer = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>");
-            BeamerCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color> Count", 1, 1, 14, 1);
-            UniqueBeamer = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color> Is Unique In All Any", false);
-            BeamCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Beam Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BeamerCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color> Count", 1, 1, 14, 1);
+            UniqueBeamer = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color> Is Unique In All Any", false);
+            BeamCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Beam Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            BeamSelf = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color> Can Beam Themselves");
 
             Rebel = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>");
-            RebelCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Count", 1, 1, 14, 1);
-            UniqueRebel = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique In All Any", false);
-            SidekickAbilityCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
-            ChaosDriveRebelKillDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Kill Cooldown Decrease", 5f, 1f, 15f, 1f, CooldownFormat);
-            PromotedSidekickCanPromote = new CustomToggleOption(true, num++, MultiMenu.syndicate, "Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others", false);
+            RebelCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Count", 1, 1, 14, 1);
+            UniqueRebel = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique In All Any", false);
+            SidekickAbilityCooldownDecrease = new CustomNumberOption(num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
+            ChaosDriveRebelKillDecrease = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Kill Cooldown Decrease", 5f, 1f, 15f, 1f, CooldownFormat);
+            PromotedSidekickCanPromote = new CustomToggleOption(num++, MultiMenu.syndicate, "Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others", false);
 
             Warper = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>");
-            WarperCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Count", 1, 1, 14, 1);
-            UniqueWarper = new CustomToggleOption(true, num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Is Unique In All Any", false);
-            WarpCooldown = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Warp Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
+            WarperCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Count", 1, 1, 14, 1);
+            UniqueWarper = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Is Unique In All Any", false);
+            WarpCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Warp Cooldown", 25, 10, 40, 2.5f, CooldownFormat);
 
             SyndicateUtilitySettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> Settings");
 
             Anarchist = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color>");
-            AnarchistCount = new CustomNumberOption(true, num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color> Count", 1, 1, 14, 1);
-            ChaosDriveCooldownDecrease = new CustomNumberOption(true, num++, MultiMenu.syndicate, "Chaos Drive Kill Cooldown Decrease", 5f, 1f, 15f, 1f, CooldownFormat);
+            AnarchistCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color> Count", 1, 1, 14, 1);
+            ChaosDriveCooldownDecrease = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Kill Cooldown Decrease", 5f, 1f, 15f, 1f, CooldownFormat);
+
+            Banshee = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#E67E22FF>Banshee</color>");
+            ScreamCooldown = new CustomNumberOption(num++, MultiMenu.syndicate, "Scream Cooldown", 25f, 10f, 60f, 1f, CooldownFormat);
+            ScreamDuration = new CustomNumberOption(num++, MultiMenu.syndicate, "Scream Duration", 10f, 1f, 30f, 1f, CooldownFormat);
 
             ModifierSettings = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings");
-            CustomModifierColors = new CustomToggleOption(true, num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors", true);
-            MaxModifiers = new CustomNumberOption(true, num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
-            MinModifiers = new CustomNumberOption(true, num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
+            CustomModifierColors = new CustomToggleOption(num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors");
+            MaxModifiers = new CustomNumberOption(num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
+            MinModifiers = new CustomNumberOption(num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
 
             Bait = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>");
-            BaitCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Count", 1, 1, 14, 1);
-            UniqueBait = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Is Unique In All Any", false);
-            BaitKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are On Game Start", true);
-            BaitMinDelay = new CustomNumberOption(true, num++, MultiMenu.modifier, "Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report", 0f, 0f, 15f, 0.5f, CooldownFormat);
-            BaitMaxDelay = new CustomNumberOption(true, num++, MultiMenu.modifier, "Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report", 1f, 0f, 15f, 0.5f, CooldownFormat);
+            BaitCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Count", 1, 1, 14, 1);
+            UniqueBait = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Is Unique In All Any", false);
+            BaitKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are On Game Start");
+            BaitMinDelay = new CustomNumberOption(num++, MultiMenu.modifier, "Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report", 0f, 0f, 15f, 0.5f, CooldownFormat);
+            BaitMaxDelay = new CustomNumberOption(num++, MultiMenu.modifier, "Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report", 1f, 0f, 15f, 0.5f, CooldownFormat);
 
             Coward = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color>");
-            CowardCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color> Count", 1, 1, 14, 1);
-            UniqueCoward = new CustomToggleOption(true, num++, MultiMenu.modifier, "Modifier Is Unique In All Any", false);
+            CowardCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color> Count", 1, 1, 14, 1);
+            UniqueCoward = new CustomToggleOption(num++, MultiMenu.modifier, "Modifier Is Unique In All Any", false);
 
             Diseased = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>");
-            DiseasedCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Count", 1, 1, 14, 1);
-            UniqueDiseased = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Is Unique In All Any", false);
-            DiseasedKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Knows Who They Are On Game Start", true);
-            DiseasedKillMultiplier = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Kill Multiplier", 3f, 1.5f, 5f, 0.5f, MultiplierFormat);
+            DiseasedCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Count", 1, 1, 14, 1);
+            UniqueDiseased = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Is Unique In All Any", false);
+            DiseasedKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Knows Who They Are On Game Start");
+            DiseasedKillMultiplier = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Kill Multiplier", 3f, 1.5f, 5f, 0.5f, MultiplierFormat);
 
             Drunk = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color>");
-            DrunkCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Count", 1, 1, 14, 1);
-            UniqueDrunk = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Is Unique In All Any", false);
-            DrunkControlsSwap = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Controls Reverse Over Time", false);
-            DrunkInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "Reversed Controls Interval", 1f, 1f, 20f, 1f, CooldownFormat);
+            DrunkCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Count", 1, 1, 14, 1);
+            UniqueDrunk = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Is Unique In All Any", false);
+            DrunkControlsSwap = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Controls Reverse Over Time", false);
+            DrunkInterval = new CustomNumberOption(num++, MultiMenu.modifier, "Reversed Controls Interval", 1f, 1f, 20f, 1f, CooldownFormat);
 
             Dwarf = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>");
-            DwarfCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Count", 1, 1, 14, 1);
-            UniqueDwarf = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Is Unique In All Any", false);
-            DwarfSpeed = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Speed", 1.5f, 1.0f, 2f, 0.05f, MultiplierFormat);
-            DwarfScale = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Scale", 0.5f, 0.3f, 0.6f, 0.025f, MultiplierFormat);
+            DwarfCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Count", 1, 1, 14, 1);
+            UniqueDwarf = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Is Unique In All Any", false);
+            DwarfSpeed = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Speed", 1.5f, 1.0f, 2f, 0.05f, MultiplierFormat);
+            DwarfScale = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Scale", 0.5f, 0.3f, 0.6f, 0.025f, MultiplierFormat);
 
             Flincher = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>");
-            FlincherCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Count", 1, 1, 14, 1);
-            UniqueFlincher = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Is Unique In All Any", false);
-            FlinchInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "Flinch Interval", 1f, 1f, 20f, 1f, CooldownFormat);
+            FlincherCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Count", 1, 1, 14, 1);
+            UniqueFlincher = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Is Unique In All Any", false);
+            FlinchInterval = new CustomNumberOption(num++, MultiMenu.modifier, "Flinch Interval", 1f, 1f, 20f, 1f, CooldownFormat);
 
             Giant = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>");
-            GiantCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Count", 1, 1, 14, 1);
-            UniqueGiant = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Is Unique In All Any", false);
-            GiantSpeed = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Speed", 0.75f, 0.5f, 1f, 0.05f, MultiplierFormat);
-            GiantScale = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Scale", 1.5f, 1.5f, 3.0f, 0.025f, MultiplierFormat);
+            GiantCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Count", 1, 1, 14, 1);
+            UniqueGiant = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Is Unique In All Any", false);
+            GiantSpeed = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Speed", 0.75f, 0.5f, 1f, 0.05f, MultiplierFormat);
+            GiantScale = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Scale", 1.5f, 1.5f, 3.0f, 0.025f, MultiplierFormat);
 
             Indomitable = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color>");
-            IndomitableCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Count", 1, 1, 14, 1);
-            UniqueIndomitable = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Is Unique In All Any", false);
-            IndomitableKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Knows Who They Are On Game Start", true);
+            IndomitableCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Count", 1, 1, 14, 1);
+            UniqueIndomitable = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Is Unique In All Any", false);
+            IndomitableKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Knows Who They Are On Game Start");
 
             Professional = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color>");
-            ProfessionalCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Count", 1, 1, 14, 1);
-            UniqueProfessional = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Is Unique In All Any", false);
-            ProfessionalKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Knows Who They Are On Game Start", true);
+            ProfessionalCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Count", 1, 1, 14, 1);
+            UniqueProfessional = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Is Unique In All Any", false);
+            ProfessionalKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Knows Who They Are On Game Start");
 
             Shy = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color>");
-            ShyCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Count", 1, 1, 14, 1);
-            UniqueShy = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Is Unique In All Any", false);
+            ShyCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Count", 1, 1, 14, 1);
+            UniqueShy = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Is Unique In All Any", false);
 
             VIP = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>");
-            VIPCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Count", 1, 1, 14, 1);
-            UniqueVIP = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Is Unique In All Any", false);
-            VIPKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Knows Who They Are On Game Start", true);
+            VIPCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Count", 1, 1, 14, 1);
+            UniqueVIP = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Is Unique In All Any", false);
+            VIPKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Knows Who They Are On Game Start");
 
             Volatile = new CustomHeaderOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>");
-            VolatileCount = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Count", 1, 1, 14, 1);
-            UniqueVolatile = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Is Unique In All Any", false);
-            VolatileInterval = new CustomNumberOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Interval", 15f, 10f, 30f, 1f, CooldownFormat);
-            VolatileKnows = new CustomToggleOption(true, num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Knows Who They Are On Game Start", true);
+            VolatileCount = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Count", 1, 1, 14, 1);
+            UniqueVolatile = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Is Unique In All Any", false);
+            VolatileInterval = new CustomNumberOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Interval", 15f, 10f, 30f, 1f, CooldownFormat);
+            VolatileKnows = new CustomToggleOption(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Knows Who They Are On Game Start");
 
             AbilitySettings = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Ability</color> Settings");
-            CustomAbilityColors = new CustomToggleOption(true, num++, MultiMenu.ability, "Enable Custom <color=#FF9900FF>Ability</color> Colors", true);
-            MaxAbilities = new CustomNumberOption(true, num++, MultiMenu.ability, "Max <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
-            MinAbilities = new CustomNumberOption(true, num++, MultiMenu.ability, "Min <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
+            CustomAbilityColors = new CustomToggleOption(num++, MultiMenu.ability, "Enable Custom <color=#FF9900FF>Ability</color> Colors");
+            MaxAbilities = new CustomNumberOption(num++, MultiMenu.ability, "Max <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
+            MinAbilities = new CustomNumberOption(num++, MultiMenu.ability, "Min <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
 
             Assassin = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color>");
-            NumberOfImpostorAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
-            NumberOfCrewAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
-            NumberOfNeutralAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
-            NumberOfSyndicateAssassins = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
-            UniqueAssassin = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Is Unique In All Any", false);
-            AssassinKills = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Guess Limit", 1, 1, 15, 1);
-            AssassinMultiKill = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Kill More Than Once Per Meeting", false);
-            AssassinGuessNeutralBenign = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false);
-            AssassinGuessNeutralEvil = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>", false);
-            AssassinGuessPest = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#424242FF>Pestilence</color>", false);
-            AssassinGuessModifiers = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#7F7F7FFF>Modifiers</color>", false);
-            AssassinGuessObjectifiers = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#DD585BFF>Objectifiers</color>", false);
-            AssassinGuessAbilities = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#FF9900FF>Abilities</color>", false);
-            AssassinateAfterVoting = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess After Voting", false);
+            NumberOfImpostorAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfCrewAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfNeutralAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfSyndicateAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            UniqueAssassin = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Is Unique In All Any", false);
+            AssassinKills = new CustomNumberOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Guess Limit", 1, 1, 15, 1);
+            AssassinMultiKill = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Kill More Than Once Per Meeting", false);
+            AssassinGuessNeutralBenign = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false);
+            AssassinGuessNeutralEvil = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>", false);
+            AssassinGuessPest = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#424242FF>Pestilence</color>", false);
+            AssassinGuessModifiers = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#7F7F7FFF>Modifiers</color>", false);
+            AssassinGuessObjectifiers = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#DD585BFF>Objectifiers</color>", false);
+            AssassinGuessAbilities = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#FF9900FF>Abilities</color>", false);
+            AssassinateAfterVoting = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess After Voting", false);
 
             ButtonBarry = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>");
-            ButtonBarryCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Count", 1, 1, 14, 1);
-            UniqueButtonBarry = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Is Unique In All Any", false);
+            ButtonBarryCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Count", 1, 1, 14, 1);
+            UniqueButtonBarry = new CustomToggleOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Is Unique In All Any", false);
+            ButtonCooldown = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color> Start Cooldown", 15f, 10f, 30f, 1f, CooldownFormat);
 
             Insider = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>");
-            InsiderCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Count", 1, 1, 14, 1);
-            UniqueInsider = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Is Unique In All Any", false);
-            InsiderKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Knows Who They Are On Game Start", true);
+            InsiderCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Count", 1, 1, 14, 1);
+            UniqueInsider = new CustomToggleOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Is Unique In All Any", false);
+            InsiderKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Knows Who They Are On Game Start");
 
             Multitasker = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>");
-            MultitaskerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Count", 1, 1, 14, 1);
-            UniqueMultitasker = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Is Unique In All Any", false);
-            Transparancy = new CustomNumberOption(true, num++, MultiMenu.ability, "Task Transparancy", 50f, 10f, 80f, 5f, PercentFormat);
+            MultitaskerCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Count", 1, 1, 14, 1);
+            UniqueMultitasker = new CustomToggleOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Is Unique In All Any", false);
+            Transparancy = new CustomNumberOption(num++, MultiMenu.ability, "Task Transparancy", 50f, 10f, 80f, 5f, PercentFormat);
 
             Ninja = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color>");
-            NinjaCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color> Count", 1, 1, 14, 1);
-            UniqueNinja = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color> Is Unique In All Any", false);
+            NinjaCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color> Count", 1, 1, 14, 1);
+            UniqueNinja = new CustomToggleOption(num++, MultiMenu.ability, "<color=#A84300FF>Ninja</color> Is Unique In All Any", false);
 
             Radar = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color>");
-            RadarCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
-            UniqueRadar = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Is Unique In All Any", false);
+            RadarCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
+            UniqueRadar = new CustomToggleOption(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Is Unique In All Any", false);
 
             Ruthless = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>");
-            RuthlessCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Count", 1, 1, 14, 1);
-            UniqueRuthless = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Is Unique In All Any", false);
-            RuthlessKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Knows Who They Are On Game Start", true);
+            RuthlessCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Count", 1, 1, 14, 1);
+            UniqueRuthless = new CustomToggleOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Is Unique In All Any", false);
+            RuthlessKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Knows Who They Are On Game Start");
 
             Snitch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>");
-            SnitchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);
-            UniqueSnitch = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Is Unique In All Any", false);
-            SnitchKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start", true);
-            SnitchSeesNeutrals = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>", false);
-            SnitchSeesCrew = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8BFDFDFF>Crew</color>", false);
-            SnitchSeesRoles = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Exact <color=#FFD700FF>Roles</color>", false);
-            SnitchTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.ability, "Tasks Remaining When Revealed", 1, 1, 5, 1);
-            SnitchSeestargetsInMeeting = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#FF0000FF>Intruders</color> In Meetings", true);
+            SnitchCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);
+            UniqueSnitch = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Is Unique In All Any", false);
+            SnitchKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start");
+            SnitchSeesNeutrals = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>", false);
+            SnitchSeesCrew = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8BFDFDFF>Crew</color>", false);
+            SnitchSeesRoles = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Exact <color=#FFD700FF>Roles</color>", false);
+            SnitchTasksRemaining = new CustomNumberOption(num++, MultiMenu.ability, "Tasks Remaining When Revealed", 1, 1, 5, 1);
+            SnitchSeestargetsInMeeting = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#FF0000FF>Intruders</color> In Meetings");
 
             Tiebreaker = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>");
-            TiebreakerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Count", 1, 1, 14, 1);
-            UniqueTiebreaker = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Is Unique In All Any", false);
-            TiebreakerKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Knows Who They Are On Game Start", true);
+            TiebreakerCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Count", 1, 1, 14, 1);
+            UniqueTiebreaker = new CustomToggleOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Is Unique In All Any", false);
+            TiebreakerKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Knows Who They Are On Game Start");
 
             Torch = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color>");
-            TorchCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Count", 1, 1, 14, 1);
-            UniqueTorch = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Is Unique In All Any", false);
+            TorchCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Count", 1, 1, 14, 1);
+            UniqueTorch = new CustomToggleOption(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Is Unique In All Any", false);
 
             Tunneler = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>");
-            TunnelerCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Count", 1, 1, 14, 1);
-            UniqueTunneler = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Is Unique In All Any", false);
-            TunnelerKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Knows Who They Are On Game Start", true);
+            TunnelerCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Count", 1, 1, 14, 1);
+            UniqueTunneler = new CustomToggleOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Is Unique In All Any", false);
+            TunnelerKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Knows Who They Are On Game Start");
 
             Underdog = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>");
-            UnderdogCount = new CustomNumberOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Count", 1, 1, 14, 1);
-            UniqueUnderdog = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Is Unique In All Any", false);
-            UnderdogKnows = new CustomToggleOption(true, num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are On Game Start", true);
-            UnderdogKillBonus = new CustomNumberOption(true, num++, MultiMenu.ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            UnderdogIncreasedKC = new CustomToggleOption(true, num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates", true);
+            UnderdogCount = new CustomNumberOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Count", 1, 1, 14, 1);
+            UniqueUnderdog = new CustomToggleOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Is Unique In All Any", false);
+            UnderdogKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are On Game Start");
+            UnderdogKillBonus = new CustomNumberOption(num++, MultiMenu.ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
+            UnderdogIncreasedKC = new CustomToggleOption(num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates");
 
             ObjectifierSettings = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#DD585BFF>Objectifier</color> Settings");
-            CustomObjectifierColors = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors", true);
-            MaxObjectifiers = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Max <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
-            MinObjectifiers = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Min <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
+            CustomObjectifierColors = new CustomToggleOption(num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors");
+            MaxObjectifiers = new CustomNumberOption(num++, MultiMenu.objectifier, "Max <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
+            MinObjectifiers = new CustomNumberOption(num++, MultiMenu.objectifier, "Min <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
 
             Allied = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>");
-            AlliedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Count", 1, 1, 14, 1);
-            UniqueAllied = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Is Unique In All Any", false);
-            AlliedFaction = new CustomStringOption(true, num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Faction", new[] { "Intruder", "Syndicate", "Crew", "Random" });
+            AlliedCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Count", 1, 1, 14, 1);
+            UniqueAllied = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Is Unique In All Any", false);
+            AlliedFaction = new CustomStringOption(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color> Faction", new[] { "Random", "Intruder", "Syndicate", "Crew" });
 
             Corrupted = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color>");
-            CorruptedCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Count", 1, 1, 14, 1);
-            UniqueCorrupted = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Is Unique In All Any", false);
-            CorruptedKillCooldown = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Kill Cooldown", 1f, 1f, 20f, 1f, CooldownFormat);
+            CorruptedCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Count", 1, 1, 14, 1);
+            UniqueCorrupted = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Is Unique In All Any", false);
+            CorruptedKillCooldown = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#4545FFFF>Corrupted</color> Kill Cooldown", 25f, 1f, 60f, 1f, CooldownFormat);
 
             Fanatic = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>");
-            FanaticCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Count", 1, 1, 14, 1);
-            UniqueFanatic = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Is Unique In All Any", false);
-            FanaticKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Knows Who They Are On Game Start", true);
-            FanaticCanAssassin = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Gets <color=#073763FF>Assassin</color>", false);
-            FanaticColourSwap = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
-            SnitchSeesFanatic = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#678D36FF>Fanatic</color>", true);
-            RevealerRevealsFanatic = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#678D36FF>Fanatic</color>", false);
+            FanaticCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Count", 1, 1, 14, 1);
+            UniqueFanatic = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Is Unique In All Any", false);
+            FanaticKnows = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Knows Who They Are On Game Start");
+            FanaticCanAssassin = new CustomToggleOption(num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Gets <color=#073763FF>Assassin</color>", false);
+            FanaticColourSwap = new CustomToggleOption(num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
+            SnitchSeesFanatic = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#678D36FF>Fanatic</color>");
+            RevealerRevealsFanatic = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#678D36FF>Fanatic</color>", false);
 
             Lovers = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>");
-            LoversCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Count", 1, 1, 14, 1);
-            UniqueLovers = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Is Unique In All Any", false);
-            BothLoversDie = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Both <color=#FF66CCFF>Lovers</color> Die", true);
-            LoversChat = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable <color=#FF66CCFF>Lovers</color> Chat", true);
-            LoversFaction = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction", true);
-            LoversRoles = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>", true);
+            LoversCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Count", 1, 1, 14, 1);
+            UniqueLovers = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Is Unique In All Any", false);
+            BothLoversDie = new CustomToggleOption(num++, MultiMenu.objectifier, "Both <color=#FF66CCFF>Lovers</color> Die");
+            LoversChat = new CustomToggleOption(num++, MultiMenu.objectifier, "Enable <color=#FF66CCFF>Lovers</color> Chat");
+            LoversFaction = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction");
+            LoversRoles = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>");
 
             Overlord = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color>");
-            OverlordCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Count", 1, 1, 14, 1);
-            UniqueOverlord = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Is Unique In All Any", false);
-            OverlordKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Knows Who They Are On Game Start", true);
-            OverlordMeetingWinCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Meeting Timer", 2f, 1f, 20f, 1f);
+            OverlordCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Count", 1, 1, 14, 1);
+            UniqueOverlord = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Is Unique In All Any", false);
+            OverlordKnows = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Knows Who They Are On Game Start");
+            OverlordMeetingWinCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Meeting Timer", 2, 1, 20, 1);
 
             Rivals = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>");
-            RivalsCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Count", 1, 1, 14, 1);
-            UniqueRivals = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Is Unique In All Any", false);
-            RivalsChat = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Enable <color=#3D2D2CFF>Rivals</color> Chat", true);
-            RivalsFaction = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction", true);
-            RivalsRoles = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>", true);
+            RivalsCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Count", 1, 1, 14, 1);
+            UniqueRivals = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Is Unique In All Any", false);
+            RivalsChat = new CustomToggleOption(num++, MultiMenu.objectifier, "Enable <color=#3D2D2CFF>Rivals</color> Chat");
+            RivalsFaction = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction");
+            RivalsRoles = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>");
 
             Taskmaster = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>");
-            TaskmasterCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Count", 1, 1, 14, 1);
-            UniqueTaskmaster = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Is Unique In All Any", false);
-            TMTasksRemaining = new CustomNumberOption(true, num++, MultiMenu.objectifier, "Tasks Remaining When Revealed", 1, 1, 5, 1);
+            TaskmasterCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Count", 1, 1, 14, 1);
+            UniqueTaskmaster = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Is Unique In All Any", false);
+            TMTasksRemaining = new CustomNumberOption(num++, MultiMenu.objectifier, "Tasks Remaining When Revealed", 1, 1, 5, 1);
 
             Traitor = new CustomHeaderOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>");
-            TraitorCount = new CustomNumberOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Count", 1, 1, 14, 1);
-            UniqueTraitor = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Is Unique In All Any", false);
-            TraitorKnows = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Knows Who They Are On Game Start", true);
-            TraitorCanAssassin = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#FF0000FF>Traitor</color> Gets <color=#073763FF>Assassin</color>", false);
-            SnitchSeesTraitor = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>", true);
-            RevealerRevealsTraitor = new CustomToggleOption(true, num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#370D43FF>Traitor</color>", false);
-            TraitorColourSwap = new CustomToggleOption(true, num++, MultiMenu.objectifier, "Turned <color=#370D43FF>Traitor</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
+            TraitorCount = new CustomNumberOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Count", 1, 1, 14, 1);
+            UniqueTraitor = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Is Unique In All Any", false);
+            TraitorKnows = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Knows Who They Are On Game Start");
+            TraitorCanAssassin = new CustomToggleOption(num++, MultiMenu.objectifier, "Turned <color=#FF0000FF>Traitor</color> Gets <color=#073763FF>Assassin</color>", false);
+            SnitchSeesTraitor = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>");
+            RevealerRevealsTraitor = new CustomToggleOption(num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#370D43FF>Traitor</color>", false);
+            TraitorColourSwap = new CustomToggleOption(num++, MultiMenu.objectifier, "Turned <color=#370D43FF>Traitor</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
         }
     }
 }

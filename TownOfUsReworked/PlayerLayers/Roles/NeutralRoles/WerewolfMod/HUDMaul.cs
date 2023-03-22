@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
             if (role.MaulButton == null)
                 role.MaulButton = Utils.InstantiateButton();
 
-            role.MaulButton.UpdateButton(role, "MAUL", role.MaulTimer(), CustomGameOptions.MaulCooldown, TownOfUsReworked.MaulSprite, AbilityTypes.Direct);
+            role.MaulButton.UpdateButton(role, "MAUL", role.MaulTimer(), CustomGameOptions.MaulCooldown, AssetManager.Maul, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }

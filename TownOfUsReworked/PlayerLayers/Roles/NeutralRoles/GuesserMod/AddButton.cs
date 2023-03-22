@@ -13,10 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        public static Sprite CycleBackSprite => TownOfUsReworked.CycleBackSprite;
-        public static Sprite CycleForwardSprite => TownOfUsReworked.CycleForwardSprite;
-        public static Sprite GuessSprite => TownOfUsReworked.GuessSprite;
-
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
             if (voteArea.AmDead)
@@ -46,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
             var cycleBack = Object.Instantiate(confirmButton, voteArea.transform);
             var cycleRendererBack = cycleBack.GetComponent<SpriteRenderer>();
-            cycleRendererBack.sprite = CycleBackSprite;
+            cycleRendererBack.sprite = AssetManager.CycleBack;
             cycleBack.transform.localPosition = new Vector3(-0.5f, 0.15f, -2f);
             cycleBack.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycleBack.layer = 5;
@@ -61,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
             var cycleForward = Object.Instantiate(confirmButton, voteArea.transform);
             var cycleRendererForward = cycleForward.GetComponent<SpriteRenderer>();
-            cycleRendererForward.sprite = CycleForwardSprite;
+            cycleRendererForward.sprite = AssetManager.CycleForward;
             cycleForward.transform.localPosition = new Vector3(-0.2f, 0.15f, -2f);
             cycleForward.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycleForward.layer = 5;
@@ -76,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
             var guess = Object.Instantiate(confirmButton, voteArea.transform);
             var guessRenderer = guess.GetComponent<SpriteRenderer>();
-            guessRenderer.sprite = GuessSprite;
+            guessRenderer.sprite = AssetManager.Guess;
             guess.transform.localPosition = new Vector3(-0.35f, -0.15f, -2f);
             guess.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             guess.layer = 5;

@@ -281,40 +281,4 @@ namespace TownOfUsReworked.Classes
             public string browser_download_url { get; set; }
         }
     }
-
-    public class BepInExUpdater : MonoBehaviour
-    {
-        public const string RequiredBepInExVersion = "6.0.0-be.664+0b23557c1355913983f3540797fa22c43a02247d";
-        public const string BepInExDownloadURL = "https://builds.bepinex.dev/projects/bepinex_be/664/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.664%2B0b23557.zip";
-        public static bool UpdateRequired => Paths.BepInExVersion.ToString() != RequiredBepInExVersion;
-
-        public void Awake()
-        {
-            Utils.LogSomething("BepInEx Update Required...");
-            Utils.LogSomething($"{Paths.BepInExVersion}, {RequiredBepInExVersion} ");
-            this.StartCoroutine(CoUpdate());
-        }
-
-        [HideFromIl2Cpp]
-        public IEnumerator CoUpdate()
-        {
-            Task.Run(() => MessageBox(GetForegroundWindow(), "Required BepInEx update is downloading, please wait...", "The Other Roles", 0));
-            UnityWebRequest www = UnityWebRequest.Get(BepInExDownloadURL);
-            yield return www.Send();        
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Utils.LogSomething(www.error);
-                yield break;
-            }
-
-            var zipPath = Path.Combine(Paths.GameRootPath, ".bepinex_update");
-            File.WriteAllBytes(zipPath, www.downloadHandler.data);
-        }
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]
-        public static extern int MessageBox(IntPtr hWnd, String text, String caption, int options);
-    }
 }

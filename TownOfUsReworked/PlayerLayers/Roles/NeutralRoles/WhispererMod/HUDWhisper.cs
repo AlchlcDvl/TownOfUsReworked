@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
                 role.WhisperButton = Utils.InstantiateButton();
 
             role.WhisperButton.UpdateButton(role, "WHISPER", role.WhisperTimer(), CustomGameOptions.WhisperCooldown + (role.WhisperCount * CustomGameOptions.WhisperCooldownIncrease), 
-                TownOfUsReworked.WhisperSprite, AbilityTypes.Effect);
+                AssetManager.Whisper, AbilityTypes.Effect, "ActionSecondary");
         }
     }
 }

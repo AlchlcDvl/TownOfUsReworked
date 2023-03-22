@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Bait : Colors.Modifier;
             ModifierType = ModifierEnum.Bait;
             Hidden = !CustomGameOptions.BaitKnows;
-            ModifierDescription = "You are a Bait! When you are killed, you force your killer to report your body!";
         }
     }
 }

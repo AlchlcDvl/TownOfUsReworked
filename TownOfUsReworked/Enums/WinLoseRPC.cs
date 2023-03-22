@@ -22,7 +22,8 @@ namespace TownOfUsReworked.Enums
         ReanimatedWin,
 
         AllNKsWin,
-        NKWins,
+        SoloNKWins,
+        SameNKWins,
         InfectorsWin,
 
         LoveWin,

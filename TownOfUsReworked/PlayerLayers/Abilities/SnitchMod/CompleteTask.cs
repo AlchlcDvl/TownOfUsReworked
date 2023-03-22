@@ -12,8 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
     public class CompleteTask
     {
-        public static Sprite Sprite => TownOfUsReworked.Arrow;
-
         public static void Postfix(PlayerControl __instance)
         {
             if (!__instance.Is(AbilityEnum.Snitch) || __instance.Data.IsDead)
@@ -34,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = AssetManager.Arrow;
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     snitch.ImpArrows.Add(arrow);
@@ -51,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = Sprite;
+                    renderer.sprite = AssetManager.Arrow;
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     snitch.SnitchArrows.Add(imp.PlayerId, arrow);

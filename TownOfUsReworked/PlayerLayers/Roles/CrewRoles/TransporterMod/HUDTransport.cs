@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
             if (role.TransportButton == null)
                 role.TransportButton = Utils.InstantiateButton();
 
-            role.TransportButton.UpdateButton(role, "TRANSPORT", role.TransportTimer(), CustomGameOptions.TransportCooldown, TownOfUsReworked.TransportSprite, AbilityTypes.Direct,
+            role.TransportButton.UpdateButton(role, "TRANSPORT", role.TransportTimer(), CustomGameOptions.TransportCooldown, AssetManager.Transport, AbilityTypes.Effect, "ActionSecondary",
                 null, role.ButtonUsable, role.ButtonUsable, false, 0, 1, true, role.UsesLeft);
 
             if (role.PressedButton && role.TransportList == null && !role.IsBlocked)
@@ -113,130 +113,127 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                     {
                         if (role.TransportTimer() == 0f && role.TransportList != null)
                         {
-                            Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
-                            Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
+                            var ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
+                            var ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
 
-                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
                             {
-                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                                if (!Input.GetMouseButtonDown(0) && role.LastMouse)
                                 {
-                                    if (!Input.GetMouseButtonDown(0) && role.LastMouse)
+                                    role.LastMouse = false;
+
+                                    foreach (var player in PlayerControl.AllPlayerControls)
                                     {
-                                        role.LastMouse = false;
-
-                                        foreach (var player in PlayerControl.AllPlayerControls)
+                                        if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
                                         {
-                                            if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
+                                            if (role.TransportPlayer1 == null)
                                             {
-                                                if (role.TransportPlayer1 == null)
-                                                {
-                                                    role.TransportPlayer1 = player;
-                                                    bubble.Cast<ChatBubble>().Background.color = Colors.Transporter;
-                                                }
-                                                else if (player.PlayerId == role.TransportPlayer1.PlayerId)
-                                                {
-                                                    role.TransportPlayer1 = null;
-                                                    bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
-                                                }
-                                                else
-                                                {
-                                                    role.PressedButton = false;
-                                                    role.TransportList.Toggle();
-                                                    role.TransportList.SetVisible(false);
-                                                    role.TransportList = null;
-                                                    role.TransportPlayer2 = player;
+                                                role.TransportPlayer1 = player;
+                                                bubble.Cast<ChatBubble>().Background.color = Colors.Transporter;
+                                            }
+                                            else if (player.PlayerId == role.TransportPlayer1.PlayerId)
+                                            {
+                                                role.TransportPlayer1 = null;
+                                                bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
+                                            }
+                                            else
+                                            {
+                                                role.PressedButton = false;
+                                                role.TransportList.Toggle();
+                                                role.TransportList.SetVisible(false);
+                                                role.TransportList = null;
+                                                role.TransportPlayer2 = player;
 
-                                                    if (!role.UntransportablePlayers.ContainsKey(role.TransportPlayer1.PlayerId) &&
-                                                        !role.UntransportablePlayers.ContainsKey(role.TransportPlayer2.PlayerId))
+                                                if (!role.UntransportablePlayers.ContainsKey(role.TransportPlayer1.PlayerId) &&
+                                                    !role.UntransportablePlayers.ContainsKey(role.TransportPlayer2.PlayerId))
+                                                {
+                                                    var interaction = Utils.Interact(role.Player, role.TransportPlayer1);
+                                                    var interaction2 = Utils.Interact(role.Player, role.TransportPlayer2);
+
+                                                    Utils.Spread(role.Player, role.TransportPlayer1);
+                                                    Utils.Spread(role.Player, role.TransportPlayer2);
+
+                                                    if (role.TransportPlayer1.Is(RoleEnum.Pestilence) || role.TransportPlayer1.IsOnAlert())
                                                     {
-                                                        var interaction = Utils.Interact(role.Player, role.TransportPlayer1);
-                                                        var interaction2 = Utils.Interact(role.Player, role.TransportPlayer2);
-
-                                                        Utils.Spread(role.Player, role.TransportPlayer1);
-                                                        Utils.Spread(role.Player, role.TransportPlayer2);
-
-                                                        if (role.TransportPlayer1.Is(RoleEnum.Pestilence) || role.TransportPlayer1.IsOnAlert())
+                                                        if (role.Player.IsShielded())
                                                         {
-                                                            if (role.Player.IsShielded())
-                                                            {
-                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                                                                    SendOption.Reliable);
-                                                                writer2.Write(role.Player.GetMedic().Player.PlayerId);
-                                                                writer2.Write(role.Player.PlayerId);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                                                            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                                                                SendOption.Reliable);
+                                                            writer2.Write(role.Player.GetMedic().Player.PlayerId);
+                                                            writer2.Write(role.Player.PlayerId);
+                                                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                                if (CustomGameOptions.ShieldBreaks)
-                                                                    role.LastTransported = DateTime.UtcNow;
+                                                            if (CustomGameOptions.ShieldBreaks)
+                                                                role.LastTransported = DateTime.UtcNow;
 
-                                                                StopKill.BreakShield(role.Player.GetMedic().Player.PlayerId, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                                return;
-                                                            }
-                                                            else if (!role.Player.IsProtected())
-                                                            {
-                                                                Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer1.PlayerId, role.Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                write2.Write((byte)ActionsRPC.Transport);
-                                                                write2.Write(role.TransportPlayer1.PlayerId);
-                                                                write2.Write(role.Player.PlayerId);
-                                                                write2.Write(true);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                return;
-                                                            }
-
-                                                            role.LastTransported = DateTime.UtcNow;
+                                                            StopKill.BreakShield(role.Player.GetMedic().Player.PlayerId, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
                                                             return;
                                                         }
-                                                        else if (role.TransportPlayer2.Is(RoleEnum.Pestilence) || role.TransportPlayer2.IsOnAlert())
+                                                        else if (!role.Player.IsProtected())
                                                         {
-                                                            if (role.Player.IsShielded())
-                                                            {
-                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                writer2.Write((byte)ActionsRPC.Transport);
-                                                                writer2.Write(role.Player.GetMedic().Player.PlayerId);
-                                                                writer2.Write(role.Player.PlayerId);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                                                                if (CustomGameOptions.ShieldBreaks)
-                                                                    role.LastTransported = DateTime.UtcNow;
-
-                                                                StopKill.BreakShield(role.Player.GetMedic().Player.PlayerId, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                                return;
-                                                            }
-                                                            else if (!role.Player.IsProtected())
-                                                            {
-                                                                Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer2.PlayerId, role.Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                write2.Write((byte)ActionsRPC.Transport);
-                                                                write2.Write(role.TransportPlayer2.PlayerId);
-                                                                write2.Write(role.Player.PlayerId);
-                                                                write2.Write(true);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                return;
-                                                            }
-
-                                                            role.LastTransported = DateTime.UtcNow;
+                                                            Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer1.PlayerId, role.Player.PlayerId, true));
+                                                            var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                SendOption.Reliable);
+                                                            write2.Write((byte)ActionsRPC.Transport);
+                                                            write2.Write(role.TransportPlayer1.PlayerId);
+                                                            write2.Write(role.Player.PlayerId);
+                                                            write2.Write(true);
+                                                            AmongUsClient.Instance.FinishRpcImmediately(write2);
                                                             return;
                                                         }
 
                                                         role.LastTransported = DateTime.UtcNow;
-                                                        role.UsesLeft--;
-                                                        Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer1.PlayerId, role.TransportPlayer2.PlayerId, false));
-                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                                                        write.Write((byte)ActionsRPC.Transport);
-                                                        write.Write(role.TransportPlayer1.PlayerId);
-                                                        write.Write(role.TransportPlayer2.PlayerId);
-                                                        write.Write(false);
-                                                        AmongUsClient.Instance.FinishRpcImmediately(write);
+                                                        return;
                                                     }
-                                                    else
-                                                        (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+                                                    else if (role.TransportPlayer2.Is(RoleEnum.Pestilence) || role.TransportPlayer2.IsOnAlert())
+                                                    {
+                                                        if (role.Player.IsShielded())
+                                                        {
+                                                            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                SendOption.Reliable);
+                                                            writer2.Write((byte)ActionsRPC.Transport);
+                                                            writer2.Write(role.Player.GetMedic().Player.PlayerId);
+                                                            writer2.Write(role.Player.PlayerId);
+                                                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                    role.TransportPlayer1 = null;
-                                                    role.TransportPlayer2 = null;
+                                                            if (CustomGameOptions.ShieldBreaks)
+                                                                role.LastTransported = DateTime.UtcNow;
+
+                                                            StopKill.BreakShield(role.Player.GetMedic().Player.PlayerId, role.Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                            return;
+                                                        }
+                                                        else if (!role.Player.IsProtected())
+                                                        {
+                                                            Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer2.PlayerId, role.Player.PlayerId, true));
+                                                            var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                                SendOption.Reliable);
+                                                            write2.Write((byte)ActionsRPC.Transport);
+                                                            write2.Write(role.TransportPlayer2.PlayerId);
+                                                            write2.Write(role.Player.PlayerId);
+                                                            write2.Write(true);
+                                                            AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                            return;
+                                                        }
+
+                                                        role.LastTransported = DateTime.UtcNow;
+                                                        return;
+                                                    }
+
+                                                    role.LastTransported = DateTime.UtcNow;
+                                                    role.UsesLeft--;
+                                                    Coroutines.Start(Transporter.TransportPlayers(role.TransportPlayer1.PlayerId, role.TransportPlayer2.PlayerId, false));
+                                                    var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                                    write.Write((byte)ActionsRPC.Transport);
+                                                    write.Write(role.TransportPlayer1.PlayerId);
+                                                    write.Write(role.TransportPlayer2.PlayerId);
+                                                    write.Write(false);
+                                                    AmongUsClient.Instance.FinishRpcImmediately(write);
                                                 }
+                                                else
+                                                    (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+
+                                                role.TransportPlayer1 = null;
+                                                role.TransportPlayer2 = null;
                                             }
                                         }
                                     }
@@ -244,23 +241,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                             }
                         }
                     }
-
-                    if (!Input.GetMouseButtonDown(0) && role.LastMouse)
-                    {
-                        if (role.MenuClick)
-                            role.MenuClick = false;
-                        else
-                        {
-                            role.TransportList.Toggle();
-                            role.TransportList.SetVisible(false);
-                            role.TransportList = null;
-                            role.PressedButton = false;
-                            role.TransportPlayer1 = null;
-                        }
-                    }
-
-                    role.LastMouse = Input.GetMouseButtonDown(0);
                 }
+
+                if (!Input.GetMouseButtonDown(0) && role.LastMouse)
+                {
+                    if (role.MenuClick)
+                        role.MenuClick = false;
+                    else
+                    {
+                        role.TransportList.Toggle();
+                        role.TransportList.SetVisible(false);
+                        role.TransportList = null;
+                        role.PressedButton = false;
+                        role.TransportPlayer1 = null;
+                    }
+                }
+
+                role.LastMouse = Input.GetMouseButtonDown(0);
             }
         }
     }

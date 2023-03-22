@@ -7,24 +7,16 @@ using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch]
-    public class MurderPlayer
-    {
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-        public class MurderPlayerPatch
-        {
-            public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
-            {
-                Utils.RpcMurderPlayer(__instance, target, !__instance.Is(AbilityEnum.Ninja));
-                return false;
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
     public class Murder
     {
         public static List<DeadPlayer> KilledPlayers = new List<DeadPlayer>();
+
+        public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
+        {
+            Utils.RpcMurderPlayer(__instance, target, !__instance.Is(AbilityEnum.Ninja));
+            return false;
+        }
 
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {

@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {
@@ -9,8 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
     {
         private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || CustomGameOptions.PlaguebearerOn == 0 ||
-                info == null)
+            if (Utils.NoButton(__instance, RoleEnum.Plaguebearer) || info == null || CustomGameOptions.PlaguebearerOn == 0)
                 return;
             
             Utils.Spread(PlayerControl.LocalPlayer, info.Object);

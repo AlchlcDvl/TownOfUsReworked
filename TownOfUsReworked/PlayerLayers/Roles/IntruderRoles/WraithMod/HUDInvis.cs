@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             if (role.InvisButton == null)
                 role.InvisButton = Utils.InstantiateButton();
 
-            role.InvisButton.UpdateButton(role, "INVIS", role.InvisTimer(), CustomGameOptions.InvisCd, TownOfUsReworked.InvisSprite, AbilityTypes.Effect,
-                null, true, !role.IsInvis, role.IsInvis, role.TimeRemaining, CustomGameOptions.InvisDuration);
+            role.InvisButton.UpdateButton(role, "INVIS", role.InvisTimer(), CustomGameOptions.InvisCd, AssetManager.Invis, AbilityTypes.Effect, "Secondary", null, true, !role.IsInvis,
+                role.IsInvis, role.TimeRemaining, CustomGameOptions.InvisDuration);
         }
     }
 }

@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Indomitable : Colors.Modifier;
             ModifierType = ModifierEnum.Indomitable;
             Hidden = !CustomGameOptions.IndomitableKnows;
-            ModifierDescription = "You are Indomitable! You cannot be guessed as all!";
         }
     }
 }

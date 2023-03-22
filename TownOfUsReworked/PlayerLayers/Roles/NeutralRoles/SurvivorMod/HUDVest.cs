@@ -20,8 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 
             role.VestButton.gameObject.SetActive(Utils.SetActive(role.Player, role.RoleType));
 
-            role.VestButton.UpdateButton(role, "VEST", role.VestTimer(), CustomGameOptions.VestCd, TownOfUsReworked.VestSprite, AbilityTypes.Effect, role.Vesting, role.TimeRemaining,
-                CustomGameOptions.VestDuration, true, !role.Vesting);
+            role.VestButton.UpdateButton(role, "VEST", role.VestTimer(), CustomGameOptions.VestCd, AssetManager.Vest, AbilityTypes.Effect, "ActionSecondary", role.Vesting,
+                role.TimeRemaining, CustomGameOptions.VestDuration, true, !role.Vesting);
         }
     }
 }

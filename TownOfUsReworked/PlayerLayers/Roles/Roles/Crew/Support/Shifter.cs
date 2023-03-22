@@ -22,9 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastShifted = DateTime.UtcNow;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
-            RoleDescription = "Your are a Shifter! You are a rogue alien who can swap roles! Steal a different player's role to be useful to the Crew!";
             InspectorResults = InspectorResults.BringsChaos;
-            //IntroSound = "ShifterIntro";
         }
 
         public float ShiftTimer()

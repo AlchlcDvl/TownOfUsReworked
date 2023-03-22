@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Actor;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
-            RoleDescription = "You are an Actor! You are a crazed performer who wants to die! Get guessed as one of the roles you are pretending to be!";
         }
     }
 }

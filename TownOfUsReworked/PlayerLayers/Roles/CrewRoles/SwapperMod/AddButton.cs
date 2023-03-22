@@ -14,9 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class AddButton
     {
-        public static Sprite ActiveSprite => TownOfUsReworked.SwapperSwitch;
-        public static Sprite DisabledSprite => TownOfUsReworked.SwapperSwitchDisabled;
-
         public static void GenButton(Swapper role, int index, bool noButton)
         {
             if (noButton)
@@ -31,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             var renderer = newButton.GetComponent<SpriteRenderer>();
             var passive = newButton.GetComponent<PassiveButton>();
 
-            renderer.sprite = DisabledSprite;
+            renderer.sprite = AssetManager.SwapperSwitchDisabled;
             newButton.transform.position = confirmButton.transform.position - new Vector3(-0.95f, 0.03f, -1.3f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
@@ -47,10 +44,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         {
             void Listener()
             {
-                if (role.ListOfActives.Count(x => x) == 2 && role.MoarButtons[index].GetComponent<SpriteRenderer>().sprite == DisabledSprite)
+                if (role.ListOfActives.Count(x => x) == 2 && role.MoarButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
                     return;
 
-                role.MoarButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? DisabledSprite : ActiveSprite;
+                role.MoarButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? AssetManager.SwapperSwitchDisabled : AssetManager.SwapperSwitch;
                 role.ListOfActives[index] = !role.ListOfActives[index];
                 SwapVotes.Swap1 = null;
                 SwapVotes.Swap2 = null;

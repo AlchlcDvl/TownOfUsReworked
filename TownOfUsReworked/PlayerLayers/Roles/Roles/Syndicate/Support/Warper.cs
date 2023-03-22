@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
             RoleType = RoleEnum.Warper;
             AlignmentName = SSu;
-            //IntroSound = "WarperIntro";
         }
 
         public void Warp()

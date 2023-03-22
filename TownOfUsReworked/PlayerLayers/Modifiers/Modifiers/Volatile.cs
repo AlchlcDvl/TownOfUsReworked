@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
             ModifierType = ModifierEnum.Volatile;
             Hidden = !CustomGameOptions.VolatileKnows;
-            ModifierDescription = "You are Volatile! You experience a lot of hallucinations that cause you to lash out sometimes!";
         }
     }
 }

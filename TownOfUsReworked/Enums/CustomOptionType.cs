@@ -7,7 +7,6 @@ namespace TownOfUsReworked.Enums
         Number,
         String,
         Button,
-        Menu,
         Nested
     }
 
@@ -96,12 +95,5 @@ namespace TownOfUsReworked.Enums
         Everyone,
         PlayerOnly,
         NoOne
-    }
-
-    public enum NKsKnow
-    {
-        Never,
-        SameRole,
-        AllNKs
     }
 }

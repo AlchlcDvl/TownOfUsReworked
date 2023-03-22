@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
             if (role.InteractButton == null)
                 role.InteractButton = Utils.InstantiateButton();
 
-            role.InteractButton.UpdateButton(role, "INTERACT", role.InteractTimer(), CustomGameOptions.InteractCooldown, TownOfUsReworked.Placeholder, AbilityTypes.Direct);
+            role.InteractButton.UpdateButton(role, "INTERACT", role.InteractTimer(), CustomGameOptions.InteractCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
         }
     }
 }
