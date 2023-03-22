@@ -3,9 +3,11 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
+    [HarmonyPatch]
     public class Blocked
     {
         [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformVent
         {
             public static bool Prefix(VentButton __instance)
@@ -24,6 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformReport
         {
             public static bool Prefix(ReportButton __instance)
@@ -42,6 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformUse
         {
             public static bool Prefix(UseButton __instance)
@@ -60,6 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformSabotage
         {
             public static bool Prefix(SabotageButton __instance)
@@ -78,6 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformAdmin
         {
             public static bool Prefix(AdminButton __instance)
@@ -96,6 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformPet
         {
             public static bool Prefix(PetButton __instance)
@@ -114,6 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         }
 
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
+        [HarmonyPriority(Priority.First)]
         public class PerformAbility
         {
             public static bool Prefix(AbilityButton __instance)

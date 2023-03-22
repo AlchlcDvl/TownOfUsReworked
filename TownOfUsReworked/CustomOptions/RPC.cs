@@ -27,7 +27,7 @@ namespace TownOfUsReworked.CustomOptions
                     writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable);
                 }
 
-                if (option.Type == CustomOptionType.Header)
+                if (option.Type == CustomOptionType.Header || option.Type == CustomOptionType.Nested || option.Type == CustomOptionType.Button)
                     continue;
 
                 writer.Write(option.ID);

@@ -48,24 +48,18 @@ namespace TownOfUsReworked.BetterMaps.Polus
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
         public static class ShipStatusBeginPatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
         public static class ShipStatusAwakePatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]
         public static class ShipStatusFixedUpdatePatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance)
             {
                 if (!IsObjectsFetched || !IsAdjustmentsDone)

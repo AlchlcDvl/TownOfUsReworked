@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Turned = false;
         public string Objective;
         public Faction Side = Faction.Crew;
-        public bool Betray => Side == Faction.Intruder ? Utils.LastImp() : (Side == Faction.Syndicate ? Utils.LastSyn() : false);
+        public bool Betray => (Side == Faction.Intruder && Utils.LastImp()) || (Side == Faction.Syndicate && Utils.LastSyn());
 
         public Fanatic(PlayerControl player) : base(player)
         {

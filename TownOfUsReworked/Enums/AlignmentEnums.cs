@@ -6,7 +6,6 @@ namespace TownOfUsReworked.Enums
         Intruder,
         Neutral,
         Syndicate,
-        Other,
 
         None
     }
