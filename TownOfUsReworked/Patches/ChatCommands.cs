@@ -679,7 +679,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "det")
                             chatText = "I showed AD how to make ONE ROLE....AND HE FUCKING EXPLODED.";
                         else if (inputText == "disguiser" || inputText == "disg")
-                            chatText = "Here, wear this for me please. I promise I won't do anything to you.";
+                            chatText = "";
                         else if (inputText == "dracula" || inputText == "drac")
                             chatText = "I am a great Undead who's power cannot be rivaled. SO WHY DO I KEEP DYING SO MANY TIMES!?";
                         else if (inputText == "engineer" || inputText == "engi")
@@ -709,7 +709,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "juggernaut" || inputText == "jugg")
                             chatText = "Strength is the pinnacle of mankind. Gotta get those proteins in.";
                         else if (inputText == "miner" || inputText == "mine")
-                            chatText = "Dig, dig, diggin' some rave, the only thing you'll be diggin' is your own grave.";
+                            chatText = "";
                         else if (inputText == "morphling" || inputText == "morph")
                             chatText = "*Casually observing the chaos over Green seeing Red kill.* It was me.";
                         else if (inputText == "murderer" || inputText == "murd")

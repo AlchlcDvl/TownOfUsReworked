@@ -516,17 +516,30 @@ namespace TownOfUsReworked.Classes
                 Faction.Intruder, "BOO"),
             new RoleInfo("Blackmailer", "BM", "The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents" +
                 " the blackmailed person from speaking during the next meeting.", RoleAlignment.IntruderConceal, Faction.Intruder, "Shush."),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Camouflager", "Camo", "The Camouflager does the same thing as the Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged " +
+                "players can kill in front everyone and no one will know who it is.", RoleAlignment.IntruderConceal, Faction.Intruder, "Good luck telling others apart."),
+            new RoleInfo("Consigliere", "Consig", "The Consigliere can reveal people's roles. They cannot get Assassin unless they see factions for obvious reasons.",
+                RoleAlignment.IntruderSupport, Faction.Intruder, "What...are you?"),
+            new RoleInfo("Consort", "Cons", "The Consort can roleblock players and prevent them from doing anything for a short while.", RoleAlignment.IntruderSupport, Faction.Intruder,
+                "I'm like the first slice of bread, everyone touches me but no one likes me."),
+            new RoleInfo("Disguiser", "Disg", "The Disguiser can disguise into other players. At the beginning of each, they can choose someone to measure. They can then disguise the " +
+                "next nearest person into the measured person for a limited amount of time after a short delay.", RoleAlignment.IntruderDecep, Faction.Intruder, "Here, wear this for" +
+                " me please. I promise I won't do anything to you."),
+            new RoleInfo("Ghoul", "Ghoul", "Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the " +
+                "next meeting. The only way to save a marked player is to click the Ghoul that marked them.", RoleAlignment.IntruderUtil, Faction.Intruder, "I CURSE YOU!"),
+            new RoleInfo("Godfather", "GF", "The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, " +
+                "the Mafioso becomes the new Godfather and has lowered cooldowns.", RoleAlignment.IntruderSupport, Faction.Intruder, "I'm going to make an offer they can't refuse."),
+            new RoleInfo("Grenadier", "Gren", "The Grenadier can throw flash grenades which blinds nearby players. However, a sabotage and a flash grenade can not be active at the same" +
+                " time.", RoleAlignment.IntruderConceal, Faction.Intruder, "AAAAAAAAAAAAA YOUR EYES"),
+            new RoleInfo("Impostor", "Imp", "Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.",
+                RoleAlignment.IntruderUtil, Faction.Intruder, "If you ever feel useless, just remember I exist."),
+            new RoleInfo("Janitor", "Jani", "The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want " +
+                "to use.", RoleAlignment.IntruderConceal, Faction.Intruder, "I'm the guy you call to clean up after you."),
+            new RoleInfo("Mafioso", "Mafi", "The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies," +
+                " the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.", RoleAlignment.IntruderUtil,
+                Faction.Intruder, "Yes, boss. Got it, boss."),
+            new RoleInfo("Miner", "Miner", "The Miner can create new vents. These vents only connect to each other, forming a new passageway.", RoleAlignment.IntruderSupport,
+                Faction.Intruder, "Dig, dig, diggin' some rave; making some loud sound waves; the only thing you'll be diggin' is your own grave."),
             new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
             new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
             new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
