@@ -7,7 +7,7 @@ using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class NeutralRole : Role
+    public abstract class NeutralRole : Role
     {
         protected NeutralRole(PlayerControl player) : base(player)
         {

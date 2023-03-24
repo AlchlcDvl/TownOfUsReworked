@@ -717,21 +717,21 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "pestilence" || inputText == "pest")
                             chatText = "You pathetic mortals cannot kill me, the demigod of disease. No...stop. NO. NO. DON'T THROW ME INTO THE LAVA. NOOOOOOOOOOOOOOOOOOO.";
                         else if (inputText == "plaguebearer" || inputText == "pb")
-                            chatText = "*Cough* This should surely work right? *Cough* I sure hope it does.";
+                            chatText = "";
                         else if (inputText == "poisoner" || inputText == "pois")
                             chatText = "So now if you mix these together, you end up creating this...thing.";
                         else if (inputText == "serial killer" || inputText == "sk")
-                            chatText = "My knife, WHERE'S MY KNIFE?!";
+                            chatText = "";
                         else if (inputText == "shapeshifter" || inputText == "ss")
                             chatText = "Everyone! We will be playing dress up! TOGETHER!";
                         else if (inputText == "shifter" || inputText == "shift")
                             chatText = "GET BACK HERE I WANT YOUR ROLE.";
                         else if (inputText == "survivor" || inputText == "surv")
-                            chatText = "Hey listen man, I mind my own business and you do you. Everyone wins!";
+                            chatText = "";
                         else if (inputText == "teleporter" || inputText == "tele")
                             chatText = "He's here, he's there, he's everywhere. Who are ya gonna call? Psychic friend fr-";
                         else if (inputText == "thief")
-                            chatText = "Now it's mine.";
+                            chatText = "";
                         else if (inputText == "time master" || inputText == "tm")
                             chatText = "That darn Time Lord, I will make him pay for taking away my position.";
                         else if (inputText == "troll")
@@ -743,7 +743,7 @@ namespace TownOfUsReworked.Patches
                         else if (inputText == "wraith")
                             chatText = "Now you see me, now you don't.";
                         else if (inputText == "werewolf" || inputText == "ww")
-                            chatText = "AWOOOOOOOOOOOOOOOOOOOO";
+                            chatText = "";
                         else
                             chatText = "Invalid input.";
 

@@ -5,7 +5,7 @@ using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class CrewRole : Role
+    public abstract class CrewRole : Role
     {
         protected CrewRole(PlayerControl player) : base(player)
         {

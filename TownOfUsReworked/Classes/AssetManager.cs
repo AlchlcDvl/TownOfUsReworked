@@ -11,7 +11,6 @@ namespace TownOfUsReworked.Classes
     public static class AssetManager
     {
         private readonly static Dictionary<string, AudioClip> SoundEffects = new();
-        private static bool MaterialsLoaded;
         public readonly static List<string> Sounds = new();
 
         #pragma warning disable
@@ -205,7 +204,7 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static void LoadAndReload()
+        public static void Load()
         {
             //Ability buttons
             Clean = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Clean");
@@ -315,37 +314,32 @@ namespace TownOfUsReworked.Classes
             UpdateTOUButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}UpdateToUButton");
             UpdateSubmergedButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}UpdateSubmergedButton");
 
-            if (!MaterialsLoaded)
-            {
-                var stream1 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Bomber");
-                var stream2 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Operative");
-                BombBundle = AssetBundle.LoadFromMemory(stream1.ReadFully());
-                BugBundle = AssetBundle.LoadFromMemory(stream2.ReadFully());
-                BombMaterial = BombBundle.LoadAsset<Material>("bomb").DontUnload();
-                BugMaterial = BugBundle.LoadAsset<Material>("trap").DontUnload();
+            var stream1 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Bomber");
+            var stream2 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Operative");
+            BombBundle = AssetBundle.LoadFromMemory(stream1.ReadFully());
+            BugBundle = AssetBundle.LoadFromMemory(stream2.ReadFully());
+            BombMaterial = BombBundle.LoadAsset<Material>("bomb").DontUnload();
+            BugMaterial = BugBundle.LoadAsset<Material>("trap").DontUnload();
 
-                //Better Airship stuff
-                var stream = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Airship");
-                AirshipBundle = AssetBundle.LoadFromMemory(stream.ReadFully());
+            //Better Airship stuff
+            var stream = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Airship");
+            AirshipBundle = AssetBundle.LoadFromMemory(stream.ReadFully());
 
-                //Menu settings
-                DiscordImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Discord");
-                UpdateImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Update");
+            //Menu settings
+            DiscordImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Discord");
+            UpdateImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Update");
 
-                //Better Aiship Resources
-                Vault = AirshipBundle.LoadAsset<Sprite>("Vault").DontDestroy();
-                Cokpit = AirshipBundle.LoadAsset<Sprite>("Cokpit").DontDestroy();
-                Medical = AirshipBundle.LoadAsset<Sprite>("Medical").DontDestroy();
-                Task = AirshipBundle.LoadAsset<Sprite>("task-shields").DontDestroy();
+            //Better Aiship Resources
+            Vault = AirshipBundle.LoadAsset<Sprite>("Vault").DontDestroy();
+            Cokpit = AirshipBundle.LoadAsset<Sprite>("Cokpit").DontDestroy();
+            Medical = AirshipBundle.LoadAsset<Sprite>("Medical").DontDestroy();
+            Task = AirshipBundle.LoadAsset<Sprite>("task-shields").DontDestroy();
 
-                VaultAnim = AirshipBundle.LoadAsset<AnimationClip>("Vault.anim").DontDestroy();
-                CokpitAnim = AirshipBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
-                MedicalAnim = AirshipBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
+            VaultAnim = AirshipBundle.LoadAsset<AnimationClip>("Vault.anim").DontDestroy();
+            CokpitAnim = AirshipBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
+            MedicalAnim = AirshipBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
 
-                CallPlateform = AirshipBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
-
-                MaterialsLoaded = true;
-            }
+            CallPlateform = AirshipBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
             SoundEffects.Clear();
             Sounds.Clear();

@@ -3024,8 +3024,6 @@ namespace TownOfUsReworked.Patches
             Role.SetColors();
 
             UpdateNames.PlayerNames.Clear();
-            AssetManager.LoadAndReload();
-            LayerInfo.LoadInfo();
 
             MiscPatches.ExileControllerPatch.lastExiled = null;
         }

@@ -390,150 +390,169 @@ namespace TownOfUsReworked.Classes
                 RoleAlignment.CrewUtil, Faction.Crew, "I once made a pencil using 2 erasers...they were pointless, just like me."),
             new RoleInfo("Engineer", "Engi", "The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.",
                 RoleAlignment.CrewSupport, Faction.Crew, "How am I going to stop some big mean mother hubbard from tearing me a structurally superfluous new behind? The solution? A wrench."),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid")
+            new RoleInfo("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", RoleAlignment.CrewSupport, Faction.Crew,
+                "Today, I will make you a man."),
+            new RoleInfo("Inspector", "Insp", "The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what" +
+                " roles could the target possibly be.", RoleAlignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME."),
+            new RoleInfo("Mayor", "Mayo (XD)", "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option" +
+                " to abstain their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they" +
+                " please.", RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged."),
+            new RoleInfo("Medic", "Medic", "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be " +
+                "killed by anyone, unless it's a suicide. Shielded players have a green ✚ next to their names.", RoleAlignment.CrewProt, Faction.Crew, "Where does it hurt?"),
+            new RoleInfo("Medium", "Med", "The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to " +
+                "see each other and communicate from beyond the grave!", RoleAlignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even smell?"),
+            new RoleInfo("Mystic", "Mys", "The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is " +
+                "changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different " +
+                "subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who" +
+                " flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer.", RoleAlignment.CrewAudit, Faction.Crew, "There's a hint of corruption."),
+            new RoleInfo("Operative", "Op", "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting," +
+                " all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what " +
+                "role a specific player is.", RoleAlignment.CrewInvest, Faction.Crew, "The only thing you need to find out information is good placement and amazing levels of prediction."),
+            new RoleInfo("Retributionist", "Ret", "The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to " +
+                "ressurect and use for the following round from the dead. They can choose to use each dead players as many times as they wish. It should be noted the Retributionist " +
+                "can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.",
+                RoleAlignment.CrewSupport, Faction.Crew, "Bodies...bodies...I NEED BODIES."),
+            new RoleInfo("Seer", "Seer", "The Seer only spawns if there are roles capable of changing their initial roles. The Seer can investigate players to see if their" +
+                " role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, " +
+                "does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their initial " +
+                "roles are dead, the Seer becomes a Sheriff.", RoleAlignment.CrewInvest, Faction.Crew, "You've got quite the history."),
+            new RoleInfo("Sheriff", "Sher", "The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or " +
+                "Evil. A player's name will change color according to their results.", RoleAlignment.CrewInvest, Faction.Crew, "Guys I promise I'm not an Executioner, I checked Blue and" +
+                " they're sus."),
+            new RoleInfo("Shifter", "Shift", "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.",
+                RoleAlignment.CrewSupport, Faction.Crew, "GET BACK HERE I WANT YOUR ROLE."),
+            new RoleInfo("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted " +
+                "towards the second player and vice versa.", RoleAlignment.CrewSov, Faction.Crew, "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it."),
+            new RoleInfo("Time Lord", "TL", "The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be" +
+                " revived. Nothing but movements and kills are affected.", RoleAlignment.CrewSupport, Faction.Crew, "What's better than an Altruist? One that dosen't die!"),
+            new RoleInfo("Tracker", "Track", "InvaThe Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which " +
+                "updates in set intervals.lid", RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker."),
+            new RoleInfo("Transporter", "Trans", "The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue " +
+                "flash on their screen.", RoleAlignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."),
+            new RoleInfo("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When " +
+                "the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a " +
+                "Vigilante.", RoleAlignment.CrewAudit, Faction.Crew, "The Dracula could be anywhere! He could be you! He could be me! He could even be- *gets voted off*"),
+            new RoleInfo("Veteran", "Vet", "The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.",
+                RoleAlignment.CrewKill, Faction.Crew, "Touch me, I dare you."),
+            new RoleInfo("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", RoleAlignment.CrewKill,
+                Faction.Crew, "I AM THE HAND OF JUSTICE."),
+            new RoleInfo("Actor", "Act", "The Actor gets a list of roles at the start of the game. The Actor must pretend to be and get guessed as one of the roles in order" +
+                " to win.", RoleAlignment.NeutralEvil, Faction.Neutral, "I am totally what you think of me as.", "Get guessed as a role in your target role list."),
+            new RoleInfo("Amnesiac", "Amne", "The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player.", RoleAlignment.NeutralBen,
+                Faction.Neutral, "I forgor :skull:", "Find a dead body, take their role and then win as that role."),
+            new RoleInfo("Arsonist", "Arso", "The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which " +
+                "kills all doused players at once. Doused players have an orange Ξ next to their names", RoleAlignment.NeutralKill, Faction.Neutral, "I like my meat well done.",
+                "Douse and ignite anyone who can oppose them"),
+            new RoleInfo("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. They do not know who the target is and must find them via " +
+                "a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button after the next meeting. The " +
+                "Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target" +
+                " dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll. The target has a red Θ next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral,
+                "You can run, but you can't hide.", "Find and kill their bounty."),
+            new RoleInfo("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", RoleAlignment.NeutralEvil, Faction.Neutral, "How " +
+                "do you survive with no food but with a lot of people? Improvise, adapt, overcome.", "Eat a certain number of bodies."),
+            new RoleInfo("Cryomaniac", "Cryo", "The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing " +
+                "players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer" +
+                " or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.",
+                RoleAlignment.NeutralKill, Faction.Neutral, "Anybody wants ice scream?", "Douse and freeze anyone who can oppose them."),
+            new RoleInfo("Dracula", "Drac", "The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If " +
+                "the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire " +
+                "Hunter to kill the Dracula.", RoleAlignment.NeutralNeo, Faction.Neutral, "Everyone calls me a pain in the neck.", "Convert or kill anyone who can oppose the Undead."),
+            new RoleInfo("Executioner", "Exe", "The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's" +
+                " target, by default, is always non-Crew Sovereign Crew. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies " +
+                "before ejected, the Executioner turns into a Jester. Targets have a grey § next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "Source: trust me bro.",
+                "Live to see their target ejected."),
+            new RoleInfo("Glitch", "Gli", "The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, " +
+                "which results in them looking exactly like the other person. The Glitch can kill normally.", RoleAlignment.NeutralKill, Faction.Neutral, "Hippity hoppity, your code is " +
+                "now my property.", "Hippity hoppity, your code is now my property."),
+            new RoleInfo("Guesser", "Guess", "The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their " +
+                "target's role. Targets have a beige π next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "I want to know what you are.", "Guess their target's role."),
+            new RoleInfo("Jackal", "Jack", "The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the " +
+                "'good' one, meaning they are Crew. The other is the 'evil' recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can " +
+                "then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead " +
+                "and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral,
+                "I've got money.", "Recruit or kill anyone who can oppose Cabal."),
+            new RoleInfo("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone" +
+                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and " +
+                "white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of the game."),
+            new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
+                "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...",
+                "Get ejected."),
+            new RoleInfo("Juggernaut", "Jugg", "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill " +
+                "cooldown no longer decreases and instead gives them other buffs, like bypassing protections.", RoleAlignment.NeutralKill, Faction.Neutral, "The doctor told me bones grow" +
+                " stronger when recieving damage. But then why did he kick me out when I picked up a hammer?", "Assault anyone who can oppose them."),
+            new RoleInfo("Revealer", "Rev", "The Revealer can reveal evils if they finish all their tasks. Upon finishing all of their tasks, Intruders, Syndicate and " +
+                "sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal evils and are once again " +
+                "a normal ghost.", RoleAlignment.CrewUtil, Faction.Crew, "I have no idea who I am or what I do, the only thing I see is bad guys who I must reveal."),
+            new RoleInfo("Murderer", "Murd", "The Murderer is a simple Neutral Killer with no special abilities.", RoleAlignment.NeutralKill, Faction.Neutral, "I like my " +
+                "women like how I like my knives, sharp and painful.", "Murder anyone who can oppose them."),
+            new RoleInfo("Necromancer", "Necro", "The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's " +
+                "team, the Reanimated. There is a limit to how many times can the Necromancer can kill and revive players.", RoleAlignment.NeutralNeo, Faction.Neutral, "I like the dead," +
+                " they do a lot of things I like. For example, staying dead.", "Resurrect the dead and kill off anyone who can oppose the Reanimated."),
+            new RoleInfo("Pestilence", "Pest", "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn " +
+                "in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed " +
+                "(usually).", RoleAlignment.NeutralPros, Faction.Neutral, "I am the god of disease, nothing can kill me. *Voice from the distance* Ejections can!", "Obliterate anyone " +
+                "who can oppose them."),
+            new RoleInfo("Phantom", "Phan", "The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all " +
+                "their tasks without getting clicked on to win.", RoleAlignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. *Voice from the distance* " +
+                "Get outta here! This is not FNAF!", "Finish tasks without getting caught."),
+            new RoleInfo("Plaguebearer", "PB", "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. " +
+                "Once all players are infected, the Plaguebearer becomes Pestilence.", RoleAlignment.NeutralKill, Faction.Neutral, "*Cough* This should surely work right? *Cough* I sure" +
+                " hope it does.", "Infect everyone to become pestilence or kill anyone who can oppose them."),
+            new RoleInfo("Serial Killer", "SK", "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust " +
+                "they gain the ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.", RoleAlignment.NeutralKill,
+                Faction.Neutral, "My knife, WHERE'S MY KNIFE?!", "Stab anyone who can oppose them."),
+            new RoleInfo("Survivor", "Surv", "The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration.", RoleAlignment.NeutralBen,
+                Faction.Neutral, "Hey listen man, I mind my own business and you mind yours. Everyone wins!", "Live to the end of the game."),
+            new RoleInfo("Thief", "Thief", "The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will " +
+                "die. After stealing their target's role, the Thief can now win as whatever role they have become.", RoleAlignment.NeutralBen, Faction.Neutral, "Now it's mine.", "Kill" +
+                " and steal someone's role."),
+            new RoleInfo("Troll", "Troll", "The Troll just wants to be killed, but not ejected. The Troll can \"interact\" with players. This interaction does nothing, it just triggers" +
+                " any interaction sensitive roles like Veteran and Pestilence.", RoleAlignment.NeutralEvil, Faction.Neutral, "Kill me. The Impostor: Later.", "Get killed."),
+            new RoleInfo("Werewolf", "WW", "The Werewolf can kill all players within a certain radius.", RoleAlignment.NeutralKill, Faction.Neutral, "AWOOOOOOOOOOOOOOOOOOOO", "Maul" +
+                " anyone who can oppose them."),
+            new RoleInfo("Whisperer", "Whisp", "The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the " +
+                "Sect increases till they do convert.", RoleAlignment.NeutralNeo, Faction.Neutral, "Psst.", "Persuade or kill anyone who can oppose the Sect."),
+            new RoleInfo("Ambusher", "Amb", "The Ambusher can temporaily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.", RoleAlignment.IntruderKill,
+                Faction.Intruder, "BOO"),
+            new RoleInfo("Blackmailer", "BM", "The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents" +
+                " the blackmailed person from speaking during the next meeting.", RoleAlignment.IntruderConceal, Faction.Intruder, "Shush."),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid"),
         };
 
         public readonly static List<ModifierInfo> AllModifiers = new();
         public readonly static List<ObjectifierInfo> AllObjectifiers = new();
         public readonly static List<AbilityInfo> AllAbilities = new();
         public readonly static List<Lore> AllLore = new();
-
-        public static void LoadInfo()
-        {
-            AllRoles.Clear();
-            AllModifiers.Clear();
-            AllAbilities.Clear();
-            AllObjectifiers.Clear();
-
-            AllRoles.Add(new RoleInfo("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", RoleAlignment.CrewSupport, Faction.Crew,
-                "Today, I will make you a man."));
-            AllRoles.Add(new RoleInfo("Inspector", "Insp", "The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what" +
-                " roles could the target possibly be.", RoleAlignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME."));
-            AllRoles.Add(new RoleInfo("Mayor", "Mayo (XD)", "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option" +
-                " to abstain their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they" +
-                " please.", RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, I'm not rigging the votes."));
-            AllRoles.Add(new RoleInfo("Medic", "Medic", "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be " +
-                "killed by anyone, unless it's a suicide. Shielded players have a green ✚ next to their names.", RoleAlignment.CrewProt, Faction.Crew, "Where does it hurt?"));
-            AllRoles.Add(new RoleInfo("Medium", "Med", "The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to " +
-                "see each other and communicate from beyond the grave!", RoleAlignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even smell?"));
-            AllRoles.Add(new RoleInfo("Mystic", "Mys", "The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is " +
-                "changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different " +
-                "subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who" +
-                " flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer.", RoleAlignment.CrewAudit, Faction.Crew, "There's a hint of corruption."));
-            AllRoles.Add(new RoleInfo("Operative", "Op", "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting," +
-                " all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what " +
-                "role a specific player is.", RoleAlignment.CrewInvest, Faction.Crew, "The only thing you need to find out information is good placement and amazing levels of prediction."));
-            AllRoles.Add(new RoleInfo("Retributionist", "Ret", "The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to " +
-                "ressurect and use for the following round from the dead. They can choose to use each dead players as many times as they wish. It should be noted the Retributionist " +
-                "can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.",
-                RoleAlignment.CrewSupport, Faction.Crew, "Bodies...bodies...I NEED BODIES."));
-            AllRoles.Add(new RoleInfo("Seer", "Seer", "The Seer only spawns if there are roles capable of changing their initial roles. The Seer can investigate players to see if their" +
-                " role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, " +
-                "does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their initial " +
-                "roles are dead, the Seer becomes a Sheriff.", RoleAlignment.CrewInvest, Faction.Crew, "You've got quite the history."));
-            AllRoles.Add(new RoleInfo("Sheriff", "Sher", "The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or " +
-                "Evil. A player's name will change color according to their results.", RoleAlignment.CrewInvest, Faction.Crew, "Guys I promise I'm not an Executioner, I checked Blue and" +
-                " they're sus."));
-            AllRoles.Add(new RoleInfo("Shifter", "Shift", "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.",
-                RoleAlignment.CrewSupport, Faction.Crew, "GET BACK HERE I WANT YOUR ROLE."));
-            AllRoles.Add(new RoleInfo("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted " +
-                "towards the second player and vice versa.", RoleAlignment.CrewSov, Faction.Crew, "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it."));
-            AllRoles.Add(new RoleInfo("Time Lord", "TL", "The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be" +
-                " revived. Nothing but movements and kills are affected.", RoleAlignment.CrewSupport, Faction.Crew, "What's better than an Altruist? An Altruist that dosen't die!"));
-            AllRoles.Add(new RoleInfo("Tracker", "Track", "InvaThe Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which " +
-                "updates in set intervals.lid", RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker."));
-            AllRoles.Add(new RoleInfo("Transporter", "Trans", "The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue " +
-                "flash on their screen.", RoleAlignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."));
-            AllRoles.Add(new RoleInfo("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When " +
-                "the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a " +
-                "Vigilante.", RoleAlignment.CrewAudit, Faction.Crew, "The Dracula could be anywhere! He could be you! He could be me! He could even be- *gets voted off*"));
-            AllRoles.Add(new RoleInfo("Veteran", "Vet", "The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.",
-                RoleAlignment.CrewKill, Faction.Crew, "Touch me, I dare you."));
-            AllRoles.Add(new RoleInfo("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", RoleAlignment.CrewKill,
-                Faction.Crew, "I AM THE HAND OF JUSTICE."));
-            AllRoles.Add(new RoleInfo("Actor", "Act", "The Actor gets a list of roles at the start of the game. The Actor must pretend to be and get guessed as one of the roles in order" +
-                " to win.", RoleAlignment.NeutralEvil, Faction.Neutral, "I am totally what you think of me as.", "Get guessed as a role in your target role list."));
-            AllRoles.Add(new RoleInfo("Amnesiac", "Amne", "The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player.", RoleAlignment.NeutralBen,
-                Faction.Neutral, "I forgor :skull:", "Find a dead body, take their role and then win as that role."));
-            AllRoles.Add(new RoleInfo("Arsonist", "Arso", "The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which " +
-                "kills all doused players at once. Doused players have an orange Ξ next to their names", RoleAlignment.NeutralKill, Faction.Neutral, "I like my meat well done.",
-                "Douse and ignite anyone who can oppose them"));
-            AllRoles.Add(new RoleInfo("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. They do not know who the target is and must find them via " +
-                "a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button after the next meeting. The " +
-                "Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target" +
-                " dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll. The target has a red Θ next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral,
-                "You can run, but you can't hide.", "Find and kill their bounty."));
-            AllRoles.Add(new RoleInfo("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", RoleAlignment.NeutralEvil, Faction.Neutral, "How " +
-                "do you survive with no food but with a lot of people? Improvise, adapt, overcome.", "Eat a certain number of bodies."));
-            AllRoles.Add(new RoleInfo("Cryomaniac", "Cryo", "The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing " +
-                "players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer" +
-                " or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.",
-                RoleAlignment.NeutralKill, Faction.Neutral, "Anybody wants ice scream?", "Douse and freeze anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Dracula", "Drac", "The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If " +
-                "the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire " +
-                "Hunter to kill the Dracula.", RoleAlignment.NeutralNeo, Faction.Neutral, "Everyone calls me a pain in the neck.", "Convert or kill anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Executioner", "Exe", "The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's" +
-                " target, by default, is always non-Crew Sovereign Crew. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies " +
-                "before ejected, the Executioner turns into a Jester. Targets have a grey § next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "Source: trust me bro.",
-                "Live to see their target ejected."));
-            AllRoles.Add(new RoleInfo("Glitch", "Gli", "The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, " +
-                "which results in them looking exactly like the other person. The Glitch can kill normally.", RoleAlignment.NeutralKill, Faction.Neutral, "Hippity hoppity, your code is " +
-                "now my property.", "Hippity hoppity, your code is now my property."));
-            AllRoles.Add(new RoleInfo("Guesser", "Guess", "The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their " +
-                "target's role. Targets have a beige π next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "I want to know what you are.", "Guess their target's role."));
-            AllRoles.Add(new RoleInfo("Jackal", "Jack", "The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the " +
-                "'good' one, meaning they are Crew. The other is the 'evil' recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can " +
-                "then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead " +
-                "and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral,
-                "I've got money.", "Recruit or kill anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone" +
-                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and " +
-                "white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of the game."));
-            AllRoles.Add(new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
-                "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...", "Get ejected."));
-            AllRoles.Add(new RoleInfo("Juggernaut", "Jugg", "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill " +
-                "cooldown no longer decreases and instead gives them other buffs, like bypassing protections.", RoleAlignment.NeutralKill, Faction.Neutral, "The doctor told me bones grow" +
-                " stronger when recieving damage. But then why did he kick me out when I picked up a hammer?", "Assault anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Revealer", "Rev", "The Revealer can reveal evils if they finish all their tasks. Upon finishing all of their tasks, Intruders, Syndicate and " +
-                "sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal evils and are once again " +
-                "a normal ghost.", RoleAlignment.CrewUtil, Faction.Crew, "I have no idea who I am or what I do, the only thing I see is bad guys who I must reveal."));
-            AllRoles.Add(new RoleInfo("Murderer", "Murd", "The Murderer is a simple Neutral Killer with no special abilities.", RoleAlignment.NeutralKill, Faction.Neutral, "I like my " +
-                "women like how I like my knives, sharp and painful.", "Murder anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Necromancer", "Necro", "The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's " +
-                "team, the Reanimated. There is a limit to how many times can the Necromancer can kill and revive players.", RoleAlignment.NeutralNeo, Faction.Neutral, "I like the dead," +
-                " they do a lot of things I like. For example, staying dead.", "Resurrect the dead and kill off anyone who can oppose them."));
-            AllRoles.Add(new RoleInfo("Pestilence", "Pest", "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn " +
-                "in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed " +
-                "(usually).", RoleAlignment.NeutralPros, Faction.Neutral, "I am the god of disease, nothing can kill me. *voice from the distance* Ejections can!", "Obliterate anyone " +
-                "who can oppose them."));
-        }
     }
 }

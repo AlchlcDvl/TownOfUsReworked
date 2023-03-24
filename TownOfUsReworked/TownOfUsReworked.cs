@@ -29,7 +29,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.2.6";
+        public const string VersionString = "0.0.2.7";
 
         #pragma warning disable
         public static Version Version = Version.Parse(VersionString);
@@ -71,7 +71,7 @@ namespace TownOfUsReworked
 
         public override void Load()
         {
-            _harmony = new Harmony("TownOfUsReworked");
+            _harmony = new("TownOfUsReworked");
 
             var maxImpostors = (Il2CppStructArray<int>) Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
             GameOptionsData.MaxImpostors = GameOptionsData.RecommendedImpostors = maxImpostors;
@@ -104,9 +104,8 @@ namespace TownOfUsReworked
             SubmergedCompatibility.Initialize();
             PalettePatch.Load();
             Generate.GenerateAll();
-            LayerInfo.LoadInfo();
             UpdateNames.PlayerNames.Clear();
-            AssetManager.LoadAndReload();
+            AssetManager.Load();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
             _harmony.PatchAll();
         }

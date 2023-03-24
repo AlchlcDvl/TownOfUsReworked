@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class SyndicateRole : Role
+    public abstract class SyndicateRole : Role
     {
         public DateTime LastKilled;
         public PlayerControl ClosestPlayer;

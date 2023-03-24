@@ -7,10 +7,10 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class IntruderRole : Role
+    public abstract class IntruderRole : Role
     {
         public DateTime LastKilled;
-        public PlayerControl ClosestPlayer = null;
+        public PlayerControl ClosestPlayer;
         public AbilityButton KillButton;
 
         protected IntruderRole(PlayerControl player) : base(player)
