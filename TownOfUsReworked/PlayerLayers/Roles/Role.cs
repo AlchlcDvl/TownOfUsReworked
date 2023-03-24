@@ -49,6 +49,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static bool PhantomWins;
 
+        public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins
+            || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins;
+
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
         #pragma warning restore

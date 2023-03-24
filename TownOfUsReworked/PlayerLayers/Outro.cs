@@ -113,11 +113,12 @@ namespace TownOfUsReworked.PlayerLayers
                 text.text = $"The {role.SubFactionName} Win!";
                 text.color = role.SubFactionColor;
             }
-            else
+            else if (Role.RoleWins)
             {
                 var role = Role.AllRoles.Find(x => ((x.RoleType == RoleEnum.Arsonist && Role.ArsonistWins) || (x.RoleType == RoleEnum.Cryomaniac && Role.CryomaniacWins) ||
                     (x.RoleType == RoleEnum.Glitch && Role.GlitchWins) || (x.RoleType == RoleEnum.Juggernaut && Role.JuggernautWins) || (x.RoleType == RoleEnum.Murderer &&
-                    Role.MurdererWins) || (x.RoleType == RoleEnum.SerialKiller && Role.SerialKillerWins) || (x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins)) && x.Winner);
+                    Role.MurdererWins) || (x.RoleType == RoleEnum.SerialKiller && Role.SerialKillerWins) || (x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins) || (x.RoleType ==
+                    RoleEnum.Phantom && Role.PhantomWins)) && x.Winner);
 
                 if (role == null)
                     return;
@@ -125,6 +126,19 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.Color;
                 text.text = $"{role.Name} Wins!";
                 text.color = role.Color;
+            }
+            else if (Objectifier.ObjectifierWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => ((x.ObjectifierType == ObjectifierEnum.Corrupted && Objectifier.CorruptedWins) || (x.ObjectifierType ==
+                    ObjectifierEnum.Lovers && Objectifier.LoveWins) || (x.ObjectifierType == ObjectifierEnum.Rivals && Objectifier.RivalWins) || (x.ObjectifierType ==
+                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.ObjectifierType == ObjectifierEnum.Overlord && Objectifier.OverlordWins)) && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = (obj.ObjectifierType == ObjectifierEnum.Lovers ? "Love" : obj.ObjectifierType == ObjectifierEnum.Rivals ? "Rival" : $"{obj.Name}") + " Wins!";
+                text.color = obj.Color;
             }
 
             var pos = __instance.WinText.transform.localPosition;

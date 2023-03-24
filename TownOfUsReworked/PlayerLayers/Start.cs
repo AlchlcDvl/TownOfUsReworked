@@ -2,9 +2,11 @@ using System;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
 using Hazel;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
+namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
     public static class Start
@@ -459,6 +461,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             {
                 var drac = (Dracula)role;
                 drac.LastBitten = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BiteCd);
+            }
+
+            //Objectifiers
+            foreach (var role in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+            {
+                var corrupted = (Corrupted)role;
+                corrupted.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
             }
         }
     }

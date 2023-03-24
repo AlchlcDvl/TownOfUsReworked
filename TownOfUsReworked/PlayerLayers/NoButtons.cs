@@ -3,7 +3,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
+namespace TownOfUsReworked.PlayerLayers
 {
     public static class NoButtons
     {
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if ((!CustomGameOptions.MayorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) || (!CustomGameOptions.SwapperButton && PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                     || (!CustomGameOptions.ActorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Actor)) || (!CustomGameOptions.ExecutionerButton &&
                     PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) || (!CustomGameOptions.GuesserButton && PlayerControl.LocalPlayer.Is(RoleEnum.Guesser)) ||
-                    (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)))
+                    (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) || PlayerControl.LocalPlayer.Is(ModifierEnum.Shy))
                 {
                     PlayerControl.LocalPlayer.RemainingEmergencies = 0;
                 }
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if ((!CustomGameOptions.MayorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Mayor)) || (!CustomGameOptions.SwapperButton && PlayerControl.LocalPlayer.Is(RoleEnum.Swapper))
                     || (!CustomGameOptions.ActorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Actor)) || (!CustomGameOptions.ExecutionerButton &&
                     PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) || (!CustomGameOptions.GuesserButton && PlayerControl.LocalPlayer.Is(RoleEnum.Guesser)) ||
-                    (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)))
+                    (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)) || PlayerControl.LocalPlayer.Is(ModifierEnum.Shy))
                 {
                     PlayerControl.LocalPlayer.RemainingEmergencies = 0;
                 }

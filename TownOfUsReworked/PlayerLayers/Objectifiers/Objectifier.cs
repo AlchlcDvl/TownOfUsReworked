@@ -27,6 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static bool OverlordWins;
         #pragma warning restore
 
+        public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins;
+
         protected Objectifier(PlayerControl player) : base(player)
         {
             Player = player;

@@ -121,6 +121,11 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <details>
   <summary>Change Log</summary>
   <details>
+    <summary>v0.0.2dev6</summary>
+    <ul> <li>Critical Fix: Fixed buttons not working</li> </ul>
+    <ul> <li>Code Change: Changed how outros work</li> </ul>
+  </details>
+  <details>
     <summary>v0.0.2dev5</summary>
     <ul> <li>WARNING THIS UPDATE IS EXPERIMENTAL</li> </ul>
     <ul> <li>Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles</li> </ul>
