@@ -1,0 +1,54 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "Master" ]
+  pull_request:
+    branches: [ "Master" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Test_Project_Path: TownOfUsReworked/TownOfUsReworked.csproj
+      Root: TownOfUsReworked/
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.x.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+  
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Test_Project_Path /t:restore /p:Configuration=$env:Configuration
+    - name: publish the application
+      run: msbuild $env:Test_Project_Path /t:publish /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+      
+    - name: Install dependencies
+      run: dotnet restore
+
+    - uses: actions/upload-artifact@v3.1.2
+      with:
+        name: TownOfUsReworked.dll
+        path: TownOfUsReworked/bin/Release/net6.0/TownOfUsReworked.dll
