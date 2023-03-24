@@ -6,15 +6,15 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class GuesserHUD
+    public static class GuesserHUD
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Guesser))
                 return;
 
             var role = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
-            
+
             if (role.Failed && !role.Player.Data.IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);

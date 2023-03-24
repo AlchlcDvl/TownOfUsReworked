@@ -6,9 +6,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDWarp
+    public static class HUDWarp
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Warper))
                 return;

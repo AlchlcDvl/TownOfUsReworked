@@ -5,19 +5,14 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
-    public class NoSpawn
+    public static class NoSpawn
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
             {
-                var caught = Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught;
-                
-                if (!caught)
-                {
-                    __instance.Close();
-                    return false;
-                }
+                __instance.Close();
+                return false;
             }
 
             return true;

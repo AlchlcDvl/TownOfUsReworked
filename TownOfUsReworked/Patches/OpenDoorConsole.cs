@@ -10,15 +10,16 @@ namespace TownOfUsReworked.Patches
 {
     #region OpenDoorConsole
     [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
-    public class OpenDoorConsoleCanUse
+    public static class OpenDoorConsoleCanUse
     {
-        public static void Prefix(OpenDoorConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) && playerInfo.IsDead &&
+                !Role.GetRole<Revealer>(playerControl).Caught) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
+                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -33,7 +34,7 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
-    public class OpenDoorConsoleUse
+    public static class OpenDoorConsoleUse
     {
         public static bool Prefix(OpenDoorConsole __instance)
         {
@@ -50,22 +51,23 @@ namespace TownOfUsReworked.Patches
 
     #region DoorConsole
     [HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
-    public class DoorConsoleCanUse
+    public static class DoorConsoleCanUse
     {
-        public static void Prefix(DoorConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
             if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
+                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse)
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             if (__state)
                 playerInfo.IsDead = true;
@@ -99,15 +101,15 @@ namespace TownOfUsReworked.Patches
 
     #region Ladder
     [HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
-    public class LadderCanUse
+    public static class LadderCanUse
     {
-        public static void Prefix(DoorConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
             if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead))
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -122,7 +124,7 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(Ladder), nameof(Ladder.Use))]
-    public class LadderUse
+    public static class LadderUse
     {
         public static bool Prefix(Ladder __instance)
         {
@@ -139,15 +141,16 @@ namespace TownOfUsReworked.Patches
 
     #region PlatformConsole
     [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
-    public class PlatformConsoleCanUse
+    public static class PlatformConsoleCanUse
     {
-        public static void Prefix(PlatformConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
             if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
+                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -164,15 +167,16 @@ namespace TownOfUsReworked.Patches
 
     #region DeconControl
     [HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
-    public class DeconControlUse
+    public static class DeconControlUse
     {
-        public static void Prefix(DoorConsole __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
             if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
+                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -189,15 +193,16 @@ namespace TownOfUsReworked.Patches
 
     #region global::Console
     [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-    public class ConsoleCanUsePatch
+    public static class ConsoleCanUsePatch
     {
-        public static void Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
         {
             __state = false;
             var playerControl = playerInfo.Object;
 
             if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught) && playerInfo.IsDead)
+                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
+                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -212,15 +217,15 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(Console), nameof(Console.Use))]
-    public class ConsoleUsePatch
+    public static class ConsoleUsePatch
     {
         public static bool Prefix(Console __instance)
         {
-            __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out var couldUse);
+            __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
 
             if (canUse)
             {
-                PlayerTask playerTask = __instance.FindTask(PlayerControl.LocalPlayer);
+                var playerTask = __instance.FindTask(PlayerControl.LocalPlayer);
 
                 if (playerTask.MinigamePrefab)
                 {

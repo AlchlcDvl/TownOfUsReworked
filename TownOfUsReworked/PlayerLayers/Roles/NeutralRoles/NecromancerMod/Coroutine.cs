@@ -14,7 +14,7 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
         public static IEnumerator NecromancerResurrect(DeadBody target, Necromancer role)
         {
@@ -89,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             else
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
+            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
@@ -100,7 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 } catch {}
             }
 
-            if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (target != null)
@@ -111,9 +111,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
 
                 lover.Revive();
-                Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
+                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
 
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (DeadBody deadBody in Object.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == lover.PlayerId)
                         deadBody.gameObject.Destroy();

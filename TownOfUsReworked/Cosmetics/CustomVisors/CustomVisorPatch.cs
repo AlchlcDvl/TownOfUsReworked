@@ -8,16 +8,16 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Cosmetics.CustomVisors
 {
     //Thanks to Las Monjas for this code
-    class CustomVisorPatch
+    public static class CustomVisorPatch
     {
-        public static Material MagicShader;
-        public static List<VisorMetadataElement> AuthorDatas = Loader.LoadCustomVisorData();
-        private static bool _customVisorLoaded = false;
+        private static Material MagicShader;
+        private readonly static List<VisorMetadataElement> AuthorDatas = Loader.LoadCustomVisorData();
+        private static bool _customVisorLoaded;
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetVisorById))]
         public static class AddCustomVisors
         {
-            public static int VisorID = 0;
+            private static int VisorID;
 
             public static void Postfix(HatManager __instance)
             {
@@ -42,16 +42,13 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             {
                 //Borrowed from Other Roles to get hats alt shaders to work
                 if (MagicShader == null)
-                {
-                    var visorShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
-                    MagicShader = visorShader;
-                }
+                    MagicShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
                 var a = ScriptableObject.CreateInstance<VisorViewData>();
                 var b = new AddressableLoadWrapper<VisorViewData>();
                 a.IdleFrame = GetSprite(id);
 
-                if (altshader == true)
+                if (altshader)
                     a.AltShader = MagicShader;
 
                 b.viewData = a;
@@ -73,8 +70,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             var mainImg = stream.ReadFully();
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             Utils.LoadImage(tex2D, mainImg, false);
-            var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-            return sprite;
+            return Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
         }
     }
 }

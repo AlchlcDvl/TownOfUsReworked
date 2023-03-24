@@ -13,9 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public abstract class Objectifier : PlayerLayer
     {
-        public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new Dictionary<byte, Objectifier>();
-        public static IEnumerable<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
+        public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new();
+        public static List<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
 
+        #pragma warning disable
         public static bool NobodyWins;
 
         public static bool LoveWins;
@@ -23,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static bool TaskmasterWins;
         public static bool CorruptedWins;
         public static bool OverlordWins;
+        #pragma warning restore
 
         protected Objectifier(PlayerControl player) : base(player)
         {
@@ -38,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         protected internal ObjectifierEnum ObjectifierType = ObjectifierEnum.None;
         protected internal string SymbolName = ":";
         protected internal string TaskText = "- None.";
-        protected internal bool Hidden = false;
-        protected internal bool Winner = false;
+        protected internal bool Hidden;
+        protected internal bool Winner;
 
         protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
@@ -47,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
 
             if (ReferenceEquals(this, obj))
@@ -87,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public static bool operator != (Objectifier a, Objectifier b) => !(a == b);
 
-        public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.FirstOrDefault(x => x.Player == player);
+        public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.Find(x => x.Player == player);
 
         public static T GetObjectifier<T>(PlayerControl player) where T : Objectifier => GetObjectifier(player) as T;
 
@@ -95,9 +97,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
 
-        public static T GenObjectifier<T>(Type type, PlayerControl player, int id, List<PlayerControl> players = null)
+        public static T GenObjectifier<T>(Type type, PlayerControl player, int id)
         {
-            var objectifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var objectifier = (T)Activator.CreateInstance(type, new object[] { player });
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable);
             writer.Write(player.PlayerId);
             writer.Write(id);
@@ -113,14 +115,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (Utils.CorruptedWin(Player))
             {
                 CorruptedWins = true;
-                
+
                 if (CustomGameOptions.AllCorruptedWin)
                 {
-                    foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+                    foreach (Corrupted corr in GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
                         corr.Winner = true;
                 }
                 else
+                {
                     Winner = true;
+                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CorruptedWin);
@@ -168,7 +172,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 OverlordWins = true;
 
-                foreach (Overlord ov in GetObjectifiers(ObjectifierEnum.Overlord))
+                foreach (Overlord ov in GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
                 {
                     if (ov.IsAlive)
                         ov.Winner = true;
@@ -182,7 +186,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 return false;
             }
 
-            var flag = Player.Is(ObjectifierEnum.Corrupted) || Player.Is(ObjectifierEnum.Allied) || Player.Is(ObjectifierEnum.Overlord) || (Player.Is(ObjectifierEnum.Lovers) && 
+            var flag = Player.Is(ObjectifierEnum.Corrupted) || Player.Is(ObjectifierEnum.Allied) || Player.Is(ObjectifierEnum.Overlord) || (Player.Is(ObjectifierEnum.Lovers) &&
                 ((Lovers)this).LoversAlive()) || (Player.Is(ObjectifierEnum.Rivals) && ((Rivals)this).RivalDead());
             return !flag;
         }
@@ -206,7 +210,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                     Role.NobodyWins = true;
-                    Objectifier.NobodyWins = true;
+                    NobodyWins = true;
                     return true;
                 }
                 else

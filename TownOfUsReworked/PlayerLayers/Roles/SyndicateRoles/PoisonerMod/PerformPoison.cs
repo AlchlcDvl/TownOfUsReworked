@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformPoison
+    public static class PerformPoison
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -16,21 +16,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
                 return true;
 
             var role = Role.GetRole<Poisoner>(PlayerControl.LocalPlayer);
-            
+
             if (__instance == role.PoisonButton)
             {
                 if (role.PoisonTimer() != 0f)
                     return false;
-                
+
                 if (role.Poisoned)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, false, true);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.PoisonedPlayer = role.ClosestPlayer;
                     role.TimeRemaining = CustomGameOptions.PoisonDuration;
@@ -42,11 +42,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
                     role.Poison();
                 }
 
-                if (interact[0] == true && Role.SyndicateHasChaosDrive)
+                if (interact[0] && Role.SyndicateHasChaosDrive)
                     role.LastPoisoned = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;

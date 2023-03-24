@@ -10,7 +10,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformTrack
+    public static class PerformTrack
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var target = role.ClosestPlayer;
                     var gameObj = new GameObject();
@@ -62,15 +62,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     role.TrackerArrows.Add(target.PlayerId, arrow);
                     role.UsesLeft--;
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastTracked = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
-            
+
             return true;
         }
     }

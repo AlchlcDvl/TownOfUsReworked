@@ -7,9 +7,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class Hide
+    public static class Hide
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsEnded || GameStates.IsLobby)
                 return;
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 
                 if (role.Player.Data.Disconnected)
                     continue;
-                
+
                 var caught = phantom.Caught;
 
                 if (!caught)
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 else if (phantom.Faded)
                 {
                     Utils.DefaultOutfit(phantom.Player);
-                    phantom.Player.myRend().color = Color.white;
+                    phantom.Player.MyRend().color = Color.white;
                     phantom.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     phantom.Faded = false;
                     phantom.Player.MyPhysics.ResetMoveState();

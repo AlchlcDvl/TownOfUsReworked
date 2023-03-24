@@ -6,7 +6,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
     [HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
     public static class Seismic
     {
-        public static bool Prefix(ReactorSystemType __instance, PlayerControl player, byte opCode)
+        public static bool Prefix(ReactorSystemType __instance, byte opCode)
         {
             if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb && opCode == 128 && !__instance.IsActive)
             {

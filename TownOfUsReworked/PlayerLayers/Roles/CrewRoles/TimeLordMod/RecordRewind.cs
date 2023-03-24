@@ -12,18 +12,19 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class RecordRewind
+    public static class RecordRewind
     {
-        public static bool rewinding = false;
+        #pragma warning disable
+        public static bool rewinding;
         public static TimeLord whoIsRewinding;
-        public static List<PointInTime> points = new List<PointInTime>();
+        public readonly static List<PointInTime> points = new();
         private static float deadTime;
         private static bool isDead;
-        private static float recordTime => CustomGameOptions.RewindDuration;
+        #pragma warning restore
 
         public static void Record()
         {
-            if (points.Count > Mathf.Round(recordTime / Time.deltaTime))
+            if (points.Count > Mathf.Round(CustomGameOptions.RewindDuration / Time.deltaTime))
                 points.RemoveAt(points.Count - 1);
 
             if (PlayerControl.LocalPlayer == null)
@@ -72,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                     PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
                     PlayerControl.LocalPlayer.MyPhysics.ExitAllVents();
                 }
-                
+
                 if (!PlayerControl.LocalPlayer.inVent)
                 {
                     if (!PlayerControl.LocalPlayer.Collider.enabled)
@@ -87,10 +88,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                     }
 
                     var currentPoint = points[0];
-
                     PlayerControl.LocalPlayer.transform.position = currentPoint.position;
 
-                    if (SubmergedCompatibility.isSubmerged())
+                    if (SubmergedCompatibility.IsSubmerged())
                         SubmergedCompatibility.ChangeFloor(currentPoint.position.y > -7);
 
                     PlayerControl.LocalPlayer.gameObject.GetComponent<Rigidbody2D>().velocity = currentPoint.velocity * 3;
@@ -138,8 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             }
 
             player.Revive();
-
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
+            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             var body = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == player.PlayerId);
 
             if (body != null)

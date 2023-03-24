@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDObliterate
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Pestilence))
                 return;

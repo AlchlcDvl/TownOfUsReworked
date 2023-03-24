@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(jackal.Player);
                 team.Add(jackal.EvilRecruit);
             }
-            
+
             if (Player.Is(ObjectifierEnum.Lovers))
                 team.Add(Player.GetOtherLover());
             else if (Player.Is(ObjectifierEnum.Rivals))

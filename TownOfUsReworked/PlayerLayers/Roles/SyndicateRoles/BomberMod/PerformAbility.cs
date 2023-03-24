@@ -8,7 +8,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -35,9 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 if (role.DetonateTimer() != 0f)
                     return false;
 
-                if (role.Bombs.Count <= 0)
+                if (role.Bombs.Count == 0)
                     return false;
-                
+
                 role.Bombs.DetonateBombs(role.PlayerName);
                 role.LastDetonated = DateTime.UtcNow;
 

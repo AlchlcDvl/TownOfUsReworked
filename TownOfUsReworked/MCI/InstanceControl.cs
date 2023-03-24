@@ -8,13 +8,12 @@ namespace TownOfUsReworked.MCI
 {
     public static class InstanceControl
     {
-        public static Dictionary<int, ClientData> clients = new();
-        public static Dictionary<byte, int> PlayerIdClientId = new();
-        public static bool MCIActive = false;
+        public static readonly Dictionary<int, ClientData> Clients = new();
+        public static readonly Dictionary<byte, int> PlayerIdClientId = new();
 
         public static void SwitchTo(byte playerId)
         {
-            if (!MCIActive)
+            if (!TownOfUsReworked.MCIActive)
                 return;
 
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);

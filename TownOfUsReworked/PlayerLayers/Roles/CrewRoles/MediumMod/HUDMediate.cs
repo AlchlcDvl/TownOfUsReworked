@@ -9,9 +9,9 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDMediate
+    public static class HUDMediate
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Medium))
                 return;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             {
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (role.MediatedPlayers.Keys.Contains(player.PlayerId))
+                    if (role.MediatedPlayers.ContainsKey(player.PlayerId))
                     {
                         role.MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
                         player.Visible = true;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                                 PlayerName = " "
                             });
 
-                            PlayerMaterial.SetColors(Color.grey, player.myRend());
+                            PlayerMaterial.SetColors(Color.grey, player.MyRend());
                         }
                     }
                 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,37 +14,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
-        public PlayerControl TargetPlayer = null;
-        public bool TargetAlive => ((TargetPlayer != null && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || TargetPlayer == null) && !Player.Data.Disconnected;
+        public PlayerControl TargetPlayer;
+        public bool TargetAlive => TargetPlayer?.Data.IsDead == false && TargetPlayer?.Data.Disconnected == false && !Player.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         public AbilityButton ProtectButton;
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            StartText = $"Protect Your Target With Your Life";
-            Objectives = $"- Have your target live to the end of the game.";
+            StartText = "Protect Your Target With Your Life";
+            Objectives = "- Have your target live to the end of the game.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             LastProtected = DateTime.UtcNow;
             RoleType = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
-            AbilitiesText = $"- You can protect your target from death for a short while.";
+            AbilitiesText = "- You can protect your target from death for a short while.";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 
         public float ProtectTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastProtected;
+            var timespan = utcNow - LastProtected;
             var num = CustomGameOptions.ProtectCd * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Protect()
@@ -57,11 +54,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSurv()
         {
-            var ga = Role.GetRole<GuardianAngel>(Player);
-            var newRole = new Survivor(Player);
-            newRole.RoleUpdate(ga);
-            newRole.UsesLeft = ga.UsesLeft;
-            Player.RegenTask();
+            var newRole = new Survivor(Player)
+            {
+                UsesLeft = UsesLeft
+            };
+
+            newRole.RoleUpdate(this);
+
+            if (Player == PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Color));
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
 
         public void UnProtect()

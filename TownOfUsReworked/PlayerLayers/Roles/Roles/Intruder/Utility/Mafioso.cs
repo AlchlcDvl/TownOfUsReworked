@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mafioso : IntruderRole
     {
-        public Role FormerRole = null;
+        public Role FormerRole;
         public Godfather Godfather;
         public bool CanPromote => Godfather.Player.Data.IsDead || Godfather.Player.Data.Disconnected;
 
@@ -24,15 +24,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnGodfather()
         {
-            var mafioso = Role.GetRole<Mafioso>(Player);
-            var formerRole = mafioso.FormerRole;
-            var role = new Godfather(Player);
-            role.WasMafioso = true;
-            role.HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote;
-            role.FormerRole = formerRole;
-            role.RoleUpdate(formerRole);
-            role.RoleBlockImmune = formerRole.RoleBlockImmune;
-            Player.RegenTask();
+            var role = new Godfather(Player)
+            {
+                WasMafioso = true,
+                HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote,
+                FormerRole = FormerRole,
+                RoleBlockImmune = FormerRole.RoleBlockImmune
+            };
+
+            role.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
                 Coroutines.Start(Utils.FlashCoroutine(Color));

@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ClosestTarget;
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Disguised => TimeRemaining > 0f;
-        public bool Enabled = false;
+        public bool Enabled;
 
         public Disguiser(PlayerControl player) : base(player)
         {
@@ -63,27 +63,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float DisguiseTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDisguised;
+            var timespan = utcNow - LastDisguised;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float MeasureTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMeasured;
+            var timespan = utcNow - LastMeasured;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MeasureCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

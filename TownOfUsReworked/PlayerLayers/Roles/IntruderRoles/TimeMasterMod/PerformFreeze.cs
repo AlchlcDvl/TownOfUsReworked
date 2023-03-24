@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformFreeze
+    public static class PerformFreeze
     {
         public static bool Prefix(AbilityButton __instance)
         {

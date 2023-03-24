@@ -9,30 +9,28 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Rivals : Objectifier
     {
-        public PlayerControl OtherRival { get; set; }
+        public PlayerControl OtherRival;
 
         public Rivals(PlayerControl player) : base(player)
         {
             Name = "Rival";
             SymbolName = "α";
-            TaskText = $"- Get your rival killed and then live to the final 2.";
+            TaskText = "- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
         {
-            List<PlayerControl> all = new();
-
-            foreach (var player in canHaveObjectifiers)
-                all.Add(player);
+            var all = new List<PlayerControl>();
+            all.AddRange(canHaveObjectifiers);
 
             if (all.Count < 4)
                 return;
 
             PlayerControl firstRival = null;
             PlayerControl secondRival = null;
-            
+
             while (firstRival == null || secondRival == null || firstRival == secondRival || (firstRival.GetFaction() == secondRival.GetFaction() && !CustomGameOptions.RivalsFaction))
             {
                 all.Shuffle();
@@ -62,9 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        public bool RivalDead() => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
+        public bool RivalDead() => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;
 
-        public bool IsDeadRival() => Player == null || Player.Data.IsDead || Player.Data.Disconnected;
+        public bool IsDeadRival() => Player?.Data?.IsDead == true || Player?.Data?.Disconnected == true;
 
         public bool BothRivalsDead() => IsDeadRival() && RivalDead();
 

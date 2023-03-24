@@ -5,11 +5,11 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 namespace TownOfUsReworked.Cosmetics.CustomVisors
 {
     [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedVisors))]
-    public class UnlockVisors
+    public static class UnlockVisors
     {
         public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<VisorData> __result)
         {
-            var array =
+            __result =
             (
                 from v
                 in __instance.allVisors.ToArray()
@@ -20,8 +20,6 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
                 o.name
                 select o
             ).ToArray();
-
-            __result = array;
             return false;
         }
     }

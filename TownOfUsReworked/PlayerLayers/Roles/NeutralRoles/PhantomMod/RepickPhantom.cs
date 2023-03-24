@@ -8,9 +8,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class RepickPhantom
+    public static class RepickPhantom
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;

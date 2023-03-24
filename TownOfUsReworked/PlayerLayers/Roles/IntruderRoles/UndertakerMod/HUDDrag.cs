@@ -6,9 +6,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDDrag
+    public static class HUDDrag
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Undertaker))
                 return;

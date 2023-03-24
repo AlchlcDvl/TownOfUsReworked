@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
     [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
     public static class Start
     {
-        public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
+        public static void Postfix()
         {
             //Crew starting cooldowns
             foreach (var role in Role.GetRoles(RoleEnum.Chameleon))
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 var transporter = (Transporter)role;
                 transporter.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
             }
-            
+
             foreach (var role in Role.GetRoles(RoleEnum.VampireHunter))
             {
                 var vampireHunter = (VampireHunter)role;
@@ -152,7 +152,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 godfather.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCooldown);
                 godfather.FormerRole = null;
             }
-            
+
             foreach (var role in Role.GetRoles(RoleEnum.Janitor))
             {
                 var janitor = (Janitor)role;
@@ -389,7 +389,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     ga.TurnSurv();
                 }
                 else
+                {
                     ga.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
+                }
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
@@ -441,7 +443,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     bh.TurnTroll();
                 }
                 else
+                {
                     bh.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BiteCd);
+                }
             }
 
             foreach (var role in Role.GetRoles(RoleEnum.Necromancer))

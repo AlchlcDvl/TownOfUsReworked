@@ -6,7 +6,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDBeam
+    public static class HUDBeam
     {
         public static void Postfix(HudManager __instance)
         {

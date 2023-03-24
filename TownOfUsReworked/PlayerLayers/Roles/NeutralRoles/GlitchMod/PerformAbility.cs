@@ -12,7 +12,7 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GlitchRoleblock);
@@ -44,9 +44,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     targetRole.IsBlocked = !targetRole.RoleBlockImmune;
                     role.Hack();
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastHack = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastHack.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -61,11 +61,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true || interact[0] == true)
+                if (interact[3] || interact[0])
                     role.LastKilled = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
@@ -114,15 +114,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                     role.MimicList.chatBubPool.activeChildren.Clear();
 
-                    foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x != null && x.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
+                    foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x?.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
                     {
                         if (!player.Data.IsDead)
                             role.MimicList.AddChat(player, "Click Here");
                         else
                         {
-                            var deadBodies = Object.FindObjectsOfType<DeadBody>();
-
-                            foreach (var body in deadBodies)
+                            foreach (var body in Object.FindObjectsOfType<DeadBody>())
                             {
                                 if (body.ParentId == player.PlayerId)
                                 {
@@ -143,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 
                 return false;
             }
-            
+
             return true;
         }
     }

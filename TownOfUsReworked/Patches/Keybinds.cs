@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(InputManager_Base), nameof(InputManager_Base.Awake))]
     public static class Keybinds
     {
-        private static void Prefix(InputManager_Base __instance)
+        public static void Prefix(InputManager_Base __instance)
         {
             __instance.userData.GetAction("ActionSecondary").descriptiveName = "Primary Ability";
             __instance.userData.GetAction("UseVent").descriptiveName = "Vent";

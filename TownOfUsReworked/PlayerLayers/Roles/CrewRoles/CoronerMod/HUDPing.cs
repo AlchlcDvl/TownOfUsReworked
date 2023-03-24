@@ -10,9 +10,9 @@ using TownOfUsReworked.Patches;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDPing
+    public static class HUDPing
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Coroner))
                 return;
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                         gameObj.layer = 5;
                         role.BodyArrows.Add(body.ParentId, arrow);
                     }
-                    
+
                     role.BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
                 }
             }

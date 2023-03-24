@@ -37,13 +37,17 @@ namespace TownOfUsReworked.Patches
                     || playerControl.inVent);
             }
             else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek && playerControl.Data.IsImpostor())
+            {
                 couldUse = false;
+            }
             else
+            {
                 couldUse = canUse;
+            }
 
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
-            if (ventitaltionSystem != null && ventitaltionSystem.PlayersCleaningVents != null)
+            if (ventitaltionSystem?.PlayersCleaningVents != null)
             {
                 foreach (var item in ventitaltionSystem.PlayersCleaningVents.Values)
                 {
@@ -54,9 +58,9 @@ namespace TownOfUsReworked.Patches
 
             canUse = couldUse;
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (SubmergedCompatibility.IsSubmerged())
             {
-                if (SubmergedCompatibility.getInTransition())
+                if (SubmergedCompatibility.GetInTransition())
                 {
                     __result = float.MaxValue;
                     return;
@@ -102,7 +106,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
     public static class EnterVentPatch
     {
-        public static bool Prefix(Vent __instance)
+        public static bool Prefix()
         {
             var player = PlayerControl.LocalPlayer;
 

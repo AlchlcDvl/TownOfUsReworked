@@ -1,7 +1,8 @@
 Changelog
-- Addition: Added a zooming button for dead players
-- Code Change: Changed how games end to squash bugs; past, present and future
-- Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end
-- Critical Fix: Fixed games not ending correctly again
-- Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills
-- Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op
+- WARNING THIS UPDATE IS EXPERIMENTAL
+- Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles
+- Code Change: The code was optimised again for better functionality (this means there might be new bugs :cri:)
+- Critical Fix: Fixed the issue where you could keep clikcing the button and it would perform its function, regardless of cooldown
+- Bug Fix: There were a lot of misc bug fixes, most annoying errors should be gone
+- Role Fix: Fixed the Glitch's mimic list not closing when they start mimicing
+- Role Fix: Fixed players crusaded by a Rebel-Crusader not killing upon interacting

@@ -12,7 +12,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     if (role.ClosestPlayer.PlayerId == role.ReferenceBody.KillerId || role.ClosestPlayer.IsFramed())
                         Coroutines.Start(Utils.FlashCoroutine(Color.red));
@@ -70,9 +70,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                     role.UsesLeft--;
                 }
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastCompared = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastCompared.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

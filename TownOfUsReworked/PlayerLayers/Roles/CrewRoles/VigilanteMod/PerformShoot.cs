@@ -33,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     (role.ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor) || (role.ClosestPlayer.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH);
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, flag4);
 
-                if (interact[3] == true)
-                {                
+                if (interact[3])
+                {
                     if (flag4 && !role.Player.IsFramed())
                     {
                         role.KilledInno = false;
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                     {
                         if (CustomGameOptions.MisfireKillsInno || role.ClosestPlayer.IsFramed())
                             Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
-                        
+
                         if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                             Coroutines.Start(Utils.FlashCoroutine(role.Color));
                         else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
@@ -67,9 +67,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                             role.PostMeetingDie = true;
                     }
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastKilled = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

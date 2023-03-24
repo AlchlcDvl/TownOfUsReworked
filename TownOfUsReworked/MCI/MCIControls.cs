@@ -6,10 +6,10 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.MCI
 {
-    [HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
-    public sealed class Keyboard_Joystick
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public sealed class MCIControls
     {
-        public static int controllingFigure;
+        private static int ControllingFigure;
 
         public static void Postfix()
         {
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.MCI
                 if (!GameStates.IsLobby)
                     return; //Don't try to add bots when you are playtesting
 
-                controllingFigure = PlayerControl.LocalPlayer.PlayerId;
+                ControllingFigure = PlayerControl.LocalPlayer.PlayerId;
 
                 if (PlayerControl.AllPlayerControls.Count >= 15 && TownOfUsReworked.LobbyCapped)
                     return; //Toggle lobby limit
@@ -29,31 +29,31 @@ namespace TownOfUsReworked.MCI
                 MCIUtils.CleanUpLoad();
                 MCIUtils.CreatePlayerInstance();
 
-                if (!InstanceControl.MCIActive)
-                    InstanceControl.MCIActive = true;
+                if (!TownOfUsReworked.MCIActive)
+                    TownOfUsReworked.MCIActive = true;
             }
 
-            if (!InstanceControl.MCIActive)
+            if (!TownOfUsReworked.MCIActive)
                 return;
 
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                controllingFigure++;
+                ControllingFigure++;
 
-                if (controllingFigure >= PlayerControl.AllPlayerControls.Count)
-                    controllingFigure = 0;
+                if (ControllingFigure >= PlayerControl.AllPlayerControls.Count)
+                    ControllingFigure = 0;
 
-                InstanceControl.SwitchTo((byte)controllingFigure);
+                InstanceControl.SwitchTo((byte)ControllingFigure);
             }
 
             if (Input.GetKeyDown(KeyCode.F3))
             {
-                controllingFigure--;
+                ControllingFigure--;
 
-                if (controllingFigure < 0)
-                    controllingFigure = PlayerControl.AllPlayerControls.Count - 1;
+                if (ControllingFigure < 0)
+                    ControllingFigure = PlayerControl.AllPlayerControls.Count - 1;
 
-                InstanceControl.SwitchTo((byte)controllingFigure);
+                InstanceControl.SwitchTo((byte)ControllingFigure);
             }
 
             if (Input.GetKeyDown(KeyCode.F4))
@@ -64,7 +64,6 @@ namespace TownOfUsReworked.MCI
                 Role.NobodyWins = true;
                 Objectifier.NobodyWins = true;
                 Utils.EndGame();
-                InstanceControl.MCIActive = false;
             }
 
             if (Input.GetKeyDown(KeyCode.F5))
@@ -127,7 +126,7 @@ namespace TownOfUsReworked.MCI
                 if (!GameStates.IsLobby)
                     return;
 
-                MCIUtils.RemovePlayer((byte)(InstanceControl.clients.Count));
+                MCIUtils.RemovePlayer((byte)InstanceControl.Clients.Count);
             }
 
             if (Input.GetKeyDown(KeyCode.F11))

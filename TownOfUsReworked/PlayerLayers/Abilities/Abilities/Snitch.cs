@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Snitch : Ability
     {
-        public List<ArrowBehaviour> ImpArrows;
-        public Dictionary<byte, ArrowBehaviour> SnitchArrows;
+        public List<ArrowBehaviour> ImpArrows = new();
+        public Dictionary<byte, ArrowBehaviour> SnitchArrows = new();
 
         public Snitch(PlayerControl player) : base(player)
         {
@@ -19,10 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
             AbilityType = AbilityEnum.Snitch;
             Hidden = !CustomGameOptions.SnitchKnows;
-            ImpArrows = new List<ArrowBehaviour>();
-            SnitchArrows = new Dictionary<byte, ArrowBehaviour>();
+            ImpArrows = new();
+            SnitchArrows = new();
         }
-        
+
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = SnitchArrows.FirstOrDefault(x => x.Key == targetPlayerId);
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             if (arrow.Value.gameObject != null)
                 Object.Destroy(arrow.Value.gameObject);
-                
+
             SnitchArrows.Remove(arrow.Key);
         }
     }

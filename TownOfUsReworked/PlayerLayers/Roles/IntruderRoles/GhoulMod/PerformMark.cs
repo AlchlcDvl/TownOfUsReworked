@@ -6,7 +6,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformMark
+    public static class PerformMark
     {
         public static bool Prefix(AbilityButton __instance)
         {

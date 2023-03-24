@@ -8,11 +8,11 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class ShowShield
+    public static class ShowShield
     {
-        public static Color ProtectedColor = Color.cyan;
+        private readonly static Color ProtectedColor = Color.cyan;
 
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
             {
@@ -26,8 +26,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (exPlayer != null)
                 {
                     Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
-                    exPlayer.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
-                    exPlayer.myRend().material.SetFloat("_Outline", 0f);
+                    exPlayer.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                    exPlayer.MyRend().material.SetFloat("_Outline", 0f);
                     ret.ExShielded = null;
                     continue;
                 }
@@ -49,9 +49,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic ||
                     showShielded == ShieldOptions.SelfAndMedic)))
                 {
-                    player.myRend().material.SetColor("_VisorColor", ProtectedColor);
-                    player.myRend().material.SetFloat("_Outline", 1f);
-                    player.myRend().material.SetColor("_OutlineColor", ProtectedColor);
+                    player.MyRend().material.SetColor("_VisorColor", ProtectedColor);
+                    player.MyRend().material.SetFloat("_Outline", 1f);
+                    player.MyRend().material.SetColor("_OutlineColor", ProtectedColor);
                 }
             }
         }

@@ -7,7 +7,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformKill
+    public static class PerformKill
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -36,21 +36,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 {
                     var jani = (Janitor)role;
 
-                    if (interact[3] == true  || interact[0] == true)
+                    if (interact[3]  || interact[0])
                     {
                         jani.LastKilled = DateTime.UtcNow;
 
                         if (CustomGameOptions.JaniCooldownsLinked)
                             jani.LastCleaned = DateTime.UtcNow;
                     }
-                    else if (interact[1] == true)
+                    else if (interact[1])
                     {
                         jani.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                         if (CustomGameOptions.JaniCooldownsLinked)
                             jani.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                     }
-                    else if (interact[2] == true)
+                    else if (interact[2])
                     {
                         jani.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
@@ -64,21 +64,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 {
                     var gf = (Godfather)role;
 
-                    if (interact[3] == true  || interact[0] == true)
+                    if (interact[3]  || interact[0])
                     {
                         gf.LastKilled = DateTime.UtcNow;
 
                         if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                             gf.LastCleaned = DateTime.UtcNow;
                     }
-                    else if (interact[1] == true)
+                    else if (interact[1])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                         if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                             gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                     }
-                    else if (interact[2] == true)
+                    else if (interact[2])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
@@ -90,11 +90,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                 }
                 else
                 {
-                    if (interact[3] == true || interact[0] == true)
+                    if (interact[3] || interact[0])
                         role.LastKilled = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    else if (interact[2] == true)
+                    else if (interact[2])
                         role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                     return false;

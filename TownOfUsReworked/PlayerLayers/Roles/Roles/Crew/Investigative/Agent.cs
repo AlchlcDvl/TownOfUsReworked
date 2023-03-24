@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Agent : CrewRole
     {
-        public Dictionary<byte, TMP_Text> PlayerNumbers;
+        public Dictionary<byte, TMP_Text> PlayerNumbers = new();
 
         public Agent(PlayerControl player) : base(player)
         {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Agent;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            PlayerNumbers = new Dictionary<byte, TMP_Text>();
+            PlayerNumbers = new();
         }
     }
 }

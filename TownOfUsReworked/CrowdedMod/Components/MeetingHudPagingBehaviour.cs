@@ -44,7 +44,9 @@ namespace TownOfUsReworked.CrowdedMod.Components
                         buttonTransform.localPosition.z);
                 }
                 else
+                {
                     button.gameObject.SetActive(false);
+                }
 
                 i++;
             }

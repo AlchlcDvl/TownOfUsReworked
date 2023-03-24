@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastInfected;
-        public List<byte> InfectedPlayers;
+        public List<byte> InfectedPlayers = new();
         public int InfectedAlive => InfectedPlayers.Count;
-        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && !x.Data.Disconnected && !x.Data.Disconnected) <= InfectedAlive;
+        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
         public AbilityButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
@@ -28,20 +28,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Plaguebearer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            InfectedPlayers = new List<byte>();
+            InfectedPlayers = new();
         }
 
         public float InfectTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInfected;
+            var timespan = utcNow - LastInfected;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
@@ -49,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (InfectedPlayers.Contains(source.PlayerId) && InfectedPlayers.Contains(target.PlayerId))
                 return;
 
-            new WaitForSeconds(1f);
+            _ = new WaitForSeconds(1f);
 
             if (InfectedPlayers.Contains(source.PlayerId) || source.Is(RoleEnum.Plaguebearer))
             {
@@ -73,11 +69,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnPestilence()
         {
-            var pb = Role.GetRole<Plaguebearer>(Player);
             var role = new Pestilence(Player);
-            role.RoleHistory.Add(pb);
-            role.RoleHistory.AddRange(pb.RoleHistory);
-            Player.RegenTask();
+            role.RoleUpdate(this);
 
             if (CustomGameOptions.PlayersAlerted)
                 Coroutines.Start(Utils.FlashCoroutine(Color));

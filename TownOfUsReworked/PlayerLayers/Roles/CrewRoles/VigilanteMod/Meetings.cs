@@ -4,10 +4,10 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
-    public class Meetings
+    public static class Meetings
     {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
-        public class StartMeetingPatch
+        public static class StartMeetingPatch
         {
             public static void Prefix(PlayerControl __instance)
             {
@@ -20,16 +20,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
                     if (role.PreMeetingDie)
                         Utils.RpcMurderPlayer(role.Player, role.Player);
-                    
-                    return;
                 }
             }
         }
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-        public class MeetingExiledEnd
+        public static class MeetingExiledEnd
         {
-            private static void Postfix()
+            public static void Postfix()
             {
                 foreach (var vigi in Role.GetRoles(RoleEnum.Vigilante))
                 {
@@ -37,8 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 
                     if (role.PostMeetingDie)
                         role.Player.Exiled();
-                    
-                    return;
                 }
             }
         }

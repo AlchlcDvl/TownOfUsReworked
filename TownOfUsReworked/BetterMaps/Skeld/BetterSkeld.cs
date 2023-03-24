@@ -8,48 +8,42 @@ namespace TownOfUsReworked.BetterMaps.Skeld
     [HarmonyPatch(typeof(ShipStatus))]
     public static class SkeldShipStatusPatch
     {
-        public static readonly Vector3 ReactorVentNewPos = new Vector3(-2.95f, -10.95f, 2f);
-        public static readonly Vector3 ShieldsVentNewPos = new Vector3(2f, -15f, 2f);
-        public static readonly Vector3 BigYVentNewPos = new Vector3(5.2f, -4.85f, 2f);
-        public static readonly Vector3 NavVentNorthNewPos = new Vector3(-11.85f, -11.55f, 2f);
-        public static readonly Vector3 CafeVentNewPos = new Vector3(-3.9f, 5.5f, 2f);
+        private static readonly Vector3 ReactorVentNewPos = new(-2.95f, -10.95f, 2f);
+        private static readonly Vector3 ShieldsVentNewPos = new(2f, -15f, 2f);
+        private static readonly Vector3 BigYVentNewPos = new(5.2f, -4.85f, 2f);
+        private static readonly Vector3 NavVentNorthNewPos = new(-11.85f, -11.55f, 2f);
+        private static readonly Vector3 CafeVentNewPos = new(-3.9f, 5.5f, 2f);
 
-        public static bool IsAdjustmentsDone;
-        public static bool IsObjectsFetched;
-        public static bool IsVentsFetched;
-        
-        public static Vent NavVentSouth;
-        public static Vent NavVentNorth;
-        public static Vent ShieldsVent;
-        public static Vent WeaponsVent;
-        public static Vent REngineVent;
-        public static Vent UpperReactorVent;
-        public static Vent LEngineVent;
-        public static Vent ReactorVent;
-        public static Vent BigYVent;
-        public static Vent CafeVent;
+        private static bool IsAdjustmentsDone;
+        private static bool IsObjectsFetched;
+        private static bool IsVentsFetched;
+
+        private static Vent NavVentSouth;
+        private static Vent NavVentNorth;
+        private static Vent ShieldsVent;
+        private static Vent WeaponsVent;
+        private static Vent REngineVent;
+        private static Vent UpperReactorVent;
+        private static Vent LEngineVent;
+        private static Vent ReactorVent;
+        private static Vent BigYVent;
+        private static Vent CafeVent;
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
         public static class ShipStatusBeginPatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Awake))]
         public static class ShipStatusAwakePatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance) => ApplyChanges(__instance);
         }
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.FixedUpdate))]
         public static class ShipStatusFixedUpdatePatch
         {
-            [HarmonyPrefix]
-            [HarmonyPatch]
             public static void Prefix(ShipStatus __instance)
             {
                 if (!IsAdjustmentsDone || !IsObjectsFetched)
@@ -66,13 +60,13 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void FindSkeldObjects()
+        private static void FindSkeldObjects()
         {
             FindVents();
             FindObjects();
         }
 
-        public static void AdjustSkeld()
+        private static void AdjustSkeld()
         {
             if (IsObjectsFetched)
             {
@@ -85,14 +79,14 @@ namespace TownOfUsReworked.BetterMaps.Skeld
                     MoveCafeVent();
                 }
             }
-            
+
             if (CustomGameOptions.SkeldVentImprovements)
                 AdjustVents();
 
             IsAdjustmentsDone = true;
         }
 
-        public static void FindVents()
+        private static void FindVents()
         {
             var ventsList = Object.FindObjectsOfType<Vent>().ToList();
 
@@ -124,7 +118,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
                 UpperReactorVent != null && LEngineVent != null && ReactorVent != null;
         }
 
-        public static void FindObjects()
+        private static void FindObjects()
         {
             if (ReactorVent == null)
                 ReactorVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ReactorVent");
@@ -140,11 +134,11 @@ namespace TownOfUsReworked.BetterMaps.Skeld
 
             if (CafeVent == null)
                 CafeVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "CafeVent");
-                
+
             IsObjectsFetched = ReactorVent != null && ShieldsVent != null && BigYVent != null && NavVentNorth != null && CafeVent != null;
         }
 
-        public static void AdjustVents()
+        private static void AdjustVents()
         {
             if (IsVentsFetched)
             {
@@ -167,7 +161,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void MoveReactorVent()
+        private static void MoveReactorVent()
         {
             if (ReactorVent.transform.position != ReactorVentNewPos)
             {
@@ -176,7 +170,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void MoveShieldsVent()
+        private static void MoveShieldsVent()
         {
             if (ShieldsVent.transform.position != ShieldsVentNewPos)
             {
@@ -185,7 +179,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void MoveBigYVent()
+        private static void MoveBigYVent()
         {
             if (BigYVent.transform.position != BigYVentNewPos)
             {
@@ -194,7 +188,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void MoveNavVentNorth()
+        private static void MoveNavVentNorth()
         {
             if (NavVentNorth.transform.position != NavVentNorthNewPos)
             {
@@ -203,7 +197,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             }
         }
 
-        public static void MoveCafeVent()
+        private static void MoveCafeVent()
         {
             if (CafeVent.transform.position != CafeVentNewPos)
             {

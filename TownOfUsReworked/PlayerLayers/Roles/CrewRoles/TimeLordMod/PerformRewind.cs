@@ -6,7 +6,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformRewind
+    public static class PerformRewind
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 return true;
 
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
-            
+
             if (__instance == role.RewindButton)
             {
                 if (role.TimeLordRewindTimer() != 0f && !RecordRewind.rewinding)
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 return false;
             }
-            
+
             return true;
         }
     }

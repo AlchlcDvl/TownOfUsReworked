@@ -7,9 +7,9 @@ namespace TownOfUsReworked.Patches
     internal static class TaskPatches
     {
         [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
-        private class GameData_RecomputeTaskCounts
+        public static class GameData_RecomputeTaskCounts
         {
-            private static bool Prefix(GameData __instance)
+            public static bool Prefix(GameData __instance)
             {
                 __instance.TotalTasks = 0;
                 __instance.CompletedTasks = 0;
@@ -18,8 +18,8 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && (playerInfo._object.CanDoTasks() &&
-                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) || (playerInfo._object.Is(RoleEnum.Revealer) && playerInfo.IsDead))))
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() &&
+                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) || (playerInfo._object.Is(RoleEnum.Revealer) && playerInfo.IsDead)))
                     {
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {
@@ -36,9 +36,9 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-        private class Console_CanUse
+        public static class Console_CanUse
         {
-            private static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+            public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
             {
                 var playerControl = playerInfo.Object;
 

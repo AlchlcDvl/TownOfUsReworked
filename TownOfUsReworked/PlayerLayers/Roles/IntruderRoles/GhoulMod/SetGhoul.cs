@@ -15,19 +15,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
     {
         public static void Postfix(AirshipExileController __instance) => SetGhoul.ExileControllerPostfix(__instance);
     }
-    
+
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetGhoul
+    public static class SetGhoul
     {
+        #pragma warning disable
         public static PlayerControl WillBeGhoul;
+        #pragma warning restore
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBeGhoul != null && !WillBeGhoul.Data.IsDead && exiled.Is(Faction.Intruder))
+            if (WillBeGhoul?.Data.IsDead == false && exiled.Is(Faction.Intruder))
                 WillBeGhoul = exiled;
-            
+
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
 

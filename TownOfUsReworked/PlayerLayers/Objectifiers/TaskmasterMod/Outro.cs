@@ -16,9 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             if (objectifier == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = objectifier.Color;

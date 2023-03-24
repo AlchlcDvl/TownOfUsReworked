@@ -8,28 +8,30 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 {
-    public class BlackmailMeetingUpdate
+    public static class BlackmailMeetingUpdate
     {
-        public static bool shookAlready = false;
-        public static Sprite PrevXMark = null;
-        public static Sprite PrevOverlay = null;
+        private static bool shookAlready;
+
+        #pragma warning disable
+        public static Sprite PrevXMark;
+        public static Sprite PrevOverlay;
         public const float LetterXOffset = 0.22f;
         public const float LetterYOffset = -0.32f;
+        #pragma warning restore
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-        public class MeetingHudStart
+        public static class MeetingHudStart
         {
             public static void Postfix(MeetingHud __instance)
             {
                 shookAlready = false;
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
 
-                foreach (var role in blackmailers)
+                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
                 {
                     if (role.BlackmailedPlayer?.PlayerId == PlayerControl.LocalPlayer.PlayerId && !role.BlackmailedPlayer.Data.IsDead)
                         Coroutines.Start(BlackmailShhh());
 
-                    if (role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead)
+                    if (role.BlackmailedPlayer?.Data.IsDead == false)
                     {
                         var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
 
@@ -39,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                             PrevXMark = playerState.XMark.sprite;
 
                         playerState.XMark.sprite = AssetManager.BlackmailLetter;
-                        playerState.XMark.transform.localScale = playerState.XMark.transform.localScale * 0.75f;
+                        playerState.XMark.transform.localScale *= 0.75f;
                         playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
                     }
@@ -64,15 +66,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        public class MeetingHud_Update
+        public static class MeetingHud_Update
         {
             public static void Postfix(MeetingHud __instance)
             {
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>();
-
-                foreach (var role in blackmailers)
+                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
                 {
-                    if (role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead)
+                    if (role.BlackmailedPlayer?.Data.IsDead == false)
                     {
                         var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
                         playerState.Overlay.gameObject.SetActive(true);
@@ -82,10 +82,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                         playerState.Overlay.sprite = AssetManager.BlackmailOverlay;
 
-                        if (__instance.state != MeetingHud.VoteStates.Animating && shookAlready == false)
+                        if (__instance.state != MeetingHud.VoteStates.Animating && !shookAlready)
                         {
                             shookAlready = true;
-                            (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(playerState.transform));
+                            __instance.StartCoroutine(Effects.SwayX(playerState.transform));
                         }
                     }
                 }
@@ -93,18 +93,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         }
 
         [HarmonyPatch(typeof(TextBoxTMP), nameof(TextBoxTMP.SetText))]
-        public class StopChatting
+        public static class StopChatting
         {
-            public static bool Prefix(TextBoxTMP __instance)
+            public static bool Prefix()
             {
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>();
-
-                foreach (var role in blackmailers)
+                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
                 {
-                    if (MeetingHud.Instance && role.BlackmailedPlayer != null && !role.BlackmailedPlayer.Data.IsDead && role.BlackmailedPlayer == PlayerControl.LocalPlayer)
+                    if (MeetingHud.Instance && role.BlackmailedPlayer?.Data.IsDead == false && role.BlackmailedPlayer == PlayerControl.LocalPlayer)
                         return false;
                 }
-                
+
                 return true;
             }
         }

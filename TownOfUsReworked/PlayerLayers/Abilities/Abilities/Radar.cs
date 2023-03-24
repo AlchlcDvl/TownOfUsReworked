@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Radar : Ability
     {
-        public List<ArrowBehaviour> RadarArrow;
+        public List<ArrowBehaviour> RadarArrow = new();
         public PlayerControl ClosestPlayer;
 
         public Radar(PlayerControl player) : base(player)
@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You are aware of those close to you.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
-            RadarArrow = new List<ArrowBehaviour>();
+            RadarArrow = new();
         }
     }
 }

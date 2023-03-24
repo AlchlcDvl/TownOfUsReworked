@@ -1,9 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
         private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
         private static readonly int BackColor = Shader.PropertyToID("_BackColor");
@@ -19,14 +20,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             {
                 if (body == null)
                     yield break;
-                
+
                 renderer.color = Color.Lerp(backColor, newColor, i / 60f);
                 renderer.color = Color.Lerp(bodyColor, newColor, i / 60f);
                 yield return null;
             }
 
-            Object.Destroy(body.gameObject);  
+            UnityEngine.Object.Destroy(body.gameObject);
             role.EatNeed--;
+            role.LastEaten = DateTime.UtcNow;
         }
     }
 }

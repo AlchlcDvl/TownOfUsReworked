@@ -12,10 +12,11 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
-    public class GuesserKill
+    public static class GuesserKill
     {
         public static void RpcMurderPlayer(Guesser assassin, PlayerControl player, string guess)
         {
@@ -73,9 +74,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     SwapVotes.Swap1 = null;
                     SwapVotes.Swap2 = null;
-                    var buttons = Role.GetRole<Swapper>(player).MoarButtons;
-                    
-                    foreach (var button in buttons)
+
+                    foreach (var button in Role.GetRole<Swapper>(player).MoarButtons)
                     {
                         button.SetActive(false);
                         button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             if (assassinPlayer != player)
             {
                 player.Die(DeathReason.Kill, false);
-                
+
                 var role2 = Role.GetRole(player);
                 role2.DeathReason = DeathReasonEnum.Guessed;
                 role2.KilledBy = " By " + assassin.PlayerName;
@@ -106,7 +106,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
                 {
                     var otherLover = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer).Player;
-                    
+
                     if (!otherLover.Is(RoleEnum.Pestilence))
                         MurderPlayer(assassin, otherLover, guess);
                 }
@@ -139,19 +139,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 if (player.AmOwner)
                     meetingHud.SetForegroundForDead();
 
-                var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
-
-                foreach (var role in blackmailers)
+                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
                 {
-                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId)
+                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && BlackmailMeetingUpdate.PrevXMark != null &&
+                        BlackmailMeetingUpdate.PrevOverlay != null)
                     {
-                        if (BlackmailMeetingUpdate.PrevXMark != null && BlackmailMeetingUpdate.PrevOverlay != null)
-                        {
-                            voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
-                            voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                            voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
-                                voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
-                        }
+                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
+                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
+                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
+                    }
+                }
+
+                foreach (var role in Role.GetRoles(RoleEnum.Godfather).Where(x => ((Godfather)x).FormerRole?.RoleType == RoleEnum.Blackmailer).Cast<Godfather>())
+                {
+                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && GFBlackmailMeetingUpdate.PrevXMark != null &&
+                        GFBlackmailMeetingUpdate.PrevOverlay != null)
+                    {
+                        voteArea.XMark.sprite = GFBlackmailMeetingUpdate.PrevXMark;
+                        voteArea.Overlay.sprite = GFBlackmailMeetingUpdate.PrevOverlay;
+                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - GFBlackmailMeetingUpdate.LetterXOffset,
+                            voteArea.XMark.transform.localPosition.y - GFBlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                     }
                 }
 
@@ -216,7 +224,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
                                 if (mayor.Player == PlayerControl.LocalPlayer)
                                     mayor.VoteBank += votesRegained;
-                                    
+
                                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
                                 writer.Write(mayor.Player.PlayerId);
                                 writer.Write(votesRegained);

@@ -1,23 +1,23 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 using System.Linq;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.BetterMaps.Airship;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
     static class LobbyBehaviourPatch
     {
-        [HarmonyPostfix]
         public static void Postfix()
         {
             //Fix Grenadier and screwed blind in lobby
-            ((Renderer)HudManager.Instance.FullScreen).gameObject.active = false;
+            HudManager.Instance.FullScreen.gameObject.active = false;
 
             foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Tracker))
             {
@@ -66,6 +66,10 @@ namespace TownOfUsReworked.Patches
             Modifier.ModifierDictionary.Clear();
             Ability.AbilityDictionary.Clear();
             Objectifier.ObjectifierDictionary.Clear();
+            PlayerLayer.LayerDictionary.Clear();
+
+            Tasks.AllCustomPlateform.Clear();
+            Tasks.NearestTask = null;
         }
     }
 }

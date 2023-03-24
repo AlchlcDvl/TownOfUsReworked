@@ -6,13 +6,13 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDBlock
+    public static class HUDBlock
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Consort))
                 return;
-                
+
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
             if (role.BlockButton == null)

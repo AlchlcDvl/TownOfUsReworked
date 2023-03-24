@@ -6,11 +6,8 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowSabotageMap))]
-    internal class Sabotage
+    public static class Sabotage
     {
-        private static bool Prefix(MapBehaviour __instance)
-        {
-            return PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage;
-        }
+        public static bool Prefix() => PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage;
     }
 }

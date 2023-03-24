@@ -9,7 +9,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformReveal
+    public static class PerformReveal
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -25,20 +25,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     if ((!role.ClosestPlayer.Is(SubFaction.None) && !role.ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || role.ClosestPlayer.IsFramed())
                         Coroutines.Start(Utils.FlashCoroutine(Color.red));
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastRevealed = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

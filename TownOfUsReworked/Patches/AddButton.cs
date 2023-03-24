@@ -11,19 +11,15 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         public static Sprite LighterSprite => AssetManager.Lighter;
         public static Sprite DarkerSprite => AssetManager.Darker;
 
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
-            var player = Utils.PlayerById(voteArea.TargetPlayerId);
-
-            if (player == null || player.Data.Disconnected || !CustomGameOptions.LighterDarker)
-                return true;
-            else
-                return false;
+            var player = Utils.PlayerByVoteArea(voteArea);
+            return player?.Data.Disconnected != false || !CustomGameOptions.LighterDarker;
         }
 
         public static void GenButton(PlayerVoteArea voteArea)
@@ -57,7 +53,7 @@ namespace TownOfUsReworked.Patches
         private static Action LighterDarkerHandler()
         {
             //Used to avoid the Lighter/Darker Indicators causing any button problems by giving them their own Listener events.
-            void Listener() {}
+            static void Listener() {}
             return Listener;
         }
 

@@ -5,11 +5,11 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 namespace TownOfUsReworked.Cosmetics.CustomNameplates
 {
     [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedNamePlates))]
-    public class UnlockNameplates
+    public static class UnlockNameplates
     {
         public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<NamePlateData> __result)
         {
-            var array =
+            __result =
             (
                 from n
                 in __instance.allNamePlates.ToArray()
@@ -20,8 +20,6 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
                 o.name
                 select o
             ).ToArray();
-
-            __result = array;
             return false;
         }
     }

@@ -8,7 +8,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformShift
+    public static class PerformShift
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Shift);
@@ -37,11 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                     Shift(role, role.ClosestPlayer);
                 }
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastShifted = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
-                
+
                 return false;
             }
 
@@ -51,9 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
         public static void Shift(Shifter shifterRole, PlayerControl other)
         {
             var role = Role.GetRole(other);
-            var roleType = role.RoleType;
             var shifter = shifterRole.Player;
-            Role newRole;
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
@@ -61,112 +59,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 return;
             }
 
-            switch (roleType)
+            Role newRole = role.RoleType switch
             {
-                case RoleEnum.Agent:
-                    newRole = new Agent(shifter);
-                    break;
+                RoleEnum.Agent => new Agent(shifter),
+                RoleEnum.Altruist => new Altruist(shifter),
+                RoleEnum.Coroner => new Coroner(shifter),
+                RoleEnum.Crewmate => new Crewmate(shifter),
+                RoleEnum.Detective => new Detective(shifter),
+                RoleEnum.Engineer => new Engineer(shifter),
+                RoleEnum.Escort => new Escort(shifter),
+                RoleEnum.Inspector => new Inspector(shifter) { Inspected = ((Inspector)role).Inspected },
+                RoleEnum.Sheriff => new Sheriff(shifter) { Interrogated = ((Sheriff)role).Interrogated },
+                RoleEnum.Mayor => new Mayor(shifter),
+                RoleEnum.Swapper => new Swapper(shifter),
+                RoleEnum.Medic => new Medic(shifter),
+                RoleEnum.Tracker => new Tracker(shifter) { TrackerArrows = ((Tracker)role).TrackerArrows },
+                RoleEnum.Transporter => new Transporter(shifter),
+                RoleEnum.Medium => new Medium(shifter),
+                RoleEnum.Operative => new Operative(shifter),
+                RoleEnum.TimeLord => new TimeLord(shifter),
+                RoleEnum.VampireHunter => new VampireHunter(shifter),
+                RoleEnum.Veteran => new Veteran(shifter),
+                RoleEnum.Vigilante => new Vigilante(shifter),
+                RoleEnum.Mystic => new Mystic(shifter),
+                RoleEnum.Seer => new Seer(shifter),
+                RoleEnum.Chameleon => new Chameleon(shifter),
+                RoleEnum.Retributionist => new Retributionist(shifter)
+                {
+                    TrackerArrows = ((Retributionist)role).TrackerArrows,
+                    Inspected = ((Retributionist)role).Inspected,
+                    Interrogated = ((Retributionist)role).Interrogated
+                },
+                _ => new Shifter(shifter),
+            };
 
-                case RoleEnum.Altruist:
-                    newRole = new Altruist(shifter);
-                    break;
-
-                case RoleEnum.Coroner:
-                    newRole = new Coroner(shifter);
-                    break;
-
-                case RoleEnum.Crewmate:
-                    newRole = new Crewmate(shifter);
-                    break;
-
-                case RoleEnum.Detective:
-                    newRole = new Detective(shifter);
-                    break;
-
-                case RoleEnum.Engineer:
-                    newRole = new Engineer(shifter);
-                    break;
-
-                case RoleEnum.Escort:
-                    newRole = new Escort(shifter);
-                    break;
-
-                case RoleEnum.Inspector:
-                    newRole = new Inspector(shifter);
-                    break;
-
-                case RoleEnum.Sheriff:
-                    newRole = new Sheriff(shifter);
-                    break;
-
-                case RoleEnum.Mayor:
-                    newRole = new Mayor(shifter);
-                    break;
-
-                case RoleEnum.Swapper:
-                    newRole = new Swapper(shifter);
-                    break;
-
-                case RoleEnum.Medic:
-                    newRole = new Medic(shifter);
-                    break;
-
-                case RoleEnum.Tracker:
-                    newRole = new Tracker(shifter);
-                    break;
-
-                case RoleEnum.Transporter:
-                    newRole = new Transporter(shifter);
-                    break;
-
-                case RoleEnum.Medium:
-                    newRole = new Medium(shifter);
-                    break;
-
-                case RoleEnum.Operative:
-                    newRole = new Operative(shifter);
-                    break;
-
-                case RoleEnum.TimeLord:
-                    newRole = new TimeLord(shifter);
-                    break;
-
-                case RoleEnum.VampireHunter:
-                    newRole = new VampireHunter(shifter);
-                    break;
-
-                case RoleEnum.Veteran:
-                    newRole = new Veteran(shifter);
-                    break;
-
-                case RoleEnum.Vigilante:
-                    newRole = new Vigilante(shifter);
-                    break;
-
-                case RoleEnum.Mystic:
-                    newRole = new Mystic(shifter);
-                    break;
-
-                case RoleEnum.Seer:
-                    newRole = new Seer(shifter);
-                    break;
-
-                case RoleEnum.Chameleon:
-                    newRole = new Chameleon(shifter);
-                    break;
-
-                case RoleEnum.Retributionist:
-                    newRole = new Retributionist(shifter);
-                    break;
-
-                default:
-                    newRole = new Shifter(shifter);
-                    break;
-            }
-
-            newRole.RoleHistory.Add(shifterRole);
-            newRole.RoleHistory.AddRange(shifterRole.RoleHistory);
-            shifter.RegenTask();
+            newRole.RoleUpdate(shifterRole);
             Role newRole2;
 
             if (CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter)
@@ -174,18 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
             else
                 newRole2 = new Crewmate(other);
 
-            newRole2.RoleHistory.Add(role);
-            newRole2.RoleHistory.AddRange(role.RoleHistory);
-            newRole2.IsRecruit = role.IsRecruit;
-            newRole2.IsBitten = role.IsBitten;
-            newRole2.IsPersuaded = role.IsPersuaded;
-            newRole2.IsResurrected = role.IsResurrected;
-            newRole2.IsIntTraitor = role.IsIntTraitor;
-            newRole2.IsSynFanatic = role.IsSynFanatic;
-            newRole2.IsIntFanatic = role.IsIntFanatic;
-            newRole2.IsSynTraitor = role.IsSynTraitor;
-
-            other.RegenTask();
+            newRole2.RoleUpdate(role);
         }
     }
 }

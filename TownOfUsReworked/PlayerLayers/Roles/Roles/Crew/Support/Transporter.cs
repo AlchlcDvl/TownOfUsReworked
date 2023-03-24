@@ -25,9 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl TransportPlayer2;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
-        public Dictionary<byte, DateTime> UntransportablePlayers;
+        public Dictionary<byte, DateTime> UntransportablePlayers = new();
         public AbilityButton TransportButton;
-        
+
         public Transporter(PlayerControl player) : base(player)
         {
             Name = "Transporter";
@@ -47,27 +47,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.LikesToExplore;
-            UntransportablePlayers = new Dictionary<byte, DateTime>();
+            UntransportablePlayers = new();
         }
 
         public float TransportTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastTransported;
+            var timespan = utcNow - LastTransported;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public static IEnumerator TransportPlayers(byte player1, byte player2, bool die)
         {
             var TP1 = Utils.PlayerById(player1);
             var TP2 = Utils.PlayerById(player2);
-            var deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            var deadBodies = Object.FindObjectsOfType<DeadBody>();
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
 
@@ -97,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TP1.inVent && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
             {
-                while (SubmergedCompatibility.getInTransition())
+                while (SubmergedCompatibility.GetInTransition())
                     yield return null;
 
                 TP1.MyPhysics.ExitAllVents();
@@ -105,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TP2.inVent && PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
             {
-                while (SubmergedCompatibility.getInTransition())
+                while (SubmergedCompatibility.GetInTransition())
                     yield return null;
 
                 TP2.MyPhysics.ExitAllVents();
@@ -116,19 +112,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TP1.MyPhysics.ResetMoveState();
                 TP2.MyPhysics.ResetMoveState();
                 var TempPosition = TP1.GetTruePosition();
-                var TempFacing = TP1.myRend().flipX;
+                var TempFacing = TP1.MyRend().flipX;
                 TP1.NetTransform.SnapTo(new Vector2(TP2.GetTruePosition().x, TP2.GetTruePosition().y + 0.3636f));
-                TP1.myRend().flipX = TP2.myRend().flipX;
+                TP1.MyRend().flipX = TP2.MyRend().flipX;
 
                 if (die)
                     Utils.MurderPlayer(TP1, TP2, !TP1.Is(AbilityEnum.Ninja));
                 else
                 {
                     TP2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
-                    TP2.myRend().flipX = TempFacing;
+                    TP2.MyRend().flipX = TempFacing;
                 }
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged())
                 {
                     if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
                     {
@@ -151,13 +147,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TP2.GetTruePosition();
                 TP2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
-                    {
-                        SubmergedCompatibility.ChangeFloor(TP2.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                    }
+                    SubmergedCompatibility.ChangeFloor(TP2.GetTruePosition().y > -7);
+                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -168,13 +161,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TP1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
-                    {
-                        SubmergedCompatibility.ChangeFloor(TP1.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                    }
+                    SubmergedCompatibility.ChangeFloor(TP1.GetTruePosition().y > -7);
+                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -204,11 +194,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static void StopDragging(byte PlayerId)
         {
-            var undertakers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Undertaker && ((Undertaker)x).CurrentlyDragging != null && ((Undertaker)x).CurrentlyDragging.ParentId ==
-                PlayerId);
-
-            foreach (var undertaker in undertakers)
+            foreach (var undertaker in AllRoles.Where(x => x.RoleType == RoleEnum.Undertaker && ((Undertaker)x).CurrentlyDragging != null && ((Undertaker)x).CurrentlyDragging.ParentId ==
+                PlayerId))
+            {
                 ((Undertaker)undertaker).CurrentlyDragging = null;
+            }
         }
 
         public void TransportListUpdate(HudManager __instance)
@@ -260,9 +250,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         TransportList.AddChat(player, "Click Here");
                     else
                     {
-                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
-
-                        foreach (var body in deadBodies)
+                        foreach (var body in Object.FindObjectsOfType<DeadBody>())
                         {
                             if (body.ParentId == player.PlayerId)
                             {
@@ -300,125 +288,121 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             var ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
                             var ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
 
-                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y && !Input.GetMouseButtonDown(0) && LastMouse)
                             {
-                                if (!Input.GetMouseButtonDown(0) && LastMouse)
+                                LastMouse = false;
+
+                                foreach (var player in PlayerControl.AllPlayerControls)
                                 {
-                                    LastMouse = false;
-
-                                    foreach (var player in PlayerControl.AllPlayerControls)
+                                    if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
                                     {
-                                        if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
+                                        if (TransportPlayer1 == null)
                                         {
-                                            if (TransportPlayer1 == null)
-                                            {
-                                                TransportPlayer1 = player;
-                                                bubble.Cast<ChatBubble>().Background.color = Colors.Transporter;
-                                            }
-                                            else if (player.PlayerId == TransportPlayer1.PlayerId)
-                                            {
-                                                TransportPlayer1 = null;
-                                                bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
-                                            }
-                                            else
-                                            {
-                                                PressedButton = false;
-                                                TransportList.Toggle();
-                                                TransportList.SetVisible(false);
-                                                TransportList = null;
-                                                TransportPlayer2 = player;
+                                            TransportPlayer1 = player;
+                                            bubble.Cast<ChatBubble>().Background.color = Colors.Transporter;
+                                        }
+                                        else if (player.PlayerId == TransportPlayer1.PlayerId)
+                                        {
+                                            TransportPlayer1 = null;
+                                            bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
+                                        }
+                                        else
+                                        {
+                                            PressedButton = false;
+                                            TransportList.Toggle();
+                                            TransportList.SetVisible(false);
+                                            TransportList = null;
+                                            TransportPlayer2 = player;
 
-                                                if (!UntransportablePlayers.ContainsKey(TransportPlayer1.PlayerId) &&
-                                                    !UntransportablePlayers.ContainsKey(TransportPlayer2.PlayerId))
+                                            if (!UntransportablePlayers.ContainsKey(TransportPlayer1.PlayerId) && !UntransportablePlayers.ContainsKey(TransportPlayer2.PlayerId))
+                                            {
+                                                var interaction = Utils.Interact(Player, TransportPlayer1);
+                                                var interaction2 = Utils.Interact(Player, TransportPlayer2);
+
+                                                Utils.Spread(Player, TransportPlayer1);
+                                                Utils.Spread(Player, TransportPlayer2);
+
+                                                if (TransportPlayer1.Is(RoleEnum.Pestilence) || TransportPlayer1.IsOnAlert())
                                                 {
-                                                    var interaction = Utils.Interact(Player, TransportPlayer1);
-                                                    var interaction2 = Utils.Interact(Player, TransportPlayer2);
-
-                                                    Utils.Spread(Player, TransportPlayer1);
-                                                    Utils.Spread(Player, TransportPlayer2);
-
-                                                    if (TransportPlayer1.Is(RoleEnum.Pestilence) || TransportPlayer1.IsOnAlert())
+                                                    if (Player.IsShielded())
                                                     {
-                                                        if (Player.IsShielded())
-                                                        {
-                                                            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                                                                SendOption.Reliable);
-                                                            writer2.Write(Player.GetMedic().Player.PlayerId);
-                                                            writer2.Write(Player.PlayerId);
-                                                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                                                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                                                            SendOption.Reliable);
+                                                        writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                        writer2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                            if (CustomGameOptions.ShieldBreaks)
-                                                                LastTransported = DateTime.UtcNow;
+                                                        if (CustomGameOptions.ShieldBreaks)
+                                                            LastTransported = DateTime.UtcNow;
 
-                                                            StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                            return;
-                                                        }
-                                                        else if (!Player.IsProtected())
-                                                        {
-                                                            Coroutines.Start(Transporter.TransportPlayers(TransportPlayer1.PlayerId, Player.PlayerId, true));
-                                                            var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                SendOption.Reliable);
-                                                            write2.Write((byte)ActionsRPC.Transport);
-                                                            write2.Write(TransportPlayer1.PlayerId);
-                                                            write2.Write(Player.PlayerId);
-                                                            write2.Write(true);
-                                                            AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                            return;
-                                                        }
-
-                                                        LastTransported = DateTime.UtcNow;
+                                                        StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
                                                         return;
                                                     }
-                                                    else if (TransportPlayer2.Is(RoleEnum.Pestilence) || TransportPlayer2.IsOnAlert())
+                                                    else if (!Player.IsProtected())
                                                     {
-                                                        if (Player.IsShielded())
-                                                        {
-                                                            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                SendOption.Reliable);
-                                                            writer2.Write((byte)ActionsRPC.Transport);
-                                                            writer2.Write(Player.GetMedic().Player.PlayerId);
-                                                            writer2.Write(Player.PlayerId);
-                                                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                                                            if (CustomGameOptions.ShieldBreaks)
-                                                                LastTransported = DateTime.UtcNow;
-
-                                                            StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                            return;
-                                                        }
-                                                        else if (!Player.IsProtected())
-                                                        {
-                                                            Coroutines.Start(Transporter.TransportPlayers(TransportPlayer2.PlayerId, Player.PlayerId, true));
-                                                            var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                SendOption.Reliable);
-                                                            write2.Write((byte)ActionsRPC.Transport);
-                                                            write2.Write(TransportPlayer2.PlayerId);
-                                                            write2.Write(Player.PlayerId);
-                                                            write2.Write(true);
-                                                            AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                            return;
-                                                        }
-
-                                                        LastTransported = DateTime.UtcNow;
+                                                        Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, Player.PlayerId, true));
+                                                        var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        write2.Write((byte)ActionsRPC.Transport);
+                                                        write2.Write(TransportPlayer1.PlayerId);
+                                                        write2.Write(Player.PlayerId);
+                                                        write2.Write(true);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write2);
                                                         return;
                                                     }
 
                                                     LastTransported = DateTime.UtcNow;
-                                                    UsesLeft--;
-                                                    Coroutines.Start(Transporter.TransportPlayers(TransportPlayer1.PlayerId, TransportPlayer2.PlayerId, false));
-                                                    var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                                                    write.Write((byte)ActionsRPC.Transport);
-                                                    write.Write(TransportPlayer1.PlayerId);
-                                                    write.Write(TransportPlayer2.PlayerId);
-                                                    write.Write(false);
-                                                    AmongUsClient.Instance.FinishRpcImmediately(write);
+                                                    return;
                                                 }
-                                                else
-                                                    (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+                                                else if (TransportPlayer2.Is(RoleEnum.Pestilence) || TransportPlayer2.IsOnAlert())
+                                                {
+                                                    if (Player.IsShielded())
+                                                    {
+                                                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        writer2.Write((byte)ActionsRPC.Transport);
+                                                        writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                        writer2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                TransportPlayer1 = null;
-                                                TransportPlayer2 = null;
+                                                        if (CustomGameOptions.ShieldBreaks)
+                                                            LastTransported = DateTime.UtcNow;
+
+                                                        StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                        return;
+                                                    }
+                                                    else if (!Player.IsProtected())
+                                                    {
+                                                        Coroutines.Start(TransportPlayers(TransportPlayer2.PlayerId, Player.PlayerId, true));
+                                                        var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        write2.Write((byte)ActionsRPC.Transport);
+                                                        write2.Write(TransportPlayer2.PlayerId);
+                                                        write2.Write(Player.PlayerId);
+                                                        write2.Write(true);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                        return;
+                                                    }
+
+                                                    LastTransported = DateTime.UtcNow;
+                                                    return;
+                                                }
+
+                                                LastTransported = DateTime.UtcNow;
+                                                UsesLeft--;
+                                                Coroutines.Start(TransportPlayers(TransportPlayer1.PlayerId, TransportPlayer2.PlayerId, false));
+                                                var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                                write.Write((byte)ActionsRPC.Transport);
+                                                write.Write(TransportPlayer1.PlayerId);
+                                                write.Write(TransportPlayer2.PlayerId);
+                                                write.Write(false);
+                                                AmongUsClient.Instance.FinishRpcImmediately(write);
                                             }
+                                            else
+                                                __instance.StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+
+                                            TransportPlayer1 = null;
+                                            TransportPlayer2 = null;
                                         }
                                     }
                                 }

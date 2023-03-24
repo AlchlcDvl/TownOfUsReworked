@@ -8,9 +8,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class RepickBanshee
+    public static class RepickBanshee
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
             writer.Write(pc.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return;
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
@@ -14,10 +13,12 @@ using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
+        #pragma warning disable
         public static ArrowBehaviour Arrow;
         public static PlayerControl Target;
+        #pragma warning restore
 
         public static IEnumerator RetributionistRevive(DeadBody target, Retributionist role)
         {
@@ -82,10 +83,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
+            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
-            if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (target != null)
@@ -96,7 +97,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
 
                 lover.Revive();
-                Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
+                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
 
                 foreach (var deadBody in GameObject.FindObjectsOfType<DeadBody>())
                 {

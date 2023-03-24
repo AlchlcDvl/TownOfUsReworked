@@ -5,25 +5,26 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Guesser : NeutralRole
     {
-        public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> MoarButtons = new Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)>();
-        private Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>();
+        public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> MoarButtons = new();
+        private readonly Dictionary<string, Color> ColorMapping = new();
         public Dictionary<string, Color> SortedColorMapping;
-        public Dictionary<byte, string> Guesses = new Dictionary<byte, string>();
+        public Dictionary<byte, string> Guesses = new();
         public PlayerControl TargetPlayer;
-        public bool TargetGuessed = false;
-        public bool GuessedThisMeeting = false;
+        public bool TargetGuessed;
+        public bool GuessedThisMeeting;
         public int RemainingGuesses;
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
         public bool GuesserWins;
         public bool FactionHintGiven;
         public bool AlignmentHintGiven;
         public bool SubFactionHintGiven;
-        public bool Failed => !TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer == null || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+        public bool Failed => !TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true);
 
         public Guesser(PlayerControl player) : base(player)
         {
@@ -33,10 +34,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
             RemainingGuesses = CustomGameOptions.GuessCount;
+            MoarButtons = new();
+            ColorMapping = new()
+            {
+                { "Crewmate", Colors.Crew }
+            };
 
             //Adds all the roles that have a non-zero chance of being in the game
-            ColorMapping.Add("Crewmate", Colors.Crew);
-
             if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
             {
                 if (CustomGameOptions.MayorOn > 0)
@@ -231,25 +235,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
                     ColorMapping.Add("Pestilence", Colors.Pestilence);
                 }
-                
+
                 if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
                 {
                     ColorMapping.Add("Dracula", Colors.Dracula);
                     ColorMapping.Add("Bitten", Colors.Undead);
                 }
-                
+
                 if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
                 {
                     ColorMapping.Add("Jackal", Colors.Jackal);
                     ColorMapping.Add("Recruit", Colors.Cabal);
                 }
-                
+
                 if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
                 {
                     ColorMapping.Add("Necromancer", Colors.Necromancer);
                     ColorMapping.Add("Resurrected", Colors.Reanimated);
                 }
-                
+
                 if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
                 {
                     ColorMapping.Add("Whisperer", Colors.Whisperer);
@@ -260,7 +264,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
 
                 if (CustomGameOptions.SurvivorOn > 0 || CustomGameOptions.GuardianAngelOn > 0)
-                        ColorMapping.Add("Survivor", Colors.Survivor);
+                    ColorMapping.Add("Survivor", Colors.Survivor);
 
                 if (CustomGameOptions.GuardianAngelOn > 0)
                     ColorMapping.Add("Guardian Angel", Colors.GuardianAngel);
@@ -295,12 +299,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnAct()
         {
-            var guess = Role.GetRole<Guesser>(Player);
-            var targetRole = Role.GetRole(guess.TargetPlayer);
-            var newRole  = new Actor(Player);
-            newRole.RoleUpdate(guess);
-            newRole.PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults;
-            Player.RegenTask();
+            var targetRole = GetRole(TargetPlayer);
+            var newRole  = new Actor(Player)
+            {
+                PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults
+            };
+
+            newRole.RoleUpdate(this);
+
+            if (Player == PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Color));
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

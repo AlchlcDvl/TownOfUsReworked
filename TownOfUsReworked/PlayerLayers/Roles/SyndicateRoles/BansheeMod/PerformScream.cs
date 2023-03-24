@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformScream
+    public static class PerformScream
     {
         public static bool Prefix(AbilityButton __instance)
         {

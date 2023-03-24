@@ -3,7 +3,7 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Classes
 {
-    public class FixFunctions
+    public static class FixFunctions
     {
         public static bool FixComms()
         {

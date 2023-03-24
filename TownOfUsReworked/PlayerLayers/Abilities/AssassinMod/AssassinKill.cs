@@ -16,7 +16,7 @@ using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
-    public class AssassinKill
+    public static class AssassinKill
     {
         public static void RpcMurderPlayer(Assassin assassin, PlayerControl player, string guess)
         {
@@ -84,9 +84,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     SwapVotes.Swap1 = null;
                     SwapVotes.Swap2 = null;
-                    var buttons = Role.GetRole<Swapper>(player).MoarButtons;
-                    
-                    foreach (var button in buttons)
+
+                    foreach (var button in Role.GetRole<Swapper>(player).MoarButtons)
                     {
                         button.SetActive(false);
                         button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
@@ -107,7 +106,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             }
 
             player.Die(DeathReason.Kill, false);
-            
             var role2 = Role.GetRole(player);
             role2.DeathReason = DeathReasonEnum.Guessed;
             role2.KilledBy = " By " + assassin.PlayerName;
@@ -115,7 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             if (checkLover && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var otherLover = Objectifier.GetObjectifier<Lovers>(PlayerControl.LocalPlayer).Player;
-                
+
                 if (!otherLover.Is(RoleEnum.Pestilence))
                     MurderPlayer(assassin, otherLover, guess, false);
             }
@@ -146,9 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             if (player.AmOwner)
                 meetingHud.SetForegroundForDead();
 
-            var blackmailers = Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer && x.Player != null).Cast<Blackmailer>();
-
-            foreach (var role in blackmailers)
+            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>())
             {
                 if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId)
                 {
@@ -216,14 +212,16 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     if (role is Mayor mayor)
                     {
                         if (role.Player == player)
+                        {
                             mayor.ExtraVotes.Clear();
+                        }
                         else
                         {
                             var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
 
                             if (mayor.Player == PlayerControl.LocalPlayer)
                                 mayor.VoteBank += votesRegained;
-                                
+
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
                             writer.Write(mayor.Player.PlayerId);
                             writer.Write(votesRegained);
@@ -244,7 +242,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
             }
             else if (assassinPlayer != player && PlayerControl.LocalPlayer == player)
+            {
                 hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{assassinPlayer.name} guessed you as {guess}!");
+            }
             else
             {
                 string something = "";

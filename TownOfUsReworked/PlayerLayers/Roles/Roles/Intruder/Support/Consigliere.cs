@@ -10,14 +10,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Consigliere : IntruderRole
     {
-        public List<byte> Investigated;
+        public List<byte> Investigated = new();
         public AbilityButton InvestigateButton;
         public PlayerControl ClosestTarget;
         public DateTime LastInvestigated;
         public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-        public Ability ability => PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer)
-            : null;
-        public string CanAssassinate => ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed." : "";
+        public static Ability Ability => PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer) : null;
+        public static string CanAssassinate => Ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed." : "";
 
         public Consigliere(PlayerControl player) : base(player)
         {
@@ -28,20 +27,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
-            Investigated = new List<byte>();
+            Investigated = new();
         }
 
         public float ConsigliereTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInvestigated;
+            var timespan = utcNow - LastInvestigated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ConsigCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

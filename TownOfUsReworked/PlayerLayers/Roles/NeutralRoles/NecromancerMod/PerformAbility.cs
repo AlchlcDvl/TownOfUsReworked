@@ -9,7 +9,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformRevive
+    public static class PerformRevive
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 writer.Write((byte)ActionsRPC.NecromancerResurrect);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);        
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Coroutines.Start(Coroutine.NecromancerResurrect(role.CurrentTarget, role));
                 role.ResurrectedCount++;
                 role.ResurrectUsesLeft--;
@@ -52,27 +52,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.KillCount++;
                     role.KillUsesLeft--;
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                 {
                     role.LastKilled = DateTime.UtcNow;
 
                     if (CustomGameOptions.KillResurrectCooldownsLinked)
                         role.LastResurrected = DateTime.UtcNow;
                 }
-                else if (interact[1] == true)
+                else if (interact[1])
                 {
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                     if (CustomGameOptions.KillResurrectCooldownsLinked)
                         role.LastResurrected.AddSeconds(CustomGameOptions.ProtectKCReset);
                 }
-                else if (interact[2] == true)
+                else if (interact[2])
                 {
                     role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 

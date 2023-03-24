@@ -5,17 +5,14 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
     [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
-    public class NoSpawn
+    public static class NoSpawn
     {
         public static bool Prefix(SpawnInMinigame __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
             {
-                if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
-                {
-                    __instance.Close();
-                    return false;
-                }
+                __instance.Close();
+                return false;
             }
 
             return true;

@@ -17,15 +17,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     }
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetPhantom
+    public static class SetPhantom
     {
+        #pragma warning disable
         public static PlayerControl WillBePhantom;
+        #pragma warning restore
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBePhantom != null && !WillBePhantom.Data.IsDead && exiled.Is(Faction.Neutral) && !Utils.NeutralHasUnfinishedBusiness(exiled))
+            if (WillBePhantom?.Data.IsDead == false && exiled.Is(Faction.Neutral) && !Utils.NeutralHasUnfinishedBusiness(exiled))
                 WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
@@ -100,10 +102,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                         normalPlayerTask.taskStep = 1;
 
-                    if ((normalPlayerTask.TaskType == TaskTypes.EmptyGarbage || normalPlayerTask.TaskType == TaskTypes.EmptyChute)
-                        && (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3 ||
+                    if ((normalPlayerTask.TaskType == TaskTypes.EmptyGarbage || normalPlayerTask.TaskType == TaskTypes.EmptyChute) &&
+                        (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3 ||
                         GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4))
+                    {
                         normalPlayerTask.taskStep = 1;
+                    }
 
                     if (updateArrow)
                         normalPlayerTask.UpdateArrow();

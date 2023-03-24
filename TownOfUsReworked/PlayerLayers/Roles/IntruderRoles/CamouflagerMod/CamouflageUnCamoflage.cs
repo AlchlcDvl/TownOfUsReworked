@@ -2,19 +2,19 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class CamouflageUnCamouflage
+    public static class CamouflageUnCamouflage
     {
-        public static bool CommsEnabled;
-        public static bool CamouflagerEnabled;
+        private static bool CommsEnabled;
+        private static bool CamouflagerEnabled;
         public static bool IsCamoed => CommsEnabled || CamouflagerEnabled;
 
-        [HarmonyPriority(Priority.Last)]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsLobby || GameStates.IsEnded)
                 return;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             CamouflagerEnabled = false;
             CommsEnabled = false;
 
-            foreach (Camouflager camouflager in Role.GetRoles(RoleEnum.Camouflager))
+            foreach (var camouflager in Role.GetRoles(RoleEnum.Camouflager).Cast<Camouflager>())
             {
                 if (camouflager.Camouflaged)
                 {
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 }
             }
 
-            foreach (Godfather godfather in Role.GetRoles(RoleEnum.Godfather))
+            foreach (var godfather in Role.GetRoles(RoleEnum.Godfather).Cast<Godfather>())
             {
                 if (godfather.Camouflaged)
                 {

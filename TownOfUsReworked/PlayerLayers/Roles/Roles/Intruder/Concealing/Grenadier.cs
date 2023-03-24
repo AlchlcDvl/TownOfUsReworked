@@ -11,13 +11,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Grenadier : IntruderRole
     {
         public AbilityButton FlashButton;
-        public bool Enabled = false;
+        public bool Enabled;
         public DateTime LastFlashed;
         public float TimeRemaining;
-        public static List<PlayerControl> ClosestPlayers;
-        static readonly Color NormalVision = new Color32(212, 212, 212, 0);
-        static readonly Color DimVision = new Color32(212, 212, 212, 51);
-        static readonly Color BlindVision = new Color32(212, 212, 212, 255);
+        private  static List<PlayerControl> ClosestPlayers = new();
+        private static readonly Color NormalVision = new Color32(212, 212, 212, 0);
+        private static readonly Color DimVision = new Color32(212, 212, 212, 51);
+        private static readonly Color BlindVision = new Color32(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers;
         public bool Flashed => TimeRemaining > 0f;
 
@@ -32,26 +32,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName ="Intruder (Concealing)";
             InspectorResults = InspectorResults.DropsItems;
-            ClosestPlayers = null;
+            ClosestPlayers = new();
             FlashedPlayers = new List<PlayerControl>();
         }
 
         public float FlashTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFlashed;
+            var timespan = utcNow - LastFlashed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.GrenadeCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Flash()
         {
-            if (Enabled != true)
+            if (!Enabled)
             {
                 ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
                 FlashedPlayers = ClosestPlayers;
@@ -59,6 +55,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+
+            if (MeetingHud.Instance)
+                TimeRemaining = 0f;
 
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
@@ -72,8 +71,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 {
-                    ((Renderer)HudManager.Instance.FullScreen).enabled = true;
-                    ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
+                    HudManager.Instance.FullScreen.enabled = true;
+                    HudManager.Instance.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
@@ -88,8 +87,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
-                        ((Renderer)HudManager.Instance.FullScreen).enabled = true;
-                        ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
+                        HudManager.Instance.FullScreen.enabled = true;
+                        HudManager.Instance.FullScreen.gameObject.active = true;
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = BlindVision;
@@ -116,9 +115,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                 }
             }
-
-            if (MeetingHud.Instance)
-                TimeRemaining = 0f;
         }
 
         private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
@@ -129,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            ((Renderer)HudManager.Instance.FullScreen).enabled = true;
+            HudManager.Instance.FullScreen.enabled = true;
             HudManager.Instance.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
         }

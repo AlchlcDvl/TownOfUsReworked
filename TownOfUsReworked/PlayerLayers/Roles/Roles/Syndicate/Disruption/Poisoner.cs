@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl PoisonedPlayer;
         public PlayerControl ClosestPoison;
         public float TimeRemaining;
-        public bool Enabled = false;
+        public bool Enabled;
         public bool Poisoned => TimeRemaining > 0f;
 
         public Poisoner(PlayerControl player) : base(player)
@@ -57,18 +57,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastPoisoned = DateTime.UtcNow;
         }
-        
+
         public float PoisonTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastPoisoned;
+            var timespan = utcNow - LastPoisoned;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.PoisonCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

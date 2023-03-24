@@ -7,23 +7,22 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    class TeleportationMeeting
+    public static class TeleportationMeeting
     {
-        public static bool TeleportationStarted = false;
+        private static bool TeleportationStarted;
 
         public static void Prefix(PlayerControl __instance)
-        {   
+        {
             if (LobbyBehaviour.Instance || __instance == null || __instance.Data == null || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
             if (__instance?.PlayerId != PlayerControl.LocalPlayer.PlayerId)
                 return;
 
-            if (CustomGameOptions.AddTeleporters)
+            if (CustomGameOptions.AddTeleporters && !TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f &&
+                Object.FindObjectOfType<AirshipStatus>() != null)
             {
-                if (!TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f && UnityEngine.Object.FindObjectOfType<AirshipStatus>()
-                    != null)
-                    Coroutines.Start(CoTeleportPlayer(__instance));
+                Coroutines.Start(CoTeleportPlayer(__instance));
             }
         }
 
@@ -68,8 +67,6 @@ namespace TownOfUsReworked.BetterMaps.Airship
             yield return new WaitForSeconds(0.3f);
             yield return Fade(true, true);
             TeleportationStarted = false;
-
-            yield break;
         }
     }
 }

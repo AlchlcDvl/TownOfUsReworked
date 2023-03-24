@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Veteran";
             StartText = "Alert To Kill Anyone Who Touches You";
-            AbilitiesText = $"- You can go on alert.\n- When on alert, you will kill whoever interacts with you.\n- You can {UsesLeft} alerts left.";
+            AbilitiesText = "- You can go on alert.\n- When on alert, you will kill whoever interacts with you.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
             RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
@@ -32,14 +32,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float AlertTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastAlerted;
+            var timespan = utcNow - LastAlerted;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Alert()

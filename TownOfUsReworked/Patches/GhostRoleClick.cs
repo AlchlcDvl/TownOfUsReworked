@@ -10,7 +10,7 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnClick))]
-    public class ClickGhostRole
+    public static class ClickGhostRole
     {
         public static void Prefix(PlayerControl __instance)
         {
@@ -38,11 +38,15 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate)))
+                {
                     return;
+                }
 
                 if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Is(Faction.Intruder)||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral)))
+                {
                     return;
+                }
 
                 if (tasksLeft <= CustomGameOptions.RevealerTasksRemainingClicked)
                 {

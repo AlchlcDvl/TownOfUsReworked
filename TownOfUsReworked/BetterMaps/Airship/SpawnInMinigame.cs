@@ -8,15 +8,18 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
-    class SpawnInMinigamePatch
+    public static class SpawnInMinigamePatch
     {
-        public static bool GameStarted = false;
-        public static List<byte> SpawnPoints = new List<byte>();
+        private static bool GameStarted;
+
+        #pragma warning disable
+        public static List<byte> SpawnPoints = new();
+        #pragma warning restore
 
         [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
-        class SpawnInMiningameBeginPatch
+        public static class SpawnInMiningameBeginPatch
         {
-            static bool Prefix(SpawnInMinigame __instance)
+            public static bool Prefix(SpawnInMinigame __instance)
             {
                 if (CustomGameOptions.MeetingSpawnChoice || !GameStarted)
                 {
@@ -57,7 +60,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
             {
                 Array.Resize(ref array, array.Length + 1);
 
-                array[array.Length - 1] = new SpawnInMinigame.SpawnLocation
+                array[^1] = new SpawnInMinigame.SpawnLocation
                 {
                     Location = Location,
                     Name = name,
@@ -71,13 +74,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             public static Vector3 GetMeetingPosition(byte PlayerId)
             {
-                int halfPlayerValue = (int) Mathf.Round(PlayerControl.AllPlayerControls.Count / 2);
-                Vector3 Position = new Vector3(9f, 16f, 0);
+                var halfPlayerValue = (int) Mathf.Round(PlayerControl.AllPlayerControls.Count / 2);
+                var Position = new Vector3(9f, 16f, 0);
 
-                float xIndex = ((PlayerId - (PlayerId % 2)) / 2);
-                float yIndex = (PlayerId % 2);
+                var xIndex = (PlayerId - (PlayerId % 2)) / 2;
+                var yIndex = PlayerId % 2;
 
-                float marge = (13f - 9f) / halfPlayerValue;
+                var marge = (13f - 9f) / halfPlayerValue;
                 Position.x += marge * xIndex;
 
                 if (yIndex == 1)
@@ -86,5 +89,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 return Position;
             }
         }
+
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
+        static class GameEndedPatch
+        {
+            public static void Postfix() => GameStarted = false;
+        }
+
+        public static void ResetGlobalVariable() => GameStarted = false;
     }
 }

@@ -7,9 +7,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDMorph
+    public static class HUDMorph
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Morphling))
                 return;

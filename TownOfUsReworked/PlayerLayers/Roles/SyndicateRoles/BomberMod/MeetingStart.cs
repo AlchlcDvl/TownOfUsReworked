@@ -6,9 +6,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class MeetingStart
+    public static class MeetingStart
     {
-        public static void Postfix(MeetingHud __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Bomber) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;

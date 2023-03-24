@@ -67,7 +67,7 @@ namespace TownOfUsReworked.Objects
         public bool Update()
         {
             var currentTime = Time.time;
-            var alpha = Mathf.Max(1f - (currentTime - _time) / Duration, 0f);
+            var alpha = Mathf.Max(1f - ((currentTime - _time) / Duration), 0f);
 
             if (alpha < 0 || alpha > 1)
                 alpha = 0;

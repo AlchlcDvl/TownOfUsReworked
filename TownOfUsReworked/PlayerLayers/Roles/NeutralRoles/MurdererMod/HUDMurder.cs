@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDMurder
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Murderer))
                 return;

@@ -7,15 +7,15 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Cosmetics.CustomNameplates
 {
     //Thanks to Las Monjas for this code
-    public class CustomNameplatesPatch
+    public static class CustomNameplatesPatch
     {
-        public static List<NameplateMetadataElement> AuthorDatas = Loader.LoadCustomNameplateData();
-        private static bool _customNamePlatesLoaded = false;
+        private readonly static List<NameplateMetadataElement> AuthorDatas = Loader.LoadCustomNameplateData();
+        private static bool _customNamePlatesLoaded;
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetNamePlateById))]
         public static class AddCustomNamePlates
         {
-            public static int NamePlateID = 0;
+            private static int NamePlateID;
 
             public static void Postfix(HatManager __instance)
             {
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
 
             private static NamePlateData CreateNamePlate(string id, string nameplateName, string author)
             {
-                var sprite = Utils.CreateSprite($"{TownOfUsReworked.Nameplates}{id}");
+                var sprite = Utils.CreateSprite(TownOfUsReworked.Nameplates + id);
 
                 var a = ScriptableObject.CreateInstance<NamePlateViewData>();
                 var b = new AddressableLoadWrapper<NamePlateViewData>();

@@ -7,9 +7,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class Hide
+    public static class Hide
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsEnded || GameStates.IsLobby)
                 return;
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 
                 if (role.Player.Data.Disconnected)
                     continue;
-                
+
                 var caught = ghoul.Caught;
 
                 if (!caught)
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
                 else if (ghoul.Faded)
                 {
                     Utils.DefaultOutfit(ghoul.Player);
-                    ghoul.Player.myRend().color = Color.white;
+                    ghoul.Player.MyRend().color = Color.white;
                     ghoul.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     ghoul.Faded = false;
                     ghoul.Player.MyPhysics.ResetMoveState();

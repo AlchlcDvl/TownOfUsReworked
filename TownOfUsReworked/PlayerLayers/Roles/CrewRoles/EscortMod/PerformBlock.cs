@@ -8,7 +8,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformBlock
+    public static class PerformBlock
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.EscRoleblock);
@@ -40,14 +40,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                     targetRole.IsBlocked = !targetRole.RoleBlockImmune;
                     role.Block();
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastBlock = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
-            
+
             return true;
         }
     }

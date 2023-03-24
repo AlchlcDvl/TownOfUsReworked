@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public abstract class Modifier : PlayerLayer
     {
-        public static readonly Dictionary<byte, Modifier> ModifierDictionary = new Dictionary<byte, Modifier>();
-        public static IEnumerable<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
+        public static readonly Dictionary<byte, Modifier> ModifierDictionary = new();
+        public static List<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
 
         protected Modifier(PlayerControl player) : base(player)
         {
@@ -25,13 +25,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         protected internal ModifierEnum ModifierType = ModifierEnum.None;
         protected internal string TaskText = "- None";
-        protected internal bool Hidden = false;
+        protected internal bool Hidden;
 
         private bool Equals(Modifier other) => Equals(Player, other.Player) && ModifierType == other.ModifierType;
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
 
             if (ReferenceEquals(this, obj))
@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public static bool operator != (Modifier a, Modifier b) => !(a == b);
 
-        public static Modifier GetModifier(PlayerControl player) => AllModifiers.FirstOrDefault(x => x.Player == player);
+        public static Modifier GetModifier(PlayerControl player) => AllModifiers.Find(x => x.Player == player);
 
         public static T GetModifier<T>(PlayerControl player) where T : Modifier => GetModifier(player) as T;
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public static T GenModifier<T>(Type type, PlayerControl player, int id)
         {
-            var modifier = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var modifier = (T)Activator.CreateInstance(type, new object[] { player });
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetModifier, SendOption.Reliable);
             writer.Write(player.PlayerId);
             writer.Write(id);

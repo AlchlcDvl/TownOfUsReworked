@@ -56,27 +56,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MorphTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMorphed;
+            var timespan = utcNow - LastMorphed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MorphlingCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float SampleTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastSampled;
+            var timespan = utcNow - LastSampled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.SampleCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

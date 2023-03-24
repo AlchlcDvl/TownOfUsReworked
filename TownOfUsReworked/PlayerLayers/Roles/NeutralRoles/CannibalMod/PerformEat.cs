@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformEat
+    public static class PerformEat
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
-                
+
                 if (role.EatTimer() != 0f)
                     return false;
 

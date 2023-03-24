@@ -14,8 +14,8 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
             {
                 var colorChip = __instance.ColorChips[i];
                 colorChip.transform.localScale *= 0.6f;
-                var x = __instance.XRange.Lerp((i % 6) / 6f) + 0.25f;
-                var y = __instance.YStart - (i / 6) * 0.35f;
+                var x = __instance.XRange.Lerp(i % 6 / 6f) + 0.25f;
+                var y = __instance.YStart - (i / 6 * 0.35f);
                 colorChip.transform.localPosition = new Vector3(x, y, 2f);
             }
         }

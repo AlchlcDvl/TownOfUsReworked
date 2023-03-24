@@ -8,9 +8,9 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDMine
+    public static class HUDMine
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Miner))
                 return;

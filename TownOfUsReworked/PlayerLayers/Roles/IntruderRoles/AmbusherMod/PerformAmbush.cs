@@ -8,7 +8,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.AmbusherMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAmbush
+    public static class PerformAmbush
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.AmbusherMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestAmbush);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.TimeRemaining = CustomGameOptions.AmbushDuration;
                     role.AmbushedPlayer = role.ClosestAmbush;
@@ -38,9 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.AmbusherMod
                     writer.Write(role.AmbushedPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastAmbushed = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastAmbushed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

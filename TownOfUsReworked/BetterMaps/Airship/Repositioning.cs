@@ -5,9 +5,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
-    class Repositioning
+    static class Repositioning
     {
-        public static void Postfix(AirshipStatus __instance)
+        public static void Postfix()
         {
             var AdminTable = Object.FindObjectOfType<MapConsole>();
 

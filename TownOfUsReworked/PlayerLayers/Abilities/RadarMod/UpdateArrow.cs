@@ -5,9 +5,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class UpdateArrow
+    public static class UpdateArrow
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, AbilityEnum.Radar))
                 return;

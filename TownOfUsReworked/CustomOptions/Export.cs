@@ -18,7 +18,7 @@ namespace TownOfUsReworked.CustomOptions
     {
         public CustomButtonOption Loading;
         public List<OptionBehaviour> OldButtons;
-        public List<CustomButtonOption> SlotButtons = new List<CustomButtonOption>();
+        public List<CustomButtonOption> SlotButtons = new();
 
         protected internal Export(int id) : base(id, MultiMenu.main, "Save Custom Settings") => Do = ToDo;
 
@@ -102,7 +102,7 @@ namespace TownOfUsReworked.CustomOptions
                 option.gameObject.SetActive(false);
 
             foreach (var option in options)
-                option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
+                option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
 
             __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
         }

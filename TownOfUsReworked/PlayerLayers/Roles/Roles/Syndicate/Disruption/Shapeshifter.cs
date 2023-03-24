@@ -61,14 +61,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float ShapeshiftTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastShapeshifted;
+            var timespan = utcNow - LastShapeshifted;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

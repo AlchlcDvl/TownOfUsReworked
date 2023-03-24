@@ -55,22 +55,24 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
             if (max > min)
             {
                 if (g == max)
-                    ret.h = (b - r) / dif * 60f + 120f;
+                    ret.h = ((b - r) / dif * 60f) + 120f;
                 else if (b == max)
-                    ret.h = (r - g) / dif * 60f + 240f;
+                    ret.h = ((r - g) / dif * 60f) + 240f;
                 else if (b > g)
-                    ret.h = (g - b) / dif * 60f + 360f;
+                    ret.h = ((g - b) / dif * 60f) + 360f;
                 else
                     ret.h = (g - b) / dif * 60f;
 
                 if (ret.h < 0)
-                    ret.h = ret.h + 360f;
+                    ret.h += 360f;
             }
             else
+            {
                 ret.h = 0;
+            }
 
             ret.h *= 1f / 360f;
-            ret.s = (dif / max) * 1f;
+            ret.s = dif / max * 1f;
             ret.b = max;
 
             return ret;
@@ -93,12 +95,12 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
                 if (h < 60f)
                 {
                     r = max;
-                    g = h * dif / 60f + min;
+                    g = (h * dif / 60f) + min;
                     b = min;
                 }
                 else if (h < 120f)
                 {
-                    r = -(h - 120f) * dif / 60f + min;
+                    r = (-(h - 120f) * dif / 60f) + min;
                     g = max;
                     b = min;
                 }
@@ -106,17 +108,17 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
                 {
                     r = min;
                     g = max;
-                    b = (h - 120f) * dif / 60f + min;
+                    b = ((h - 120f) * dif / 60f) + min;
                 }
                 else if (h < 240f)
                 {
                     r = min;
-                    g = -(h - 240f) * dif / 60f + min;
+                    g = (-(h - 240f) * dif / 60f) + min;
                     b = max;
                 }
                 else if (h < 300f)
                 {
-                    r = (h - 240f) * dif / 60f + min;
+                    r = ((h - 240f) * dif / 60f) + min;
                     g = min;
                     b = max;
                 }
@@ -124,7 +126,7 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
                 {
                     r = max;
                     g = min;
-                    b = -(h - 360f) * dif / 60 + min;
+                    b = (-(h - 360f) * dif / 60) + min;
                 }
                 else
                 {
@@ -137,9 +139,9 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
             return new Color(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
         }
 
-        public Color ToColor() => ToColor(this);
+        public readonly Color ToColor() => ToColor(this);
 
-        public override string ToString() => $"H: {h} S: {s} B: {b}";
+        public override readonly string ToString() => $"H: {h} S: {s} B: {b}";
 
         public static HSBColor Lerp(HSBColor a, HSBColor b, float t)
         {
@@ -160,9 +162,13 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
             else
             {
                 if (a.s == 0)
+                {
                     h = b.h;
+                }
                 else if (b.s == 0)
+                {
                     h = a.h;
+                }
                 else
                 {
                     var angle = Mathf.LerpAngle(a.h * 360f, b.h * 360f, t);
@@ -172,7 +178,7 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
 
                     while (angle > 360f)
                         angle -= 360f;
-                        
+
                     h = angle / 360f;
                 }
 

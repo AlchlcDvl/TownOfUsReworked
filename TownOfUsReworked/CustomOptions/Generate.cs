@@ -3,8 +3,9 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.CustomOptions
 {
-    public class Generate
+    public static class Generate
     {
+        #pragma warning disable
         //Global Options
         public static CustomHeaderOption GlobalSettings;
         public static CustomNumberOption PlayerSpeed;
@@ -473,6 +474,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption CoronerReportRole;
         public static CustomNumberOption CoronerKillerNameTime;
         public static CustomNumberOption CompareCooldown;
+        public static CustomNumberOption AutopsyCooldown;
         public static CustomNumberOption CompareLimit;
 
         //Inspector Options
@@ -1390,6 +1392,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption ExampleToggle;
         public static CustomNumberOption ExampleNumber;
         public static CustomStringOption ExampleString;
+        #pragma warning restore
 
         public static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
         public static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
@@ -1713,6 +1716,7 @@ namespace TownOfUsReworked.CustomOptions
             CoronerReportName = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false);
             CoronerKillerNameTime = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
             CompareCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            AutopsyCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Autopsy Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             CompareLimit = new CustomNumberOption(num++, MultiMenu.crew, "Compare Limit", 5, 1, 15, 1);
 
             Detective = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>");
@@ -1960,7 +1964,7 @@ namespace TownOfUsReworked.CustomOptions
             BHVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Vent", false);
             VigiKillsBH = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>", false);
 
-            Cannibal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>"); 
+            Cannibal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>");
             CannibalCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Count", 1, 1, 14, 1);
             UniqueCannibal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Is Unique In All Any", false);
             CannibalCd = new CustomNumberOption(num++, MultiMenu.neutral, "Eat Cooldown", 10f, 10f, 60f, 2.5f, MultiplierFormat);

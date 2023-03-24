@@ -1,20 +1,26 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.BetterMaps.Airship;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch]
-    public class Blocked
+    public static class Blocked
     {
         [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformVent
+        public static class PerformVent
         {
-            public static bool Prefix(VentButton __instance)
+            public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) || !GameStates.IsInGame)
+                    !GameStates.IsInGame)
+                {
                     return true;
+                }
+
+                if (!Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data))
+                    return false;
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -27,13 +33,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformReport
+        public static class PerformReport
         {
-            public static bool Prefix(ReportButton __instance)
+            public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -46,13 +54,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformUse
+        public static class PerformUse
         {
             public static bool Prefix(UseButton __instance)
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
+
+                if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null)
+                {
+                    Tasks.NearestTask.Use();
+                    return false;
+                }
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -65,13 +81,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformSabotage
+        public static class PerformSabotage
         {
-            public static bool Prefix(SabotageButton __instance)
+            public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -84,13 +102,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformAdmin
+        public static class PerformAdmin
         {
-            public static bool Prefix(AdminButton __instance)
+            public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -103,13 +123,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformPet
+        public static class PerformPet
         {
-            public static bool Prefix(PetButton __instance)
+            public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
 
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -122,13 +144,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
         [HarmonyPriority(Priority.First)]
-        public class PerformAbility
+        public static class PerformAbility
         {
             public static bool Prefix(AbilityButton __instance)
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
                     !GameStates.IsInGame)
+                {
                     return true;
+                }
 
                 if (!Utils.ButtonUsable(__instance))
                     return false;

@@ -7,9 +7,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class Hide
+    public static class Hide
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsEnded || GameStates.IsLobby)
                 return;
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 
                 if (role.Player.Data.Disconnected)
                     continue;
-                
+
                 var caught = banshee.Caught;
 
                 if (!caught)
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
                 else if (banshee.Faded)
                 {
                     Utils.DefaultOutfit(banshee.Player);
-                    banshee.Player.myRend().color = Color.white;
+                    banshee.Player.MyRend().color = Color.white;
                     banshee.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     banshee.Faded = false;
                     banshee.Player.MyPhysics.ResetMoveState();

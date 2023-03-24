@@ -337,6 +337,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int CompareLimit => (int)Generate.CompareLimit.Get();
         public static float CoronerKillerNameTime => Generate.CoronerKillerNameTime.Get();
         public static float CompareCooldown => Generate.CompareCooldown.Get();
+        public static float AutopsyCooldown => Generate.AutopsyCooldown.Get();
 
         //Revealer Settings
         public static bool RevealerKnows => Generate.RevealerKnows.Get();

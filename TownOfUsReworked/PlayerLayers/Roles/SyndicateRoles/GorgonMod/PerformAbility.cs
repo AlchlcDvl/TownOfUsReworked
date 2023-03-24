@@ -8,7 +8,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Gaze);
@@ -37,11 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                     role.Gazed.Add(role.ClosestPlayer.PlayerId);
                 }
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastGazed = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastGazed.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastGazed.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;

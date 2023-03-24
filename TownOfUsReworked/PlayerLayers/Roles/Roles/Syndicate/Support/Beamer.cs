@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public ChatController BeamList;
         public PlayerControl BeamPlayer1;
         public PlayerControl BeamPlayer2;
-        public Dictionary<byte, DateTime> UnbeamablePlayers = new Dictionary<byte, DateTime>();
+        public Dictionary<byte, DateTime> UnbeamablePlayers = new();
         public AbilityButton BeamButton;
 
         public Beamer(PlayerControl player) : base(player)
@@ -42,22 +42,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BeamPlayer2 = null;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
+            UnbeamablePlayers = new();
         }
 
         public float BeamTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastBeamed;
+            var timespan = utcNow - LastBeamed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BeamCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
-        public static IEnumerator BeamPlayers(byte player1, byte player2, bool die)
+        public static IEnumerator BeamPlayers(byte player1, byte player2)
         {
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Beamer) || PlayerControl.LocalPlayer == Utils.PlayerById(player1) || PlayerControl.LocalPlayer == Utils.PlayerById(player2))
             {
@@ -69,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var TP1 = Utils.PlayerById(player1);
             var TP2 = Utils.PlayerById(player2);
-            var deadBodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+            var deadBodies = Object.FindObjectsOfType<DeadBody>();
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
 
@@ -84,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TP1.inVent && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
             {
-                while (SubmergedCompatibility.getInTransition())
+                while (SubmergedCompatibility.GetInTransition())
                     yield return null;
 
                 TP1.MyPhysics.ExitAllVents();
@@ -93,18 +90,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player1Body == null && Player2Body == null)
             {
                 TP1.MyPhysics.ResetMoveState();
-                var TempPosition = TP1.GetTruePosition();
-                var TempFacing = TP1.myRend().flipX;
                 TP1.NetTransform.SnapTo(new Vector2(TP2.GetTruePosition().x, TP2.GetTruePosition().y + 0.3636f));
-                TP1.myRend().flipX = TP2.myRend().flipX;
+                TP1.MyRend().flipX = TP2.MyRend().flipX;
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
-                    {
-                        SubmergedCompatibility.ChangeFloor(TP1.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                    }
+                    SubmergedCompatibility.ChangeFloor(TP1.GetTruePosition().y > -7);
+                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body != null && Player2Body == null)
@@ -112,22 +104,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = TP2.GetTruePosition();
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
-                    {
-                        SubmergedCompatibility.ChangeFloor(TP2.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                    }
+                    SubmergedCompatibility.ChangeFloor(TP2.GetTruePosition().y > -7);
+                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
             {
                 TP1.MyPhysics.ResetMoveState();
-                var TempPosition = TP1.GetTruePosition();
                 TP1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged())
                 {
                     if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId)
                     {
@@ -217,9 +205,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         BeamList.AddChat(player, "Click Here");
                     else
                     {
-                        var deadBodies = Object.FindObjectsOfType<DeadBody>();
-
-                        foreach (var body in deadBodies)
+                        foreach (var body in Object.FindObjectsOfType<DeadBody>())
                         {
                             if (body.ParentId == player.PlayerId)
                             {
@@ -257,126 +243,118 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             Vector2 ScreenMin = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.min);
                             Vector2 ScreenMax = Camera.main.WorldToScreenPoint(bubble.Cast<ChatBubble>().Background.bounds.max);
 
-                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x)
+                            if (Input.mousePosition.x > ScreenMin.x && Input.mousePosition.x < ScreenMax.x && Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y &&
+                                !Input.GetMouseButtonDown(0) && LastMouse)
                             {
-                                if (Input.mousePosition.y > ScreenMin.y && Input.mousePosition.y < ScreenMax.y)
+                                LastMouse = false;
+
+                                foreach (var player in PlayerControl.AllPlayerControls)
                                 {
-                                    if (!Input.GetMouseButtonDown(0) && LastMouse)
+                                    if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
                                     {
-                                        LastMouse = false;
-
-                                        foreach (var player in PlayerControl.AllPlayerControls)
+                                        if (BeamPlayer1 == null)
                                         {
-                                            if (player.Data.PlayerName == bubble.Cast<ChatBubble>().NameText.text)
+                                            BeamPlayer1 = player;
+                                            bubble.Cast<ChatBubble>().Background.color = Colors.Beamer;
+                                        }
+                                        else if (player.PlayerId == BeamPlayer1.PlayerId)
+                                        {
+                                            BeamPlayer1 = null;
+                                            bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
+                                        }
+                                        else
+                                        {
+                                            PressedButton = false;
+                                            BeamList.Toggle();
+                                            BeamList.SetVisible(false);
+                                            BeamList = null;
+                                            BeamPlayer2 = player;
+
+                                            if (!UnbeamablePlayers.ContainsKey(BeamPlayer1.PlayerId) && !UnbeamablePlayers.ContainsKey(BeamPlayer2.PlayerId))
                                             {
-                                                if (BeamPlayer1 == null)
-                                                {
-                                                    BeamPlayer1 = player;
-                                                    bubble.Cast<ChatBubble>().Background.color = Colors.Beamer;
-                                                }
-                                                else if (player.PlayerId == BeamPlayer1.PlayerId)
-                                                {
-                                                    BeamPlayer1 = null;
-                                                    bubble.Cast<ChatBubble>().Background.color = new Color32(255, 255, 255, 255);
-                                                }
-                                                else
-                                                {
-                                                    PressedButton = false;
-                                                    BeamList.Toggle();
-                                                    BeamList.SetVisible(false);
-                                                    BeamList = null;
-                                                    BeamPlayer2 = player;
+                                                var interaction = Utils.Interact(Player, BeamPlayer1);
+                                                var interaction2 = Utils.Interact(Player, BeamPlayer2);
 
-                                                    if (!UnbeamablePlayers.ContainsKey(BeamPlayer1.PlayerId) && !UnbeamablePlayers.ContainsKey(BeamPlayer2.PlayerId))
+                                                Utils.Spread(Player, BeamPlayer1);
+                                                Utils.Spread(Player, BeamPlayer2);
+
+                                                if (BeamPlayer1.Is(RoleEnum.Pestilence) || BeamPlayer1.IsOnAlert())
+                                                {
+                                                    if (Player.IsShielded())
                                                     {
-                                                        var interaction = Utils.Interact(Player, BeamPlayer1);
-                                                        var interaction2 = Utils.Interact(Player, BeamPlayer2);
+                                                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
+                                                            SendOption.Reliable);
+                                                        writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                        writer2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                        Utils.Spread(Player, BeamPlayer1);
-                                                        Utils.Spread(Player, BeamPlayer2);
-
-                                                        if (BeamPlayer1.Is(RoleEnum.Pestilence) || BeamPlayer1.IsOnAlert())
-                                                        {
-                                                            if (Player.IsShielded())
-                                                            {
-                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound,
-                                                                    SendOption.Reliable);
-                                                                writer2.Write(Player.GetMedic().Player.PlayerId);
-                                                                writer2.Write(Player.PlayerId);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                                                                if (CustomGameOptions.ShieldBreaks)
-                                                                    LastBeamed = DateTime.UtcNow;
-
-                                                                StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                                return;
-                                                            }
-                                                            else if (!Player.IsProtected())
-                                                            {
-                                                                Coroutines.Start(Beamer.BeamPlayers(BeamPlayer1.PlayerId, Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                write2.Write((byte)ActionsRPC.Beam);
-                                                                write2.Write(BeamPlayer1.PlayerId);
-                                                                write2.Write(Player.PlayerId);
-                                                                write2.Write(true);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                return;
-                                                            }
-
+                                                        if (CustomGameOptions.ShieldBreaks)
                                                             LastBeamed = DateTime.UtcNow;
-                                                            return;
-                                                        }
-                                                        else if (BeamPlayer2.Is(RoleEnum.Pestilence) || BeamPlayer2.IsOnAlert())
-                                                        {
-                                                            if (Player.IsShielded())
-                                                            {
-                                                                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                writer2.Write((byte)ActionsRPC.Beam);
-                                                                writer2.Write(Player.GetMedic().Player.PlayerId);
-                                                                writer2.Write(Player.PlayerId);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-                                                                if (CustomGameOptions.ShieldBreaks)
-                                                                    LastBeamed = DateTime.UtcNow;
-
-                                                                StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
-                                                                return;
-                                                            }
-                                                            else if (!Player.IsProtected())
-                                                            {
-                                                                Coroutines.Start(Beamer.BeamPlayers(BeamPlayer2.PlayerId, Player.PlayerId, true));
-                                                                var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
-                                                                    SendOption.Reliable);
-                                                                write2.Write((byte)ActionsRPC.Beam);
-                                                                write2.Write(BeamPlayer2.PlayerId);
-                                                                write2.Write(Player.PlayerId);
-                                                                write2.Write(true);
-                                                                AmongUsClient.Instance.FinishRpcImmediately(write2);
-                                                                return;
-                                                            }
-
-                                                            LastBeamed = DateTime.UtcNow;
-                                                            return;
-                                                        }
-
-                                                        LastBeamed = DateTime.UtcNow;
-                                                        Coroutines.Start(Beamer.BeamPlayers(BeamPlayer1.PlayerId, BeamPlayer2.PlayerId, false));
-                                                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                                                        write.Write((byte)ActionsRPC.Beam);
-                                                        write.Write(BeamPlayer1.PlayerId);
-                                                        write.Write(BeamPlayer2.PlayerId);
-                                                        write.Write(false);
-                                                        AmongUsClient.Instance.FinishRpcImmediately(write);
+                                                        StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                        return;
                                                     }
-                                                    else
-                                                        (__instance as MonoBehaviour).StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+                                                    else if (!Player.IsProtected())
+                                                    {
+                                                        Coroutines.Start(BeamPlayers(BeamPlayer1.PlayerId, Player.PlayerId));
+                                                        var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        write2.Write((byte)ActionsRPC.Beam);
+                                                        write2.Write(BeamPlayer1.PlayerId);
+                                                        write2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                        return;
+                                                    }
 
-                                                    BeamPlayer1 = null;
-                                                    BeamPlayer2 = null;
+                                                    LastBeamed = DateTime.UtcNow;
+                                                    return;
                                                 }
+                                                else if (BeamPlayer2.Is(RoleEnum.Pestilence) || BeamPlayer2.IsOnAlert())
+                                                {
+                                                    if (Player.IsShielded())
+                                                    {
+                                                        var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        writer2.Write((byte)ActionsRPC.Beam);
+                                                        writer2.Write(Player.GetMedic().Player.PlayerId);
+                                                        writer2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
+
+                                                        if (CustomGameOptions.ShieldBreaks)
+                                                            LastBeamed = DateTime.UtcNow;
+
+                                                        StopKill.BreakShield(Player.GetMedic().Player.PlayerId, Player.PlayerId, CustomGameOptions.ShieldBreaks);
+                                                        return;
+                                                    }
+                                                    else if (!Player.IsProtected())
+                                                    {
+                                                        Coroutines.Start(BeamPlayers(BeamPlayer2.PlayerId, Player.PlayerId));
+                                                        var write2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action,
+                                                            SendOption.Reliable);
+                                                        write2.Write((byte)ActionsRPC.Beam);
+                                                        write2.Write(BeamPlayer2.PlayerId);
+                                                        write2.Write(Player.PlayerId);
+                                                        AmongUsClient.Instance.FinishRpcImmediately(write2);
+                                                        return;
+                                                    }
+
+                                                    LastBeamed = DateTime.UtcNow;
+                                                    return;
+                                                }
+
+                                                LastBeamed = DateTime.UtcNow;
+                                                Coroutines.Start(BeamPlayers(BeamPlayer1.PlayerId, BeamPlayer2.PlayerId));
+                                                var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                                                write.Write((byte)ActionsRPC.Beam);
+                                                write.Write(BeamPlayer1.PlayerId);
+                                                write.Write(BeamPlayer2.PlayerId);
+                                                AmongUsClient.Instance.FinishRpcImmediately(write);
                                             }
+                                            else
+                                                __instance.StartCoroutine(Effects.SwayX(__instance.KillButton.transform));
+
+                                            BeamPlayer1 = null;
+                                            BeamPlayer2 = null;
                                         }
                                     }
                                 }

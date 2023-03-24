@@ -15,8 +15,7 @@ namespace TownOfUsReworked.Patches
 {
     public static class IntroCutScenePatch
     {
-        public static TextMeshPro StatusText;
-        public static float Scale;
+        private static TextMeshPro StatusText;
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
         public static class IntroCutscene_BeginCrewmate
@@ -87,13 +86,13 @@ namespace TownOfUsReworked.Patches
                     var statusString = "";
                     var status = "";
 
-                    if (modifier != null && !modifier.Hidden)
+                    if (modifier?.Hidden == false)
                         status += $" {modifier.ColorString}{modifier.Name}</color>";
 
-                    if (objectifier != null && !objectifier.Hidden)
+                    if (objectifier?.Hidden == false)
                         status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
-                    if (ability != null && !ability.Hidden)
+                    if (ability?.Hidden == false)
                         status += $" {ability.ColorString}{ability.Name}</color>";
 
                     if (status.Length != 0)
@@ -114,9 +113,7 @@ namespace TownOfUsReworked.Patches
             public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role != null)
-                    role.IntroPrefix(__instance);
+                role?.IntroPrefix(__instance);
             }
 
             public static void Postfix(IntroCutscene._ShowTeam_d__32 __instance)
@@ -142,13 +139,13 @@ namespace TownOfUsReworked.Patches
                     var statusString = "";
                     var status = "";
 
-                    if (modifier != null && !modifier.Hidden)
+                    if (modifier?.Hidden == false)
                         status += $" {modifier.ColorString}{modifier.Name}</color>";
 
-                    if (objectifier != null && !objectifier.Hidden)
+                    if (objectifier?.Hidden == false)
                         status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
-                    if (ability != null && !ability.Hidden)
+                    if (ability?.Hidden == false)
                         status += $" {ability.ColorString}{ability.Name}</color>";
 
                     if (status.Length != 0)

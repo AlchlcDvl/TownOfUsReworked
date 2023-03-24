@@ -6,7 +6,7 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomOption
     {
-        public static List<CustomOption> AllOptions = new List<CustomOption>();
+        public readonly static List<CustomOption> AllOptions = new();
         public readonly int ID;
         public readonly MultiMenu Menu;
         public Func<object, string> Format;
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.CustomOptions
         public object DefaultValue { get; set; }
         public static bool LobbyTextScroller { get; set; } = true;
         protected internal bool Indent { get; set; }
-        
+
         protected internal CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
         {
             ID = id;

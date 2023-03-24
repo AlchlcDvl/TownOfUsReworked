@@ -9,14 +9,14 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
-    public class RandomMap
+    public static class RandomMap
     {
-        public static byte previousMap;
-        public static float vision;
+        private static byte previousMap;
+        private static float vision;
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
         [HarmonyPrefix]
-        public static bool Prefix(GameStartManager __instance)
+        public static bool Prefix()
         {
             if (AmongUsClient.Instance.AmHost)
             {
@@ -65,7 +65,6 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-        [HarmonyPostfix]
         public static void Postfix(AmongUsClient __instance)
         {
             if (__instance.AmHost)
@@ -89,7 +88,7 @@ namespace TownOfUsReworked.Patches
 
         public static byte GetRandomMap()
         {
-            Random _rnd = new Random();
+            Random _rnd = new();
             float totalWeight = 0;
             totalWeight += CustomGameOptions.RandomMapSkeld;
             totalWeight += CustomGameOptions.RandomMapMira;

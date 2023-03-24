@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             if (role == null)
                 return true;
-            
+
             if (!PlayerControl.LocalPlayer.Data.IsDead)
                 return true;
 
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
                 foreach (var cam in Camera.allCameras)
                 {
-                    if (cam != null && cam.gameObject.name == "UI Camera")
+                    if (cam?.gameObject.name == "UI Camera")
                         cam.orthographicSize = orthographicSize;
                 }
 

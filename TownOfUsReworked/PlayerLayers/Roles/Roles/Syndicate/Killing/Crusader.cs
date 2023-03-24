@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Crusader";
             StartText = "Ambush";
-            AbilitiesText = $"- You can crusade players.\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then.";
+            AbilitiesText = "- You can crusade players.\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Crusader : Colors.Syndicate;
             RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
@@ -31,14 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CrusadeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCrusaded;
+            var timespan = utcNow - LastCrusaded;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Crusade()
@@ -57,20 +53,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             CrusadedPlayer = null;
         }
 
-        public void RadialCrusade(PlayerControl player2)
+        public static void RadialCrusade(PlayerControl player2)
         {
-            var closestPlayers = Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius);
-
-            foreach (var player in closestPlayers)
+            foreach (var player in Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius))
             {
                 Utils.Spread(player2, player);
 
                 if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player))
                     continue;
-                    
+
                 if (!player.Is(RoleEnum.Pestilence) && !player.IsOnAlert())
                     Utils.RpcMurderPlayer(player2, player, false);
-                
+
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player, player2, false);
             }

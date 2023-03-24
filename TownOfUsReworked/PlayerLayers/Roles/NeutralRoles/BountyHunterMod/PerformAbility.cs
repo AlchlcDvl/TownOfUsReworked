@@ -10,7 +10,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformKill
+    public static class PerformKill
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 {
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                    if (interact[3] == false)
+                    if (interact[3])
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -67,17 +67,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 {
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                    if (interact[0] == true || interact[3] ==true)
+                    if (interact[0] || interact[3])
                         role.LastChecked = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastChecked.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    else if (interact[2] == true)
+                    else if (interact[2])
                         role.LastChecked.AddSeconds(CustomGameOptions.VestKCReset);
                 }
 
                 return false;
             }
-            
+
             return true;
         }
     }

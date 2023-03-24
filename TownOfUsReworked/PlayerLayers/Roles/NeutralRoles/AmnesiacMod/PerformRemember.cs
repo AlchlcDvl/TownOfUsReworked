@@ -2,17 +2,15 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Reactor.Utilities;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformRemember
+    public static class PerformRemember
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -44,10 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
         public static void Remember(Amnesiac amneRole, PlayerControl other)
         {
             var role = Role.GetRole(other);
-            var roleType = role.RoleType;
-            var ability = (Ability.GetAbility(other))?.AbilityType;
             var amnesiac = amneRole.Player;
-            Role newRole;
+            var target = other.GetTarget();
+            var leader = other.GetLeader();
+            var actor = other.GetActorList();
 
             if (PlayerControl.LocalPlayer == amnesiac)
             {
@@ -57,328 +55,137 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 Coroutines.Start(Utils.FlashCoroutine(amneRole.Color));
             }
 
-            switch (roleType)
+            Role newRole = role.RoleType switch
             {
-                case RoleEnum.Agent:
-                    newRole = new Agent(amnesiac);
-                    break;
-
-                case RoleEnum.Altruist:
-                    newRole = new Altruist(amnesiac);
-                    break;
-
-                case RoleEnum.Amnesiac:
-                    newRole = new Amnesiac(amnesiac);
-                    break;
-
-                case RoleEnum.Anarchist:
-                    newRole = new Anarchist(amnesiac);
-                    break;
-
-                case RoleEnum.Arsonist:
-                    newRole = new Arsonist(amnesiac);
-                    break;
-
-                case RoleEnum.Blackmailer:
-                    newRole = new Blackmailer(amnesiac);
-                    break;
-
-                case RoleEnum.Bomber:
-                    newRole = new Bomber(amnesiac);
-                    break;
-
-                case RoleEnum.Camouflager:
-                    newRole = new Camouflager(amnesiac);
-                    break;
-
-                case RoleEnum.Cannibal:
-                    newRole = new Cannibal(amnesiac);
-                    break;
-
-                case RoleEnum.Concealer:
-                    newRole = new Concealer(amnesiac);
-                    break;
-
-                case RoleEnum.Consigliere:
-                    newRole = new Consigliere(amnesiac);
-                    break;
-
-                case RoleEnum.Consort:
-                    newRole = new Consort(amnesiac);
-                    break;
-
-                case RoleEnum.Coroner:
-                    newRole = new Coroner(amnesiac);
-                    break;
-
-                case RoleEnum.Crewmate:
-                    newRole = new Crewmate(amnesiac);
-                    break;
-
-                case RoleEnum.Cryomaniac:
-                    newRole = new Cryomaniac(amnesiac);
-                    break;
-
-                case RoleEnum.Detective:
-                    newRole = new Detective(amnesiac);
-                    break;
-
-                case RoleEnum.Disguiser:
-                    newRole = new Disguiser(amnesiac);
-                    break;
-
-                case RoleEnum.Dracula:
-                    newRole = new Dracula(amnesiac);
-                    break;
-
-                case RoleEnum.Engineer:
-                    newRole = new Engineer(amnesiac);
-                    break;
-
-                case RoleEnum.Escort:
-                    newRole = new Escort(amnesiac);
-                    break;
-
-                case RoleEnum.Executioner:
-                    newRole = new Executioner(amnesiac);
-                    break;
-
-                case RoleEnum.Framer:
-                    newRole = new Framer(amnesiac);
-                    break;
-
-                case RoleEnum.Glitch:
-                    newRole = new Glitch(amnesiac);
-                    break;
-
-                case RoleEnum.Godfather:
-                    newRole = new Godfather(amnesiac);
-                    break;
-
-                case RoleEnum.Gorgon:
-                    newRole = new Gorgon(amnesiac);
-                    break;
-
-                case RoleEnum.Grenadier:
-                    newRole = new Grenadier(amnesiac);
-                    break;
-
-                case RoleEnum.GuardianAngel:
-                    newRole = new GuardianAngel(amnesiac);
-                    break;
-
-                case RoleEnum.Impostor:
-                    newRole = new Impostor(amnesiac);
-                    break;
-
-                case RoleEnum.Inspector:
-                    newRole = new Inspector(amnesiac);
-                    break;
-
-                case RoleEnum.Jackal:
-                    newRole = new Jackal(amnesiac);
-                    break;
-
-                case RoleEnum.Jester:
-                    newRole = new Jester(amnesiac);
-                    break;
-
-                case RoleEnum.Juggernaut:
-                    newRole = new Juggernaut(amnesiac);
-                    break;
-
-                case RoleEnum.Sheriff:
-                    newRole = new Sheriff(amnesiac);
-                    break;
-
-                case RoleEnum.Mayor:
-                    newRole = new Mayor(amnesiac);
-                    break;
-
-                case RoleEnum.Mafioso:
-                    newRole = new Mafioso(amnesiac);
-                    break;
-
-                case RoleEnum.Miner:
-                    newRole = new Miner(amnesiac);
-                    break;
-
-                case RoleEnum.Morphling:
-                    newRole = new Morphling(amnesiac);
-                    break;
-
-                case RoleEnum.Swapper:
-                    newRole = new Swapper(amnesiac);
-                    break;
-
-                case RoleEnum.Medic:
-                    newRole = new Medic(amnesiac);
-                    break;
-
-                case RoleEnum.Tracker:
-                    newRole = new Tracker(amnesiac);
-                    break;
-
-                case RoleEnum.Transporter:
-                    newRole = new Transporter(amnesiac);
-                    break;
-
-                case RoleEnum.Medium:
-                    newRole = new Medium(amnesiac);
-                    break;
-
-                case RoleEnum.Operative:
-                    newRole = new Operative(amnesiac);
-                    break;
-
-                case RoleEnum.Shifter:
-                    newRole = new Shifter(amnesiac);
-                    break;
-
-                case RoleEnum.Rebel:
-                    newRole = new Rebel(amnesiac);
-                    break;
-
-                case RoleEnum.Sidekick:
-                    newRole = new Sidekick(amnesiac);
-                    break;
-
-                case RoleEnum.Shapeshifter:
-                    newRole = new Shapeshifter(amnesiac);
-                    break;
-
-                case RoleEnum.Murderer:
-                    newRole = new Murderer(amnesiac);
-                    break;
-
-                case RoleEnum.Survivor:
-                    newRole = new Survivor(amnesiac);
-                    break;
-
-                case RoleEnum.Plaguebearer:
-                    newRole = new Plaguebearer(amnesiac);
-                    break;
-
-                case RoleEnum.Pestilence:
-                    newRole = new Pestilence(amnesiac);
-                    break;
-
-                case RoleEnum.SerialKiller:
-                    newRole = new SerialKiller(amnesiac);
-                    break;
-
-                case RoleEnum.Werewolf:
-                    newRole = new Werewolf(amnesiac);
-                    break;
-
-                case RoleEnum.Janitor:
-                    newRole = new Janitor(amnesiac);
-                    break;
-
-                case RoleEnum.Poisoner:
-                    newRole = new Poisoner(amnesiac);
-                    break;
-
-                case RoleEnum.TimeLord:
-                    newRole = new TimeLord(amnesiac);
-                    break;
-
-                case RoleEnum.Teleporter:
-                    newRole = new Teleporter(amnesiac);
-                    break;
-
-                case RoleEnum.TimeMaster:
-                    newRole = new TimeMaster(amnesiac);
-                    break;
-
-                case RoleEnum.Troll:
-                    newRole = new Troll(amnesiac);
-                    break;
-
-                case RoleEnum.Thief:
-                    newRole = new Thief(amnesiac);
-                    break;
-
-                case RoleEnum.Undertaker:
-                    newRole = new Undertaker(amnesiac);
-                    break;
-
-                case RoleEnum.VampireHunter:
-                    newRole = new VampireHunter(amnesiac);
-                    break;
-
-                case RoleEnum.Veteran:
-                    newRole = new Veteran(amnesiac);
-                    break;
-
-                case RoleEnum.Vigilante:
-                    newRole = new Vigilante(amnesiac);
-                    break;
-
-                case RoleEnum.Warper:
-                    newRole = new Warper(amnesiac);
-                    break;
-
-                case RoleEnum.Wraith:
-                    newRole = new Wraith(amnesiac);
-                    break;
-
-                case RoleEnum.Chameleon:
-                    newRole = new Chameleon(amnesiac);
-                    break;
-                
-                default:
-                    newRole = new Amnesiac(amnesiac);
-                    break;
-            }
-            
-            newRole.RoleHistory.Add(amneRole);
-            newRole.RoleHistory.AddRange(amneRole.RoleHistory);
-            newRole.Faction = amneRole.Faction;
-            newRole.SubFaction = amneRole.SubFaction;
-            newRole.FactionColor = amneRole.FactionColor;
-            newRole.SubFactionColor = amneRole.SubFactionColor;
-            newRole.DeathReason = amneRole.DeathReason;
-            newRole.KilledBy = amneRole.KilledBy;
-            newRole.IsBitten = amneRole.IsBitten;
-            newRole.IsRecruit = amneRole.IsRecruit;
-            newRole.IsResurrected = amneRole.IsResurrected;
-            newRole.IsPersuaded = amneRole.IsPersuaded;
-            newRole.IsIntAlly = amneRole.IsIntAlly;
-            newRole.IsIntFanatic = amneRole.IsIntFanatic;
-            newRole.IsIntTraitor = amneRole.IsIntTraitor;
-            newRole.IsSynAlly = amneRole.IsSynAlly;
-            newRole.IsSynFanatic = amneRole.IsSynFanatic;
-            newRole.IsSynTraitor = amneRole.IsSynTraitor;
-            newRole.IsCrewAlly = amneRole.IsCrewAlly;
-            amnesiac.RegenTask();
-
-            if (ability == AbilityEnum.Snitch)
-            {
-                var snitchRole = Ability.GetAbility<Snitch>(amnesiac);
-                snitchRole.ImpArrows.DestroyAll();
-                snitchRole.SnitchArrows.Values.DestroyAll();
-                snitchRole.SnitchArrows.Clear();
-                CompleteTask.Postfix(amnesiac);
-
-                if (other.AmOwner)
+                RoleEnum.Agent => new Agent(amnesiac),
+                RoleEnum.Altruist => new Altruist(amnesiac),
+                RoleEnum.Anarchist => new Anarchist(amnesiac),
+                RoleEnum.Arsonist => new Arsonist(amnesiac) { DousedPlayers = ((Arsonist)role).DousedPlayers },
+                RoleEnum.Blackmailer => new Blackmailer(amnesiac),
+                RoleEnum.Bomber => new Bomber(amnesiac),
+                RoleEnum.Camouflager => new Camouflager(amnesiac),
+                RoleEnum.Cannibal => new Cannibal(amnesiac),
+                RoleEnum.Concealer => new Concealer(amnesiac),
+                RoleEnum.Consigliere => new Consigliere(amnesiac) { Investigated = ((Consigliere)role).Investigated },
+                RoleEnum.Consort => new Consort(amnesiac),
+                RoleEnum.Coroner => new Coroner(amnesiac),
+                RoleEnum.Crewmate => new Crewmate(amnesiac),
+                RoleEnum.Cryomaniac => new Cryomaniac(amnesiac) { DousedPlayers = ((Cryomaniac)role).DousedPlayers },
+                RoleEnum.Detective => new Detective(amnesiac),
+                RoleEnum.Disguiser => new Disguiser(amnesiac),
+                RoleEnum.Dracula => new Dracula(amnesiac) { Converted = ((Dracula)role).Converted },
+                RoleEnum.Engineer => new Engineer(amnesiac),
+                RoleEnum.Escort => new Escort(amnesiac),
+                RoleEnum.Executioner => new Executioner(amnesiac) { TargetPlayer = target },
+                RoleEnum.Framer => new Framer(amnesiac),
+                RoleEnum.Glitch => new Glitch(amnesiac),
+                RoleEnum.Godfather => new Godfather(amnesiac),
+                RoleEnum.Gorgon => new Gorgon(amnesiac),
+                RoleEnum.Grenadier => new Grenadier(amnesiac),
+                RoleEnum.GuardianAngel => new GuardianAngel(amnesiac) { TargetPlayer = target },
+                RoleEnum.Impostor => new Impostor(amnesiac),
+                RoleEnum.Inspector => new Inspector(amnesiac) { Inspected = ((Inspector)role).Inspected },
+                RoleEnum.Jackal => new Jackal(amnesiac)
                 {
-                    foreach (var player in PlayerControl.AllPlayerControls)
-                        player.NameText().color = Color.white;
-                }
+                    Recruited = ((Jackal)role).Recruited,
+                    EvilRecruit = ((Jackal)role).EvilRecruit,
+                    GoodRecruit = ((Jackal)role).GoodRecruit,
+                    BackupRecruit = ((Jackal)role).BackupRecruit
+                },
+                RoleEnum.Jester => new Jester(amnesiac),
+                RoleEnum.Juggernaut => new Juggernaut(amnesiac) { JuggKills = ((Juggernaut)role).JuggKills },
+                RoleEnum.Sheriff => new Sheriff(amnesiac) { Interrogated = ((Sheriff)role).Interrogated },
+                RoleEnum.Mayor => new Mayor(amnesiac),
+                RoleEnum.Mafioso => new Mafioso(amnesiac) { Godfather = (Godfather)leader },
+                RoleEnum.Miner => new Miner(amnesiac),
+                RoleEnum.Morphling => new Morphling(amnesiac),
+                RoleEnum.Swapper => new Swapper(amnesiac),
+                RoleEnum.Medic => new Medic(amnesiac),
+                RoleEnum.Tracker => new Tracker(amnesiac) { TrackerArrows = ((Tracker)role).TrackerArrows },
+                RoleEnum.Transporter => new Transporter(amnesiac),
+                RoleEnum.Medium => new Medium(amnesiac),
+                RoleEnum.Operative => new Operative(amnesiac),
+                RoleEnum.Shifter => new Shifter(amnesiac),
+                RoleEnum.Rebel => new Rebel(amnesiac),
+                RoleEnum.Sidekick => new Sidekick(amnesiac) { Rebel = (Rebel)leader },
+                RoleEnum.Shapeshifter => new Shapeshifter(amnesiac),
+                RoleEnum.Murderer => new Murderer(amnesiac),
+                RoleEnum.Survivor => new Survivor(amnesiac),
+                RoleEnum.Plaguebearer => new Plaguebearer(amnesiac) { InfectedPlayers = ((Plaguebearer)role).InfectedPlayers },
+                RoleEnum.Pestilence => new Pestilence(amnesiac),
+                RoleEnum.SerialKiller => new SerialKiller(amnesiac),
+                RoleEnum.Werewolf => new Werewolf(amnesiac),
+                RoleEnum.Janitor => new Janitor(amnesiac),
+                RoleEnum.Poisoner => new Poisoner(amnesiac),
+                RoleEnum.TimeLord => new TimeLord(amnesiac),
+                RoleEnum.Teleporter => new Teleporter(amnesiac),
+                RoleEnum.TimeMaster => new TimeMaster(amnesiac),
+                RoleEnum.Troll => new Troll(amnesiac),
+                RoleEnum.Thief => new Thief(amnesiac),
+                RoleEnum.Undertaker => new Undertaker(amnesiac),
+                RoleEnum.VampireHunter => new VampireHunter(amnesiac),
+                RoleEnum.Veteran => new Veteran(amnesiac),
+                RoleEnum.Vigilante => new Vigilante(amnesiac),
+                RoleEnum.Warper => new Warper(amnesiac),
+                RoleEnum.Wraith => new Wraith(amnesiac),
+                RoleEnum.Chameleon => new Chameleon(amnesiac),
+                RoleEnum.Mystic => new Mystic(amnesiac),
+                RoleEnum.Retributionist => new Retributionist(amnesiac)
+                {
+                    TrackerArrows = ((Retributionist)role).TrackerArrows,
+                    Inspected = ((Retributionist)role).Inspected,
+                    Interrogated = ((Retributionist)role).Interrogated
+                },
+                RoleEnum.Seer => new Seer(amnesiac),
+                RoleEnum.Actor => new Actor(amnesiac) { PretendRoles = actor },
+                RoleEnum.BountyHunter => new BountyHunter(amnesiac) { TargetPlayer = target },
+                RoleEnum.Guesser => new Guesser(amnesiac) { TargetPlayer = target },
+                RoleEnum.Necromancer => new Necromancer(amnesiac)
+                {
+                    Resurrected = ((Necromancer)role).Resurrected,
+                    KillCount = ((Necromancer)role).KillCount,
+                    ResurrectedCount = ((Necromancer)role).ResurrectedCount
+                },
+                RoleEnum.Whisperer => new Whisperer(amnesiac)
+                {
+                    Persuaded = ((Whisperer)role).Persuaded,
+                    WhisperCount = ((Whisperer)role).WhisperCount,
+                    WhisperConversion = ((Whisperer)role).WhisperConversion
+                },
+                RoleEnum.Betrayer => new Betrayer(amnesiac) { Faction = role.Faction },
+                RoleEnum.Ambusher => new Ambusher(amnesiac),
+                RoleEnum.Beamer => new Beamer(amnesiac),
+                RoleEnum.Crusader => new Crusader(amnesiac),
+                RoleEnum.Drunkard => new Drunkard(amnesiac),
+                _ => new Amnesiac(amnesiac),
+            };
+
+            newRole.RoleUpdate(amneRole);
+
+            if (other.Is(RoleEnum.Dracula))
+                ((Dracula)role).Converted.Clear();
+            else if (other.Is(RoleEnum.Whisperer))
+                ((Whisperer)role).Persuaded.Clear();
+            else if (other.Is(RoleEnum.Necromancer))
+                ((Necromancer)role).Resurrected.Clear();
+            else if (other.Is(RoleEnum.Jackal))
+            {
+                ((Jackal)role).Recruited.Clear();
+                ((Jackal)role).EvilRecruit = null;
+                ((Jackal)role).GoodRecruit = null;
+                ((Jackal)role).BackupRecruit = null;
             }
 
             if (amnesiac.Is(Faction.Intruder) || (amnesiac.Is(Faction.Syndicate) && CustomGameOptions.AltImps))
                 amnesiac.Data.Role.TeamType = RoleTeamTypes.Impostor;
 
-            if ((amnesiac.Is(Faction.Intruder) || amnesiac.Is(Faction.Syndicate)) && (!amnesiac.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
+            if (amnesiac.Is(Faction.Intruder) || amnesiac.Is(Faction.Syndicate))
             {
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {
                     var snitchRole = (Snitch)snitch;
-                    var role3 = Role.GetRole(snitch.Player);
 
-                    if (role3.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
+                    if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -389,7 +196,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(amnesiac.PlayerId, arrow);
                     }
-                    else if (role3.TasksDone && PlayerControl.LocalPlayer == amnesiac)
+                    else if (snitchRole.TasksDone && PlayerControl.LocalPlayer == amnesiac)
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -402,6 +209,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     }
                 }
             }
+
+            amneRole.RememberButton.gameObject.SetActive(false);
         }
     }
 }

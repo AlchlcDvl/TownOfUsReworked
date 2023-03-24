@@ -25,14 +25,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
+            var timespan = utcNow - LastKilled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.IntKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
@@ -56,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
                     team.Add(player);
             }
-            
+
             if (Player.Is(ObjectifierEnum.Lovers))
                 team.Add(Player.GetOtherLover());
             else if (Player.Is(ObjectifierEnum.Rivals))

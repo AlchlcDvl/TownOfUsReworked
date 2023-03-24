@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -12,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastWhispered;
         public int WhisperCount;
         public int ConversionCount;
-        public List<(byte, int)> PlayerConversion;
+        public List<(byte, int)> PlayerConversion = new();
         public float WhisperConversion;
-        public List<byte> Persuaded;
+        public List<byte> Persuaded = new();
 
         public Whisperer(PlayerControl player) : base(player)
         {
@@ -25,22 +26,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFaction = SubFaction.Sect;
             SubFactionColor = Colors.Sect;
             AlignmentName = NN;
-            Persuaded = new List<byte>();
-            PlayerConversion = new List<(byte, int)>();
+            PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
+
+            Persuaded = new()
+            {
+                Player.PlayerId
+            };
         }
 
         public float WhisperTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastWhispered;
+            var timespan = utcNow - LastWhispered;
             var num = (CustomGameOptions.WhisperCooldown + (CustomGameOptions.WhisperCooldownIncrease * WhisperCount)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public List<(byte, int)> GetPlayers()
@@ -54,6 +55,76 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             return playerList;
+        }
+
+        public void Whisper()
+        {
+            var truePosition = Player.GetTruePosition();
+            var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
+            closestPlayers.Remove(Player);
+
+            if (PlayerConversion.Count == 0)
+                PlayerConversion = GetPlayers();
+
+            var oldStats = PlayerConversion;
+            PlayerConversion = new();
+
+            foreach (var conversionRate in oldStats)
+            {
+                var player = conversionRate.Item1;
+                var stats = conversionRate.Item2;
+
+                if (closestPlayers.Contains(Utils.PlayerById(player)))
+                    stats -= (int)WhisperConversion;
+
+                if (!Utils.PlayerById(player).Data.IsDead)
+                    PlayerConversion.Add((player, stats));
+            }
+
+            WhisperCount++;
+            var removals = new List<(byte, int)>();
+
+            foreach (var playerConversion in PlayerConversion)
+            {
+                if (playerConversion.Item2 <= 0)
+                {
+                    ConversionCount++;
+
+                    if (CustomGameOptions.WhisperRateDecreases)
+                        WhisperConversion -= CustomGameOptions.WhisperRateDecrease;
+
+                    if (WhisperConversion < 2.5f)
+                        WhisperConversion = 2.5f;
+
+                    if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.None))
+                    {
+                        removals.Add(playerConversion);
+                        var targetRole = GetRole(Utils.PlayerById(playerConversion.Item1));
+                        targetRole.SubFaction = SubFaction.Sect;
+                        targetRole.IsPersuaded = true;
+                        Persuaded.Add(playerConversion.Item1);
+
+                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+                            Coroutines.Start(Utils.FlashCoroutine(Color));
+                    }
+                    else if (!Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
+                        Utils.RpcMurderPlayer(Player, Utils.PlayerById(playerConversion.Item1), false);
+                    else  if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
+                    {
+                        if (Utils.PlayerById(playerConversion.Item1).Is(RoleEnum.Whisperer))
+                        {
+                            var targetRole = GetRole<Whisperer>(Utils.PlayerById(playerConversion.Item1));
+                            Persuaded.AddRange(targetRole.Persuaded);
+                            targetRole.Persuaded.AddRange(Persuaded);
+                        }
+                        else
+                            Persuaded.Add(playerConversion.Item1);
+                    }
+                }
+            }
+
+            foreach (var removal in removals)
+                PlayerConversion.Remove(removal);
         }
     }
 }

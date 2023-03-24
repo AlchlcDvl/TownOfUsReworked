@@ -8,9 +8,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class MeetingStart
+    public static class MeetingStart
     {
-        public static void Postfix(MeetingHud __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                 string message = "The following roles triggered your bug:\n";
                 int position = 0;
 
-                foreach (RoleEnum role in opRole.BuggedPlayers.OrderBy(x => Guid.NewGuid()))
+                foreach (RoleEnum role in opRole.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
                 {
                     if (position < opRole.BuggedPlayers.Count - 1)
                         message += $" {role},";
@@ -35,6 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 
                     position++;
                 }
+
+                if (string.IsNullOrEmpty(message))
+                    return;
 
                 //Ensures only the Operative sees this
                 if (HudManager.Instance)

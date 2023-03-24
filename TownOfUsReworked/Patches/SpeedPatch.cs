@@ -14,8 +14,8 @@ namespace TownOfUsReworked.Patches
         {
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
             {
-                __instance.body.velocity *= (__instance.myPlayer.GetAppearance().SpeedFactor * (__instance.myPlayer.Data.IsDead && !__instance.myPlayer.Is(RoleEnum.Phantom) &&
-                    !__instance.myPlayer.Is(RoleEnum.Revealer) && !__instance.myPlayer.Is(RoleEnum.Ghoul) && !__instance.myPlayer.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1));
+                __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor * (__instance.myPlayer.Data.IsDead && !__instance.myPlayer.Is(RoleEnum.Phantom) &&
+                    !__instance.myPlayer.Is(RoleEnum.Revealer) && !__instance.myPlayer.Is(RoleEnum.Ghoul) && !__instance.myPlayer.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1);
             }
         }
 
@@ -26,8 +26,8 @@ namespace TownOfUsReworked.Patches
             if (!__instance.AmOwner && __instance.interpolateMovement != 0.0f && GameData.Instance)
             {
                 var player = __instance.gameObject.GetComponent<PlayerControl>();
-                __instance.body.velocity *= (player.GetAppearance().SpeedFactor * (player.Data.IsDead && !player.Is(RoleEnum.Phantom) && !player.Is(RoleEnum.Revealer) &&
-                    !player.Is(RoleEnum.Ghoul) && !player.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1));
+                __instance.body.velocity *= player.GetAppearance().SpeedFactor * (player.Data.IsDead && !player.Is(RoleEnum.Phantom) && !player.Is(RoleEnum.Revealer) &&
+                    !player.Is(RoleEnum.Ghoul) && !player.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1);
             }
         }
     }

@@ -10,9 +10,9 @@ using TownOfUsReworked.Patches;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDRemember
+    public static class HUDRemember
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Amnesiac))
                 return;
@@ -52,13 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     role.BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
                 }
             }
-            else
+            else if (role.BodyArrows.Count != 0)
             {
-                if (role.BodyArrows.Count != 0)
-                {
-                    role.BodyArrows.Values.DestroyAll();
-                    role.BodyArrows.Clear();
-                }
+                role.BodyArrows.Values.DestroyAll();
+                role.BodyArrows.Clear();
             }
         }
     }

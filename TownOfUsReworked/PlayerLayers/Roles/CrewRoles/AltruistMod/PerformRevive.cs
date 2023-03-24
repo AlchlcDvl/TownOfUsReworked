@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformRevive
+    public static class PerformRevive
     {
         public static bool Prefix(AbilityButton __instance)
         {

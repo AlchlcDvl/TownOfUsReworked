@@ -29,10 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SSu;
         }
 
-        public void Warp()
+        public static void Warp()
         {
             var coordinates = GenerateWarpCoordinates();
-
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Warp);
             writer.Write((byte)coordinates.Count);
@@ -74,14 +73,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        private Dictionary<byte, Vector2> GenerateWarpCoordinates()
+        private static Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
             var targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
             var vents = Object.FindObjectsOfType<Vent>().ToHashSet();
             var coordinates = new Dictionary<byte, Vector2>(targets.Count);
             var rnd = new System.Random((int)DateTime.Now.Ticks);
 
-            List<Vector3> SkeldPositions = new List<Vector3>()
+            var SkeldPositions = new List<Vector3>()
             {
                 new Vector3(-2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(0.7f, 2.2f, 0f), //caffeteria. button. top right.
@@ -123,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(-6.5f, -4.5f, 0f) //medbay bottom
             };
 
-            List<Vector3> MiraPositions = new List<Vector3>()
+            var MiraPositions = new List<Vector3>()
             {
                 new Vector3(-4.5f, 3.5f, 0f), //launchpad top
                 new Vector3(-4.5f, -1.4f, 0f), //launchpad bottom
@@ -148,7 +147,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(22f, -2f, 0f), //balcony
             };
 
-            List<Vector3> PolusPositions = new List<Vector3>()
+            var PolusPositions = new List<Vector3>()
             {
                 new Vector3(16.6f, -1f, 0f), //dropship top
                 new Vector3(16.6f, -5f, 0f), //dropship bottom
@@ -196,7 +195,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(17.5f, -25.7f, 0f), //snowman under office
             };
 
-            List<Vector3> dlekSPositions = new List<Vector3>()
+            var dlekSPositions = new List<Vector3>()
             {
                 new Vector3(2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(-0.7f, 2.2f, 0f), //caffeteria. button. top right.
@@ -237,22 +236,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(10.5f, -2.0f, 0f), //medbay top
                 new Vector3(6.5f, -4.5f, 0f) //medbay bottom
             };
-            
-            var map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
 
             foreach (PlayerControl target in targets)
             {
                 var coin = Random.RandomRangeInt(0, 2);
-                Vector3 destination = new Vector3();
+                var destination = new Vector3();
 
                 if (coin == 0 || !SyndicateHasChaosDrive)
                 {
-                    Vent vent = vents.Random();
+                    var vent = vents.Random();
                     destination = SendPlayerToVent(vent);
                 }
                 else if (coin == 1)
                 {
-                    switch (map)
+                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                     {
                         case 0:
                             destination = SkeldPositions[rnd.Next(SkeldPositions.Count)];
@@ -269,9 +266,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         case 3:
                             destination = dlekSPositions[rnd.Next(dlekSPositions.Count)];
                             break;
-                        
-                        default:
-                            break;
                     }
                 }
 
@@ -283,7 +277,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Vector3 SendPlayerToVent(Vent vent)
         {
-            Vector2 size = vent.GetComponent<BoxCollider2D>().size;
             Vector3 destination = vent.transform.position;
             destination.y += 0.3636f;
             return destination;
@@ -292,14 +285,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float WarpTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastWarped;
+            var timespan = utcNow - LastWarped;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.WarpCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

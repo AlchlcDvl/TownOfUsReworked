@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDDouseAndFreeze
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Cryomaniac))
                 return;

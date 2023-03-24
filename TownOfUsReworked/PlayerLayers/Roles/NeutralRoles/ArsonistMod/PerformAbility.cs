@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 if (role.DouseTimer() != 0f)
                     return false;
 
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.Douse);
@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     if (CustomGameOptions.ArsoCooldownsLinked)
                         role.LastIgnited = DateTime.UtcNow;
                 }
-                else if (interact[1] == true)
+                else if (interact[1])
                 {
                     role.LastDoused.AddSeconds(CustomGameOptions.ProtectKCReset);
 

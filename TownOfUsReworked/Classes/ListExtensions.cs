@@ -13,9 +13,7 @@ namespace TownOfUsReworked.Classes
             for (var i = 0; i <= last; ++i)
             {
                 var r = Random.Range(i, count);
-                var tmp = list[i];
-                list[i] = list[r];
-                list[r] = tmp;
+                (list[r], list[i]) = (list[i], list[r]);
             }
         }
 

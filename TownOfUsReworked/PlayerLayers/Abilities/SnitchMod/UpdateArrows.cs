@@ -5,10 +5,10 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class UpdateArrows
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class UpdateArrows
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix()
         {
             foreach (var role in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
             {
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
                 {
                     var player = Utils.PlayerById(arrow.Key);
 
-                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
+                    if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
                         snitch.DestroyArrow(arrow.Key);
                     else
                         arrow.Value.target = player.transform.position;

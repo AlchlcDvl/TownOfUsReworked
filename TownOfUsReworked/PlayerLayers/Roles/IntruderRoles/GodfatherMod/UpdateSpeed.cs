@@ -14,11 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 var role = Role.GetRole<Godfather>(__instance.myPlayer);
 
-                if (role.CurrentlyDragging != null)
-                {
-                    if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-                        __instance.body.velocity *= CustomGameOptions.DragModifier;
-                }
+                if (role.CurrentlyDragging != null && __instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+                    __instance.body.velocity *= CustomGameOptions.DragModifier;
             }
         }
     }

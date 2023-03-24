@@ -4,12 +4,13 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Random = UnityEngine.Random;
 using System;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class BountyHunter : NeutralRole
     {
-        public PlayerControl TargetPlayer = null;
+        public PlayerControl TargetPlayer;
         public PlayerControl ClosestPlayer;
         public bool TargetKilled;
         public bool ColorHintGiven;
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton GuessButton;
         public AbilityButton HuntButton;
         public bool ButtonUsable => UsesLeft > 0;
-        public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer == null || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
+        public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true));
         public int UsesLeft;
 
         public BountyHunter(PlayerControl player) : base(player)
@@ -37,14 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CheckTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastChecked;
+            var timespan = utcNow - LastChecked;
             var num = CustomGameOptions.BountyHunterCooldown * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Kaboom()
@@ -55,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (player.Data.Disconnected || player.Data.IsDead || player == Player)
                     continue;
-                
+
                 allPlayers.Add(player);
                 PlayerControl unfortunate1 = null;
                 PlayerControl unfortunate2 = null;
@@ -76,10 +73,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnTroll()
         {
-            var bh = Role.GetRole(Player);
             var newRole = new Troll(Player);
-            newRole.RoleUpdate(bh);
-            Player.RegenTask();
+            newRole.RoleUpdate(this);
+
+            if (Player == PlayerControl.LocalPlayer)
+                Coroutines.Start(Utils.FlashCoroutine(Color));
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
         }
     }
 }

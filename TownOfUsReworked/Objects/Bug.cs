@@ -5,12 +5,13 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.Objects
 {
     public class Bug
     {
-        public Dictionary<byte, float> Players = new Dictionary<byte, float>();
+        public Dictionary<byte, float> Players = new();
         public Transform Transform;
 
         public IEnumerator BugTimer()
@@ -48,20 +49,20 @@ namespace TownOfUsReworked.Objects
 
                     if (Players[entry.PlayerId] > CustomGameOptions.MinAmountOfTimeInBug)
                     {
-                        foreach (Operative t in Role.GetRoles(RoleEnum.Operative))
+                        foreach (Operative t in Role.GetRoles(RoleEnum.Operative).Cast<Operative>())
                         {
-                            RoleEnum playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                            var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
 
                             if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                 t.BuggedPlayers.Add(playerrole);
                         }
 
-                        foreach (Retributionist t in Role.GetRoles(RoleEnum.Retributionist))
+                        foreach (Retributionist t in Role.GetRoles(RoleEnum.Retributionist).Cast<Retributionist>())
                         {
                             if (t.RevivedRole?.RoleType != RoleEnum.Operative)
                                 continue;
 
-                            RoleEnum playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                            var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
 
                             if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                 t.BuggedPlayers.Add(playerrole);

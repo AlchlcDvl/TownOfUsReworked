@@ -9,7 +9,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformClean
+    public static class PerformClean
     {
         public static bool Prefix(AbilityButton __instance)
         {

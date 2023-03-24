@@ -9,7 +9,7 @@ using Reactor.Networking.Extensions;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformDrag
+    public static class PerformDrag
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged())
                 {
                     if (position.y > -7f)
                         position.z = 0.0208f;

@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInfect
+    public static class PerformInfect
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer2.Write((byte)ActionsRPC.Infect);
@@ -36,10 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     role.InfectedPlayers.Add(role.ClosestPlayer.PlayerId);
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastInfected = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInfected.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

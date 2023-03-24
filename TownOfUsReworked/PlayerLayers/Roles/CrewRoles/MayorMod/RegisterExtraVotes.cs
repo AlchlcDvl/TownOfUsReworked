@@ -15,7 +15,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
     [HarmonyPatch(typeof(MeetingHud))]
-    public class RegisterExtraVotes
+    public static class RegisterExtraVotes
     {
         [HarmonyPatch(nameof(MeetingHud.Update))]
         public static void Postfix(MeetingHud __instance)
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         public static Dictionary<byte, int> CalculateAllVotes(MeetingHud __instance)
         {
             var dictionary = new Dictionary<byte, int>();
-            
+
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
                 var playerVoteArea = __instance.playerStates[i];
@@ -107,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
         [HarmonyPrefix]
         [HarmonyPatch( nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
-        public static void Prefix( MeetingHud __instance, [HarmonyArgument(0)] PlayerControl player)
+        public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
             if (AmongUsClient.Instance.AmHost && MeetingHud.Instance)
             {
@@ -195,8 +195,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
         public static class VotingComplete
         {
-            public static void Postfix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states, [HarmonyArgument(1)]
-                GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
+            public static void Postfix([HarmonyArgument(1)] GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
             {
                 var exiledString = exiled == null ? "null" : exiled.PlayerName;
                 Utils.LogSomething($"Exiled PlayerName = {exiledString}");

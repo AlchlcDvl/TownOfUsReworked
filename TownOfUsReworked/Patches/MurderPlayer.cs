@@ -1,6 +1,5 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Objects;
@@ -8,9 +7,9 @@ using TownOfUsReworked.Objects;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]
-    public class Murder
+    public static class Murder
     {
-        public static List<DeadPlayer> KilledPlayers = new List<DeadPlayer>();
+        public readonly static List<DeadPlayer> KilledPlayers = new();
 
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {

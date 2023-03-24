@@ -8,11 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MafiosoMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class Promote
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mafioso))
                 return;
-            
+
             var role = Role.GetRole<Mafioso>(PlayerControl.LocalPlayer);
 
             if (role.CanPromote && !role.Player.Data.IsDead)

@@ -5,7 +5,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
-    public class StopKill
+    public static class StopKill
     {
         public static void BreakShield(byte medicId, byte playerId, bool flag)
         {
@@ -14,7 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
             if ((PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded || CustomGameOptions.NotificationShield ==
                 NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
                 CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic)) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
+            {
                 Coroutines.Start(Utils.FlashCoroutine(role.Color));
+            }
 
             if (!flag)
                 return;
@@ -31,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                 }
             }
 
-            player.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
-            player.myRend().material.SetFloat("_Outline", 0f);
+            player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+            player.MyRend().material.SetFloat("_Outline", 0f);
         }
     }
 }

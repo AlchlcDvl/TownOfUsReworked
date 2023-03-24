@@ -2,7 +2,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Abilities.SnitchMod;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
@@ -11,7 +10,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformSteal
+    public static class PerformSteal
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -19,9 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 return true;
 
             var role = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
-            
+
             if (__instance == role.StealButton)
-            {                
+            {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
 
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     if (!(role.ClosestPlayer.Is(Faction.Intruder) || role.ClosestPlayer.Is(Faction.Syndicate) || role.ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
                         role.ClosestPlayer.Is(RoleAlignment.NeutralNeo) || role.ClosestPlayer.Is(RoleAlignment.NeutralPros) || role.ClosestPlayer.Is(RoleAlignment.CrewKill)))
@@ -47,12 +46,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         Steal(role, role.ClosestPlayer);
                     }
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastStolen = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastStolen.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastStolen.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
@@ -64,226 +63,117 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
         public static void Steal(Thief thiefRole, PlayerControl other)
         {
             var role = Role.GetRole(other);
-            var roleType = role.RoleType;
-            var ability = (Ability.GetAbility(other))?.AbilityType;
             var thief = thiefRole.Player;
-            Role newRole;
+            var target = other.GetTarget();
+            var leader = other.GetLeader();
 
-            switch (roleType)
+            Role newRole = role.RoleType switch
             {
-                case RoleEnum.Anarchist:
-                    newRole = new Anarchist(thief);
-                    break;
+                RoleEnum.Anarchist => new Anarchist(thief),
+                RoleEnum.Arsonist => new Arsonist(thief) { DousedPlayers = ((Arsonist)role).DousedPlayers },
+                RoleEnum.Blackmailer => new Blackmailer(thief),
+                RoleEnum.Bomber => new Bomber(thief),
+                RoleEnum.Camouflager => new Camouflager(thief),
+                RoleEnum.Concealer => new Concealer(thief),
+                RoleEnum.Consigliere => new Consigliere(thief) { Investigated = ((Consigliere)role).Investigated },
+                RoleEnum.Consort => new Consort(thief),
+                RoleEnum.Cryomaniac => new Cryomaniac(thief) { DousedPlayers = ((Cryomaniac)role).DousedPlayers },
+                RoleEnum.Disguiser => new Disguiser(thief),
+                RoleEnum.Dracula => new Dracula(thief) { Converted = ((Dracula)role).Converted },
+                RoleEnum.Framer => new Framer(thief),
+                RoleEnum.Glitch => new Glitch(thief),
+                RoleEnum.Godfather => new Godfather(thief),
+                RoleEnum.Gorgon => new Gorgon(thief),
+                RoleEnum.Grenadier => new Grenadier(thief),
+                RoleEnum.Impostor => new Impostor(thief),
+                RoleEnum.Juggernaut => new Juggernaut(thief) { JuggKills = ((Juggernaut)role).JuggKills },
+                RoleEnum.Mafioso => new Mafioso(thief) { Godfather = (Godfather)leader },
+                RoleEnum.Miner => new Miner(thief),
+                RoleEnum.Morphling => new Morphling(thief),
+                RoleEnum.Rebel => new Rebel(thief),
+                RoleEnum.Sidekick => new Sidekick(thief) { Rebel = (Rebel)leader },
+                RoleEnum.Shapeshifter => new Shapeshifter(thief),
+                RoleEnum.Murderer => new Murderer(thief),
+                RoleEnum.Plaguebearer => new Plaguebearer(thief) { InfectedPlayers = ((Plaguebearer)role).InfectedPlayers },
+                RoleEnum.Pestilence => new Pestilence(thief),
+                RoleEnum.SerialKiller => new SerialKiller(thief),
+                RoleEnum.Werewolf => new Werewolf(thief),
+                RoleEnum.Janitor => new Janitor(thief),
+                RoleEnum.Poisoner => new Poisoner(thief),
+                RoleEnum.Teleporter => new Teleporter(thief),
+                RoleEnum.TimeMaster => new TimeMaster(thief),
+                RoleEnum.Undertaker => new Undertaker(thief),
+                RoleEnum.VampireHunter => new VampireHunter(thief),
+                RoleEnum.Veteran => new Veteran(thief),
+                RoleEnum.Vigilante => new Vigilante(thief),
+                RoleEnum.Warper => new Warper(thief),
+                RoleEnum.Wraith => new Wraith(thief),
+                RoleEnum.BountyHunter => new BountyHunter(thief) { TargetPlayer = target },
+                RoleEnum.Jackal => new Jackal(thief)
+                {
+                    Recruited = ((Jackal)role).Recruited,
+                    EvilRecruit = ((Jackal)role).EvilRecruit,
+                    GoodRecruit = ((Jackal)role).GoodRecruit,
+                    BackupRecruit = ((Jackal)role).BackupRecruit
+                },
+                RoleEnum.Necromancer => new Necromancer(thief)
+                {
+                    Resurrected = ((Necromancer)role).Resurrected,
+                    KillCount = ((Necromancer)role).KillCount,
+                    ResurrectedCount = ((Necromancer)role).ResurrectedCount
+                },
+                RoleEnum.Whisperer => new Whisperer(thief)
+                {
+                    Persuaded = ((Whisperer)role).Persuaded,
+                    WhisperCount = ((Whisperer)role).WhisperCount,
+                    WhisperConversion = ((Whisperer)role).WhisperConversion
+                },
+                RoleEnum.Betrayer => new Betrayer(thief),
+                RoleEnum.Ambusher => new Ambusher(thief),
+                RoleEnum.Beamer => new Beamer(thief),
+                RoleEnum.Crusader => new Crusader(thief),
+                RoleEnum.Drunkard => new Drunkard(thief),
+                _ => new Thief(thief),
+            };
 
-                case RoleEnum.Arsonist:
-                    newRole = new Arsonist(thief);
-                    break;
+            newRole.RoleUpdate(thiefRole);
 
-                case RoleEnum.Blackmailer:
-                    newRole = new Blackmailer(thief);
-                    break;
-
-                case RoleEnum.Bomber:
-                    newRole = new Bomber(thief);
-                    break;
-
-                case RoleEnum.Camouflager:
-                    newRole = new Camouflager(thief);
-                    break;
-
-                case RoleEnum.Concealer:
-                    newRole = new Concealer(thief);
-                    break;
-
-                case RoleEnum.Consigliere:
-                    newRole = new Consigliere(thief);
-                    break;
-
-                case RoleEnum.Consort:
-                    newRole = new Consort(thief);
-                    break;
-
-                case RoleEnum.Cryomaniac:
-                    newRole = new Cryomaniac(thief);
-                    break;
-
-                case RoleEnum.Disguiser:
-                    newRole = new Disguiser(thief);
-                    break;
-
-                case RoleEnum.Dracula:
-                    newRole = new Dracula(thief);
-                    break;
-
-                case RoleEnum.Framer:
-                    newRole = new Framer(thief);
-                    break;
-
-                case RoleEnum.Glitch:
-                    newRole = new Glitch(thief);
-                    break;
-
-                case RoleEnum.Godfather:
-                    newRole = new Godfather(thief);
-                    break;
-
-                case RoleEnum.Gorgon:
-                    newRole = new Gorgon(thief);
-                    break;
-
-                case RoleEnum.Grenadier:
-                    newRole = new Grenadier(thief);
-                    break;
-
-                case RoleEnum.Impostor:
-                    newRole = new Impostor(thief);
-                    break;
-
-                case RoleEnum.Juggernaut:
-                    newRole = new Juggernaut(thief);
-                    break;
-
-                case RoleEnum.Mafioso:
-                    newRole = new Mafioso(thief);
-                    break;
-
-                case RoleEnum.Miner:
-                    newRole = new Miner(thief);
-                    break;
-
-                case RoleEnum.Morphling:
-                    newRole = new Morphling(thief);
-                    break;
-
-                case RoleEnum.Rebel:
-                    newRole = new Rebel(thief);
-                    break;
-
-                case RoleEnum.Sidekick:
-                    newRole = new Sidekick(thief);
-                    break;
-
-                case RoleEnum.Shapeshifter:
-                    newRole = new Shapeshifter(thief);
-                    break;
-
-                case RoleEnum.Murderer:
-                    newRole = new Murderer(thief);
-                    break;
-
-                case RoleEnum.Plaguebearer:
-                    newRole = new Plaguebearer(thief);
-                    break;
-
-                case RoleEnum.Pestilence:
-                    newRole = new Pestilence(thief);
-                    break;
-
-                case RoleEnum.SerialKiller:
-                    newRole = new SerialKiller(thief);
-                    break;
-
-                case RoleEnum.Werewolf:
-                    newRole = new Werewolf(thief);
-                    break;
-
-                case RoleEnum.Janitor:
-                    newRole = new Janitor(thief);
-                    break;
-
-                case RoleEnum.Poisoner:
-                    newRole = new Poisoner(thief);
-                    break;
-
-                case RoleEnum.Teleporter:
-                    newRole = new Teleporter(thief);
-                    break;
-
-                case RoleEnum.TimeMaster:
-                    newRole = new TimeMaster(thief);
-                    break;
-
-                case RoleEnum.Thief:
-                    newRole = new Thief(thief);
-                    break;
-
-                case RoleEnum.Undertaker:
-                    newRole = new Undertaker(thief);
-                    break;
-
-                case RoleEnum.VampireHunter:
-                    newRole = new VampireHunter(thief);
-                    break;
-
-                case RoleEnum.Veteran:
-                    newRole = new Veteran(thief);
-                    break;
-
-                case RoleEnum.Vigilante:
-                    newRole = new Vigilante(thief);
-                    break;
-
-                case RoleEnum.Warper:
-                    newRole = new Warper(thief);
-                    break;
-
-                case RoleEnum.Wraith:
-                    newRole = new Wraith(thief);
-                    break;
-                
-                default:
-                    newRole = new Thief(thief);
-                    break;
+            if (other.Is(RoleEnum.Dracula))
+                ((Dracula)role).Converted.Clear();
+            else if (other.Is(RoleEnum.Whisperer))
+                ((Whisperer)role).Persuaded.Clear();
+            else if (other.Is(RoleEnum.Necromancer))
+                ((Necromancer)role).Resurrected.Clear();
+            else if (other.Is(RoleEnum.Jackal))
+            {
+                ((Jackal)role).Recruited.Clear();
+                ((Jackal)role).EvilRecruit = null;
+                ((Jackal)role).GoodRecruit = null;
+                ((Jackal)role).BackupRecruit = null;
             }
-            
-            newRole.RoleHistory.Add(thiefRole);
-            newRole.RoleHistory.AddRange(thiefRole.RoleHistory);
-            thief.RegenTask();
 
-            if (other.IsRecruit())
-                newRole.IsRecruit = true;
-            
+            if (thief.Is(Faction.Intruder) || (thief.Is(Faction.Syndicate) && CustomGameOptions.AltImps))
+                thief.Data.Role.TeamType = RoleTeamTypes.Impostor;
+
             if (CustomGameOptions.ThiefSteals)
             {
                 var newRole2 = new Thief(other);
-                newRole2.RoleHistory.Add(role);
-                newRole2.RoleHistory.AddRange(role.RoleHistory);
+                newRole2.RoleUpdate(role);
 
                 if (PlayerControl.LocalPlayer == other && other.Is(Faction.Intruder))
                 {
                     HudManager.Instance.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
                 }
-                
-                if (other.IsRecruit())
-                    newRole2.IsRecruit = true;
-
-                other.RegenTask();
             }
 
-            if (ability == AbilityEnum.Snitch)
-            {
-                var snitchRole = Ability.GetAbility<Snitch>(thief);
-                snitchRole.ImpArrows.DestroyAll();
-                snitchRole.SnitchArrows.Values.DestroyAll();
-                snitchRole.SnitchArrows.Clear();
-                CompleteTask.Postfix(thief);
-
-                if (other.AmOwner)
-                {
-                    foreach (var player in PlayerControl.AllPlayerControls)
-                        player.NameText().color = Color.white;
-                }
-            }
-
-            if (thief.Is(Faction.Intruder) && (!thief.Is(ObjectifierEnum.Traitor) || CustomGameOptions.SnitchSeesTraitor))
+            if (thief.Is(Faction.Intruder) || thief.Is(Faction.Syndicate))
             {
                 foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
                 {
                     var snitchRole = (Snitch)snitch;
-                    var role3 = Role.GetRole(snitchRole.Player);
 
-                    if (role3.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
+                    if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -294,7 +184,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         gameObj.layer = 5;
                         snitchRole.SnitchArrows.Add(thief.PlayerId, arrow);
                     }
-                    else if (role3.TasksDone && PlayerControl.LocalPlayer == thief)
+                    else if (snitchRole.TasksDone && PlayerControl.LocalPlayer == thief)
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();

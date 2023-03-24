@@ -8,7 +8,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformCrusade
+    public static class PerformCrusade
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestCrusade);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.TimeRemaining = CustomGameOptions.AmbushDuration;
                     role.CrusadedPlayer = role.ClosestCrusade;
@@ -38,9 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
                     writer.Write(role.CrusadedPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastCrusaded = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

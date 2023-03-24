@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace TownOfUsReworked.MCI
 {
-    public class MCIUtils
+    public static class MCIUtils
     {
         public const int MaxID = 100;
 
@@ -12,7 +12,7 @@ namespace TownOfUsReworked.MCI
         {
             for (int i = 2; i < MaxID; i++)
             {
-                if (!InstanceControl.clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
+                if (!InstanceControl.Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
                     return i;
             }
 
@@ -23,9 +23,9 @@ namespace TownOfUsReworked.MCI
         {
             if (GameData.Instance.AllPlayers.Count == 1)
             {
-                InstanceControl.clients.Clear();
+                InstanceControl.Clients.Clear();
                 InstanceControl.PlayerIdClientId.Clear();
-            } 
+            }
         }
 
         public static PlayerControl CreatePlayerInstance()
@@ -36,31 +36,26 @@ namespace TownOfUsReworked.MCI
                 PlatformName = "Robot"
             };
 
-            int sampleId = -1;
-            var name = "Robot";
-
-            if (sampleId == -1)
-                sampleId = AvailableId();
-
-            var sampleC = new ClientData(sampleId, name + $"-{sampleId}", samplePSD, 5, "", "");
+            var sampleId = AvailableId();
+            var sampleC = new ClientData(sampleId, $"Robot-{sampleId}", samplePSD, 5, "", "");
 
             AmongUsClient.Instance.CreatePlayer(sampleC);
             AmongUsClient.Instance.allClients.Add(sampleC);
 
-            sampleC.Character.SetName(name + $" {sampleC.Character.PlayerId}");
+            sampleC.Character.SetName($"Robot {sampleC.Character.PlayerId}");
             sampleC.Character.SetSkin(HatManager.Instance.allSkins[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-            sampleC.Character.SetHat(HatManager.Instance.allHats[UnityEngine.Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            sampleC.Character.SetHat(HatManager.Instance.allHats[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
             sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
 
-            InstanceControl.clients.Add(sampleId, sampleC);
+            InstanceControl.Clients.Add(sampleId, sampleC);
             InstanceControl.PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
             return sampleC.Character;
         }
 
         public static void RemovePlayer(byte id)
         {
-            int clientId = InstanceControl.clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
-            InstanceControl.clients.Remove(clientId, out ClientData outputData);
+            int clientId = InstanceControl.Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
+            InstanceControl.Clients.Remove(clientId, out ClientData outputData);
             InstanceControl.PlayerIdClientId.Remove(id);
             AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
             AmongUsClient.Instance.allClients.Remove(outputData);
@@ -71,8 +66,8 @@ namespace TownOfUsReworked.MCI
             foreach (byte playerId in InstanceControl.PlayerIdClientId.Keys)
                 RemovePlayer(playerId);
 
-            InstanceControl.MCIActive = false;
             InstanceControl.SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
+            TownOfUsReworked.MCIActive = false;
         }
     }
 }

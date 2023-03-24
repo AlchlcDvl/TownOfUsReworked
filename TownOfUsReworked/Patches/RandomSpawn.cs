@@ -7,20 +7,20 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.Patches
 {
     //Thanks to The Other Roles: Community Edition for this code
-    class RandomSpawns
+    public static class RandomSpawns
     {
-        public static System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
+        private readonly static System.Random rnd = new((int)DateTime.Now.Ticks);
 
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
         static class IntroCutsceneOnDestroyPatch
         {
-            public static void Prefix(IntroCutscene __instance) => RandomSpawn();
+            public static void Prefix() => RandomSpawn();
         }
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
         static class BaseExileControllerPatch
         {
-            public static void Postfix(ExileController __instance) => RandomSpawn();
+            public static void Postfix() => RandomSpawn();
         }
 
         public static void RandomSpawn()
@@ -193,9 +193,7 @@ namespace TownOfUsReworked.Patches
                 if (player.Data.Disconnected || player.Data.IsDead)
                     continue;
 
-                var map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
-
-                switch (map)
+                switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                 {
                     case 0:
                         player.transform.position = skeldSpawn[rnd.Next(skeldSpawn.Count)];

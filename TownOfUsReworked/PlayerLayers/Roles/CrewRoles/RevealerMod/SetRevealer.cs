@@ -7,7 +7,6 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Patches;
-using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
@@ -16,19 +15,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         public static void Postfix(AirshipExileController __instance) => SetRevealer.ExileControllerPostfix(__instance);
     }
-    
+
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetRevealer
+    public static class SetRevealer
     {
+        #pragma warning disable
         public static PlayerControl WillBeRevealer;
+        #pragma warning restore
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBeRevealer != null && !WillBeRevealer.Data.IsDead && exiled.Is(Faction.Crew))
+            if (WillBeRevealer?.Data.IsDead == false && exiled.Is(Faction.Crew))
                 WillBeRevealer = exiled;
-            
+
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
 
@@ -86,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     var normalPlayerTask = task.Cast<NormalPlayerTask>();
 
                     var updateArrow = normalPlayerTask.taskStep > 0;
-                    
+
                     normalPlayerTask.taskStep = 0;
                     normalPlayerTask.Initialize();
 
@@ -104,11 +105,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     if ((normalPlayerTask.TaskType == TaskTypes.EmptyGarbage || normalPlayerTask.TaskType == TaskTypes.EmptyChute) &&
                         (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3 ||
                         GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4))
+                    {
                         normalPlayerTask.taskStep = 1;
+                    }
 
                     if (updateArrow)
                         normalPlayerTask.UpdateArrow();
-                    
+
                     var taskInfo = player.Data.FindTaskById(task.Id);
                     taskInfo.Complete = false;
                 }

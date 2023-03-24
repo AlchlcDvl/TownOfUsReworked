@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
     [HarmonyPatch(typeof(PlayerVoteArea))]
-    public class AllowExtraVotes
+    public static class AllowExtraVotes
     {
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]
         public static class Select

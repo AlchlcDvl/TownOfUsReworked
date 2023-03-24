@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            return player == null || player.Data.IsDead || player.Data.Disconnected;
+            return player?.Data.IsDead != false || player.Data.Disconnected;
         }
 
         public static void GenButton(Guesser role, PlayerVoteArea voteArea)
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
             var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var parent = confirmButton.transform.parent.parent;
-            
+
             var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
             voteArea.NameText.transform.localPosition = new Vector3(0.55f, 0.12f, -0.1f);
             nameText.transform.localPosition = new Vector3(0.55f, -0.12f, -0.1f);

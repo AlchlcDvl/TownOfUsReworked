@@ -4,34 +4,23 @@ using HarmonyLib;
 using UnityEngine;
 using Reactor.Utilities.Attributes;
 using Il2CppInterop.Runtime.Attributes;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
     [RegisterInIl2Cpp]
-    class Tasks : MonoBehaviour
+    public class Tasks : MonoBehaviour
     {
         public Tasks(IntPtr ptr) : base(ptr) { }
 
-        public static List<GameObject> AllCustomPlateform = new List<GameObject>();
-        public static Tasks NearestTask = null;
-        private SpriteRenderer renderer;
-        private BoxCollider2D collider;
-        public float UsableDistance = 1f;
+        public readonly static List<GameObject> AllCustomPlateform = new();
         public byte Id;
         public Action OnClick;
 
-        private void Awake()
-        {
-            renderer = gameObject.AddComponent<SpriteRenderer>();
-            renderer.material = new Material(Shader.Find("Sprites/Outline"));
-            renderer.sprite = AssetManager.Task;
-            SetOutline(false);
-            collider = gameObject.AddComponent<BoxCollider2D>();
-            collider.isTrigger = false;
-            collider.size /= 4f;
-            collider.edgeRadius = 0.1f;
-        }
+        #pragma warning disable
+        public static Tasks NearestTask;
+        private readonly SpriteRenderer renderer = null;
+        #pragma warning restore
 
         [HideFromIl2Cpp]
         public float CanUse(GameData.PlayerInfo PC, out bool CanUse)
@@ -44,13 +33,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
             if (CanUse)
             {
                 Distance = Vector2.Distance(truePosition, transform.position);
-                CanUse &= Distance <= UsableDistance;
+                CanUse &= Distance <= CustomGameOptions.InteractionDistance;
             }
 
             return Distance;
         }
 
-        public void Use(PlayerControl LocalPlayer) => OnClick();
+        public void Use() => OnClick();
 
         [HideFromIl2Cpp]
         public void SetOutline(bool On)
@@ -65,7 +54,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         public static void CreateThisTask(Vector3 Position, Vector3 Rotation, Action OnClick)
         {
-            var CallPlateform = new GameObject("Call Plateform");
+            var CallPlateform = new GameObject("CallPlateform");
             CallPlateform.transform.position = Position;
             CallPlateform.transform.localRotation = Quaternion.Euler(Rotation);
             CallPlateform.transform.localScale = new Vector3(1f, 1f, 2f);
@@ -91,38 +80,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 {
                     var Distance = component.CanUse(Player.Data, out bool CanUse);
 
-                    if (CanUse && Distance < component.UsableDistance)
+                    if (CanUse && Distance <= CustomGameOptions.InteractionDistance)
                     {
                         NearestTask = component;
                         component.SetOutline(true);
                     }
                 }
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-    public static class ResetUseButton
-    {
-        public static void Prefix()
-        {
-            Tasks.AllCustomPlateform.Clear();
-            Tasks.NearestTask = null;
-        }
-    }
-
-    [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
-    public static class UseButtonOnClickPatch
-    {
-        public static bool Prefix(UseButton __instance)
-        {
-            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null)
-            {
-                Tasks.NearestTask.Use(PlayerControl.LocalPlayer);
-                return false;
-            }
-
-            return true;
         }
     }
 

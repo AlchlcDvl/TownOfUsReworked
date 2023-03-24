@@ -11,14 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Syndicate && Role.SyndicateWin);
+            var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate && Role.SyndicateWin);
 
             if (role == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = role.FactionColor;

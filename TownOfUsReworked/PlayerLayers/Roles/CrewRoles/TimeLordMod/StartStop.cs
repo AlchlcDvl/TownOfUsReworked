@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
-    public class StartStop
+    [HarmonyPatch]
+    public static class StartStop
     {
-        public static Color oldColor;
+        private static Color oldColor;
 
         public static void StartRewind(TimeLord role)
         {

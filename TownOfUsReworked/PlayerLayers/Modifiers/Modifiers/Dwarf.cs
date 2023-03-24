@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
-            appearance = Player.GetDefaultAppearance();
+            appearance = Utils.GetDefaultAppearance();
             appearance.SpeedFactor = (Player.Data.IsDead ? CustomGameOptions.GhostSpeed : CustomGameOptions.PlayerSpeed) * CustomGameOptions.DwarfSpeed;
             appearance.SizeFactor = new Vector3(CustomGameOptions.DwarfScale, CustomGameOptions.DwarfScale, 1f);
             return true;

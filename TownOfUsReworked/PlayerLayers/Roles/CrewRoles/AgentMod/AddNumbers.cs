@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddNumbers
+    public static class AddNumbers
     {
         public static void GenNumber(Agent role, PlayerVoteArea voteArea)
         {

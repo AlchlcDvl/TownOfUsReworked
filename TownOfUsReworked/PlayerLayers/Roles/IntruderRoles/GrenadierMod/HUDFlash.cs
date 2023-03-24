@@ -7,9 +7,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDFlash
+    public static class HUDFlash
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Grenadier))
                 return;

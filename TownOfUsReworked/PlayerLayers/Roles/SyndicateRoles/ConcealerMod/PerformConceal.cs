@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformConceal
+    public static class PerformConceal
     {
         public static bool Prefix(AbilityButton __instance)
         {

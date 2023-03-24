@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Enums
 {
-    public enum CustomPlayerOutfitType 
+    public enum CustomPlayerOutfitType
     {
         Default,
         Shapeshifted,

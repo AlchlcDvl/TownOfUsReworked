@@ -6,9 +6,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class Betray
+    public static class Betray
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Traitor))
                 return;

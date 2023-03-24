@@ -26,7 +26,7 @@ namespace TownOfUsReworked.Objects
             if (Transform == null)
                 return;
 
-            Players = Utils.GetClosestPlayers(Transform.position, (CustomGameOptions.BombRange + (Role.SyndicateHasChaosDrive ? CustomGameOptions.ChaosDriveBombRange : 0f)));
+            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Role.SyndicateHasChaosDrive ? CustomGameOptions.ChaosDriveBombRange : 0f));
         }
     }
 }

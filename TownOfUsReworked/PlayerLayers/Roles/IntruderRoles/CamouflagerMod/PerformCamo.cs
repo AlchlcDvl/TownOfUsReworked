@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformCamo
+    public static class PerformCamo
     {
         public static bool Prefix(AbilityButton __instance)
         {

@@ -10,7 +10,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         public static void GenButton(Retributionist role, int index, bool canRevive)
         {
@@ -103,11 +103,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         }
 
                         if (player.Data.IsDead && !player.Data.Disconnected && (revivedRole == RoleEnum.Detective || revivedRole == RoleEnum.Seer || revivedRole == RoleEnum.Mystic ||
-                            revivedRole == RoleEnum.Agent || revivedRole == RoleEnum.Tracker || revivedRole == RoleEnum.Medic || revivedRole == RoleEnum.Sheriff || 
+                            revivedRole == RoleEnum.Agent || revivedRole == RoleEnum.Tracker || revivedRole == RoleEnum.Medic || revivedRole == RoleEnum.Sheriff ||
                             revivedRole == RoleEnum.Veteran || revivedRole == RoleEnum.Altruist || revivedRole == RoleEnum.Engineer || revivedRole == RoleEnum.Vigilante ||
                             revivedRole == RoleEnum.Medium || revivedRole == RoleEnum.Operative || revivedRole == RoleEnum.Inspector || revivedRole == RoleEnum.Chameleon ||
                             revivedRole == RoleEnum.Coroner || revivedRole == RoleEnum.VampireHunter))
+                        {
                             revivable = true;
+                        }
 
                         if (retRole.Used.Contains(player.PlayerId))
                             revivable = false;

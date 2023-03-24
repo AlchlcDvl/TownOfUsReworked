@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StartMeetingPatch
+    public static class StartMeetingPatch
     {
         public static void Prefix()
         {

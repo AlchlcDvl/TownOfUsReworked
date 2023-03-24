@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Reactor.Utilities.Extensions;
@@ -8,12 +7,11 @@ namespace TownOfUsReworked.Cosmetics
 {
     public static class Loader
     {
-        private static string json = "metadata.json";
-        public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
+        private const string json = "metadata.json";
 
         public static HatMetadataJson LoadHatJson()
         {
-            var stream = Assembly.GetManifestResourceStream($"{TownOfUsReworked.Hats}{json}");
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream(TownOfUsReworked.Hats + json);
 
             return JsonSerializer.Deserialize<HatMetadataJson>(Encoding.UTF8.GetString(stream.ReadFully()), new JsonSerializerOptions
             {
@@ -25,14 +23,14 @@ namespace TownOfUsReworked.Cosmetics
         public static List<HatMetadataElement> LoadCustomHatData()
         {
             var json = LoadHatJson();
-            List<HatMetadataElement> hats = new List<HatMetadataElement>();
+            List<HatMetadataElement> hats = new();
             hats.AddRange(json.Credits);
             return hats;
         }
 
         public static NameplateMetadataJson LoadNameplateJson()
         {
-            var stream = Assembly.GetManifestResourceStream($"{TownOfUsReworked.Nameplates}{json}");
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream(TownOfUsReworked.Nameplates + json);
 
             return JsonSerializer.Deserialize<NameplateMetadataJson>(Encoding.UTF8.GetString(stream.ReadFully()), new JsonSerializerOptions
             {
@@ -44,14 +42,14 @@ namespace TownOfUsReworked.Cosmetics
         public static List<NameplateMetadataElement> LoadCustomNameplateData()
         {
             var json = LoadNameplateJson();
-            List<NameplateMetadataElement> nameplates = new List<NameplateMetadataElement>();
+            List<NameplateMetadataElement> nameplates = new();
             nameplates.AddRange(json.Credits);
             return nameplates;
         }
 
         public static VisorMetadataJson LoadVisorJson()
         {
-            var stream = Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{json}");
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream(TownOfUsReworked.Visors + json);
 
             return JsonSerializer.Deserialize<VisorMetadataJson>(Encoding.UTF8.GetString(stream.ReadFully()), new JsonSerializerOptions
             {
@@ -63,7 +61,7 @@ namespace TownOfUsReworked.Cosmetics
         public static List<VisorMetadataElement> LoadCustomVisorData()
         {
             var json = LoadVisorJson();
-            List<VisorMetadataElement> visors = new List<VisorMetadataElement>();
+            List<VisorMetadataElement> visors = new();
             visors.AddRange(json.Credits);
             return visors;
         }

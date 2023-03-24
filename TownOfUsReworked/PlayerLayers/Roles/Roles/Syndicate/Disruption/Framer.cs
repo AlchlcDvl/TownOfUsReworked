@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Framer : SyndicateRole
     {
         public AbilityButton FrameButton;
-        public List<byte> Framed;
+        public List<byte> Framed = new();
         public DateTime LastFramed;
         public PlayerControl ClosestFrame;
 
@@ -24,27 +24,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
-            Framed = new List<byte>();
+            Framed = new();
         }
 
         public float FrameTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFramed;
+            var timespan = utcNow - LastFramed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.FrameCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Frame(PlayerControl player)
         {
             if (player.Is(Faction.Syndicate) || Framed.Contains(player.PlayerId))
                 return;
-            
+
             Framed.Add(player.PlayerId);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Frame);

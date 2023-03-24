@@ -30,11 +30,13 @@ namespace TownOfUsReworked.CrowdedMod.Components
                     var relativeIndex = i % MaxPerPage;
                     var row = relativeIndex / 3;
                     var buttonTransform = panel.transform;
-                    buttonTransform.localPosition = new Vector3(shapeshifterMinigame.XStart + shapeshifterMinigame.XOffset * (relativeIndex % 3), shapeshifterMinigame.YStart +
-                        shapeshifterMinigame.YOffset * row, buttonTransform.localPosition.z);
+                    buttonTransform.localPosition = new Vector3(shapeshifterMinigame.XStart + (shapeshifterMinigame.XOffset * (relativeIndex % 3)), shapeshifterMinigame.YStart + (row *
+                        shapeshifterMinigame.YOffset), buttonTransform.localPosition.z);
                 }
                 else
+                {
                     panel.gameObject.SetActive(false);
+                }
 
                 i++;
             }

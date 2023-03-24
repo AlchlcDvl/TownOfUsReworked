@@ -14,12 +14,12 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomNestedOption : CustomOption
     {
-        private List<OptionBehaviour> OldButtons = new List<OptionBehaviour>();
-        public List<CustomOption> InternalOptions = new List<CustomOption>();
-        public static List<CustomOption> AllInternalOptions = new List<CustomOption>();
-        public static List<CustomButtonOption> AllCancelButtons = new List<CustomButtonOption>();
-        private CustomButtonOption CancelButton;
-        private CustomHeaderOption Header;
+        private List<OptionBehaviour> OldButtons = new();
+        public List<CustomOption> InternalOptions = new();
+        public readonly static List<CustomOption> AllInternalOptions = new();
+        public readonly static List<CustomButtonOption> AllCancelButtons = new();
+        private readonly CustomButtonOption CancelButton;
+        private readonly CustomHeaderOption Header;
 
         protected internal CustomNestedOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Nested, 0)
         {
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.CustomOptions
                 option.gameObject.SetActive(false);
 
             foreach (var option in options)
-                option.transform.localPosition = new Vector3(x, y - i++ * 0.5f, z);
+                option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
 
             __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
         }

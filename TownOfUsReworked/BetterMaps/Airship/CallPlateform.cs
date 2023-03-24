@@ -11,10 +11,11 @@ namespace TownOfUsReworked.BetterMaps.Airship
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
     public static class CallPlateform
     {
-        public static bool PlateformIsUsed = false;
-        public static PlatformConsole PlateformConsole = Object.FindObjectOfType<PlatformConsole>();
+        #pragma warning disable CA2211
+        public static bool PlateformIsUsed;
+        #pragma warning restore CA2211
 
-        public static void Postfix(AirshipStatus __instance)
+        public static void Postfix()
         {
             Tasks.AllCustomPlateform.Clear();
             Tasks.NearestTask = null;
@@ -57,7 +58,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             PlateformIsUsed = true;
             Plateform.IsLeft = isLeft;
-            Plateform.transform.localPosition = (Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition);
+            Plateform.transform.localPosition = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
             Plateform.IsDirty = true;
 
             var sourcePos = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
@@ -69,8 +70,6 @@ namespace TownOfUsReworked.BetterMaps.Airship
             Plateform.IsLeft = !Plateform.IsLeft;
             yield return Effects.Wait(0.1f);
             PlateformIsUsed = false;
-
-            yield break;
         }
     }
 
@@ -82,8 +81,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             var num = float.MaxValue;
             var @object = pc.Object;
-            couldUse = (!CallPlateform.PlateformIsUsed && !pc.IsDead && @object.CanMove && !__instance.Platform.InUse && Vector2.Distance(__instance.Platform.transform.position,
-                __instance.transform.position) < 2f);
+            couldUse = !pc.IsDead && @object.CanMove && !__instance.Platform.InUse && Vector2.Distance(__instance.Platform.transform.position, __instance.transform.position) < 2f;
             canUse = couldUse;
 
             if (canUse)
@@ -91,7 +89,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 var truePosition = @object.GetTruePosition();
                 var position = __instance.transform.position;
                 num = Vector2.Distance(truePosition, position);
-                canUse &= (num <= __instance.UsableDistance && !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShipOnlyMask, false));
+                canUse &= num <= __instance.UsableDistance && !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShipOnlyMask, false);
             }
 
             __result = num;

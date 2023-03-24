@@ -9,21 +9,16 @@ namespace TownOfUsReworked.Classes
     {
         private struct Il2CppListStruct
         {
-            #pragma warning disable CS0169
-            private IntPtr _unusedPtr1;
-            private IntPtr _unusedPtr2;
-            #pragma warning restore CS0169
-
             #pragma warning disable CS0649
             public IntPtr _items;
             public int _size;
             #pragma warning restore CS0649
         }
-        
+
         private static readonly int _elemSize;
         private static readonly int _offset;
-        private static Func<IntPtr, T> _objFactory;
-        
+        private readonly static Func<IntPtr, T> _objFactory;
+
         static Il2CppListEnumerable()
         {
             _elemSize = IntPtr.Size;
@@ -59,11 +54,13 @@ namespace TownOfUsReworked.Classes
         }
 
         public void Reset() => _index = -1;
-        
+
         public System.Collections.Generic.IEnumerator<T> GetEnumerator() => this;
 
         IEnumerator IEnumerable.GetEnumerator() => this;
 
+        #pragma warning disable CA1816
         public void Dispose() {}
+        #pragma warning restore CA1816
     }
 }

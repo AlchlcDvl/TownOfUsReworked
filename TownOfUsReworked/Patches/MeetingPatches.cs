@@ -10,15 +10,17 @@ using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
 {
-    public class MeetingPatches
+    public static class MeetingPatches
     {
+        #pragma warning disable
         private static GameData.PlayerInfo voteTarget = null;
-        public static int MeetingCount = 0;
+        public static int MeetingCount;
+        #pragma warning restore
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        public class CamoMeetings
+        public static class CamoMeetings
         {
-            private static void Postfix(MeetingHud __instance)
+            public static void Postfix(MeetingHud __instance)
             {
                 if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
                 {
@@ -35,9 +37,9 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
-        public class PlayerStates
+        public static class PlayerStates
         {
-            private static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo)
+            public static void Postfix(PlayerVoteArea __instance)
             {
                 if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
                 {
@@ -61,9 +63,9 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
-        public class PlayerPreviews
+        public static class PlayerPreviews
         {
-            private static void Postfix(PlayerVoteArea __instance, [HarmonyArgument(0)] string plateId)
+            public static void Postfix(PlayerVoteArea __instance)
             {
                 if (CustomGameOptions.MeetingColourblind && CamouflageUnCamouflage.IsCamoed)
                 {
@@ -88,9 +90,9 @@ namespace TownOfUsReworked.Patches
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
         [HarmonyPriority(Priority.First)]
-        public class MeetingHUD_Start
+        public static class MeetingHUD_Start
         {
-            public static void Postfix(MeetingHud __instance)
+            public static void Postfix()
             {
                 foreach (var player in PlayerControl.AllPlayerControls)
                     player.MyPhysics.ResetAnimState();
@@ -103,9 +105,9 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
-        public class MeetingHud_Close
+        public static class MeetingHud_Close
         {
-            public static void Postfix(MeetingHud __instance)
+            public static void Postfix()
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -121,20 +123,22 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
-        class StartMeetingPatch
+        public static class StartMeetingPatch
         {
-            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) => voteTarget = meetingTarget;
+            public static void Prefix([HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) => voteTarget = meetingTarget;
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        class MeetingHudUpdatePatch
+        public static class MeetingHudUpdatePatch
         {
-            static void Postfix(MeetingHud __instance)
+            public static void Postfix(MeetingHud __instance)
             {
                 //Deactivate skip Button if skipping on emergency meetings is disabled 
                 if ((voteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) || (CustomGameOptions.SkipButtonDisable ==
                     DisableSkipButtonMeetings.Always))
+                {
                     __instance.SkipVoteButton.gameObject.SetActive(false);
+                }
             }
         }
     }

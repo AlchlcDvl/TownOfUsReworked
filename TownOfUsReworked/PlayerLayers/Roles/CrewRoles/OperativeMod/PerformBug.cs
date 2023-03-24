@@ -6,7 +6,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformBug
+    public static class PerformBug
     {
         public static bool Prefix(AbilityButton __instance)
         {

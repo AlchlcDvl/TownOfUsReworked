@@ -5,15 +5,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class VestUnvest
+    public static class VestUnvest
     {
-        [HarmonyPriority(Priority.Last)]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Survivor))
             {
                 var surv = (Survivor)role;
-                
+
                 if (surv.Vesting)
                     surv.Vest();
                 else if (surv.Enabled)

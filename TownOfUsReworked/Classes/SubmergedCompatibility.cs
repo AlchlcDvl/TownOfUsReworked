@@ -42,10 +42,12 @@ namespace TownOfUsReworked.Classes
                 if (!Loaded)
                     return null;
 
-                if (_submarineStatus is null || _submarineStatus.WasCollected || !_submarineStatus || _submarineStatus == null)
+                if (_submarineStatus?.WasCollected != false || !_submarineStatus || _submarineStatus == null)
                 {
-                    if (ShipStatus.Instance is null || ShipStatus.Instance.WasCollected || !ShipStatus.Instance || ShipStatus.Instance == null)
+                    if (ShipStatus.Instance?.WasCollected != false || !ShipStatus.Instance || ShipStatus.Instance == null)
+                    {
                         return _submarineStatus = null;
+                    }
                     else
                     {
                         if (ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE)
@@ -55,7 +57,9 @@ namespace TownOfUsReworked.Classes
                     }
                 }
                 else
+                {
                     return _submarineStatus;
+                }
             }
         }
 
@@ -83,9 +87,11 @@ namespace TownOfUsReworked.Classes
         private static Type Vent_MoveToVent_PatchType;
         private static FieldInfo InTransitionField;
 
+        #pragma warning disable
         private static Type CustomTaskTypesType;
         private static FieldInfo RetrieveOxigenMaskField;
         public static TaskTypes RetrieveOxygenMask;
+        #pragma warning restore
         private static Type SubmarineOxygenSystemType;
         private static FieldInfo SubmarineOxygenSystemInstanceField;
         private static MethodInfo RepairDamageMethod;
@@ -99,7 +105,7 @@ namespace TownOfUsReworked.Classes
         private static FieldInfo getSubElevatorSystem;
 
         private static Type SubmarineElevatorSystem;
-        private static FieldInfo UpperDeckIsTargetFloor; 
+        private static FieldInfo UpperDeckIsTargetFloor;
 
         private static FieldInfo SubmergedInstance;
         private static FieldInfo SubmergedElevators;
@@ -117,7 +123,7 @@ namespace TownOfUsReworked.Classes
             Assembly = Plugin!.GetType().Assembly;
             Types = AccessTools.GetTypesFromAssembly(Assembly);
 
-            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null,
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(Types, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null,
                 Array.Empty<object>());
 
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");
@@ -155,7 +161,7 @@ namespace TownOfUsReworked.Classes
             UpperDeckIsTargetFloor = AccessTools.Field(SubmarineElevatorSystem, "UpperDeckIsTargetFloor");
 
             //I tried patching normally but it would never work
-            Harmony _harmony = new Harmony("tou.submerged.patch");
+            Harmony _harmony = new("tou.submerged.patch");
             var exilerolechangePostfix = SymbolExtensions.GetMethodInfo(() => ExileRoleChangePostfix());
             _harmony.Patch(SubmergedExileWrapUpMethod, null, new HarmonyMethod(exilerolechangePostfix));
         }
@@ -165,7 +171,7 @@ namespace TownOfUsReworked.Classes
             if (!Loaded)
                 return;
 
-            if (!isSubmerged())
+            if (!IsSubmerged())
                 return;
 
             var elevator = GetPlayerElevator(player);
@@ -182,7 +188,7 @@ namespace TownOfUsReworked.Classes
 
         public static void MoveDeadPlayerElevator(PlayerControl player)
         {
-            if (!isSubmerged())
+            if (!IsSubmerged())
                 return;
 
             var elevator = GetPlayerElevator(player);
@@ -205,13 +211,10 @@ namespace TownOfUsReworked.Classes
 
         public static Tuple<bool, object> GetPlayerElevator(PlayerControl player)
         {
-            if (!isSubmerged())
+            if (!IsSubmerged())
                 return Tuple.Create(false, (object)null);
 
-            IList elevatorlist = Utils.CreateList(SubmarineElevator);
-            elevatorlist = (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null));
-
-            foreach (object elevator in elevatorlist)
+            foreach (object elevator in (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null)))
             {
                 if ((bool)GetInElevator.Invoke(elevator, new object[] { player }))
                     return Tuple.Create(true, elevator);
@@ -222,8 +225,8 @@ namespace TownOfUsReworked.Classes
 
         public static void ExileRoleChangePostfix()
         {
-            Coroutines.Start(waitMeeting(resetTimers));
-            Coroutines.Start(waitMeeting(GhostRoleBegin));
+            Coroutines.Start(WaitMeeting(ResetTimers));
+            Coroutines.Start(WaitMeeting(GhostRoleBegin));
 
             SetPhantom.ExileControllerPostfix(ExileController.Instance);
             SetRevealer.ExileControllerPostfix(ExileController.Instance);
@@ -231,7 +234,7 @@ namespace TownOfUsReworked.Classes
             SetBanshee.ExileControllerPostfix(ExileController.Instance);
         }
 
-        public static IEnumerator waitStart(Action next)
+        public static IEnumerator WaitStart(Action next)
         {
             while (HudManager.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
                 yield return null;
@@ -244,7 +247,7 @@ namespace TownOfUsReworked.Classes
             next();
         }
 
-        public static IEnumerator waitMeeting(Action next)
+        public static IEnumerator WaitMeeting(Action next)
         {
             while (!PlayerControl.LocalPlayer.moveable)
                 yield return null;
@@ -257,7 +260,7 @@ namespace TownOfUsReworked.Classes
             next();
         }
 
-        public static void resetTimers()
+        public static void ResetTimers()
         {
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
@@ -366,7 +369,7 @@ namespace TownOfUsReworked.Classes
                 {
                     if (!Role.GetRole<Phantom>(player).Caught)
                     {
-                        if (player.AmOwner) 
+                        if (player.AmOwner)
                             MoveDeadPlayerElevator(player);
                         else
                             player.Collider.enabled = false;
@@ -458,14 +461,13 @@ namespace TownOfUsReworked.Classes
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
-        public static bool getInTransition()
+        public static bool GetInTransition()
         {
             if (!Loaded)
                 return false;
 
             return (bool)InTransitionField.GetValue(null);
         }
-
 
         public static void RepairOxygen()
         {
@@ -479,7 +481,7 @@ namespace TownOfUsReworked.Classes
             } catch (System.NullReferenceException) {}
         }
 
-        public static bool isSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
+        public static bool IsSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
     }
 
     public class MissingSubmergedBehaviour : MonoBehaviour

@@ -27,18 +27,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.HasInformation;
             BlackmailedPlayer = null;
         }
-        
+
         public float BlackmailTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastBlackmailed;
+            var timespan = utcNow - LastBlackmailed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BlackmailCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

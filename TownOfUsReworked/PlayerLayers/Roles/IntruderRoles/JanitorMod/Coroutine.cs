@@ -1,17 +1,16 @@
 using System.Collections;
-using TownOfUsReworked.CustomOptions;
 using UnityEngine;
+using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
         private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
         private static readonly int BackColor = Shader.PropertyToID("_BackColor");
 
         public static IEnumerator CleanCoroutine(DeadBody body, Janitor role)
         {
-            role.Player.SetKillTimer(CustomGameOptions.JanitorCleanCd);
             var renderer = body.bodyRenderer;
             var backColor = renderer.material.GetColor(BackColor);
             var bodyColor = renderer.material.GetColor(BodyColor);
@@ -21,13 +20,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
             {
                 if (body == null)
                     yield break;
-                    
+
                 renderer.color = Color.Lerp(backColor, newColor, i / 60f);
                 renderer.color = Color.Lerp(bodyColor, newColor, i / 60f);
                 yield return null;
             }
 
-            Object.Destroy(body.gameObject);
+            UnityEngine.Object.Destroy(body.gameObject);
+            role.LastCleaned = DateTime.UtcNow;
         }
     }
 }

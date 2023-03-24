@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastRevealed;
-        public bool ConvertedDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None)) == 0;
+        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && !x.Is(SubFaction.None));
         public AbilityButton RevealButton;
 
         public Mystic(PlayerControl player) : base(player)
@@ -30,22 +30,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float RevealTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastRevealed;
+            var timespan = utcNow - LastRevealed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.RevealCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TurnSeer()
         {
-            var mystic = Role.GetRole<Mystic>(Player);
             var role = new Seer(Player);
-            role.RoleUpdate(mystic);
-            Player.RegenTask();
+            role.RoleUpdate(this);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));

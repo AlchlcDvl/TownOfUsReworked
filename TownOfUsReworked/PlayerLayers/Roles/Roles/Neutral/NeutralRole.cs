@@ -180,7 +180,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         SerialKillerWins = true;
                         break;
                 }
-                
+
                 if (CustomGameOptions.NoSolo == NoSolo.SameNKs)
                 {
                     foreach (var role in GetRoles(RoleType))
@@ -208,9 +208,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return false;
             }
 
-            var flag = RoleAlignment != RoleAlignment.NeutralKill && RoleAlignment != RoleAlignment.NeutralNeo && RoleType != RoleEnum.Pestilence && RoleType != RoleEnum.Betrayer ?
-                NotDefective : false;
-            return flag;
+            return RoleAlignment != RoleAlignment.NeutralKill && RoleAlignment != RoleAlignment.NeutralNeo && RoleType != RoleEnum.Pestilence && RoleType != RoleEnum.Betrayer &&
+                NotDefective;
         }
     }
 }

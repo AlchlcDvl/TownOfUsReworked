@@ -6,7 +6,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class ChaosDriveCount
+    public static class ChaosDriveCount
     {
         public static void Postfix()
         {

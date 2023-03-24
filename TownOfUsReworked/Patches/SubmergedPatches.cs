@@ -6,15 +6,15 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
-    public class SubmergedPatches
+    public static class SubmergedPatches
     {
         [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
         public static class SubmergedStartPatch
         {
-            public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
+            public static void Postfix()
             {
-                if (SubmergedCompatibility.isSubmerged())
-                    Coroutines.Start(SubmergedCompatibility.waitStart(SubmergedCompatibility.resetTimers));
+                if (SubmergedCompatibility.IsSubmerged())
+                    Coroutines.Start(SubmergedCompatibility.WaitStart(SubmergedCompatibility.ResetTimers));
             }
         }
 
@@ -23,36 +23,16 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(HudManager __instance)
             {
-                if (SubmergedCompatibility.isSubmerged())
+                if (SubmergedCompatibility.IsSubmerged())
                 {
                     if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                    {
-                        if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                        else
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
-                    }
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught);
                     else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
-                    {
-                        if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                        else 
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
-                    }
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught);
                     else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
-                    {
-                        if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                        else 
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
-                    }
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught);
                     else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
-                    {
-                        if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(false);
-                        else 
-                            __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(true);
-                    }
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught);
                 }
             }
         }

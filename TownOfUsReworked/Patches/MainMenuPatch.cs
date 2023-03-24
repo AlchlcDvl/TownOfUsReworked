@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
     {
         private static AnnouncementPopUp popUp;
 
-        static void Postfix(MainMenuManager __instance)
+        public static void Postfix(MainMenuManager __instance)
         {
             var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
 
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Patches
             if (InvButton == null)
                 return;
 
-            var discObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
+            var discObj = Object.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
             iconrenderer1.sprite = AssetManager.DiscordImage;
 
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.Patches
             button1.OnClick = new ButtonClickedEvent();
             button1.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/cd27aDQDY9")));
 
-            var announceObj = GameObject.Instantiate(InvButton, InvButton.transform.parent);
+            var announceObj = Object.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer2 = announceObj.GetComponent<SpriteRenderer>();
             iconrenderer2.sprite = AssetManager.UpdateImage;
 
@@ -54,15 +54,19 @@ namespace TownOfUsReworked.Patches
 
                 popUp = Object.Instantiate(Object.FindObjectOfType<AnnouncementPopUp>(true));
                 popUp.gameObject.SetActive(true);
-                var changesAnnouncement = new Assets.InnerNet.Announcement();
-                changesAnnouncement.Id = "tourewChanges";
-                changesAnnouncement.Language = 0;
-                changesAnnouncement.Number = 500;
-                changesAnnouncement.Title = "Town Of Us Reworked Changes";
-                changesAnnouncement.ShortTitle = "Changes";
-                changesAnnouncement.SubTitle = "no idea what im doing anymore lmao";
-                changesAnnouncement.PinState = false;
-                changesAnnouncement.Date = "03.03.2023";
+
+                var changesAnnouncement = new Assets.InnerNet.Announcement
+                {
+                    Id = "tourewChanges",
+                    Language = 0,
+                    Number = 500,
+                    Title = "Town Of Us Reworked Changes",
+                    ShortTitle = "Changes",
+                    SubTitle = "no idea what im doing anymore lmao",
+                    PinState = false,
+                    Date = "03.03.2023"
+                };
+
                 var changelog = Utils.CreateText("Changelog");
                 changesAnnouncement.Text = $"<size=60%>{changelog}</size>";
 

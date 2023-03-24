@@ -9,7 +9,7 @@ using Reactor.Utilities;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformRecruit
+    public static class PerformRecruit
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -25,10 +25,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             {
                 if (role.RecruitTimer() != 0f)
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, !role.ClosestPlayer.Is(SubFaction.None), role.ClosestPlayer.Is(SubFaction.None));
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     Recruit(role, role.ClosestPlayer);
                     var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBackupRecruit, SendOption.Reliable);
@@ -37,9 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer2);
                     return false;
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastRecruited = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

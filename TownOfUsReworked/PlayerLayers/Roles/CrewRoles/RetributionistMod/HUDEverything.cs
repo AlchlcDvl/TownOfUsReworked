@@ -9,9 +9,9 @@ using TownOfUsReworked.Patches;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDEverything
+    public static class HUDEverything
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist))
                 return;
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             if (role.RevivedRole == null)
                 return;
-            
+
             var copyRole = role.RevivedRole.RoleType;
 
             if (copyRole == RoleEnum.Altruist)
@@ -94,17 +94,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                             gameObj.layer = 5;
                             role.BodyArrows.Add(body.ParentId, arrow);
                         }
-                        
+
                         role.BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
                     }
                 }
-                else
+                else if (role.BodyArrows.Count != 0)
                 {
-                    if (role.BodyArrows.Count != 0)
-                    {
-                        role.BodyArrows.Values.DestroyAll();
-                        role.BodyArrows.Clear();
-                    }
+                    role.BodyArrows.Values.DestroyAll();
+                    role.BodyArrows.Clear();
                 }
             }
             else if (copyRole == RoleEnum.Medic)
@@ -161,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (role.AlertButton == null)
                     role.AlertButton = Utils.InstantiateButton();
 
-                role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", null, 
+                role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", null,
                     role.AlertButtonUsable, role.AlertButtonUsable && !role.OnAlert, role.OnAlert, role.AlertTimeRemaining, CustomGameOptions.AlertDuration, true, role.AlertUsesLeft);
             }
             else if (copyRole == RoleEnum.Vigilante)
@@ -183,7 +180,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
                     {
-                        if (role.MediatedPlayers.Keys.Contains(player.PlayerId))
+                        if (role.MediatedPlayers.ContainsKey(player.PlayerId))
                         {
                             role.MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
                             player.Visible = true;
@@ -199,7 +196,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                                     PlayerName = " "
                                 });
 
-                                PlayerMaterial.SetColors(Color.grey, player.myRend());
+                                PlayerMaterial.SetColors(Color.grey, player.MyRend());
                             }
                         }
                     }

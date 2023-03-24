@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
-using UnityEngine;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public abstract class Ability : PlayerLayer
     {
-        public static readonly Dictionary<byte, Ability> AbilityDictionary = new Dictionary<byte, Ability>();
-        public static IEnumerable<Ability> AllAbilities => AbilityDictionary.Values.ToList();
+        public static readonly Dictionary<byte, Ability> AbilityDictionary = new();
+        public static List<Ability> AllAbilities => AbilityDictionary.Values.ToList();
 
         protected Ability(PlayerControl player) : base(player)
         {
@@ -25,15 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = Colors.Ability;
         }
 
-        protected internal string TaskText;
-        protected internal AbilityEnum AbilityType;
-        protected internal bool Hidden = false;
+        protected internal string TaskText = "- None.";
+        protected internal AbilityEnum AbilityType = AbilityEnum.None;
+        protected internal bool Hidden;
 
         private bool Equals(Ability other) => Equals(Player, other.Player) && AbilityType == other.AbilityType;
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
 
             if (ReferenceEquals(this, obj))
@@ -47,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)AbilityType);
 
-        public static Ability GetAbility(PlayerControl player) => AllAbilities.FirstOrDefault(x => x.Player == player);
+        public static Ability GetAbility(PlayerControl player) => AllAbilities.Find(x => x.Player == player);
 
         public static T GetAbility<T>(PlayerControl player) where T : Ability => GetAbility(player) as T;
 
@@ -83,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public static T GenAbility<T>(Type type, PlayerControl player, int id)
         {
-            var ability = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var ability = (T)Activator.CreateInstance(type, new object[] { player });
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable);
             writer.Write(player.PlayerId);
             writer.Write(id);

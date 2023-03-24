@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StartMeetingPatch
+    public static class StartMeetingPatch
     {
-        public static int lettersGiven = 0;
-        public static bool lettersExhausted = false;
-        public static string roleName = "";
-        public static List<string> letters = new List<string>();
+        private static int lettersGiven;
+        private static bool lettersExhausted;
+        private static string roleName = "";
+        private readonly static List<string> letters = new();
 
         public static void Prefix()
         {
@@ -23,18 +23,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             var targetRole = Role.GetRole(role.TargetPlayer);
             var something = "";
             var newRoleName = targetRole.Name;
-            bool rolechanged = false;
+            var rolechanged = false;
 
             if (roleName != newRoleName && roleName != "")
             {
                 rolechanged = true;
                 roleName = newRoleName;
             }
-            else if (roleName == "")
+            else if (roleName?.Length == 0)
                 roleName = newRoleName;
 
             if (rolechanged)
+            {
                 something = "Your target's role changed!";
+                lettersGiven = 0;
+                lettersExhausted = false;
+                letters.Clear();
+            }
             else if (!lettersExhausted)
             {
                 var random = Random.RandomRangeInt(0, roleName.Length);
@@ -67,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
                         if (letters.Contains($"{roleName[random]}"))
                             random = Random.RandomRangeInt(0, roleName.Length);
-                        
+
                         if (random == random2)
                             random = Random.RandomRangeInt(0, roleName.Length);
                     }
@@ -121,6 +126,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 something = $"Your target is a {targetRole.AlignmentName} Role!";
                 role.AlignmentHintGiven = true;
             }
+
+            if (string.IsNullOrEmpty(something))
+                return;
 
             //Ensures only the Guesser sees this
             if (HudManager.Instance && something != "")

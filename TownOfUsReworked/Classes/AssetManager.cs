@@ -8,10 +8,11 @@ namespace TownOfUsReworked.Classes
 {
     public static class AssetManager
     {
-        private static Dictionary<string, AudioClip> SoundEffects;
-        private static bool MaterialsLoaded = false;
-        public static List<string> Sounds;
+        private readonly static Dictionary<string, AudioClip> SoundEffects = new();
+        private static bool MaterialsLoaded;
+        public readonly static List<string> Sounds = new();
 
+        #pragma warning disable CA2211
         public static Sprite Clean;
         public static Sprite Fix;
         public static Sprite SwapperSwitch;
@@ -134,9 +135,10 @@ namespace TownOfUsReworked.Classes
         public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
-        public static AssetBundle AirshipBundle;
-        public static AssetBundle BugBundle;
-        public static AssetBundle BombBundle;
+        private static AssetBundle AirshipBundle;
+        private static AssetBundle BugBundle;
+        private static AssetBundle BombBundle;
+        #pragma warning restore CA2211
 
         public static AudioClip Get(string path)
         {
@@ -157,16 +159,7 @@ namespace TownOfUsReworked.Classes
             Stop(path);
 
             if (clipToPlay != null && Constants.ShouldPlaySfx())
-            {   
-                try
-                {
-                    SoundManager.Instance.PlaySound(clipToPlay, false);
-                }
-                catch
-                {
-                    Utils.LogSomething($"Error Playing: {path}");
-                }
-            }
+                SoundManager.Instance.PlaySound(clipToPlay, false);
             else
                 Utils.LogSomething($"Error Playing Because Sound Was null: {path}");
         }
@@ -352,13 +345,10 @@ namespace TownOfUsReworked.Classes
                 MaterialsLoaded = true;
             }
 
-            SoundEffects = new Dictionary<string, AudioClip>();
-            Sounds = new List<string>();
             SoundEffects.Clear();
             Sounds.Clear();
-            var resourceNames = TownOfUsReworked.assembly.GetManifestResourceNames();
 
-            foreach (var resourceName in resourceNames)
+            foreach (var resourceName in TownOfUsReworked.assembly.GetManifestResourceNames())
             {
                 if (resourceName.StartsWith($"{TownOfUsReworked.Sounds}") && resourceName.EndsWith(".raw"))
                 {

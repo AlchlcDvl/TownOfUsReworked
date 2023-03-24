@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInteract
+    public static class PerformInteract
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -23,20 +23,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true || interact[0] == true)
+                if (interact[3] || interact[0])
                     role.LastInteracted = DateTime.UtcNow;
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastInteracted = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInteracted.AddSeconds(CustomGameOptions.ProtectKCReset);
-                    
+
                 return false;
             }
 
-            return false;
+            return true;
         }
     }
 }

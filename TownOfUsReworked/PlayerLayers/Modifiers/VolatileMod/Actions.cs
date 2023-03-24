@@ -1,7 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
 using Reactor.Utilities;
-using Random = UnityEngine.Random;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
@@ -9,11 +8,11 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class Actions
+    public static class Actions
     {
-        public static float _time = 0f;
-        public static int randomNumber = 0;
-        public static int otherNumber = 0;
+        private static float _time;
+        private static int randomNumber;
+        private static int otherNumber;
 
         public static void Postfix(HudManager __instance)
         {

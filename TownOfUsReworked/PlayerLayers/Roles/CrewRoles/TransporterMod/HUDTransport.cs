@@ -6,7 +6,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDTransport
+    public static class HUDTransport
     {
         public static void Postfix(HudManager __instance)
         {

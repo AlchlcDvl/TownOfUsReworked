@@ -5,10 +5,10 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
-    class NoButtons
+    public static class NoButtons
     {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetRole))]
-        public class NoButton
+        public static class NoButton
         {
             public static void Postfix()
             {
@@ -16,12 +16,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     || (!CustomGameOptions.ActorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Actor)) || (!CustomGameOptions.ExecutionerButton &&
                     PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) || (!CustomGameOptions.GuesserButton && PlayerControl.LocalPlayer.Is(RoleEnum.Guesser)) ||
                     (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)))
+                {
                     PlayerControl.LocalPlayer.RemainingEmergencies = 0;
+                }
             }
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Start))]
-        public class NoButtonHost
+        public static class NoButtonHost
         {
             public static void Postfix()
             {
@@ -29,7 +31,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     || (!CustomGameOptions.ActorButton && PlayerControl.LocalPlayer.Is(RoleEnum.Actor)) || (!CustomGameOptions.ExecutionerButton &&
                     PlayerControl.LocalPlayer.Is(RoleEnum.Executioner)) || (!CustomGameOptions.GuesserButton && PlayerControl.LocalPlayer.Is(RoleEnum.Guesser)) ||
                     (!CustomGameOptions.JesterButton && PlayerControl.LocalPlayer.Is(RoleEnum.Jester)))
+                {
                     PlayerControl.LocalPlayer.RemainingEmergencies = 0;
+                }
             }
         }
     }

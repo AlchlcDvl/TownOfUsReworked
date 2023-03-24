@@ -9,16 +9,16 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Cosmetics.CustomVisors
 {
     //Thanks to Las Monjas for the code
-    class CustomHats
+    public static class CustomHats
     {
-        public static Material MagicShader;
-        public static List<HatMetadataElement> AuthorDatas = Loader.LoadCustomHatData();
-        private static bool _customHatsLoaded = false;
+        private static Material MagicShader;
+        private readonly static List<HatMetadataElement> AuthorDatas = Loader.LoadCustomHatData();
+        private static bool _customHatsLoaded;
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
         public static class AddCustomHats
         {
-            public static int HatID = 0;
+            private static int HatID;
 
             public static void Postfix(HatManager __instance)
             {
@@ -41,31 +41,22 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
 
             private static HatData CreateHat(string id, string hatName, bool altshader, string author, bool bounce, string climbid, string leftimageid)
             {
-                //Borrowed from Other Roles to get hats alt shaders to work
+                //Borrowed from The Other Roles to get hats alt shaders to work
                 if (MagicShader == null)
-                {
-                    var hatShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
-                    MagicShader = hatShader;
-                }
+                    MagicShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
 
                 var sprite = GetSprite(id);
                 var a = ScriptableObject.CreateInstance<HatViewData>();
                 var b = new AddressableLoadWrapper<HatViewData>();
                 a.MainImage = sprite;
 
-                if (climbid != null && climbid != "")
-                {
-                    var climb = GetSprite(climbid);
-                    a.ClimbImage = climb;
-                }
+                if (!string.IsNullOrEmpty(climbid))
+                    a.ClimbImage = GetSprite(climbid);
                 else
                     a.ClimbImage = null;
 
-                if (leftimageid != null && leftimageid != "")
-                {
-                    var leftimage = GetSprite(leftimageid);
-                    a.LeftMainImage = leftimage;
-                }
+                if (!string.IsNullOrEmpty(leftimageid))
+                    a.LeftMainImage = GetSprite(leftimageid);
                 else
                     a.LeftMainImage = null;
 
@@ -97,8 +88,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             var mainImg = stream.ReadFully();
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             Utils.LoadImage(tex2D, mainImg, false);
-            var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-            return sprite;
+            return Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
         }
     }
 }

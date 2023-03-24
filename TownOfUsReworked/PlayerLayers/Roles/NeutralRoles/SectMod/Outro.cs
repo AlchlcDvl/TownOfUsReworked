@@ -11,14 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SectMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.SubFaction == SubFaction.Sect && Role.SectWin);
+            var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Sect && Role.SectWin);
 
             if (role == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = Colors.Sect;

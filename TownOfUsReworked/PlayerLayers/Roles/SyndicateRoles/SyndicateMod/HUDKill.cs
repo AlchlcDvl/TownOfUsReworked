@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDKill
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, Faction.Syndicate))
                 return;

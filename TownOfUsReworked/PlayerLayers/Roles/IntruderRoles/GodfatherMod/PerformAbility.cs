@@ -13,7 +13,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -26,10 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.GodfatherAction);
@@ -39,9 +39,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Declare(role, role.ClosestTarget);
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastDeclared = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -59,10 +59,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestBlackmail))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestBlackmail);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.BlackmailedPlayer = role.ClosestBlackmail;
                     role.BlackmailButton.SetCoolDown(1f, 1f);
@@ -74,9 +74,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastBlackmailed = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -108,12 +108,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.Investigated.Add(role.ClosestTarget.PlayerId);
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastInvestigated = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -127,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                         return false;
-                    
+
                     if (role.Disguised || role.DelayActive)
                         return false;
 
@@ -136,7 +136,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                    if (interact[3] == true)
+                    if (interact[3])
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.GodfatherAction);
@@ -148,9 +148,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                         role.DisguiserTimeRemaining = CustomGameOptions.DisguiseDuration;
                         role.Delay();
                     }
-                    else if (interact[0] == true)
+                    else if (interact[0])
                         role.LastDisguised = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                     return false;
@@ -168,12 +168,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     var interact = Utils.Interact(role.Player, role.MeasureTarget);
 
-                    if (interact[3] == true)
+                    if (interact[3])
                         role.MeasuredPlayer = role.MeasureTarget;
 
-                    if (interact[0] == true)
+                    if (interact[0])
                         role.LastMeasured = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                     return false;
@@ -233,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 if (SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1)
                     return false;
-                
+
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Mine);
@@ -278,17 +278,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                    if (interact[3] == true)
+                    if (interact[3])
                         role.SampledPlayer = role.ClosestTarget;
-                    
-                    if (interact[0] == true)
+
+                    if (interact[0])
                     {
                         role.LastSampled = DateTime.UtcNow;
 
                         if (CustomGameOptions.MorphCooldownsLinked)
                             role.LastMorphed = DateTime.UtcNow;
                     }
-                    else if (interact[1] == true)
+                    else if (interact[1])
                     {
                         role.LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
@@ -309,7 +309,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                     if (role.MarkTimer() != 0f)
                         return false;
-                    
+
                     if (role.TeleportPoint == PlayerControl.LocalPlayer.transform.position)
                         return false;
 
@@ -385,14 +385,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-                    if (SubmergedCompatibility.isSubmerged())
+                    if (SubmergedCompatibility.IsSubmerged())
                     {
                         if (position.y > -7f)
                             position.z = 0.0208f;
                         else
                             position.z = -0.0273f;
                     }
-                    
+
                     writer.Write(position);
                     writer.Write(position.z);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -429,11 +429,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         {
             gf.HasDeclared = true;
             var formerRole = Role.GetRole(target);
-            var mafioso = new Mafioso(target);
-            mafioso.FormerRole = formerRole;
-            mafioso.RoleHistory.Add(formerRole);
-            mafioso.RoleHistory.AddRange(formerRole.RoleHistory);
-            mafioso.Godfather = gf;
+
+            var mafioso = new Mafioso(target)
+            {
+                FormerRole = formerRole,
+                Godfather = gf
+            };
+
+            mafioso.RoleUpdate(formerRole);
 
             if (target == PlayerControl.LocalPlayer)
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Mafioso));
@@ -446,7 +449,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         {
             var ventPrefab = UnityEngine.Object.FindObjectOfType<Vent>();
             var vent = UnityEngine.Object.Instantiate(ventPrefab, ventPrefab.transform.parent);
-            
+
             vent.Id = ventId;
             vent.transform.position = new Vector3(position.x, position.y, zAxis);
 
@@ -469,10 +472,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             role.Vents.Add(vent);
             role.LastMined = DateTime.UtcNow;
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (SubmergedCompatibility.IsSubmerged())
             {
                 vent.gameObject.layer = 12;
-                vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); // just in case elevator vent is not blocked
+                vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
 
                 if (vent.gameObject.transform.position.y > -7)
                     vent.gameObject.transform.position = new Vector3(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.03f);
@@ -492,7 +495,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 if (ShipStatus.Instance.AllVents.All(v => v.Id != id))
                     return id;
-                
+
                 id++;
             }
         }

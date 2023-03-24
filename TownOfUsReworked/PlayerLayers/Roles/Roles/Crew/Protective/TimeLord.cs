@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleBlockImmune = true;
         }
 
-        public float GetCooldown() => RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.RewindCooldown;
+        public static float GetCooldown() => RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomGameOptions.RewindCooldown;
 
         public float TimeLordRewindTimer()
         {
@@ -39,11 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = (RecordRewind.rewinding ? CustomGameOptions.RewindDuration : Utils.GetModifiedCooldown(CustomGameOptions.RewindCooldown)) * 1000f / (RecordRewind.rewinding ? 3f : 1f);
             var timespan = utcNow - (RecordRewind.rewinding ? StartRewind : FinishRewind);
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timespan.TotalMilliseconds) / 1000f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

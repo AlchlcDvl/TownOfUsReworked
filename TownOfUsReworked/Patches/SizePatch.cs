@@ -9,7 +9,7 @@ namespace TownOfUsReworked.Patches
     public static class SizePatch
     {
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsLobby)
                 return;
@@ -23,9 +23,8 @@ namespace TownOfUsReworked.Patches
             }
 
             var playerBindings = PlayerControl.AllPlayerControls.ToArray().ToDictionary(player => player.PlayerId);
-            var bodies = UnityEngine.Object.FindObjectsOfType<DeadBody>();
 
-            foreach (var body in bodies)
+            foreach (var body in Object.FindObjectsOfType<DeadBody>() )
                 body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
         }
     }

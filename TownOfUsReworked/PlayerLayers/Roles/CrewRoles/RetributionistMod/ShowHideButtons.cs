@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
-    public class ShowHideButtons
+    public static class ShowHideButtons
     {
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
         public static class Confirm

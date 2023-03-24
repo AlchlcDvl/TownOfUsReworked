@@ -31,34 +31,34 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
 
-            if (player == null || player.IsDead)
+            if (player?.IsDead != false)
             {
                 __result = __instance.MaxLightRadius;
                 return false;
             }
-
-            if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(AbilityEnum.Torch))
+            else if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(AbilityEnum.Torch))
             {
                 __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
                 return false;
             }
-
-            if (player._object.Is(Faction.Syndicate))
+            else if (player._object.Is(Faction.Syndicate))
             {
                 __result = __instance.MaxLightRadius * CustomGameOptions.SyndicateVision;
                 return false;
             }
-
-            if (player._object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)
+            else if (player._object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)
             {
                 __result = __instance.MaxLightRadius * CustomGameOptions.NeutralVision;
                 return false;
             }
+            else if (player != null)
+            {
+                var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                var t = switchSystem.Value / 255f;
+                __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * (player._object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision :
+                    CustomGameOptions.CrewVision);
+            }
 
-            var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-            var t = switchSystem.Value / 255f;
-            __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * (player._object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision :
-                CustomGameOptions.CrewVision);
             return false;
         }
     }

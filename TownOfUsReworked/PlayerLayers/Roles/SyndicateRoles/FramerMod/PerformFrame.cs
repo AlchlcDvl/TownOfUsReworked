@@ -7,7 +7,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformFrame
+    public static class PerformFrame
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -28,19 +28,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 
                     var interact = Utils.Interact(role.Player, role.ClosestFrame);
 
-                    if (interact[3] == true)
+                    if (interact[3])
                         role.Frame(role.ClosestFrame);
 
-                    if (interact[0] == true)
+                    if (interact[0])
                         role.LastFramed = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
                 }
                 else
                 {
-                    var closestplayers = Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius);
-
-                    foreach (var player in closestplayers)
+                    foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
                         role.Frame(player);
 
                     role.LastFramed = DateTime.UtcNow;

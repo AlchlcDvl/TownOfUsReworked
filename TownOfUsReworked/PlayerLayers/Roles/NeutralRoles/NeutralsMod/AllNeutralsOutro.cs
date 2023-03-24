@@ -7,18 +7,16 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public class AllNeutralsOutro
+    public static class AllNeutralsOutro
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.Faction == Faction.Neutral && Role.AllNeutralsWin);
+            var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral && Role.AllNeutralsWin);
 
             if (role == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = Colors.Neutral;

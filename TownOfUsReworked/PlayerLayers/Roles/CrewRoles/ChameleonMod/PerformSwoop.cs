@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformSwoop
+    public static class PerformSwoop
     {
         public static bool Prefix(AbilityButton __instance)
         {

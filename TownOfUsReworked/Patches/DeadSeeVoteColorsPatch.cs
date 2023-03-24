@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)] int index, [HarmonyArgument(2)] Transform parent)
         {
-            var spriteRenderer = Object.Instantiate<SpriteRenderer>(__instance.PlayerVotePrefab);
+            var spriteRenderer = Object.Instantiate(__instance.PlayerVotePrefab);
             var insiderFlag = false;
             var deadFlag = CustomGameOptions.DeadSeeEverything && PlayerControl.LocalPlayer.Data.IsDead;
 
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.Patches
             spriteRenderer.transform.localScale = Vector3.zero;
 
             var Base = __instance as MonoBehaviour;
-            Base.StartCoroutine(Effects.Bloop((float)index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
+            Base.StartCoroutine(Effects.Bloop(index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
             parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
             return false;
         }

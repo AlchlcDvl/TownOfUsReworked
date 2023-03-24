@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Medic : CrewRole
     {
         public PlayerControl ClosestPlayer;
-        public bool UsedAbility => ShieldedPlayer != null && ExShielded != null;
+        public bool UsedAbility => ShieldedPlayer != null || ExShielded != null;
         public PlayerControl ShieldedPlayer;
         public PlayerControl ExShielded;
         public AbilityButton ShieldButton;

@@ -5,22 +5,16 @@ namespace TownOfUsReworked.BetterMaps.Airship
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
     public static class EndGamePatch
     {
-        public static void Prefix(AmongUsClient __instance) => EndGameCommons.ResetGlobalVariable();
+        public static void Prefix() => SpawnInMinigamePatch.ResetGlobalVariable();
     }
 
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
     public static class EndGameManagerPatch
     {
-        public static bool Prefix(EndGameManager __instance)
+        public static bool Prefix()
         {
-            EndGameCommons.ResetGlobalVariable();
-
+            SpawnInMinigamePatch.ResetGlobalVariable();
             return true;
         }
-    }
-
-    public static class EndGameCommons
-    {
-        public static void ResetGlobalVariable() => SpawnInMinigamePatch.GameStarted = false;
     }
 }

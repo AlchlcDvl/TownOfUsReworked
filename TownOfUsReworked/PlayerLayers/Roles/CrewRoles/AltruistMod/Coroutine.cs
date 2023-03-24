@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -14,10 +13,12 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
-    public class Coroutine
+    public static class Coroutine
     {
+        #pragma warning disable
         public static ArrowBehaviour Arrow;
         public static PlayerControl Target;
+        #pragma warning restore
 
         public static IEnumerator AltruistRevive(DeadBody target, Altruist role)
         {
@@ -32,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 
             if (CustomGameOptions.AltruistTargetBody)
             {
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (DeadBody deadBody in Object.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == parentId)
                         deadBody.gameObject.Destroy();
@@ -55,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                     yield break;
             }
 
-            foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+            foreach (DeadBody deadBody in Object.FindObjectsOfType<DeadBody>())
             {
                 if (deadBody.ParentId == role.Player.PlayerId)
                     deadBody.gameObject.Destroy();
@@ -81,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             else
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
 
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == player.PlayerId));
+            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
             if (PlayerControl.LocalPlayer == player)
@@ -92,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 } catch {}
             }
 
-            if (SubmergedCompatibility.isSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (target != null)
@@ -103,9 +104,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
 
                 lover.Revive();
-                Murder.KilledPlayers.Remove(Murder.KilledPlayers.FirstOrDefault(x => x.PlayerId == lover.PlayerId));
+                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
 
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (DeadBody deadBody in Object.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == lover.PlayerId)
                         deadBody.gameObject.Destroy();

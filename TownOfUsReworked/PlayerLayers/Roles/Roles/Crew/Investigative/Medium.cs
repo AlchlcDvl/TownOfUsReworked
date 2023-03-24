@@ -11,9 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Medium : CrewRole
     {
         public DateTime LastMediated;
-        public Dictionary<byte, ArrowBehaviour> MediatedPlayers;
+        public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new();
         public AbilityButton MediateButton;
-        
+
         public Medium(PlayerControl player) : base(player)
         {
             Name = "Medium";
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "you." : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             RoleType = RoleEnum.Medium;
-            MediatedPlayers = new Dictionary<byte, ArrowBehaviour>();
+            MediatedPlayers = new();
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             InspectorResults = InspectorResults.DifferentLens;
@@ -31,14 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MediateTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMediated;
+            var timespan = utcNow - LastMediated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void AddMediatePlayer(byte playerId)
@@ -55,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;
             }
-            
+
             MediatedPlayers.Add(playerId, arrow);
             Coroutines.Start(Utils.FlashCoroutine(Color));
         }

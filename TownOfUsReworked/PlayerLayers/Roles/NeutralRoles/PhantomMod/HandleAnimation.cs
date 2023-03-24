@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-    public class HandleAnimation
+    public static class HandleAnimation
     {
         public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] ref bool amDead)
         {

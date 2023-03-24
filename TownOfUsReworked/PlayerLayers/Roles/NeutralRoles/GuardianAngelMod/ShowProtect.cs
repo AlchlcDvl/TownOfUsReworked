@@ -8,9 +8,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class ShowProtect
+    public static class ShowProtect
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
             {
@@ -28,14 +28,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                         ProtectOptions.SelfAndGA)) || (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && (showProtected == ProtectOptions.GA || showProtected ==
                         ProtectOptions.SelfAndGA)))
                     {
-                        player.myRend().material.SetColor("_VisorColor", new Color32(255, 217, 0, 255));
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", new Color32(255, 217, 0, 255));
+                        player.MyRend().material.SetColor("_VisorColor", new Color32(255, 217, 0, 255));
+                        player.MyRend().material.SetFloat("_Outline", 1f);
+                        player.MyRend().material.SetColor("_OutlineColor", new Color32(255, 217, 0, 255));
                     }
                     else
                     {
-                        player.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
-                        player.myRend().material.SetFloat("_Outline", 0f);
+                        player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                        player.MyRend().material.SetFloat("_Outline", 0f);
                     }
                 }
                 else if (ga.TargetPlayer.IsShielded())
@@ -45,20 +45,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                     if (showShielded == ShieldOptions.Everyone || (PlayerControl.LocalPlayer == player && (showShielded == ShieldOptions.Self || showShielded == ShieldOptions.SelfAndMedic))
                         || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic || showShielded == ShieldOptions.SelfAndMedic)))
                     {
-                        player.myRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
-                        player.myRend().material.SetFloat("_Outline", 1f);
-                        player.myRend().material.SetColor("_OutlineColor", new Color32(0, 255, 255, 255));
+                        player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
+                        player.MyRend().material.SetFloat("_Outline", 1f);
+                        player.MyRend().material.SetColor("_OutlineColor", new Color32(0, 255, 255, 255));
                     }
                     else
                     {
-                        player.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
-                        player.myRend().material.SetFloat("_Outline", 0f);
+                        player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                        player.MyRend().material.SetFloat("_Outline", 0f);
                     }
                 }
                 else
                 {
-                    player.myRend().material.SetColor("_VisorColor", Palette.VisorColor);
-                    player.myRend().material.SetFloat("_Outline", 0f);
+                    player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                    player.MyRend().material.SetFloat("_Outline", 0f);
                 }
             }
         }

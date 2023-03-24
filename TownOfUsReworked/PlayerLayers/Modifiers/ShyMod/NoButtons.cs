@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Modifiers.ShyMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetRole))]
-    public class NoButtons
+    public static class NoButtons
     {
         public static void Postfix()
         {
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.ShyMod
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Start))]
-    public class NoButtonsHost
+    public static class NoButtonsHost
     {
         public static void Postfix()
         {

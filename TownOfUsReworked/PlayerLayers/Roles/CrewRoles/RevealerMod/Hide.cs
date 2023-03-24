@@ -7,9 +7,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class Hide
+    public static class Hide
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (GameStates.IsEnded || GameStates.IsLobby)
                 return;
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 else if (haunter.Faded)
                 {
                     Utils.DefaultOutfit(haunter.Player);
-                    haunter.Player.myRend().color = Color.white;
+                    haunter.Player.MyRend().color = Color.white;
                     haunter.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     haunter.Faded = false;
                     haunter.Player.MyPhysics.ResetMoveState();

@@ -4,9 +4,9 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class DoUndo
+    public static class DoUndo
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Glitch))
             {

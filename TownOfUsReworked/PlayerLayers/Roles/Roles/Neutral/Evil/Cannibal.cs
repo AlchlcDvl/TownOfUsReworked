@@ -13,12 +13,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton EatButton;
         public DeadBody CurrentTarget;
         public int EatNeed;
-        private string body => EatNeed == 1 ? "body" : "bodies";
+        private string Body => EatNeed == 1 ? "body" : "bodies";
         public bool CannibalWin;
         public DateTime LastEaten;
-        public Dictionary<byte, ArrowBehaviour> BodyArrows;
+        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public bool EatWin => EatNeed <= 0;
-        
+
         public Cannibal(PlayerControl player) : base(player)
         {
             Name = "Cannibal";
@@ -28,8 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            Objectives = $"- Eat {EatNeed} {body}.";
-            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            Objectives = $"- Eat {EatNeed} {Body}.";
+            BodyArrows = new();
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
                 CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
         }
@@ -37,14 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float EatTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastEaten;
+            var timespan = utcNow - LastEaten;
             var num = CustomGameOptions.CannibalCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -55,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Object.Destroy(arrow.Value);
             if (arrow.Value.gameObject != null)
                 Object.Destroy(arrow.Value.gameObject);
-                
+
             BodyArrows.Remove(arrow.Key);
         }
     }

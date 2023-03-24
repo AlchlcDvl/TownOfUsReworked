@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInvis
+    public static class PerformInvis
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 
                 if (role.IsInvis)
                     return false;
-                
+
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Invis);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);

@@ -22,19 +22,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IC;
             InspectorResults = InspectorResults.MeddlesWithDead;
         }
-        
+
         public float CleanTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCleaned;
-            var num = Utils.GetModifiedCooldown((Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd), Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var timespan = utcNow - LastCleaned;
+            var num = Utils.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd, Utils.GetUnderdogChange(Player)) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

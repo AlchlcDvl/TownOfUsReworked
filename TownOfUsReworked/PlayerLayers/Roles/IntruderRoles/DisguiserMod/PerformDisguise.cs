@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformDisguise
+    public static class PerformDisguise
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Disguise);
@@ -43,9 +43,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                     role.DisguisedPlayer = role.ClosestTarget;
                     role.Delay();
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastDisguised = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -63,12 +63,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.MeasuredPlayer = role.ClosestTarget;
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastMeasured = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

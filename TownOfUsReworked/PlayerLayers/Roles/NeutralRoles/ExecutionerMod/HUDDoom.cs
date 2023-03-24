@@ -8,9 +8,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDDoom
+    public static class HUDDoom
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Executioner))
                 return;

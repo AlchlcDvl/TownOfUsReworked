@@ -10,14 +10,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Assassin : Ability
     {
-        public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> Buttons = new Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)>();
-        private Dictionary<string, Color> ColorMapping = new Dictionary<string, Color>();
+        public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> Buttons = new();
+        private readonly Dictionary<string, Color> ColorMapping = new();
         public Dictionary<string, Color> SortedColorMapping;
-        public Dictionary<byte, string> Guesses = new Dictionary<byte, string>();
-        public bool GuessedThisMeeting { get; set; } = false;
+        public Dictionary<byte, string> Guesses = new();
+        public bool GuessedThisMeeting { get; set; }
         public int RemainingKills { get; set; }
         public List<string> PossibleGuesses => SortedColorMapping.Keys.ToList();
-        private bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
+        private static bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
             CustomGameOptions.NeutralAssassinOn > 0;
 
         public Assassin(PlayerControl player) : base(player)
@@ -27,6 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
             AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
+            ColorMapping = new();
+            Buttons = new();
 
             //Adds all the roles that have a non-zero chance of being in the game
             if (!PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.NotOnTheSameSide())
@@ -227,29 +229,29 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 {
                     if (!PlayerControl.LocalPlayer.Is(RoleEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
                         ColorMapping.Add("Pestilence", Colors.Pestilence);
-                    
+
                     if (!PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer))
                         ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
                 }
-                
+
                 if (CustomGameOptions.DraculaOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Undead))
                 {
                     ColorMapping.Add("Dracula", Colors.Dracula);
                     ColorMapping.Add("Bitten", Colors.Undead);
                 }
-                
+
                 if (CustomGameOptions.JackalOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Cabal))
                 {
                     ColorMapping.Add("Jackal", Colors.Jackal);
                     ColorMapping.Add("Recruit", Colors.Cabal);
                 }
-                
+
                 if (CustomGameOptions.NecromancerOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Reanimated))
                 {
                     ColorMapping.Add("Necromancer", Colors.Necromancer);
                     ColorMapping.Add("Resurrected", Colors.Reanimated);
                 }
-                
+
                 if (CustomGameOptions.WhispererOn > 0 && !PlayerControl.LocalPlayer.Is(SubFaction.Sect))
                 {
                     ColorMapping.Add("Whisperer", Colors.Whisperer);
@@ -324,7 +326,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
                 if (CustomGameOptions.CorruptedOn > 0)
                     ColorMapping.Add("Corrupted", Colors.Corrupted);
-                    
+
                 if (CustomGameOptions.TraitorOn > 0)
                     ColorMapping.Add("Traitor", Colors.Traitor);
 

@@ -6,14 +6,13 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.Patches
 {
     //Thanks to twix for this code
-    public class Reportmessage
+    public static class Reportmessage
     {
-        public static string location;
+        private static string location;
 
         [HarmonyPatch(typeof(RoomTracker), nameof(RoomTracker.FixedUpdate))]
-        public class Recordlocation
+        public static class Recordlocation
         {
-            [HarmonyPostfix]
             public static void Postfix(RoomTracker __instance)
             {
                 if (__instance.text.transform.localPosition.y != -3.25f)
@@ -27,9 +26,8 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
-        public class Sendchat
+        public static class Sendchat
         {
-            [HarmonyPostfix]
             public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target)
             {
                 if (target != null && CustomGameOptions.LocationReports)

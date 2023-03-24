@@ -3,50 +3,51 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.MCI;
 
 namespace TownOfUsReworked.Patches
 {
-    public class GameStartManagerPatch
+    public static class GameStartManagerPatch
     {
         //Thanks to The Other Roles for this code, made a minor change so that MCI works :sweat_smile:
-        public static Dictionary<int, PlayerVersion> PlayerVersions = new Dictionary<int, PlayerVersion>();
+        public readonly static Dictionary<int, PlayerVersion> PlayerVersions = new();
+        private static float kickingTimer;
+        private static bool versionSent;
+
+        #pragma warning disable
         public static float timer = 600f;
-        private static float kickingTimer = 0f;
-        private static bool versionSent = false;
+        #pragma warning restore
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
-        public class AmongUsClientOnPlayerJoinedPatch
+        public static class AmongUsClientOnPlayerJoinedPatch
         {
-            public static void Postfix(AmongUsClient __instance)
+            public static void Postfix()
             {
-                if (PlayerControl.LocalPlayer != null && !InstanceControl.MCIActive)
+                if (PlayerControl.LocalPlayer != null && !TownOfUsReworked.MCIActive)
                     Utils.ShareGameVersion();
             }
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
-        public class GameStartManagerStartPatch
+        public static class GameStartManagerStartPatch
         {
-            public static void Postfix(GameStartManager __instance)
+            public static void Postfix()
             {
                 //Trigger version refresh
                 versionSent = false;
                 //Reset lobby countdown timer
-                timer = 600f; 
+                timer = 600f;
                 //Reset kicking timer
                 kickingTimer = 0f;
                 //Copy lobby code
-                var code = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
-                GUIUtility.systemCopyBuffer = code;
+                GUIUtility.systemCopyBuffer = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
             }
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
-        public class GameStartManagerUpdatePatch
+        public static class GameStartManagerUpdatePatch
         {
-            public static float startingTimer = 0;
-            private static bool update = false;
+            private static float startingTimer;
+            private static bool update;
             private static string currentText = "";
 
             public static void Prefix(GameStartManager __instance)
@@ -59,7 +60,7 @@ namespace TownOfUsReworked.Patches
 
             public static void Postfix(GameStartManager __instance)
             {
-                if (!InstanceControl.MCIActive)
+                if (!TownOfUsReworked.MCIActive)
                 {
                     //Send version as soon as PlayerControl.LocalPlayer exists
                     if (PlayerControl.LocalPlayer != null && !versionSent)
@@ -77,12 +78,7 @@ namespace TownOfUsReworked.Patches
                         if (client.Character == null)
                             continue;
 
-                        var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
-
-                        if (dummyComponent != null && dummyComponent.enabled)
-                            continue;
-
-                        else if (!PlayerVersions.ContainsKey(client.Id))
+                        if (!PlayerVersions.ContainsKey(client.Id))
                         {
                             versionMismatch = true;
                             message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a different or no version of Town Of Us Reworked.\n</color>";
@@ -95,19 +91,19 @@ namespace TownOfUsReworked.Patches
                             if (diff > 0)
                             {
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version.ToString()})\n</color>";
+                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n</color>";
                             }
                             else if (diff < 0)
                             {
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version.ToString()})\n</color>";
+                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n</color>";
                             }
                             else if (!PV.GuidMatches())
                             {
                                 //Version presumably matches, check if Guid matches
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version.ToString()}" +
-                                    $" <size=30%>({PV.Guid.ToString()})</size>\n</color>";
+                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version}" +
+                                    $" <size=30%>({PV.Guid})</size>\n</color>";
                             }
                         }
                     }
@@ -119,7 +115,7 @@ namespace TownOfUsReworked.Patches
                         {
                             __instance.StartButton.color = __instance.startLabelText.color = Palette.DisabledClear;
                             __instance.GameStartText.text = message;
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                         }
                         else
                         {
@@ -144,19 +140,21 @@ namespace TownOfUsReworked.Patches
 
                             __instance.GameStartText.text = "<color=#FF0000FF>The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in" +
                                 $" {Math.Round(10 - kickingTimer)}s</color>";
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                         }
                         else if (versionMismatch)
                         {
-                            __instance.GameStartText.text = $"<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + Vector3.up * 2;
+                            __instance.GameStartText.text = "<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
+                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                         }
                         else
                         {
                             __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
 
                             if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0)
+                            {
                                 __instance.GameStartText.text = string.Empty;
+                            }
                             else
                             {
                                 __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
@@ -190,41 +188,38 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
-        public class GameStartManagerBeginGame
+        public static class GameStartManagerBeginGame
         {
-            public static bool Prefix(GameStartManager __instance)
+            public static bool Prefix()
             {
                 //Block game start if not everyone has the same mod version
                 var continueStart = true;
 
-                if (!InstanceControl.MCIActive)
+                if (!TownOfUsReworked.MCIActive && AmongUsClient.Instance.AmHost)
                 {
-                    if (AmongUsClient.Instance.AmHost)
+                    foreach (var client in AmongUsClient.Instance.allClients.GetFastEnumerator())
                     {
-                        foreach (var client in AmongUsClient.Instance.allClients.GetFastEnumerator())
+                        if (client.Character == null)
+                            continue;
+
+                        var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
+
+                        if (dummyComponent?.enabled == true)
+                            continue;
+
+                        if (!PlayerVersions.ContainsKey(client.Id))
                         {
-                            if (client.Character == null)
-                                continue;
+                            continueStart = false;
+                            break;
+                        }
 
-                            var dummyComponent = client.Character.GetComponent<DummyBehaviour>();
+                        PlayerVersion PV = PlayerVersions[client.Id];
+                        var diff = TownOfUsReworked.Version.CompareTo(PV.Version);
 
-                            if (dummyComponent != null && dummyComponent.enabled)
-                                continue;
-
-                            if (!PlayerVersions.ContainsKey(client.Id))
-                            {
-                                continueStart = false;
-                                break;
-                            }
-
-                            PlayerVersion PV = PlayerVersions[client.Id];
-                            var diff = TownOfUsReworked.Version.CompareTo(PV.Version);
-
-                            if (diff != 0 || !PV.GuidMatches())
-                            {
-                                continueStart = false;
-                                break;
-                            }
+                        if (diff != 0 || !PV.GuidMatches())
+                        {
+                            continueStart = false;
+                            break;
                         }
                     }
                 }
@@ -244,7 +239,7 @@ namespace TownOfUsReworked.Patches
                 this.Guid = Guid;
             }
 
-            public bool GuidMatches() => TownOfUsReworked.assembly.ManifestModule.ModuleVersionId.Equals(this.Guid);
+            public bool GuidMatches() => TownOfUsReworked.assembly.ManifestModule.ModuleVersionId.Equals(Guid);
         }
     }
 }

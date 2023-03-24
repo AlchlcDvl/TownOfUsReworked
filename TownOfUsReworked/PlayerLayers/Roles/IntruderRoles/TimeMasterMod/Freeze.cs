@@ -7,11 +7,11 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 {
-    public class Freeze
+    public static class Freeze
     {
         public static class FreezeFunctions
         {
-            private static List<PlayerControl> Frozen = new List<PlayerControl>();
+            private readonly static List<PlayerControl> Frozen = new();
 
             public static void FreezeAll()
             {
@@ -21,8 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 {
                     if (player.Data.IsDead || player.Data.Disconnected || (player.Is(RoleEnum.TimeLord) && CustomGameOptions.TLImmunity) || (player.Is(RoleEnum.TimeMaster) &&
                         CustomGameOptions.TMImmunity) || (player.Is(Faction.Intruder) && CustomGameOptions.IntruderImmunity))
+                    {
                         continue;
-                    
+                    }
+
                     Frozen.Add(player);
                 }
 

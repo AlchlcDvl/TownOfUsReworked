@@ -11,14 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins && x.Winner);
+            var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins && x.Winner);
 
             if (role == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
 
             __instance.BackgroundBar.material.color = role.Color;
@@ -29,11 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
             pos.y = 1.5f;
             text.transform.position = pos;
             text.text = $"<size=4>{text.text}</size>";
-            
-            try
-            {
-                //SoundManager.Instance.PlaySound(TownOfUsReworked.WerewolfWin, false, 1f);
-            } catch {}
         }
     }
 }

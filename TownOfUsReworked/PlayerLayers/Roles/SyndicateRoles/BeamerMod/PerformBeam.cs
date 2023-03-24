@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformBeam
+    public static class PerformBeam
     {
         public static bool Prefix(AbilityButton __instance)
         {

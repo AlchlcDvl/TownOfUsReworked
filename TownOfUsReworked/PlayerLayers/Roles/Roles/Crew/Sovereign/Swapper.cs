@@ -8,8 +8,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Swapper : CrewRole
     {
-        public readonly List<GameObject> MoarButtons;
-        public readonly List<bool> ListOfActives;
+        public readonly List<GameObject> MoarButtons = new();
+        public readonly List<bool> ListOfActives = new();
 
         public Swapper(PlayerControl player) : base(player)
         {
@@ -21,8 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
             InspectorResults = InspectorResults.BringsChaos;
-            MoarButtons = new List<GameObject>();
-            ListOfActives = new List<bool>();
+            MoarButtons = new();
+            ListOfActives = new();
         }
     }
 }

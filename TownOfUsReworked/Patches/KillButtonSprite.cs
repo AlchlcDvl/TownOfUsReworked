@@ -4,12 +4,12 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class KillButtonSprite
+    public static class KillButtonSprite
     {
         [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
-        class AbilityButtonUpdatePatch
+        public static class AbilityButtonUpdatePatch
         {
-            static void Postfix()
+            public static void Postfix()
             {
                 if (!GameStates.IsInGame)
                     HudManager.Instance.AbilityButton.gameObject.SetActive(false);

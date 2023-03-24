@@ -8,7 +8,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformBlackmail
+    public static class PerformBlackmail
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -24,10 +24,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestBlackmail))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestBlackmail);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.BlackmailedPlayer = role.ClosestBlackmail;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -37,9 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                if (interact[0] == true)
+                if (interact[0])
                     role.LastBlackmailed = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

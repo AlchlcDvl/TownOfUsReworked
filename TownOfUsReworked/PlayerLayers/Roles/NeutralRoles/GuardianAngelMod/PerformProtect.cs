@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformProtect
+    public static class PerformProtect
     {
         public static bool Prefix(AbilityButton __instance)
         {

@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformShapeshift
+    public static class PerformShapeshift
     {
         public static bool Prefix(AbilityButton __instance)
         {

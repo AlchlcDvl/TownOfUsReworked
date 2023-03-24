@@ -5,10 +5,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class SwoopUnSwoop
+    public static class SwoopUnSwoop
     {
-        [HarmonyPriority(Priority.Last)]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Chameleon))
             {

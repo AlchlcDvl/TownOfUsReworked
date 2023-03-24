@@ -4,14 +4,8 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Classes
 {
-    public class LayerInfo
+    public static class LayerInfo
     {
-        public static List<RoleInfo> AllRoles = new();
-        public static List<ModifierInfo> AllModifiers = new();
-        public static List<ObjectifierInfo> AllObjectifiers = new();
-        public static List<AbilityInfo> AllAbilities = new();
-        public static List<Lore> AllLore = new();
-
         public class RoleInfo
         {
             public string Name { get; set; }
@@ -26,59 +20,59 @@ namespace TownOfUsReworked.Classes
             public string Quote { get; set; }
             public Faction Faction { get; set; }
 
-            private string SyndicateDescription = "Syndicate is an \"evil\" faction that is an informed minority of the game. They have special abilities specifically geared towards" +
+            private readonly string SyndicateDescription = "Syndicate is an \"evil\" faction that is an informed minority of the game. They have special abilities specifically geared towards" +
                 " slowing down the progress of other or causing chaos. Syndicate members, unless they are Syndicate (Killing), Anarchist or Sidekick, cannot kill by default. Instead" +
                 " they gain the ability to kill by obtaining a powerup called the Chaos Drive. The Chaos Drive not only boosts each member's abilities but also gives them the ability" +
                 " to kill if they didn't already.";
-            private string CrewDescription = "The Crew is the uninformed majority of the game. They are the \"good guys\". It is their job to deduce who is evil and who is not and vote" +
+            private readonly string CrewDescription = "The Crew is the uninformed majority of the game. They are the \"good guys\". It is their job to deduce who is evil and who is not and vote" +
                 " them out.";
-            private string IntruderDescription = "Intruders are the main \"bad guys\" of the game and an informed minority of the game. All roles have the capability to kill and" +
+            private readonly string IntruderDescription = "Intruders are the main \"bad guys\" of the game and an informed minority of the game. All roles have the capability to kill and" +
                 " sabotage, making them a pain to deal with.";
-            private string NeutralDescription = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
+            private readonly string NeutralDescription = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
 
-            private static string IntruderObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +
+            private readonly string IntruderObjective = "Have a critical sabotage reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew, Neutral Killers, Proselytes and " +
                 "Neophytes.";
-            private static string ISDescription = "Intruder (Support) roles have miscellaneous abilities. These roles can delay players' chances of winning by" +
+            private readonly string ISDescription = "Intruder (Support) roles have miscellaneous abilities. These roles can delay players' chances of winning by" +
                 " either gaining enough info to stop them or forcing players to do things they can't.";
-            private static string ICDescription = "Intruder (Concealing) roles specialise in hiding information from others. If there is no new " +
+            private readonly string ICDescription = "Intruder (Concealing) roles specialise in hiding information from others. If there is no new " +
                 "information, it's probably their work.";
-            private static string IDDescription = "Intruder (Deception) roles are built to spread misinformation. Never trust your eyes, for the killer you " +
+            private readonly string IDDescription = "Intruder (Deception) roles are built to spread misinformation. Never trust your eyes, for the killer you " +
                 "saw in front of you might not be the one who they seem to be.";
-            private static string IUDescription = "Intruder (Utility) roles usually don't appear under regaular spawn conditions.";
-            private static string IKDescription = "Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " + 
+            private readonly string IUDescription = "Intruder (Utility) roles usually don't appear under regaular spawn conditions.";
+            private readonly string IKDescription = "Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " +
                 "with your abilities!";
 
-            private static string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, " +
+            private readonly string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, " +
                 "Crew and Neutral Killers, Proselytes and Neophytes.";
-            private static string SUDescription = "Syndicate (Utility) roles usually don't appear under regaular spawn conditions.";
-            private static string SSuDescription = "Syndicate (Support) roles have miscellaneous abilities. They are detrimental to the Syndicate's cause and if" +
+            private readonly string SUDescription = "Syndicate (Utility) roles usually don't appear under regaular spawn conditions.";
+            private readonly string SSuDescription = "Syndicate (Support) roles have miscellaneous abilities. They are detrimental to the Syndicate's cause and if" +
                 " used right, can greatly affect how the game continues.";
-            private static string SDDescription = "Syndicate (Disruption) roles are designed to change the flow of the game, via changing some mechanic.";
-            private static string SyKDescription = "Syndicate (Killing) roles are powerful killers unique ways to rack up body counts.";
-            private static string SPDescription = "Syndicate (Power) roles are powerful disruptors with a knack for chaos and destruction.";
+            private readonly string SDDescription = "Syndicate (Disruption) roles are designed to change the flow of the game, via changing some mechanic.";
+            private readonly string SyKDescription = "Syndicate (Killing) roles are powerful killers unique ways to rack up body counts.";
+            private readonly string SPDescription = "Syndicate (Power) roles are powerful disruptors with a knack for chaos and destruction.";
 
-            private static string CrewObjective = "Finish your tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, Neutral Killers, Proselytes and Neophytes.";
-            private static string CPDescription = "Crew (Protective) roles have the capability to stop someone from losing their life or bring back the dead.";
-            private static string CIDescription = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, " +
+            private readonly string CrewObjective = "Finish your tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, Neutral Killers, Proselytes and Neophytes.";
+            private readonly string CPDescription = "Crew (Protective) roles have the capability to stop someone from losing their life or bring back the dead.";
+            private readonly string CIDescription = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, " +
                 "Crew (Investigative) roles can deduce who is good and who is not.";
-            private static string CUDescription = "Crew (Utility) roles usually don't appear under regaular spawn conditions.";
-            private static string CSDescription = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying " +
+            private readonly string CUDescription = "Crew (Utility) roles usually don't appear under regaular spawn conditions.";
+            private readonly string CSDescription = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying " +
                 "attention, your chances of winning will be severely decreased because of them.";
-            private static string CADescription = "Crew (Auditor) roles are special roles that spawn under certain conditions. They exist for the demise of rival subfactions.";
-            private static string CKDescription = "Crew (Killing) roles have no aversion to killing like the rest of the Crew and if left alone and potentially wreck the chances of " +
+            private readonly string CADescription = "Crew (Auditor) roles are special roles that spawn under certain conditions. They exist for the demise of rival subfactions.";
+            private readonly string CKDescription = "Crew (Killing) roles have no aversion to killing like the rest of the Crew and if left alone and potentially wreck the chances of " +
                 "evil subfactions winning.";
-            private static string CSvDescription = "Crew (Sovereign) roles are democratic roles with powers over votes. They are the most powerful during a meeting, so avoid too many " + 
+            private readonly string CSvDescription = "Crew (Sovereign) roles are democratic roles with powers over votes. They are the most powerful during a meeting, so avoid too many " +
                 "meetings while they are active.";
 
-            private static string NBDescription = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain " +
+            private readonly string NBDescription = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain " +
                 "condition is fulfilled by the end of the game.";
-            private static string NKDescription = "Neutral (Killing) roles are roles that have the ability to kill and do not side with anyone. Each role has a special way" +
+            private readonly string NKDescription = "Neutral (Killing) roles are roles that have the ability to kill and do not side with anyone. Each role has a special way" +
                 " to kill and gain large body counts in one go. Steer clear of them if you don't want to die.";
-            private static string NEDescription = "Neutral (Evil) roles are roles whose objectives clash with those of other roles. As such, you need to ensure they don't have a chance" +
+            private readonly string NEDescription = "Neutral (Evil) roles are roles whose objectives clash with those of other roles. As such, you need to ensure they don't have a chance" +
                 " at winning or when they do win, you have their cooperation.";
-            private static string NPDescription = "Neutral (Proselyte) roles are special roles that have their specific ways to win. Each role here is unique in its own way and more often than not" +
+            private readonly string NPDescription = "Neutral (Proselyte) roles are special roles that have their specific ways to win. Each role here is unique in its own way and more often than not" +
                 " they are against you.";
-            private static string NNDescription = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily overrun you with their" + 
+            private readonly string NNDescription = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily overrun you with their" +
                 " numbers.";
 
             public RoleInfo(string name, string shortF, string description, RoleAlignment alignmentEnum, Faction faction, string quote, string wincon = "")
@@ -87,6 +81,7 @@ namespace TownOfUsReworked.Classes
                 Short = shortF;
                 Description = description;
                 Faction = faction;
+                Quote = quote;
 
                 switch (faction)
                 {
@@ -240,29 +235,29 @@ namespace TownOfUsReworked.Classes
             public string RoleInfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Name: {Name}");
-                builder.AppendLine($"Short Form: {Short}");
-                builder.AppendLine($"Alignment: {Alignment}");
-                builder.AppendLine($"Win Condition: {WinCon}");
-                builder.AppendLine($"Description: {Description}");
+                builder.Append("Name: ").AppendLine(Name)
+                    .Append("Short Form: ").AppendLine(Short)
+                    .Append("Alignment: ").AppendLine(Alignment)
+                    .Append("Win Condition: ").AppendLine(WinCon)
+                    .Append("Description: ").AppendLine(Description);
                 return builder.ToString();
             }
 
             public string AlignmentInfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Name: {Alignment}");
-                builder.AppendLine($"Short Form: {AlignmentShort}");
-                builder.AppendLine($"Description: {AlignmentDescription}");
+                builder.Append("Name: ").AppendLine(Alignment)
+                    .Append("Short Form: ").AppendLine(AlignmentShort)
+                    .Append("Description: ").AppendLine(AlignmentDescription);
                 return builder.ToString();
             }
 
             public string FactionInfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Name: {Faction}");
-                builder.AppendLine($"Short Form: {FactionShort}");
-                builder.AppendLine($"Description: {FactionDescription}");
+                builder.Append("Name: ").Append(Faction).AppendLine()
+                    .Append("Short Form: ").AppendLine(FactionShort)
+                    .Append("Description: ").AppendLine(FactionDescription);
                 return builder.ToString();
             }
 
@@ -287,10 +282,10 @@ namespace TownOfUsReworked.Classes
             public string InfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Role Name: {Name}");
-                builder.AppendLine($"Short Form: {Short}");
-                builder.AppendLine($"Applies To: {AppliesTo}");
-                builder.AppendLine($"Description: {Description}");
+                builder.Append("Role Name: ").AppendLine(Name)
+                    .Append("Short Form: ").AppendLine(Short)
+                    .Append("Applies To: ").AppendLine(AppliesTo)
+                    .Append("Description: ").AppendLine(Description);
                 return builder.ToString();
             }
         }
@@ -317,12 +312,12 @@ namespace TownOfUsReworked.Classes
             public string InfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Role Name: {Name}");
-                builder.AppendLine($"Short Form: {Short}");
-                builder.AppendLine($"Symbol: {Symbol}");
-                builder.AppendLine($"Applies To: {AppliesTo}");
-                builder.AppendLine($"Win Con: {WinCon}");
-                builder.AppendLine($"Description: {Description}");
+                builder.Append("Role Name: ").AppendLine(Name)
+                    .Append("Short Form: ").AppendLine(Short)
+                    .Append("Symbol: ").AppendLine(Symbol)
+                    .Append("Applies To: ").AppendLine(AppliesTo)
+                    .Append("Win Con: ").AppendLine(WinCon)
+                    .Append("Description: ").AppendLine(Description);
                 return builder.ToString();
             }
         }
@@ -345,10 +340,10 @@ namespace TownOfUsReworked.Classes
             public string InfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Role Name: {Name}");
-                builder.AppendLine($"Short Form: {Short}");
-                builder.AppendLine($"Applies To: {AppliesTo}");
-                builder.AppendLine($"Description: {Description}");
+                builder.Append("Role Name: ").AppendLine(Name)
+                    .Append("Short Form: ").AppendLine(Short)
+                    .Append("Applies To: ").AppendLine(AppliesTo)
+                    .Append("Description: ").AppendLine(Description);
                 return builder.ToString();
             }
         }
@@ -367,11 +362,24 @@ namespace TownOfUsReworked.Classes
             public string InfoMessage()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Name: {Name}");
-                builder.AppendLine($"Lore: {Story}");
+                builder.Append("Name: ").AppendLine(Name);
+                builder.Append("Lore: ").AppendLine(Story);
                 return builder.ToString();
             }
         }
+
+        public readonly static List<RoleInfo> AllRoles = new()
+        {
+            new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
+            new RoleInfo("Agent", "Ag", "The Agent gains more information when on Admin Table and on Vitals. On Admin Table, the Agent can see the colors of every person" +
+                " on the map. When on Vitals, the Agent is shown how long someone has been dead for.", RoleAlignment.CrewInvest, Faction.Crew, "Hippity hoppity, your privacy is now " +
+                "my property.")
+        };
+
+        public readonly static List<ModifierInfo> AllModifiers = new();
+        public readonly static List<ObjectifierInfo> AllObjectifiers = new();
+        public readonly static List<AbilityInfo> AllAbilities = new();
+        public readonly static List<Lore> AllLore = new();
 
         public static void LoadInfo()
         {
@@ -380,7 +388,6 @@ namespace TownOfUsReworked.Classes
             AllAbilities.Clear();
             AllObjectifiers.Clear();
 
-            AllRoles.Add(new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"));
             AllRoles.Add(new RoleInfo("Agent", "Ag", "The Agent gains more information when on Admin Table and on Vitals. On Admin Table, the Agent can see the colors of every person" +
                 " on the map. When on Vitals, the Agent is shown how long someone has been dead for.", RoleAlignment.CrewInvest, Faction.Crew, "Hippity hoppity, your privacy is now " +
                 "my property."));
@@ -480,7 +487,7 @@ namespace TownOfUsReworked.Classes
                 "and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral,
                 "I've got money.", "Recruit or kill anyone who can oppose them."));
             AllRoles.Add(new RoleInfo("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone" +
-                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and " + 
+                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and " +
                 "white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of the game."));
             AllRoles.Add(new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
                 "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...", "Get ejected."));

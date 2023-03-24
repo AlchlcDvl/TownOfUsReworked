@@ -7,12 +7,12 @@ using TMPro;
 
 namespace TownOfUsReworked.Patches
 {
-    public class MiscPatches
+    public static class MiscPatches
     {
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.InitializeOptions))]
-        public class EnableMapImps
+        public static class EnableMapImps
         {
-            private static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
+            public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
@@ -23,17 +23,19 @@ namespace TownOfUsReworked.Patches
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
         [HarmonyPriority(Priority.First)]
-        public class ExileControllerPatch
+        public static class ExileControllerPatch
         {
+            #pragma warning disable
             public static ExileController lastExiled;
-            
+            #pragma warning restore
+
             public static void Prefix(ExileController __instance) => lastExiled = __instance;
         }
 
         //Vent and kill shit
         //Yes thank you Discussions - AD
         [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
-        class SetVentOutlinePatch
+        public static class SetVentOutlinePatch
         {
             public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
             {
@@ -42,18 +44,18 @@ namespace TownOfUsReworked.Patches
 
                 if (active)
                 {
-                    var role = Role.GetRole(player); 
+                    var role = Role.GetRole(player);
                     var color = role != null ? role.Color : new Color32(255, 255, 255, 255);
-                    ((Renderer)__instance.myRend).material.SetColor("_OutlineColor", color);
-                    ((Renderer)__instance.myRend).material.SetColor("_AddColor", mainTarget ? color : Color.clear);
+                    __instance.myRend.material.SetColor("_OutlineColor", color);
+                    __instance.myRend.material.SetColor("_AddColor", mainTarget ? color : Color.clear);
                 }
             }
         }
 
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
-        class MapBehaviourPatch
+        public static class MapBehaviourPatch
         {
-            static void Postfix(MapBehaviour __instance)
+            public static void Postfix(MapBehaviour __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -74,7 +76,7 @@ namespace TownOfUsReworked.Patches
 
                 if (sprite != null)
                     PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
-                
+
                 var text = __instance.GetComponentInChildren<TextMeshPro>(true);
 
                 if (text == null)
@@ -101,7 +103,7 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(StatsManager), nameof(StatsManager.AmBanned), MethodType.Getter)]
-        public class AmBanned
+        public static class AmBanned
         {
             public static void Postfix(out bool __result) => __result = false;
         }

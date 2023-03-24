@@ -3,7 +3,7 @@ using HarmonyLib;
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
-    public class EndGame
+    public static class EndGame
     {
         public static void Reset()
         {
@@ -14,16 +14,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
         public static class EndGamePatch
         {
-            public static void Prefix(AmongUsClient __instance)
-            {
-                Reset();
-            }
+            public static void Prefix() => Reset();
         }
 
         [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
         public static class ShipStatusPatch
         {
-            public static bool Prefix(ShipStatus __instance)
+            public static bool Prefix()
             {
                 Reset();
                 return true;

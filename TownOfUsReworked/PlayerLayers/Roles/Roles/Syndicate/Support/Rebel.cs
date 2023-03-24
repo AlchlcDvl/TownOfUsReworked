@@ -30,13 +30,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
+            Framed = new();
         }
 
         //Rebel Stuff
-        public PlayerControl ClosestSyndicate = null;
-        public bool HasDeclared = false;
-        public bool WasSidekick = false;
-        public Role FormerRole = null;
+        public PlayerControl ClosestSyndicate;
+        public bool HasDeclared;
+        public bool WasSidekick;
+        public Role FormerRole;
         public AbilityButton DeclareButton;
         public DateTime LastDeclared;
 
@@ -66,40 +67,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float ConcealTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastConcealed;
+            var timespan = utcNow - LastConcealed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ConcealCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Framer Stuff
         public AbilityButton FrameButton;
-        public List<byte> Framed = new List<byte>();
+        public List<byte> Framed = new();
         public DateTime LastFramed;
         public PlayerControl ClosestFrame;
 
         public float FrameTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFramed;
+            var timespan = utcNow - LastFramed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.FrameCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Frame(PlayerControl player)
         {
             if (player.Is(Faction) || Framed.Contains(player.PlayerId))
                 return;
-            
+
             Framed.Add(player.PlayerId);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RebelAction);
@@ -117,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Poisoned => PoisonTimeRemaining > 0f;
         public bool PoisonEnabled;
         public PlayerControl ClosestPoison;
-        
+
         public void Poison()
         {
             PoisonEnabled = true;
@@ -146,18 +139,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PoisonEnabled = false;
             LastPoisoned = DateTime.UtcNow;
         }
-        
+
         public float PoisonTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastPoisoned;
+            var timespan = utcNow - LastPoisoned;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.PoisonCd, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Shapeshifter Stuff
@@ -179,10 +168,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var player in allPlayers)
             {
-                var random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+                var random = Random.RandomRangeInt(0, allPlayers.Count);
 
                 while (player == allPlayers[random])
-                    random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
+                    random = Random.RandomRangeInt(0, allPlayers.Count);
 
                 var otherPlayer = allPlayers[random];
                 Utils.Morph(player, otherPlayer);
@@ -199,14 +188,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float ShapeshiftTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastShapeshifted;
+            var timespan = utcNow - LastShapeshifted;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Bomber Stuff
@@ -219,37 +204,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float BombTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastPlaced;
+            var timespan = utcNow - LastPlaced;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BombCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float DetonateTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDetonated;
+            var timespan = utcNow - LastDetonated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DetonateCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Warper Stuff
         public AbilityButton WarpButton;
         public DateTime LastWarped;
 
-        public void Warp()
+        public static void Warp()
         {
-            Dictionary<byte, Vector2> coordinates = GenerateWarpCoordinates();
-
+            var coordinates = GenerateWarpCoordinates();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Warp);
             writer.Write((byte)coordinates.Count);
@@ -287,14 +263,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        private Dictionary<byte, Vector2> GenerateWarpCoordinates()
+        private static Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
-            List<PlayerControl> targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
-            HashSet<Vent> vents = Object.FindObjectsOfType<Vent>().ToHashSet();
-            Dictionary<byte, Vector2> coordinates = new Dictionary<byte, Vector2>(targets.Count);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
+            var vents = Object.FindObjectsOfType<Vent>().ToHashSet();
+            var coordinates = new Dictionary<byte, Vector2>(targets.Count);
             var rnd = new System.Random((int)DateTime.Now.Ticks);
 
-            List<Vector3> SkeldPositions = new List<Vector3>()
+            var SkeldPositions = new List<Vector3>()
             {
                 new Vector3(-2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(0.7f, 2.2f, 0f), //caffeteria. button. top right.
@@ -336,7 +312,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(-6.5f, -4.5f, 0f) //medbay bottom
             };
 
-            List<Vector3> MiraPositions = new List<Vector3>()
+            var MiraPositions = new List<Vector3>()
             {
                 new Vector3(-4.5f, 3.5f, 0f), //launchpad top
                 new Vector3(-4.5f, -1.4f, 0f), //launchpad bottom
@@ -361,7 +337,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(22f, -2f, 0f), //balcony
             };
 
-            List<Vector3> PolusPositions = new List<Vector3>()
+            var PolusPositions = new List<Vector3>()
             {
                 new Vector3(16.6f, -1f, 0f), //dropship top
                 new Vector3(16.6f, -5f, 0f), //dropship bottom
@@ -409,7 +385,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(17.5f, -25.7f, 0f), //snowman under office
             };
 
-            List<Vector3> dlekSPositions = new List<Vector3>()
+            var dlekSPositions = new List<Vector3>()
             {
                 new Vector3(2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(-0.7f, 2.2f, 0f), //caffeteria. button. top right.
@@ -450,14 +426,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 new Vector3(10.5f, -2.0f, 0f), //medbay top
                 new Vector3(6.5f, -4.5f, 0f) //medbay bottom
             };
-            
-            var map = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
 
-            foreach (PlayerControl target in targets)
+            foreach (var target in targets)
             {
                 var coin = Random.RandomRangeInt(0, 2);
-
-                Vector3 destination = new Vector3();
+                var destination = new Vector3();
 
                 if (coin == 0 || !SyndicateHasChaosDrive)
                 {
@@ -466,7 +439,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
                 else if (coin == 1)
                 {
-                    switch (map)
+                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                     {
                         case 0:
                             destination = SkeldPositions[rnd.Next(SkeldPositions.Count)];
@@ -483,9 +456,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         case 3:
                             destination = dlekSPositions[rnd.Next(dlekSPositions.Count)];
                             break;
-                        
-                        default:
-                            break;
                     }
                 }
 
@@ -497,7 +467,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Vector3 SendPlayerToVent(Vent vent)
         {
-            Vector2 size = vent.GetComponent<BoxCollider2D>().size;
             Vector3 destination = vent.transform.position;
             destination.y += 0.3636f;
             return destination;
@@ -506,34 +475,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float WarpTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastWarped;
+            var timespan = utcNow - LastWarped;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.WarpCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.SidekickAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Drunkard Stuff
         public AbilityButton ConfuseButton;
-        public bool ConfuseEnabled = false;
+        public bool ConfuseEnabled;
         public float ConfuseTimeRemaining;
         public DateTime LastConfused;
         public bool Confused => ConfuseTimeRemaining > 0f;
-        
+
         public float DrunkTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastConfused;
+            var timespan = utcNow - LastConfused;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Confuse()
@@ -564,14 +525,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CrusadeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCrusaded;
+            var timespan = utcNow - LastCrusaded;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Crusade()
@@ -588,25 +545,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             CrusadeEnabled = false;
             LastCrusaded = DateTime.UtcNow;
             CrusadedPlayer = null;
-        }
-
-        public void Crusade(PlayerControl player2)
-        {
-            var closestPlayers = Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius);
-
-            foreach (var player in closestPlayers)
-            {
-                Utils.Spread(player2, player);
-
-                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player))
-                    continue;
-                    
-                if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player2, player, false);
-                
-                if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player, player2, false);
-            }
         }
     }
 }

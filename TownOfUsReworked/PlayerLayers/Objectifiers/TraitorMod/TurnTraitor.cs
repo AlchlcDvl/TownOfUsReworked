@@ -12,9 +12,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    public class SetTraitor
+    public static class SetTraitor
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, ObjectifierEnum.Traitor))
                 return;
@@ -39,8 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
             var traitorRole = Role.GetRole(traitor);
 
-            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected).Count();
-            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected).Count();
+            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
+            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
 
             var turnIntruder = false;
             var turnSyndicate = false;
@@ -72,12 +72,18 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 }
             }
             else if (IntrudersAlive > 0 && SyndicateAlive == 0)
+            {
                 turnIntruder = true;
+            }
             else if (SyndicateAlive > 0 && IntrudersAlive == 0)
+            {
                 turnSyndicate = true;
+            }
             else
+            {
                 return;
-            
+            }
+
             if (turnIntruder)
             {
                 traitorRole.Faction = Faction.Intruder;

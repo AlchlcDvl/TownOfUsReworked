@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class TimeMaster : IntruderRole
     {
         public AbilityButton FreezeButton;
-        public bool Enabled = false;
+        public bool Enabled;
         public float TimeRemaining;
         public DateTime LastFrozen;
         public bool Frozen => TimeRemaining > 0f;
@@ -26,18 +26,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
         }
-        
+
         public float FreezeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFrozen;
+            var timespan = utcNow - LastFrozen;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TimeFreeze()

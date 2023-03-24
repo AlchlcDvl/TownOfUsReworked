@@ -9,9 +9,9 @@ using TownOfUsReworked.Patches;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
-    internal class MeetingStart
+    public static class MeetingStart
     {
-        private static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] GameData.PlayerInfo info)
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo info)
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Coroner) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                 return;
 
             Role.GetRole<Coroner>(PlayerControl.LocalPlayer).Reported.Add(info.PlayerId);
-                
+
             var br = new BodyReport
             {
                 Killer = Utils.PlayerById(killer.KillerId),

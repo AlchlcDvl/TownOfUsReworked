@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformMediate
+    public static class PerformMediate
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 {
                     foreach (var dead in PlayersDead)
                     {
-                        if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
+                        if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.ContainsKey(x.ParentId)))
                         {
                             role.AddMediatePlayer(dead.PlayerId);
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                     PlayersDead.Shuffle();
                     var dead = PlayersDead[Random.RandomRangeInt(0, PlayersDead.Count - 1)];
 
-                    if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.Keys.Contains(x.ParentId)))
+                    if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !role.MediatedPlayers.ContainsKey(x.ParentId)))
                     {
                         role.AddMediatePlayer(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

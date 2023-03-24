@@ -7,9 +7,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class UpdateArrows
+    public static class UpdateArrows
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Revealer))
             {
@@ -30,10 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                 {
                     if (target.Data.IsDead)
                     {
-                        arrow.Destroy();
-
-                        if (arrow.gameObject != null)
-                            arrow.gameObject.Destroy();
+                        arrow?.Destroy();
+                        arrow?.gameObject?.Destroy();
                     }
 
                     arrow.target = target.transform.position;

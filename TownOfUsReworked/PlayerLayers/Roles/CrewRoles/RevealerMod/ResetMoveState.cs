@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ResetMoveState))]
-    public class ResetMoveState
+    public static class ResetMoveState
     {
         public static void Postfix(PlayerPhysics __instance)
         {

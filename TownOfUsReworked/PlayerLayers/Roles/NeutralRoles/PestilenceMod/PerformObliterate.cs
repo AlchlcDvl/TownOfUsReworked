@@ -7,7 +7,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformObliterate
+    public static class PerformObliterate
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -26,11 +26,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true || interact[0] == true)
+                if (interact[3] || interact[0])
                     role.LastKilled = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;

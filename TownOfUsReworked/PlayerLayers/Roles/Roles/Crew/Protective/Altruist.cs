@@ -6,11 +6,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Altruist : CrewRole
     {
-        public bool CurrentlyReviving = false;
-        public DeadBody CurrentTarget = null;
-        public bool ReviveUsed = false;
+        public bool CurrentlyReviving;
+        public DeadBody CurrentTarget;
+        public bool ReviveUsed;
         public AbilityButton ReviveButton;
-        
+
         public Altruist(PlayerControl player) : base(player)
         {
             Name = "Altruist";

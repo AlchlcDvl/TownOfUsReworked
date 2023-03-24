@@ -9,10 +9,12 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
     [HarmonyPatch(typeof(MeetingHud))]
-    public class SwapVotes
+    public static class SwapVotes
     {
+        #pragma warning disable
         public static PlayerVoteArea Swap1;
         public static PlayerVoteArea Swap2;
+        #pragma warning restore
 
         private static IEnumerator Slide2D(Transform target, Vector2 source, Vector2 dest, float duration = 0.75f)
         {
@@ -36,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))] // BBFDNCCEJHI
         public static class VotingComplete
         {
-            public static void Postfix(MeetingHud __instance)
+            public static void Postfix()
             {
                 Utils.LogSomething(Swap1 == null ? "null" : Swap1.ToString());
                 Utils.LogSomething(Swap2 == null ? "null" : Swap2.ToString());
@@ -48,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     foreach (var button in swapper.MoarButtons.Where(button => button != null))
                         button.SetActive(false);
                 }
-                
+
                 if (Swap1 == null || Swap2 == null)
                     return;
 
@@ -111,7 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
         public static class MeetingHud_Start
         {
-            public static void Postfix(MeetingHud __instance)
+            public static void Postfix()
             {
                 Swap1 = null;
                 Swap2 = null;

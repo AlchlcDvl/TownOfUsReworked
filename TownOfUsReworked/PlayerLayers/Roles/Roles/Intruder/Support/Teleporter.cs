@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastMarked;
         public AbilityButton MarkButton;
         public bool CanMark;
-        public Vector3 TeleportPoint = new Vector3(0, 0, 0);
+        public Vector3 TeleportPoint = new(0, 0, 0);
 
         public Teleporter(PlayerControl player) : base(player)
         {
@@ -28,43 +28,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TeleportTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastTeleport;
+            var timespan = utcNow - LastTeleport;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.TeleportCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float MarkTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMarked;
+            var timespan = utcNow - LastMarked;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MarkCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public static void Teleport(PlayerControl teleporter)
         {
             teleporter.MyPhysics.ResetMoveState();
-            var teleporterRole = Role.GetRole<Teleporter>(teleporter);
+            var teleporterRole = GetRole<Teleporter>(teleporter);
             var position = teleporterRole.TeleportPoint;
             teleporter.NetTransform.SnapTo(new Vector2(position.x, position.y));
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
             {
-                if (PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
-                {
-                    SubmergedCompatibility.ChangeFloor(teleporter.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                }
+                SubmergedCompatibility.ChangeFloor(teleporter.GetTruePosition().y > -7);
+                SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
             }
 
             if (PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)

@@ -7,11 +7,12 @@ using Reactor.Utilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
 {
-    public class Reverse
+    [HarmonyPatch]
+    public static class Reverse
     {
         public static class ConfuseFunctions
         {
-            private static List<PlayerControl> Confused = new List<PlayerControl>();
+            private static readonly List<PlayerControl> Confused = new();
 
             public static void ConfuseAll()
             {
@@ -21,8 +22,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
                 {
                     if (player.Data.IsDead || player.Data.Disconnected || (player.Is(Faction.Syndicate) && CustomGameOptions.SyndicateImmunity) || player.Is(RoleEnum.Drunkard) ||
                         player.Is(ModifierEnum.Drunk))
+                    {
                         continue;
-                    
+                    }
+
                     Confused.Add(player);
                 }
 

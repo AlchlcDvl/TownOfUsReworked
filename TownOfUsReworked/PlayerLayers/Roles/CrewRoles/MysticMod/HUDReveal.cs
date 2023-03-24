@@ -7,9 +7,9 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDReveal
+    public static class HUDReveal
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Mystic))
                 return;
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 
             role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary");
 
-            if (role.ConvertedDead && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (Mystic.ConvertedDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 role.TurnSeer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);

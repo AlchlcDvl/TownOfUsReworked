@@ -6,7 +6,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformButton
+    public static class PerformButton
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
             {
                 if (ability.ButtonUsed || PlayerControl.LocalPlayer.RemainingEmergencies <= 0)
                     return false;
-                
+
                 if (ability.StartTimer() != 0f)
                     return false;
 

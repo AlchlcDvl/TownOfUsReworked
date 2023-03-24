@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using HarmonyLib;
-using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Modifiers;
@@ -12,58 +11,64 @@ using InnerNet;
 using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.Enums;
+using System.Collections.Generic;
+using UnityEngine;
+using AmongUs.Data;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class ChatCommands
     {
-        public static System.Collections.Generic.List<string> ChatHistory = new();
-        public static int LobbyLimit = 127;
+        private readonly static List<string> ChatHistory = new();
+        private static int LobbyLimit = 127;
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
-        private static class SendChatPatch
+        public static class SendChatPatch
         {
-            static bool Prefix()
+            public static bool Prefix()
             {
                 //Set up dictionaries and list for colours
-                var coloursDict = new Dictionary<int, string>();
-                coloursDict.Add(0, "Red");
-                coloursDict.Add(1, "Blue");
-                coloursDict.Add(2, "Green");
-                coloursDict.Add(3, "Pink");
-                coloursDict.Add(4, "Orange");
-                coloursDict.Add(5, "Yellow");
-                coloursDict.Add(6, "Black");
-                coloursDict.Add(7, "White");
-                coloursDict.Add(8, "Purple");
-                coloursDict.Add(9, "Brown");
-                coloursDict.Add(10, "Cyan");
-                coloursDict.Add(11, "Lime");
-                coloursDict.Add(12, "Maroon");
-                coloursDict.Add(13, "Rose");
-                coloursDict.Add(14, "Banana");
-                coloursDict.Add(15, "Grey");
-                coloursDict.Add(16, "Tan");
-                coloursDict.Add(17, "Coral");
-                coloursDict.Add(18, "Watermelon");
-                coloursDict.Add(19, "Chocolate");
-                coloursDict.Add(20, "Sky Blue");
-                coloursDict.Add(21, "Biege");
-                coloursDict.Add(22, "Hot Pink");
-                coloursDict.Add(23, "Turquoise");
-                coloursDict.Add(24, "Lilac");
-                coloursDict.Add(25, "Olive");
-                coloursDict.Add(26, "Azure");
-                coloursDict.Add(27, "Plum");
-                coloursDict.Add(28, "Jungle");
-                coloursDict.Add(29, "Mint");
-                coloursDict.Add(30, "Chartreuse");
-                coloursDict.Add(31, "Macau");
-                coloursDict.Add(32, "Tawny");
-                coloursDict.Add(33, "Gold");
-                coloursDict.Add(34, "Chroma");
-                coloursDict.Add(35, "Rainbow");
+                var coloursDict = new Dictionary<int, string>
+                {
+                    { 0, "Red" },
+                    { 1, "Blue" },
+                    { 2, "Green" },
+                    { 3, "Pink" },
+                    { 4, "Orange" },
+                    { 5, "Yellow" },
+                    { 6, "Black" },
+                    { 7, "White" },
+                    { 8, "Purple" },
+                    { 9, "Brown" },
+                    { 10, "Cyan" },
+                    { 11, "Lime" },
+                    { 12, "Maroon" },
+                    { 13, "Rose" },
+                    { 14, "Banana" },
+                    { 15, "Grey" },
+                    { 16, "Tan" },
+                    { 17, "Coral" },
+                    { 18, "Watermelon" },
+                    { 19, "Chocolate" },
+                    { 20, "Sky Blue" },
+                    { 21, "Biege" },
+                    { 22, "Hot Pink" },
+                    { 23, "Turquoise" },
+                    { 24, "Lilac" },
+                    { 25, "Olive" },
+                    { 26, "Azure" },
+                    { 27, "Plum" },
+                    { 28, "Jungle" },
+                    { 29, "Mint" },
+                    { 30, "Chartreuse" },
+                    { 31, "Macau" },
+                    { 32, "Tawny" },
+                    { 33, "Gold" },
+                    { 34, "Chroma" },
+                    { 35, "Rainbow" }
+                };
 
                 var hudManager = HudManager.Instance.Chat;
                 var text = hudManager.TextArea.text;
@@ -105,14 +110,16 @@ namespace TownOfUsReworked.Patches
                         hudManager.AddChat(player, "Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page at " +
                             "\nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
                     }
-                    else if (text.ToLower().StartsWith("/size "))
+                    else if (text.StartsWith("/size "))
                     {
                         chatHandled = true;
 
                         if (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
                         {
-                            if (!Int32.TryParse(text.Substring(6), out LobbyLimit))
+                            if (!int.TryParse(text.AsSpan(6), out LobbyLimit))
+                            {
                                 hudManager.AddChat(PlayerControl.LocalPlayer, "Invalid Size\nUsage: /size <amount>");
+                            }
                             else
                             {
                                 LobbyLimit = Math.Clamp(LobbyLimit, 1, 127);
@@ -121,16 +128,20 @@ namespace TownOfUsReworked.Patches
                                 {
                                     GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = LobbyLimit;
                                     GameStartManager.Instance.LastPlayerCount = LobbyLimit;
-                                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions)); 
-                                    // TODO Maybe simpler?? 
+                                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
+                                    //TODO Maybe simpler?? 
                                     hudManager.AddChat(PlayerControl.LocalPlayer, $"Lobby size changed to {LobbyLimit} players.");
                                 }
                                 else
+                                {
                                     hudManager.AddChat(PlayerControl.LocalPlayer, $"Lobby size is already {LobbyLimit}.");
+                                }
                             }
                         }
                         else
+                        {
                             hudManager.AddChat(PlayerControl.LocalPlayer, "You can't do that.");
+                        }
                     }
                     //Abbreviations help
                     else if (text == "/abbreviations" || text == "/abbreviations " || text == "/ab" || text == "/ab ")
@@ -142,7 +153,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/abbreviations ") || text.StartsWith("/ab "))
                     {
                         chatHandled = true;
-                        inputText = text.StartsWith("/ab ") ? text.Substring(4) : text.Substring(15);
+                        inputText = text.StartsWith("/ab ") ? text[4..] : text[15..];
                         var tempText = inputText;
                         inputText = inputText.ToLower();
                         var requiredText = inputText.Replace("(", "");
@@ -440,16 +451,22 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/setname "))
                     {
                         chatHandled = true;
-                        inputText = otherText.Substring(9);
+                        inputText = otherText[9..];
                         //As much as I hate to do this, people will take advatage of this function so we're better off doing this early
                         string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
 
-                        if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[a-zA-Z0-9]+$"))
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, "@^[a-zA-Z0-9]+$"))
+                        {
                             hudManager.AddChat(player, "Name contains disallowed characters.");
+                        }
                         else if (profanities.Any(x => inputText.ToLower().Contains(x)))
+                        {
                             hudManager.AddChat(player, "Name contains unaccepted words.");
+                        }
                         else if (inputText.Length > 20)
+                        {
                             hudManager.AddChat(player, "Name is too long.");
+                        }
                         else
                         {
                             player.RpcSetName(inputText);
@@ -466,10 +483,10 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/color ") || text.StartsWith("/colour "))
                     {
                         chatHandled = true;
-                        inputText = text.StartsWith("/colour ") ? text.Substring(7) : text.Substring(6);
+                        inputText = text.StartsWith("/colour ") ? text[7..] : text[6..];
                         var colourSpelling = text.StartsWith("/colour ") ? "Colour" : "Color";
 
-                        if (!Int32.TryParse(inputText, out var col))
+                        if (!int.TryParse(inputText, out var col))
                         {
                             hudManager.AddChat(player, inputText + " is an invalid " + colourSpelling + ".\nYou need to use the color ID for the color you want to be. To find out a color's ID," +
                                 " go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick. The range of colors is from 0" +
@@ -492,10 +509,10 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/kick "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(6);
-                        PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(inputText));
+                        inputText = text[6..];
+                        PlayerControl target = PlayerControl.AllPlayerControls.ToArray().ToList().Find(x => x.Data.PlayerName.Equals(inputText));
 
-                        if (target != null && target != player && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
+                        if (target != null && target != player && AmongUsClient.Instance?.CanBan() == true)
                         {
                             var client = AmongUsClient.Instance.GetClient(target.OwnerId);
 
@@ -507,11 +524,11 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/clearlobby"))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(6);
+                        inputText = text[6..];
 
                         foreach (var player2 in PlayerControl.AllPlayerControls)
                         {
-                            if (player2 != player && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
+                            if (player2 != player && AmongUsClient.Instance?.CanBan() == true)
                             {
                                 var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
 
@@ -530,10 +547,10 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/ban "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(5);
-                        var target = PlayerControl.AllPlayerControls.ToArray().ToList().FirstOrDefault(x => x.Data.PlayerName.Equals(inputText));
+                        inputText = text[5..];
+                        var target = PlayerControl.AllPlayerControls.ToArray().ToList().Find(x => x.Data.PlayerName.Equals(inputText));
 
-                        if (target != null && AmongUsClient.Instance != null && AmongUsClient.Instance.CanBan())
+                        if (target != null && AmongUsClient.Instance?.CanBan() == true)
                         {
                             var client = AmongUsClient.Instance.GetClient(target.OwnerId);
 
@@ -557,237 +574,15 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/roleinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(10);
-
-                        if (inputText == "anarchist" || inputText == "ana")
-                            chatText = "The Anarchist is just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "arsonist" || inputText == "arso")
-                        {
-                            chatText = "The Arsonist is a slow killer who benefits the longer the game goes on. The Arsonist can douse other players with gasoline. " +
-                                "After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.";
-                        }
-                        else if (inputText == "blackmailer" || inputText == "bm")
-                        {
-                            chatText = "The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents " + 
-                                "the blackmailed person from speaking during the next meeting.";
-                        }
-                        else if (inputText == "camouflager" || inputText == "camo")
-                        {
-                            chatText = "The Camouflager has the ability to disrupt everyone's ability to differentiate others, causing everyone to appear grey and lackluster. " +
-                                "This is very advantageous to all evils as they can commit their evil deeds while being unable to tell apart friend from foe.";
-                        }
-                        else if (inputText == "cannibal" || inputText == "cann")
-                        {
-                            chatText = $"The Cannibal can eat the body which wipes away the body, like the Janitor. They win when they eat {EatNeed}" +
-                                " bodies to win. Do not let them have this chance.";
-                        }
-                        else if (inputText == "concealer" || inputText == "conc")
-                        {
-                            chatText = "The Concealer can make everyone invisible for a short while, allowing sneaky kills to be made. If you stop seeing anyone around you, it's" +
-                                " probably the work of a Concealer.";
-                        }
-                        else if (inputText == "consigliere" || inputText == "consig")
-                        {
-                            chatText = $"The Consigliere is a corrupt Inspector who can find out a player's specific {getWhat}. Using this information wisely " +
-                                "is a must because giving too much may give out your role.";
-                        }
-                        else if (inputText == "consort" || inputText == "cons")
-                        {
-                            chatText = "The Consort can roleblock players to stop them from using their on screen buttons. If you were blocked in a very crucial moment, blame " +
-                                "the Consort.";
-                        }
-                        else if (inputText == "coroner" || inputText == "cor")
-                        {
-                            chatText = "The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. " +
-                                "The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, " +
-                                "the killer's faction/role and (according to the settings) the killer's name.";
-                        }
-                        else if (inputText == "crewmate" || inputText == "crew")
-                            chatText = "The Crewmate is just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "cryomaniac" || inputText == "cryo")
-                            chatText = "The Cryomaniac is someone who's obsessed with freezing everyone. Ensure you are not douse because they freeze you!";
-                        else if (inputText == "detective" || inputText == "det")
-                        {
-                            chatText = "The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective " +
-                                "will be alerted about it.";
-                        }
-                        else if (inputText == "disguiser" || inputText == "disg")
-                            chatText = "The Disguiser can change another player's appearance. This can be used to frame them or cause the spread of false clears.";
-                        else if (inputText == "dracula" || inputText == "drac")
-                        {
-                            chatText = "The Dracula is the leader of the Undead subfaction. They have the ability to convert other people to their cause. Take them " +
-                                "down quick, or else they will overrun you.";
-                        }
-                        else if (inputText == "engineer" || inputText == "engi")
-                        {
-                            chatText = "The Engineer can fix a sabotage at any point during the round. They can also vent so beware of them when killing. They " +
-                                "could be lurking anywhere at any given point.";
-                        }
-                        else if (inputText == "mafioso" || inputText == "mafi")
-                        {
-                            chatText = "The Mafioso is a result of promoting a fellow Intruder via the Godfather. The whole point of the Mafioso is to get stronger off of the death " +
-                                "of their leader. The Mafioso in itself is not a bad thing, but should the Godfather die while the Mafioso is still alive, the Intruders will then have " +
-                                "a stronger leader";
-                        }
-                        else if (inputText == "escort" || inputText == "esc")
-                        {
-                            chatText = "The Escort can roleblock players to stop them from using their on screen buttons. If you were blocked in a very crucial moment, blame " +
-                                "the Escort.";
-                        }
-                        else if (inputText == "executioner" || inputText == "exe")
-                        {
-                            chatText = "The Executioner is a crazed crewmate who only wants to see their target get ejected. Do not let the target ejected, because " +
-                                "the Executioner only targets Crew.";
-                        }
-                        else if (inputText == "glitch" || inputText == "gli")
-                        {
-                            chatText = "The Glitch can hack players to prevent them from being able to use their buttons. They can also mimic others so if you see someone" +
-                                " kill in front of you, chances are that their appearance is not real.";
-                        }
-                        else if (inputText == "godfather" || inputText == "gf")
-                        {
-                            chatText = "The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso" +
-                                " becomes the new Godfather and has lowered cooldowns.";
-                        }
-                        else if (inputText == "gorgon" || inputText == "gorg")
-                        {
-                            chatText = "The Gorgon can gaze at players which forces them to stand still. When a meeting is called, all of the frozen players will die. If you start " +
-                                "seeing a lot of people standing still, chances are it's the Gorgon's work.";
-                        }
-                        else if (inputText == "grenadier" || inputText == "gren")
-                            chatText = "The Grenadier has flashbangs which can blind players. Blinded players cannot see anything that's happening around them.";
-                        else if (inputText == "impostor" || inputText == "imp")
-                            chatText = "The Impostor is just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "inspector" || inputText == "insp")
-                        {
-                            chatText = "The Inspector can inspect players and receive a role list of what that player could be. If you claim a role, you better be prepared" +
-                                " for an Inspector to check you and call you out.";
-                        }
-                        else if (inputText == "investigator" || inputText == "inv")
-                            chatText = "The Investigator can see the footprints of players. All footprints disappear after a set amount of time and only the Investigator can see them.";
-                        else if (inputText == "guardian angel" || inputText == "ga")
-                        {
-                            chatText = "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their " +
-                                "target lives to the end of the game, even if their target loses (like in case of a Cannibal Win and their target being an Intruder).";
-                        }
-                        else if (inputText == "janitor" || inputText == "jani")
-                        {
-                            chatText = "The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use." +
-                                " If the round goes on for too long with no bodies reported, chances are that there is a Janitor cleaning up dead bodies.";
-                        }
-                        else if (inputText == "jester" || inputText == "jest")
-                            chatText = "The Jester has no abilities. They must make themselves appear to be evil and get ejected as a result to win.";
-                        else if (inputText == "juggernaut" || inputText == "jugg")
-                        {
-                            chatText = "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer decreases " +
-                                "and instead gives them other buffs, like bypassing protections.";
-                        }
-                        else if (inputText == "mayor")
-                        {
-                            chatText = "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option to abstain their vote " +
-                                "during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.";
-                        }
-                        else if (inputText == "medic")
-                            chatText = "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide.";
-                        else if (inputText == "medium" || inputText == "med")
-                        {
-                            chatText = "The Medium can see ghosts. During each round the Medium has an ability called Mediate. If the Medium uses this ability, the Medium and the dead player will be " +
-                                "able to see each other and communicate from beyond the grave!";
-                        }
-                        else if (inputText == "miner" || inputText == "mine")
-                        {
-                            chatText = "The Miner can create new vents. These vents only connect to each other, forming a new passageway.";
-                        }
-                        else if (inputText == "morphling" || inputText == "morph")
-                        {
-                            chatText = "The Morphling can morph into another player. At the beginning of the game and after every meeting, they can choose someone to sample. They can then morph into " +
-                                "that person at any time for a limited amount of time.";
-                        }
-                        else if (inputText == "murderer" || inputText == "murd")
-                            chatText = "The Murderer is a simple Neutral Killer with no special abilities.";
-                        else if (inputText == "operative" || inputText == "op")
-                        {
-                            chatText = "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug " +
-                                "will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is.";
-                        }
-                        else if (inputText == "pestilence" || inputText == "pest")
-                        {
-                            chatText = "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from " +
-                                "Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).";
-                        }
-                        else if (inputText == "plaguebearer" || inputText == "pb")
-                        {
-                            chatText = "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected," +
-                                " the Plaguebearer becomes Pestilence.";
-                        }
-                        else if (inputText == "poisoner" || inputText == "pois")
-                            chatText = "The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration.";
-                        else if (inputText == "serial killer" || inputText == "sk")
-                        {
-                            chatText = "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, " +
-                                "unlike most killers, their kill cooldown is really short for the duration of the bloodlust.";
-                        }
-                        else if (inputText == "shapeshifter" || inputText == "ss")
-                            chatText = "The Shapeshifter can randomise everyone's appearances for a short while.";
-                        else if (inputText == "sheriff" || inputText == "sher")
-                            chatText = "The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or Evil. A player's name will change color according to their results.";
-                        else if (inputText == "shifter" || inputText == "shift")
-                            chatText = "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.";
-                        else if (inputText == "survivor" || inputText == "surv")
-                            chatText = "The Survivor wins by simply surviving. They can vest which makes them immune to death for a short duration.";
-                        else if (inputText == "swapper" || inputText == "swap")
-                            chatText = "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.";
-                        else if (inputText == "teleporter" || inputText == "tele")
-                            chatText = "The Teleporter can teleport to a marked positions. Once per round, the Teleporter can mark a location which they can then teleport to later in the round.";
-                        else if (inputText == "thief")
-                        {
-                            chatText = "The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will kill themselves. After stealing " +
-                                "their target's role, the Thief can now win as whatever role they have become.";
-                        }
-                        else if (inputText == "time lord" || inputText == "tl")
-                            chatText = "The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be revived. Nothing but movements and kills are affected.";
-                        else if (inputText == "time master" || inputText == "tm")
-                        {
-                            chatText = "The Time Master can freeze time, causing all non-Intruders (and the Time Lord if a certain setting is on) to freeze in place and unable to move for a short while. Time freeze and " + 
-                                "sabotages cannot happen for obvious reasons.";
-                        }
-                        else if (inputText == "tracker" || inputText == "track")
-                            chatText = "The Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.";
-                        else if (inputText == "transporter" || inputText == "trans")
-                            chatText = "The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue flash on their screen.";
-                        else if (inputText == "troll")
-                        {
-                            chatText = "The Troll just wants to be killed, but not ejected. Only spawns in Custom Mode. The Troll can fake interact with players. This interaction does nothing, it just triggers any " +
-                                "interaction sensitive roles like Veteran and Pestilence.";
-                        }
-                        else if (inputText == "undertaker" || inputText == "ut")
-                            chatText = "The Undertaker can drag, drop bodies and hide them in vents.";
-                        else if (inputText == "vampire hunter" || inputText == "vh")
-                        {
-                            chatText = "The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, " +
-                                " the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.";
-                        }
-                        else if (inputText == "veteran" || inputText == "vet")
-                            chatText = "The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.";
-                        else if (inputText == "vigilante" || inputText == "vig")
-                            chatText = "The Vigilante is a Crewmate that has the ability to eliminate the Intruder using their kill button. However, if they kill a Crewmate or a Neutral player they can't kill, they instead die themselves.";
-                        else if (inputText == "warper" || inputText == "warp")
-                            chatText = "The Warper can teleport everyone to a random vent every now and then.";
-                        else if (inputText == "wraith")
-                            chatText = "The Wraith can temporarily turn invisible.";
-                        else if (inputText == "werewolf" || inputText == "ww")
-                            chatText = "The Werewolf can kill all players within a certain radius.";
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[10..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
                     else if (text.StartsWith("/factioninfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(13);
-                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => inputText.ToLower() == $"{x.Faction}".ToLower() || inputText.ToLower() == x.FactionShort.ToLower(),
+                        inputText = text[13..];
+                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => string.Equals(inputText, $"{x.Faction}", StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.FactionShort, StringComparison.OrdinalIgnoreCase),
                             LayerInfo.AllRoles[0]).FactionInfoMessage();
                         hudManager.AddChat(player, chatText);
                     }
@@ -795,138 +590,30 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/alignmentinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(15);
-                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => x.Alignment.ToLower() == inputText || x.AlignmentShort.ToLower() == inputText.ToLower(),
-                            LayerInfo.AllRoles[0])?.AlignmentInfoMessage();
+                        inputText = text[15..];
+                        chatText = LayerInfo.AllRoles.FirstOrDefault(x => x.Alignment.ToLower() == inputText || string.Equals(x.AlignmentShort, inputText,
+                            StringComparison.OrdinalIgnoreCase), LayerInfo.AllRoles[0])?.AlignmentInfoMessage();
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
                     else if (text.StartsWith("/modifierinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(14);
-
-                        if (inputText == "bait")
-                        {
-                            chatText = "The Bait is a ticking time bomb for whoever dares to kill them. Killing them will result in the killer self reporting " +
-                                "almost instantly.";
-                        }
-                        else if (inputText == "coward" || inputText == "cow")
-                            chatText = "The Coward cannot report anyone's body at all.";
-                        else if (inputText == "diseased" || inputText == "dis")
-                        {
-                            chatText = "The Diseased has a terrible disease that infects their killer upon death. The unfortunate killer's kill cooldown " +
-                                "will be tripled for the next kill.";
-                        }
-                        else if (inputText == "drunk")
-                            chatText = "The Drunk's controls are reversed. Traditional control no longer work on them and keybinds are randomised.";
-                        else if (inputText == "dwarf")
-                            chatText = "The Dwarf is a tiny boi with speed.";
-                        else if (inputText == "flincher" || inputText == "flinch")
-                        {
-                            chatText = "The Flincher will occasioanlly flinch causing them to stop for a moment. This is super unhelpful if you're trying to catch" +
-                                " and kill someone or when you are trying to run away from a killer.";
-                        }
-                        else if (inputText == "giant")
-                            chatText = "The Giant is a big boi with lower speed.";
-                        else if (inputText == "professional" || inputText == "prof")
-                            chatText = "The Professional is so good at avoiding dying via assassination that they are able to dodge one misfire.";
-                        else if (inputText == "shy")
-                            chatText = "The Shy player cannot call a meeting because they just can't seem to be able to talk in front of a crowd.";
-                        else if (inputText == "vip")
-                            chatText = "If the VIP is killed, all players will be alerted to their death and the players' screens will flash in the VIP's role's color.";
-                        else if (inputText == "volatile" || inputText == "vol")
-                            chatText = "The Volatile player player cannot distinguish sounds and hallucinations from reality, causing them to see, hear and feel things at random";
-                        else
-                            chatText = "Invalid input.";
-                        
+                        inputText = text[14..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding abilities
                     else if (text.StartsWith("/abilityinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(13);
-
-                        if (inputText == "assassin" || inputText == "ass")
-                        {
-                            chatText = "The Assassin can kill players during a meeting by guessing their target's role. Be careful though, as guessing incorrectly " +
-                                "will kill you instead.";
-
-                            if (inputText == "ass")
-                                chatText += " I know what you tried to look up. ;)";
-                        }
-                        else if (inputText == "button barry" || inputText == "bb")
-                            chatText = "The Button Barry can call a meeting from anywhere, at the cost of their vision.";
-                        else if (inputText == "lighter" || inputText == "light")
-                            chatText = "The Lighter has higher vision.";
-                        else if (inputText == "multitasker" || inputText == "mt")
-                            chatText = "The Multitasker can...well...multitask. When on a task, the task menu will appear to be translucent to allow observing others.";
-                        else if (inputText == "radar")
-                            chatText = "The Radar always has an arrow pointing at the nearest player, regardless of their position or location.";
-                        else if (inputText == "revealer" || inputText == "reveal")
-                        {
-                            chatText = "The Revealer cannot do anything by themselves while alive. But when the Revealer dies, their tasks reset and they appear to be" +
-                                " a faded bean to everyone else. The Revealer must finish their tasks without getting clicked on by evil natured players and on doing so" +
-                                " all evils will be revealed to the Crew.";
-                        }
-                        else if (inputText == "snitch" || inputText == "sni")
-                            chatText = "The Snitch needs to finish their tasks in order to have all evil natured players be revealed to them.";
-                        else if (inputText == "tiebreaker" || inputText == "tb")
-                            chatText = "In the case of a tie between votes, whatever the Tiebreaker voted for will happen.";
-                        else if (inputText == "torch")
-                            chatText = "The Torch's vision is not affected by the lights sabotage.";
-                        else if (inputText == "tunneler" || inputText == "tunn")
-                            chatText = "The Tunneler gains the ability to vent when they finish their tasks.";
-                        else if (inputText == "underdog" || inputText == "ud")
-                        {
-                            chatText = "The Underdog has a higher cooldown on all abilities when their team mates are still alive. After the Underdog is alone, all cooldowns" +
-                                " will be decreased.";
-                        }
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[13..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
                     else if (text.StartsWith("/objectifierinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(17);
-
-                        if (inputText == "fanatic" || inputText == "fan")
-                        {
-                            chatText = "The Fanatic is a regular crewmate until they are attacked by someone. The attacker's role and identity will by revealed" +
-                                " to the Fanatic and the Fanatic now wins with the attacker, regardless of the Fanatic's original role.";
-                        }
-                        else if (inputText == "lovers" || inputText == "lover")
-                        {
-                            chatText = "Lovers are a pair of players whose fates are linked together. If one Lover dies and the setting allows, the other Lover" +
-                                " will also die, ragardless of their locations. If the Lovers are 2 out of the 3 final players alive, they achieve a special Lovers" +
-                                " only win. Intruders cannot be Lovers with other Intruders and same applies for the Syndicate.";
-                        }
-                        else if (inputText == "phantom" || inputText == "phan")
-                        {
-                            chatText = "The Phantom cannot win as a Phantom when they are alive. Instead they need to die. Upon death, the Phantom has a faded bean" +
-                                " appearance which everyone can see. The Phantom needs to finish their tasks without getting clicked to win.";
-                        }
-                        else if (inputText == "rivals" || inputText == "rival")
-                        {
-                            chatText = "Rivals are a pair of player who despise each other. Rivals cannot win together when alive, even if they belong to the same " +
-                                "faction. For a Rival to win, they need their other Rival to die not by their hands. A Killing Rival cannot attack their Rival and " +
-                                "neither Rivals can vote each other. A Rival wins if they manage to kill the other Rival and live to be 1 of the final 2 players alive.";
-                        }
-                        else if (inputText == "taskmaster" || inputText == "task")
-                            chatText = "The Taskmaster needs to finish their tasks before a certain number of meetings are called in order to win.";
-                        else if (inputText == "traitor" || inputText == "trait")
-                        {
-                            chatText = "The Traitor is a crewmate who needs to finish their tasks to switch sides. Upon finishing their tasks, the Traitor has a 50%" +
-                                " chance to side with either the Intruders or the Syndicate and win with them. If they happen to be the last of the factioned evils " +
-                                "the Traitor loses all of their current role's abilities and instead gain the ability to kill.";
-                        }
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[17..];
                         hudManager.AddChat(player, chatText);
                     }
                     //ModifierInfo help
@@ -963,8 +650,8 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/quote "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(7);
-                        
+                        inputText = text[7..];
+
                         if (inputText == "anarchist" || inputText == "ana")
                             chatText = "My job is that I have no job and those things over there are the only things I'm good at breaking.";
                         else if (inputText == "arsonist" || inputText == "arso")
@@ -1090,16 +777,16 @@ namespace TownOfUsReworked.Patches
                         var objectifier = Objectifier.GetObjectifier(player);
 
                         if (role != null)
-                            hudManager.AddChat(player, LayerInfo.AllRoles.FirstOrDefault(x => x.Name == role.Name)?.RoleInfoMessage());
+                            hudManager.AddChat(player, LayerInfo.AllRoles.FirstOrDefault(x => x.Name == role.Name, LayerInfo.AllRoles[0])?.RoleInfoMessage());
 
-                        if (modifier != null && !modifier.Hidden)
-                            hudManager.AddChat(player, LayerInfo.AllModifiers.FirstOrDefault(x => x.Name == modifier.Name).InfoMessage());
+                        if (modifier?.Hidden == false)
+                            hudManager.AddChat(player, LayerInfo.AllModifiers.FirstOrDefault(x => x.Name == modifier.Name, LayerInfo.AllModifiers[0])?.InfoMessage());
 
-                        if (objectifier != null && !objectifier.Hidden)
-                            hudManager.AddChat(player, LayerInfo.AllObjectifiers.FirstOrDefault(x => x.Name == objectifier.Name).InfoMessage());
+                        if (objectifier?.Hidden == false)
+                            hudManager.AddChat(player, LayerInfo.AllObjectifiers.FirstOrDefault(x => x.Name == objectifier.Name, LayerInfo.AllObjectifiers[0])?.InfoMessage());
 
-                        if (ability != null && !ability.Hidden)
-                            hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name).InfoMessage());
+                        if (ability?.Hidden == false)
+                            hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name, LayerInfo.AllAbilities[0])?.InfoMessage());
                     }
                     //RoleInfo help
                     else if (text == "/roleinfo" || text == "/roleinfo ")
@@ -1141,496 +828,42 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/roleinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(10);
-
-                        if (inputText == "agent" || inputText == "ag")
-                        {
-                            chatText = "The Agent gains more information when on Admin Table. On Admin Table, the Agent can see the colors of every person on the map." +
-                                " Be careful when killing anyone, chances are that there is an Agent watching your every move.";
-                        }
-                        else if (inputText == "altruist" || inputText == "alt")
-                        {
-                            chatText = "The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, " +
-                                "risking sacrificing themselves for the revival of another player. If enabled, the dead body disappears, so only they Altruist's body" +
-                                " remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted. If a revive is " + 
-                                "successful, and you were one of the few who aided in the death of the revived player, kill them quick before your identity is revealed.";
-                        }
-                        else if (inputText == "amnesiac" || inputText == "amne")
-                            chatText = "The Amnesiac is essentially roleless and cannot win without remembering a role from someone who has died.";
-                        else if (inputText == "anarchist" || inputText == "ana")
-                            chatText = "The Anarchist is just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "arsonist" || inputText == "arso")
-                        {
-                            chatText = "The Arsonist is a slow killer who benefits the longer the game goes on. The Arsonist can douse other players with gasoline. " +
-                                "After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.";
-                        }
-                        else if (inputText == "blackmailer" || inputText == "bm")
-                        {
-                            chatText = "The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents " + 
-                                "the blackmailed person from speaking during the next meeting.";
-                        }
-                        else if (inputText == "camouflager" || inputText == "camo")
-                        {
-                            chatText = "The Camouflager has the ability to disrupt everyone's ability to differentiate others, causing everyone to appear grey and lackluster. " +
-                                "This is very advantageous to all evils as they can commit their evil deeds while being unable to tell apart friend from foe.";
-                        }
-                        else if (inputText == "cannibal" || inputText == "cann")
-                        {
-                            chatText = $"The Cannibal can eat the body which wipes away the body, like the Janitor. They win when they eat {EatNeed}" +
-                                " bodies to win. Do not let them have this chance.";
-                        }
-                        else if (inputText == "concealer" || inputText == "conc")
-                        {
-                            chatText = "The Concealer can make everyone invisible for a short while, allowing sneaky kills to be made. If you stop seeing anyone around you, it's" +
-                                " probably the work of a Concealer.";
-                        }
-                        else if (inputText == "consigliere" || inputText == "consig")
-                        {
-                            chatText = $"The Consigliere is a corrupt Inspector who can find out a player's specific {getWhat}. Using this information wisely " +
-                                "is a must because giving too much may give out your role.";
-                        }
-                        else if (inputText == "consort" || inputText == "cons")
-                        {
-                            chatText = "The Consort can roleblock players to stop them from using their on screen buttons. If you were blocked in a very crucial moment, blame " +
-                                "the Consort.";
-                        }
-                        else if (inputText == "coroner" || inputText == "cor")
-                        {
-                            chatText = "The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. " +
-                                "The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, " +
-                                "the killer's faction/role and (according to the settings) the killer's name.";
-                        }
-                        else if (inputText == "crewmate" || inputText == "crew")
-                            chatText = "The Crewmate is just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "cryomaniac" || inputText == "cryo")
-                            chatText = "The Cryomaniac is someone who's obsessed with freezing everyone. Ensure you are not douse because they freeze you!";
-                        else if (inputText == "dampyr" || inputText == "damp")
-                        {
-                            chatText = "The Dampyr is an Undead that is formed from a Dracula converting a killing role. The Dampyr can bite players to kill them." +
-                                " For balancing purposes, the Dracula and the Dampyr share cooldowns to avoid them getting a quick majority.";
-                        }
-                        else if (inputText == "detective" || inputText == "det")
-                        {
-                            chatText = "The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective " +
-                                "will be alerted about it.";
-                        }
-                        else if (inputText == "disguiser" || inputText == "disg")
-                            chatText = "The Disguiser can change another player's appearance. This can be used to frame them or cause the spread of false clears.";
-                        else if (inputText == "dracula" || inputText == "drac")
-                        {
-                            chatText = "The Dracula is the leader of the Undead subfaction. They have the ability to convert other people to their cause. Take them " +
-                                "down quick, or else they will overrun you.";
-                        }
-                        else if (inputText == "engineer" || inputText == "engi")
-                        {
-                            chatText = "The Engineer can fix a sabotage at any point during the round. They can also vent so beware of them when killing. They " +
-                                "could be lurking anywhere at any given point.";
-                        }
-                        else if (inputText == "mafioso" || inputText == "mafi")
-                        {
-                            chatText = "The Mafioso is a result of promoting a fellow Intruder via the Godfather. The whole point of the Mafioso is to get stronger off of the death " +
-                                "of their leader. The Mafioso in itself is not a bad thing, but should the Godfather die while the Mafioso is still alive, the Intruders will then have " +
-                                "a stronger leader";
-                        }
-                        else if (inputText == "escort" || inputText == "esc")
-                        {
-                            chatText = "The Escort can roleblock players to stop them from using their on screen buttons. If you were blocked in a very crucial moment, blame " +
-                                "the Escort.";
-                        }
-                        else if (inputText == "executioner" || inputText == "exe")
-                        {
-                            chatText = "The Executioner is a crazed crewmate who only wants to see their target get ejected. Do not let the target ejected, because " +
-                                "the Executioner only targets Crew.";
-                        }
-                        else if (inputText == "glitch" || inputText == "gli")
-                        {
-                            chatText = "The Glitch can hack players to prevent them from being able to use their buttons. They can also mimic others so if you see someone" +
-                                " kill in front of you, chances are that their appearance is not real.";
-                        }
-                        else if (inputText == "godfather" || inputText == "gf")
-                        {
-                            chatText = "The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso" +
-                                " becomes the new Godfather and has lowered cooldowns.";
-                        }
-                        else if (inputText == "gorgon" || inputText == "gorg")
-                        {
-                            chatText = "The Gorgon can gaze at players which forces them to stand still. When a meeting is called, all of the frozen players will die. If you start " +
-                                "seeing a lot of people standing still, chances are it's the Gorgon's work.";
-                        }
-                        else if (inputText == "grenadier" || inputText == "gren")
-                            chatText = "The Grenadier has flashbangs which can blind players. Blinded players cannot see anything that's happening around them.";
-                        else if (inputText == "impostor" || inputText == "imp")
-                            chatText = "The Impostor is just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.";
-                        else if (inputText == "inspector" || inputText == "insp")
-                        {
-                            chatText = "The Inspector can inspect players and receive a role list of what that player could be. If you claim a role, you better be prepared" +
-                                " for an Inspector to check you and call you out.";
-                        }
-                        else if (inputText == "investigator" || inputText == "inv")
-                            chatText = "The Investigator can see the footprints of players. All footprints disappear after a set amount of time and only the Investigator can see them.";
-                        else if (inputText == "guardian angel" || inputText == "ga")
-                        {
-                            chatText = "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their " +
-                                "target lives to the end of the game, even if their target loses (like in case of a Cannibal Win and their target being an Intruder).";
-                        }
-                        else if (inputText == "janitor" || inputText == "jani")
-                        {
-                            chatText = "The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use." +
-                                " If the round goes on for too long with no bodies reported, chances are that there is a Janitor cleaning up dead bodies.";
-                        }
-                        else if (inputText == "jester" || inputText == "jest")
-                            chatText = "The Jester has no abilities. They must make themselves appear to be evil and get ejected as a result to win.";
-                        else if (inputText == "juggernaut" || inputText == "jugg")
-                        {
-                            chatText = "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer decreases " +
-                                "and instead gives them other buffs, like bypassing protections.";
-                        }
-                        else if (inputText == "mayor")
-                        {
-                            chatText = "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option to abstain their vote " +
-                                "during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.";
-                        }
-                        else if (inputText == "medic")
-                            chatText = "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide.";
-                        else if (inputText == "medium" || inputText == "med")
-                        {
-                            chatText = "The Medium can see ghosts. During each round the Medium has an ability called Mediate. If the Medium uses this ability, the Medium and the dead player will be " +
-                                "able to see each other and communicate from beyond the grave!";
-                        }
-                        else if (inputText == "miner" || inputText == "mine")
-                        {
-                            chatText = "The Miner can create new vents. These vents only connect to each other, forming a new passageway.";
-                        }
-                        else if (inputText == "morphling" || inputText == "morph")
-                        {
-                            chatText = "The Morphling can morph into another player. At the beginning of the game and after every meeting, they can choose someone to sample. They can then morph into " +
-                                "that person at any time for a limited amount of time.";
-                        }
-                        else if (inputText == "murderer" || inputText == "murd")
-                            chatText = "The Murderer is a simple Neutral Killer with no special abilities.";
-                        else if (inputText == "operative" || inputText == "op")
-                        {
-                            chatText = "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug " +
-                                "will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is.";
-                        }
-                        else if (inputText == "pestilence" || inputText == "pest")
-                        {
-                            chatText = "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from " +
-                                "Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).";
-                        }
-                        else if (inputText == "plaguebearer" || inputText == "pb")
-                        {
-                            chatText = "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected," +
-                                " the Plaguebearer becomes Pestilence.";
-                        }
-                        else if (inputText == "poisoner" || inputText == "pois")
-                            chatText = "The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration.";
-                        else if (inputText == "puppeteer" || inputText == "pup")
-                            chatText = "The Puppeteer can control a player and force them to kill someone.";
-                        else if (inputText == "serial killer" || inputText == "sk")
-                        {
-                            chatText = "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, " +
-                                "unlike most killers, their kill cooldown is really short for the duration of the bloodlust.";
-                        }
-                        else if (inputText == "shapeshifter" || inputText == "ss")
-                            chatText = "The Shapeshifter can randomise everyone's appearances for a short while.";
-                        else if (inputText == "sheriff" || inputText == "sher")
-                            chatText = "The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or Evil. A player's name will change color according to their results.";
-                        else if (inputText == "shifter" || inputText == "shift")
-                            chatText = "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.";
-                        else if (inputText == "survivor" || inputText == "surv")
-                            chatText = "The Survivor wins by simply surviving. They can vest which makes them immune to death for a short duration.";
-                        else if (inputText == "swapper" || inputText == "swap")
-                            chatText = "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.";
-                        else if (inputText == "teleporter" || inputText == "tele")
-                            chatText = "The Teleporter can teleport to a marked positions. Once per round, the Teleporter can mark a location which they can then teleport to later in the round.";
-                        else if (inputText == "thief")
-                        {
-                            chatText = "The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will kill themselves. After stealing " +
-                                "their target's role, the Thief can now win as whatever role they have become.";
-                        }
-                        else if (inputText == "time lord" || inputText == "tl")
-                            chatText = "The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be revived. Nothing but movements and kills are affected.";
-                        else if (inputText == "time master" || inputText == "tm")
-                        {
-                            chatText = "The Time Master can freeze time, causing all non-Intruders (and the Time Lord if a certain setting is on) to freeze in place and unable to move for a short while. Time freeze and " + 
-                                "sabotages cannot happen for obvious reasons.";
-                        }
-                        else if (inputText == "tracker" || inputText == "track")
-                            chatText = "The Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.";
-                        else if (inputText == "transporter" || inputText == "trans")
-                            chatText = "The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue flash on their screen.";
-                        else if (inputText == "troll")
-                        {
-                            chatText = "The Troll just wants to be killed, but not ejected. Only spawns in Custom Mode. The Troll can fake interact with players. This interaction does nothing, it just triggers any " +
-                                "interaction sensitive roles like Veteran and Pestilence.";
-                        }
-                        else if (inputText == "undertaker" || inputText == "ut")
-                            chatText = "The Undertaker can drag, drop bodies and hide them in vents.";
-                        else if (inputText == "vampire" || inputText == "vamp")
-                            chatText = "The Vampire has no special abilities and just exists to be additional voting power for the Undead subfaction.";
-                        else if (inputText == "vampire hunter" || inputText == "vh")
-                        {
-                            chatText = "The Vampire Hunter only spawns if there are Vampires in the game. They can check players to see if they are a Dracula, Vampire or Dampyr. When the Vampire Hunter finds them, " +
-                                " the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.";
-                        }
-                        else if (inputText == "veteran" || inputText == "vet")
-                            chatText = "The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.";
-                        else if (inputText == "vigilante" || inputText == "vig")
-                            chatText = "The Vigilante is a Crewmate that has the ability to eliminate the Intruder using their kill button. However, if they kill a Crewmate or a Neutral player they can't kill, they instead die themselves.";
-                        else if (inputText == "warper" || inputText == "warp")
-                            chatText = "The Warper can teleport everyone to a random vent every now and then.";
-                        else if (inputText == "wraith")
-                            chatText = "The Wraith can temporarily turn invisible.";
-                        else if (inputText == "werewolf" || inputText == "ww")
-                            chatText = "The Werewolf can kill all players within a certain radius.";
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[10..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding factions
                     else if (text.StartsWith("/factioninfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(13);
-
-                        if (inputText == "crew")
-                        {
-                            chatText = "The Crew is the uninformed majority of the game. They are the \"good guys\". The Crew wins if Intruders, " +
-                                "Syndicate, and all Neutral Killers, Neophytes and Proselytes are dead or if they all finish their tasks.";
-                        }
-                        else if (inputText == "intruder")
-                        {
-                            chatText = "Intruders are the main \"bad guys\" of the game. All roles have the capability to kill and sabotage, making " +
-                                "them a pain to deal with.";
-                        }
-                        else if (inputText == "syndicate")
-                        {
-                            chatText = "Syndicate is an \"evil\" faction that is an informed minority of the game. They have special abilities specifically " +
-                                "geared towards slowing down the progress of other or causing chaos. Syndicate members, unless they are Syndicate (Killing), " +
-                                "cannot kill by default. Instead they gain the ability to kill by obtaining a powerup called the Chaos Drive. The Chaos Drive " +
-                                "not only boosts the holder's abilities but also gives them the ability to kill if they didn't already. If the holder can already " +
-                                "kill, their kill power is increased instead.";
-                        }
-                        else if (inputText == "neutral")
-                            chatText = "Neutrals are essentially factionless. They are the uninformed minority of the game and can only win by themselves.";
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[13..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding alignments
                     else if (text.StartsWith("/alignmentinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(15);
-
-                        if (inputText == "crew investigative" || inputText == "ci")
-                        {
-                            chatText = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, " +
-                                "Crew (Investigative) roles can deduce who is good and who is not.";
-                        }
-                        else if (inputText == "intruder support" || inputText == "is")
-                        {
-                            chatText = "Intruder (Support) roles are roles with miscellaneous abilities. These roles can delay players' chances of winning by" +
-                                " either gaining enough info to stop them or forcing players to do things they can't.";
-                        }
-                        else if (inputText == "intruder concealing" || inputText == "ic")
-                        {
-                            chatText = "Intruder (Concealing) roles are roles that specialise in hiding information from others. If there is no new " +
-                                "information, it's probably their work.";
-                        }
-                        else if (inputText == "neutral benign" || inputText == "nb")
-                        {
-                            chatText = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain " +
-                                "condition is fulfilled by the end of the game.";
-                        }
-                        else if (inputText == "crew protective" || inputText == "cp")
-                        {
-                            chatText = "Crew (Protective) roles are roles that have have the capability to protect. In doing so, their targets are " +
-                                "spared from final death and might even bring useful information from the dead.";
-                        }
-                        else if (inputText == "syndicate utility" || inputText == "su")
-                            chatText = "Syndicate (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "neutral killing" || inputText == "nk")
-                        {
-                            chatText = "Neutral (Killing) roles are roles that have the ability to kill and do not side with anyone. Each role has a special way" +
-                                " to kill and gain large body counts in one go. Steer clear of them if you don't want to die.";
-                        }
-                        else if (inputText == "neutral evil" || inputText == "ne")
-                        {
-                            chatText = "Neutral (Evil) roles are roles whose objectives clash with those of other roles. They have miscellaneous win conditions" +
-                                " that end the game. As such, you need to ensure they don't have a chance at winning.";
-                        }
-                        else if (inputText == "syndicate support" || inputText == "ssu")
-                        {
-                            chatText = "Syndicate (Support) roles are roles with miscellaneous abilities. They are detrimental to the Syndicate's cause and if" +
-                                " used right, can greatly affect how the game continues.";
-                        }
-                        else if (inputText == "crew support" || inputText == "cs")
-                        {
-                            chatText = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying " +
-                                "attention, your chances of winning will be severely decreased because of them.";
-                        }
-                        else if (inputText == "crew utility" || inputText == "cu")
-                            chatText = "Crew (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "neutral proselyte" || inputText == "np")
-                        {
-                            chatText = "Neutral (Proselyte) roles are roles that do not spawn at the start of the game. Instead you are converted into them." +
-                                " Neutral (Proselyte) roles exist to help the leader Neutral (Neophyte) role gain a fast majority.";
-                        }
-                        else if (inputText == "intruder deception" || inputText == "id")
-                        {
-                            chatText = "Intruder (Deception) roles are roles that are built to spread misinformation. Never trust your eyes, for the killer you " +
-                                "see in front of you might not be the one who they seem to be.";
-                        }
-                        else if (inputText == "neutral neophyte" || inputText == "nn")
-                        {
-                            chatText = "Neutral (Neophyte) roles are roles that can convert someone to side with them. Be careful of them, as they can easily" +
-                                " overrun you with their numbers.";
-                        }
-                        else if (inputText == "syndicate killing" || inputText == "syk")
-                        {
-                            chatText = "Syndicate (Killing) roles are roles that specialise in providing body count to the Syndicate. They do not have ways to " +
-                                "kill a lot of players at once, but their attacks can be very powerful.";
-                        }
-                        else if (inputText == "intruder utility" || inputText == "iu")
-                            chatText = "Intruder (Utility) roles usually don't have any special abilities and don't even appear under regaular spawn conditions.";
-                        else if (inputText == "syndicate disruption" || inputText == "sd")
-                            chatText = "Syndicate (Disruption) roles are roles that a designed to change the flow of the game, via changing some mechanic.";
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[15..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding modifiers
                     else if (text.StartsWith("/modifierinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(14);
-
-                        if (inputText == "bait")
-                        {
-                            chatText = "The Bait is a ticking time bomb for whoever dares to kill them. Killing them will result in the killer self reporting " +
-                                "almost instantly.";
-                        }
-                        else if (inputText == "coward" || inputText == "cow")
-                            chatText = "The Coward cannot report anyone's body at all.";
-                        else if (inputText == "diseased" || inputText == "dis")
-                        {
-                            chatText = "The Diseased has a terrible disease that infects their killer upon death. The unfortunate killer's kill cooldown " +
-                                "will be tripled for the next kill.";
-                        }
-                        else if (inputText == "drunk")
-                            chatText = "The Drunk's controls are reversed. Traditional control no longer work on them and keybinds are randomised.";
-                        else if (inputText == "dwarf")
-                            chatText = "The Dwarf is a tiny boi with speed.";
-                        else if (inputText == "flincher" || inputText == "flinch")
-                        {
-                            chatText = "The Flincher will occasioanlly flinch causing them to stop for a moment. This is super unhelpful if you're trying to catch" +
-                                " and kill someone or when you are trying to run away from a killer.";
-                        }
-                        else if (inputText == "giant")
-                            chatText = "The Giant is a big boi with lower speed.";
-                        else if (inputText == "professional" || inputText == "prof")
-                            chatText = "The Professional is so good at avoiding dying via assassination that they are able to dodge one misfire.";
-                        else if (inputText == "shy")
-                            chatText = "The Shy player cannot call a meeting because they just can't seem to be able to talk in front of a crowd.";
-                        else if (inputText == "vip")
-                            chatText = "If the VIP is killed, all players will be alerted to their death and the players' screens will flash in the VIP's role's color.";
-                        else if (inputText == "volatile" || inputText == "vol")
-                            chatText = "The Volatile player player cannot distinguish sounds and hallucinations from reality, causing them to see, hear and feel things at random";
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[14..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding abilities
                     else if (text.StartsWith("/abilityinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(13);
-
-                        if (inputText == "assassin" || inputText == "ass")
-                        {
-                            chatText = "The Assassin can kill players during a meeting by guessing their target's role. Be careful though, as guessing incorrectly " +
-                                "will kill you instead.";
-
-                            if (inputText == "ass")
-                                chatText += " I know what you tried to look up. ;)";
-                        }
-                        else if (inputText == "button barry" || inputText == "bb")
-                            chatText = "The Button Barry can call a meeting from anywhere, at the cost of their vision.";
-                        else if (inputText == "lighter" || inputText == "light")
-                            chatText = "The Lighter has higher vision.";
-                        else if (inputText == "multitasker" || inputText == "mt")
-                            chatText = "The Multitasker can...well...multitask. When on a task, the task menu will appear to be translucent to allow observing others.";
-                        else if (inputText == "radar")
-                            chatText = "The Radar always has an arrow pointing at the nearest player, regardless of their position or location.";
-                        else if (inputText == "revealer" || inputText == "reveal")
-                        {
-                            chatText = "The Revealer cannot do anything by themselves while alive. But when the Revealer dies, their tasks reset and they appear to be" +
-                                " a faded bean to everyone else. The Revealer must finish their tasks without getting clicked on by evil natured players and on doing so" +
-                                " all evils will be revealed to the Crew.";
-                        }
-                        else if (inputText == "snitch" || inputText == "sni")
-                            chatText = "The Snitch needs to finish their tasks in order to have all evil natured players be revealed to them.";
-                        else if (inputText == "tiebreaker" || inputText == "tb")
-                            chatText = "In the case of a tie between votes, whatever the Tiebreaker voted for will happen.";
-                        else if (inputText == "torch")
-                            chatText = "The Torch's vision is not affected by the lights sabotage.";
-                        else if (inputText == "tunneler" || inputText == "tunn")
-                            chatText = "The Tunneler gains the ability to vent when they finish their tasks.";
-                        else if (inputText == "underdog" || inputText == "ud")
-                        {
-                            chatText = "The Underdog has a higher cooldown on all abilities when their team mates are still alive. After the Underdog is alone, all cooldowns" +
-                                " will be decreased.";
-                        }
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[13..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Gives information regarding objectifiers
                     else if (text.StartsWith("/objectifierinfo "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(17);
-
-                        if (inputText == "fanatic" || inputText == "fan")
-                        {
-                            chatText = "The Fanatic is a regular crewmate until they are attacked by someone. The attacker's role and identity will by revealed" +
-                                " to the Fanatic and the Fanatic now wins with the attacker, regardless of the Fanatic's original role.";
-                        }
-                        else if (inputText == "lovers" || inputText == "lover")
-                        {
-                            chatText = "Lovers are a pair of players whose fates are linked together. If one Lover dies and the setting allows, the other Lover" +
-                                " will also die, ragardless of their locations. If the Lovers are 2 out of the 3 final players alive, they achieve a special Lovers" +
-                                " only win. Intruders cannot be Lovers with other Intruders and same applies for the Syndicate.";
-                        }
-                        else if (inputText == "phantom" || inputText == "phan")
-                        {
-                            chatText = "The Phantom cannot win as a Phantom when they are alive. Instead they need to die. Upon death, the Phantom has a faded bean" +
-                                " appearance which everyone can see. The Phantom needs to finish their tasks without getting clicked to win.";
-                        }
-                        else if (inputText == "rivals" || inputText == "rival")
-                        {
-                            chatText = "Rivals are a pair of player who despise each other. Rivals cannot win together when alive, even if they belong to the same " +
-                                "faction. For a Rival to win, they need their other Rival to die not by their hands. A Killing Rival cannot attack their Rival and " +
-                                "neither Rivals can vote each other. A Rival wins if they manage to kill the other Rival and live to be 1 of the final 2 players alive.";
-                        }
-                        else if (inputText == "taskmaster" || inputText == "task")
-                            chatText = "The Taskmaster needs to finish their tasks before a certain number of meetings are called in order to win.";
-                        else if (inputText == "traitor" || inputText == "trait")
-                        {
-                            chatText = "The Traitor is a crewmate who needs to finish their tasks to switch sides. Upon finishing their tasks, the Traitor has a" +
-                                " chance to side with either the Intruders or the Syndicate and win with them. If they happen to be the last of the factioned evils " +
-                                "the Traitor loses all of their current role's abilities and instead gain the ability to kill.";
-                        }
-                        else
-                            chatText = "Invalid input.";
-
+                        inputText = text[17..];
                         hudManager.AddChat(player, chatText);
                     }
                     //Credits
@@ -1648,7 +881,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/quote "))
                     {
                         chatHandled = true;
-                        inputText = text.Substring(7);
+                        inputText = text[7..];
 
                         if (inputText == "agent" || inputText == "ag")
                             chatText = "Hippity hoppity, your privacy is now my property.";
@@ -1795,7 +1028,7 @@ namespace TownOfUsReworked.Patches
                     else if (text.StartsWith("/abbreviations ") || text.StartsWith("/ab "))
                     {
                         chatHandled = true;
-                        inputText = text.StartsWith("/ab ") ? text.Substring(4) : text.Substring(15);
+                        inputText = text.StartsWith("/ab ") ? text[4..] : text[15..];
                         var tempText = inputText;
                         inputText = inputText.ToLower();
                         var requiredText = inputText.Replace("(", "");
@@ -2086,12 +1319,14 @@ namespace TownOfUsReworked.Patches
                         chatHandled = true;
 
                         if (!CustomGameOptions.Whispers)
+                        {
                             hudManager.AddChat(player, "Whispering is not turned on.");
+                        }
                         else
                         {
-                            inputText = text.StartsWith("/w ") ? text.Substring(3) : text.Substring(9);
-                            var message = text.StartsWith("/w ") ? text.Substring(4) : text.Substring(10);
-                            var message2 = text.StartsWith("/w ") ? text.Substring(5) : text.Substring(11);
+                            inputText = text.StartsWith("/w ") ? text[3..] : text[9..];
+                            var message = text.StartsWith("/w ") ? text[4..] : text[10..];
+                            var message2 = text.StartsWith("/w ") ? text[5..] : text[11..];
                             var number = inputText.Replace(message, "");
                             var number2 = inputText.Replace(message2, "");
                             number = number.Replace(" ", "");
@@ -2105,9 +1340,13 @@ namespace TownOfUsReworked.Patches
                             if (whispered != null)
                             {
                                 if (whispered.Data.IsDead)
+                                {
                                     hudManager.AddChat(player, $"{whispered.name} is dead.");
+                                }
                                 else if (whispered.Data.Disconnected)
+                                {
                                     hudManager.AddChat(player, $"{whispered.name} is not in this world anymore.");
+                                }
                                 else
                                 {
                                     hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
@@ -2122,9 +1361,13 @@ namespace TownOfUsReworked.Patches
                             else if (whispered2 != null)
                             {
                                 if (whispered.Data.IsDead)
+                                {
                                     hudManager.AddChat(player, $"{whispered2.name} is dead.");
+                                }
                                 else if (whispered.Data.Disconnected)
+                                {
                                     hudManager.AddChat(player, $"{whispered2.name} is not in this world anymore.");
+                                }
                                 else
                                 {
                                     hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
@@ -2137,7 +1380,9 @@ namespace TownOfUsReworked.Patches
                                 }
                             }
                             else
+                            {
                                 hudManager.AddChat(player, "Who are you trying to whisper?");
+                            }
                         }
                     }
                     //Incorrect command
@@ -2155,6 +1400,130 @@ namespace TownOfUsReworked.Patches
                 }
 
                 return !chatHandled;
+            }
+        }
+
+        //Thanks to Town Of Host for all this code
+        [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
+        public static class ChatControlPatch
+        {
+            private static int CurrentHistorySelection = -1;
+
+            public static void Postfix(ChatController __instance)
+            {
+                if (!__instance.TextArea.hasFocus)
+                    return;
+
+                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C))
+                    ClipboardHelper.PutClipboardString(__instance.TextArea.text);
+
+                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.V))
+                    __instance.TextArea.SetText(__instance.TextArea.text + GUIUtility.systemCopyBuffer);
+
+                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.X))
+                {
+                    ClipboardHelper.PutClipboardString(__instance.TextArea.text);
+                    __instance.TextArea.SetText("");
+                }
+
+                if (Input.GetKeyDown(KeyCode.UpArrow) && ChatHistory.Count > 0)
+                {
+                    CurrentHistorySelection = Mathf.Clamp(--CurrentHistorySelection, 0, ChatHistory.Count - 1);
+                    __instance.TextArea.SetText(ChatHistory[CurrentHistorySelection]);
+                }
+
+                if (Input.GetKeyDown(KeyCode.DownArrow) && ChatHistory.Count > 0)
+                {
+                    CurrentHistorySelection++;
+
+                    if (CurrentHistorySelection < ChatHistory.Count)
+                        __instance.TextArea.SetText(ChatHistory[CurrentHistorySelection]);
+                    else if (CurrentHistorySelection > ChatHistory.Count)
+                        __instance.TextArea.SetText(ChatHistory[0]);
+                    else
+                        __instance.TextArea.SetText("");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ControllerManager), nameof(ControllerManager.Update))]
+        public static class ControllerManagerUpdatePatch
+        {
+            public static void Postfix()
+            {
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    if (Input.GetKeyDown(KeyCode.LeftShift) && Classes.GameStates.IsCountDown)
+                        GameStartManager.Instance.countDownTimer = 0;
+
+                    if (Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S))
+                        GameStartManager.Instance.Start();
+
+                    if (Input.GetKeyDown(KeyCode.C) && Classes.GameStates.IsCountDown)
+                        GameStartManager.Instance.ResetStartState();
+                }
+            }
+        }
+
+        //Thanks to The Other Roles for this code
+        [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.HostGame))]
+        public static class InnerNetClientHostPatch
+        {
+            public static void Prefix([HarmonyArgument(0)] GameOptionsData settings)
+            {
+                int maxPlayers;
+
+                try
+                {
+                    maxPlayers = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
+                }
+                catch
+                {
+                    maxPlayers = 127;
+                }
+
+                LobbyLimit = maxPlayers;
+                settings.MaxPlayers = 127; // Force 127 Player Lobby on Server
+                DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
+            }
+
+            public static void Postfix([HarmonyArgument(0)] GameOptionsData settings) => settings.MaxPlayers = LobbyLimit;
+        }
+
+        [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
+        public static class InnerNetClientJoinPatch
+        {
+            public static void Prefix() => DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
+        }
+
+        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
+        public static class AmongUsClientOnPlayerJoined
+        {
+            public static bool Prefix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
+            {
+                if (LobbyLimit < __instance.allClients.Count)
+                {
+                    // TODO: Fix this canceling start
+                    DisconnectPlayer(__instance, client.Id);
+                    return false;
+                }
+
+                return true;
+            }
+
+            private static void DisconnectPlayer(InnerNetClient _this, int clientId)
+            {
+                if (!_this.AmHost)
+                    return;
+
+                var messageWriter = MessageWriter.Get(SendOption.Reliable);
+                messageWriter.StartMessage(4);
+                messageWriter.Write(_this.GameId);
+                messageWriter.WritePacked(clientId);
+                messageWriter.Write((byte)DisconnectReasons.GameFull);
+                messageWriter.EndMessage();
+                _this.SendOrDisconnect(messageWriter);
+                messageWriter.Recycle();
             }
         }
     }

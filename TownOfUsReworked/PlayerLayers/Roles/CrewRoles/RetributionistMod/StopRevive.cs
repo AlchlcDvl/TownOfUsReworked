@@ -12,9 +12,9 @@ using TownOfUsReworked.Objects;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StopRevive
+    public static class StopRevive
     {
-        public static void Postfix(MeetingHud __instance)
+        public static void Postfix()
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
                 return;
@@ -33,12 +33,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 else
                 {
                     string message = "Roles caught in your bugs:\n";
+                    int position = 0;
 
-                    foreach (RoleEnum role in ret.BuggedPlayers.OrderBy(x => Guid.NewGuid()))
-                        message += $" {role},";
+                    foreach (RoleEnum role in ret.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
+                    {
+                        if (position < ret.BuggedPlayers.Count - 1)
+                            message += $" {role},";
+                        else
+                            message += $" and {role}.";
 
-                    message.Remove(message.Length - 1, 1);
-                    
+                        position++;
+                    }
+
                     //Ensures only the Retributionist-Operative sees this
                     if (HudManager.Instance)
                         HudManager.Instance.Chat.AddChat(ret.Player, message);
@@ -79,10 +85,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
                 EndGame.Reset();
-            else if (ret.RevivedRole.RoleType == RoleEnum.Sheriff)
-                ret.Interrogated.Clear();
-            else if (ret.RevivedRole.RoleType == RoleEnum.Inspector)
-                ret.Inspected.Clear();
 
             ret.RevivedRole = null;
         }

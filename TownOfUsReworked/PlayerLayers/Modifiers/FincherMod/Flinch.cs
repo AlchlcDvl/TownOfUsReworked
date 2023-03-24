@@ -6,9 +6,9 @@ using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.FlincherMod
 {
-    public class Flinch
+    public static class Flinch
     {
-        public static float _time = 0f;
+        private static float _time;
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         public static class PlayerPhysics_FixedUpdate

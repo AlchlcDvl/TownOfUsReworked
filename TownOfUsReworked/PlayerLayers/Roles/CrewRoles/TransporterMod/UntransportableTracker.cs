@@ -7,12 +7,12 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
 {
     [HarmonyPatch]
-    public class UntransportableTracker
+    public static class UntransportableTracker
     {
-        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-        public class UntransportableUpdate
+        [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+        public static class UntransportableUpdate
         {
-            public static void Postfix(PlayerControl __instance)
+            public static void Postfix()
             {
                 if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Transporter))
                     return;
@@ -22,21 +22,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
                 foreach (var entry in role.UntransportablePlayers)
                 {
                     var player = Utils.PlayerById(entry.Key);
-                    
-                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
+
+                    if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
                         continue;
 
-                    if (role.UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable == true &&
-                        role.UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    if (role.UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && role.UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) <
+                        DateTime.UtcNow)
+                    {
                         role.UntransportablePlayers.Remove(player.PlayerId);
+                    }
                 }
             }
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
-        public class SaveLadderPlayer
+        public static class SaveLadderPlayer
         {
-            public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] Ladder source, [HarmonyArgument(1)] byte climbLadderSid)
+            public static void Prefix(PlayerPhysics __instance)
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
                     Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
@@ -44,9 +46,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TransporterMod
         }
 
         [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), new Type[] {})]
-        public class SavePlatformPlayer
+        public static class SavePlatformPlayer
         {
-            public static void Prefix(MovingPlatformBehaviour __instance)
+            public static void Prefix()
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
                     Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(PlayerControl.LocalPlayer.PlayerId, DateTime.UtcNow);

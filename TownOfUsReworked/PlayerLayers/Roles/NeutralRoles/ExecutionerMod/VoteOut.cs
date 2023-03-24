@@ -6,9 +6,9 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-    internal class MeetingExiledEnd
+    public static class MeetingExiledEnd
     {
-        private static void Postfix(ExileController __instance)
+        public static void Postfix(ExileController __instance)
         {
             var exiled = __instance.exiled;
 
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
                     writer.Write(exe.Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-            }        
+            }
         }
     }
 }

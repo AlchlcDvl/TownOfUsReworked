@@ -50,7 +50,7 @@ namespace TownOfUsReworked.CustomOptions
             while (reader.BytesRemaining > 0)
             {
                 var id = reader.ReadInt32();
-                var customOption = CustomOption.AllOptions.FirstOrDefault(option => option.ID == id);
+                var customOption = CustomOption.AllOptions.Find(option => option.ID == id);
                 // Works but may need to change to gameObject.name check
                 var type = customOption?.Type;
                 object value = null;

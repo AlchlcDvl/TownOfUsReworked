@@ -11,13 +11,13 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class UpdateArrows
+    public static class UpdateArrows
     {
         private static DateTime _time = DateTime.UnixEpoch;
         private static float Interval => CustomGameOptions.UpdateInterval;
-        public static bool CamoedLastTick = false;
+        private static bool CamoedLastTick;
 
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Coroutine.Arrow != null)
             {
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             {
                 var player = Utils.PlayerById(arrow.Key);
 
-                if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
+                if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
                 {
                     role.DestroyTrackerArrow(arrow.Key);
                     continue;
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             }
 
             CamoedLastTick = CamouflageUnCamouflage.IsCamoed;
-            
+
             if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
                 _time = DateTime.UtcNow;
         }

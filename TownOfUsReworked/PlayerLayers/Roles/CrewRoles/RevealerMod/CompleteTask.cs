@@ -9,7 +9,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    public class CompleteTask
+    public static class CompleteTask
     {
         public static void Postfix(PlayerControl __instance)
         {
@@ -44,7 +44,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
                     (PlayerControl.LocalPlayer.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals))
+                {
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RevealerFinished);

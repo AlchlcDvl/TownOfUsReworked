@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class HUDDouseAndIgnite
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Arsonist))
                 return;

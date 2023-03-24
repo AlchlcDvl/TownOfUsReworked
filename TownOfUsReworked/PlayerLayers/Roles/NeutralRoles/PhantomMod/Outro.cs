@@ -11,16 +11,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var role = Role.AllRoles.FirstOrDefault(x => x.RoleType == RoleEnum.Phantom && ((Phantom)x).CompletedTasks);
+            var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Phantom && ((Phantom)x).CompletedTasks);
 
             if (role == null)
                 return;
 
-            var array = Object.FindObjectsOfType<PoolablePlayer>();
-
-            foreach (var player in array)
+            foreach (var player in Object.FindObjectsOfType<PoolablePlayer>())
                 player.NameText().text = Utils.GetEndGameName(player.NameText().text);
-                
+
             __instance.BackgroundBar.material.color = role.Color;
             var text = Object.Instantiate(__instance.WinText);
             text.text = "Phantom Wins!";

@@ -16,14 +16,17 @@ using System.Collections.Generic;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class UpdateNames
+    public static class UpdateNames
     {
-        public static Dictionary<byte, string> PlayerNames = new Dictionary<byte, string>();
+        public static readonly Dictionary<byte, string> PlayerNames = new();
 
         [HarmonyPriority(Priority.Last)]
         private static void Postfix()
         {
             if (GameStates.IsLobby || PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
+                return;
+
+            if (GameStates.IsHnS)
                 return;
 
             if (MeetingHud.Instance)
@@ -46,7 +49,7 @@ namespace TownOfUsReworked.Patches
 
         private static (string, Color) UpdateGameName(PlayerControl player)
         {
-            var blank = "";
+            const string blank = "";
 
             if ((CustomGameOptions.NoNames || player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis) && player != PlayerControl.LocalPlayer)
                 return (blank, Color.clear);
@@ -65,14 +68,11 @@ namespace TownOfUsReworked.Patches
             if (info[0] == null || localinfo[0] == null)
                 return (name, color);
 
-            if (player.CanDoTasks() && (PlayerControl.LocalPlayer == player || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
+            if (player.CanDoTasks() && (PlayerControl.LocalPlayer == player || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)) && info[0] != null)
             {
-                if (info[0] != null)
-                {
-                    var role = info[0] as Role;
-                    name += $" ({role.TasksCompleted}/{role.TotalTasks})";
-                    roleRevealed = true;
-                }
+                var role = info[0] as Role;
+                name += $" ({role.TasksCompleted}/{role.TotalTasks})";
+                roleRevealed = true;
             }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -81,7 +81,7 @@ namespace TownOfUsReworked.Patches
 
                 if (sheriff.Interrogated.Contains(player.PlayerId))
                 {
-                    if (Utils.SeemsEvil(player))
+                    if (player.SeemsEvil())
                         color = Colors.Intruder;
                     else
                         color = Colors.Glitch;
@@ -125,7 +125,7 @@ namespace TownOfUsReworked.Patches
                 if (arsonist.DousedPlayers.Contains(player.PlayerId))
                 {
                     name += " <color=#EE7600FF>Ξ</color>";
-                    player.myRend().material.SetColor("_VisorColor", arsonist.Color);
+                    player.MyRend().material.SetColor("_VisorColor", arsonist.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -135,7 +135,7 @@ namespace TownOfUsReworked.Patches
                 if (plaguebearer.InfectedPlayers.Contains(player.PlayerId))
                 {
                     name += " <color=#CFFE61FF>ρ</color>";
-                    player.myRend().material.SetColor("_VisorColor", plaguebearer.Color);
+                    player.MyRend().material.SetColor("_VisorColor", plaguebearer.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -145,7 +145,7 @@ namespace TownOfUsReworked.Patches
                 if (cryomaniac.DousedPlayers.Contains(player.PlayerId))
                 {
                     name += " <color=#642DEAFF>λ</color>";
-                    player.myRend().material.SetColor("_VisorColor", cryomaniac.Color);
+                    player.MyRend().material.SetColor("_VisorColor", cryomaniac.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Framer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -155,7 +155,7 @@ namespace TownOfUsReworked.Patches
                 if (framer.Framed.Contains(player.PlayerId))
                 {
                     name += " <color=#00FFFFFF>ς</color>";
-                    player.myRend().material.SetColor("_VisorColor", framer.Color);
+                    player.MyRend().material.SetColor("_VisorColor", framer.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Executioner) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -172,10 +172,12 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = executioner.Color;
+                    }
 
                     name += " <color=#CCCCCCFF>§</color>";
-                    player.myRend().material.SetColor("_VisorColor", executioner.Color);
+                    player.MyRend().material.SetColor("_VisorColor", executioner.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Guesser) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -186,7 +188,7 @@ namespace TownOfUsReworked.Patches
                 {
                     color = guesser.Color;
                     name += " <color=#EEE5BEFF>π</color>";
-                    player.myRend().material.SetColor("_VisorColor", guesser.Color);
+                    player.MyRend().material.SetColor("_VisorColor", guesser.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -203,10 +205,12 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = guardianAngel.Color;
+                    }
 
                     name += " <color=#FFFFFFFF>★</color>";
-                    player.myRend().material.SetColor("_VisorColor", guardianAngel.Color);
+                    player.MyRend().material.SetColor("_VisorColor", guardianAngel.Color);
 
                     if (player.IsProtected() && (CustomGameOptions.ShowProtect == ProtectOptions.GA || CustomGameOptions.ShowProtect == ProtectOptions.SelfAndGA))
                         name += " <color=#FFFFFFFF>η</color>";
@@ -227,9 +231,11 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = whisperer.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Sect);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Sect);
                 }
                 else
                 {
@@ -258,9 +264,11 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = dracula.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Undead);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Undead);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Jackal) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -278,9 +286,11 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = jackal.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Cabal);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Necromancer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -298,9 +308,11 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = necromancer.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Reanimated);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
 
@@ -327,9 +339,11 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = dracula.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Undead);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Undead);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -355,9 +369,11 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = jackal.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Cabal);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -383,9 +399,11 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = necromancer.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Reanimated);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -411,9 +429,11 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = whisperer.SubFactionColor;
+                    }
 
-                    player.myRend().material.SetColor("_VisorColor", Colors.Sect);
+                    player.MyRend().material.SetColor("_VisorColor", Colors.Sect);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer))
@@ -424,7 +444,7 @@ namespace TownOfUsReworked.Patches
                 {
                     name += " <color=#02A752FF>Φ</color>";
                     color = blackmailer.Color;
-                    player.myRend().material.SetColor("_VisorColor", blackmailer.Color);
+                    player.MyRend().material.SetColor("_VisorColor", blackmailer.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Inspector))
@@ -557,33 +577,25 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
-                var arsonists = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Arsonist).ToList();
-
-                foreach (Arsonist arsonist in arsonists)
+                foreach (Arsonist arsonist in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Arsonist).Cast<Arsonist>())
                 {
                     if (arsonist.DousedPlayers.Contains(player.PlayerId))
                         name += " <color=#EE7600FF>Ξ</color>";
                 }
 
-                var plaguebearers = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Plaguebearer).ToList();
-
-                foreach (Plaguebearer plaguebearer in plaguebearers)
+                foreach (Plaguebearer plaguebearer in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Plaguebearer).Cast<Plaguebearer>())
                 {
                     if (plaguebearer.InfectedPlayers.Contains(player.PlayerId))
                         name += " <color=#CFFE61FF>ρ</color>";
                 }
 
-                var cryomaniacs = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Cryomaniac).ToList();
-
-                foreach (Cryomaniac cryomaniac in cryomaniacs)
+                foreach (Cryomaniac cryomaniac in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Cryomaniac).Cast<Cryomaniac>())
                 {
                     if (cryomaniac.DousedPlayers.Contains(player.PlayerId))
                         name += " <color=#642DEAFF>λ</color>";
                 }
 
-                var framers = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Framer).ToList();
-
-                foreach (Framer framer in framers)
+                foreach (Framer framer in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Framer).Cast<Framer>())
                 {
                     if (framer.Framed.Contains(player.PlayerId))
                         name += " <color=#00FFFFFF>ς</color>";
@@ -620,24 +632,21 @@ namespace TownOfUsReworked.Patches
                             roleRevealed = true;
                         }
                     }
-                    else
+                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
                     {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
                         {
-                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
-                            {
-                                color = role2.FactionColor;
-                                name += $"\n{role2.FactionName}";
-                            }
-                            else
-                            {
-                                color = Colors.Crew;
-                                name += "\nCrew";
-                            }
-
-                            roleRevealed = true;
+                            color = role2.FactionColor;
+                            name += $"\n{role2.FactionName}";
                         }
+                        else
+                        {
+                            color = Colors.Crew;
+                            name += "\nCrew";
+                        }
+
+                        roleRevealed = true;
                     }
                 }
             }
@@ -650,7 +659,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var ability = info[2] as Ability;
                     color = ability.Color;
-                    name += (name.Contains("\n") ? " " : "\n") + $"{ability.Name}";
+                    name += (name.Contains('\n') ? " " : "\n") + $"{ability.Name}";
                     roleRevealed = true;
                 }
             }
@@ -679,7 +688,9 @@ namespace TownOfUsReworked.Patches
                     }
                 }
                 else
+                {
                     color = role.FactionColor;
+                }
 
                 if (player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(ObjectifierEnum.Allied))
                 {
@@ -704,25 +715,22 @@ namespace TownOfUsReworked.Patches
                             roleRevealed = true;
                         }
                     }
-                    else
-                    {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
+                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
                             (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
+                    {
+                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
+                            CustomGameOptions.RevealerRevealsFanatic))
                         {
-                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
-                                CustomGameOptions.RevealerRevealsFanatic))
-                            {
-                                color = role.FactionColor;
-                                name += $"\n{role.FactionName}";
-                            }
-                            else
-                            {
-                                color = Colors.Crew;
-                                name += "\nCrew";
-                            }
-
-                            roleRevealed = true;
+                            color = role.FactionColor;
+                            name += $"\n{role.FactionName}";
                         }
+                        else
+                        {
+                            color = Colors.Crew;
+                            name += "\nCrew";
+                        }
+
+                        roleRevealed = true;
                     }
                 }
             }
@@ -749,7 +757,7 @@ namespace TownOfUsReworked.Patches
 
         private static (string, Color) UpdateGameName(PlayerVoteArea player)
         {
-            var blank = "";
+            const string blank = "";
 
             if (CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind)
                 return (blank, Color.clear);
@@ -766,14 +774,12 @@ namespace TownOfUsReworked.Patches
             if (info[0] == null || localinfo[0] == null)
                 return (name, color);
 
-            if (player.CanDoTasks() && (PlayerControl.LocalPlayer.PlayerId == player.TargetPlayerId || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
+            if (player.CanDoTasks() && (PlayerControl.LocalPlayer.PlayerId == player.TargetPlayerId || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)) &&
+                info[0] != null)
             {
-                if (info[0] != null)
-                {
-                    var role = info[0] as Role;
-                    name += $"{(CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind ? name : blank)} ({role.TasksCompleted}/{role.TotalTasks})";
-                    roleRevealed = true;
-                }
+                var role = info[0] as Role;
+                name += $"{(CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind ? name : blank)} ({role.TasksCompleted}/{role.TotalTasks})";
+                roleRevealed = true;
             }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -782,7 +788,7 @@ namespace TownOfUsReworked.Patches
 
                 if (sheriff.Interrogated.Contains(player.TargetPlayerId))
                 {
-                    if (Utils.SeemsEvil(player))
+                    if (player.SeemsEvil())
                         color = Colors.Intruder;
                     else
                         color = Colors.Glitch;
@@ -870,7 +876,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = executioner.Color;
+                    }
 
                     name += " <color=#CCCCCCFF>§</color>";
                 }
@@ -899,7 +907,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = guardianAngel.Color;
+                    }
 
                     name += " <color=#FFFFFFFF>★</color>";
                 }
@@ -919,7 +929,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = whisperer.SubFactionColor;
+                    }
                 }
                 else
                 {
@@ -948,7 +960,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = dracula.SubFactionColor;
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Jackal) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -966,7 +980,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = jackal.SubFactionColor;
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Necromancer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -984,7 +1000,9 @@ namespace TownOfUsReworked.Patches
                         roleRevealed = true;
                     }
                     else
+                    {
                         color = necromancer.SubFactionColor;
+                    }
                 }
             }
 
@@ -1011,7 +1029,9 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = dracula.SubFactionColor;
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -1037,7 +1057,9 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = jackal.SubFactionColor;
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -1063,7 +1085,9 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = necromancer.SubFactionColor;
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -1089,7 +1113,9 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     else
+                    {
                         color = whisperer.SubFactionColor;
+                    }
                 }
             }
 
@@ -1205,33 +1231,25 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
-                var arsonists = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Arsonist).ToList();
-
-                foreach (Arsonist arsonist in arsonists)
+                foreach (Arsonist arsonist in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Arsonist).Cast<Arsonist>())
                 {
                     if (arsonist.DousedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#EE7600FF>Ξ</color>";
                 }
 
-                var plaguebearers = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Plaguebearer).ToList();
-
-                foreach (Plaguebearer plaguebearer in plaguebearers)
+                foreach (Plaguebearer plaguebearer in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Plaguebearer).Cast<Plaguebearer>())
                 {
                     if (plaguebearer.InfectedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#CFFE61FF>ρ</color>";
                 }
 
-                var cryomaniacs = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Cryomaniac).ToList();
-
-                foreach (Cryomaniac cryomaniac in cryomaniacs)
+                foreach (Cryomaniac cryomaniac in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Cryomaniac).Cast<Cryomaniac>())
                 {
                     if (cryomaniac.DousedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#642DEAFF>λ</color>";
                 }
 
-                var framers = Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Framer).ToList();
-
-                foreach (Framer framer in framers)
+                foreach (Framer framer in Role.AllRoles.ToArray().Where(x => x.RoleType == RoleEnum.Framer).Cast<Framer>())
                 {
                     if (framer.Framed.Contains(player.TargetPlayerId))
                         name += " <color=#00FFFFFF>ς</color>";
@@ -1263,24 +1281,21 @@ namespace TownOfUsReworked.Patches
                             roleRevealed = true;
                         }
                     }
-                    else
+                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
                     {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
                         {
-                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
-                            {
-                                color = role2.FactionColor;
-                                name += $"\n{role2.FactionName}";
-                            }
-                            else
-                            {
-                                color = Colors.Crew;
-                                name += "\nCrew";
-                            }
-
-                            roleRevealed = true;
+                            color = role2.FactionColor;
+                            name += $"\n{role2.FactionName}";
                         }
+                        else
+                        {
+                            color = Colors.Crew;
+                            name += "\nCrew";
+                        }
+
+                        roleRevealed = true;
                     }
                 }
             }
@@ -1293,7 +1308,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var ability = info[2] as Ability;
                     color = ability.Color;
-                    name += (name.Contains("\n") ? " " : "\n") + $"{ability.Name}";
+                    name += (name.Contains('\n') ? " " : "\n") + $"{ability.Name}";
                     roleRevealed = true;
                 }
             }
@@ -1322,7 +1337,9 @@ namespace TownOfUsReworked.Patches
                     }
                 }
                 else
+                {
                     color = role.FactionColor;
+                }
 
                 if (player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(ObjectifierEnum.Allied))
                 {
@@ -1347,25 +1364,22 @@ namespace TownOfUsReworked.Patches
                             roleRevealed = true;
                         }
                     }
-                    else
+                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
+                        (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
                     {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
+                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
+                            CustomGameOptions.RevealerRevealsFanatic))
                         {
-                            if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
-                                CustomGameOptions.RevealerRevealsFanatic))
-                            {
-                                color = role.FactionColor;
-                                name += $"\n{role.FactionName}";
-                            }
-                            else
-                            {
-                                color = Colors.Crew;
-                                name += "\nCrew";
-                            }
-
-                            roleRevealed = true;
+                            color = role.FactionColor;
+                            name += $"\n{role.FactionName}";
                         }
+                        else
+                        {
+                            color = Colors.Crew;
+                            name += "\nCrew";
+                        }
+
+                        roleRevealed = true;
                     }
                 }
             }

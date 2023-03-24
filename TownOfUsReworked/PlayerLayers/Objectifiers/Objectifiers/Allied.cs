@@ -6,9 +6,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Allied : Objectifier
     {
-        public string Side;
-        public string Objective;
-        public Faction Side2;
+        public string Objective = "- None.";
+        public Faction Side = Faction.Neutral;
 
         public Allied(PlayerControl player) : base(player)
         {

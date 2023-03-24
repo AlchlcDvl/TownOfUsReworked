@@ -8,7 +8,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformFix
+    public static class PerformFix
     {
         public static bool Prefix(AbilityButton __instance)
         {

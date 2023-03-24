@@ -7,9 +7,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-    public class ModUpdaterButton
+    public static class ModUpdaterButton
     {
-        private static void Prefix(MainMenuManager __instance)
+        public static void Prefix(MainMenuManager __instance)
         {
             //Check if there's a ToU-Rew update
             ModUpdater.LaunchUpdater();
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.Patches
 
                     //Set button text
                     var text = touButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {text.SetText("");})));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>(_ => text.SetText(""))));
 
                     //Set popup stuff
                     var man = DestroyableSingleton<TwitchManager>.Instance;
@@ -75,7 +75,7 @@ namespace TownOfUsReworked.Patches
 
                     //Set button text
                     var text = submergedButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => {text.SetText("");})));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>(_ => text.SetText(""))));
 
                     //Set popup stuff
                     var man = DestroyableSingleton<TwitchManager>.Instance;

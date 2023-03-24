@@ -13,10 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton IgniteButton;
         public AbilityButton DouseButton;
-        public bool LastKiller => PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
-            x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))).ToList().Count() == 0;
-        public PlayerControl ClosestPlayer = null;
-        public List<byte> DousedPlayers = new List<byte>();
+        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+            x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player)));
+        public PlayerControl ClosestPlayer;
+        public List<byte> DousedPlayers = new();
         public DateTime LastDoused;
         public DateTime LastIgnited;
         public int DousedAlive => DousedPlayers.Count;
@@ -31,33 +31,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
-            DousedPlayers = new List<byte>();
+            DousedPlayers = new();
         }
 
         public float DouseTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDoused;
+            var timespan = utcNow - LastDoused;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public float IgniteTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastIgnited;
+            var timespan = utcNow - LastIgnited;
             var num = CustomGameOptions.IgniteCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Ignite()
@@ -70,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var player = Utils.PlayerById(playerId);
 
-                    if (player == null || player.Data.Disconnected || player.Data.IsDead || player.Is(RoleEnum.Pestilence) || player.IsProtected())
+                    if (player?.Data.Disconnected == true || player.Data.IsDead || player.Is(RoleEnum.Pestilence) || player.IsProtected())
                         continue;
 
                     Utils.RpcMurderPlayer(Player, player, false);
@@ -82,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
         {
-            new WaitForSeconds(1f);
+            _ = new WaitForSeconds(1f);
 
             if (!source.Is(RoleType))
                 return;

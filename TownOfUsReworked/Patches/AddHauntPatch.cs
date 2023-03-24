@@ -7,11 +7,11 @@ namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
     [HarmonyPriority(Priority.First)]
-    class AddHauntPatch
+    public static class AddHauntPatch
     {
-        public static List<PlayerControl> AssassinatedPlayers = new List<PlayerControl>();
+        public readonly static List<PlayerControl> AssassinatedPlayers = new();
 
-        public static void Prefix(ExileController __instance)
+        public static void Prefix()
         {
             foreach (var player in AssassinatedPlayers)
                 player.Exiled();

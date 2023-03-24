@@ -24,11 +24,15 @@ namespace TownOfUsReworked.Objects
             report += $"They were a {bodyRole.Name}!\n";
 
             if (selfFlag)
+            {
                 report += "There is evidence of self-harm!\n";
+            }
             else if (!selfFlag)
             {
                 if (CustomGameOptions.CoronerReportRole)
+                {
                     report += $"They were killed by a {killerRole.Name}!\n";
+                }
                 else
                 {
                     if (br.Killer.Is(Faction.Crew))
@@ -90,7 +94,7 @@ namespace TownOfUsReworked.Objects
 
                 report += $"The killer is a {colors[br.Killer.CurrentOutfit.ColorId]} color!\n";
 
-                if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000)) 
+                if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(br.KillAge / 1000))
                     report += $"They were killed by {br.Killer.Data.PlayerName}!";
             }
 

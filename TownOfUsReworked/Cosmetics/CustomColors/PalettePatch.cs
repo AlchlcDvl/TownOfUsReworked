@@ -99,7 +99,7 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
                 new Color32(0, 0, 0, 255),
                 new Color32(0, 0, 0, 255),
             };
-            
+
             Palette.ShadowColors = new[]
             {
                 new Color32(122, 8, 56, 255),

@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StoneMeetingKill
+    public static class StoneMeetingKill
     {
         public static void Prefix()
         {
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                 {
                     var stoned = Utils.PlayerById(id);
 
-                    if (stoned == null || stoned.Data == null || stoned.Data.Disconnected || stoned.Data.IsDead || stoned.Is(RoleEnum.Pestilence))
+                    if (stoned == null || stoned.Data?.Disconnected != false || stoned.Data.IsDead || stoned.Is(RoleEnum.Pestilence))
                         continue;
 
                     Utils.RpcMurderPlayer(gorg.Player, stoned, false);

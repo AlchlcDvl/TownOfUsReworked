@@ -7,25 +7,10 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class GlobalHUD
+    public static class GlobalHUD
     {
         public static void Postfix(HudManager __instance)
         {
-            if (GameStates.IsLobby)
-            {
-                __instance.ReportButton.gameObject.SetActive(false);
-
-                if (Input.GetKeyDown(KeyCode.Tab))
-                {
-                    if (GameSettings.SettingsPage >= 7)
-                        GameSettings.SettingsPage = 0;
-                    else
-                        GameSettings.SettingsPage++;
-                }
-
-                return;
-            }
-            
             var local = PlayerControl.LocalPlayer;
 
             if (PlayerControl.AllPlayerControls.Count <= 1 || local == null || local.Data == null || (GameStates.IsInGame && GameStates.IsHnS) || GameStates.IsEnded)
@@ -61,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 __instance.ImpostorVentButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
             }
 
-            var Report = __instance.ReportButton.graphic.sprite;
+            Sprite Report;
 
             if (local.IsBlocked())
                 Report = AssetManager.Blocked;
@@ -79,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             else
                 __instance.ReportButton.SetEnabled();
 
-            var Use = __instance.UseButton.graphic.sprite;
+            Sprite Use;
 
             if (local.IsBlocked())
                 Use = AssetManager.Blocked;
@@ -90,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             __instance.UseButton.buttonLabelText.SetOutlineColor(role.FactionColor);
             __instance.UseButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
-            var Pet = __instance.PetButton.graphic.sprite;
+            Sprite Pet;
 
             if (local.IsBlocked())
                 Pet = AssetManager.Blocked;
@@ -101,14 +86,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             __instance.PetButton.buttonLabelText.SetOutlineColor(role.FactionColor);
             __instance.PetButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
-            var Sabotage = __instance.SabotageButton.graphic.sprite;
+            Sprite Sabotage;
 
             if (local.IsBlocked())
                 Sabotage = AssetManager.Blocked;
-            else if (local.Is(Faction.Intruder))
-                Sabotage = AssetManager.Sabotage;
             else if (local.Is(Faction.Syndicate))
                 Sabotage = AssetManager.SyndicateSabotage;
+            else
+                Sabotage = AssetManager.Sabotage;
 
             __instance.SabotageButton.graphic.sprite = Sabotage;
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(role.FactionColor);
@@ -123,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             if (role.IsBlocked && MapBehaviour.Instance)
                 MapBehaviour.Instance.Close();
-            
+
             if (local.Data.IsDead)
             {
                 var ghostRole = false;

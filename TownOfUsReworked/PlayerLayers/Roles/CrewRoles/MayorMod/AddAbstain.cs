@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
-    public class AddAbstain
+    public static class AddAbstain
     {
         public static void UpdateButton(Mayor role, MeetingHud __instance)
         {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-        public class MeetingHudStart
+        public static class MeetingHudStart
         {
             public static void GenButton(Mayor role, MeetingHud __instance)
             {
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
-        public class MeetingHudClearVote
+        public static class MeetingHudClearVote
         {
             public static void Postfix(MeetingHud __instance)
             {
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-        public class MeetingHudConfirm
+        public static class MeetingHudConfirm
         {
             public static void Postfix(MeetingHud __instance)
             {
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
-        public class MeetingHudSelect
+        public static class MeetingHudSelect
         {
             public static void Postfix(MeetingHud __instance, int __0)
             {
@@ -86,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-        public class MeetingHudVotingComplete
+        public static class MeetingHudVotingComplete
         {
             public static void Postfix(MeetingHud __instance)
             {
@@ -99,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-        public class MeetingHudUpdate
+        public static class MeetingHudUpdate
         {
             public static void Postfix(MeetingHud __instance)
             {

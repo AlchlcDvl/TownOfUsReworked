@@ -2,7 +2,7 @@
 
 namespace TownOfUsReworked.Cosmetics.CustomColors
 {
-    public class ColorUtils
+    public static class ColorUtils
     {
         private static readonly int BackColor = Shader.PropertyToID("_BackColor");
         private static readonly int BodyColor = Shader.PropertyToID("_BodyColor");
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
 
         public static float PPR(float min, float max, float mul) => max - Mathf.PingPong(Time.time * mul, max - min);
 
-        public static Color Shadow(Color color) => new Color(color.r - 0.3f, color.g - 0.3f, color.b - 0.3f);
+        public static Color Shadow(Color color) => new(color.r - 0.3f, color.g - 0.3f, color.b - 0.3f);
 
         public static void SetRainbow(Renderer rend)
         {

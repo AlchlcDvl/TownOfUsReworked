@@ -8,9 +8,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDTeleport
+    public static class HUDTeleport
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Teleporter))
                 return;
@@ -30,8 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
             hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
             role.CanMark = hits.Count == 0 && PlayerControl.LocalPlayer.moveable && !SubmergedCompatibility.GetPlayerElevator(PlayerControl.LocalPlayer).Item1 && role.TeleportPoint !=
                 PlayerControl.LocalPlayer.transform.position;
-            role.MarkButton.UpdateButton(role, "MARK", role.MarkTimer(), CustomGameOptions.MarkCooldown, AssetManager.Mark, AbilityTypes.Effect, null, true,
-                role.CanMark);
+            role.MarkButton.UpdateButton(role, "MARK", role.MarkTimer(), CustomGameOptions.MarkCooldown, AssetManager.Mark, AbilityTypes.Effect, null, true, role.CanMark);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Necromancer : NeutralRole
     {
-        public bool CurrentlyReviving = false;
-        public DeadBody CurrentTarget = null;
+        public bool CurrentlyReviving;
+        public DeadBody CurrentTarget;
         public PlayerControl ClosestPlayer;
         public AbilityButton ResurrectButton;
         public AbilityButton KillButton;
-        public List<byte> Resurrected;
+        public List<byte> Resurrected = new();
         public int ResurrectUsesLeft;
         public bool ResurrectButtonUsable => ResurrectUsesLeft != 0;
         public int KillUsesLeft;
@@ -23,10 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastResurrected;
         public int ResurrectedCount;
         public int KillCount;
-        public bool Resurrecting = false;
+        public bool Resurrecting;
         public float TimeRemaining;
         public bool IsResurrecting => TimeRemaining > 0f;
-        
+
         public Necromancer(PlayerControl player) : base(player)
         {
             Name = "Necromancer";
@@ -39,38 +39,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Resurrect the dead into helping you gain control of the crew.";
             SubFaction = SubFaction.Reanimated;
             SubFactionColor = Colors.Reanimated;
-            Resurrected = new List<byte>();
-            Resurrected.Add(Player.PlayerId);
             ResurrectUsesLeft = CustomGameOptions.ResurrectCount;
             KillUsesLeft = CustomGameOptions.NecroKillCount;
             ResurrectedCount = 0;
             KillCount = 0;
+            Resurrected = new List<byte>
+            {
+                Player.PlayerId
+            };
         }
 
         public float ResurrectTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastResurrected;
+            var timespan = utcNow - LastResurrected;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
+            var timespan = utcNow - LastKilled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Resurrect()

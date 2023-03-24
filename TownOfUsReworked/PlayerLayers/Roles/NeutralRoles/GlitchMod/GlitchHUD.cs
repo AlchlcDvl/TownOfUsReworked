@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class GlitchHUD
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Glitch))
                 return;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             role.HackButton.UpdateButton(role, "HACK", role.HackTimer(), CustomGameOptions.HackCooldown, AssetManager.Hack, AbilityTypes.Direct, "Tertiary", role.IsUsingHack,
                 role.TimeRemaining, CustomGameOptions.HackDuration, true, !role.IsUsingHack);
             role.KillButton.UpdateButton(role, "NEUTRALISE", role.KillTimer(), CustomGameOptions.GlitchKillCooldown, AssetManager.Neutralise, AbilityTypes.Direct, "ActionSecondary");
-            role.MimicListUpdate(__instance);
+            role.MimicListUpdate();
         }
     }
 }

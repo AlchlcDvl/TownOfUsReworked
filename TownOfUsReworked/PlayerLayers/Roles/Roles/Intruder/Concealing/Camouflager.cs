@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using Random = UnityEngine.Random;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -10,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Camouflager : IntruderRole
     {
         public AbilityButton CamouflageButton;
-        public bool Enabled = false;
+        public bool Enabled;
         public DateTime LastCamouflaged;
         public float TimeRemaining;
         public bool Camouflaged => TimeRemaining > 0f;
@@ -47,14 +46,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CamouflageTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCamouflaged;
+            var timespan = utcNow - LastCamouflaged;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.CamouflagerCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

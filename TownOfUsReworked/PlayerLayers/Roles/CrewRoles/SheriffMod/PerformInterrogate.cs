@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInterrogate
+    public static class PerformInterrogate
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -23,15 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-            
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.Interrogated.Add(role.ClosestPlayer.PlayerId);
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastInterrogated = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

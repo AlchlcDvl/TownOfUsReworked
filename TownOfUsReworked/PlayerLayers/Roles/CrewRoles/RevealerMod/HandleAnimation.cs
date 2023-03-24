@@ -5,7 +5,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-    public class HandleAnimation
+    public static class HandleAnimation
     {
         public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] ref bool amDead)
         {

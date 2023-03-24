@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.DrunkMod
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
     public static class InvertedControls
     {
-        public static float _time = 0f;
-        public static bool reversed = false;
+        private static float _time;
+        private static bool reversed;
 
         public static void Postfix(PlayerPhysics __instance)
         {

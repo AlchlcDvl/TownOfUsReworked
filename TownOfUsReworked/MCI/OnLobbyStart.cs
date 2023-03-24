@@ -10,10 +10,10 @@ namespace TownOfUsReworked.MCI
         [HarmonyPostfix]
         public static void Postfix()
         {
-            if (InstanceControl.clients.Count != 0 && InstanceControl.MCIActive && GameStates.IsLocalGame)
+            if (InstanceControl.Clients.Count != 0 && TownOfUsReworked.MCIActive && GameStates.IsLocalGame)
             {
-                int count = InstanceControl.clients.Count;
-                InstanceControl.clients.Clear();
+                int count = InstanceControl.Clients.Count;
+                InstanceControl.Clients.Clear();
                 InstanceControl.PlayerIdClientId.Clear();
 
                 if (TownOfUsReworked.Persistence)

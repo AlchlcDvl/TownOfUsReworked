@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Traitor : Objectifier
     {
         public Role former;
-        public bool Turned = false;
+        public bool Turned;
         public string Objective;
         public Faction Side = Faction.Crew;
         public bool Betray => (Side == Faction.Intruder && Utils.LastImp()) || (Side == Faction.Syndicate && Utils.LastSyn());

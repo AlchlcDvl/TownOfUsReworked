@@ -9,7 +9,7 @@ using Reactor.Utilities;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -17,15 +17,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 return true;
 
             var role = Role.GetRole<Rebel>(PlayerControl.LocalPlayer);
-            
+
             if (__instance == role.DeclareButton && !role.HasDeclared)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RebelAction);
@@ -35,9 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Sidekick(role, role.ClosestPlayer);
                 }
-                else if (interact[0] == true)
+                else if (interact[0])
                     role.LastDeclared = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
@@ -45,9 +45,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
             if (!role.WasSidekick || role.FormerRole == null)
                 return false;
-            
+
             var formerRole = role.FormerRole.RoleType;
-            
+
             if (__instance == role.ConcealButton && formerRole == RoleEnum.Concealer)
             {
                 if (role.ConcealTimer() != 0f)
@@ -81,19 +81,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 
                     var interact = Utils.Interact(role.Player, role.ClosestFrame);
 
-                    if (interact[3] == true)
+                    if (interact[3])
                         role.Frame(role.ClosestFrame);
 
-                    if (interact[0] == true)
+                    if (interact[0])
                         role.LastFramed = DateTime.UtcNow;
-                    else if (interact[1] == true)
+                    else if (interact[1])
                         role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
                 }
                 else
                 {
-                    var closestplayers = Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius);
-
-                    foreach (var player in closestplayers)
+                    foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
                         role.Frame(player);
 
                     role.LastFramed = DateTime.UtcNow;
@@ -105,16 +103,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             {
                 if (role.PoisonTimer() != 0f)
                     return false;
-                
+
                 if (role.Poisoned)
                     return false;
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     role.PoisonedPlayer = role.ClosestPlayer;
                     role.PoisonTimeRemaining = CustomGameOptions.PoisonDuration;
@@ -127,11 +125,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                     role.Poison();
                 }
 
-                if (interact[0] == true && Role.SyndicateHasChaosDrive)
+                if (interact[0] && Role.SyndicateHasChaosDrive)
                     role.LastPoisoned = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;
@@ -160,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 writer.Write((byte)RebelActionsRPC.Warp);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                role.Warp();
+                Rebel.Warp();
                 role.LastWarped = DateTime.UtcNow;
                 return false;
             }
@@ -186,10 +184,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
         {
             reb.HasDeclared = true;
             var formerRole = Role.GetRole(target);
-            var sidekick = new Sidekick(target);
-            sidekick.FormerRole = formerRole;
+
+            var sidekick = new Sidekick(target)
+            {
+                FormerRole = formerRole,
+                Rebel = reb
+            };
+
             sidekick.RoleUpdate(formerRole);
-            sidekick.Rebel = reb;
 
             if (target == PlayerControl.LocalPlayer)
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Rebel));

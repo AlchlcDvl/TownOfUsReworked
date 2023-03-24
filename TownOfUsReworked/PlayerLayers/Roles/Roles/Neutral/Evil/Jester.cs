@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Jester : NeutralRole
     {
         public bool VotedOut;
-        public List<byte> ToHaunt;
-        public bool HasHaunted = false;
+        public List<byte> ToHaunt = new();
+        public bool HasHaunted;
         public AbilityButton HauntButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastHaunted;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
-            ToHaunt = new List<byte>();
+            ToHaunt = new();
             MaxUses = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
         }
 
@@ -42,28 +42,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (state.AmDead || Utils.PlayerById(state.TargetPlayerId).Data.Disconnected || state.VotedFor != Player.PlayerId || state.TargetPlayerId == Player.PlayerId)
                     continue;
-                
+
                 ToHaunt.Add(state.TargetPlayerId);
             }
 
             while (ToHaunt.Count > CustomGameOptions.HauntCount)
             {
                 ToHaunt.Shuffle();
-                ToHaunt.Remove(ToHaunt[ToHaunt.Count - 1]);
+                ToHaunt.Remove(ToHaunt[^1]);
             }
         }
 
         public float HauntTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastHaunted;
+            var timespan = utcNow - LastHaunted;
             var num = CustomGameOptions.HauntCooldown * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

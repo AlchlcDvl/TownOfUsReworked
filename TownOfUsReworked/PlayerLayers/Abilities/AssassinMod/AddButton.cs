@@ -18,7 +18,7 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return true;
 
             var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            return player == null || player.Data.IsDead || player.Data.Disconnected || player.NameText().text.Contains("\n");
+            return player?.Data.IsDead != false || player.Data.Disconnected || player.NameText().text.Contains('\n');
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var parent = confirmButton.transform.parent.parent;
-            
+
             var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
             voteArea.NameText.transform.localPosition = new Vector3(0.55f, 0.12f, -0.1f);
             nameText.transform.localPosition = new Vector3(0.55f, -0.12f, -0.1f);
@@ -155,25 +155,22 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var undeadflag = targetPlayer.IsBitten() && currentGuess == "Bitten";
                 var framedflag = targetPlayer.IsFramed();
 
-                if (targetPlayer.Is(RoleEnum.Actor))
+                if (targetPlayer.Is(RoleEnum.Actor) && currentGuess != "Actor")
                 {
-                    if (currentGuess != "Actor")
-                    {
-                        var actor = Role.GetRole<Actor>(targetPlayer);
-                        var results = Role.GetRoles(actor.PretendRoles);
-                        var names = new List<string>();
+                    var actor = Role.GetRole<Actor>(targetPlayer);
+                    var results = Role.GetRoles(actor.PretendRoles);
+                    var names = new List<string>();
 
-                        foreach (var role in results)
-                            names.Add(role.Name);
-                        
-                        if (names.Contains(currentGuess))
-                        {
-                            actor.Guessed = true;
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                            writer.Write((byte)WinLoseRPC.ActorWin);
-                            writer.Write(targetPlayer.PlayerId);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
+                    foreach (var role in results)
+                        names.Add(role.Name);
+
+                    if (names.Contains(currentGuess))
+                    {
+                        actor.Guessed = true;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                        writer.Write((byte)WinLoseRPC.ActorWin);
+                        writer.Write(targetPlayer.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
 
@@ -186,7 +183,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                     {
                         var modifier = Modifier.GetModifier<Professional>(PlayerControl.LocalPlayer);
 
-                        if (modifier.LifeUsed == false)
+                        if (!modifier.LifeUsed)
                         {
                             modifier.LifeUsed = true;
                             Coroutines.Start(Utils.FlashCoroutine(modifier.Color));

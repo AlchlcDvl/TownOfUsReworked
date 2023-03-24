@@ -2,12 +2,10 @@ using HarmonyLib;
 
 namespace TownOfUsReworked.MCI
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
     public sealed class OnGameStart
     {
-        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
-        [HarmonyPrefix]
-        public static void Postfix(AmongUsClient __instance)
+        public static void Prefix(AmongUsClient __instance)
         {
             foreach (var p in __instance.allClients)
                 p.IsReady = true;

@@ -8,9 +8,9 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    internal class TaskDone
+    public static class TaskDone
     {
-        private static void Postfix(PlayerControl __instance)
+        public static void Postfix(PlayerControl __instance)
         {
             if (!__instance.Is(ObjectifierEnum.Taskmaster))
                 return;
@@ -26,9 +26,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
+                {
                     Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                }
                 else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
+                {
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                }
                 else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                 {
                     Coroutines.Start(Utils.FlashCoroutine(role.Color));
@@ -47,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
                     Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                
+
                 role.WinTasksDone = true;
             }
         }

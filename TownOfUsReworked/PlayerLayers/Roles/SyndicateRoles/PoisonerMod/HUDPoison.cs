@@ -7,9 +7,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDPoison
+    public static class HUDPoison
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Poisoner))
                 return;

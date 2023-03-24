@@ -9,9 +9,9 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDEverything
+    public static class HUDEverything
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Godfather))
                 return;
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     targets = targets.Where(x => x.Is(Faction.Intruder)).ToList();
                 else if (CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders)
                     targets = targets.Where(x => !x.Is(Faction.Intruder)).ToList();
-                
+
                 if (role.MeasuredPlayer != null && targets.Contains(role.MeasuredPlayer))
                     targets.Remove(role.MeasuredPlayer);
 
@@ -79,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     role.MeasureButton = Utils.InstantiateButton();
 
                 var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => role.MeasuredPlayer != x).ToList();
-                role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", 
+                role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, AssetManager.Measure, AbilityTypes.Direct, "Tertiary",
                     notMeasured);
             }
             else if (formerRole == RoleEnum.Grenadier)

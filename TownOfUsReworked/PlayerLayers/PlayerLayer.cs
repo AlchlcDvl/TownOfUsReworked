@@ -10,8 +10,8 @@ namespace TownOfUsReworked.PlayerLayers
 {
     public abstract class PlayerLayer
     {
-        public static readonly Dictionary<byte, PlayerLayer> LayerDictionary = new Dictionary<byte, PlayerLayer>();
-        public static IEnumerable<PlayerLayer> AllLayers => LayerDictionary.Values.ToList();
+        public static readonly Dictionary<byte, PlayerLayer> LayerDictionary = new();
+        public static List<PlayerLayer> AllLayers => LayerDictionary.Values.ToList();
 
         protected internal Color32 Color = Colors.Role;
         protected internal string Name = "Layerless";
@@ -30,18 +30,18 @@ namespace TownOfUsReworked.PlayerLayers
             LayerDictionary.Add(player.PlayerId, this);
         }
 
-        private PlayerControl _player { get; set; }
+        private PlayerControl PlayerB { get; set; }
         public string PlayerName { get; set; }
 
         public PlayerControl Player
         {
-            get => _player;
+            get => PlayerB;
             set
             {
-                if (_player != null)
-                    _player.NameText().color = new Color32(255, 255, 255, 255);
+                if (PlayerB != null)
+                    PlayerB.NameText().color = new Color32(255, 255, 255, 255);
 
-                _player = value;
+                PlayerB = value;
                 PlayerName = value.Data.PlayerName;
             }
         }
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers
 
         protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         protected internal int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.ToArray().Count();
+        protected internal int TotalTasks => Player.Data.Tasks.ToArray().Length;
         protected internal bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
 
         public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
 
             if (ReferenceEquals(this, obj))

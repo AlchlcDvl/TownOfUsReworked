@@ -9,10 +9,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public bool KilledInno = false;
-        public bool PreMeetingDie = false;
-        public bool PostMeetingDie = false;
-        public bool InnoMessage = false;
+        public bool KilledInno;
+        public bool PreMeetingDie;
+        public bool PostMeetingDie;
+        public bool InnoMessage;
         public AbilityButton ShootButton;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Vigilante";
             StartText = "Shoot The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = $"- You can shoot players.\n- You you shoot someone you are not supposed to, you will die to guilt.\n- You have {UsesLeft} bullets left.";
+            AbilitiesText = "- You can shoot players.\n- You you shoot someone you are not supposed to, you will die to guilt.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Vigilante;
@@ -35,14 +35,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
+            var timespan = utcNow - LastKilled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.VigiKillCd) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

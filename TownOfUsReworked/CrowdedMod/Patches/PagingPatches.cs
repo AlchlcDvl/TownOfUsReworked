@@ -3,7 +3,7 @@ using TownOfUsReworked.CrowdedMod.Components;
 
 namespace TownOfUsReworked.CrowdedMod.Patches
 {
-    internal static class PagingPatches 
+    internal static class PagingPatches
     {
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
         public static class MeetingHudStartPatch

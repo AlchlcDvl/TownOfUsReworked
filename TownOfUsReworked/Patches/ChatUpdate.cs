@@ -8,9 +8,9 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class ChatUpdate
+    public static class ChatUpdate
     {
-        public static float _time = 0f;
+        private static float _time;
 
         public static void Postfix(HudManager __instance)
         {
@@ -62,11 +62,15 @@ namespace TownOfUsReworked.Patches
                                     {
                                         if (((PlayerControl.LocalPlayer.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) ||
                                             (PlayerControl.LocalPlayer.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles)
+                                        {
                                             bubble.Cast<ChatBubble>().NameText.color = role.Color;
-                                        else if ((PlayerControl.LocalPlayer.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) &&
+                                        }
+                                        else if (PlayerControl.LocalPlayer.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) &&
                                             !CustomGameOptions.FactionSeeRoles)
+                                        {
                                             bubble.Cast<ChatBubble>().NameText.color = role.FactionColor;
-                                        else if ((PlayerControl.LocalPlayer.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None)) && !CustomGameOptions.FactionSeeRoles)
+                                        }
+                                        else if (PlayerControl.LocalPlayer.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
                                             bubble.Cast<ChatBubble>().NameText.color = role.SubFactionColor;
                                         else
                                             bubble.Cast<ChatBubble>().NameText.color = Color.white;

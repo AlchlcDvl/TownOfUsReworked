@@ -11,7 +11,7 @@ namespace TownOfUsReworked.MCI
             if (!GameStates.IsLocalGame)
                 return;
 
-            if (!InstanceControl.MCIActive)
+            if (!TownOfUsReworked.MCIActive)
                 return;
 
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)

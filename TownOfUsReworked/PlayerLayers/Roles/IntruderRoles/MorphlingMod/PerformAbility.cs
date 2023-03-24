@@ -8,7 +8,7 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAbility
+    public static class PerformAbility
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -45,17 +45,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.SampledPlayer = role.ClosestTarget;
 
-                if (interact[0] == true)
+                if (interact[0])
                 {
                     role.LastSampled = DateTime.UtcNow;
 
                     if (CustomGameOptions.MorphCooldownsLinked)
                         role.LastMorphed = DateTime.UtcNow;
                 }
-                else if (interact[1] == true)
+                else if (interact[1])
                 {
                     role.LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
 

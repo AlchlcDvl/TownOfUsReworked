@@ -7,26 +7,21 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using BepInEx;
-using BepInEx.Unity.IL2CPP.Utils;
-using UnityEngine.Networking;
-using Il2CppInterop.Runtime.Attributes;
 
 namespace TownOfUsReworked.Classes
 {
-    public class ModUpdater
-    { 
-        public static bool running = false;
-        public static bool hasTOUUpdate = false;
-        public static bool hasSubmergedUpdate = false;
-        public static string updateTOUURI = null;
-        public static string updateSubmergedURI = null;
-        private static Task updateTOUTask = null;
-        private static Task updateSubmergedTask = null;
+    public static class ModUpdater
+    {
+        #pragma warning disable
+        public static bool running;
+        public static bool hasTOUUpdate;
+        public static bool hasSubmergedUpdate;
+        public static string updateTOUURI;
+        public static string updateSubmergedURI;
+        private static Task updateTOUTask;
+        private static Task updateSubmergedTask;
         public static GenericPopup InfoPopup;
+        #pragma warning restore
 
         public static void LaunchUpdater()
         {
@@ -39,7 +34,7 @@ namespace TownOfUsReworked.Classes
 
             //Only check of Submerged update if Submerged is already installed
             string codeBase = Assembly.GetExecutingAssembly().Location;
-            System.UriBuilder uri = new System.UriBuilder(codeBase);
+            System.UriBuilder uri = new(codeBase);
             string submergedPath = System.Uri.UnescapeDataString(uri.Path.Replace("TownOfUsReworked", "Submerged"));
 
             if (File.Exists(submergedPath))
@@ -55,7 +50,7 @@ namespace TownOfUsReworked.Classes
             if (updateType == "TOU")
             {
                 info = "Updating Town Of Us\nPlease wait...";
-                ModUpdater.InfoPopup.Show(info);
+                InfoPopup.Show(info);
 
                 if (updateTOUTask == null)
                 {
@@ -65,12 +60,14 @@ namespace TownOfUsReworked.Classes
                         info = "Unable to auto-update\nPlease update manually";
                 }
                 else
+                {
                     info = "Update might already\nbe in progress";
+                }
             }
             else if (updateType == "Submerged")
             {
                 info = "Updating Submerged\nPlease wait...";
-                ModUpdater.InfoPopup.Show(info);
+                InfoPopup.Show(info);
 
                 if (updateSubmergedTask == null)
                 {
@@ -80,12 +77,16 @@ namespace TownOfUsReworked.Classes
                         info = "Unable to auto-update\nPlease update manually";
                 }
                 else
+                {
                     info = "Update might already\nbe in progress";
+                }
             }
             else
+            {
                 return;
+            }
 
-            ModUpdater.InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>((p) => { ModUpdater.SetPopupText(info); })));
+            InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>(_ => SetPopupText(info))));
         }
 
         public static void ClearOldVersions()
@@ -93,10 +94,9 @@ namespace TownOfUsReworked.Classes
             //Removes any old versions (Denoted by the suffix `.old`)
             try
             {
-                DirectoryInfo d = new DirectoryInfo(Path.GetDirectoryName(Application.dataPath) + @"\BepInEx\plugins");
-                string[] files = d.GetFiles("*.old").Select(x => x.FullName).ToArray();
+                DirectoryInfo d = new(Path.GetDirectoryName(Application.dataPath) + @"\BepInEx\plugins");
 
-                foreach (string f in files)
+                foreach (string f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
                     File.Delete(f);
             }
             catch (System.Exception e)
@@ -117,7 +117,7 @@ namespace TownOfUsReworked.Classes
                 else if (updateType == "Submerged")
                     githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
 
-                HttpClient http = new HttpClient();
+                HttpClient http = new();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
                 var response = await http.GetAsync(new System.Uri(githubURI), HttpCompletionOption.ResponseContentRead);
 
@@ -134,8 +134,8 @@ namespace TownOfUsReworked.Classes
                 if (tagname == null)
                     return false; // Something went wrong
 
-                int diff = 0;
-                System.Version ver = System.Version.Parse(tagname.Replace("v", ""));
+                var diff = 0;
+                var ver = System.Version.Parse(tagname.Replace("v", ""));
 
                 if (updateType == "TOU")
                 {
@@ -152,7 +152,9 @@ namespace TownOfUsReworked.Classes
                 {
                     //Accounts for broken version
                     if (SubmergedCompatibility.Version == null)
+                    {
                         hasSubmergedUpdate = true;
+                    }
                     else
                     {
                         diff = SubmergedCompatibility.Version.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
@@ -162,7 +164,7 @@ namespace TownOfUsReworked.Classes
                             // Submerged update required
                             hasSubmergedUpdate = true;
                         }
-                    } 
+                    }
                 }
                 var assets = data.assets;
 
@@ -212,7 +214,7 @@ namespace TownOfUsReworked.Classes
 
             try
             {
-                HttpClient http = new HttpClient();
+                HttpClient http = new();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
                 var response = await http.GetAsync(new System.Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
 
@@ -223,7 +225,7 @@ namespace TownOfUsReworked.Classes
                 }
 
                 string codeBase = Assembly.GetExecutingAssembly().Location;
-                System.UriBuilder uri = new System.UriBuilder(codeBase);
+                System.UriBuilder uri = new(codeBase);
                 string fullname = System.Uri.UnescapeDataString(uri.Path);
 
                 if (updateType == "Submerged")
@@ -235,10 +237,8 @@ namespace TownOfUsReworked.Classes
                 File.Move(fullname, fullname + ".old"); //Rename current executable to old
 
                 using (var responseStream = await response.Content.ReadAsStreamAsync())
-                {
-                    using (var fileStream = File.Create(fullname))
-                        responseStream.CopyTo(fileStream);
-                }
+                using (var fileStream = File.Create(fullname))
+                    responseStream.CopyTo(fileStream);
 
                 ShowPopup(info);
                 return true;
@@ -267,6 +267,7 @@ namespace TownOfUsReworked.Classes
                 InfoPopup.TextAreaTMP.text = message;
         }
 
+        #pragma warning disable
         class GitHubApiObject
         {
             [JsonPropertyName("tag_name")]
@@ -280,5 +281,6 @@ namespace TownOfUsReworked.Classes
             [JsonPropertyName("browser_download_url")]
             public string browser_download_url { get; set; }
         }
+        #pragma warning restore
     }
 }

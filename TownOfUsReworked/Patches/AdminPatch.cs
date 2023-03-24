@@ -10,7 +10,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {
     [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
-    public static class Admin
+    public static class AdminPatch
     {
         public static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
         {
@@ -51,16 +51,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     else
                         PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
                 }
-                
+
                 if (text != null)
                 {
                     text.gameObject.SetActive(true);
                     text.text = colorMapping[i].ToString();
-                    
+
                     //Show first row numbers below player icons
                     //Show second row numbers above player icons
                     //Show all icons on player icons when there are three rows
-
                     if (useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);
                     else if (i / area.MaxWidth == 0)
@@ -104,10 +103,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                         continue;
                     }
 
-                    if (data != null && !data.Disconnected && !data.IsDead && !colorMap.Contains(data.DefaultOutfit.ColorId))
+                    if (data?.Disconnected == false && !data.IsDead && !colorMap.Contains(data.DefaultOutfit.ColorId))
                         colorMap.Add(data.DefaultOutfit.ColorId);
                 }
-                
+
                 UpdateBlips(area, colorMap, isAgent);
             }
         }
@@ -141,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
             if (!sabotaged)
                 UpdateBlips(__instance, isAgent);
-            
+
             return false;
         }
     }

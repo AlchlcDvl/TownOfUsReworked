@@ -10,12 +10,12 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class UpdateTrackerArrows
+    public static class UpdateTrackerArrows
     {
         private static DateTime _time = DateTime.UnixEpoch;
         private static float Interval => CustomGameOptions.UpdateInterval;
 
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Tracker))
                 return;
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                 {
                     var player = Utils.PlayerById(arrow.Key);
 
-                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
+                    if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
                     {
                         role.DestroyArrow(arrow.Key);
                         continue;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
                         arrow.Value.target = player.transform.position;
                 }
-                
+
                 if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
                     _time = DateTime.UtcNow;
             }

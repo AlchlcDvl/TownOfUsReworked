@@ -26,11 +26,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer, role.ClosestPlayer.Is(SubFaction.Undead));
 
-                if (interact[3] == true || interact[0] == true)
+                if (interact[3] || interact[0])
                     role.LastStaked = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2] == true)
+                else if (interact[2])
                     role.LastStaked.AddSeconds(CustomGameOptions.VestKCReset);
 
                 return false;

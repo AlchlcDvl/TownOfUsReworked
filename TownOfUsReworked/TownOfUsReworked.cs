@@ -29,37 +29,42 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.2.3";
-        public static Version Version = System.Version.Parse(VersionString);
+        public const string VersionString = "0.0.2.5";
+
+        #pragma warning disable
+        public static Version Version = Version.Parse(VersionString);
+        #pragma warning restore
 
         public const int MaxPlayers = 127;
         public const int MaxImpostors = 62;
 
-        public static string dev = VersionString.Substring(6);
-        public static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
-        public static bool isDev = dev != "0";
-        public static bool isTest = false;
-        public static string devString = isDev ? $"-dev{dev}" : "";
-        public static string test = isTest ? "_test" : "";
-        public static string versionFinal = $"v{version}{devString}{test}";
+        public readonly static string dev = VersionString[6..];
+        public readonly static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
+        public readonly static bool isDev = dev != "0";
+        public readonly static bool isTest;
+        public readonly static string devString = isDev ? $"-dev{dev}" : "";
+        public readonly static string test = isTest ? "_test" : "";
+        public readonly static string versionFinal = $"v{version}{devString}{test}";
 
-        public static string Resources = "TownOfUsReworked.Resources.";
-        public static string Buttons = $"{Resources}Buttons.";
-        public static string Sounds = $"{Resources}Sounds.";
-        public static string Misc = $"{Resources}Misc.";
-        public static string Presets = $"{Resources}Presets.";
-        public static string Hats = $"{Resources}Hats.";
-        public static string Visors = $"{Resources}Visors.";
-        public static string Nameplates = $"{Resources}Nameplates.";
+        public readonly static string Resources = "TownOfUsReworked.Resources.";
+        public readonly static string Buttons = $"{Resources}Buttons.";
+        public readonly static string Sounds = $"{Resources}Sounds.";
+        public readonly static string Misc = $"{Resources}Misc.";
+        public readonly static string Presets = $"{Resources}Presets.";
+        public readonly static string Hats = $"{Resources}Hats.";
+        public readonly static string Visors = $"{Resources}Visors.";
+        public readonly static string Nameplates = $"{Resources}Nameplates.";
 
         public static readonly Assembly assembly = Assembly.GetExecutingAssembly();
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
 
-        public static bool LobbyCapped = false;
-        public static bool Persistence = false;
+        #pragma warning disable
+        public static bool LobbyCapped;
+        public static bool Persistence;
+        public static bool MCIActive;
+        #pragma warning restore
 
         private Harmony _harmony;
-        private Harmony Harmony { get; } = new (Id);
 
         public ConfigEntry<string> Ip { get; set; }
         public ConfigEntry<ushort> Port { get; set; }
@@ -81,7 +86,7 @@ namespace TownOfUsReworked
             Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
             Port = Config.Bind("Custom", "Port", (ushort) 22023);
             var defaultRegions = ServerManager.DefaultRegions.ToList();
-            var ip = Ip.Value;
+            _ = Ip.Value;
 
             if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
             {
@@ -90,7 +95,7 @@ namespace TownOfUsReworked
                     if (address.AddressFamily != AddressFamily.InterNetwork)
                         continue;
 
-                    ip = address.ToString();
+                    _ = address.ToString();
                     break;
                 }
             }

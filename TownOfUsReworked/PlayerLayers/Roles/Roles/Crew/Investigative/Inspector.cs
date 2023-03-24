@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastInspected;
-        public List<byte> Inspected;
+        public List<byte> Inspected = new();
         public AbilityButton InspectButton;
 
         public Inspector(PlayerControl player) : base(player)
@@ -22,21 +22,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            Inspected = new List<byte>();
+            Inspected = new();
             InspectorResults = InspectorResults.HasInformation;
         }
 
         public float InspectTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInspected;
+            var timespan = utcNow - LastInspected;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

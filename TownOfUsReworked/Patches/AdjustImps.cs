@@ -1,15 +1,14 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.CustomOptions;
-using AmongUs.GameOptions;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.GetAdjustedNumImpostors))]
-    public class GetAdjustedImposters
+    public static class GetAdjustedImposters
     {
-        public static bool Prefix(IGameOptions __instance, ref int __result)
+        public static bool Prefix(ref int __result)
         {
             if (GameStates.IsHnS)
                 return true;
@@ -17,10 +16,10 @@ namespace TownOfUsReworked.Patches
             if (GameStates.IsAA)
             {
                 var players = GameData.Instance.PlayerCount;
-                var impostors = 1;
                 var random = Random.RandomRangeInt(0, 100);
+                int impostors;
 
-                if (players <= 6 )
+                if (players <= 6)
                 {
                     if (random <= 5)
                         impostors = 0;

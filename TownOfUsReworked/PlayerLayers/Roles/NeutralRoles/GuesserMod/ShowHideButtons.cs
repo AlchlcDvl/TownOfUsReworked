@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-    public class ShowHideGuessButtons
+    public static class ShowHideGuessButtons
     {
         public static void HideButtons(Guesser role)
         {

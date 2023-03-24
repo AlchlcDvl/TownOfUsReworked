@@ -29,21 +29,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float InvisTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInvis;
+            var timespan = utcNow - LastInvis;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.InvisCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Invis()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            
+
             if (Player.Data.IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;
 
@@ -63,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     PlayerName = " "
                 });
 
-                Player.myRend().color = color;
+                Player.MyRend().color = color;
                 Player.NameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
             }
@@ -74,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastInvis = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
-            Player.myRend().color = new Color32(255, 255, 255, 255);
+            Player.MyRend().color = new Color32(255, 255, 255, 255);
         }
     }
 }

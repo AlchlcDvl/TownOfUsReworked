@@ -55,35 +55,35 @@ namespace TownOfUsReworked.Patches
 {
     public static class RPCHandling
     {
-        private static readonly List<(Type, int, int, bool)> CrewAuditorRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewInvestigativeRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewKillingRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewProtectiveRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewSovereignRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewSupportRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> CrewRoles = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> CrewAuditorRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewInvestigativeRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewKillingRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewProtectiveRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewSovereignRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewSupportRoles = new();
+        private static readonly List<(Type, int, int, bool)> CrewRoles = new();
 
-        private static readonly List<(Type, int, int, bool)> NeutralEvilRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> NeutralBenignRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> NeutralKillingRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> NeutralNeophyteRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> NeutralRoles = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> NeutralEvilRoles = new();
+        private static readonly List<(Type, int, int, bool)> NeutralBenignRoles = new();
+        private static readonly List<(Type, int, int, bool)> NeutralKillingRoles = new();
+        private static readonly List<(Type, int, int, bool)> NeutralNeophyteRoles = new();
+        private static readonly List<(Type, int, int, bool)> NeutralRoles = new();
 
-        private static readonly List<(Type, int, int, bool)> IntruderDeceptionRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> IntruderConcealingRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> IntruderKillingRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> IntruderSupportRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> IntruderRoles = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> IntruderDeceptionRoles = new();
+        private static readonly List<(Type, int, int, bool)> IntruderConcealingRoles = new();
+        private static readonly List<(Type, int, int, bool)> IntruderKillingRoles = new();
+        private static readonly List<(Type, int, int, bool)> IntruderSupportRoles = new();
+        private static readonly List<(Type, int, int, bool)> IntruderRoles = new();
 
-        private static readonly List<(Type, int, int, bool)> SyndicateDisruptionRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> SyndicateKillingRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> SyndicatePowerRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> SyndicateSupportRoles = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> SyndicateRoles = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> SyndicateDisruptionRoles = new();
+        private static readonly List<(Type, int, int, bool)> SyndicateKillingRoles = new();
+        private static readonly List<(Type, int, int, bool)> SyndicatePowerRoles = new();
+        private static readonly List<(Type, int, int, bool)> SyndicateSupportRoles = new();
+        private static readonly List<(Type, int, int, bool)> SyndicateRoles = new();
 
-        private static readonly List<(Type, int, int, bool)> AllModifiers = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> AllAbilities = new List<(Type, int, int, bool)>();
-        private static readonly List<(Type, int, int, bool)> AllObjectifiers = new List<(Type, int, int, bool)>();
+        private static readonly List<(Type, int, int, bool)> AllModifiers = new();
+        private static readonly List<(Type, int, int, bool)> AllAbilities = new();
+        private static readonly List<(Type, int, int, bool)> AllObjectifiers = new();
 
         private static bool PhantomOn;
         private static bool RevealerOn;
@@ -101,11 +101,7 @@ namespace TownOfUsReworked.Patches
                 max = items.Count;
 
             if (min > max)
-            {
-                var temp = min;
-                min = max;
-                max = temp;
-            }
+                (max, min) = (min, max);
 
             if (items.Count < max)
                 max = items.Count;
@@ -124,7 +120,9 @@ namespace TownOfUsReworked.Patches
                 var (_, chance, _, _) = (item.Item1, item.Item2, item.Item3, item.Item4);
 
                 if (chance == 100)
+                {
                     tempList.Add(item);
+                }
                 else
                 {
                     var random = Random.RandomRangeInt(0, 100);
@@ -138,7 +136,6 @@ namespace TownOfUsReworked.Patches
             }
 
             tempList.Shuffle();
-            items = tempList;
         }
 
         private static List<(Type, int, int, bool)> AASort(List<(Type, int, int, bool)> items, int amount)
@@ -150,7 +147,7 @@ namespace TownOfUsReworked.Patches
                 items.Shuffle();
                 newList.Add(items[0]);
 
-                if (items[0].Item4 == true && CustomGameOptions.EnableUniques)
+                if (items[0].Item4 && CustomGameOptions.EnableUniques)
                     items.Remove(items[0]);
 
                 newList.Shuffle();
@@ -164,8 +161,11 @@ namespace TownOfUsReworked.Patches
             Utils.LogSomething("Role Gen Start");
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
+
+            #pragma warning disable
             var spawnList1 = new List<(Type, int, int, bool)>();
             var spawnList2 = new List<(Type, int, int, bool)>();
+            #pragma warning restore
 
             CrewRoles.Clear();
             IntruderRoles.Clear();
@@ -188,13 +188,13 @@ namespace TownOfUsReworked.Patches
 
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
-                var (type, _, id, unique) = spawnList2.TakeFirst();
+                var (type, _, id, _) = spawnList2.TakeFirst();
                 Role.GenRole<Role>(type, impostors.TakeFirst(), id);
             }
 
             while (crewmates.Count > 0 && spawnList1.Count > 0)
             {
-                var (type, _, id, unique) = spawnList1.TakeFirst();
+                var (type, _, id, _) = spawnList1.TakeFirst();
                 Role.GenRole<Role>(type, crewmates.TakeFirst(), id);
             }
 
@@ -206,8 +206,11 @@ namespace TownOfUsReworked.Patches
             Utils.LogSomething("Role Gen Start");
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
+
+            #pragma warning disable
             var spawnList1 = new List<(Type, int, int, bool)>();
             var spawnList2 = new List<(Type, int, int, bool)>();
+            #pragma warning restore
 
             CrewRoles.Clear();
             IntruderRoles.Clear();
@@ -217,7 +220,7 @@ namespace TownOfUsReworked.Patches
             Utils.LogSomething("Lists Cleared - Killing Only");
 
             if (!CustomGameOptions.AltImps)
-            {   
+            {
                 IntruderRoles.Clear();
                 IntruderRoles.Add((typeof(Undertaker), CustomGameOptions.UndertakerOn, 41, CustomGameOptions.UniqueUndertaker));
                 IntruderRoles.Add((typeof(Morphling), CustomGameOptions.MorphlingOn, 42, CustomGameOptions.UniqueMorphling));
@@ -301,7 +304,9 @@ namespace TownOfUsReworked.Patches
             nonIntruderRoles.AddRange(NeutralKillingRoles);
 
             if (!CustomGameOptions.AltImps)
+            {
                 nonIntruderRoles.AddRange(SyndicateRoles);
+            }
             else
             {
                 IntruderRoles.Clear();
@@ -336,13 +341,13 @@ namespace TownOfUsReworked.Patches
 
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
-                var (type, _, id, unique) = spawnList2.TakeFirst();
+                var (type, _, id, _) = spawnList2.TakeFirst();
                 Role.GenRole<Role>(type, impostors.TakeFirst(), id);
             }
 
             while (crewmates.Count > 0 && spawnList1.Count > 0)
             {
-                var (type, _, id, unique) = spawnList1.TakeFirst();
+                var (type, _, id, _) = spawnList1.TakeFirst();
                 Role.GenRole<Role>(type, crewmates.TakeFirst(), id);
             }
 
@@ -355,8 +360,11 @@ namespace TownOfUsReworked.Patches
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
             var allCount = crewmates.Count + impostors.Count;
+
+            #pragma warning disable
             var spawnList1 = new List<(Type, int, int, bool)>();
             var spawnList2 = new List<(Type, int, int, bool)>();
+            #pragma warning restore
 
             crewmates.Shuffle();
             impostors.Shuffle();
@@ -532,7 +540,7 @@ namespace TownOfUsReworked.Patches
                 {
                     CrewKillingRoles.Add((typeof(Veteran), CustomGameOptions.VeteranOn, 11, CustomGameOptions.UniqueVeteran));
                     num--;
-                } 
+                }
 
                 Utils.LogSomething("Veteran Done");
             }
@@ -541,11 +549,11 @@ namespace TownOfUsReworked.Patches
             {
                 num = GameStates.IsCustom ? CustomGameOptions.TrackerCount : 1;
 
-                while (num > 0) 
+                while (num > 0)
                 {
                     CrewInvestigativeRoles.Add((typeof(Tracker), CustomGameOptions.TrackerOn, 12, CustomGameOptions.UniqueTracker));
                     num--;
-                } 
+                }
 
                 Utils.LogSomething("Tracker Done");
             }
@@ -1227,7 +1235,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
             {
                 num = GameStates.IsCustom ? CustomGameOptions.GodfatherCount : 1;
-                    
+
                 while (num > 0)
                 {
                     IntruderSupportRoles.Add((typeof(Godfather), CustomGameOptions.GodfatherOn, 56, CustomGameOptions.UniqueGodfather));
@@ -1305,7 +1313,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.RebelOn > 0 && CustomGameOptions.SyndicateCount >= 3)
             {
                 num = GameStates.IsCustom ? CustomGameOptions.RebelCount : 1;
-                        
+
                 while (num > 0)
                 {
                     SyndicateSupportRoles.Add((typeof(Rebel), CustomGameOptions.RebelOn, 61, CustomGameOptions.UniqueRebel));
@@ -1318,7 +1326,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.BeamerOn > 0)
             {
                 num = GameStates.IsCustom ? CustomGameOptions.BeamerCount : 1;
-                        
+
                 while (num > 0)
                 {
                     SyndicateSupportRoles.Add((typeof(Beamer), CustomGameOptions.BeamerOn, 74, CustomGameOptions.UniqueBeamer));
@@ -1412,9 +1420,7 @@ namespace TownOfUsReworked.Patches
 
                     while (maxIntSum > maxInt)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxIC > 0) maxIC--;
@@ -1431,9 +1437,6 @@ namespace TownOfUsReworked.Patches
                             case 3:
                                 if (maxIS > 0) maxIS--;
                                 break;
-
-                            default:
-                                break;
                         }
 
                         maxIntSum = maxIC + maxID + maxIK + maxIS;
@@ -1441,9 +1444,7 @@ namespace TownOfUsReworked.Patches
 
                     while (minIntSum > minInt)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minIC > 0) minIC--;
@@ -1459,9 +1460,6 @@ namespace TownOfUsReworked.Patches
 
                             case 3:
                                 if (minIS > 0) minIS--;
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -1488,7 +1486,7 @@ namespace TownOfUsReworked.Patches
 
                     while (IntruderRoles.Count < CustomGameOptions.IntruderCount)
                         IntruderRoles.Add((typeof(Impostor), 100, 52, false));
-                    
+
                     IntruderRoles.Shuffle();
                 }
 
@@ -1509,9 +1507,7 @@ namespace TownOfUsReworked.Patches
 
                     while (maxNeutSum > maxNeut)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxNE > 0) maxNE--;
@@ -1528,9 +1524,6 @@ namespace TownOfUsReworked.Patches
                             case 3:
                                 if (maxNN > 0) maxNN--;
                                 break;
-
-                            default:
-                                break;
                         }
 
                         maxNeutSum = maxNE + maxNB + maxNK + maxNN;
@@ -1538,9 +1531,7 @@ namespace TownOfUsReworked.Patches
 
                     while (minNeutSum > minNeut)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minNE > 0) minNE--;
@@ -1556,9 +1547,6 @@ namespace TownOfUsReworked.Patches
 
                             case 3:
                                 if (minNN > 0) minNN--;
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -1601,9 +1589,7 @@ namespace TownOfUsReworked.Patches
 
                     while (maxSynSum > maxSyn)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxSSu > 0) maxSSu--;
@@ -1620,9 +1606,6 @@ namespace TownOfUsReworked.Patches
                             case 3:
                                 if (maxSP > 0) maxSP--;
                                 break;
-
-                            default:
-                                break;
                         }
 
                         maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
@@ -1630,9 +1613,7 @@ namespace TownOfUsReworked.Patches
 
                     while (minSynSum > minSyn)
                     {
-                        var random = Random.RandomRangeInt(0, 4);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minSSu > 0) minSSu--;
@@ -1648,9 +1629,6 @@ namespace TownOfUsReworked.Patches
 
                             case 3:
                                 if (minSP > 0) minSP--;
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -1702,9 +1680,7 @@ namespace TownOfUsReworked.Patches
 
                     while (maxCrewSum > maxCrew)
                     {
-                        var random = Random.RandomRangeInt(0, 6);
-
-                        switch (random)
+                        switch (Random.RandomRangeInt(0, 6))
                         {
                             case 0:
                                 if (maxCA > 0) maxCA--;
@@ -1728,9 +1704,6 @@ namespace TownOfUsReworked.Patches
 
                             case 5:
                                 if (maxCP > 0) maxCP--;
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -1765,9 +1738,6 @@ namespace TownOfUsReworked.Patches
 
                             case 5:
                                 if (minCSv > 0) minCSv--;
-                                break;
-
-                            default:
                                 break;
                         }
 
@@ -1850,7 +1820,9 @@ namespace TownOfUsReworked.Patches
             NonIntruderRoles.AddRange(NeutralRoles);
 
             if (!CustomGameOptions.AltImps)
+            {
                 NonIntruderRoles.AddRange(SyndicateRoles);
+            }
             else
             {
                 IntruderRoles.Clear();
@@ -1953,7 +1925,9 @@ namespace TownOfUsReworked.Patches
                 writer.Write(pc.PlayerId);
             }
             else
+            {
                 writer.Write(byte.MaxValue);
+            }
 
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
@@ -1968,7 +1942,9 @@ namespace TownOfUsReworked.Patches
                 writer3.Write(pc.PlayerId);
             }
             else
+            {
                 writer3.Write(byte.MaxValue);
+            }
 
             AmongUsClient.Instance.FinishRpcImmediately(writer3);
 
@@ -1984,7 +1960,9 @@ namespace TownOfUsReworked.Patches
                 writer2.Write(pc.PlayerId);
             }
             else
+            {
                 writer2.Write(byte.MaxValue);
+            }
 
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
@@ -1999,7 +1977,9 @@ namespace TownOfUsReworked.Patches
                 writer4.Write(pc.PlayerId);
             }
             else
+            {
                 writer4.Write(byte.MaxValue);
+            }
 
             AmongUsClient.Instance.FinishRpcImmediately(writer4);
 
@@ -2260,7 +2240,7 @@ namespace TownOfUsReworked.Patches
                 canHaveNeutralAbility.Count > 0 || canHaveCrewAbility.Count > 0 || canHaveSyndicateAbility.Count > 0 || canHaveAbility.Count > 0 || canHaveEvilAbility.Count > 0 ||
                 canHaveTaskedAbility.Count > 0 || canHaveNonEvilAbility.Count > 0 || canHaveKillingAbility.Count > 0)
             {
-                if (spawnList.Count <= 0)
+                if (spawnList.Count == 0)
                     break;
 
                 var (type, _, id, unique) = spawnList.TakeFirst();
@@ -2439,7 +2419,7 @@ namespace TownOfUsReworked.Patches
 
             while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 4)
             {
-                if (spawnList.Count <= 0)
+                if (spawnList.Count == 0)
                     break;
 
                 var (type, _, id, unique) = spawnList.TakeFirst();
@@ -2456,11 +2436,17 @@ namespace TownOfUsReworked.Patches
                         Rivals.Gen(canHaveLoverorRival);
                 }
                 else if (Crew.Contains(id) && canHaveCrewObjectifier.Count > 0)
+                {
                     Objectifier.GenObjectifier<Objectifier>(type, canHaveCrewObjectifier.TakeFirst(), id);
+                }
                 else if (Neutral.Contains(id) && canHaveNeutralObjectifier.Count > 0)
+                {
                     Objectifier.GenObjectifier<Objectifier>(type, canHaveNeutralObjectifier.TakeFirst(), id);
+                }
                 else if (Allied.Contains(id) && canHaveAllied.Count > 0)
+                {
                     Objectifier.GenObjectifier<Objectifier>(type, canHaveAllied.TakeFirst(), id);
+                }
             }
 
             Utils.LogSomething("Objectifiers Done");
@@ -2496,7 +2482,7 @@ namespace TownOfUsReworked.Patches
 
                 Utils.LogSomething("Bait Done");
             }
-            
+
             if (CustomGameOptions.DwarfOn > 0)
             {
                 num = GameStates.IsCustom ? CustomGameOptions.DwarfCount : 1;
@@ -2548,7 +2534,7 @@ namespace TownOfUsReworked.Patches
 
                 Utils.LogSomething("Giant Done");
             }
-            
+
             if (CustomGameOptions.DrunkOn > 0)
             {
                 num = GameStates.IsCustom ? CustomGameOptions.DrunkCount : 1;
@@ -2656,7 +2642,7 @@ namespace TownOfUsReworked.Patches
 
             while (canHaveBait.Count > 0 || canHaveDiseased.Count > 0 || canHaveProfessional.Count > 0 || canHaveModifier.Count > 0)
             {
-                if (spawnList.Count <= 0)
+                if (spawnList.Count == 0)
                     break;
 
                 var (type, _, id, unique) = spawnList.TakeFirst();
@@ -2685,7 +2671,7 @@ namespace TownOfUsReworked.Patches
         {
             if (CustomGameOptions.AlliedOn > 0)
             {
-                foreach (Allied ally in Objectifier.GetObjectifiers(ObjectifierEnum.Allied))
+                foreach (Allied ally in Objectifier.GetObjectifiers(ObjectifierEnum.Allied).Cast<Allied>())
                 {
                     var alliedRole = Role.GetRole(ally.Player);
 
@@ -2736,9 +2722,8 @@ namespace TownOfUsReworked.Patches
                             ally.Color = Colors.Crew;
                         }
                     }
-                    
-                    ally.Side = alliedRole.FactionName;
-                    ally.Side2 = alliedRole.Faction;
+
+                    ally.Side = alliedRole.Faction;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAlliedFaction, SendOption.Reliable);
                     writer.Write(ally.Player.PlayerId);
                     writer.Write((byte)alliedRole.Faction);
@@ -2762,10 +2747,10 @@ namespace TownOfUsReworked.Patches
                 {
                     if (!player.Is(RoleEnum.Altruist))
                         gaTargets.Add(player);
-                    
-                    if (!player.HasObjectifier())
+
+                    if (Objectifier.GetObjectifier(player) != null)
                         goodRecruits.Add(player);
-                        
+
                     if (!player.Is(RoleAlignment.CrewSov) && !player.Is(ObjectifierEnum.Traitor))
                         exeTargets.Add(player);
                 }
@@ -2774,8 +2759,8 @@ namespace TownOfUsReworked.Patches
                     if (!player.Is(RoleEnum.Executioner) && !player.Is(RoleEnum.Troll) && !player.Is(RoleEnum.GuardianAngel) && !player.Is(RoleEnum.Jester))
                     {
                         gaTargets.Add(player);
-                            
-                        if (player.Is(RoleAlignment.NeutralKill) && !player.HasObjectifier())
+
+                        if (player.Is(RoleAlignment.NeutralKill) && Objectifier.GetObjectifier(player) != null)
                             evilRecruits.Add(player);
                     }
 
@@ -2785,8 +2770,8 @@ namespace TownOfUsReworked.Patches
                 else if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                 {
                     gaTargets.Add(player);
-                    
-                    if (!player.HasObjectifier())
+
+                    if (Objectifier.GetObjectifier(player) != null)
                         evilRecruits.Add(player);
 
                     if ((player.Is(Faction.Intruder) && CustomGameOptions.ExeCanHaveIntruderTargets) || (player.Is(Faction.Syndicate) && CustomGameOptions.ExeCanHaveSyndicateTargets))
@@ -2804,7 +2789,7 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.ExecutionerOn > 0)
             {
-                foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner))
+                foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner).Cast<Executioner>())
                 {
                     exe.TargetPlayer = null;
 
@@ -2832,7 +2817,7 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.GuesserOn > 0)
             {
-                foreach (Guesser guess in Role.GetRoles(RoleEnum.Guesser))
+                foreach (Guesser guess in Role.GetRoles(RoleEnum.Guesser).Cast<Guesser>())
                 {
                     guess.TargetPlayer = null;
 
@@ -2857,13 +2842,13 @@ namespace TownOfUsReworked.Patches
 
                 Utils.LogSomething("Guess Target Set");
             }
-            
+
             if (CustomGameOptions.GuardianAngelOn > 0)
             {
-                foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel))
+                foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel).Cast<GuardianAngel>())
                 {
                     ga.TargetPlayer = null;
-                    
+
                     if (gaTargets.Count > 0)
                     {
                         while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
@@ -2885,13 +2870,13 @@ namespace TownOfUsReworked.Patches
 
                 Utils.LogSomething("GA Target Set");
             }
-            
+
             if (CustomGameOptions.BountyHunterOn > 0)
             {
-                foreach (BountyHunter bh in Role.GetRoles(RoleEnum.BountyHunter))
+                foreach (BountyHunter bh in Role.GetRoles(RoleEnum.BountyHunter).Cast<BountyHunter>())
                 {
                     bh.TargetPlayer = null;
-                    
+
                     if (bhTargets.Count > 0)
                     {
                         while (bh.TargetPlayer == null || bh.TargetPlayer == bh.Player)
@@ -2913,13 +2898,13 @@ namespace TownOfUsReworked.Patches
 
                 Utils.LogSomething("BH Target Set");
             }
-            
+
             if (CustomGameOptions.ActorOn > 0)
             {
-                foreach (Actor act in Role.GetRoles(RoleEnum.Actor))
+                foreach (Actor act in Role.GetRoles(RoleEnum.Actor).Cast<Actor>())
                 {
                     act.PretendRoles = InspectorResults.None;
-                    
+
                     if (pretendRoles.Count > 0)
                     {
                         while (act.PretendRoles == InspectorResults.None)
@@ -2941,12 +2926,12 @@ namespace TownOfUsReworked.Patches
 
             if (CustomGameOptions.JackalOn > 0)
             {
-                foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal))
+                foreach (Jackal jackal in Role.GetRoles(RoleEnum.Jackal).Cast<Jackal>())
                 {
                     jackal.GoodRecruit = null;
                     jackal.EvilRecruit = null;
                     jackal.BackupRecruit = null;
-                    
+
                     if (goodRecruits.Count > 0)
                     {
                         while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player)
@@ -2958,7 +2943,7 @@ namespace TownOfUsReworked.Patches
 
                         goodRecruits.Remove(jackal.GoodRecruit);
                         (Role.GetRole(jackal.GoodRecruit)).SubFaction = SubFaction.Cabal;
-                        (Role.GetRole(jackal.GoodRecruit)).IsRecruit = true;
+                        Role.GetRole(jackal.GoodRecruit).IsRecruit = true;
                         jackal.Recruited.Add(jackal.GoodRecruit.PlayerId);
 
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGoodRecruit, SendOption.Reliable);
@@ -2967,7 +2952,7 @@ namespace TownOfUsReworked.Patches
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Good Recruit = {jackal.GoodRecruit.name}");
                     }
-                    
+
                     if (evilRecruits.Count > 0)
                     {
                         while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player)
@@ -2978,7 +2963,7 @@ namespace TownOfUsReworked.Patches
                         }
 
                         evilRecruits.Remove(jackal.EvilRecruit);
-                        (Role.GetRole(jackal.EvilRecruit)).SubFaction = SubFaction.Cabal;
+                        Role.GetRole(jackal.EvilRecruit).SubFaction = SubFaction.Cabal;
                         (Role.GetRole(jackal.EvilRecruit)).IsRecruit = true;
                         jackal.Recruited.Add(jackal.EvilRecruit.PlayerId);
 
@@ -3083,240 +3068,239 @@ namespace TownOfUsReworked.Patches
                 {
                     case CustomRPC.SetRole:
                         var player = Utils.PlayerById(reader.ReadByte());
-                        var id = reader.ReadInt32();
 
-                        switch (id)
+                        switch (reader.ReadByte())
                         {
                             case 0:
-                                new Mayor(player);
+                                _ = new Mayor(player);
                                 break;
                             case 1:
-                                new Sheriff(player);
+                                _ = new Sheriff(player);
                                 break;
                             case 2:
-                                new Inspector(player);
+                                _ = new Inspector(player);
                                 break;
                             case 3:
-                                new Vigilante(player);
+                                _ = new Vigilante(player);
                                 break;
                             case 4:
-                                new Engineer(player);
+                                _ = new Engineer(player);
                                 break;
                             case 5:
-                                new Swapper(player);
+                                _ = new Swapper(player);
                                 break;
                             case 6:
-                                new Drunkard(player);
+                                _ = new Drunkard(player);
                                 break;
                             case 7:
-                                new TimeLord(player);
+                                _ = new TimeLord(player);
                                 break;
                             case 8:
-                                new Medic(player);
+                                _ = new Medic(player);
                                 break;
                             case 9:
-                                new Agent(player);
+                                _ = new Agent(player);
                                 break;
                             case 10:
-                                new Altruist(player);
+                                _ = new Altruist(player);
                                 break;
                             case 11:
-                                new Veteran(player);
+                                _ = new Veteran(player);
                                 break;
                             case 12:
-                                new Tracker(player);
+                                _ = new Tracker(player);
                                 break;
                             case 13:
-                                new Transporter(player);
+                                _ = new Transporter(player);
                                 break;
                             case 14:
-                                new Medium(player);
+                                _ = new Medium(player);
                                 break;
                             case 15:
-                                new Coroner(player);
+                                _ = new Coroner(player);
                                 break;
                             case 16:
-                                new Operative(player);
+                                _ = new Operative(player);
                                 break;
                             case 17:
-                                new Detective(player);
+                                _ = new Detective(player);
                                 break;
                             case 18:
-                                new Escort(player);
+                                _ = new Escort(player);
                                 break;
                             case 19:
-                                new Shifter(player);
+                                _ = new Shifter(player);
                                 break;
                             case 20:
-                                new Crewmate(player);
+                                _ = new Crewmate(player);
                                 break;
                             case 21:
-                                new VampireHunter(player);
+                                _ = new VampireHunter(player);
                                 break;
                             case 22:
-                                new Jester(player);
+                                _ = new Jester(player);
                                 break;
                             case 23:
-                                new Amnesiac(player);
+                                _ = new Amnesiac(player);
                                 break;
                             case 24:
-                                new Executioner(player);
+                                _ = new Executioner(player);
                                 break;
                             case 25:
-                                new Survivor(player);
+                                _ = new Survivor(player);
                                 break;
                             case 26:
-                                new GuardianAngel(player);
+                                _ = new GuardianAngel(player);
                                 break;
                             case 27:
-                                new Glitch(player);
+                                _ = new Glitch(player);
                                 break;
                             case 28:
-                                new Murderer(player);
+                                _ = new Murderer(player);
                                 break;
                             case 29:
-                                new Cryomaniac(player);
+                                _ = new Cryomaniac(player);
                                 break;
                             case 30:
-                                new Werewolf(player);
+                                _ = new Werewolf(player);
                                 break;
                             case 31:
-                                new Arsonist(player);
+                                _ = new Arsonist(player);
                                 break;
                             case 32:
-                                new Jackal(player);
+                                _ = new Jackal(player);
                                 break;
                             case 33:
-                                new Plaguebearer(player);
+                                _ = new Plaguebearer(player);
                                 break;
                             case 34:
-                                new Pestilence(player);
+                                _ = new Pestilence(player);
                                 break;
                             case 35:
-                                new SerialKiller(player);
+                                _ = new SerialKiller(player);
                                 break;
                             case 36:
-                                new Juggernaut(player);
+                                _ = new Juggernaut(player);
                                 break;
                             case 37:
-                                new Cannibal(player);
+                                _ = new Cannibal(player);
                                 break;
                             case 38:
-                                new Thief(player);
+                                _ = new Thief(player);
                                 break;
                             case 39:
-                                new Dracula(player);
+                                _ = new Dracula(player);
                                 break;
                             case 40:
-                                new Troll(player);
+                                _ = new Troll(player);
                                 break;
                             case 41:
-                                new Undertaker(player);
+                                _ = new Undertaker(player);
                                 break;
                             case 42:
-                                new Morphling(player);
+                                _ = new Morphling(player);
                                 break;
                             case 43:
-                                new Blackmailer(player);
+                                _ = new Blackmailer(player);
                                 break;
                             case 44:
-                                new Miner(player);
+                                _ = new Miner(player);
                                 break;
                             case 45:
-                                new Teleporter(player);
+                                _ = new Teleporter(player);
                                 break;
                             case 46:
-                                new Wraith(player);
+                                _ = new Wraith(player);
                                 break;
                             case 47:
-                                new Consort(player);
+                                _ = new Consort(player);
                                 break;
                             case 48:
-                                new Janitor(player);
+                                _ = new Janitor(player);
                                 break;
                             case 49:
-                                new Camouflager(player);
+                                _ = new Camouflager(player);
                                 break;
                             case 50:
-                                new Grenadier(player);
+                                _ = new Grenadier(player);
                                 break;
                             case 51:
-                                new Poisoner(player);
+                                _ = new Poisoner(player);
                                 break;
                             case 52:
-                                new Impostor(player);
+                                _ = new Impostor(player);
                                 break;
                             case 53:
-                                new Consigliere(player);
+                                _ = new Consigliere(player);
                                 break;
                             case 54:
-                                new Disguiser(player);
+                                _ = new Disguiser(player);
                                 break;
                             case 55:
-                                new TimeMaster(player);
+                                _ = new TimeMaster(player);
                                 break;
                             case 56:
-                                new Godfather(player);
+                                _ = new Godfather(player);
                                 break;
                             case 57:
-                                new Anarchist(player);
+                                _ = new Anarchist(player);
                                 break;
                             case 58:
-                                new Shapeshifter(player);
+                                _ = new Shapeshifter(player);
                                 break;
                             case 59:
-                                new Gorgon(player);
+                                _ = new Gorgon(player);
                                 break;
                             case 60:
-                                new Framer(player);
+                                _ = new Framer(player);
                                 break;
                             case 61:
-                                new Rebel(player);
+                                _ = new Rebel(player);
                                 break;
                             case 62:
-                                new Concealer(player);
+                                _ = new Concealer(player);
                                 break;
                             case 63:
-                                new Warper(player);
+                                _ = new Warper(player);
                                 break;
                             case 64:
-                                new Bomber(player);
+                                _ = new Bomber(player);
                                 break;
                             case 65:
-                                new Chameleon(player);
+                                _ = new Chameleon(player);
                                 break;
                             case 66:
-                                new Guesser(player);
+                                _ = new Guesser(player);
                                 break;
                             case 67:
-                                new Whisperer(player);
+                                _ = new Whisperer(player);
                                 break;
                             case 68:
-                                new Retributionist(player);
+                                _ = new Retributionist(player);
                                 break;
                             case 69:
-                                new Actor(player);
+                                _ = new Actor(player);
                                 break;
                             case 70:
-                                new BountyHunter(player);
+                                _ = new BountyHunter(player);
                                 break;
                             case 71:
-                                new Mystic(player);
+                                _ = new Mystic(player);
                                 break;
                             case 72:
-                                new Seer(player);
+                                _ = new Seer(player);
                                 break;
                             case 73:
-                                new Necromancer(player);
+                                _ = new Necromancer(player);
                                 break;
                             case 74:
-                                new Beamer(player);
+                                _ = new Beamer(player);
                                 break;
                             case 75:
-                                new Ambusher(player);
+                                _ = new Ambusher(player);
                                 break;
                             case 76:
-                                new Crusader(player);
+                                _ = new Crusader(player);
                                 break;
                         }
 
@@ -3324,45 +3308,44 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetModifier:
                         var player2 = Utils.PlayerById(reader.ReadByte());
-                        var id2 = reader.ReadInt32();
 
-                        switch (id2)
+                        switch (reader.ReadInt32())
                         {
                             case 0:
-                                new Diseased(player2);
+                                _ = new Diseased(player2);
                                 break;
                             case 1:
-                                new Bait(player2);
+                                _ = new Bait(player2);
                                 break;
                             case 2:
-                                new Dwarf(player2);
+                                _ = new Dwarf(player2);
                                 break;
                             case 3:
-                                new VIP(player2);
+                                _ = new VIP(player2);
                                 break;
                             case 4:
-                                new Shy(player2);
+                                _ = new Shy(player2);
                                 break;
                             case 5:
-                                new Giant(player2);
+                                _ = new Giant(player2);
                                 break;
                             case 6:
-                                new Drunk(player2);
+                                _ = new Drunk(player2);
                                 break;
                             case 7:
-                                new Flincher(player2);
+                                _ = new Flincher(player2);
                                 break;
                             case 8:
-                                new Coward(player2);
+                                _ = new Coward(player2);
                                 break;
                             case 9:
-                                new Volatile(player2);
+                                _ = new Volatile(player2);
                                 break;
                             case 10:
-                                new Professional(player2);
+                                _ = new Professional(player2);
                                 break;
                             case 11:
-                                new Indomitable(player2);
+                                _ = new Indomitable(player2);
                                 break;
                         }
 
@@ -3370,48 +3353,47 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetAbility:
                         var player3 = Utils.PlayerById(reader.ReadByte());
-                        var id3 = reader.ReadInt32();
 
-                        switch (id3)
+                        switch (reader.ReadInt32())
                         {
                             case 0:
                             case 11:
                             case 12:
                             case 13:
-                                new Assassin(player3);
+                                _ = new Assassin(player3);
                                 break;
                             case 1:
-                                new Snitch(player3);
+                                _ = new Snitch(player3);
                                 break;
                             case 2:
-                                new Insider(player3);
+                                _ = new Insider(player3);
                                 break;
                             case 4:
-                                new Multitasker(player3);
+                                _ = new Multitasker(player3);
                                 break;
                             case 5:
-                                new Radar(player3);
+                                _ = new Radar(player3);
                                 break;
                             case 6:
-                                new Tiebreaker(player3);
+                                _ = new Tiebreaker(player3);
                                 break;
                             case 7:
-                                new Torch(player3);
+                                _ = new Torch(player3);
                                 break;
                             case 8:
-                                new Underdog(player3);
+                                _ = new Underdog(player3);
                                 break;
                             case 9:
-                                new Tunneler(player3);
+                                _ = new Tunneler(player3);
                                 break;
                             case 10:
-                                new Ruthless(player3);
+                                _ = new Ruthless(player3);
                                 break;
                             case 14:
-                                new Ninja(player3);
+                                _ = new Ninja(player3);
                                 break;
                             case 15:
-                                new ButtonBarry(player3);
+                                _ = new ButtonBarry(player3);
                                 break;
                         }
 
@@ -3419,27 +3401,26 @@ namespace TownOfUsReworked.Patches
 
                     case CustomRPC.SetObjectifier:
                         var player4 = Utils.PlayerById(reader.ReadByte());
-                        var id4 = reader.ReadInt32();
 
-                        switch (id4)
+                        switch (reader.ReadInt32())
                         {
                             case 2:
-                                new Fanatic(player4);
+                                _ = new Fanatic(player4);
                                 break;
                             case 3:
-                                new Corrupted(player4);
+                                _ = new Corrupted(player4);
                                 break;
                             case 4:
-                                new Overlord(player4);
+                                _ = new Overlord(player4);
                                 break;
                             case 5:
-                                new Allied(player4);
+                                _ = new Allied(player4);
                                 break;
                             case 6:
-                                new Traitor(player4);
+                                _ = new Traitor(player4);
                                 break;
                             case 7:
-                                new Taskmaster(player4);
+                                _ = new Taskmaster(player4);
                                 break;
                         }
 
@@ -3603,15 +3584,21 @@ namespace TownOfUsReworked.Patches
                         var message = reader.ReadString();
 
                         if (whispered == PlayerControl.LocalPlayer)
+                        {
                             HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
+                        }
                         else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || (PlayerControl.LocalPlayer.Data.IsDead &&
-                            CustomGameOptions.DeadSeeEverything))
+                                                    CustomGameOptions.DeadSeeEverything))
+                        {
                             HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}:{message}");
+                        }
                         else if (CustomGameOptions.WhispersAnnouncement)
+                        {
                             HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
+                        }
 
                         break;
-                    
+
                     case CustomRPC.Guess:
                         break;
 
@@ -3683,8 +3670,8 @@ namespace TownOfUsReworked.Patches
                         var jackalRole = Role.GetRole<Jackal>(jackal);
                         jackalRole.GoodRecruit = goodRecruit;
                         jackalRole.Recruited.Add(goodRecruit.PlayerId);
-                        (Role.GetRole(goodRecruit)).SubFaction = SubFaction.Cabal;
-                        (Role.GetRole(goodRecruit)).IsRecruit = true;
+                        Role.GetRole(goodRecruit).SubFaction = SubFaction.Cabal;
+                        Role.GetRole(goodRecruit).IsRecruit = true;
                         break;
 
                     case CustomRPC.SetBackupRecruit:
@@ -3700,8 +3687,8 @@ namespace TownOfUsReworked.Patches
                         var jackalRole2 = Role.GetRole<Jackal>(jackal2);
                         jackalRole2.EvilRecruit = evilRecruit;
                         jackalRole2.Recruited.Add(evilRecruit.PlayerId);
-                        (Role.GetRole(evilRecruit)).SubFaction = SubFaction.Cabal;
-                        (Role.GetRole(evilRecruit)).IsRecruit = true;
+                        Role.GetRole(evilRecruit).SubFaction = SubFaction.Cabal;
+                        Role.GetRole(evilRecruit).IsRecruit = true;
                         break;
 
                     case CustomRPC.SendChat:
@@ -3718,16 +3705,13 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.RemoveAllBodies:
-                        var buggedBodies = Object.FindObjectsOfType<DeadBody>();
-
-                        foreach (var body in buggedBodies)
+                        foreach (var body in Object.FindObjectsOfType<DeadBody>())
                             body.gameObject.Destroy();
 
                         break;
 
                     case CustomRPC.SetSpawnAirship:
-                        List<byte> spawnPoints = reader.ReadBytesAndSize().ToList();
-                        SpawnInMinigamePatch.SpawnPoints = spawnPoints;
+                        SpawnInMinigamePatch.SpawnPoints = reader.ReadBytesAndSize().ToList();
                         break;
 
                     case CustomRPC.DoorSyncToilet:
@@ -3735,7 +3719,7 @@ namespace TownOfUsReworked.Patches
                         PlainDoor DoorToSync = Object.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == Id);
                         DoorToSync.SetDoorway(true);
                         break;
-                    
+
                     case CustomRPC.SyncPlateform:
                         bool isLeft = reader.ReadBoolean();
                         CallPlateform.SyncPlateform(isLeft);
@@ -3777,7 +3761,9 @@ namespace TownOfUsReworked.Patches
                             guid = new Guid(gbytes);
                         }
                         else
+                        {
                             guid = new Guid(new byte[16]);
+                        }
 
                         Utils.VersionHandshake(major, minor, patch, revision == byte.MaxValue ? -1 : revision, guid, versionOwnerId);
                         break;
@@ -3807,15 +3793,14 @@ namespace TownOfUsReworked.Patches
                             alliedRole.IsSynAlly = true;
                             ally.Color = Colors.Syndicate;
                         }
-                        
-                        ally.Side = alliedRole.FactionName;
-                        ally.Side2 = alliedRole.Faction;
+
+                        ally.Side = alliedRole.Faction;
                         break;
 
                     case CustomRPC.SubmergedFixOxygen:
                         SubmergedCompatibility.RepairOxygen();
                         break;
-                    
+
                     case CustomRPC.ChaosDrive:
                         Role.SyndicateHasChaosDrive = reader.ReadBoolean();
                         break;
@@ -3886,9 +3871,8 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.JanitorClean:
                                 var janitorPlayer = Utils.PlayerById(reader.ReadByte());
                                 var janitorRole = Role.GetRole<Janitor>(janitorPlayer);
-                                var deadBodies = Object.FindObjectsOfType<DeadBody>();
 
-                                foreach (var body in deadBodies)
+                                foreach (var body in Object.FindObjectsOfType<DeadBody>())
                                 {
                                     if (body.ParentId == reader.ReadByte())
                                         Coroutines.Start(Coroutine.CleanCoroutine(body, janitorRole));
@@ -3936,14 +3920,10 @@ namespace TownOfUsReworked.Patches
                                 PerformSteal.Steal(Role.GetRole<Thief>(thief), other4);
                                 break;
 
-                            case ActionsRPC.WhisperConvert:
-                                var persuaded = Utils.PlayerById(reader.ReadByte());
+                            case ActionsRPC.Whisper:
                                 var whisp = Utils.PlayerById(reader.ReadByte());
                                 var whispRole = Role.GetRole<Whisperer>(whisp);
-                                var persuadedRole = Role.GetRole(persuaded);
-                                persuadedRole.SubFaction = SubFaction.Sect;
-                                persuadedRole.IsPersuaded = true;
-                                whispRole.Persuaded.Add(persuaded.PlayerId);
+                                whispRole.Whisper();
                                 break;
 
                             case ActionsRPC.RetributionistAction:
@@ -4068,7 +4048,7 @@ namespace TownOfUsReworked.Patches
                                 }
 
                                 break;
-    
+
                             case ActionsRPC.GodfatherAction:
                                 var gfId = reader.ReadByte();
 
@@ -4096,8 +4076,7 @@ namespace TownOfUsReworked.Patches
                                     case GodfatherActionsRPC.Teleport:
                                         var gf2 = Utils.PlayerById(reader.ReadByte());
                                         var gfRole2 = Role.GetRole<Godfather>(gf2);
-                                        var teleportPos2 = reader.ReadVector2();
-                                        gfRole2.TeleportPoint = teleportPos2;
+                                        gfRole2.TeleportPoint = reader.ReadVector2();
                                         Godfather.Teleport(gf2);
                                         break;
 
@@ -4192,7 +4171,7 @@ namespace TownOfUsReworked.Patches
                                 }
 
                                 break;
-    
+
                             case ActionsRPC.RebelAction:
                                 var rebId = reader.ReadByte();
 
@@ -4212,13 +4191,13 @@ namespace TownOfUsReworked.Patches
                                         break;
 
                                     case RebelActionsRPC.Warp:
-                                        byte teleports2 = reader.ReadByte();
-                                        Dictionary<byte, Vector2> coordinates2 = new Dictionary<byte, Vector2>();
+                                        var teleports2 = reader.ReadByte();
+                                        var coordinates2 = new Dictionary<byte, Vector2>();
 
-                                        for (int i = 0; i < teleports2; i++)
+                                        for (var i = 0; i < teleports2; i++)
                                         {
-                                            byte playerId = reader.ReadByte();
-                                            Vector2 location = reader.ReadVector2();
+                                            var playerId = reader.ReadByte();
+                                            var location = reader.ReadVector2();
                                             coordinates2.Add(playerId, location);
                                         }
 
@@ -4266,8 +4245,7 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.Teleport:
                                 var teleporter = Utils.PlayerById(reader.ReadByte());
                                 var teleporterRole = Role.GetRole<Teleporter>(teleporter);
-                                var teleportPos = reader.ReadVector2();
-                                teleporterRole.TeleportPoint = teleportPos;
+                                teleporterRole.TeleportPoint = reader.ReadVector2();
                                 Teleporter.Teleport(teleporter);
                                 break;
 
@@ -4299,67 +4277,6 @@ namespace TownOfUsReworked.Patches
                                 var guessString = reader.ReadString();
                                 var assassin = Ability.GetAbilityValue<Assassin>(AbilityEnum.Assassin);
                                 AssassinKill.MurderPlayer(assassin, toDie, guessString);
-                                break;
-
-                            case ActionsRPC.AddConversions:
-                                var converter = Utils.PlayerById(reader.ReadByte());
-                                var converted = Utils.PlayerById(reader.ReadByte());
-                                var converterRole = Role.GetRole(converter);
-                                var convertedRole = Role.GetRole(converted);
-
-                                if (converter.Is(SubFaction.Undead))
-                                {
-                                    var drac2 = (Dracula)converterRole;
-
-                                    if (converted.Is(RoleEnum.Dracula))
-                                    {
-                                        var drac3 = (Dracula)convertedRole;
-                                        drac2.Converted.AddRange(drac3.Converted);
-                                        drac3.Converted.AddRange(drac2.Converted);
-                                    }
-                                    else
-                                        drac2.Converted.Add(converted.PlayerId);
-                                }
-                                else if (converter.Is(SubFaction.Reanimated))
-                                {
-                                    var necro = (Necromancer)converterRole;
-
-                                    if (converted.Is(RoleEnum.Necromancer))
-                                    {
-                                        var necro2 = (Necromancer)convertedRole;
-                                        necro.Resurrected.AddRange(necro2.Resurrected);
-                                        necro2.Resurrected.AddRange(necro.Resurrected);
-                                    }
-                                    else
-                                        necro.Resurrected.Add(converted.PlayerId);
-                                }
-                                else if (converter.Is(SubFaction.Cabal))
-                                {
-                                    var jack = (Jackal)converterRole;
-
-                                    if (converted.Is(RoleEnum.Jackal))
-                                    {
-                                        var jack2 = (Jackal)convertedRole;
-                                        jack.Recruited.AddRange(jack2.Recruited);
-                                        jack2.Recruited.AddRange(jack.Recruited);
-                                    }
-                                    else
-                                        jack.Recruited.Add(converted.PlayerId);
-                                }
-                                else if (converter.Is(SubFaction.Sect))
-                                {
-                                    var whisp1 = (Whisperer)converterRole;
-
-                                    if (converted.Is(RoleEnum.Whisperer))
-                                    {
-                                        var whisp2 = (Whisperer)convertedRole;
-                                        whisp1.Persuaded.AddRange(whisp2.Persuaded);
-                                        whisp2.Persuaded.AddRange(whisp1.Persuaded);
-                                    }
-                                    else
-                                        whisp1.Persuaded.Add(converted.PlayerId);
-                                }
-
                                 break;
 
                             case ActionsRPC.GuesserKill:
@@ -4502,7 +4419,7 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case ActionsRPC.Beam:
-                                Coroutines.Start(Beamer.BeamPlayers(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean()));
+                                Coroutines.Start(Beamer.BeamPlayers(reader.ReadByte(), reader.ReadByte()));
                                 break;
 
                             case ActionsRPC.SetUntransportable:
@@ -4561,9 +4478,8 @@ namespace TownOfUsReworked.Patches
                                 var cannibalPlayer = Utils.PlayerById(readByte1);
                                 var cannibalRole = Role.GetRole<Cannibal>(cannibalPlayer);
                                 readByte = reader.ReadByte();
-                                var deads = Object.FindObjectsOfType<DeadBody>();
 
-                                foreach (var body in deads)
+                                foreach (var body in Object.FindObjectsOfType<DeadBody>())
                                 {
                                     if (body.ParentId == readByte)
                                         Coroutines.Start(Eat.EatCoroutine(body, cannibalRole));
@@ -4582,9 +4498,8 @@ namespace TownOfUsReworked.Patches
                                 var altruistPlayer = Utils.PlayerById(readByte1);
                                 var altruistRole = Role.GetRole<Altruist>(altruistPlayer);
                                 readByte = reader.ReadByte();
-                                var theDeadBodies = Object.FindObjectsOfType<DeadBody>();
 
-                                foreach (var body in theDeadBodies)
+                                foreach (var body in Object.FindObjectsOfType<DeadBody>())
                                 {
                                     if (body.ParentId == readByte)
                                     {
@@ -4602,9 +4517,8 @@ namespace TownOfUsReworked.Patches
                                 var necroPlayer = Utils.PlayerById(readByte1);
                                 var necroRole = Role.GetRole<Necromancer>(necroPlayer);
                                 readByte = reader.ReadByte();
-                                var theDeadBodies3 = Object.FindObjectsOfType<DeadBody>();
 
-                                foreach (var body in theDeadBodies3)
+                                foreach (var body in Object.FindObjectsOfType<DeadBody>())
                                 {
                                     if (body.ParentId == readByte)
                                     {
@@ -4618,13 +4532,13 @@ namespace TownOfUsReworked.Patches
                                 break;
 
                             case ActionsRPC.Warp:
-                                byte teleports = reader.ReadByte();
-                                Dictionary<byte, Vector2> coordinates = new Dictionary<byte, Vector2>();
+                                var teleports = reader.ReadByte();
+                                var coordinates = new Dictionary<byte, Vector2>();
 
-                                for (int i = 0; i < teleports; i++)
+                                for (var i = 0; i < teleports; i++)
                                 {
-                                    byte playerId = reader.ReadByte();
-                                    Vector2 location = reader.ReadVector2();
+                                    var playerId = reader.ReadByte();
+                                    var location = reader.ReadVector2();
                                     coordinates.Add(playerId, location);
                                 }
 
@@ -4897,11 +4811,13 @@ namespace TownOfUsReworked.Patches
 
                                 if (reader.ReadBoolean())
                                 {
-                                    foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
+                                    foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
                                         corr.Winner = true;
                                 }
                                 else
+                                {
                                     Objectifier.GetObjectifier(Utils.PlayerById(reader.ReadByte())).Winner = true;
+                                }
 
                                 break;
 
@@ -4915,7 +4831,7 @@ namespace TownOfUsReworked.Patches
                             case WinLoseRPC.OverlordWin:
                                 Objectifier.OverlordWins = true;
 
-                                foreach (Overlord ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord))
+                                foreach (Overlord ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
                                     ov.Winner = true;
 
                                 break;
@@ -4960,7 +4876,7 @@ namespace TownOfUsReworked.Patches
 
                 var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(startWriter);
-                
+
                 BeginRoleGen(infected.ToList());
 
                 foreach (var player in PlayerControl.AllPlayerControls)

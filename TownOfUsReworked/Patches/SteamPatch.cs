@@ -5,7 +5,7 @@ using HarmonyLib;
 
 namespace TownOfUsReworked.Patches
 {
-    public class SteamPatch
+    public static class SteamPatch
     {
         [HarmonyPatch]
         public static class RestartAppIfNecessaryPatch

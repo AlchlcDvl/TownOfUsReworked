@@ -65,14 +65,13 @@ namespace TownOfUsReworked.Enums
         RebelAction,
         Detonate,
         NecromancerResurrect,
-        WhisperConvert,
+        Whisper,
         Confuse,
         Beam,
         Frame,
         Ambush,
         Crusade,
         Scream,
-        AddConversions,
         Mark
     }
 }

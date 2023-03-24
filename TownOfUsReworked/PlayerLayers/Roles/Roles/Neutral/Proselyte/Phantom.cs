@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             distPercent = Mathf.Max(0, distPercent - 1);
 
             var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
-            color.a = 0.07f + velocity / Player.MyPhysics.TrueSpeed * 0.13f;
+            color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 });
             }
 
-            Player.myRend().color = color;
+            Player.MyRend().color = color;
             Player.NameText().color = new Color(0f, 0f, 0f, 0f);
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (!Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
-                
+
             if (CompletedTasks)
             {
                 PhantomWins = true;

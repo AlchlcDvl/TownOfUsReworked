@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     {
         public static void Postfix(AirshipExileController __instance) => StartRevive.ExileControllerPostfix(__instance);
     }
-    
+
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class StartRevive
+    public static class StartRevive
     {
         public static void ExileControllerPostfix(ExileController __instance)
         {
@@ -58,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         {
             if (revived == null)
                 return;
-            
+
             ret.RevivedRole = Role.GetRole(revived);
             ret.Used.Add(revived.PlayerId);
         }

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastBitten;
         public AbilityButton BiteButton;
         public PlayerControl ClosestPlayer;
-        public List<byte> Converted;
+        public List<byte> Converted = new();
 
         public Dracula(PlayerControl player) : base(player)
         {
@@ -25,21 +25,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFaction = SubFaction.Undead;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
-            Converted = new List<byte>();
             SubFactionColor = Colors.Undead;
+
+            Converted = new()
+            {
+                Player.PlayerId
+            };
         }
 
         public float ConvertTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastBitten;
+            var timespan = utcNow - LastBitten;
             var num = CustomGameOptions.BiteCd * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

@@ -5,10 +5,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     [HarmonyPriority(Priority.Last)]
-    public class ScreamUnscream
+    public static class ScreamUnscream
     {
-        [HarmonyPriority(Priority.Last)]
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Banshee))
             {

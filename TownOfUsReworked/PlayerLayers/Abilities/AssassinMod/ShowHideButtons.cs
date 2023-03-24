@@ -8,7 +8,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-    public class ShowHideButtons
+    public static class ShowHideButtons
     {
         public static void HideButtons(Assassin role)
         {
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void HideSingle(Assassin role, byte targetId, bool killedSelf, bool doubleshot)
         {
-            if ((killedSelf || role.RemainingKills == 0 || !CustomGameOptions.AssassinMultiKill) && doubleshot == false)
+            if ((killedSelf || role.RemainingKills == 0 || !CustomGameOptions.AssassinMultiKill) && !doubleshot)
             {
                 HideButtons(role);
                 var role2 = Role.GetRole(role.Player);
@@ -39,7 +39,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 role2.KilledBy = " Via Misfire";
             }
             else
+            {
                 HideTarget(role, targetId);
+            }
         }
 
         public static void HideTarget(Assassin role, byte targetId)
@@ -61,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             role.Guesses.Remove(targetId);
         }
 
-        public static void Prefix(MeetingHud __instance)
+        public static void Prefix()
         {
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin))
                 return;

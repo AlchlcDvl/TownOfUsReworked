@@ -7,12 +7,12 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
 {
     [HarmonyPatch]
-    public class UnbeamableTracker
+    public static class UnbeamableTracker
     {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-        public class UnbeamableUpdate
+        public static class UnbeamableUpdate
         {
-            public static void Postfix(PlayerControl __instance)
+            public static void Postfix()
             {
                 if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Beamer))
                     return;
@@ -22,21 +22,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
                 foreach (var entry in role.UnbeamablePlayers)
                 {
                     var player = Utils.PlayerById(entry.Key);
-                    
-                    if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected)
+
+                    if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
                         continue;
 
-                    if (role.UnbeamablePlayers.ContainsKey(player.PlayerId) && player.moveable == true && role.UnbeamablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) <
-                        DateTime.UtcNow)
+                    if (role.UnbeamablePlayers.ContainsKey(player.PlayerId) && player.moveable && role.UnbeamablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
                         role.UnbeamablePlayers.Remove(player.PlayerId);
                 }
             }
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
-        public class SaveLadderPlayer
+        public static class SaveLadderPlayer
         {
-            public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] Ladder source, [HarmonyArgument(1)] byte climbLadderSid)
+            public static void Prefix(PlayerPhysics __instance)
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Beamer))
                     Role.GetRole<Beamer>(PlayerControl.LocalPlayer).UnbeamablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
@@ -44,9 +43,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
         }
 
         [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), new Type[] {})]
-        public class SavePlatformPlayer
+        public static class SavePlatformPlayer
         {
-            public static void Prefix(MovingPlatformBehaviour __instance)
+            public static void Prefix()
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Beamer))
                     Role.GetRole<Beamer>(PlayerControl.LocalPlayer).UnbeamablePlayers.Add(PlayerControl.LocalPlayer.PlayerId, DateTime.UtcNow);

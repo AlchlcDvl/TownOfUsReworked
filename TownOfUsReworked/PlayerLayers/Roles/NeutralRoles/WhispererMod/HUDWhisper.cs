@@ -6,9 +6,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDWhisper
+    public static class HUDWhisper
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Whisperer))
                 return;
@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod
             if (role.WhisperButton == null)
                 role.WhisperButton = Utils.InstantiateButton();
 
-            role.WhisperButton.UpdateButton(role, "WHISPER", role.WhisperTimer(), CustomGameOptions.WhisperCooldown + (role.WhisperCount * CustomGameOptions.WhisperCooldownIncrease), 
+            role.WhisperButton.UpdateButton(role, "WHISPER", role.WhisperTimer(), CustomGameOptions.WhisperCooldown + (role.WhisperCount * CustomGameOptions.WhisperCooldownIncrease),
                 AssetManager.Whisper, AbilityTypes.Effect, "ActionSecondary");
         }
     }

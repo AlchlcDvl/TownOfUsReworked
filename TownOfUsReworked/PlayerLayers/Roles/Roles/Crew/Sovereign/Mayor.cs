@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mayor : CrewRole
     {
-        public List<byte> ExtraVotes;
+        public List<byte> ExtraVotes = new();
         public int VoteBank;
         public bool SelfVote;
         public bool VotedOnce;
@@ -19,14 +19,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Mayor";
             StartText = "Save Your Votes To Vote Dump Someone";
             AbilitiesText = "- You can save your votes into your vote bank, so you can vote multiple times later.\n- You can vote multiple times as long as you haven't abstained or " +
-                $"are the last player voting.\n- You currently have {VoteBank} votes in your vote bank.";
+                "are the last player voting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             RoleType = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
             InspectorResults = InspectorResults.LeadsTheGroup;
-            ExtraVotes = new List<byte>();
+            ExtraVotes = new();
         }
     }
 }

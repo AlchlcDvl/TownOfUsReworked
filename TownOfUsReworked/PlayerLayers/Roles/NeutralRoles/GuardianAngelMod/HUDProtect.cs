@@ -7,9 +7,9 @@ using Hazel;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDProtect
+    public static class HUDProtect
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.GuardianAngel))
                 return;
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 
             if (role.ProtectButton == null)
                 role.ProtectButton = Utils.InstantiateButton();
-            
+
             role.ProtectButton.UpdateButton(role, "PROTECT", role.ProtectTimer(), CustomGameOptions.ProtectCd, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", null,
                 role.ButtonUsable && role.TargetAlive, !role.Protecting, role.Protecting, role.TimeRemaining, CustomGameOptions.ProtectDuration, role.ButtonUsable, role.UsesLeft,
                 CustomGameOptions.ProtectBeyondTheGrave);

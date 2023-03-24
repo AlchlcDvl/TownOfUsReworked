@@ -9,30 +9,28 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Lovers : Objectifier
     {
-        public PlayerControl OtherLover { get; set; }
+        public PlayerControl OtherLover;
 
         public Lovers(PlayerControl player) : base(player)
         {
             Name = "Lover";
             SymbolName = "♥";
-            TaskText = $"- Live to the final 3 with your Lover";
+            TaskText = "- Live to the final 3 with your Lover";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;
         }
 
         public static void Gen(List<PlayerControl> canHaveObjectifiers)
         {
-            List<PlayerControl> all = new List<PlayerControl>();
-
-            foreach (var player in canHaveObjectifiers)
-                all.Add(player);
+            var all = new List<PlayerControl>();
+            all.AddRange(canHaveObjectifiers);
 
             if (all.Count < 5)
                 return;
 
             PlayerControl firstLover = null;
             PlayerControl secondLover = null;
-            
+
             while (firstLover == null || secondLover == null || firstLover == secondLover || (firstLover.GetFaction() == secondLover.GetFaction() && !CustomGameOptions.LoversFaction))
             {
                 all.Shuffle();
@@ -62,12 +60,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        public bool LoverDead() => OtherLover == null || OtherLover.Data.IsDead || OtherLover.Data.Disconnected;
+        public bool LoverDead() => OtherLover?.Data?.IsDead == true || OtherLover?.Data?.Disconnected == true;
 
-        public bool IsDeadLover() => Player == null || Player.Data.IsDead || Player.Data.Disconnected;
+        public bool IsDeadLover() => Player?.Data?.IsDead == true || Player?.Data?.Disconnected == true;
 
         public bool LoversLose() => LoverDead() && IsDeadLover();
 
-        public bool LoversAlive() => OtherLover != null && Player != null && !OtherLover.Data.IsDead && !Player.Data.IsDead && !OtherLover.Data.Disconnected && !Player.Data.Disconnected;
+        public bool LoversAlive() => OtherLover?.Data?.IsDead == false && Player?.Data?.IsDead == false && OtherLover?.Data?.Disconnected == false && Player?.Data?.Disconnected == false;
     }
 }

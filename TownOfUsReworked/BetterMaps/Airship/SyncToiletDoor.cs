@@ -5,7 +5,7 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
-    class SyncToiletDoor
+    public static class SyncToiletDoor
     {
         public static void Prefix(OpenDoorConsole __instance)
         {

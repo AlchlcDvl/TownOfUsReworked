@@ -8,11 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SidekickMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class Promote
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Sidekick))
                 return;
-            
+
             var role = Role.GetRole<Sidekick>(PlayerControl.LocalPlayer);
 
             if (role.CanPromote && !role.Player.Data.IsDead)

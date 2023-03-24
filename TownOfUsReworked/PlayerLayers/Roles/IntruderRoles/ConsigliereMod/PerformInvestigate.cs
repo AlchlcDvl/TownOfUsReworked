@@ -7,7 +7,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInvestigate
+    public static class PerformInvestigate
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -26,17 +26,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestTarget);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.Investigated.Add(role.ClosestTarget.PlayerId);
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastInvestigated = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
-            
+
             return true;
         }
     }

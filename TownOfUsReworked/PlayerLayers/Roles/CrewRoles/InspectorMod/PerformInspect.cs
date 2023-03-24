@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformInspect
+    public static class PerformInspect
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -29,17 +29,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                     role.Inspected.Add(role.ClosestPlayer.PlayerId);
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastInspected = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }
-            
+
             return true;
         }
     }

@@ -48,27 +48,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float HackTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastHack;
+            var timespan = utcNow - LastHack;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public float MimicTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMimic;
+            var timespan = utcNow - LastMimic;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void UnHack()
@@ -110,21 +102,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
+            var timespan = utcNow - LastKilled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             if (IsUsingMimic)
             {
-                appearance = MimicTarget.GetDefaultAppearance();
+                appearance = Utils.GetDefaultAppearance();
                 var modifier = Modifier.GetModifier(MimicTarget);
 
                 if (modifier is IVisualAlteration alteration)
@@ -133,11 +121,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
             }
 
-            appearance = Player.GetDefaultAppearance();
+            appearance = Utils.GetDefaultAppearance();
             return false;
         }
 
-        public void MimicListUpdate(HudManager __instance)
+        public void MimicListUpdate()
         {
             if (MimicList != null)
             {
@@ -174,6 +162,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                                     writer.Write(MimicTarget.PlayerId);
                                     TimeRemaining2 = CustomGameOptions.MimicDuration;
                                     Mimic();
+                                    MimicList.Toggle();
+                                    MimicList.SetVisible(false);
+                                    MimicList.gameObject.SetActive(false);
+                                    MimicList = null;
                                     break;
                                 }
 

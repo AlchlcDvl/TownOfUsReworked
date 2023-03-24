@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sidekick : SyndicateRole
     {
-        public Role FormerRole = null;
+        public Role FormerRole;
         public Rebel Rebel;
         public bool CanPromote => Rebel.Player.Data.IsDead || Rebel.Player.Data.Disconnected;
 
@@ -24,14 +24,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnRebel()
         {
-            var sidekick = Role.GetRole<Sidekick>(Player);
-            var formerRole = sidekick.FormerRole;
-            var role = new Rebel(Player);
-            role.WasSidekick = true;
-            role.HasDeclared = !CustomGameOptions.PromotedSidekickCanPromote;
-            role.FormerRole = formerRole;
-            role.RoleUpdate(formerRole);
-            Player.RegenTask();
+            var formerRole = FormerRole;
+
+            var role = new Rebel(Player)
+            {
+                WasSidekick = true,
+                HasDeclared = !CustomGameOptions.PromotedSidekickCanPromote,
+                FormerRole = formerRole
+            };
+
+            role.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
                 Coroutines.Start(Utils.FlashCoroutine(Color));

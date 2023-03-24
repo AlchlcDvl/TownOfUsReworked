@@ -8,7 +8,7 @@ using System.Linq;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformFlash
+    public static class PerformFlash
     {
         public static bool Prefix(AbilityButton __instance)
         {

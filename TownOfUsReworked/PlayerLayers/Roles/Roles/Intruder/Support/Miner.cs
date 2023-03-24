@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Miner : IntruderRole
     {
-        public readonly List<Vent> Vents = new List<Vent>();
+        public readonly List<Vent> Vents = new();
         public AbilityButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
@@ -28,14 +28,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MineTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMined;
+            var timespan = utcNow - LastMined;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MineCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

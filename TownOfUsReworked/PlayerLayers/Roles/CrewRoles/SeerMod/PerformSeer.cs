@@ -9,7 +9,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformSeer
+    public static class PerformSeer
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -25,10 +25,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var targetRoleCount = Role.GetRole(role.ClosestPlayer).RoleHistory.Count;
 
@@ -37,10 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastSeered = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastSeered.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

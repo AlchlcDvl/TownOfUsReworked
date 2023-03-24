@@ -11,10 +11,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Coroner : CrewRole
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows;
-        public List<byte> Reported;
+        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public List<byte> Reported = new();
         public AbilityButton CompareButton;
-        public DeadBody CurrentTarget = null;
+        public DeadBody CurrentTarget;
         public DeadPlayer ReferenceBody;
         public PlayerControl ClosestPlayer;
         public DateTime LastCompared;
@@ -33,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
-            Reported = new List<byte>();
+            BodyArrows = new();
+            Reported = new();
             InspectorResults = InspectorResults.DealsWithDead;
             UsesLeft = 0;
         }
@@ -42,27 +42,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CompareTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCompared;
+            var timespan = utcNow - LastCompared;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public float AutopsyTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastAutopsied;
-            var num = 10000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var timespan = utcNow - LastAutopsied;
+            var num = Utils.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -74,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (arrow.Value.gameObject != null)
                 GameObject.Destroy(arrow.Value.gameObject);
-                
+
             BodyArrows.Remove(arrow.Key);
         }
     }

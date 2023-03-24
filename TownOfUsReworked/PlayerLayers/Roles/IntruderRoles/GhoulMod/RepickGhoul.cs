@@ -8,9 +8,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class RepickGhoul
+    public static class RepickGhoul
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
@@ -26,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
             writer.Write(pc.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return;
         }
     }
 }

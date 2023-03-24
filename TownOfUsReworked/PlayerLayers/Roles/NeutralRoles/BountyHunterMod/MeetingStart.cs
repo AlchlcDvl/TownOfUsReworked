@@ -7,11 +7,11 @@ using System.Collections.Generic;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StartMeetingPatch
+    public static class StartMeetingPatch
     {
-        public static int lettersGiven = 0;
-        public static bool lettersExhausted = false;
-        public static List<string> letters = new List<string>();
+        private static int lettersGiven;
+        private static bool lettersExhausted;
+        private static readonly List<string> letters = new();
 
         public static void Prefix()
         {
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 
                         if (letters.Contains($"{targetName[random]}"))
                             random = Random.RandomRangeInt(0, targetName.Length);
-                        
+
                         if (random == random2)
                             random = Random.RandomRangeInt(0, targetName.Length);
                     }
@@ -146,6 +146,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                     role.ColorHintGiven = true;
                 }
             }
+
+            if (string.IsNullOrEmpty(something))
+                return;
 
             //Ensures only the Bounty Hunter sees this
             if (HudManager.Instance && something != "")

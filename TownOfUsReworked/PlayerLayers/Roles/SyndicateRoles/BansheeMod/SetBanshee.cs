@@ -15,19 +15,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
     {
         public static void Postfix(AirshipExileController __instance) => SetBanshee.ExileControllerPostfix(__instance);
     }
-    
+
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-    public class SetBanshee
+    public static class SetBanshee
     {
+        #pragma warning disable
         public static PlayerControl WillBeBanshee;
+        #pragma warning restore
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBeBanshee != null && !WillBeBanshee.Data.IsDead && exiled.Is(Faction.Syndicate))
+            if (WillBeBanshee?.Data.IsDead == false && exiled.Is(Faction.Syndicate))
                 WillBeBanshee = exiled;
-            
+
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)
                 return;
 

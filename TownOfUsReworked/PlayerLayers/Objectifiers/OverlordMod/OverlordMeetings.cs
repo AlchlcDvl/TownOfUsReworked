@@ -8,7 +8,7 @@ using TownOfUsReworked.Patches;
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class StartMeetingPatch
+    public static class StartMeetingPatch
     {
         public static void Prefix(PlayerControl __instance)
         {

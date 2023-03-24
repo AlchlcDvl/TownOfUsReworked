@@ -28,9 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         //Godfather Stuff
         public PlayerControl ClosestIntruder;
-        public bool HasDeclared = false;
-        public bool WasMafioso = false;
-        public Role FormerRole = null;
+        public bool HasDeclared;
+        public bool WasMafioso;
+        public Role FormerRole;
         public AbilityButton DeclareButton;
         public DateTime LastDeclared;
         public DeadBody CurrentTarget;
@@ -40,17 +40,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (Disguised)
             {
-                appearance = MeasuredPlayer.GetDefaultAppearance();
+                appearance = Utils.GetDefaultAppearance();
                 var modifier = Modifier.GetModifier(MeasuredPlayer);
 
                 if (modifier is IVisualAlteration alteration)
                     alteration.TryGetModifiedAppearance(out appearance);
-                
+
                 return true;
             }
             else if (Morphed)
             {
-                appearance = MorphedPlayer.GetDefaultAppearance();
+                appearance = Utils.GetDefaultAppearance();
                 var modifier = Modifier.GetModifier(MorphedPlayer);
 
                 if (modifier is IVisualAlteration alteration)
@@ -59,33 +59,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
             }
 
-            appearance = Player.GetDefaultAppearance();
+            appearance = Utils.GetDefaultAppearance();
             return false;
         }
 
         //Blackmailer Stuff
         public AbilityButton BlackmailButton;
-        public PlayerControl BlackmailedPlayer = null;
+        public PlayerControl BlackmailedPlayer;
         public DateTime LastBlackmailed;
         public bool Blackmailed => BlackmailedPlayer != null;
         public PlayerControl ClosestBlackmail;
-        
+
         public float BlackmailTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastBlackmailed;
+            var timespan = utcNow - LastBlackmailed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BlackmailCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Camouflager Stuff
         public AbilityButton CamouflageButton;
-        public bool CamoEnabled = false;
+        public bool CamoEnabled;
         public DateTime LastCamouflaged;
         public float CamoTimeRemaining;
         public bool Camouflaged => CamoTimeRemaining > 0f;
@@ -110,44 +106,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CamouflageTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCamouflaged;
+            var timespan = utcNow - LastCamouflaged;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.CamouflagerCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Grenadier Stuff
         public AbilityButton FlashButton;
-        public bool FlashEnabled = false;
+        public bool FlashEnabled;
         public DateTime LastFlashed;
         public float FlashTimeRemaining;
-        public static List<PlayerControl> ClosestPlayers;
-        static readonly Color NormalVision = new Color32(212, 212, 212, 0);
-        static readonly Color DimVision = new Color32(212, 212, 212, 51);
-        static readonly Color BlindVision = new Color32(212, 212, 212, 255);
+        private static List<PlayerControl> ClosestPlayers = new();
+        private static readonly Color NormalVision = new Color32(212, 212, 212, 0);
+        private static readonly Color DimVision = new Color32(212, 212, 212, 51);
+        private static readonly Color BlindVision = new Color32(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers;
         public bool Flashed => FlashTimeRemaining > 0f;
 
         public float FlashTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFlashed;
+            var timespan = utcNow - LastFlashed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.GrenadeCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Flash()
         {
-            if (FlashEnabled != true)
+            if (!FlashEnabled)
             {
                 ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
                 FlashedPlayers = ClosestPlayers;
@@ -171,8 +159,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
                 {
-                    ((Renderer)HudManager.Instance.FullScreen).enabled = true;
-                    ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
+                    HudManager.Instance.FullScreen.enabled = true;
+                    HudManager.Instance.FullScreen.gameObject.active = true;
 
                     if (FlashTimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
@@ -187,8 +175,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     else if (FlashTimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && FlashTimeRemaining >= 0.5f)
                     {
-                        ((Renderer)HudManager.Instance.FullScreen).enabled = true;
-                        ((Renderer)HudManager.Instance.FullScreen).gameObject.active = true;
+                        HudManager.Instance.FullScreen.enabled = true;
+                        HudManager.Instance.FullScreen.gameObject.active = true;
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = BlindVision;
@@ -215,12 +203,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                 }
             }
-
-            if (FlashTimeRemaining > 0.5f)
-            {
-                if (PlayerControl.LocalPlayer.Is(Faction.Intruder) && MapBehaviour.Instance.infectedOverlay.SabSystem.Timer < 0.5f)
-                    MapBehaviour.Instance.infectedOverlay.SabSystem.Timer = 0.5f;
-            }
         }
 
         private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
@@ -231,7 +213,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             FlashEnabled = false;
             LastFlashed = DateTime.UtcNow;
-            ((Renderer)HudManager.Instance.FullScreen).enabled = true;
+            HudManager.Instance.FullScreen.enabled = true;
             HudManager.Instance.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
         }
@@ -239,19 +221,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Janitor Stuff
         public AbilityButton CleanButton;
         public DateTime LastCleaned;
-        
+
         public float CleanTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastCleaned;
-            var num = Utils.GetModifiedCooldown((Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd), Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var timespan = utcNow - LastCleaned;
+            var num = Utils.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Undertaker Stuff
@@ -263,14 +241,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float DragTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDragged;
+            var timespan = utcNow - LastDragged;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DragCd, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Disguiser Stuff
@@ -281,7 +255,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Disguised => DisguiserTimeRemaining > 0f;
         public float DisguiserTimeRemaining2;
         public bool DelayActive => DisguiserTimeRemaining2 > 0f;
-        public bool DisguiserEnabled = false;
+        public bool DisguiserEnabled;
         public PlayerControl DisguisedPlayer;
         public PlayerControl MeasureTarget;
         public AbilityButton MeasureButton;
@@ -316,27 +290,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float DisguiseTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDisguised;
+            var timespan = utcNow - LastDisguised;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float MeasureTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMeasured;
+            var timespan = utcNow - LastMeasured;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MeasureCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Morphling Stuff
@@ -374,27 +340,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MorphTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMorphed;
+            var timespan = utcNow - LastMorphed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MorphlingCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float SampleTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastSampled;
+            var timespan = utcNow - LastSampled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.SampleCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Wraith Stuff
@@ -407,21 +365,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float InvisTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInvis;
+            var timespan = utcNow - LastInvis;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.InvisCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Invis()
         {
             InvisEnabled = true;
             InvisTimeRemaining -= Time.deltaTime;
-            
+
             if (Player.Data.IsDead || MeetingHud.Instance)
                 InvisTimeRemaining = 0f;
 
@@ -441,7 +395,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     PlayerName = " "
                 });
 
-                Player.myRend().color = color;
+                Player.MyRend().color = color;
                 Player.NameText().color = new Color32(0, 0, 0, 0);
                 Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
             }
@@ -452,29 +406,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InvisEnabled = false;
             LastInvis = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
-            Player.myRend().color = new Color32(255, 255, 255, 255);
+            Player.MyRend().color = new Color32(255, 255, 255, 255);
         }
 
         //Consigliere Stuff
-        public List<byte> Investigated = new List<byte>();
+        public List<byte> Investigated = new();
         public AbilityButton InvestigateButton;
         public DateTime LastInvestigated;
 
         public float ConsigliereTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastInvestigated;
+            var timespan = utcNow - LastInvestigated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.ConsigCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Miner Stuff
-        public readonly System.Collections.Generic.List<Vent> Vents = new System.Collections.Generic.List<Vent>();
+        public readonly List<Vent> Vents = new();
         public AbilityButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
@@ -482,20 +432,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MineTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMined;
+            var timespan = utcNow - LastMined;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MineCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         //Teleporter Stuff
         public AbilityButton TeleportButton;
         public DateTime LastTeleport;
-        public Vector3 TeleportPoint = new Vector3(0, 0, 0);
+        public Vector3 TeleportPoint = new(0, 0, 0);
         public DateTime LastMarked;
         public AbilityButton MarkButton;
         public bool CanMark;
@@ -503,46 +449,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float MarkTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastMarked;
+            var timespan = utcNow - LastMarked;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.MarkCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float TeleportTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastTeleport;
+            var timespan = utcNow - LastTeleport;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.TeleportCd, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
-        public static void Teleport(PlayerControl teleporter)
+        public static void Teleport(PlayerControl godfather)
         {
-            teleporter.MyPhysics.ResetMoveState();
-            var teleporterRole = Role.GetRole<Teleporter>(teleporter);
+            godfather.MyPhysics.ResetMoveState();
+            var teleporterRole = GetRole<Godfather>(godfather);
             var position = teleporterRole.TeleportPoint;
-            teleporter.NetTransform.SnapTo(new Vector2(position.x, position.y));
+            godfather.NetTransform.SnapTo(new Vector2(position.x, position.y));
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == godfather.PlayerId)
             {
-                if (PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
-                {
-                    SubmergedCompatibility.ChangeFloor(teleporter.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-                }
+                SubmergedCompatibility.ChangeFloor(godfather.GetTruePosition().y > -7);
+                SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
             }
 
-            if (PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
+            if (PlayerControl.LocalPlayer.PlayerId == godfather.PlayerId)
             {
                 Coroutines.Start(Utils.FlashCoroutine(new Color(0.6f, 0.1f, 0.2f, 1f)));
 
@@ -550,29 +485,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     Minigame.Instance.Close();
             }
 
-            teleporter.moveable = true;
-            teleporter.Collider.enabled = true;
-            teleporter.NetTransform.enabled = true;
+            godfather.moveable = true;
+            godfather.Collider.enabled = true;
+            godfather.NetTransform.enabled = true;
         }
 
         //Time Master Stuff
         public AbilityButton FreezeButton;
-        public bool FreezeEnabled = false;
+        public bool FreezeEnabled;
         public float FreezeTimeRemaining;
         public DateTime LastFrozen;
         public bool Frozen => FreezeTimeRemaining > 0f;
-        
+
         public float FreezeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastFrozen;
+            var timespan = utcNow - LastFrozen;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TimeFreeze()
@@ -603,14 +534,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float AmbushTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastAmbushed;
+            var timespan = utcNow - LastAmbushed;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Ambush()
@@ -620,7 +547,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Player.Data.IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || MeetingHud.Instance)
                 AmbushTimeRemaining = 0f;
-
         }
 
         public void UnAmbush()

@@ -11,7 +11,7 @@ using Reactor.Networking.Extensions;
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformMine
+    public static class PerformMine
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 
                 if (role.MineTimer() != 0f)
                     return false;
-                
+
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Mine);
                 var position = PlayerControl.LocalPlayer.transform.position;
@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
         {
             var ventPrefab = Object.FindObjectOfType<Vent>();
             var vent = Object.Instantiate(ventPrefab, ventPrefab.transform.parent);
-            
+
             vent.Id = ventId;
             vent.transform.position = new Vector3(position.x, position.y, zAxis);
 
@@ -71,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
             role.Vents.Add(vent);
             role.LastMined = DateTime.UtcNow;
 
-            if (SubmergedCompatibility.isSubmerged())
+            if (SubmergedCompatibility.IsSubmerged())
             {
                 vent.gameObject.layer = 12;
                 vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
@@ -94,7 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
             {
                 if (ShipStatus.Instance.AllVents.All(v => v.Id != id))
                     return id;
-                
+
                 id++;
             }
         }

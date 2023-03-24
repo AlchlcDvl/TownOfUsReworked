@@ -8,9 +8,9 @@ using System.Linq;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-    internal class ConfirmEjects
+    public static class ConfirmEjects
     {
-        private static void Postfix(ExileController __instance)
+        public static void Postfix(ExileController __instance)
         {
             var exiled = __instance.exiled;
 
@@ -30,8 +30,8 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Where(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) &&
-                !x.Is(RoleAlignment.NeutralEvil)) || x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected)).Count();
+            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
+                x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
             var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";
             var IsAre = totalEvilsCount > 1 ? "are" : "is";
@@ -73,7 +73,9 @@ namespace TownOfUsReworked.Patches
                         ejectString = $"{player.name} is now off to a scuba adventure.";
                 }
                 else
+                {
                     ejectString = $"{player.name} was ejected.";
+                }
 
                 __instance.completeString = ejectString;
             }
@@ -88,17 +90,16 @@ namespace TownOfUsReworked.Patches
                     else
                         ejectString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
                 }
+                else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
+                {
+                    ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
+                }
                 else
                 {
-                    if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                        ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
+                    if (!player.Is(SubFaction.None))
+                        ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
                     else
-                    {
-                        if (!player.Is(SubFaction.None))
-                            ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
-                        else
-                            ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
-                    }
+                        ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
                 }
 
                 __instance.ImpostorText.text = totalEvils;

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked;
-        public bool VampsDead => PlayerControl.AllPlayerControls.ToArray().Count(x => x != null && !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead)) == 0;
+        public static bool VampsDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && x.Is(SubFaction.Undead));
         public AbilityButton StakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
@@ -30,22 +30,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float StakeTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastStaked;
+            var timespan = utcNow - LastStaked;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TurnVigilante()
         {
-            var vh = Role.GetRole<VampireHunter>(Player);
             var role = new Vigilante(Player);
-            role.RoleUpdate(vh);
-            Player.RegenTask();
+            role.RoleUpdate(this);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));

@@ -12,7 +12,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    public class AddButton
+    public static class AddButton
     {
         public static void GenButton(Swapper role, int index, bool noButton)
         {
@@ -67,22 +67,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                         SwapVotes.Swap2 = MeetingHud.Instance.playerStates[i];
                 }
 
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.SetSwaps);
+
                 if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 {
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer2.Write((byte)ActionsRPC.SetSwaps);
-                    writer2.Write(sbyte.MaxValue);
-                    writer2.Write(sbyte.MaxValue);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                    writer.Write(sbyte.MaxValue);
+                    writer.Write(sbyte.MaxValue);
                 }
                 else
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.SetSwaps);
                     writer.Write(SwapVotes.Swap1.TargetPlayerId);
                     writer.Write(SwapVotes.Swap2.TargetPlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
             return Listener;

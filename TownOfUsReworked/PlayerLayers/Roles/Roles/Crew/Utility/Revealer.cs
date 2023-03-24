@@ -12,9 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Revealed;
         public bool CompletedTasks;
         public bool Faded;
-        public List<ArrowBehaviour> ImpArrows;
-        public List<PlayerControl> RevealerTargets;
-        public List<ArrowBehaviour> RevealerArrows;
+        public List<ArrowBehaviour> ImpArrows = new();
+        public List<PlayerControl> RevealerTargets = new();
+        public List<ArrowBehaviour> RevealerArrows = new();
         public Role FormerRole;
 
         public Revealer(PlayerControl player) : base(player)
@@ -24,9 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = CU;
-            ImpArrows = new List<ArrowBehaviour>();
-            RevealerTargets = new List<PlayerControl>();
-            RevealerArrows = new List<ArrowBehaviour>();
+            ImpArrows = new();
+            RevealerTargets = new();
+            RevealerArrows = new();
             InspectorResults = InspectorResults.Ghostly;
         }
 
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             distPercent = Mathf.Max(0, distPercent - 1);
 
             var velocity = Player.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude;
-            color.a = 0.07f + velocity / Player.MyPhysics.TrueSpeed * 0.13f;
+            color.a = 0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f);
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 });
             }
 
-            Player.myRend().color = color;
+            Player.MyRend().color = color;
             Player.NameText().color = new Color(0f, 0f, 0f, 0f);
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }

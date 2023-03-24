@@ -7,7 +7,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformWarp
+    public static class PerformWarp
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -25,8 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
                 writer.Write((byte)ActionsRPC.Warp);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                role.Warp();
                 role.LastWarped = DateTime.UtcNow;
+                Warper.Warp();
                 return false;
             }
 

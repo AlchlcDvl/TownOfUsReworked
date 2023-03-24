@@ -17,11 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
         private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (!GameStates.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist) || LobbyBehaviour.Instance || MeetingHud.Instance)
                 return;
-            
+
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
             if (ret.RevivedRole?.RoleType != RoleEnum.Detective)
@@ -35,20 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (player == null || player.Data.IsDead || player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                    if (player?.Data.IsDead != false || player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                         continue;
 
                     var canPlace = !ret.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
                         player.PlayerId);
 
-                    if (Vent && ShipStatus.Instance != null)
-                    {
-                        if (ShipStatus.Instance.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f))
-                            canPlace = false;
-                    }
+                    if (Vent && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f) == true)
+                        canPlace = false;
 
                     if (canPlace)
-                        new Footprint(player, ret);
+                        _ = new Footprint(player, ret);
                 }
 
                 for (var i = 0; i < ret.AllPrints.Count; i++)
@@ -59,13 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                         if (footprint.Update())
                             i--;
-                    }
-                    catch
-                    {
-                        //Assume footprint value is null and allow the loop to continue
-                        continue;
-                    }
-                    
+                    } catch { /*Assume footprint value is null and allow the loop to continue*/ }
                 }
             }
         }

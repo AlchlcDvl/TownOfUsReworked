@@ -7,9 +7,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDGaze
+    public static class HUDGaze
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Gorgon))
                 return;
@@ -22,21 +22,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             var notGazed = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && !role.Gazed.Contains(x.PlayerId)).ToList();
             role.GazeButton.UpdateButton(role, "GAZE", role.GazeTimer(), CustomGameOptions.GazeCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", notGazed);
 
-            foreach (var id in role.Gazed)
+            if (!Role.SyndicateHasChaosDrive)
             {
-                var player = Utils.PlayerById(id);
-
-                if (player.Data.IsDead)
+                foreach (var id in role.Gazed)
                 {
-                    if (!player.moveable)
-                        player.moveable = true;
+                    var player = Utils.PlayerById(id);
 
-                    role.Gazed.Remove(id);
-                    continue;
+                    if (player.Data.IsDead)
+                    {
+                        if (!player.moveable)
+                            player.moveable = true;
+
+                        role.Gazed.Remove(id);
+                        continue;
+                    }
+
+                    if (player.moveable)
+                        player.moveable = false;
                 }
-
-                if (player.moveable)
-                    player.moveable = false;
             }
         }
     }

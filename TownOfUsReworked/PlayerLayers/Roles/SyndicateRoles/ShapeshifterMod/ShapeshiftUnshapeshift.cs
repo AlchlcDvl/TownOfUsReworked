@@ -4,9 +4,10 @@ using TownOfUsReworked.Enums;
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class ShapeshiftUnshapeshift
+    [HarmonyPriority(Priority.Last)]
+    public static class ShapeshiftUnshapeshift
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             foreach (var role in Role.GetRoles(RoleEnum.Shapeshifter))
             {

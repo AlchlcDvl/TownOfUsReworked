@@ -15,13 +15,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public abstract class Role : PlayerLayer
     {
-        public static readonly Dictionary<byte, Role> RoleDictionary = new Dictionary<byte, Role>();
-        public static List<GameObject> Buttons = new List<GameObject>();
-        public static readonly Dictionary<int, string> LightDarkColors = new Dictionary<int, string>();
-        public readonly List<Footprint> AllPrints = new List<Footprint>();
+        public static readonly Dictionary<byte, Role> RoleDictionary = new();
+        public static readonly List<GameObject> Buttons = new();
+        public static readonly Dictionary<int, string> LightDarkColors = new();
+        public readonly List<Footprint> AllPrints = new();
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
+        #pragma warning disable
         public static bool NobodyWins;
 
         public static bool UndeadWin;
@@ -49,6 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
+        #pragma warning restore
 
         protected internal Color32 FactionColor = Colors.Faction;
         protected internal Color32 SubFactionColor = Colors.SubFaction;
@@ -58,10 +60,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal RoleAlignment RoleAlignment = RoleAlignment.None;
         protected internal SubFaction SubFaction = SubFaction.None;
         protected internal InspectorResults InspectorResults = InspectorResults.None;
-        protected internal List<Role> RoleHistory = new List<Role>();
+        protected internal List<Role> RoleHistory = new();
 
         protected internal string IntroSound => $"{Name}Intro";
-        protected internal bool IntroPlayed = false;
+        protected internal bool IntroPlayed;
 
         protected internal string StartText = "Woah The Game Started";
         protected internal string AbilitiesText = "- None.";
@@ -72,61 +74,61 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected internal string Objectives = "- None.";
 
-        protected internal bool RoleBlockImmune = false;
-        protected internal bool IsBlocked = false;
+        protected internal bool RoleBlockImmune;
+        protected internal bool IsBlocked;
 
-        protected internal bool Base = false;
+        protected internal bool Base;
 
         protected internal AbilityButton SpectateButton;
 
         protected internal AbilityButton ZoomButton;
-        protected internal bool Zooming = false;
+        protected internal bool Zooming;
 
-        protected internal bool IsRecruit = false;
-        protected internal bool IsResurrected = false;
-        protected internal bool IsPersuaded = false;
-        protected internal bool IsBitten = false;
-        protected internal bool IsIntTraitor = false;
-        protected internal bool IsIntAlly = false;
-        protected internal bool IsIntFanatic = false;
-        protected internal bool IsSynTraitor = false;
-        protected internal bool IsSynAlly = false;
-        protected internal bool IsSynFanatic = false;
-        protected internal bool IsCrewAlly = false;
+        protected internal bool IsRecruit;
+        protected internal bool IsResurrected;
+        protected internal bool IsPersuaded;
+        protected internal bool IsBitten;
+        protected internal bool IsIntTraitor;
+        protected internal bool IsIntAlly;
+        protected internal bool IsIntFanatic;
+        protected internal bool IsSynTraitor;
+        protected internal bool IsSynAlly;
+        protected internal bool IsSynFanatic;
+        protected internal bool IsCrewAlly;
         protected internal bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
             !IsSynFanatic && !IsCrewAlly;
 
-        protected internal bool Winner = false;
+        protected internal bool Winner;
 
-        public static string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
-        public static string IS = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>";
-        public static string IC = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>";
-        public static string ID = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>";
-        public static string IK = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>";
-        public static string IU = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
+        public static readonly string IS = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>";
+        public static readonly string IC = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>";
+        public static readonly string ID = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>";
+        public static readonly string IK = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static readonly string IU = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>";
 
-        public static string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds.\n" : "") + "- Cause chaos and kill anyone who opposes " +
+        public static readonly string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds.\n" : "") + "- Cause chaos and kill anyone who opposes " +
             "the <color=#008000FF>Syndicate</color>.";
-        public static string SU = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Utility</color>)</color>";
-        public static string SSu = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>";
-        public static string SD = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>";
-        public static string SyK = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>";
-        public static string SP = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>";
+        public static readonly string SU = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static readonly string SSu = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>";
+        public static readonly string SD = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>";
+        public static readonly string SyK = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static readonly string SP = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>";
 
-        public static string CrewWinCon = "- Finish all tasks.\n- Eject all <color=#FF0000FF>evildoers</color>.";
-        public static string CP = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>";
-        public static string CI = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>";
-        public static string CU = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>";
-        public static string CS = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Support</color>)</color>";
-        public static string CA = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>";
-        public static string CK = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>";
-        public static string CSv = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>";
+        public static readonly string CrewWinCon = "- Finish all tasks.\n- Eject all <color=#FF0000FF>evildoers</color>.";
+        public static readonly string CP = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>";
+        public static readonly string CI = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>";
+        public static readonly string CU = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static readonly string CS = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Support</color>)</color>";
+        public static readonly string CA = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>";
+        public static readonly string CK = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static readonly string CSv = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>";
 
-        public static string NB = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>";
-        public static string NE = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>";
-        public static string NK = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>";
-        public static string NN = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>";
-        public static string NP = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Proselyte</color>)</color>";
+        public static readonly string NB = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>";
+        public static readonly string NE = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>";
+        public static readonly string NK = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static readonly string NN = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>";
+        public static readonly string NP = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Proselyte</color>)</color>";
 
         protected Role(PlayerControl player) : base(player)
         {
@@ -139,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Role;
         }
 
-        public static IEnumerable<Role> AllRoles => RoleDictionary.Values.ToList();
+        public static List<Role> AllRoles => RoleDictionary.Values.ToList();
 
         public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
         public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
@@ -148,7 +150,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
 
             if (ReferenceEquals(this, obj))
@@ -211,7 +213,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static T GenRole<T>(Type type, PlayerControl player, int id)
         {
-            var role = (T)((object)Activator.CreateInstance(type, new object[] { player }));
+            var role = (T)Activator.CreateInstance(type, new object[] { player });
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable);
             writer.Write(player.PlayerId);
             writer.Write(id);
@@ -219,19 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return role;
         }
 
-        public static Role GetRole(PlayerControl player)
-        {
-            if (player == null)
-                return null;
-
-            foreach (var role in AllRoles)
-            {
-                if (role.Player == player)
-                    return role;
-            }
-
-            return null;
-        }
+        public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
 
         public static Role GetRoleValue(RoleEnum roleEnum)
         {
@@ -297,7 +287,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
 
-                bool crewexists = false;
+                var crewexists = false;
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
@@ -311,7 +301,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write((byte)WinLoseRPC.NobodyWins);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    Role.NobodyWins = true;
+                    NobodyWins = true;
                     Objectifier.NobodyWins = true;
                     return true;
                 }
@@ -321,7 +311,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write((byte)WinLoseRPC.CrewWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    Role.CrewWin = true;
+                    CrewWin = true;
                     return true;
                 }
                 else if (Utils.Sabotaged())
@@ -332,7 +322,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         writer.Write((byte)WinLoseRPC.SyndicateWin);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         Utils.EndGame();
-                        Role.SyndicateWin = true;
+                        SyndicateWin = true;
                     }
                     else
                     {
@@ -340,7 +330,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         writer.Write((byte)WinLoseRPC.IntruderWin);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         Utils.EndGame();
-                        Role.IntruderWin = true;
+                        IntruderWin = true;
                     }
 
                     return true;
@@ -359,9 +349,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
-        private static class PlayerControl_SetTasks
+        public static class PlayerControl_SetTasks
         {
-            private static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
             {
                 if (__instance == null)
                     return;
@@ -376,7 +366,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                         if (importantTextTask.Text.Contains("Sabotage and kill everyone") || importantTextTask.Text.Contains("Fake Tasks") || importantTextTask.Text.Contains("Role") ||
                             importantTextTask.Text.Contains("tasks to win"))
+                        {
                             player.myTasks.Remove(importantTextTask);
+                        }
                     }
                 } catch {}
 

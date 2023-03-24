@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public PlayerControl BlockTarget;
-        public bool Enabled = false;
+        public bool Enabled;
         public DateTime LastBlock;
         public float TimeRemaining;
         public AbilityButton BlockButton;
@@ -44,21 +44,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
+            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || !BlockTarget.IsBlocked())
                 TimeRemaining = 0f;
         }
 
         public float RoleblockTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastBlock;
+            var timespan = utcNow - LastBlock;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
-            var flag2 = num - (float) timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float) timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

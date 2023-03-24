@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.MultitaskerMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class TaskHUD
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Multitasker))
                 return;

@@ -8,13 +8,15 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class RepickRevealer
+    public static class RepickRevealer
     {
-        private static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || PlayerControl.LocalPlayer !=
                 SetRevealer.WillBeRevealer || PlayerControl.LocalPlayer.Data.IsDead)
+            {
                 return;
+            }
 
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
 
@@ -29,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
             writer.Write(pc.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return;
         }
     }
 }

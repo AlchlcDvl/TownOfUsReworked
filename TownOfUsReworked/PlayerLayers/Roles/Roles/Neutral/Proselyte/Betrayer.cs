@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton KillButton;
         public DateTime LastKilled;
-        public PlayerControl ClosestPlayer = null;
+        public PlayerControl ClosestPlayer;
 
         public Betrayer(PlayerControl player) : base(player)
         {
@@ -23,14 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastKilled;
+            var timespan = utcNow - LastKilled;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BetrayerKillCooldown) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

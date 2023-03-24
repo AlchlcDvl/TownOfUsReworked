@@ -3,10 +3,10 @@ using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
-    public class UpdateArrows
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class UpdateArrows
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix()
         {
             if (Coroutine.Arrow != null)
             {
@@ -16,7 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                     Coroutine.Target = null;
                 }
                 else
+                {
                     Coroutine.Arrow.target = Coroutine.Target.transform.position;
+                }
             }
         }
     }

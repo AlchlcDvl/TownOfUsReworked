@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : NeutralRole
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows;
-        public DeadBody CurrentTarget = null;
+        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public DeadBody CurrentTarget;
         public AbilityButton RememberButton;
 
         public Amnesiac(PlayerControl player) : base(player)
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role.";
-            BodyArrows = new Dictionary<byte, ArrowBehaviour>();
+            BodyArrows = new();
             InspectorResults = InspectorResults.DealsWithDead;
         }
 
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Object.Destroy(arrow.Value);
             if (arrow.Value.gameObject != null)
                 Object.Destroy(arrow.Value.gameObject);
-                
+
             BodyArrows.Remove(arrow.Key);
         }
     }

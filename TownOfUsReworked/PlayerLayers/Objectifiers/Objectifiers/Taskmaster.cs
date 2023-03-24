@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public bool Revealed => TasksLeft <= CustomGameOptions.TMTasksRemaining;
         public bool WinTasksDone;
-        public List<ArrowBehaviour> ImpArrows;
+        public List<ArrowBehaviour> ImpArrows = new();
 
         public Taskmaster(PlayerControl player) : base(player)
         {

@@ -5,21 +5,17 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
-    internal class MedScan
+    [HarmonyPatch]
+    public static class MedScan
     {
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]
         private static class MedScanMinigamePatch
         {
-            private static void Postfix(MedScanMinigame __instance)
+            public static void Postfix(MedScanMinigame __instance)
             {
-                var oldHeightFeet = 3f;
-                var oldHeightInch = 6f;
-                var oldWeight = 92f;
-                var newHeightFeet = 0f;
-                var newHeightInch = 0f;
-                var newWeight = 0f;
-                var weightString = "";
-                var heightString = "";
+                const float oldHeightFeet = 3f;
+                const float oldHeightInch = 6f;
+                const float oldWeight = 92f;
                 var scale = 1f;
 
                 //Update medical details for Giant and Dwarf modifiers based on game options
@@ -28,9 +24,9 @@ namespace TownOfUsReworked.Patches
                 else if (PlayerControl.LocalPlayer.Is(ModifierEnum.Dwarf))
                     scale = CustomGameOptions.DwarfScale;
 
-                newHeightFeet = oldHeightFeet * scale;
-                newHeightInch = oldHeightInch * scale;
-                newWeight = oldWeight * scale;
+                var newHeightFeet = oldHeightFeet * scale;
+                var newHeightInch = oldHeightInch * scale;
+                var newWeight = oldWeight * scale;
 
                 while (newHeightFeet.IsInRange(0, 1))
                 {
@@ -47,17 +43,17 @@ namespace TownOfUsReworked.Patches
                     newHeightInch -= 12;
                 }
 
-                weightString = $"{newWeight}lb";
-                heightString = $"{newHeightFeet}' {newHeightInch}\"";
+                string weightString = $"{newWeight}lb";
+                string heightString = $"{newHeightFeet}' {newHeightInch}\"";
 
                 __instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
             }
         }
 
         [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.FixedUpdate))]
-        class MedScanMinigameFixedUpdatePatch
+        public static class MedScanMinigameFixedUpdatePatch
         {
-            static void Prefix(MedScanMinigame __instance)
+            public static void Prefix(MedScanMinigame __instance)
             {
                 if (CustomGameOptions.ParallelMedScans)
                 {

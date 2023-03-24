@@ -12,7 +12,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
-    public class ShowHideSwapButtons
+    public static class ShowHideSwapButtons
     {
         public static Dictionary<byte, int> CalculateVotes(MeetingHud __instance)
         {
@@ -113,33 +113,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             {
                 if (playerVoteArea.AmDead || playerVoteArea.DidVote)
                     return true;
-                    
+
                 var playerInfo = GameData.Instance.GetPlayerById(playerVoteArea.TargetPlayerId);
 
                 if (playerInfo == null)
                     return true;
 
                 var playerControl = playerInfo.Object;
-                
+
                 if (playerControl.Is(AbilityEnum.Assassin) && playerInfo.IsDead)
                 {
                     playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
                     playerVoteArea.SetDead(false, true);
                 }
-                
+
                 return true;
             }
-            
+
             public static bool Prefix(MeetingHud __instance)
             {
-                if (__instance.playerStates.All(ps => ps.AmDead || ps.DidVote && CheckVoted(ps)))
+                if (__instance.playerStates.All(ps => ps.AmDead || (ps.DidVote && CheckVoted(ps))))
                 {
                     var self = CalculateVotes(__instance);
                     var array = new Il2CppStructArray<MeetingHud.VoterState>(__instance.playerStates.Length);
                     var maxIdx = self.MaxPair(out var tie);
                     Utils.LogSomething($"Meeting was a tie = {tie}");
                     var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == maxIdx.Key);
-                    
+
                     for (var i = 0; i < __instance.playerStates.Length; i++)
                     {
                         var playerVoteArea = __instance.playerStates[i];
@@ -152,7 +152,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     }
 
                     __instance.RpcVotingComplete(array, exiled, tie);
-                    
+
                     foreach (var role in Role.GetRoles(RoleEnum.Mayor))
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);

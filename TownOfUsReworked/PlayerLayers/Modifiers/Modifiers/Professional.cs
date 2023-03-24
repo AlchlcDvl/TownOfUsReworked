@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Professional : Modifier
     {
-        public bool LifeUsed = false;
+        public bool LifeUsed;
 
         public Professional(PlayerControl player) : base(player)
         {
@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Professional : Colors.Modifier;
             ModifierType = ModifierEnum.Professional;
             Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
+            LifeUsed = false;
         }
     }
 }

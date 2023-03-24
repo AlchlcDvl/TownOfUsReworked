@@ -15,7 +15,7 @@ namespace TownOfUsReworked.Patches
 {
     static class AdditionalTempData
     {
-        public static List<PlayerRoleInfo> PlayerRoles = new List<PlayerRoleInfo>();
+        public static List<PlayerRoleInfo> PlayerRoles = new();
 
         public static void Clear() => PlayerRoles.Clear();
 
@@ -27,9 +27,9 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
-    public class OnGameEndPatch
+    public static class OnGameEndPatch
     {
-        public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] EndGameResult endGameResult)
+        public static void Postfix()
         {
             AdditionalTempData.Clear();
 
@@ -38,8 +38,8 @@ namespace TownOfUsReworked.Patches
             foreach (var playerControl in PlayerControl.AllPlayerControls)
             {
                 var summary = "";
-                var endString = "</color>";
-                var TotalTasks = playerControl.Data.Tasks.ToArray().Count();
+                const string endString = "</color>";
+                var TotalTasks = playerControl.Data.Tasks.ToArray().Length;
                 var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
 
                 var info = playerControl.AllPlayerInfo();
@@ -111,22 +111,22 @@ namespace TownOfUsReworked.Patches
     }
 
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
-    public class ShipStatusSetUpPatch
+    public static class ShipStatusSetUpPatch
     {
         public static void Postfix(EndGameManager __instance)
         {
             if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
                 return;
 
-            var bonusText = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
+            var bonusText = Object.Instantiate(__instance.WinText.gameObject);
             bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f, __instance.WinText.transform.position.z);
             bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
             var textRenderer = bonusText.GetComponent<TMP_Text>();
             textRenderer.text = "";
 
             var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
-            var roleSummary = UnityEngine.Object.Instantiate(__instance.WinText.gameObject);
-            roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f); 
+            var roleSummary = Object.Instantiate(__instance.WinText.gameObject);
+            roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
             roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
 
             var roleSummaryText = new StringBuilder();
@@ -138,8 +138,8 @@ namespace TownOfUsReworked.Patches
 
             roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
             roleSummaryText.AppendLine();
-            winnersText.AppendLine("<size=105%><b>Winners</b></size> -");
-            losersText.AppendLine("<size=105%><b>Losers</b></size> -");
+            winnersText.AppendLine("<size=105%><b>Winners</b></size>");
+            losersText.AppendLine("<size=105%><b>Losers</b></size>");
 
             foreach (var data in AdditionalTempData.PlayerRoles)
             {
@@ -149,12 +149,12 @@ namespace TownOfUsReworked.Patches
                 if (data.PlayerName.IsWinner())
                 {
                     winnersText.AppendLine(dataString);
-                    winnerCount += 1;
+                    winnerCount++;
                 }
                 else
                 {
                     losersText.AppendLine(dataString);
-                    loserCount += 1;
+                    loserCount++;
                 }
             }
 

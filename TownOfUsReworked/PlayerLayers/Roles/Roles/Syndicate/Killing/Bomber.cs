@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDetonated;
         public AbilityButton BombButton;
         public AbilityButton DetonateButton;
-        public List<Bomb> Bombs;
+        public List<Bomb> Bombs = new();
 
         public Bomber(PlayerControl player) : base(player)
         {
@@ -25,33 +25,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            Bombs = new List<Bomb>();
+            Bombs = new();
         }
 
         public float BombTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastPlaced;
+            var timespan = utcNow - LastPlaced;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.BombCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float DetonateTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timeSpan = utcNow - LastDetonated;
+            var timespan = utcNow - LastDetonated;
             var num = Utils.GetModifiedCooldown(CustomGameOptions.DetonateCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float)timeSpan.TotalMilliseconds < 0f;
-
-            if (flag2)
-                return 0f;
-
-            return (num - (float)timeSpan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
     }
 }

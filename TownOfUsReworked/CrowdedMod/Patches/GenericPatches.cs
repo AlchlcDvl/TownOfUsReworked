@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using TownOfUsReworked.CrowdedMod.Net;
 using HarmonyLib;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Reactor.Networking.Rpc;
-using UnityEngine;
 using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.CrowdedMod.Patches
@@ -50,11 +48,8 @@ namespace TownOfUsReworked.CrowdedMod.Patches
         [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.AreInvalid))]
         public static class InvalidOptionsPatches
         {
-            public static bool Prefix(GameOptionsData __instance, [HarmonyArgument(0)] int maxExpectedPlayers)
-            {
-                return __instance.MaxPlayers > maxExpectedPlayers || __instance.NumImpostors < 1 || __instance.NumImpostors + 1 > maxExpectedPlayers / 2 ||
-                    __instance.KillDistance is < 0 or > 2 || __instance.PlayerSpeedMod is <= 0f or > 3f;
-            }
+            public static bool Prefix(GameOptionsData __instance, [HarmonyArgument(0)] int maxExpectedPlayers) => __instance.MaxPlayers > maxExpectedPlayers || __instance.NumImpostors < 1
+                || __instance.NumImpostors + 1 > maxExpectedPlayers / 2 || __instance.KillDistance is < 0 or > 2 || __instance.PlayerSpeedMod is <= 0f or > 3f;
         }
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
@@ -88,10 +83,8 @@ namespace TownOfUsReworked.CrowdedMod.Patches
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
         public static class GameOptionsMenu_Start
         {
-            public static void Postfix(ref GameOptionsMenu __instance)
-            {
-                __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title == StringNames.GameNumImpostors).ValidRange = new FloatRange(1, TownOfUsReworked.MaxImpostors);
-            }
+            public static void Postfix(ref GameOptionsMenu __instance) => __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title ==
+                StringNames.GameNumImpostors).ValidRange = new FloatRange(1, TownOfUsReworked.MaxImpostors);
         }
     }
 }

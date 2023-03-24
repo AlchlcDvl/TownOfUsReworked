@@ -10,7 +10,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformExamine
+    public static class PerformExamine
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -26,10 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
-                
+
                 var interact = Utils.Interact(role.Player, role.ClosestPlayer);
 
-                if (interact[3] == true)
+                if (interact[3])
                 {
                     var hasKilled = false;
 
@@ -44,10 +44,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     else
                         Coroutines.Start(Utils.FlashCoroutine(Color.green));
                 }
-                
-                if (interact[0] == true)
+
+                if (interact[0])
                     role.LastExamined = DateTime.UtcNow;
-                else if (interact[1] == true)
+                else if (interact[1])
                     role.LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;

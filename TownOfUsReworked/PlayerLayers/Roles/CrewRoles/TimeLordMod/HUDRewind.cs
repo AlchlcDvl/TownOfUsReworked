@@ -5,9 +5,9 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public class HUDRewind
+    public static class HUDRewind
     {
-        public static void Postfix(HudManager __instance)
+        public static void Postfix()
         {
             if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord))
                 return;
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             if (role.RewindButton == null)
                 role.RewindButton = Utils.InstantiateButton();
 
-            role.RewindButton.UpdateButton(role, "REWIND", role.TimeLordRewindTimer(), role.GetCooldown(), AssetManager.Rewind, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
+            role.RewindButton.UpdateButton(role, "REWIND", role.TimeLordRewindTimer(), TimeLord.GetCooldown(), AssetManager.Rewind, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
                 role.ButtonUsable, role.ButtonUsable && !RecordRewind.rewinding);
         }
     }

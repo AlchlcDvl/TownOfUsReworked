@@ -6,7 +6,7 @@ using System;
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformHaunt
+    public static class PerformHaunt
     {
         public static bool Prefix(AbilityButton __instance)
         {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 
                 if (role.HauntTimer() != 0f)
                     return false;
-                    
+
                 Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, false);
                 role.HasHaunted = true;
                 role.MaxUses--;

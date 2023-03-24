@@ -3,11 +3,9 @@ using System;
 
 namespace TownOfUsReworked.MCI
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
     public sealed class AirshipSpawn
     {
-        [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
-        [HarmonyPostfix]
         public static void Postfix(SpawnInMinigame __instance)
         {
             foreach (var player in PlayerControl.AllPlayerControls)

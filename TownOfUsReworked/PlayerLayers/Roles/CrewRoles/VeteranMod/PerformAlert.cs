@@ -7,7 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
 {
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
-    public class PerformAlert
+    public static class PerformAlert
     {
         public static bool Prefix(AbilityButton __instance)
         {
