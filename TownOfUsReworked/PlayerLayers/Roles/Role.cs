@@ -13,6 +13,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
+    [HarmonyPatch]
     public abstract class Role : PlayerLayer
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new();
@@ -264,17 +265,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype && x.NotDefective);
+        public static List<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype && x.NotDefective).ToList();
 
-        public static IEnumerable<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && x.NotDefective);
+        public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && x.NotDefective).ToList();
 
-        public static IEnumerable<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && x.NotDefective);
+        public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && x.NotDefective).ToList();
 
-        public static IEnumerable<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction);
+        public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction).ToList();
 
-        public static IEnumerable<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results);
+        public static List<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results).ToList();
 
-        public static IEnumerable<Role> GetRoles(string name) => AllRoles.Where(x => x.Name == name);
+        public static List<Role> GetRoles(string name) => AllRoles.Where(x => x.Name == name).ToList();
 
         [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
         public static class CheckEndGame

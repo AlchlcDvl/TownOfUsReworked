@@ -1,4 +1,3 @@
-using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var objectifier = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Taskmaster && ((Taskmaster)x).WinTasksDone);
+            var objectifier = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Taskmaster && ((Taskmaster)x).WinTasksDone);
 
             if (objectifier == null)
                 return;

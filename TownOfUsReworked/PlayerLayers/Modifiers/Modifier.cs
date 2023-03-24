@@ -4,9 +4,11 @@ using System.Linq;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using Hazel;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
+    [HarmonyPatch]
     public abstract class Modifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Modifier> ModifierDictionary = new();

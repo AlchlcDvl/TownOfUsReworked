@@ -36,9 +36,7 @@ namespace TownOfUsReworked.Patches
                             reactorSystemType.ReactorDuration / 75f);
                     }
                     else
-                    {
                         __instance.PlayerCam.ShakeScreen(0, 0);
-                    }
                 }
 
                 if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0)
@@ -51,9 +49,7 @@ namespace TownOfUsReworked.Patches
                             reactorSystemType.ReactorDuration / 100f);
                     }
                     else
-                    {
                         __instance.PlayerCam.ShakeScreen(0, 0);
-                    }
                 }
             }
         }

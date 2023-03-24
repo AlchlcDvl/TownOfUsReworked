@@ -8,6 +8,7 @@ using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
+    [HarmonyPatch]
     public static class SpawnInMinigamePatch
     {
         private static bool GameStarted;

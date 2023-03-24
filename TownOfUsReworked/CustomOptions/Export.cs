@@ -11,9 +11,11 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class Export : CustomButtonOption
     {
         public CustomButtonOption Loading;

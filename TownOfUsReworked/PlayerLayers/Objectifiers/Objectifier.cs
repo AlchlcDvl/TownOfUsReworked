@@ -11,6 +11,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
+    [HarmonyPatch]
     public abstract class Objectifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new();

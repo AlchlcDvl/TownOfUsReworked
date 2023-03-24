@@ -11,9 +11,9 @@ namespace TownOfUsReworked.BetterMaps.Airship
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
     public static class CallPlateform
     {
-        #pragma warning disable CA2211
+        #pragma warning disable
         public static bool PlateformIsUsed;
-        #pragma warning restore CA2211
+        #pragma warning restore
 
         public static void Postfix()
         {

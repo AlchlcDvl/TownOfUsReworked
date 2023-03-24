@@ -1,8 +1,10 @@
 using Hazel;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public static class FixFunctions
     {
         public static bool FixComms()

@@ -8,6 +8,7 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
+    [HarmonyPatch]
     [RegisterInIl2Cpp]
     public class Tasks : MonoBehaviour
     {

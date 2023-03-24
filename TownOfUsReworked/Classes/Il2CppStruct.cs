@@ -2,17 +2,19 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using Il2CppSystem.Collections.Generic;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public unsafe class Il2CppListEnumerable<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IEnumerator<T> where T : Il2CppSystem.Object
     {
         private struct Il2CppListStruct
         {
-            #pragma warning disable CS0649
+            #pragma warning disable
             public IntPtr _items;
             public int _size;
-            #pragma warning restore CS0649
+            #pragma warning restore
         }
 
         private static readonly int _elemSize;
@@ -47,7 +49,9 @@ namespace TownOfUsReworked.Classes
 
         public bool MoveNext()
         {
-            if (++_index >= _count) return false;
+            if (++_index >= _count)
+                return false;
+
             var refPtr = *(IntPtr*) IntPtr.Add(IntPtr.Add(_arrayPointer, _offset), _index * _elemSize);
             Current = _objFactory(refPtr);
             return true;
@@ -59,8 +63,8 @@ namespace TownOfUsReworked.Classes
 
         IEnumerator IEnumerable.GetEnumerator() => this;
 
-        #pragma warning disable CA1816
+        #pragma warning disable
         public void Dispose() {}
-        #pragma warning restore CA1816
+        #pragma warning restore
     }
 }

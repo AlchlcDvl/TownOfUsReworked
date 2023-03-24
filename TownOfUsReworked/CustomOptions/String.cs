@@ -1,7 +1,9 @@
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomStringOption : CustomOption
     {
         protected internal CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)

@@ -4,9 +4,11 @@ using TownOfUsReworked.Cosmetics.CustomColors;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Objects
 {
+    [HarmonyPatch]
     public class Footprint
     {
         public readonly PlayerControl Player;

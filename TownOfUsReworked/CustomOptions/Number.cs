@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomNumberOption : CustomOption
     {
         protected internal CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) :

@@ -6,9 +6,11 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Objects
 {
+    [HarmonyPatch]
     public class Bug
     {
         public Dictionary<byte, float> Players = new();

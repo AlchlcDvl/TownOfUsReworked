@@ -1,8 +1,10 @@
 using System;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public static class Generate
     {
         #pragma warning disable

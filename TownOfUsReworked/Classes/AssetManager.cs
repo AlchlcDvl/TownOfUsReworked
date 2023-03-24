@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Reactor.Utilities.Extensions;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public static class AssetManager
     {
         private readonly static Dictionary<string, AudioClip> SoundEffects = new();
         private static bool MaterialsLoaded;
         public readonly static List<string> Sounds = new();
 
-        #pragma warning disable CA2211
+        #pragma warning disable
         public static Sprite Clean;
         public static Sprite Fix;
         public static Sprite SwapperSwitch;
@@ -138,7 +140,7 @@ namespace TownOfUsReworked.Classes
         private static AssetBundle AirshipBundle;
         private static AssetBundle BugBundle;
         private static AssetBundle BombBundle;
-        #pragma warning restore CA2211
+        #pragma warning restore
 
         public static AudioClip Get(string path)
         {

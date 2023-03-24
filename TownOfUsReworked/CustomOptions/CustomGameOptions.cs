@@ -14,9 +14,11 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public static class CustomGameOptions
     {
         //Global Options

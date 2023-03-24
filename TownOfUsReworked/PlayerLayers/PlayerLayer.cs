@@ -5,9 +5,11 @@ using Reactor.Utilities.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers
 {
+    [HarmonyPatch]
     public abstract class PlayerLayer
     {
         public static readonly Dictionary<byte, PlayerLayer> LayerDictionary = new();
@@ -53,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers
         protected internal int TotalTasks => Player.Data.Tasks.ToArray().Length;
         protected internal bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
 
-        public string ColorString => "<color=#" + Color.ToHtmlStringRGBA() + ">";
+        public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
         private bool Equals(PlayerLayer other) => Equals(Player, other.Player);
 

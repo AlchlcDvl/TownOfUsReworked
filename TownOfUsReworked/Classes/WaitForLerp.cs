@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public class WaitForLerp : IEnumerator
     {
         private readonly Action<float> act;

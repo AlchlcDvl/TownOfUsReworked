@@ -114,8 +114,8 @@ namespace TownOfUsReworked.BetterMaps.Skeld
             if (ReactorVent == null)
                 ReactorVent = ventsList.Find(vent => vent.gameObject.name == "ReactorVent");
 
-            IsVentsFetched = NavVentSouth != null && NavVentNorth != null && ShieldsVent != null && WeaponsVent != null && REngineVent != null &&
-                UpperReactorVent != null && LEngineVent != null && ReactorVent != null;
+            IsVentsFetched = NavVentSouth != null && NavVentNorth != null && ShieldsVent != null && WeaponsVent != null && REngineVent != null && UpperReactorVent != null &&
+                LEngineVent != null && ReactorVent != null;
         }
 
         private static void FindObjects()
@@ -165,7 +165,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             if (ReactorVent.transform.position != ReactorVentNewPos)
             {
-                Transform transform = ReactorVent.transform;
+                var transform = ReactorVent.transform;
                 transform.position = ReactorVentNewPos;
             }
         }
@@ -174,7 +174,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             if (ShieldsVent.transform.position != ShieldsVentNewPos)
             {
-                Transform transform = ShieldsVent.transform;
+                var transform = ShieldsVent.transform;
                 transform.position = ShieldsVentNewPos;
             }
         }
@@ -183,7 +183,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             if (BigYVent.transform.position != BigYVentNewPos)
             {
-                Transform transform = BigYVent.transform;
+                var transform = BigYVent.transform;
                 transform.position = BigYVentNewPos;
             }
         }
@@ -192,7 +192,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             if (NavVentNorth.transform.position != NavVentNorthNewPos)
             {
-                Transform transform = NavVentNorth.transform;
+                var transform = NavVentNorth.transform;
                 transform.position = NavVentNorthNewPos;
             }
         }
@@ -201,7 +201,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         {
             if (CafeVent.transform.position != CafeVentNewPos)
             {
-                Transform transform = CafeVent.transform;
+                var transform = CafeVent.transform;
                 transform.position = CafeVentNewPos;
             }
         }

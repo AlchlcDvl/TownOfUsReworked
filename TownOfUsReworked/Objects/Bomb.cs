@@ -4,9 +4,11 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Objects
 {
+    [HarmonyPatch]
     public class Bomb
     {
         public List<PlayerControl> Players;

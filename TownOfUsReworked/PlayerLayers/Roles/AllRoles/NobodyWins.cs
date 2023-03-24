@@ -6,7 +6,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-    public static class Outro
+    public static class NobodyWins
     {
         public static void Postfix(EndGameManager __instance)
         {

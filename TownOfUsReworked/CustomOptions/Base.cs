@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomOption
     {
         public readonly static List<CustomOption> AllOptions = new();

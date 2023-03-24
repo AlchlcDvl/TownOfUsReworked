@@ -9,9 +9,11 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomNestedOption : CustomOption
     {
         private List<OptionBehaviour> OldButtons = new();

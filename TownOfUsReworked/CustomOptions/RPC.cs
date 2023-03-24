@@ -1,11 +1,12 @@
 using System.Collections.Generic;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public static class RPC
     {
         public static void SendRPC(CustomOption optionn = null)

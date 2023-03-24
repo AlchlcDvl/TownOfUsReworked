@@ -29,7 +29,7 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.2.5";
+        public const string VersionString = "0.0.2.6";
 
         #pragma warning disable
         public static Version Version = Version.Parse(VersionString);

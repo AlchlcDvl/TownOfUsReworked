@@ -4,9 +4,11 @@ using System.Linq;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using Hazel;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
+    [HarmonyPatch]
     public abstract class Ability : PlayerLayer
     {
         public static readonly Dictionary<byte, Ability> AbilityDictionary = new();

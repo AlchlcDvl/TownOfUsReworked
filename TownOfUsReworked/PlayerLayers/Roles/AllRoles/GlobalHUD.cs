@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             if (PlayerControl.AllPlayerControls.Count <= 1 || local == null || local.Data == null || (GameStates.IsInGame && GameStates.IsHnS) || GameStates.IsEnded)
                 return;
 
+            __instance.KillButton.SetTarget(null);
             __instance.KillButton.gameObject.SetActive(false);
             __instance.AbilityButton.gameObject.SetActive(false);
             var role = Role.GetRole(local);

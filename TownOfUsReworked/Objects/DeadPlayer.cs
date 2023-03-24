@@ -1,7 +1,9 @@
 using System;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Objects
 {
+    [HarmonyPatch]
     public class DeadPlayer
     {
         public byte KillerId { get; set; }

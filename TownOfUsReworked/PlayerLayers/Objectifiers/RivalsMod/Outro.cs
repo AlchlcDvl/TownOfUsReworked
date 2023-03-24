@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
     {
         public static void Postfix(EndGameManager __instance)
         {
-            var obj = Objectifier.AllObjectifiers.FirstOrDefault(x => x.ObjectifierType == ObjectifierEnum.Rivals && x.Winner && Objectifier.RivalWins);
+            var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Rivals && x.Winner && Objectifier.RivalWins);
 
             if (obj == null)
                 return;

@@ -10,6 +10,7 @@ using static UnityEngine.UI.Button;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public static class Patches
     {
         static readonly string[] Menus = { "Game", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };

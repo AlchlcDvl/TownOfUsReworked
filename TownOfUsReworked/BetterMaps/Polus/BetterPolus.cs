@@ -171,7 +171,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
 
             if (DvdScreenOffice == null)
             {
-                GameObject DvdScreenAdmin = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "dvdscreen");
+                var DvdScreenAdmin = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "dvdscreen");
 
                 if (DvdScreenAdmin != null)
                     DvdScreenOffice = Object.Instantiate(DvdScreenAdmin);
@@ -211,7 +211,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
         {
             if (TempCold.transform.position != TempColdNewPos)
             {
-                Transform tempColdTransform = TempCold.transform;
+                var tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPos;
                 BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
@@ -224,7 +224,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
         {
             if (TempCold.transform.position != TempColdNewPosDV)
             {
-                Transform tempColdTransform = TempCold.transform;
+                var tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPosDV;
                 BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
@@ -237,14 +237,14 @@ namespace TownOfUsReworked.BetterMaps.Polus
         {
             if (WifiConsole.transform.position != WifiNewPos)
             {
-                Transform wifiTransform = WifiConsole.transform;
+                var wifiTransform = WifiConsole.transform;
                 wifiTransform.parent = DropShip.transform;
                 wifiTransform.position = WifiNewPos;
             }
 
             if (NavConsole.transform.position != NavNewPos)
             {
-                Transform navTransform = NavConsole.transform;
+                var navTransform = NavConsole.transform;
                 navTransform.parent = Comms.transform;
                 navTransform.position = NavNewPos;
                 NavConsole.checkWalls = true;
@@ -255,14 +255,14 @@ namespace TownOfUsReworked.BetterMaps.Polus
         {
             if (Vitals.transform.position != VitalsNewPos)
             {
-                Transform vitalsTransform = Vitals.gameObject.transform;
+                var vitalsTransform = Vitals.gameObject.transform;
                 vitalsTransform.parent = Science.transform;
                 vitalsTransform.position = VitalsNewPos;
             }
 
             if (DvdScreenOffice.transform.position != DvdScreenNewPos)
             {
-                Transform dvdScreenTransform = DvdScreenOffice.transform;
+                var dvdScreenTransform = DvdScreenOffice.transform;
                 dvdScreenTransform.position = DvdScreenNewPos;
                 var localScale = dvdScreenTransform.localScale;
                 localScale = new(DvdScreenNewScale, localScale.y, localScale.z);

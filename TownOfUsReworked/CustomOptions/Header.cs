@@ -1,7 +1,9 @@
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomHeaderOption : CustomOption
     {
         protected internal CustomHeaderOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Header, 0) {}

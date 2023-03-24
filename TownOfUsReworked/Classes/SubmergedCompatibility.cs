@@ -20,6 +20,7 @@ using Hazel;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public static class SubmergedCompatibility
     {
         public const string SUBMERGED_GUID = "Submerged";
@@ -45,21 +46,14 @@ namespace TownOfUsReworked.Classes
                 if (_submarineStatus?.WasCollected != false || !_submarineStatus || _submarineStatus == null)
                 {
                     if (ShipStatus.Instance?.WasCollected != false || !ShipStatus.Instance || ShipStatus.Instance == null)
-                    {
                         return _submarineStatus = null;
-                    }
+                    else if (ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE)
+                        return _submarineStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
                     else
-                    {
-                        if (ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE)
-                            return _submarineStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
-                        else
-                            return _submarineStatus = null;
-                    }
+                        return _submarineStatus = null;
                 }
                 else
-                {
                     return _submarineStatus;
-                }
             }
         }
 
@@ -92,6 +86,7 @@ namespace TownOfUsReworked.Classes
         private static FieldInfo RetrieveOxigenMaskField;
         public static TaskTypes RetrieveOxygenMask;
         #pragma warning restore
+
         private static Type SubmarineOxygenSystemType;
         private static FieldInfo SubmarineOxygenSystemInstanceField;
         private static MethodInfo RepairDamageMethod;
@@ -168,10 +163,7 @@ namespace TownOfUsReworked.Classes
 
         public static void CheckOutOfBoundsElevator(PlayerControl player)
         {
-            if (!Loaded)
-                return;
-
-            if (!IsSubmerged())
+            if (!Loaded || IsSubmerged())
                 return;
 
             var elevator = GetPlayerElevator(player);
@@ -180,7 +172,7 @@ namespace TownOfUsReworked.Classes
                 return;
 
             var CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
-            var PlayerFloor = player.transform.position.y > -7f; //true is top, false is bottom
+            var PlayerFloor = player.transform.position.y > -7f;
 
             if (CurrentFloor != PlayerFloor)
                 ChangeFloor(CurrentFloor);
@@ -273,89 +265,23 @@ namespace TownOfUsReworked.Classes
             if (!PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+            if ((PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught) || (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom) &&
+                !Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) || (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught) ||
+                (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught))
             {
-                if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
-                {
-                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
-                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
+                    startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
-                    ChangeFloor(startingVent.transform.position.y > -7f);
-
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer2.Write(startingVent.transform.position.x);
-                    writer2.Write(startingVent.transform.position.y);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
-                }
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
-            {
-                if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
-                {
-                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    ChangeFloor(startingVent.transform.position.y > -7f);
-
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer2.Write(startingVent.transform.position.x);
-                    writer2.Write(startingVent.transform.position.y);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
-                }
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
-            {
-                if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
-                {
-                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    ChangeFloor(startingVent.transform.position.y > -7f);
-
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer2.Write(startingVent.transform.position.x);
-                    writer2.Write(startingVent.transform.position.y);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
-                }
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
-            {
-                if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
-                {
-                    var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                        startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-                    ChangeFloor(startingVent.transform.position.y > -7f);
-
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer2.Write(startingVent.transform.position.x);
-                    writer2.Write(startingVent.transform.position.y);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-                    PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-                    PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
-                }
+                ChangeFloor(startingVent.transform.position.y > -7f);
+                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
+                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer2.Write(startingVent.transform.position.x);
+                writer2.Write(startingVent.transform.position.y);
+                AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+                PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
             }
         }
 
@@ -365,73 +291,20 @@ namespace TownOfUsReworked.Classes
             {
                 var player = __instance.myPlayer;
 
-                if (player.Is(RoleEnum.Phantom))
+                if ((player.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(player).Caught) || (player.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(player).Caught) ||
+                    (player.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(player).Caught) || (player.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(player).Caught))
                 {
-                    if (!Role.GetRole<Phantom>(player).Caught)
-                    {
-                        if (player.AmOwner)
-                            MoveDeadPlayerElevator(player);
-                        else
-                            player.Collider.enabled = false;
+                    if (player.AmOwner)
+                        MoveDeadPlayerElevator(player);
+                    else
+                        player.Collider.enabled = false;
 
-                        var transform = __instance.transform;
-                        var position = transform.position;
-                        position.z = position.y/1000;
+                    var transform = __instance.transform;
+                    var position = transform.position;
+                    position.z = position.y / 1000;
 
-                        transform.position = position;
-                        __instance.myPlayer.gameObject.layer = 8;
-                    }
-                }
-                else if (player.Is(RoleEnum.Revealer))
-                {
-                    if (!Role.GetRole<Revealer>(player).Caught)
-                    {
-                        if (player.AmOwner)
-                            MoveDeadPlayerElevator(player);
-                        else
-                            player.Collider.enabled = false;
-
-                        var transform = __instance.transform;
-                        var position = transform.position;
-                        position.z = position.y / 1000;
-
-                        transform.position = position;
-                        __instance.myPlayer.gameObject.layer = 8;
-                    }
-                }
-                else if (player.Is(RoleEnum.Banshee))
-                {
-                    if (!Role.GetRole<Banshee>(player).Caught)
-                    {
-                        if (player.AmOwner)
-                            MoveDeadPlayerElevator(player);
-                        else
-                            player.Collider.enabled = false;
-
-                        var transform = __instance.transform;
-                        var position = transform.position;
-                        position.z = position.y / 1000;
-
-                        transform.position = position;
-                        __instance.myPlayer.gameObject.layer = 8;
-                    }
-                }
-                else if (player.Is(RoleEnum.Ghoul))
-                {
-                    if (!Role.GetRole<Ghoul>(player).Caught)
-                    {
-                        if (player.AmOwner)
-                            MoveDeadPlayerElevator(player);
-                        else
-                            player.Collider.enabled = false;
-
-                        var transform = __instance.transform;
-                        var position = transform.position;
-                        position.z = position.y / 1000;
-
-                        transform.position = position;
-                        __instance.myPlayer.gameObject.layer = 8;
-                    }
+                    transform.position = position;
+                    __instance.myPlayer.gameObject.layer = 8;
                 }
             }
         }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TownOfUsReworked.Classes;
+using HarmonyLib;
 
 namespace TownOfUsReworked.MCI
 {
+    [HarmonyPatch]
     public static class InstanceControl
     {
         public static readonly Dictionary<int, ClientData> Clients = new();

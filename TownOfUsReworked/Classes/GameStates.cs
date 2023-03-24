@@ -2,10 +2,12 @@ using AmongUs.GameOptions;
 using InnerNet;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
     //Thanks to Town Of Host for this code
+    [HarmonyPatch]
     public static class GameStates
     {
         public static bool IsCountDown => GameStartManager.InstanceExists && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;

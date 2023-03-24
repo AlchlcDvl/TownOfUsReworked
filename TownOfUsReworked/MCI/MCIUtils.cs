@@ -1,16 +1,16 @@
 using InnerNet;
 using UnityEngine;
 using System.Linq;
+using HarmonyLib;
 
 namespace TownOfUsReworked.MCI
 {
+    [HarmonyPatch]
     public static class MCIUtils
     {
-        public const int MaxID = 100;
-
         public static int AvailableId()
         {
-            for (int i = 2; i < MaxID; i++)
+            for (var i = 2; i < 100; i++)
             {
                 if (!InstanceControl.Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
                     return i;
@@ -59,6 +59,7 @@ namespace TownOfUsReworked.MCI
             InstanceControl.PlayerIdClientId.Remove(id);
             AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
             AmongUsClient.Instance.allClients.Remove(outputData);
+            TownOfUsReworked.MCIActive = InstanceControl.Clients.Count > 0;
         }
 
         public static void RemoveAllPlayers()

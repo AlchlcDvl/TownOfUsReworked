@@ -1,7 +1,9 @@
 using TownOfUsReworked.Enums;
+using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
 {
+    [HarmonyPatch]
     public class CustomToggleOption : CustomOption
     {
         protected internal CustomToggleOption(int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = val => (bool)val ?

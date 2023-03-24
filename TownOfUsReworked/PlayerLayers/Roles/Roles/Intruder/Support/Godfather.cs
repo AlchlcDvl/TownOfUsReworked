@@ -5,7 +5,6 @@ using Il2CppSystem.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Linq;
-using TownOfUsReworked.PlayerLayers.Modifiers;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod;
 
@@ -35,33 +34,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDeclared;
         public DeadBody CurrentTarget;
         public PlayerControl ClosestTarget;
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (Disguised)
-            {
-                appearance = Utils.GetDefaultAppearance();
-                var modifier = Modifier.GetModifier(MeasuredPlayer);
-
-                if (modifier is IVisualAlteration alteration)
-                    alteration.TryGetModifiedAppearance(out appearance);
-
-                return true;
-            }
-            else if (Morphed)
-            {
-                appearance = Utils.GetDefaultAppearance();
-                var modifier = Modifier.GetModifier(MorphedPlayer);
-
-                if (modifier is IVisualAlteration alteration)
-                    alteration.TryGetModifiedAppearance(out appearance);
-
-                return true;
-            }
-
-            appearance = Utils.GetDefaultAppearance();
-            return false;
-        }
 
         //Blackmailer Stuff
         public AbilityButton BlackmailButton;

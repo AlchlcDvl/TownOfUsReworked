@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public static class Colors
     {
         //Layer Colors
@@ -24,6 +26,7 @@ namespace TownOfUsReworked.Classes
         public static Color32 Cabal => new(87, 86, 87, 255); //#575657FF
         public static Color32 Reanimated => new(230, 16, 138, 255); //#E6108AFF
         public static Color32 Sect => new(249, 149, 252, 255); //#F995FCFF
+        public static Color32 Infector => new(167, 197, 150, 255); //#A7C596FF
 
         //Crew Colors
         public static Color32 Mayor => new(112, 79, 168, 255); //#704FA8FF
@@ -165,7 +168,7 @@ namespace TownOfUsReworked.Classes
         //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #2684c1 #a82626
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #a7c596 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #8ff731
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #8ff731
 
         //Symbol Storage
         //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω Ӫ

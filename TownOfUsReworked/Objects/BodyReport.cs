@@ -4,9 +4,11 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Objects
 {
+    [HarmonyPatch]
     public class BodyReport
     {
         public PlayerControl Killer { get; set; }

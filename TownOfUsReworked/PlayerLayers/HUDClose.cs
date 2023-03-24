@@ -1,8 +1,8 @@
 using HarmonyLib;
-using Object = UnityEngine.Object;
+using UnityEngine;
 using TownOfUsReworked.Classes;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
+namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
     public static class HUDClose

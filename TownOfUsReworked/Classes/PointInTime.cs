@@ -1,7 +1,9 @@
 using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public class PointInTime
     {
         public Vector3 position;

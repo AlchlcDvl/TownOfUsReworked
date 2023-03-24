@@ -1,8 +1,10 @@
-using Random = UnityEngine.Random;
+using UnityEngine;
 using System.Collections.Generic;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
+    [HarmonyPatch]
     public static class ListExtensions
     {
         public static void Shuffle<T>(this List<T> list)

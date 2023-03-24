@@ -22,7 +22,6 @@ using Il2CppInterop.Runtime.InteropTypes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
-using TownOfUsReworked.PlayerLayers;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Objects;
@@ -38,14 +37,14 @@ namespace TownOfUsReworked.Classes
     public static class Utils
     {
         public readonly static List<WinningPlayerData> PotentialWinners = new();
-        public static string RoleColorString => "<color=#" + Colors.Role.ToHtmlStringRGBA() + ">";
-        public static string AlignmentColorString => "<color=#" + Colors.Alignment.ToHtmlStringRGBA() + ">";
-        public static string ObjectivesColorString => "<color=#" + Colors.Objectives.ToHtmlStringRGBA() + ">";
-        public static string AttributesColorString => "<color=#" + Colors.Attributes.ToHtmlStringRGBA() + ">";
-        public static string AbilitiesColorString => "<color=#" + Colors.Abilities.ToHtmlStringRGBA() + ">";
-        public static string ObjectifierColorString => "<color=#" + Colors.Objectifier.ToHtmlStringRGBA() + ">";
-        public static string ModifierColorString => "<color=#" + Colors.Modifier.ToHtmlStringRGBA() + ">";
-        public static string AbilityColorString => "<color=#" + Colors.Ability.ToHtmlStringRGBA() + ">";
+        public static string RoleColorString => $"<color=#{Colors.Role.ToHtmlStringRGBA()}>";
+        public static string AlignmentColorString => $"<color=#{Colors.Alignment.ToHtmlStringRGBA()}>";
+        public static string ObjectivesColorString => $"<color=#{Colors.Objectives.ToHtmlStringRGBA()}>";
+        public static string AttributesColorString => $"<color=#{Colors.Attributes.ToHtmlStringRGBA()}>";
+        public static string AbilitiesColorString => $"<color=#{Colors.Abilities.ToHtmlStringRGBA()}>";
+        public static string ObjectifierColorString => $"<color=#{Colors.Objectifier.ToHtmlStringRGBA()}>";
+        public static string ModifierColorString => $"<color=#{Colors.Modifier.ToHtmlStringRGBA()}>";
+        public static string AbilityColorString => $"<color=#{Colors.Ability.ToHtmlStringRGBA()}>";
         private static DLoadImage _iCallLoadImage;
 
         private delegate bool DLoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
@@ -69,9 +68,7 @@ namespace TownOfUsReworked.Classes
                     tie = false;
                 }
                 else if (keyValuePair.Value == result.Value)
-                {
                     tie = true;
-                }
             }
 
             return result;
@@ -90,33 +87,31 @@ namespace TownOfUsReworked.Classes
                     tie = false;
                 }
                 else if (self[i] == result.Value)
-                {
                     tie = true;
-                }
             }
 
             return result;
         }
 
-        public static VisualAppearance GetDefaultAppearance() => new();
+        public static VisualAppearance GetDefaultAppearance(this PlayerControl player) => new() { Player = player };
 
-        public static bool TryGetAppearance(IVisualAlteration modifier, out VisualAppearance appearance)
+        public static bool TryGetAppearance(this PlayerControl player, IVisualAlteration modifier, out VisualAppearance appearance)
         {
             if (modifier != null)
                 return modifier.TryGetModifiedAppearance(out appearance);
 
-            appearance = GetDefaultAppearance();
+            appearance = player.GetDefaultAppearance();
             return false;
         }
 
         public static VisualAppearance GetAppearance(this PlayerControl player)
         {
-            if (TryGetAppearance(Role.GetRole(player) as IVisualAlteration, out var appearance))
+            if (player.TryGetAppearance(Role.GetRole(player) as IVisualAlteration, out var appearance))
                 return appearance;
-            else if (TryGetAppearance(Modifier.GetModifier(player) as IVisualAlteration, out appearance))
+            else if (player.TryGetAppearance(Modifier.GetModifier(player) as IVisualAlteration, out appearance))
                 return appearance;
             else
-                return GetDefaultAppearance();
+                return player.GetDefaultAppearance();
         }
 
         public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
@@ -168,9 +163,7 @@ namespace TownOfUsReworked.Classes
                     playerControl.NameText().color = Colors.Cabal;
             }
             else
-            {
                 playerControl.NameText().color = Color.white;
-            }
         }
 
         public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
@@ -421,8 +414,8 @@ namespace TownOfUsReworked.Classes
             var revivedFlag = player.IsResurrected();
             var rivalFlag = player.IsWinningRival();
             var corruptedFlag = player.Is(ObjectifierEnum.Corrupted);
-
-            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag;
+            var allyFlag = player.Is(ObjectifierEnum.Corrupted);
+            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || allyFlag;
         }
 
         public static bool IsBase(this PlayerControl player)
@@ -443,21 +436,16 @@ namespace TownOfUsReworked.Classes
             if (player == null)
                 return false;
 
-            bool flag = false;
-
-            foreach (GuardianAngel ga in Role.GetRoles(RoleEnum.GuardianAngel).Cast<GuardianAngel>())
+            foreach (var ga in Role.GetRoles(RoleEnum.GuardianAngel).Cast<GuardianAngel>())
             {
                 if (ga.TargetPlayer == null)
                     continue;
 
                 if (player.PlayerId == ga.TargetPlayer.PlayerId)
-                {
-                    flag = true;
-                    break;
-                }
+                    return true;
             }
 
-            return flag;
+            return false;
         }
 
         public static bool IsExeTarget(this PlayerControl player)
@@ -465,21 +453,16 @@ namespace TownOfUsReworked.Classes
             if (player == null)
                 return false;
 
-            bool flag = false;
-
-            foreach (Executioner exe in Role.GetRoles(RoleEnum.Executioner).Cast<Executioner>())
+            foreach (var exe in Role.GetRoles(RoleEnum.Executioner).Cast<Executioner>())
             {
                 if (exe.TargetPlayer == null)
                     continue;
 
                 if (player.PlayerId == exe.TargetPlayer.PlayerId)
-                {
-                    flag = true;
-                    break;
-                }
+                    return true;
             }
 
-            return flag;
+            return false;
         }
 
         public static bool IsBHTarget(this PlayerControl player)
@@ -487,21 +470,16 @@ namespace TownOfUsReworked.Classes
             if (player == null)
                 return false;
 
-            bool flag = false;
-
-            foreach (BountyHunter bh in Role.GetRoles(RoleEnum.BountyHunter).Cast<BountyHunter>())
+            foreach (var bh in Role.GetRoles(RoleEnum.BountyHunter).Cast<BountyHunter>())
             {
                 if (bh.TargetPlayer == null)
                     continue;
 
                 if (player.PlayerId == bh.TargetPlayer.PlayerId)
-                {
-                    flag = true;
-                    break;
-                }
+                    return true;
             }
 
-            return flag;
+            return false;
         }
 
         public static bool IsGuessTarget(this PlayerControl player)
@@ -509,21 +487,67 @@ namespace TownOfUsReworked.Classes
             if (player == null)
                 return false;
 
-            bool flag = false;
-
-            foreach (Guesser guess in Role.GetRoles(RoleEnum.Guesser).Cast<Guesser>())
+            foreach (var guess in Role.GetRoles(RoleEnum.Guesser).Cast<Guesser>())
             {
                 if (guess.TargetPlayer == null)
                     continue;
 
                 if (player.PlayerId == guess.TargetPlayer.PlayerId)
-                {
-                    flag = true;
-                    break;
-                }
+                    return true;
             }
 
-            return flag;
+            return false;
+        }
+
+        public static PlayerControl GetTarget(this PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+
+            if (!role.HasTarget())
+                return null;
+
+            if (player.Is(RoleEnum.Executioner))
+                return ((Executioner)role).TargetPlayer;
+            else if (player.Is(RoleEnum.GuardianAngel))
+                return ((GuardianAngel)role).TargetPlayer;
+            else if (player.Is(RoleEnum.Guesser))
+                return ((Guesser)role).TargetPlayer;
+
+            return null;
+        }
+
+        public static Role GetLeader(this PlayerControl player)
+        {
+            if (!player.Is(RoleEnum.Mafioso) && !player.Is(RoleEnum.Sidekick))
+                return null;
+
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return null;
+
+            if (player.Is(RoleEnum.Mafioso))
+                return ((Mafioso)role).Godfather;
+            else if (player.Is(RoleEnum.Sidekick))
+                return ((Sidekick)role).Rebel;
+
+            return null;
+        }
+
+        public static InspectorResults GetActorList(this PlayerControl player)
+        {
+            if (!player.Is(RoleEnum.Actor))
+                return InspectorResults.None;
+
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return InspectorResults.None;
+
+            if (player.Is(RoleEnum.Actor))
+                return ((Actor)role).PretendRoles;
+
+            return InspectorResults.None;
         }
 
         public static bool IsGATarget(this PlayerVoteArea player) => PlayerByVoteArea(player).IsGATarget();
@@ -562,9 +586,7 @@ namespace TownOfUsReworked.Classes
             var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
             var flag3 = intruderflag && taskmasterflag;
             var flag4 = syndicateflag && taskmasterflag;
-            var flag = flag1 || flag2 || flag3 || flag4;
-
-            return flag;
+            return flag1 || flag2 || flag3 || flag4;
         }
 
         public static bool CanDoTasks(this PlayerVoteArea player) => PlayerByVoteArea(player).CanDoTasks();
@@ -577,7 +599,7 @@ namespace TownOfUsReworked.Classes
             if (!player.IsRecruit())
                 return null;
 
-            return Role.GetRoles(RoleEnum.Jackal).FirstOrDefault(role => ((Jackal)role).Recruited.Contains(player.PlayerId)) as Jackal;
+            return Role.GetRoles(RoleEnum.Jackal).Find(role => ((Jackal)role).Recruited.Contains(player.PlayerId)) as Jackal;
         }
 
         public static Necromancer GetNecromancer(this PlayerControl player)
@@ -588,7 +610,7 @@ namespace TownOfUsReworked.Classes
             if (!player.IsResurrected())
                 return null;
 
-            return Role.GetRoles(RoleEnum.Necromancer).FirstOrDefault(role => ((Necromancer)role).Resurrected.Contains(player.PlayerId)) as Necromancer;
+            return Role.GetRoles(RoleEnum.Necromancer).Find(role => ((Necromancer)role).Resurrected.Contains(player.PlayerId)) as Necromancer;
         }
 
         public static Dracula GetDracula(this PlayerControl player)
@@ -599,7 +621,7 @@ namespace TownOfUsReworked.Classes
             if (!player.Is(SubFaction.Undead))
                 return null;
 
-            return Role.GetRoles(RoleEnum.Dracula).FirstOrDefault(role => ((Dracula)role).Converted.Contains(player.PlayerId)) as Dracula;
+            return Role.GetRoles(RoleEnum.Dracula).Find(role => ((Dracula)role).Converted.Contains(player.PlayerId)) as Dracula;
         }
 
         public static Whisperer GetWhisperer(this PlayerControl player)
@@ -610,7 +632,7 @@ namespace TownOfUsReworked.Classes
             if (!player.IsPersuaded())
                 return null;
 
-            return Role.GetRoles(RoleEnum.Whisperer).FirstOrDefault(role => ((Whisperer)role).Persuaded.Contains(player.PlayerId)) as Whisperer;
+            return Role.GetRoles(RoleEnum.Whisperer).Find(role => ((Whisperer)role).Persuaded.Contains(player.PlayerId)) as Whisperer;
         }
 
         public static Jackal GetJackal(this PlayerVoteArea player) => PlayerByVoteArea(player).GetJackal();
@@ -658,7 +680,7 @@ namespace TownOfUsReworked.Classes
 
         public static Medic GetMedic(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Medic).FirstOrDefault(role =>
+            return Role.GetRoles(RoleEnum.Medic).Find(role =>
             {
                 var shieldedPlayer = ((Medic)role).ShieldedPlayer;
                 return shieldedPlayer != null && player == shieldedPlayer;
@@ -667,7 +689,7 @@ namespace TownOfUsReworked.Classes
 
         public static Retributionist GetRetMedic(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Retributionist).FirstOrDefault(role =>
+            return Role.GetRoles(RoleEnum.Retributionist).Find(role =>
             {
                 var shieldedPlayer = ((Retributionist)role).ShieldedPlayer;
                 return shieldedPlayer != null && player == shieldedPlayer && ((Retributionist)role).RevivedRole?.RoleType == RoleEnum.Medic;
@@ -676,7 +698,7 @@ namespace TownOfUsReworked.Classes
 
         public static Crusader GetCrusader(this PlayerControl player)
         {
-            return Role.GetRoles(RoleEnum.Crusader).FirstOrDefault(role =>
+            return Role.GetRoles(RoleEnum.Crusader).Find(role =>
             {
                 var crusaded = ((Crusader)role).CrusadedPlayer;
                 return crusaded != null && player == crusaded;
@@ -723,25 +745,17 @@ namespace TownOfUsReworked.Classes
             return Role.GetRoles(RoleEnum.Ambusher).Any(role =>
             {
                 var amb = (Ambusher)role;
-                return (bool)amb?.OnAmbush && player == amb.AmbushedPlayer;
+                return amb?.OnAmbush == true && player == amb.AmbushedPlayer;
             });
         }
 
         public static bool IsCrusaded(this PlayerControl player)
         {
-            var crusFlag = Role.GetRoles(RoleEnum.Crusader).Any(role =>
+            return Role.GetRoles(RoleEnum.Crusader).Any(role =>
             {
                 var crus = (Crusader)role;
-                return (bool)crus?.OnCrusade && player == crus.CrusadedPlayer;
+                return crus?.OnCrusade == true && player == crus.CrusadedPlayer;
             });
-
-            var rebFlag = Role.GetRoles(RoleEnum.Rebel).Any(role =>
-            {
-                var reb = (Rebel)role;
-                return (bool)reb?.OnCrusade && player == reb.CrusadedPlayer;
-            });
-
-            return crusFlag || rebFlag;
         }
 
         public static bool IsProtected(this PlayerControl player)
@@ -759,7 +773,7 @@ namespace TownOfUsReworked.Classes
             return Role.GetRoles(RoleEnum.Plaguebearer).Any(role =>
             {
                 var plaguebearer = (Plaguebearer)role;
-                return (bool)plaguebearer?.InfectedPlayers.Contains(player.PlayerId) || player == plaguebearer?.Player;
+                return plaguebearer != null && (plaguebearer.InfectedPlayers.Contains(player.PlayerId) || player == plaguebearer.Player);
             });
         }
 
@@ -768,7 +782,7 @@ namespace TownOfUsReworked.Classes
             return Role.GetRoles(RoleEnum.Framer).Any(role =>
             {
                 var framer = (Framer)role;
-                return (bool)framer?.Framed.Contains(player.PlayerId);
+                return framer?.Framed.Contains(player.PlayerId) == true;
             });
         }
 
@@ -810,9 +824,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsIntFanatic(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Fanatic))
                 return false;
 
@@ -822,9 +833,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsSynFanatic(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Fanatic))
                 return false;
 
@@ -834,9 +842,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsIntTraitor(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Traitor))
                 return false;
 
@@ -846,9 +851,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsSynTraitor(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Traitor))
                 return false;
 
@@ -858,9 +860,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsCrewAlly(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Allied))
                 return false;
 
@@ -870,9 +869,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsSynAlly(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Allied))
                 return false;
 
@@ -882,9 +878,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsIntAlly(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Allied))
                 return false;
 
@@ -894,9 +887,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsOtherRival(this PlayerControl player, PlayerControl refPlayer)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Rivals) || !refPlayer.Is(ObjectifierEnum.Rivals))
                 return false;
 
@@ -907,9 +897,6 @@ namespace TownOfUsReworked.Classes
 
         public static bool IsOtherLover(this PlayerControl player, PlayerControl refPlayer)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Lovers) || !refPlayer.Is(ObjectifierEnum.Lovers))
                 return false;
 
@@ -962,17 +949,12 @@ namespace TownOfUsReworked.Classes
 
         public static bool CorruptedWin(PlayerControl player)
         {
-            if (CustomGameOptions.AllCorruptedWin)
-            {
+            if (!player.Is(ObjectifierEnum.Corrupted))
+                return false;
+            else if (CustomGameOptions.AllCorruptedWin)
                 return !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted));
-            }
             else
-            {
-                if (!player.Is(ObjectifierEnum.Corrupted))
-                    return false;
-
                 return !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted) && x != player);
-            }
         }
 
         public static bool LoversWin(PlayerControl player)
@@ -1036,21 +1018,8 @@ namespace TownOfUsReworked.Classes
             if (role == null)
                 return " ERROR";
 
-            var die = "";
+            var die = $"{role.DeathReason}";
             var killedBy = "";
-
-            if (role.DeathReason == DeathReasonEnum.Killed)
-                die = "Killed";
-            else if (role.DeathReason == DeathReasonEnum.Ejected)
-                die = "Ejected";
-            else if (role.DeathReason == DeathReasonEnum.Guessed)
-                die = "Guessed";
-            else if (role.DeathReason == DeathReasonEnum.Alive)
-                die = "Alive";
-            else if (role.DeathReason == DeathReasonEnum.Revived)
-                die = "Revived";
-            else if (role.DeathReason == DeathReasonEnum.Suicide)
-                die = "Suicide";
 
             if (role.DeathReason != DeathReasonEnum.Alive && role.DeathReason != DeathReasonEnum.Ejected && role.DeathReason != DeathReasonEnum.Suicide)
                 killedBy = role.KilledBy;
@@ -1063,22 +1032,26 @@ namespace TownOfUsReworked.Classes
             var truePosition = refPlayer.GetTruePosition();
             var closestDistance = double.MaxValue;
             PlayerControl closestPlayer = null;
-            var targets = AllPlayers ?? PlayerControl.AllPlayerControls.ToArray().ToList();
+
+            #pragma warning disable
+            if (AllPlayers == null)
+                AllPlayers = PlayerControl.AllPlayerControls.ToArray().ToList();
+            #pragma warning restore
 
             if (maxDistance == 0f)
                 maxDistance = CustomGameOptions.InteractionDistance;
 
-            foreach (var player in targets)
+            foreach (var player in AllPlayers)
             {
-                if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.inMovingPlat || player.onLadder || (player.inVent &&
-                    !CustomGameOptions.VentTargetting))
-                {
+                if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargetting))
                     continue;
-                }
 
                 var distance = Vector2.Distance(truePosition, player.GetTruePosition());
 
-                if (distance > closestDistance || distance > maxDistance)
+                if (distance > closestDistance)
+                    continue;
+
+                if (distance > maxDistance)
                     continue;
 
                 closestPlayer = player;
@@ -1110,9 +1083,14 @@ namespace TownOfUsReworked.Classes
             return closestVent;
         }
 
-        public static bool CanInteractWithDead(this PlayerControl player) => player != null && !MeetingHud.Instance && (player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) ||
-            player.Is(RoleEnum.Cannibal) || player.Is(RoleEnum.Necromancer) || player.Is(RoleEnum.Janitor) || player.Is(RoleEnum.Godfather) || player.Is(RoleEnum.Coroner) ||
-            player.Is(RoleEnum.Undertaker) || player.Is(RoleEnum.Retributionist));
+        public static bool CanInteractWithDead(this PlayerControl player)
+        {
+            var flag = player != null && !MeetingHud.Instance && (player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Cannibal) ||
+                player.Is(RoleEnum.Necromancer) || player.Is(RoleEnum.Janitor) || player.Is(RoleEnum.Godfather) || player.Is(RoleEnum.Coroner) || player.Is(RoleEnum.Undertaker) ||
+                player.Is(RoleEnum.Retributionist));
+
+            return flag;
+        }
 
         public static void SetDeadTarget(this AbilityButton button, Role role, bool condition = true)
         {
@@ -1205,9 +1183,7 @@ namespace TownOfUsReworked.Classes
                 button.SetEnabled();
             }
             else
-            {
                 button.SetDisabled();
-            }
         }
 
         public static bool CanInteract(PlayerControl player) => player != null && !MeetingHud.Instance && (player.Is(RoleAlignment.NeutralKill) || player.Is(RoleEnum.Thief) ||
@@ -1225,7 +1201,12 @@ namespace TownOfUsReworked.Classes
             if (!ButtonUsable(button) || !CanInteract(PlayerControl.LocalPlayer))
                 return;
 
-            var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
+            #pragma warning disable
+            if (targets == null)
+                targets = PlayerControl.AllPlayerControls.ToArray().ToList();
+            #pragma warning restore
+
+            var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets);
             PlayerControl oldTarget = null;
             PlayerControl oldTarget1 = null;
             PlayerControl oldTarget2 = null;
@@ -1333,7 +1314,7 @@ namespace TownOfUsReworked.Classes
                         RoleEnum.VampireHunter && revivedRole != RoleEnum.Medic && revivedRole != RoleEnum.Mystic && revivedRole != RoleEnum.Vigilante && revivedRole != RoleEnum.Tracker &&
                         revivedRole != RoleEnum.Inspector)
                     {
-                        break;
+                        return;
                     }
 
                     oldTarget = ret.ClosestPlayer;
@@ -1573,9 +1554,7 @@ namespace TownOfUsReworked.Classes
                 button.SetEnabled();
             }
             else
-            {
                 button.SetDisabled();
-            }
         }
 
         public static void SetAliveTarget(this AbilityButton button, Objectifier obj, List<PlayerControl> targets = null, bool condition = true)
@@ -1586,7 +1565,12 @@ namespace TownOfUsReworked.Classes
             if (!ButtonUsable(button) || !CanInteract(PlayerControl.LocalPlayer))
                 return;
 
-            var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets ?? PlayerControl.AllPlayerControls.ToArray().ToList());
+            #pragma warning disable
+            if (targets == null)
+                targets = PlayerControl.AllPlayerControls.ToArray().ToList();
+            #pragma warning restore
+
+            var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets);
             PlayerControl oldTarget = null;
 
             var oldComponent = oldTarget?.MyRend();
@@ -1616,9 +1600,7 @@ namespace TownOfUsReworked.Classes
                 button.SetEnabled();
             }
             else
-            {
                 button.SetDisabled();
-            }
         }
 
         public static bool HasEffect(PlayerControl player) => player != null && !MeetingHud.Instance && (player.Is(RoleEnum.Camouflager) || player.Is(RoleEnum.Shapeshifter) ||
@@ -1658,7 +1640,7 @@ namespace TownOfUsReworked.Classes
             else
                 return;
 
-            button.graphic.sprite = role.IsBlocked ? AssetManager.Blocked : (sprite ?? AssetManager.Placeholder);
+            button.graphic.sprite = role.IsBlocked ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
             var difference = GetUnderdogChange(PlayerControl.LocalPlayer);
             button.SetCoolDown(effectActive ? effectTimer : timer, effectActive ? maxDuration : (maxTimer + difference));
             button.buttonLabelText.text = label;
@@ -1683,7 +1665,7 @@ namespace TownOfUsReworked.Classes
             else
                 button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, role.RoleType, usable));
 
-            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && !effectActive)
+            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && !effectActive && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
         }
 
@@ -1720,13 +1702,10 @@ namespace TownOfUsReworked.Classes
         public static void UpdateButton(this AbilityButton button, Objectifier obj, float timer, float maxTimer, string label, Sprite sprite, AbilityTypes type, string keybind,
             List<PlayerControl> targets = null, bool condition = true, bool usesActive = false, int uses = 0)
         {
-            if (button == null)
-                return;
-
             if (CanInteract(PlayerControl.LocalPlayer) && type == AbilityTypes.Direct)
                 button.SetAliveTarget(obj, targets, condition);
 
-            button.graphic.sprite = obj.Player.IsBlocked() ? AssetManager.Blocked : (sprite ?? AssetManager.Placeholder);
+            button.graphic.sprite = PlayerControl.LocalPlayer.IsBlocked() ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
             button.buttonLabelText.text = label;
             button.buttonLabelText.SetOutlineColor(obj.Color);
             button.commsDown?.gameObject?.SetActive(false);
@@ -1743,20 +1722,17 @@ namespace TownOfUsReworked.Classes
             else
                 button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, obj.ObjectifierType, condition));
 
-            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind))
+            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
         }
 
         public static void UpdateButton(this AbilityButton button, Ability ability, Sprite sprite, string label, AbilityTypes type, bool condition, float timer, float maxTimer,
             string keybind, bool usesActive = false, int uses = 0)
         {
-            if (button == null)
-                return;
-
             if (HasEffect(PlayerControl.LocalPlayer) && type == AbilityTypes.Effect)
                 button.SetEffectTarget(condition);
 
-            button.graphic.sprite = ability.Player.IsBlocked() ? AssetManager.Blocked : (sprite ?? AssetManager.Placeholder);
+            button.graphic.sprite = PlayerControl.LocalPlayer.IsBlocked() ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
             button.buttonLabelText.text = label;
             button.buttonLabelText.SetOutlineColor(ability.Color);
             button.commsDown?.gameObject?.SetActive(false);
@@ -1773,7 +1749,7 @@ namespace TownOfUsReworked.Classes
             else
                 button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, ability.AbilityType, condition));
 
-            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind))
+            if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
         }
 
@@ -1781,13 +1757,12 @@ namespace TownOfUsReworked.Classes
         {
             var truePosition = player.GetTruePosition();
             var closestDistance = double.MaxValue;
-            var allBodies = Object.FindObjectsOfType<DeadBody>();
             DeadBody closestBody = null;
 
             if (maxDistance == 0f)
                 maxDistance = CustomGameOptions.InteractionDistance;
 
-            foreach (var body in allBodies)
+            foreach (var body in Object.FindObjectsOfType<DeadBody>())
             {
                 var distance = Vector2.Distance(truePosition, body.TruePosition);
 
@@ -1895,9 +1870,7 @@ namespace TownOfUsReworked.Classes
                     targetRole.DeathReason = DeathReasonEnum.Killed;
                 }
                 else
-                {
                     targetRole.DeathReason = DeathReasonEnum.Suicide;
-                }
 
                 var deadBody = new DeadPlayer
                 {
@@ -1969,9 +1942,7 @@ namespace TownOfUsReworked.Classes
                     }
                 }
                 else if (target.Is(ModifierEnum.Bait))
-                {
                     BaitReport(killer, target);
-                }
             }
         }
 
@@ -1982,7 +1953,7 @@ namespace TownOfUsReworked.Classes
             if (killer == null || target == null || killer == target)
                 yield break;
 
-            var extraDelay = Random.RandomRangeInt(0, (int)((100 * (CustomGameOptions.BaitMaxDelay - CustomGameOptions.BaitMinDelay)) + 1));
+            var extraDelay = Random.RandomRangeInt(0, (int) ((100 * (CustomGameOptions.BaitMaxDelay - CustomGameOptions.BaitMinDelay)) + 1));
 
             if (CustomGameOptions.BaitMaxDelay <= CustomGameOptions.BaitMinDelay)
                 yield return new WaitForSeconds(CustomGameOptions.BaitMaxDelay + 0.01f);
@@ -2137,7 +2108,6 @@ namespace TownOfUsReworked.Classes
 
         public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false) => GameManager.Instance.RpcEndGame(reason, showAds);
 
-        //Submerged utils
         public static object TryCast(this Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self,
             Array.Empty<object>());
 
@@ -2839,47 +2809,29 @@ namespace TownOfUsReworked.Classes
 
             if (player == null || playerInfo == null || (playerInfo.IsDead && !(player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Phantom) || player.Is(RoleEnum.Ghoul) ||
                 player.Is(RoleEnum.Banshee))) || playerInfo.Disconnected || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Noone || !GameStates.IsRoaming || player.inMovingPlat)
-            {
                 return false;
-            }
             else if (player.inVent || CustomGameOptions.WhoCanVent == WhoCanVentOptions.Everyone || player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Phantom) ||
                 player.Is(RoleEnum.Ghoul) || player.Is(RoleEnum.Banshee))
-            {
                 return true;
-            }
 
             var playerRole = Role.GetRole(player);
+
             bool mainflag;
 
             if (playerRole == null)
-            {
                 mainflag = playerInfo.IsImpostor();
-            }
             else if (playerRole.IsBlocked)
-            {
                 mainflag = false;
-            }
             else if (player.IsRecruit())
-            {
                 mainflag = CustomGameOptions.RecruitVent;
-            }
             else if (player.IsResurrected())
-            {
                 mainflag = CustomGameOptions.ResurrectVent;
-            }
             else if (player.IsPersuaded())
-            {
                 mainflag = CustomGameOptions.PersuadedVent;
-            }
             else if (player.IsBitten())
-            {
                 mainflag = CustomGameOptions.UndeadVent;
-            }
             else if (player.Is(Faction.Syndicate))
-            {
-                mainflag = (Role.SyndicateHasChaosDrive && CustomGameOptions.SyndicateVent == SyndicateVentOptions.ChaosDrive) || CustomGameOptions.SyndicateVent ==
-                                SyndicateVentOptions.Always;
-            }
+                mainflag = (Role.SyndicateHasChaosDrive && CustomGameOptions.SyndicateVent == SyndicateVentOptions.ChaosDrive) || CustomGameOptions.SyndicateVent == SyndicateVentOptions.Always;
             else if (player.Is(Faction.Intruder))
             {
                 if (CustomGameOptions.IntrudersVent)
@@ -2888,9 +2840,7 @@ namespace TownOfUsReworked.Classes
                         (player.Is(RoleEnum.Grenadier) && CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && CustomGameOptions.TeleVent);
 
                     if (flag)
-                    {
                         mainflag = true;
-                    }
                     else if (player.Is(RoleEnum.Undertaker))
                     {
                         var undertaker = (Undertaker)playerRole;
@@ -2900,14 +2850,10 @@ namespace TownOfUsReworked.Classes
                             CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless);
                     }
                     else
-                    {
                         mainflag = true;
-                    }
                 }
                 else
-                {
                     mainflag = false;
-                }
             }
             else if (player.Is(Faction.Crew) && !player.Is(RoleEnum.Revealer))
             {
@@ -2917,17 +2863,11 @@ namespace TownOfUsReworked.Classes
                     mainflag = tunneler.TasksDone;
                 }
                 else if (player.Is(RoleEnum.Engineer))
-                {
                     mainflag = true;
-                }
                 else if (CustomGameOptions.CrewVent)
-                {
                     mainflag = true;
-                }
                 else
-                {
                     mainflag = false;
-                }
             }
             else if (player.Is(Faction.Neutral))
             {
@@ -2942,9 +2882,7 @@ namespace TownOfUsReworked.Classes
                     (player.Is(RoleEnum.BountyHunter) && CustomGameOptions.BHVent) || player.Is(RoleEnum.Phantom);
 
                 if (flag)
-                {
                     mainflag = flag;
-                }
                 else if (player.Is(RoleEnum.SerialKiller))
                 {
                     var role2 = (SerialKiller)playerRole;
@@ -2959,18 +2897,12 @@ namespace TownOfUsReworked.Classes
                         mainflag = false;
                 }
                 else
-                {
                     mainflag = false;
-                }
             }
             else if (player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Phantom))
-            {
                 mainflag = true;
-            }
             else
-            {
                 mainflag = false;
-            }
 
             return mainflag;
         }
@@ -2978,15 +2910,7 @@ namespace TownOfUsReworked.Classes
         public static List<bool> Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false)
         {
             if (!CanInteract(player))
-            {
-                return new List<bool>()
-                {
-                    false,
-                    false,
-                    false,
-                    false
-                };
-            }
+                return new List<bool>() { false, false, false, false };
 
             var fullCooldownReset = false;
             var gaReset = false;
@@ -3242,22 +3166,19 @@ namespace TownOfUsReworked.Classes
             !PlayerControl.LocalPlayer.CanMove || !GameStates.IsRoaming;
 
         public static bool NoButton(PlayerControl target, RoleEnum role) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(role) || !GameStates.IsRoaming || MeetingHud.Instance;
+            !target.Is(role) || !GameStates.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
 
         public static bool NoButton(PlayerControl target, Faction faction) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(faction) || !GameStates.IsRoaming || MeetingHud.Instance;
+            !target.Is(faction) || !GameStates.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
 
         public static bool NoButton(PlayerControl target, ObjectifierEnum obj) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(obj) || !GameStates.IsRoaming || MeetingHud.Instance;
+            !target.Is(obj) || !GameStates.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
 
         public static bool NoButton(PlayerControl target, AbilityEnum ability) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(ability) || !GameStates.IsRoaming || MeetingHud.Instance;
+            !target.Is(ability) || !GameStates.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
 
         public static bool IsBlocked(this PlayerControl player)
         {
-            if (player == null)
-                return false;
-
             var role = Role.GetRole(player);
 
             if (role == null)
@@ -3275,7 +3196,6 @@ namespace TownOfUsReworked.Classes
             var nkFlag = player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NeutKillingRed;
             var neFlag = player.Is(RoleAlignment.NeutralEvil) && !CustomGameOptions.NeutEvilRed;
             var framedFlag = player.IsFramed();
-
             return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
         }
 
@@ -3342,7 +3262,7 @@ namespace TownOfUsReworked.Classes
         public static bool HasTarget(this Role role) => role.RoleType == RoleEnum.Executioner || role.RoleType == RoleEnum.GuardianAngel || role.RoleType == RoleEnum.Guesser ||
             role.RoleType == RoleEnum.BountyHunter;
 
-        public static bool ButtonUsable(ActionButton button) => button != null && button?.isActiveAndEnabled == true && button.isCoolingDown && !CannotUse(PlayerControl.LocalPlayer);
+        public static bool ButtonUsable(ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CannotUse(PlayerControl.LocalPlayer);
 
         public static List<object> AllPlayerInfo(this PlayerControl player)
         {
@@ -3473,9 +3393,7 @@ namespace TownOfUsReworked.Classes
                 }
             }
             else
-            {
                 objectifierName += "None";
-            }
 
             objectifierName += "</color>";
 
@@ -3485,9 +3403,7 @@ namespace TownOfUsReworked.Classes
                     abilityName += $"{ability.ColorString}{ability.Name}</color>";
             }
             else
-            {
                 abilityName += "None";
-            }
 
             abilityName += "</color>";
 
@@ -3497,9 +3413,7 @@ namespace TownOfUsReworked.Classes
                     modifierName += $"{modifier.ColorString}{modifier.Name}</color>";
             }
             else
-            {
                 modifierName += "None";
-            }
 
             modifierName += "</color>";
 
@@ -3521,12 +3435,11 @@ namespace TownOfUsReworked.Classes
             else if (player.IsBitten())
             {
                 var dracula = player.GetDracula();
-                objectives += $"\n<color=#{Colors.Dracula.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission." +
+                objectives += $"\n<color=#{Colors.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission." +
                     "\n- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you.</color>";
             }
 
             objectives += "</color>";
-
             var hassomething = false;
 
             if (info[0] != null)
@@ -3545,7 +3458,6 @@ namespace TownOfUsReworked.Classes
                 abilities += "\n- None.";
 
             abilities += "</color>";
-
             var hasnothing = true;
 
             if (info[1] != null && !modifier.Hidden)
@@ -3628,7 +3540,7 @@ namespace TownOfUsReworked.Classes
             var img = imageStream.ReadFully();
             LoadImage(tex, img, true);
             tex.DontDestroy();
-            var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
+            var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
             sprite.DontDestroy();
             return sprite;
         }
@@ -3648,7 +3560,7 @@ namespace TownOfUsReworked.Classes
 
             if (subfolder != "" && folder != "")
                 resourceName = $"{TownOfUsReworked.Resources}{folder}.{subfolder}.{itemName}";
-            else if (subfolder?.Length == 0 && folder != "")
+            else if (subfolder.Length == 0 && folder != "")
                 resourceName = $"{TownOfUsReworked.Resources}{folder}.{itemName}";
             else
                 resourceName = TownOfUsReworked.Resources + itemName;
@@ -3674,57 +3586,6 @@ namespace TownOfUsReworked.Classes
                 return num > min && num <= max;
             else
                 return num > min && num < max;
-        }
-
-        public static PlayerControl GetTarget(this PlayerControl player)
-        {
-            var role = Role.GetRole(player);
-
-            if (!role.HasTarget())
-                return null;
-
-            if (player.Is(RoleEnum.Executioner))
-                return ((Executioner)role).TargetPlayer;
-            else if (player.Is(RoleEnum.GuardianAngel))
-                return ((GuardianAngel)role).TargetPlayer;
-            else if (player.Is(RoleEnum.Guesser))
-                return ((Guesser)role).TargetPlayer;
-
-            return null;
-        }
-
-        public static Role GetLeader(this PlayerControl player)
-        {
-            if (!player.Is(RoleEnum.Mafioso) && !player.Is(RoleEnum.Sidekick))
-                return null;
-
-            var role = Role.GetRole(player);
-
-            if (role == null)
-                return null;
-
-            if (player.Is(RoleEnum.Mafioso))
-                return ((Mafioso)role).Godfather;
-            else if (player.Is(RoleEnum.Sidekick))
-                return ((Sidekick)role).Rebel;
-
-            return null;
-        }
-
-        public static InspectorResults GetActorList(this PlayerControl player)
-        {
-            if (!player.Is(RoleEnum.Actor))
-                return InspectorResults.None;
-
-            var role = Role.GetRole(player);
-
-            if (role == null)
-                return InspectorResults.None;
-
-            if (player.Is(RoleEnum.Actor))
-                return ((Actor)role).PretendRoles;
-
-            return InspectorResults.None;
         }
 
         public static void RoleUpdate(this Role newRole, Role former)
@@ -3771,9 +3632,9 @@ namespace TownOfUsReworked.Classes
             Version ver;
 
             if (revision < 0)
-                ver = new(major, minor, build);
+                ver = new Version(major, minor, build);
             else
-                ver = new(major, minor, build, revision);
+                ver = new Version(major, minor, build, revision);
 
             GameStartManagerPatch.PlayerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, guid);
         }

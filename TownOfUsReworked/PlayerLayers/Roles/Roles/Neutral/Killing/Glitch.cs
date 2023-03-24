@@ -2,14 +2,13 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Modifiers;
 using UnityEngine;
 using System.Linq;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Glitch : NeutralRole, IVisualAlteration
+    public class Glitch : NeutralRole
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastMimic;
@@ -106,23 +105,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = Utils.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (IsUsingMimic)
-            {
-                appearance = Utils.GetDefaultAppearance();
-                var modifier = Modifier.GetModifier(MimicTarget);
-
-                if (modifier is IVisualAlteration alteration)
-                    alteration.TryGetModifiedAppearance(out appearance);
-
-                return true;
-            }
-
-            appearance = Utils.GetDefaultAppearance();
-            return false;
         }
 
         public void MimicListUpdate()

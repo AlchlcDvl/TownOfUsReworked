@@ -53,12 +53,7 @@ namespace TownOfUsReworked.Classes
             Object.Destroy(BombPref.GetComponent<SphereCollider>());
             BombPref.GetComponent<MeshRenderer>().material = AssetManager.BombMaterial;
             BombPref.transform.position = location;
-
-            var BombScript = new Bomb
-            {
-                Transform = BombPref.transform
-            };
-
+            var BombScript = new Bomb { Transform = BombPref.transform };
             Coroutines.Start(BombScript.BombTimer());
             return BombScript;
         }
