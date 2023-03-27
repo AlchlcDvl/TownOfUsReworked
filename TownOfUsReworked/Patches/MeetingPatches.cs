@@ -112,9 +112,7 @@ namespace TownOfUsReworked.Patches
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                var buggedBodies = Object.FindObjectsOfType<DeadBody>();
-
-                foreach (var body in buggedBodies)
+                foreach (var body in Object.FindObjectsOfType<DeadBody>())
                     body.gameObject.Destroy();
 
                 foreach (var player in PlayerControl.AllPlayerControls)

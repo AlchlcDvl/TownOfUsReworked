@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {
@@ -39,9 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 role2.KilledBy = " Via Misfire";
             }
             else
-            {
                 HideTarget(role, targetId);
-            }
         }
 
         public static void HideTarget(Assassin role, byte targetId)

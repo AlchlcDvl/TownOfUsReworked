@@ -6,30 +6,28 @@ using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using HarmonyLib;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch]
     public abstract class PlayerLayer
     {
-        public static readonly Dictionary<byte, PlayerLayer> LayerDictionary = new();
-        public static List<PlayerLayer> AllLayers => LayerDictionary.Values.ToList();
-
-        protected internal Color32 Color = Colors.Role;
+        protected internal Color32 Color = Colors.Layer;
         protected internal string Name = "Layerless";
         protected internal PlayerLayerEnum LayerType = PlayerLayerEnum.None;
 
         protected internal string KilledBy = "";
         protected internal DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
 
+        public readonly static List<PlayerLayer> Layers = new();
+
+        protected internal virtual void OnLobby() {}
+
         protected PlayerLayer(PlayerControl player)
         {
             Player = player;
-
-            if (LayerDictionary.ContainsKey(player.PlayerId))
-                LayerDictionary.Remove(player.PlayerId);
-
-            LayerDictionary.Add(player.PlayerId, this);
+            Layers.Add(this);
         }
 
         private PlayerControl PlayerB { get; set; }
@@ -73,21 +71,7 @@ namespace TownOfUsReworked.PlayerLayers
             return Equals((PlayerLayer)obj);
         }
 
-        internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
-
-        public static PlayerLayer GetLayer(PlayerControl player)
-        {
-            if (player == null)
-                return null;
-
-            foreach (var layer in AllLayers)
-            {
-                if (layer.Player == player)
-                    return layer;
-            }
-
-            return null;
-        }
+        protected internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
 
         public static bool operator == (PlayerLayer a, PlayerLayer b)
         {

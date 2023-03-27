@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
             var role = Role.GetRole<Juggernaut>(PlayerControl.LocalPlayer);
 
             if (role.AssaultButton == null)
-                role.AssaultButton = Utils.InstantiateButton();
+                role.AssaultButton = CustomButtons.InstantiateButton();
 
             role.AssaultButton.UpdateButton(role, "ASSAULT", role.KillTimer(), CustomGameOptions.JuggKillCooldown, AssetManager.Assault, AbilityTypes.Direct, "ActionSecondary");
         }

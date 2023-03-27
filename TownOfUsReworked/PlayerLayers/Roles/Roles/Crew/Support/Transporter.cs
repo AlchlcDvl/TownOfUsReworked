@@ -11,6 +11,9 @@ using Object = UnityEngine.Object;
 using Hazel;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -54,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastTransported;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -178,7 +181,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.LocalPlayer == TP1 || PlayerControl.LocalPlayer == TP2)
             {
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Transporter));
+                Utils.Flash(Colors.Transporter, "You were transported to a different location!");
 
                 if (Minigame.Instance)
                     Minigame.Instance.Close();

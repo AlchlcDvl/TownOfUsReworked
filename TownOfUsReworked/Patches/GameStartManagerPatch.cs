@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -119,49 +120,46 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                         {
-                            __instance.StartButton.color = __instance.startLabelText.color = ((__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor :
-                                Palette.DisabledClear);
+                            __instance.StartButton.color = __instance.startLabelText.color = (__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor :
+                                Palette.DisabledClear;
                             __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
                         }
                     }
                     //Client update with handshake infos
+                    else if (!PlayerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TownOfUsReworked.Version.CompareTo(PlayerVersions[AmongUsClient.Instance.HostId].Version) != 0)
+                    {
+                        kickingTimer += Time.deltaTime;
+
+                        if (kickingTimer > 10)
+                        {
+                            kickingTimer = 0;
+                            AmongUsClient.Instance.ExitGame(DisconnectReasons.ExitGame);
+                            SceneChanger.ChangeScene("MainMenu");
+                        }
+
+                        __instance.GameStartText.text = "<color=#FF0000FF>The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in" +
+                            $" {Math.Round(10 - kickingTimer)}s</color>";
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
+                    }
+                    else if (versionMismatch)
+                    {
+                        __instance.GameStartText.text = "<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
+                    }
                     else
                     {
-                        if (!PlayerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TownOfUsReworked.Version.CompareTo(PlayerVersions[AmongUsClient.Instance.HostId].Version) != 0)
-                        {
-                            kickingTimer += Time.deltaTime;
+                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
 
-                            if (kickingTimer > 10)
-                            {
-                                kickingTimer = 0;
-                                AmongUsClient.Instance.ExitGame(DisconnectReasons.ExitGame);
-                                SceneChanger.ChangeScene("MainMenu");
-                            }
-
-                            __instance.GameStartText.text = "<color=#FF0000FF>The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in" +
-                                $" {Math.Round(10 - kickingTimer)}s</color>";
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
-                        }
-                        else if (versionMismatch)
+                        if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0)
                         {
-                            __instance.GameStartText.text = "<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
+                            __instance.GameStartText.text = string.Empty;
                         }
                         else
                         {
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
+                            __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
 
-                            if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0)
-                            {
+                            if (startingTimer <= 0)
                                 __instance.GameStartText.text = string.Empty;
-                            }
-                            else
-                            {
-                                __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
-
-                                if (startingTimer <= 0)
-                                    __instance.GameStartText.text = string.Empty;
-                            }
                         }
                     }
                 }
@@ -239,7 +237,7 @@ namespace TownOfUsReworked.Patches
                 this.Guid = Guid;
             }
 
-            public bool GuidMatches() => TownOfUsReworked.assembly.ManifestModule.ModuleVersionId.Equals(Guid);
+            public bool GuidMatches() => TownOfUsReworked.Assembly.ManifestModule.ModuleVersionId.Equals(Guid);
         }
     }
 }

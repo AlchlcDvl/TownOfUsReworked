@@ -4,6 +4,9 @@ using TownOfUsReworked.CustomOptions;
 using System;
 using Reactor.Utilities;
 using System.Linq;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -33,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastSeered;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -44,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             role.RoleUpdate(this);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Color, "Someone has changed their identity!");
         }
     }
 }

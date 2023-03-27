@@ -1,6 +1,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using System;
 using System.Collections.Generic;
 

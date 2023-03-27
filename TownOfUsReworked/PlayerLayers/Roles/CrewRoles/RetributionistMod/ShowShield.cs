@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -39,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 if (player.Data.IsDead || ret.Player.Data.IsDead || ret.Player.Data.Disconnected)
                 {
-                    RetributionistMod.StopKill.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
+                    StopKill.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
                     continue;
                 }
 

@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
             var role = Role.GetRole<Shapeshifter>(PlayerControl.LocalPlayer);
 
             if (role.ShapeshiftButton == null)
-                role.ShapeshiftButton = Utils.InstantiateButton();
+                role.ShapeshiftButton = CustomButtons.InstantiateButton();
 
             role.ShapeshiftButton.UpdateButton(role, "SHAPESHIFT", role.ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary",
                 role.Shapeshifted, role.TimeRemaining, CustomGameOptions.ShapeshiftDuration);

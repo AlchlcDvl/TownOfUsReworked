@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WerewolfMod
             var role = Role.GetRole<Werewolf>(PlayerControl.LocalPlayer);
 
             if (role.MaulButton == null)
-                role.MaulButton = Utils.InstantiateButton();
+                role.MaulButton = CustomButtons.InstantiateButton();
 
             role.MaulButton.UpdateButton(role, "MAUL", role.MaulTimer(), CustomGameOptions.MaulCooldown, AssetManager.Maul, AbilityTypes.Direct, "ActionSecondary");
         }

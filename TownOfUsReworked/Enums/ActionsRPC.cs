@@ -2,7 +2,6 @@ namespace TownOfUsReworked.Enums
 {
     public enum ActionsRPC
     {
-        JanitorClean,
         FixLights,
         EngineerFix,
         SetExtraVotes,
@@ -14,7 +13,6 @@ namespace TownOfUsReworked.Enums
         Morph,
         Camouflage,
         Mine,
-        CannibalEat,
         Swoop,
         Invis,
         Disguise,
@@ -72,6 +70,10 @@ namespace TownOfUsReworked.Enums
         Ambush,
         Crusade,
         Scream,
-        Mark
+        HideBody,
+        Mark,
+        FadeBody,
+
+        None
     }
 }

@@ -4,6 +4,7 @@ using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
@@ -15,9 +16,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
+            if (PlayerControl.LocalPlayer != SetGhoul.WillBeGhoul || PlayerControl.LocalPlayer.Data.IsDead)
+                return;
+
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && x.Data.IsDead && !x.Data.Disconnected).ToList();
 
             if (toChooseFrom.Count == 0)
+                return;
+
+            if (!RoleGen.GhoulOn)
                 return;
 
             var rand = Random.RandomRangeInt(0, toChooseFrom.Count);

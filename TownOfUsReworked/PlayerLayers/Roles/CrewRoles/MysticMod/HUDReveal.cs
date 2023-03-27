@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
             var role = Role.GetRole<Mystic>(PlayerControl.LocalPlayer);
 
             if (role.RevealButton == null)
-                role.RevealButton = Utils.InstantiateButton();
+                role.RevealButton = CustomButtons.InstantiateButton();
 
             role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary");
 

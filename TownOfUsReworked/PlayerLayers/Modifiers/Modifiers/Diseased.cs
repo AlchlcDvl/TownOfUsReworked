@@ -1,6 +1,9 @@
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {

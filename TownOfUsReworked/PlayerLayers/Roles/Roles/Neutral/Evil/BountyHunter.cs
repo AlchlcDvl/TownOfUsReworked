@@ -5,6 +5,8 @@ using TownOfUsReworked.Classes;
 using Random = UnityEngine.Random;
 using System;
 using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -77,10 +79,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Troll, "Your target died so you have become a <color=#678D36FF>Troll</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

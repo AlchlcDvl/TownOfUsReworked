@@ -2,6 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {
@@ -11,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
     {
         public static void Postfix()
         {
-            if (GameStates.IsEnded || GameStates.IsLobby)
+            if (ConstantVariables.IsEnded || ConstantVariables.IsLobby)
                 return;
 
             foreach (var role in Role.GetRoles(RoleEnum.Ghoul))

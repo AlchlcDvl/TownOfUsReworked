@@ -1,7 +1,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
 using System.Collections.Generic;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {

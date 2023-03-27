@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
 {
@@ -17,11 +18,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SheriffMod
             var role = Role.GetRole<Sheriff>(PlayerControl.LocalPlayer);
 
             if (role.InterrogateButton == null)
-                role.InterrogateButton = Utils.InstantiateButton();
+                role.InterrogateButton = CustomButtons.InstantiateButton();
 
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
-            role.InterrogateButton.UpdateButton(role, "INTERROGATE", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, AssetManager.Interrogate, AbilityTypes.Direct, "ActionSecondary",
-                notInvestigated);
+            role.InterrogateButton.UpdateButton(role, "INTERROGATE", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, AssetManager.Interrogate, AbilityTypes.Direct,
+                "ActionSecondary", notInvestigated);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace TownOfUsReworked.Enums
         Guessed,
         Killed,
         Revived,
-        Suicide
+        Suicide,
+
+        None
     }
 }

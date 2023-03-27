@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     {
         public static void Postfix()
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Retributionist) || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);

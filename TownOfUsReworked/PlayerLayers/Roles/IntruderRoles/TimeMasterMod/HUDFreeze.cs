@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
             var role = Role.GetRole<TimeMaster>(PlayerControl.LocalPlayer);
 
             if (role.FreezeButton == null)
-                role.FreezeButton = Utils.InstantiateButton();
+                role.FreezeButton = CustomButtons.InstantiateButton();
 
             role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, AssetManager.TimeFreeze, AbilityTypes.Effect, "Secondary", role.Frozen,
                 role.TimeRemaining, CustomGameOptions.FreezeDuration, true, !role.Frozen);

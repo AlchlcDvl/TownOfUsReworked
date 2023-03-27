@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System.Linq;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.InspectorMod
             var role = Role.GetRole<Inspector>(PlayerControl.LocalPlayer);
 
             if (role.InspectButton == null)
-                role.InspectButton = Utils.InstantiateButton();
+                role.InspectButton = CustomButtons.InstantiateButton();
 
             var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
             role.InspectButton.UpdateButton(role, "INSPECT", role.InspectTimer(), CustomGameOptions.InspectCooldown, AssetManager.Inspect, AbilityTypes.Direct, "ActionSecondary",

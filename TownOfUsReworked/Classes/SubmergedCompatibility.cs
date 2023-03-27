@@ -17,6 +17,8 @@ using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod;
 using Hazel;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.Classes
 {
@@ -217,7 +219,7 @@ namespace TownOfUsReworked.Classes
 
         public static void ExileRoleChangePostfix()
         {
-            Coroutines.Start(WaitMeeting(ResetTimers));
+            Coroutines.Start(WaitMeeting(() => ResetTimers(false)));
             Coroutines.Start(WaitMeeting(GhostRoleBegin));
 
             SetPhantom.ExileControllerPostfix(ExileController.Instance);
@@ -252,12 +254,12 @@ namespace TownOfUsReworked.Classes
             next();
         }
 
-        public static void ResetTimers()
+        public static void ResetTimers(bool start = false)
         {
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            Utils.ResetCustomTimers();
+            CustomButtons.ResetCustomTimers(start);
         }
 
         public static void GhostRoleBegin()
@@ -351,7 +353,7 @@ namespace TownOfUsReworked.Classes
             {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
-            } catch (System.NullReferenceException) {}
+            } catch (NullReferenceException) {}
         }
 
         public static bool IsSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;

@@ -1,6 +1,9 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.BetterMaps.Airship;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -14,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -38,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -59,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix(UseButton __instance)
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -86,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -107,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -128,7 +131,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix()
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
@@ -149,12 +152,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             public static bool Prefix(AbilityButton __instance)
             {
                 if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !GameStates.IsInGame)
+                    !ConstantVariables.IsInGame)
                 {
                     return true;
                 }
 
-                if (!Utils.ButtonUsable(__instance))
+                if (!CustomButtons.ButtonUsable(__instance))
                     return false;
 
                 if (__instance == HudManager.Instance.AbilityButton)

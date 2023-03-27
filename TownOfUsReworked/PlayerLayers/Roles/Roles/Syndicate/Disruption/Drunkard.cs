@@ -2,8 +2,9 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastConfused;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

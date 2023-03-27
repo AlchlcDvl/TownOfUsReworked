@@ -4,6 +4,8 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -62,12 +64,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if ((IsRecruit || RoleType == RoleEnum.Jackal) && Utils.CabalWin())
+            if ((IsRecruit || RoleType == RoleEnum.Jackal) && ConstantVariables.CabalWin)
             {
                 CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -76,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if ((IsPersuaded || RoleType == RoleEnum.Whisperer) && Utils.SectWin())
+            else if ((IsPersuaded || RoleType == RoleEnum.Whisperer) && ConstantVariables.SectWin)
             {
                 SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -85,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if ((IsBitten || RoleType == RoleEnum.Dracula) && Utils.UndeadWin())
+            else if ((IsBitten || RoleType == RoleEnum.Dracula) && ConstantVariables.UndeadWin)
             {
                 UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -94,7 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if ((IsResurrected || RoleType == RoleEnum.Necromancer) && Utils.ReanimatedWin())
+            else if ((IsResurrected || RoleType == RoleEnum.Necromancer) && ConstantVariables.ReanimatedWin)
             {
                 ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -103,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.AllNeutralsWin() && NotDefective)
+            else if (ConstantVariables.AllNeutralsWin && NotDefective)
             {
                 AllNeutralsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -112,7 +114,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.AllNKsWin() && NotDefective && RoleAlignment == RoleAlignment.NeutralKill)
+            else if (ConstantVariables.AllNKsWin && NotDefective && RoleAlignment == RoleAlignment.NeutralKill)
             {
                 NKWins = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -121,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsCrewAlly && Utils.CrewWins())
+            else if (IsCrewAlly && ConstantVariables.CrewWins)
             {
                 CrewWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -130,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if ((IsIntAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Intruder)) && Utils.IntrudersWin())
+            else if ((IsIntAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Intruder)) && ConstantVariables.IntrudersWin)
             {
                 IntruderWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -139,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if ((IsSynAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Syndicate)) && Utils.SyndicateWins())
+            else if ((IsSynAlly || (RoleType == RoleEnum.Betrayer && Faction == Faction.Syndicate)) && ConstantVariables.SyndicateWins)
             {
                 SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -148,7 +150,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (NotDefective && RoleAlignment == RoleAlignment.NeutralKill && (Utils.SameNKWins(RoleType) || Utils.SoloNKWins(RoleType, Player)))
+            else if (NotDefective && RoleAlignment == RoleAlignment.NeutralKill && (ConstantVariables.SameNKWins(RoleType) || ConstantVariables.SoloNKWins(RoleType, Player)))
             {
                 switch (RoleType)
                 {
@@ -198,7 +200,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.PestOrPBWins() && NotDefective && (RoleType == RoleEnum.Plaguebearer || RoleType == RoleEnum.Pestilence))
+            else if (ConstantVariables.PestOrPBWins && NotDefective && (RoleType == RoleEnum.Plaguebearer || RoleType == RoleEnum.Pestilence))
             {
                 InfectorsWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);

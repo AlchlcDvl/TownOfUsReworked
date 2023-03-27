@@ -4,6 +4,8 @@ using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -20,12 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierType = ObjectifierEnum.Rivals;
         }
 
-        public static void Gen(List<PlayerControl> canHaveObjectifiers)
+        public static void Gen(List<PlayerControl> canBeRival)
         {
-            var all = new List<PlayerControl>();
-            all.AddRange(canHaveObjectifiers);
-
-            if (all.Count < 4)
+            if (canBeRival.Count < 4)
                 return;
 
             PlayerControl firstRival = null;
@@ -33,20 +32,20 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             while (firstRival == null || secondRival == null || firstRival == secondRival || (firstRival.GetFaction() == secondRival.GetFaction() && !CustomGameOptions.RivalsFaction))
             {
-                all.Shuffle();
+                canBeRival.Shuffle();
 
-                var num = Random.RandomRangeInt(0, all.Count);
-                firstRival = all[num];
+                var num = Random.RandomRangeInt(0, canBeRival.Count);
+                firstRival = canBeRival[num];
 
-                var num2 = Random.RandomRangeInt(0, all.Count);
-                secondRival = all[num2];
+                var num2 = Random.RandomRangeInt(0, canBeRival.Count);
+                secondRival = canBeRival[num2];
             }
-
-            canHaveObjectifiers.Remove(firstRival);
-            canHaveObjectifiers.Remove(secondRival);
 
             var rival1 = new Rivals(firstRival);
             var rival2 = new Rivals(secondRival);
+
+            canBeRival.Remove(firstRival);
+            canBeRival.Remove(secondRival);
 
             rival1.OtherRival = secondRival;
             rival2.OtherRival = firstRival;

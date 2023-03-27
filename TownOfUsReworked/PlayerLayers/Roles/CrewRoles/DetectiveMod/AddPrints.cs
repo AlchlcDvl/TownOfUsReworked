@@ -1,7 +1,8 @@
 using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Objects;
@@ -19,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 
         public static void Postfix()
         {
-            if (!GameStates.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Detective) || LobbyBehaviour.Instance || MeetingHud.Instance)
+            if (!ConstantVariables.IsInGame || !PlayerControl.LocalPlayer.Is(RoleEnum.Detective) || LobbyBehaviour.Instance || MeetingHud.Instance)
                 return;
 
             var investigator = Role.GetRole<Detective>(PlayerControl.LocalPlayer);

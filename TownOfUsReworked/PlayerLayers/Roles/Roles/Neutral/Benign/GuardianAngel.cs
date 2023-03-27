@@ -3,7 +3,8 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -62,10 +63,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Survivor, "Your target died so you have become a <color=#DDDD00FF>Survivor</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "SOmeone has changed their identity!");
         }
 
         public void UnProtect()

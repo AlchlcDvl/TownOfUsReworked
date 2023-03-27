@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
 {
@@ -16,14 +17,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod
             var role = Role.GetRole<Undertaker>(PlayerControl.LocalPlayer);
 
             if (role.DragButton == null)
-                role.DragButton = Utils.InstantiateButton();
+                role.DragButton = CustomButtons.InstantiateButton();
 
             role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, AssetManager.Drag, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging == null);
 
             if (role.DropButton == null)
-                role.DropButton = Utils.InstantiateButton();
+                role.DropButton = CustomButtons.InstantiateButton();
 
-            role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging != null);
+            role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Effect, "Secondary", role.CurrentlyDragging != null && role.ClosestVent == null);
+
+            if (role.HideButton == null)
+                role.HideButton = CustomButtons.InstantiateButton();
+
+            role.HideButton.UpdateButton(role, "HIDE BODY", 0, 1, AssetManager.Placeholder, AbilityTypes.Vent, "Secondary", role.CurrentlyDragging != null && role.ClosestVent != null);
         }
     }
 }

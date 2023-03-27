@@ -11,7 +11,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
@@ -48,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             if (player != assassinPlayer && player.Is(ModifierEnum.Indomitable) && !player.Is(RoleEnum.Actor) && player == PlayerControl.LocalPlayer)
             {
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Indomitable));
+                Utils.Flash(Colors.Indomitable, "Someone is trying to guess you!");
                 return;
             }
 

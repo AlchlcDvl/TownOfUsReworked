@@ -3,6 +3,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
 {
@@ -17,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
             var role = Role.GetRole<Poisoner>(PlayerControl.LocalPlayer);
 
             if (role.PoisonButton == null)
-                role.PoisonButton = Utils.InstantiateButton();
+                role.PoisonButton = CustomButtons.InstantiateButton();
 
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != role.PoisonedPlayer).ToList();
             role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? AssetManager.Poisoned :

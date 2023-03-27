@@ -4,6 +4,7 @@ using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -21,6 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
 
             if (toChooseFrom.Count == 0)
+                return;
+
+            if (!RoleGen.PhantomOn)
                 return;
 
             var hasWon = true;

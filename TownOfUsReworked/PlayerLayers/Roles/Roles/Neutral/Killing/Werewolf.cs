@@ -2,6 +2,9 @@ using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -28,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMauled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.MaulCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MaulCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

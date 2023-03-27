@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
             var role = Role.GetRole<Engineer>(PlayerControl.LocalPlayer);
 
             if (role.FixButton == null)
-                role.FixButton = Utils.InstantiateButton();
+                role.FixButton = CustomButtons.InstantiateButton();
 
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = (bool)system?.dummy.IsActive;

@@ -30,11 +30,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(role.Player, player);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.JanitorClean);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write((byte)ActionsRPC.FadeBody);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
+                Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
                 role.LastCleaned = DateTime.UtcNow;
 
                 if (CustomGameOptions.JaniCooldownsLinked)

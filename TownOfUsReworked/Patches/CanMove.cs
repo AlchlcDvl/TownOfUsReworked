@@ -2,10 +2,11 @@ using HarmonyLib;
 
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class CanMove
     {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CanMove), MethodType.Getter)]
-        internal static class CanMovePatch
+        public static class CanMovePatch
         {
             public static bool Prefix(PlayerControl __instance, ref bool __result)
             {

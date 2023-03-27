@@ -3,6 +3,8 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
 {
@@ -17,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod
             var role = Role.GetRole<Consigliere>(PlayerControl.LocalPlayer);
 
             if (role.InvestigateButton == null)
-                role.InvestigateButton = Utils.InstantiateButton();
+                role.InvestigateButton = CustomButtons.InstantiateButton();
 
             var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Investigated.Contains(x.PlayerId) && !(x.Is(Faction.Intruder) &&
                 CustomGameOptions.FactionSeeRoles)).ToList();

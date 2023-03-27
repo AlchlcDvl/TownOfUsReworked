@@ -3,7 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches

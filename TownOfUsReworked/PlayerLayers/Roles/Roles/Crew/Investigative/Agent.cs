@@ -1,7 +1,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles

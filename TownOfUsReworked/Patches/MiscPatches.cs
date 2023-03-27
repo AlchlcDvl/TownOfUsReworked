@@ -4,9 +4,13 @@ using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Classes;
 using TMPro;
+using AmongUs.Data.Player;
+using AmongUs.Data.Legacy;
+using TownOfUsReworked.Crowded.Components;
 
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class MiscPatches
     {
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.InitializeOptions))]
@@ -39,16 +43,17 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
             {
-                var player = PlayerControl.LocalPlayer;
-                bool active = player != null && !MeetingHud.Instance && Utils.CanVent(player, player.Data);
+                var active = PlayerControl.LocalPlayer != null && !MeetingHud.Instance && Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data);
+                var role = Role.GetRole(PlayerControl.LocalPlayer);
 
-                if (active)
-                {
-                    var role = Role.GetRole(player);
-                    var color = role != null ? role.Color : new Color32(255, 255, 255, 255);
-                    __instance.myRend.material.SetColor("_OutlineColor", color);
-                    __instance.myRend.material.SetColor("_AddColor", mainTarget ? color : Color.clear);
-                }
+                if (role == null)
+                    return;
+
+                if (!active)
+                    return;
+
+                __instance.myRend.material.SetColor("_OutlineColor", role.Color);
+                __instance.myRend.material.SetColor("_AddColor", mainTarget ? role.Color : Color.clear);
             }
         }
 
@@ -106,6 +111,36 @@ namespace TownOfUsReworked.Patches
         public static class AmBanned
         {
             public static void Postfix(out bool __result) => __result = false;
+        }
+
+        [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
+        public static class SaveManagerPatch
+        {
+            public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+        }
+
+        [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
+        public static class LegacySaveManagerPatch
+        {
+            public static void Postfix(ref string __result) => __result += "_ToU-Rew";
+        }
+
+        [HarmonyPatch(typeof(SecurityLogger), nameof(SecurityLogger.Awake))]
+        public static class SecurityLoggerPatch
+        {
+            public static void Postfix(ref SecurityLogger __instance) => __instance.Timers = new float[127];
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+        public static class MeetingHudStartPatch
+        {
+            public static void Postfix(MeetingHud __instance) => __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().meetingHud = __instance;
+        }
+
+        [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin))]
+        public static class ShapeshifterMinigameBeginPatch
+        {
+            public static void Postfix(ShapeshifterMinigame __instance) => __instance.gameObject.AddComponent<ShapeShifterPagingBehaviour>().shapeshifterMinigame = __instance;
         }
     }
 }

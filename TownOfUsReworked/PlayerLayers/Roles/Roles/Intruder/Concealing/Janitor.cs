@@ -2,6 +2,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -10,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton CleanButton;
         public DeadBody CurrentTarget;
         public DateTime LastCleaned;
+        public Vent ClosestVent;
 
         public Janitor(PlayerControl player) : base(player)
         {
@@ -27,8 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCleaned;
-            var num = Utils.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

@@ -1,11 +1,11 @@
 ﻿using System;
-using Reactor.Utilities;
 using HarmonyLib;
-using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 {
@@ -40,9 +40,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
                     }
 
                     if (hasKilled || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} has killed someone recently!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} has not killed anyone recently!");
                 }
 
                 if (interact[0])

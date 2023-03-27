@@ -1,22 +1,20 @@
-using Reactor.Utilities;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
     public static class StopKill
     {
-        public static void BreakShield(byte medicId, byte playerId, bool flag)
+        public static void BreakShield(byte retId, byte playerId, bool flag)
         {
-            var role = Role.GetRole<Retributionist>(Utils.PlayerById(medicId));
-
             if ((PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded || CustomGameOptions.NotificationShield ==
-                NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
+                NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == retId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
                 CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic)) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
             {
-                Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                Utils.Flash(Colors.Medic, "Someone was attacked!");
             }
 
             if (!flag)

@@ -3,6 +3,8 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
 {
@@ -17,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
             var role = Role.GetRole<Framer>(PlayerControl.LocalPlayer);
 
             if (role.FrameButton == null)
-                role.FrameButton = Utils.InstantiateButton();
+                role.FrameButton = CustomButtons.InstantiateButton();
 
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
             role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, AssetManager.Placeholder, Role.SyndicateHasChaosDrive ? AbilityTypes.Effect

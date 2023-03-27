@@ -6,6 +6,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -300,18 +302,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void TurnAct()
         {
             var targetRole = GetRole(TargetPlayer);
-            var newRole  = new Actor(Player)
-            {
-                PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults
-            };
-
+            var newRole  = new Actor(Player) { PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults };
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Actor, "Your target died so you have become an <color=#00ACC2FF>Actor</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

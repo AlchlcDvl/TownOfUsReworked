@@ -3,6 +3,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BetrayerMod
 {
@@ -16,11 +18,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BetrayerMod
 
             var role = Role.GetRole<Betrayer>(PlayerControl.LocalPlayer);
 
-            if (role.Faction != Faction.Intruder && role.Faction != Faction.Syndicate)
+            if (role.Faction == Faction.Neutral)
                 return;
 
             if (role.KillButton == null)
-                role.KillButton = Utils.InstantiateButton();
+                role.KillButton = CustomButtons.InstantiateButton();
 
             var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(role.Faction)).ToList();
             role.KillButton.UpdateButton(role, "KILL", role.KillTimer(), CustomGameOptions.BetrayerKillCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary",

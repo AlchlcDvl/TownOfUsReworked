@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using Hazel;
 using HarmonyLib;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
@@ -16,8 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         protected Modifier(PlayerControl player) : base(player)
         {
-            Player = player;
-
             if (ModifierDictionary.ContainsKey(player.PlayerId))
                 ModifierDictionary.Remove(player.PlayerId);
 

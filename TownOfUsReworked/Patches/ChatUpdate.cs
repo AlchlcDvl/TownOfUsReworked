@@ -2,8 +2,9 @@ using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -14,7 +15,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix(HudManager __instance)
         {
-            if (__instance && __instance.Chat)
+            if (__instance.Chat)
             {
                 if (_time >= CustomGameOptions.ChatCooldown)
                 {
@@ -33,7 +34,7 @@ namespace TownOfUsReworked.Patches
                     }
                 }
 
-                if (GameStates.IsLobby)
+                if (ConstantVariables.IsLobby)
                     return;
 
                 foreach (var bubble in __instance.Chat.chatBubPool.activeChildren)

@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {
@@ -20,10 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 return;
 
             if (role.GuessButton == null)
-                role.GuessButton = Utils.InstantiateButton();
+                role.GuessButton = CustomButtons.InstantiateButton();
 
             if (role.HuntButton == null)
-                role.HuntButton = Utils.InstantiateButton();
+                role.HuntButton = CustomButtons.InstantiateButton();
 
             role.GuessButton.UpdateButton(role, "GUESS", role.CheckTimer(), CustomGameOptions.BountyHunterCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", true,
                 role.UsesLeft, role.ButtonUsable && !role.TargetFound, role.ButtonUsable);

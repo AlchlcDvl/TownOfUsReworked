@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,10 +10,10 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ref int __result)
         {
-            if (GameStates.IsHnS)
+            if (ConstantVariables.IsHnS)
                 return true;
 
-            if (GameStates.IsAA)
+            if (ConstantVariables.IsAA)
             {
                 var players = GameData.Instance.PlayerCount;
                 var random = Random.RandomRangeInt(0, 100);
@@ -108,19 +108,16 @@ namespace TownOfUsReworked.Patches
                     else
                         impostors = 2;
                 }
+                else if (random < 5)
+                    impostors = 0;
+                else if (random < 20)
+                    impostors = 1;
+                else if (random < 60)
+                    impostors = 3;
+                else if (random < 90)
+                    impostors = 2;
                 else
-                {
-                    if (random < 5)
-                        impostors = 0;
-                    else if (random < 20)
-                        impostors = 1;
-                    else if (random < 60)
-                        impostors = 3;
-                    else if (random < 90)
-                        impostors = 2;
-                    else
-                        impostors = 4;
-                }
+                    impostors = 4;
 
                 __result = impostors;
                 return false;

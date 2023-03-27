@@ -1793,7 +1793,7 @@ namespace TownOfUsReworked.CustomOptions
             VigiKillAgain = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent");
             RoundOneNoShot = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round");
             VigiNotifOptions = new CustomStringOption(num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] { "Never", "Flash", "Message" });
-            VigiOptions = new CustomStringOption(num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Pre-Meeting", "Post-Meeting" });
+            VigiOptions = new CustomStringOption(num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Before Meeting", "After Meeting" });
             VigiKillCd = new CustomNumberOption(num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             VigiBulletCount = new CustomNumberOption(num++, MultiMenu.crew, "Maximum Number Of Bullets", 5, 1, 15, 1);
 
@@ -1810,8 +1810,8 @@ namespace TownOfUsReworked.CustomOptions
             Medic = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color>");
             MedicCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Count", 1, 1, 14, 1);
             UniqueMedic = new CustomToggleOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Is Unique In All Any", false);
-            ShowShielded = new CustomStringOption(num++, MultiMenu.crew, "Show Shielded Player", new[] { "Self", "Medic", "Self+Medic", "Everyone" });
-            WhoGetsNotification = new CustomStringOption(num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self+Medic", "Everyone", "Nobody" });
+            ShowShielded = new CustomStringOption(num++, MultiMenu.crew, "Show Shielded Player", new[] { "Self", "Medic", "Self And Medic", "Everyone" });
+            WhoGetsNotification = new CustomStringOption(num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self And Medic", "Everyone", "Nobody" });
             ShieldBreaks = new CustomToggleOption(num++, MultiMenu.crew, "Shield Breaks On Murder Attempt", false);
 
             TimeLord = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#0000FFFF>Time Lord</color>");
@@ -1891,7 +1891,7 @@ namespace TownOfUsReworked.CustomOptions
             RevealerRevealsNeutrals = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
             RevealerRevealsCrew = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
             RevealerRevealsRoles = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals Exact <color=#FFD700FF>Roles</color>", false);
-            RevealerCanBeClickedBy = new CustomStringOption(num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non-Crew", "Evils Only" });
+            RevealerCanBeClickedBy = new CustomStringOption(num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non Crew", "Evils Only" });
 
             NeutralSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
             CustomNeutColors = new CustomToggleOption(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors");
@@ -1922,7 +1922,7 @@ namespace TownOfUsReworked.CustomOptions
             ProtectDuration = new CustomNumberOption(num++, MultiMenu.neutral, "Protect Duration", 10f, 5f, 15f, 1f, CooldownFormat);
             ProtectKCReset = new CustomNumberOption(num++, MultiMenu.neutral, "Kill Cooldown Reset When Protected", 2.5f, 0f, 15f, 0.5f, CooldownFormat);
             MaxProtects = new CustomNumberOption(num++, MultiMenu.neutral, "Maximum Number Of Protects", 5, 1, 15, 1);
-            ShowProtect = new CustomStringOption(num++, MultiMenu.neutral, "Show Protected Player", new[] { "Self", "Guardian Angel", "Self+GA", "Everyone" });
+            ShowProtect = new CustomStringOption(num++, MultiMenu.neutral, "Show Protected Player", new[] { "Self", "Guardian Angel", "Self And GA", "Everyone" });
             GATargetKnows = new CustomToggleOption(num++, MultiMenu.neutral, "Target Knows <color=#FFFFFFFF>Guardian Angel</color> Exists", false);
             ProtectBeyondTheGrave = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Protect After Death", false);
             GAKnowsTargetRole = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFFFFFF>Guardian Angel</color> Knows Target's <color=#FFD700FF>Role</color>", false);

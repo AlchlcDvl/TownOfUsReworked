@@ -5,6 +5,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -14,11 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Enabled;
         public DateTime LastFlashed;
         public float TimeRemaining;
-        private  static List<PlayerControl> ClosestPlayers = new();
+        private static List<PlayerControl> ClosestPlayers = new();
         private static readonly Color NormalVision = new Color32(212, 212, 212, 0);
         private static readonly Color DimVision = new Color32(212, 212, 212, 51);
         private static readonly Color BlindVision = new Color32(212, 212, 212, 255);
-        public List<PlayerControl> FlashedPlayers;
+        public List<PlayerControl> FlashedPlayers = new();
         public bool Flashed => TimeRemaining > 0f;
 
         public Grenadier(PlayerControl player) : base(player)
@@ -40,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastFlashed;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.GrenadeCd, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GrenadeCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -113,6 +116,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         HudManager.Instance.FullScreen.color = NormalVision;
                         TimeRemaining = 0f;
                     }
+
+                    if (MapBehaviour.Instance)
+                        MapBehaviour.Instance.Close();
+
+                    if (Minigame.Instance)
+                        Minigame.Instance.Close();
                 }
             }
         }

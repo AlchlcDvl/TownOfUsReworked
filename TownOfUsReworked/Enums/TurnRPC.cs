@@ -15,6 +15,8 @@ namespace TownOfUsReworked.Enums
         TurnJest,
         TurnSurv,
         TurnAct,
-        TurnTroll
+        TurnTroll,
+
+        None
     }
 }

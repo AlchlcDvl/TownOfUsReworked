@@ -71,6 +71,8 @@ namespace TownOfUsReworked.Enums
         SetColor,
         VersionHandshake,
 
-        ChaosDrive
+        ChaosDrive,
+
+        None
     }
 }

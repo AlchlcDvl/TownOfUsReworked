@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -11,9 +12,9 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                if (!GameStates.IsInGame)
+                if (!ConstantVariables.IsInGame)
                     HudManager.Instance.AbilityButton.gameObject.SetActive(false);
-                else if (GameStates.IsHnS)
+                else if (ConstantVariables.IsHnS)
                     HudManager.Instance.AbilityButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsImpostor());
             }
         }

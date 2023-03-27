@@ -1,7 +1,7 @@
 using System.Text;
 using HarmonyLib;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using System.Linq;
 using UnityEngine;
 
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(ref string __result)
             {
-                if (GameStates.IsHnS)
+                if (ConstantVariables.IsHnS)
                     return;
 
                 var builder = new StringBuilder();
@@ -66,9 +66,7 @@ namespace TownOfUsReworked.CustomOptions
                         }
                     }
                     else
-                    {
                         builder.Append("    ").Append(option.Name).Append(": ").Append(option).AppendLine();
-                    }
                 }
 
                 __result = $"<size=1.25>{builder}</size>";
@@ -86,7 +84,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(HudManager __instance)
             {
-                if (!GameStates.IsLobby)
+                if (!ConstantVariables.IsLobby)
                     return;
 
                 __instance.ReportButton.gameObject.SetActive(false);

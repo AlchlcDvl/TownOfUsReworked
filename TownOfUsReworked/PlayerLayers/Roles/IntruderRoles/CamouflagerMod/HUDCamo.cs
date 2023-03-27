@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
             var role = Role.GetRole<Camouflager>(PlayerControl.LocalPlayer);
 
             if (role.CamouflageButton == null)
-                role.CamouflageButton = Utils.InstantiateButton();
+                role.CamouflageButton = CustomButtons.InstantiateButton();
 
             role.CamouflageButton.UpdateButton(role, "CAMOUFLAGE", role.CamouflageTimer(), CustomGameOptions.CamouflagerCd, AssetManager.Camouflage, AbilityTypes.Effect, "Secondary",
                 null, CamouflageUnCamouflage.IsCamoed, !CamouflageUnCamouflage.IsCamoed, CamouflageUnCamouflage.IsCamoed, role.TimeRemaining, CustomGameOptions.CamouflagerDuration);

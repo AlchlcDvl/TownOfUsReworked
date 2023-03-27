@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
 {
@@ -14,7 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.ButtonBarryMod
                 return;
 
             var role = Ability.GetAbility<ButtonBarry>(PlayerControl.LocalPlayer);
-            role.ButtonButton ??= Utils.InstantiateButton();
+
+            if (role.ButtonButton == null)
+                role.ButtonButton = CustomButtons.InstantiateButton();
+
             role.ButtonButton.UpdateButton(role, AssetManager.Button, "BUTTON", AbilityTypes.Effect, !role.ButtonUsed && PlayerControl.LocalPlayer.RemainingEmergencies > 0,
                 role.StartTimer(), CustomGameOptions.ButtonCooldown, "Quarternary", true, PlayerControl.LocalPlayer.RemainingEmergencies);
         }

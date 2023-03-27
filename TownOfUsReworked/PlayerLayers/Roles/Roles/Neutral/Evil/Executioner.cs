@@ -4,6 +4,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -64,10 +66,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Jester, "Your target died so you have become a <color=#F7B3DAFF>Jester</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

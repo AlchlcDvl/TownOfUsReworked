@@ -4,6 +4,7 @@ using Hazel;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
@@ -12,15 +13,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         public static void Postfix()
         {
-            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || PlayerControl.LocalPlayer !=
-                SetRevealer.WillBeRevealer || PlayerControl.LocalPlayer.Data.IsDead)
-            {
+            if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
-            }
+
+            if (PlayerControl.LocalPlayer != SetRevealer.WillBeRevealer || PlayerControl.LocalPlayer.Data.IsDead)
+                return;
 
             var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
 
             if (toChooseFrom.Count == 0)
+                return;
+
+            if (!RoleGen.RevealerOn)
                 return;
 
             var rand = Random.RandomRangeInt(0, toChooseFrom.Count);

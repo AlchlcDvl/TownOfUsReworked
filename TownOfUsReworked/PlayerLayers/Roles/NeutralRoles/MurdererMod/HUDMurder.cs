@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
             var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);
 
             if (role.MurderButton == null)
-                role.MurderButton = Utils.InstantiateButton();
+                role.MurderButton = CustomButtons.InstantiateButton();
 
             role.MurderButton.UpdateButton(role, "MURDER", role.KillTimer(), CustomGameOptions.MurdKCD, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
         }

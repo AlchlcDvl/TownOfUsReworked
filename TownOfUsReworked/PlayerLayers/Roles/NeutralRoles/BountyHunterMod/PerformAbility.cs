@@ -29,13 +29,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 
                 if (role.ClosestPlayer != role.TargetPlayer)
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} is not the target!");
                     role.UsesLeft--;
                 }
                 else
                 {
                     role.TargetFound = true;
-                    Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                    Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} is bounty!");
                 }
 
                 return false;
@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
             {
                 if (role.ClosestPlayer != role.TargetPlayer && !role.TargetKilled)
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} is not the target!");
                     Utils.RpcMurderPlayer(role.Player, role.Player);
                     role.LastChecked = DateTime.UtcNow;
                 }
@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
                 {
                     var interact = Utils.Interact(role.Player, role.ClosestPlayer, true);
 
-                    if (interact[3])
+                    if (!interact[3])
                         Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);

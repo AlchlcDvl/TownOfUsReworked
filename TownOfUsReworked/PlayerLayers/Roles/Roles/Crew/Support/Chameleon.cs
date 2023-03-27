@@ -3,6 +3,8 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -30,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastSwooped;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.SwoopCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.SwoopCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

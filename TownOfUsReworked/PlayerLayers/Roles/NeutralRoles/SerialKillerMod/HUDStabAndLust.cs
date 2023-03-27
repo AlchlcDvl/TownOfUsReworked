@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
 {
@@ -16,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
             var role = Role.GetRole<SerialKiller>(PlayerControl.LocalPlayer);
 
             if (role.BloodlustButton == null)
-                role.BloodlustButton = Utils.InstantiateButton();
+                role.BloodlustButton = CustomButtons.InstantiateButton();
 
             if (role.StabButton == null)
-                role.StabButton = Utils.InstantiateButton();
+                role.StabButton = CustomButtons.InstantiateButton();
 
             role.BloodlustButton.UpdateButton(role, "BLOODLUST", role.LustTimer(), CustomGameOptions.BloodlustCd, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", role.Lusted,
                 role.TimeRemaining, CustomGameOptions.BloodlustDuration, true, !role.Lusted);

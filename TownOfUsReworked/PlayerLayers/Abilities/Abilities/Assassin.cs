@@ -4,7 +4,8 @@ using TMPro;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {

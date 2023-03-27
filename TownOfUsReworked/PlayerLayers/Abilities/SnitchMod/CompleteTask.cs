@@ -1,6 +1,6 @@
 using System.Linq;
 using HarmonyLib;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
@@ -21,13 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
             {
                 if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
-                {
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                }
+                    Utils.Flash(role.Color, "You are almost there!");
                 else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "A <color=#D4AF37FF>Snitch</color> is nearly finished with their tasks!");
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -40,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             }
             else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
             {
-                Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                Utils.Flash(Color.green, "You now know who is bad!");
 
                 foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)))
                 {
@@ -57,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
                 PlayerControl.LocalPlayer.Is(Faction.Syndicate))
             {
-                Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                Utils.Flash(Color.red, "The <color=#D4AF37FF>Snitch</color> finished their tasks!");
             }
         }
     }

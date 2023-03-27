@@ -8,6 +8,8 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {

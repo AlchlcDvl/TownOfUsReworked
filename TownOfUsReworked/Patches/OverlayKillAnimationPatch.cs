@@ -9,7 +9,6 @@ namespace TownOfUsReworked.Patches
     {
         static int currentOutfitTypeCache;
 
-        [HarmonyPrefix]
         public static void Prefix(GameData.PlayerInfo kInfo)
         {
             var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
@@ -19,7 +18,6 @@ namespace TownOfUsReworked.Patches
                 playerControl.CurrentOutfitType = PlayerOutfitType.Default;
         }
 
-        [HarmonyPostfix]
         public static void Postfix(GameData.PlayerInfo kInfo)
         {
             var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);

@@ -32,6 +32,8 @@ namespace TownOfUsReworked.Enums
         CorruptedWin,
         OverlordWin,
 
-        NobodyWins
+        NobodyWins,
+
+        None
     }
 }

@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             var role = Role.GetRole<Warper>(PlayerControl.LocalPlayer);
 
             if (role.WarpButton == null)
-                role.WarpButton = Utils.InstantiateButton();
+                role.WarpButton = CustomButtons.InstantiateButton();
 
             role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, AssetManager.Warp, AbilityTypes.Effect, "Secondary");
         }

@@ -1,10 +1,10 @@
 using System;
-using Reactor.Utilities;
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
 {
@@ -33,9 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SeerMod
                     var targetRoleCount = Role.GetRole(role.ClosestPlayer).RoleHistory.Count;
 
                     if (targetRoleCount > 0 || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} has changed their identity!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} has yet to change their identity!");
                 }
 
                 if (interact[0])

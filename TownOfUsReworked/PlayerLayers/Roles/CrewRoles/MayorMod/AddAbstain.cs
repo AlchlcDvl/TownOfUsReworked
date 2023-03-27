@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TMPro;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 

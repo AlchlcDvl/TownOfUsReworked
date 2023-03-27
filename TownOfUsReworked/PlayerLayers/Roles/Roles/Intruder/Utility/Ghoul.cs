@@ -3,6 +3,7 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {

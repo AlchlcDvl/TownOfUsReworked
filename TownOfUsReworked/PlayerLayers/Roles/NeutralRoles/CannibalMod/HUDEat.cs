@@ -6,6 +6,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
             var role = Role.GetRole<Cannibal>(PlayerControl.LocalPlayer);
 
             if (role.EatButton == null)
-                role.EatButton = Utils.InstantiateButton();
+                role.EatButton = CustomButtons.InstantiateButton();
 
             role.EatButton.UpdateButton(role, "EAT", role.EatTimer(), CustomGameOptions.CannibalCd, AssetManager.Eat, AbilityTypes.Dead, "ActionSecondary");
 

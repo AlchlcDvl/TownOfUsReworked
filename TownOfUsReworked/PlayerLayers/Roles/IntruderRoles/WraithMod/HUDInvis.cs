@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
             var role = Role.GetRole<Wraith>(PlayerControl.LocalPlayer);
 
             if (role.InvisButton == null)
-                role.InvisButton = Utils.InstantiateButton();
+                role.InvisButton = CustomButtons.InstantiateButton();
 
             role.InvisButton.UpdateButton(role, "INVIS", role.InvisTimer(), CustomGameOptions.InvisCd, AssetManager.Invis, AbilityTypes.Effect, "Secondary", null, true, !role.IsInvis,
                 role.IsInvis, role.TimeRemaining, CustomGameOptions.InvisDuration);

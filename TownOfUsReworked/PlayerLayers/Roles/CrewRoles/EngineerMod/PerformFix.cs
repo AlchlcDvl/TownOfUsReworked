@@ -4,6 +4,7 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
+using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {

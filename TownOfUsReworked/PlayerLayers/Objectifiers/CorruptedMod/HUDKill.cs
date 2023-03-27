@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.CorruptedMod
             var role = Objectifier.GetObjectifier<Corrupted>(PlayerControl.LocalPlayer);
 
             if (role.KillButton == null)
-                role.KillButton = Utils.InstantiateButton();
+                role.KillButton = CustomButtons.InstantiateButton();
 
             role.KillButton.UpdateButton(role, role.KillTimer(), CustomGameOptions.CorruptedKillCooldown, "KILL", AssetManager.CorruptedKill, AbilityTypes.Direct, "Quarternary");
         }

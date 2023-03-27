@@ -4,6 +4,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {
@@ -34,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
             else if (role.TargetVotedOut)
             {
                 if (role.DoomButton == null)
-                    role.DoomButton = Utils.InstantiateButton();
+                    role.DoomButton = CustomButtons.InstantiateButton();
 
                 var toBeDoomed = PlayerControl.AllPlayerControls.ToArray().Where(x => role.ToDoom.Contains(x.PlayerId)).ToList();
                 role.DoomButton.UpdateButton(role, "DOOM", role.DoomTimer(), CustomGameOptions.DoomCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", toBeDoomed,

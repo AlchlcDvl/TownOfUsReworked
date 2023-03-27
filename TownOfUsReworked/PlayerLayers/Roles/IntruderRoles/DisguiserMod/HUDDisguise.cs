@@ -3,6 +3,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 {
@@ -17,14 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
             var role = Role.GetRole<Disguiser>(PlayerControl.LocalPlayer);
 
             if (role.DisguiseButton == null)
-                role.DisguiseButton = Utils.InstantiateButton();
+                role.DisguiseButton = CustomButtons.InstantiateButton();
 
-            var targets = PlayerControl.AllPlayerControls.ToArray().ToList();
-
-            if (CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders)
-                targets = targets.Where(x => x.Is(Faction.Intruder)).ToList();
-            else if (CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders)
-                targets = targets.Where(x => !x.Is(Faction.Intruder)).ToList();
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => (x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) ||
+                (!x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || CustomGameOptions.DisguiseTarget == DisguiserTargets.Everyone).ToList();
 
             if (role.MeasuredPlayer != null && targets.Contains(role.MeasuredPlayer))
                 targets.Remove(role.MeasuredPlayer);
@@ -34,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
                 CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration);
 
             if (role.MeasureButton == null)
-                role.MeasureButton = Utils.InstantiateButton();
+                role.MeasureButton = CustomButtons.InstantiateButton();
 
             var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => role.MeasuredPlayer != x).ToList();
             role.MeasureButton.UpdateButton(role, "MEASURE", role.MeasureTimer(), CustomGameOptions.MeasureCooldown, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", notMeasured);

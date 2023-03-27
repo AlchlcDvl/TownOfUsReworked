@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 using System;
 using UnityEngine;
 using System.Linq;
@@ -37,14 +37,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 
                 if (killed == null)
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                    Utils.Flash(Color.red, "ERROR");
                     return false;
                 }
 
                 role.ReferenceBody = killed;
                 role.UsesLeft = CustomGameOptions.CompareLimit;
                 role.LastAutopsied = DateTime.UtcNow;
-                Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                Utils.Flash(role.Color, "You are selected a reference!");
                 return false;
             }
             else if (__instance == role.CompareButton)
@@ -63,9 +63,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
                 if (interact[3])
                 {
                     if (role.ClosestPlayer.PlayerId == role.ReferenceBody.KillerId || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} is the killer!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} is not the killer!");
 
                     role.UsesLeft--;
                 }

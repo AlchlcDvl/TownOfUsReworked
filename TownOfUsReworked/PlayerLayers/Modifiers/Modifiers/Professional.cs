@@ -1,4 +1,4 @@
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 

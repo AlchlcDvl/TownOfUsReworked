@@ -1,7 +1,8 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 using System;
 using UnityEngine;
 
@@ -26,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Resurrecting;
         public float TimeRemaining;
         public bool IsResurrecting => TimeRemaining > 0f;
+        public Vent ClosestVent;
 
         public Necromancer(PlayerControl player) : base(player)
         {
@@ -53,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastResurrected;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -62,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

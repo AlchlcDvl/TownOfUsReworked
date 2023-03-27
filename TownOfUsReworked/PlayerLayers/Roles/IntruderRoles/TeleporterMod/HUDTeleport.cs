@@ -4,6 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
 {
@@ -18,13 +19,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
             var role = Role.GetRole<Teleporter>(PlayerControl.LocalPlayer);
 
             if (role.TeleportButton == null)
-                role.TeleportButton = Utils.InstantiateButton();
+                role.TeleportButton = CustomButtons.InstantiateButton();
 
             role.TeleportButton.UpdateButton(role, "TELEPORT", role.TeleportTimer(), CustomGameOptions.TeleportCd, AssetManager.Teleport, AbilityTypes.Effect, null,
                 role.TeleportPoint != new Vector3(0, 0, 0));
 
             if (role.MarkButton == null)
-                role.MarkButton = Utils.InstantiateButton();
+                role.MarkButton = CustomButtons.InstantiateButton();
 
             var hits = Physics2D.OverlapBoxAll(PlayerControl.LocalPlayer.transform.position, Utils.GetSize(), 0);
             hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();

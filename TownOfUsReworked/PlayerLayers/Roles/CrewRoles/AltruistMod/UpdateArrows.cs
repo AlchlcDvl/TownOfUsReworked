@@ -16,9 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                     Coroutine.Target = null;
                 }
                 else
-                {
                     Coroutine.Arrow.target = Coroutine.Target.transform.position;
-                }
             }
         }
     }

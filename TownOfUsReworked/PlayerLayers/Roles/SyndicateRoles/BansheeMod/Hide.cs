@@ -2,6 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
@@ -11,9 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
     {
         public static void Postfix()
         {
-            if (GameStates.IsEnded || GameStates.IsLobby)
-                return;
-
             foreach (var role in Role.GetRoles(RoleEnum.Banshee))
             {
                 var banshee = (Banshee)role;

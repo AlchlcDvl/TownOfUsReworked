@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
 {
@@ -16,9 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
             var role = Role.GetRole<Survivor>(PlayerControl.LocalPlayer);
 
             if (role.VestButton == null)
-                role.VestButton = Utils.InstantiateButton();
-
-            role.VestButton.gameObject.SetActive(Utils.SetActive(role.Player, role.RoleType));
+                role.VestButton = CustomButtons.InstantiateButton();
 
             role.VestButton.UpdateButton(role, "VEST", role.VestTimer(), CustomGameOptions.VestCd, AssetManager.Vest, AbilityTypes.Effect, "ActionSecondary", role.Vesting,
                 role.TimeRemaining, CustomGameOptions.VestDuration, true, !role.Vesting);

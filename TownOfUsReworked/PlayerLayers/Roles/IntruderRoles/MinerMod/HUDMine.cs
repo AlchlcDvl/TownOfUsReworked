@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 {
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
             var role = Role.GetRole<Miner>(PlayerControl.LocalPlayer);
 
             if (role.MineButton == null)
-                role.MineButton = Utils.InstantiateButton();
+                role.MineButton = CustomButtons.InstantiateButton();
 
             var hits = Physics2D.OverlapBoxAll(PlayerControl.LocalPlayer.transform.position, Utils.GetSize(), 0);
             hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();

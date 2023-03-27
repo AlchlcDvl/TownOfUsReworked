@@ -3,7 +3,7 @@ using System.Linq;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public DeadBody CurrentTarget;
         public AbilityButton RememberButton;
+        public Vent ClosestVent;
 
         public Amnesiac(PlayerControl player) : base(player)
         {

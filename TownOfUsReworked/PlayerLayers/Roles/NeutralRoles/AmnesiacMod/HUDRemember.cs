@@ -6,6 +6,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
             var role = Role.GetRole<Amnesiac>(PlayerControl.LocalPlayer);
 
             if (role.RememberButton == null)
-                role.RememberButton = Utils.InstantiateButton();
+                role.RememberButton = CustomButtons.InstantiateButton();
 
             role.RememberButton.UpdateButton(role, "REMEMBER", 0, 1, AssetManager.Remember, AbilityTypes.Dead, "ActionSecondary");
 

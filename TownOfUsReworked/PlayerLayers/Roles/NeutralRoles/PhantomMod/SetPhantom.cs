@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -27,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
         {
             var exiled = __instance.exiled?.Object;
 
-            if (WillBePhantom?.Data.IsDead == false && exiled.Is(Faction.Neutral) && !Utils.NeutralHasUnfinishedBusiness(exiled))
+            if (WillBePhantom?.Data.IsDead == false && exiled.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(exiled))
                 WillBePhantom = exiled;
 
             if (!PlayerControl.LocalPlayer.Data.IsDead && exiled != PlayerControl.LocalPlayer)

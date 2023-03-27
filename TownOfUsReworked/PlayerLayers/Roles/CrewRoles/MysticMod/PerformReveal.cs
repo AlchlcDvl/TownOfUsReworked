@@ -5,6 +5,7 @@ using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
 {
@@ -31,9 +32,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MysticMod
                 if (interact[3])
                 {
                     if ((!role.ClosestPlayer.Is(SubFaction.None) && !role.ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName}'s allegience is not where is should be!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName}'s allegience is where it should be!");
                 }
 
                 if (interact[0])

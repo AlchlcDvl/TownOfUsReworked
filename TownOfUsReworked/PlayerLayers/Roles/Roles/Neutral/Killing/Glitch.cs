@@ -5,6 +5,8 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using System.Linq;
 using Hazel;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -48,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastHack;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -57,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMimic;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -102,7 +104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

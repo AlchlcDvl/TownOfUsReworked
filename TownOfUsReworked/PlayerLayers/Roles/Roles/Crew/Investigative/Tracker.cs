@@ -4,6 +4,8 @@ using System.Linq;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -35,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastTracked;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -51,6 +53,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Object.Destroy(arrow.Value.gameObject);
 
             TrackerArrows.Remove(arrow.Key);
+        }
+
+        protected internal override void OnLobby()
+        {
+            TrackerArrows.Values.DestroyAll();
+            TrackerArrows.Clear();
         }
     }
 }

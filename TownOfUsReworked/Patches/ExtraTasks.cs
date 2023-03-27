@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -9,11 +10,11 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(ref bool __result) => __result = false;
 
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-        public static bool Prefix(ShipStatus __instance)
+        public static bool Prefix()
         {
-            var commonTask = __instance.CommonTasks.Count;
-            var normalTask = __instance.NormalTasks.Count;
-            var longTask = __instance.LongTasks.Count;
+            var commonTask = CustomGameOptions.CommonTasks;
+            var normalTask = CustomGameOptions.ShortTasks;
+            var longTask = CustomGameOptions.LongTasks;
 
             if (GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks > commonTask)
                 GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = commonTask;

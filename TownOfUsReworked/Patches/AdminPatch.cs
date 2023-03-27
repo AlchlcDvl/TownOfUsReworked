@@ -6,6 +6,7 @@ using TownOfUsReworked.Classes;
 using TMPro;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 {

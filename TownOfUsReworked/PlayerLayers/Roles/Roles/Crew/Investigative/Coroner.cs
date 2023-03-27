@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GameObject = UnityEngine.Object;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Objects;
@@ -22,6 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public AbilityButton AutopsyButton;
+        public Vent ClosestVent;
 
         public Coroner(PlayerControl player) : base(player)
         {
@@ -43,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCompared;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -52,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastAutopsied;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

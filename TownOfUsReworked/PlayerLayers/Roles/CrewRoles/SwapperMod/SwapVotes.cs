@@ -5,6 +5,7 @@ using Reactor.Utilities;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {

@@ -4,6 +4,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers
 {
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (!Utils.GameHasEnded())
+            if (!ConstantVariables.GameHasEnded)
                 return;
 
             var text = Object.Instantiate(__instance.WinText);
@@ -21,7 +22,10 @@ namespace TownOfUsReworked.PlayerLayers
             if (players.Count > 0)
             {
                 foreach (var player in players)
-                    player.NameText().text = Utils.GetEndGameName(player.NameText().text);
+                {
+                    var role = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
+                    player.NameText().text = $"{role.ColorString}<size=75%>{role.Name}</size>\n<size=90%>{player.NameText().text}</size></color>";
+                }
             }
 
             if (!Role.IntruderWin)
@@ -36,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.CrewWin)
             {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Crew && x.Winner);
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Crew);
 
                 if (role == null)
                     return;
@@ -48,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.SyndicateWin)
             {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate && x.Winner);
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate);
 
                 if (role == null)
                     return;
@@ -59,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.IntruderWin)
             {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Intruder && x.Winner);
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Intruder);
 
                 if (role == null)
                     return;
@@ -70,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.AllNeutralsWin)
             {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral && x.Winner);
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral);
 
                 if (role == null)
                     return;

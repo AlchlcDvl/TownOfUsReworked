@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -15,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
             var role = Role.GetRole<Altruist>(PlayerControl.LocalPlayer);
 
             if (role.ReviveButton == null)
-                role.ReviveButton = Utils.InstantiateButton();
+                role.ReviveButton = CustomButtons.InstantiateButton();
 
             role.ReviveButton.UpdateButton(role, "REVIVE", 0, 1, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", !role.ReviveUsed);
         }

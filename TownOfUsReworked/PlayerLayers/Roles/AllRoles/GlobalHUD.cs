@@ -3,6 +3,9 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -13,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             var local = PlayerControl.LocalPlayer;
 
-            if (PlayerControl.AllPlayerControls.Count <= 1 || local == null || local.Data == null || (GameStates.IsInGame && GameStates.IsHnS) || GameStates.IsEnded)
+            if (PlayerControl.AllPlayerControls.Count <= 1 || local == null || local.Data == null || (ConstantVariables.IsInGame && ConstantVariables.IsHnS) || ConstantVariables.IsEnded)
                 return;
 
             __instance.KillButton.SetTarget(null);
@@ -58,9 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             __instance.ReportButton.buttonLabelText.SetOutlineColor(role.FactionColor);
             __instance.ReportButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
-            var closestDead = Utils.GetClosestDeadPlayer(local, CustomGameOptions.ReportDistance);
+            var closestDead = CustomButtons.GetClosestDeadPlayer(local, CustomGameOptions.ReportDistance);
 
-            if (closestDead == null || Utils.CannotUse(local))
+            if (closestDead == null || CustomButtons.CannotUse(local))
                 __instance.ReportButton.SetDisabled();
             else
                 __instance.ReportButton.SetEnabled();
@@ -99,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             __instance.SabotageButton.graphic.sprite = Sabotage;
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(role.FactionColor);
 
-            if (Utils.CannotUse(local))
+            if (CustomButtons.CannotUse(local))
                 __instance.SabotageButton.SetDisabled();
             else
                 __instance.SabotageButton.SetEnabled();
@@ -112,40 +115,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 
             if (local.Data.IsDead)
             {
-                var ghostRole = false;
+                var ghostRole = (local.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(local).Caught) || (local.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(local).Caught) ||
+                    (local.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(local).Caught) || (local.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(local).Caught);
 
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+                if (!ghostRole)
                 {
-                    if (!Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught)
-                        ghostRole = true;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
-                {
-                    if (!Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught)
-                        ghostRole = true;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
-                {
-                    if (!Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught)
-                        ghostRole = true;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
-                {
-                    if (!Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught)
-                        ghostRole = true;
-                }
+                    if (role.SpectateButton == null)
+                        role.SpectateButton = CustomButtons.InstantiateButton();
 
-                if (role.SpectateButton == null)
-                    role.SpectateButton = Utils.InstantiateButton();
+                    role.SpectateButton.UpdateButton(role, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
+                        false, 0, !ghostRole);
 
-                role.SpectateButton.UpdateButton(role, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
-                    false, 0, !ghostRole);
+                    if (role.ZoomButton == null)
+                        role.ZoomButton = CustomButtons.InstantiateButton();
 
-                if (role.ZoomButton == null)
-                    role.ZoomButton = Utils.InstantiateButton();
+                    role.ZoomButton.UpdateButton(role, "SPECTATE", 0, 1, role.Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
+                        false, 0, 1, false, 0, !ghostRole);
+                }
+            }
+            else if (local.CanInteractWithBodyInVent())
+            {
+                if (role.PullButton == null)
+                    role.PullButton = CustomButtons.InstantiateButton();
 
-                role.ZoomButton.UpdateButton(role, "SPECTATE", 0, 1, role.Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
-                    false, 0, 1, false, 0, !ghostRole);
+                role.PullButton.UpdateButton(role, "PULL BODY", 0, 1, AssetManager.Placeholder, AbilityTypes.Vent, "Quarternary", null, local.CanInteractWithBodyInVent());
             }
         }
     }

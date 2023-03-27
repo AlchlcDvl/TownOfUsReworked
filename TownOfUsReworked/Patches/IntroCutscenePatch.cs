@@ -10,6 +10,8 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {

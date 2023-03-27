@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -55,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (!Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
                 return;
 
             if (role.RecruitButton == null)
-                role.RecruitButton = Utils.InstantiateButton();
+                role.RecruitButton = CustomButtons.InstantiateButton();
 
             var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => player != role.GoodRecruit && player != role.EvilRecruit && player != role.BackupRecruit).ToList();
             role.RecruitButton.UpdateButton(role, "RECRUIT", role.RecruitTimer(), CustomGameOptions.RecruitCooldown, AssetManager.Recruit, AbilityTypes.Direct, "ActionSecondary",

@@ -852,7 +852,7 @@
       "id": "hats0088",
       "name": "Gigawolf",
       "artist": "Sugawara",
-      "adaptive": false,
+      "adaptive": true,
       "nobounce": false
     },
     {

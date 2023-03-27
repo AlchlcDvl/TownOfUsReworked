@@ -5,9 +5,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.BetterMaps.Airship;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -62,11 +62,14 @@ namespace TownOfUsReworked.Patches
             foreach (var ab in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
                 ((Radar)ab).RadarArrow.DestroyAll();
 
+            foreach (var layer in PlayerLayer.Layers)
+                layer.OnLobby();
+
             Role.RoleDictionary.Clear();
             Modifier.ModifierDictionary.Clear();
             Ability.AbilityDictionary.Clear();
             Objectifier.ObjectifierDictionary.Clear();
-            PlayerLayer.LayerDictionary.Clear();
+            PlayerLayer.Layers.Clear();
 
             Tasks.AllCustomPlateform.Clear();
             Tasks.NearestTask = null;

@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
@@ -16,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             var role = Role.GetRole<Necromancer>(PlayerControl.LocalPlayer);
 
             if (role.ResurrectButton == null)
-                role.ResurrectButton = Utils.InstantiateButton();
+                role.ResurrectButton = CustomButtons.InstantiateButton();
 
             if (role.KillButton == null)
-                role.KillButton = Utils.InstantiateButton();
+                role.KillButton = CustomButtons.InstantiateButton();
 
             role.ResurrectButton.UpdateButton(role, "RESURRECT", role.ResurrectTimer(), CustomGameOptions.ResurrectCooldown + (CustomGameOptions.ResurrectCooldownIncrease *
                 role.ResurrectedCount), AssetManager.Ressurect, AbilityTypes.Dead, "ActionSecondary", null, role.ResurrectButtonUsable, true, role.IsResurrecting, role.TimeRemaining,

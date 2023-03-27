@@ -1,13 +1,13 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Actor : NeutralRole
     {
         public bool Guessed;
-        public InspectorResults PretendRoles;
+        public InspectorResults PretendRoles = InspectorResults.None;
 
         public Actor(PlayerControl player) : base(player)
         {

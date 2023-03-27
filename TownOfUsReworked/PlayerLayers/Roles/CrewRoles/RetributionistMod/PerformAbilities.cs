@@ -9,12 +9,12 @@ using System.Linq;
 using TownOfUsReworked.Patches;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
 using TownOfUsReworked.Cosmetics.CustomColors;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.Objects;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -267,9 +267,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     }
 
                     if (hasKilled || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} has killed someone recently!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} has not killed anyone recently!");
                 }
 
                 if (interact[0])
@@ -370,7 +370,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 role.BugUsesLeft--;
                 role.LastBugged = DateTime.UtcNow;
-                role.Bugs.Add(BugExtentions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
+                role.Bugs.Add(BugExtensions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
             else if (__instance == role.TrackButton && revivedRole == RoleEnum.Tracker)
@@ -471,9 +471,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (interact[3])
                 {
                     if ((!role.ClosestPlayer.Is(SubFaction.None) && !role.ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName}'s allegience is not where it should be!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName}'s allegience is where it should be!");
                 }
 
                 if (interact[0])
@@ -498,9 +498,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     var targetRoleCount = Role.GetRole(role.ClosestPlayer).RoleHistory.Count;
 
                     if (targetRoleCount > 0 || role.ClosestPlayer.IsFramed())
-                        Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                        Utils.Flash(Color.red, $"{role.ClosestPlayer.Data.PlayerName} has changed their identity!");
                     else
-                        Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                        Utils.Flash(Color.green, $"{role.ClosestPlayer.Data.PlayerName} has not changed their identity yet!");
                 }
 
                 if (interact[0])

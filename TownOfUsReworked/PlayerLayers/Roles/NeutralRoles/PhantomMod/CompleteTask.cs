@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -21,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     if (player == PlayerControl.LocalPlayer)
-                        Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                        Utils.Flash(role.Color, "A <color=#45076AFF>Phantom</color> is nearly done with their tasks!");
                 }
             }
 

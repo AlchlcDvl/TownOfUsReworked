@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
             var role = Role.GetRole<Chameleon>(PlayerControl.LocalPlayer);
 
             if (role.SwoopButton == null)
-                role.SwoopButton = Utils.InstantiateButton();
+                role.SwoopButton = CustomButtons.InstantiateButton();
 
             role.SwoopButton.UpdateButton(role, "SWOOP", role.SwoopTimer(), CustomGameOptions.SwoopCooldown, AssetManager.Swoop, AbilityTypes.Effect, "ActionSecondary", role.IsSwooped,
                 role.TimeRemaining, CustomGameOptions.SwoopDuration, true, !role.IsSwooped);

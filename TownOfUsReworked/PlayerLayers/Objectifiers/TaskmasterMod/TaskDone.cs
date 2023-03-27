@@ -2,7 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
@@ -20,22 +20,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
 
             var role = Objectifier.GetObjectifier<Taskmaster>(__instance);
 
-            if (role == null)
-                return;
-
             if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
+                    Utils.Flash(role.Color, "You are almost done with tasks!");
+                else if (PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil))
+                    Utils.Flash(role.Color, "There is a <color=#ABABFFFF>Taskmaster</color> on the loose!");
+                else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
+                    PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros))
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(Color.green));
-                }
-                else if (PlayerControl.LocalPlayer.Is(Faction.Crew))
-                {
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
-                }
-                else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate))
-                {
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "There is a <color=#ABABFFFF>Taskmaster</color> on the loose!");
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -46,11 +40,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                     role.ImpArrows.Add(arrow);
                 }
             }
-
-            if (role.TasksDone)
+            else if (role.TasksDone)
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
-                    Coroutines.Start(Utils.FlashCoroutine(Color.green));
+                    Utils.Flash(role.Color, "Done!");
 
                 role.WinTasksDone = true;
             }

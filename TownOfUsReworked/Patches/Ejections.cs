@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
@@ -73,9 +73,7 @@ namespace TownOfUsReworked.Patches
                         ejectString = $"{player.name} is now off to a scuba adventure.";
                 }
                 else
-                {
                     ejectString = $"{player.name} was ejected.";
-                }
 
                 __instance.completeString = ejectString;
             }
@@ -91,16 +89,11 @@ namespace TownOfUsReworked.Patches
                         ejectString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
                 }
                 else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                {
                     ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
-                }
+                else if (!player.Is(SubFaction.None))
+                    ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
                 else
-                {
-                    if (!player.Is(SubFaction.None))
-                        ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
-                    else
-                        ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
-                }
+                    ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
 
                 __instance.ImpostorText.text = totalEvils;
                 __instance.completeString = ejectString;

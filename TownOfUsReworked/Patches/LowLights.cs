@@ -3,6 +3,8 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -11,7 +13,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameData.PlayerInfo player, ref float __result)
         {
-            if (GameStates.IsHnS)
+            if (ConstantVariables.IsHnS)
             {
                 if (GameOptionsManager.Instance.currentHideNSeekGameOptions.useFlashlight)
                 {
@@ -20,13 +22,10 @@ namespace TownOfUsReworked.Patches
                     else
                         __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewmateFlashlightSize;
                 }
+                else if (player.IsImpostor())
+                    __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorLightMod;
                 else
-                {
-                    if (player.IsImpostor())
-                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorLightMod;
-                    else
-                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewLightMod;
-                }
+                    __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewLightMod;
 
                 return false;
             }

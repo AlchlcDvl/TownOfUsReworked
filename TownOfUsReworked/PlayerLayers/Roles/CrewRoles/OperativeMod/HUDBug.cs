@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
             var role = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
 
             if (role.BugButton == null)
-                role.BugButton = Utils.InstantiateButton();
+                role.BugButton = CustomButtons.InstantiateButton();
 
             role.BugButton.UpdateButton(role, "BUG", role.BugTimer(), CustomGameOptions.BugCooldown, AssetManager.Bug, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
                 role.ButtonUsable);

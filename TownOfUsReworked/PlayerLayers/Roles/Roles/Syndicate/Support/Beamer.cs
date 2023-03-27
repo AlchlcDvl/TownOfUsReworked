@@ -11,6 +11,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -49,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBeamed;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.BeamCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.BeamCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -132,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.LocalPlayer.PlayerId == TP1.PlayerId || PlayerControl.LocalPlayer.PlayerId == TP2.PlayerId)
             {
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Beamer));
+                Utils.Flash(Colors.Beamer, "You were beamed to an unknown location!");
 
                 if (Minigame.Instance)
                     Minigame.Instance.Close();

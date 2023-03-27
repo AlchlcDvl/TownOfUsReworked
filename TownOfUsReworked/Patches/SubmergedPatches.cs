@@ -3,6 +3,7 @@ using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -14,7 +15,7 @@ namespace TownOfUsReworked.Patches
             public static void Postfix()
             {
                 if (SubmergedCompatibility.IsSubmerged())
-                    Coroutines.Start(SubmergedCompatibility.WaitStart(SubmergedCompatibility.ResetTimers));
+                    Coroutines.Start(SubmergedCompatibility.WaitStart(() => SubmergedCompatibility.ResetTimers(false)));
             }
         }
 

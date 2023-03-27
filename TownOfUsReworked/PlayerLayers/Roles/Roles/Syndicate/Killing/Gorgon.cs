@@ -1,6 +1,7 @@
 using TownOfUsReworked.Enums;
 using System.Collections.Generic;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 using System;
 using TownOfUsReworked.CustomOptions;
 
@@ -30,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastGazed;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.GazeCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GazeCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

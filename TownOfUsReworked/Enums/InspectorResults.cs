@@ -20,6 +20,7 @@ namespace TownOfUsReworked.Enums
         CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
         DropsItems, //Bomber, Operative, Grenadier
         Ghostly, //Revealer, Phantom, Banshee, Ghoul
+
         None
     }
 }

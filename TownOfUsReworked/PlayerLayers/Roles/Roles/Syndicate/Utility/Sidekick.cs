@@ -2,6 +2,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -36,10 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             role.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Rebel, "You have been promoted to <color=#FFFCCEFF>Rebel</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

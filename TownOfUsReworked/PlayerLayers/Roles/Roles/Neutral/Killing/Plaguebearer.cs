@@ -7,6 +7,9 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -35,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInfected;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -72,11 +75,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var role = new Pestilence(Player);
             role.RoleUpdate(this);
 
+            if (Player == PlayerControl.LocalPlayer)
+                Utils.Flash(Colors.Pestilence, "Everyone has been infected, you feel your body transforming!");
+
             if (CustomGameOptions.PlayersAlerted)
-                Coroutines.Start(Utils.FlashCoroutine(Color));
+                Utils.Flash(Colors.Pestilence, "A plague has spread within the crew, summoning <color=#424242FF>Pestilence</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

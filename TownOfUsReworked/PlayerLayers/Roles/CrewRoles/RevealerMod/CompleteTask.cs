@@ -5,6 +5,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
@@ -21,12 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             if (role.TasksLeft <= CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
             {
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "You are almost finished with tasks!");
                 else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || (PlayerControl.LocalPlayer.Is(Faction.Neutral) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                 {
                     role.Revealed = true;
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "A <color=#D3D3D3FF>Revealer</color> nearly finished with their tasks!");
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -37,15 +38,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     role.ImpArrows.Add(arrow);
                 }
             }
-
-            if (role.TasksDone && !role.Caught)
+            else if (role.TasksDone && !role.Caught)
             {
                 role.CompletedTasks = true;
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
                     (PlayerControl.LocalPlayer.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals))
                 {
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "The <color=#D3D3D3FF>Revealer</color> has finished their tasks!");
                 }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

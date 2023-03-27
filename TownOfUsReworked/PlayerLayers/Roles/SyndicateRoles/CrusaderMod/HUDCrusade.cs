@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
             var role = Role.GetRole<Crusader>(PlayerControl.LocalPlayer);
 
             if (role.CrusadeButton == null)
-                role.CrusadeButton = Utils.InstantiateButton();
+                role.CrusadeButton = CustomButtons.InstantiateButton();
 
             role.CrusadeButton.UpdateButton(role, "CRUSADE", role.CrusadeTimer(), CustomGameOptions.CrusadeCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary",
                 role.OnCrusade, role.TimeRemaining, CustomGameOptions.CrusadeDuration, true, !role.OnCrusade);

@@ -9,6 +9,8 @@ using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 using Reactor.Networking.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -210,12 +212,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(role.Player, player);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.JanitorClean);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write((byte)ActionsRPC.FadeBody);
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Coroutines.Start(Coroutine.CleanCoroutine(role.CurrentTarget, role));
+                Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
                 role.LastCleaned = DateTime.UtcNow;
 
                 if (CustomGameOptions.JaniCooldownsLinked)
@@ -439,10 +439,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             mafioso.RoleUpdate(formerRole);
 
             if (target == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Mafioso));
+                Utils.Flash(Colors.Mafioso, "You have been promoted to <color=#6400FFFF>Mafioso</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone changed their identity!");
         }
 
         public static void SpawnVent(int ventId, Godfather role, Vector2 position, float zAxis)

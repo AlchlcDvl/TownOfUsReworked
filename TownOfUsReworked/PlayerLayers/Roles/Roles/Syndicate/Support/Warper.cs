@@ -11,6 +11,8 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -50,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (coordinates.ContainsKey(PlayerControl.LocalPlayer.PlayerId))
             {
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Warper));
+                Utils.Flash(Colors.Warper, "You were warped to an unknown location!");
 
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
@@ -286,7 +288,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastWarped;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.WarpCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.WarpCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

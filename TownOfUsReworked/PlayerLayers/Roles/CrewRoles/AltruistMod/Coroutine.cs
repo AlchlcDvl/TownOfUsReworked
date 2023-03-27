@@ -9,7 +9,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
 {
@@ -29,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Utils.RpcMurderPlayer(role.Player, role.Player);
 
             if (PlayerControl.LocalPlayer.PlayerId == parentId)
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
+                Utils.Flash(Colors.Reanimated, "You are being resurrected!");
 
             if (CustomGameOptions.AltruistTargetBody)
             {
@@ -134,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AltruistMod
                 Arrow.image = renderer;
                 gameObj.layer = 5;
                 Target = player;
-                yield return Utils.FlashCoroutine(role.Color);
+                yield return Utils.FlashCoro(role.Color, "Someone has been revived!");
             }
         }
     }

@@ -2,7 +2,8 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -18,9 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Fanatic";
             SymbolName = "♠";
-            TaskText = Turned
-                ? Objective
-                : "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side.";
+            TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
@@ -35,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             fanatic2.Turned = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Mystic));
+                Utils.Flash(Colors.Mystic, "Someone changed their allegience!");
 
             if (faction == Faction.Syndicate)
             {
@@ -53,6 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             }
 
             fanatic2.Side = faction;
+            fanatic2.TaskText = "";
             fanatic.RegenTask();
         }
 
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Player.RegenTask();
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone changed their identity!");
         }
     }
 }

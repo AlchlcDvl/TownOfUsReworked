@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Linq;
+using TownOfUsReworked.Extensions;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -127,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 Arrow.image = renderer;
                 gameObj.layer = 5;
                 Target = player;
-                yield return Utils.FlashCoroutine(role.Color);
+                yield return Utils.FlashCoro(role.Color, "Someone has been revived!");
             }
         }
     }

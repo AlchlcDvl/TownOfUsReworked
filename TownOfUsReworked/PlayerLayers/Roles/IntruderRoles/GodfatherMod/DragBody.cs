@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -14,6 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 return;
 
             var role = Role.GetRole<Godfather>(__instance);
+
+            if (role.FormerRole?.RoleType != RoleEnum.Undertaker)
+                return;
+
             var body = role.CurrentlyDragging;
 
             if (body == null)
@@ -26,9 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 return;
             }
 
-            var currentPosition = __instance.GetTruePosition();
+            var truePosition = __instance.GetTruePosition();
             var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
-            Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3) + body.myCollider.offset;
+            Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3f) + body.myCollider.offset;
+            newPos.z = 0.02f;
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
             //AD: idk ¯\_(ツ)_/¯
@@ -40,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     newPos.z = -0.0273f;
             }
 
-            if (!PhysicsHelpers.AnythingBetween(currentPosition, newPos, Constants.ShipAndObjectsMask, false))
+            if (!PhysicsHelpers.AnythingBetween(truePosition, newPos, Constants.ShipAndObjectsMask, false))
                 body.transform.position = newPos;
 
             if (!__instance.AmOwner)

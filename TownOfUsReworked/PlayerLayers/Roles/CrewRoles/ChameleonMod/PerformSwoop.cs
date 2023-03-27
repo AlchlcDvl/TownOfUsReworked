@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
                     return false;
 
                 role.TimeRemaining = CustomGameOptions.SwoopDuration;
-                role.Player.RegenTask();
                 role.Invis();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Swoop);

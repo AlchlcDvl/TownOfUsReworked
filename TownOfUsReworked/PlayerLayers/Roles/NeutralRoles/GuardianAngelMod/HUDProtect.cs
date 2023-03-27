@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
                 return;
 
             if (role.ProtectButton == null)
-                role.ProtectButton = Utils.InstantiateButton();
+                role.ProtectButton = CustomButtons.InstantiateButton();
 
             role.ProtectButton.UpdateButton(role, "PROTECT", role.ProtectTimer(), CustomGameOptions.ProtectCd, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", null,
                 role.ButtonUsable && role.TargetAlive, !role.Protecting, role.Protecting, role.TimeRemaining, CustomGameOptions.ProtectDuration, role.ButtonUsable, role.UsesLeft,

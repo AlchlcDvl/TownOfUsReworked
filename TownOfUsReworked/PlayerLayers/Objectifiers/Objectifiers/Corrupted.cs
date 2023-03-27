@@ -1,7 +1,7 @@
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 using System;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Corrupted";
             SymbolName = "δ";
-            TaskText = "- Kill everyone!";
+            TaskText = "- Kill everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
         }

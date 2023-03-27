@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             var role = Role.GetRole<Dracula>(PlayerControl.LocalPlayer);
 
             if (role.BiteButton == null)
-                role.BiteButton = Utils.InstantiateButton();
+                role.BiteButton = CustomButtons.InstantiateButton();
 
             var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.Converted.Contains(player.PlayerId)).ToList();
             role.BiteButton.UpdateButton(role, "BITE", role.ConvertTimer(), CustomGameOptions.BiteCd, AssetManager.Bite, AbilityTypes.Direct, "ActionSecondary", notVamp,

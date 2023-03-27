@@ -1,6 +1,6 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DeadBody CurrentTarget;
         public bool ReviveUsed;
         public AbilityButton ReviveButton;
+        public Vent ClosestVent;
 
         public Altruist(PlayerControl player) : base(player)
         {

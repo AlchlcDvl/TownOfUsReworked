@@ -16,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
         public static void Postfix()
         {
-            if (GameStates.IsLobby || GameStates.IsEnded)
-                return;
-
             CamouflagerEnabled = false;
             CommsEnabled = false;
 

@@ -1,7 +1,7 @@
 using System;
 using HarmonyLib;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,7 +10,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(HudManager __instance)
         {
-            if (GameStates.IsInGame && ShipStatus.Instance != null)
+            if (ConstantVariables.IsInGame && ShipStatus.Instance != null)
             {
                 if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
                 {

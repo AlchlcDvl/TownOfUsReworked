@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
             var role = Role.GetRole<Grenadier>(PlayerControl.LocalPlayer);
 
             if (role.FlashButton == null)
-                role.FlashButton = Utils.InstantiateButton();
+                role.FlashButton = CustomButtons.InstantiateButton();
 
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = (bool)system?.dummy.IsActive;

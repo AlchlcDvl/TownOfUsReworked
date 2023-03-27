@@ -4,6 +4,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -105,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Persuaded.Add(playerConversion.Item1);
 
                         if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                            Coroutines.Start(Utils.FlashCoroutine(Color));
+                            Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
                     }
                     else if (!Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
                         Utils.RpcMurderPlayer(Player, Utils.PlayerById(playerConversion.Item1), false);

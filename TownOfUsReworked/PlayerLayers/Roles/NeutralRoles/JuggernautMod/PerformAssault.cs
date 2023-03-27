@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JuggernautMod
                     role.JuggKills++;
 
                 if (role.JuggKills == 4)
-                    Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                    Utils.Flash(role.Color, "You can now bypass protections!");
 
                 if (interact[0])
                     role.LastKilled = DateTime.UtcNow;

@@ -3,7 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                             Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer);
 
                         if (role.Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
-                            Coroutines.Start(Utils.FlashCoroutine(role.Color));
+                            Utils.Flash(role.Color, "Your target was innocent!");
                         else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                             role.InnoMessage = true;
 

@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
@@ -16,12 +17,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
 
             if (role.BombButton == null)
-                role.BombButton = Utils.InstantiateButton();
+                role.BombButton = CustomButtons.InstantiateButton();
 
             role.BombButton.UpdateButton(role, "PLANT", role.BombTimer(), CustomGameOptions.BombCooldown, AssetManager.Plant, AbilityTypes.Effect, "Secondary");
 
             if (role.DetonateButton == null)
-                role.DetonateButton = Utils.InstantiateButton();
+                role.DetonateButton = CustomButtons.InstantiateButton();
 
             role.DetonateButton.UpdateButton(role, "DETONATE", role.DetonateTimer(), CustomGameOptions.DetonateCooldown, AssetManager.Detonate, AbilityTypes.Effect, "Tertiary",
                 role.Bombs.Count > 0);

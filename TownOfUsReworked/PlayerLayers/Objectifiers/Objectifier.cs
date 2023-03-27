@@ -8,6 +8,8 @@ using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -31,8 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         protected Objectifier(PlayerControl player) : base(player)
         {
-            Player = player;
-
             if (ObjectifierDictionary.ContainsKey(player.PlayerId))
                 ObjectifierDictionary.Remove(player.PlayerId);
 
@@ -110,24 +110,22 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return objectifier;
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (Utils.CorruptedWin(Player))
+            if (ConstantVariables.CorruptedWin(Player))
             {
                 CorruptedWins = true;
 
                 if (CustomGameOptions.AllCorruptedWin)
                 {
-                    foreach (Corrupted corr in GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
+                    foreach (var corr in GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
                         corr.Winner = true;
                 }
                 else
-                {
                     Winner = true;
-                }
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CorruptedWin);
@@ -137,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.LoversWin(Player))
+            else if (ConstantVariables.LoversWin(Player))
             {
                 LoveWins = true;
                 Winner = true;
@@ -149,7 +147,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.RivalsWin(Player))
+            else if (ConstantVariables.RivalsWin(Player))
             {
                 RivalWins = true;
                 Winner = true;
@@ -175,7 +173,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 OverlordWins = true;
 
-                foreach (Overlord ov in GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
+                foreach (var ov in GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
                 {
                     if (ov.IsAlive)
                         ov.Winner = true;
@@ -200,13 +198,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
             public static bool Prefix(LogicGameFlowNormal __instance)
             {
-                if (GameStates.IsHnS)
+                if (ConstantVariables.IsHnS)
                     return true;
 
                 if (!AmongUsClient.Instance.AmHost)
                     return false;
 
-                if (Utils.NoOneWins())
+                if (ConstantVariables.NoOneWins)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.NobodyWins);
@@ -225,7 +223,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                     }
                 }
 
-                return Utils.GameHasEnded();
+                return ConstantVariables.GameHasEnded;
             }
         }
     }

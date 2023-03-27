@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.Patches
 {
-    internal static class TaskPatches
+    public static class TaskPatches
     {
         [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
         public static class GameData_RecomputeTaskCounts
@@ -18,8 +18,8 @@ namespace TownOfUsReworked.Patches
                 {
                     var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() &&
-                        !(playerInfo._object.Is(ObjectifierEnum.Lovers) || (playerInfo._object.Is(RoleEnum.Revealer) && playerInfo.IsDead)))
+                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() && !(playerInfo.IsDead &&
+                        playerInfo._object.Is(RoleEnum.Revealer)))
                     {
                         for (var j = 0; j < playerInfo.Tasks.Count; j++)
                         {

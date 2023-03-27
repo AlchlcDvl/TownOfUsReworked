@@ -7,6 +7,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Patches;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {

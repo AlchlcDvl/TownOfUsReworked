@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
@@ -11,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         public static void Postfix()
         {
-            if (GameStates.IsEnded || GameStates.IsLobby)
+            if (ConstantVariables.IsEnded || ConstantVariables.IsLobby)
                 return;
 
             foreach (var role in Role.GetRoles(RoleEnum.Revealer))

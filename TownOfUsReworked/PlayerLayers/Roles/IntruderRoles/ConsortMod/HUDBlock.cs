@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             var role = Role.GetRole<Consort>(PlayerControl.LocalPlayer);
 
             if (role.BlockButton == null)
-                role.BlockButton = Utils.InstantiateButton();
+                role.BlockButton = CustomButtons.InstantiateButton();
 
             role.BlockButton.UpdateButton(role, "BLOCK", role.RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null,
                 true, !role.Blocking, role.Blocking, role.TimeRemaining, CustomGameOptions.ConsRoleblockDuration);

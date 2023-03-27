@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Enums;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod

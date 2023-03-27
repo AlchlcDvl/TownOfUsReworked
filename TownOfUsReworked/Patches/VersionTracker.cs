@@ -1,7 +1,7 @@
 using HarmonyLib;
 using UnityEngine;
 using TMPro;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.Patches
                 $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.versionFinal}</color>\n" : "")}" +
                 $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
                 $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (TownOfUsReworked.MCIActive ?
-                (GameStates.IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "");
+                (ConstantVariables.IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "");
         }
     }
 }

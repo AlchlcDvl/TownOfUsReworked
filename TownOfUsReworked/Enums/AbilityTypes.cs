@@ -5,6 +5,7 @@ namespace TownOfUsReworked.Enums
         Direct,
         Dead,
         Effect,
+        Vent,
 
         None
     }

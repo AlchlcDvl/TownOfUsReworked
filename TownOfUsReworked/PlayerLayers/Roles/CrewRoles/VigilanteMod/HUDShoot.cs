@@ -2,6 +2,7 @@
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
             var role = Role.GetRole<Vigilante>(PlayerControl.LocalPlayer);
 
             if (role.ShootButton == null)
-                role.ShootButton = Utils.InstantiateButton();
+                role.ShootButton = CustomButtons.InstantiateButton();
 
             role.ShootButton.UpdateButton(role, "SHOOT", role.KillTimer(), CustomGameOptions.VigiKillCd, AssetManager.Shoot, AbilityTypes.Direct, "ActionSecondary", true, role.UsesLeft,
                 role.ButtonUsable, role.ButtonUsable && !role.KilledInno);

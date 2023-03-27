@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
             var role = Role.GetRole<Banshee>(PlayerControl.LocalPlayer);
 
             if (role.ScreamButton == null)
-                role.ScreamButton = Utils.InstantiateButton();
+                role.ScreamButton = CustomButtons.InstantiateButton();
 
             role.ScreamButton.UpdateButton(role, "SCREAM", role.ScreamTimer(), CustomGameOptions.ScreamCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary",
                 null, true, !role.Screaming, role.Screaming, role.TimeRemaining, CustomGameOptions.ScreamDuration, false, 0, true);

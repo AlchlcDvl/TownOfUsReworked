@@ -4,7 +4,7 @@
 
 ![LOGO](./Images/ToU-Rew.png)
 
-An Among Us mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
+An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
@@ -28,47 +28,47 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
 |------------------------------|-------------------------------|---------------------|----------------------------|
-| [Ambusher](#ambusher) | [Anarchist](#anarchist) | [Agent](#agent) | [Actor](#actor) |
-| [Blackmailer](#blackmailer) | [Banshee](#banshee) | [Altruist](#altruist) | [Amnesiac](#amnesiac) |
-| [Camouflager](#camouflager) | [Beamer](#beamer) | [Chameleon](#chameleon) | [Arsonist](#arsonist) |
-| [Consigliere](#consigliere) | [Bomber](#bomber) | [Coroner](#coroner) | [Betrayer](betrayer) |
-| [Consort](#consort) | [Concealer](#concealer) | [Crewmate](#crewmate) | [Bounty Hunter](#bounty-hunter) |
-| [Disguiser](#disguiser) | [Crusader](#crusader) | [Detective](#detective) | [Cannibal](#cannibal) |
-| [Ghoul](#ghoul) | [Drunkard](#drunkard) | [Engineer](#engineer) | [Cryomaniac](#cryomaniac) |
-| [Godfather](#godfather) | [Framer](#framer) | [Escort](#escort) | [Dracula](#dracula) |
-| [Grenadier](#grenadier) | [Gorgon](#gorgon) | [Inspector](#inspector) | [Executioner](#executioner) |
-| [Impostor](#impostor) | [Poisoner](#poisoner) | [Mayor](#mayor) | [Glitch](#glitch) |
-| [Janitor](#janitor) | [Rebel](#rebel) | [Medic](#medic) | [Guardian Angel](#guardian-angel) |
-| [Mafioso](#mafioso) | [Shapeshifter](#shapeshifter) | [Medium](#medium) | [Guesser](#guesser) |
-| [Miner](#miner) | [Sidekick](#sidekick) | [Mystic](#mystic) | [Jackal](#jackal) |
-| [Morphling](#morphling) | [Warper](#warper) | [Operative](#operative) | [Jester](#jester) |
-| [Teleporter](#teleporter) |  | [Retributionist](#retributionist) | [Juggernaut](#juggernaut) |
-| [Time Master](#time-master) |  | [Revealer](#revealer) | [Murderer](#murderer) |
-| [Undertaker](#undertaker) |  | [Seer](#seer) | [Necromancer](#necromancer) |
-| [Wraith](#wraith) |  | [Sheriff](#sheriff) | [Pestilence](#pestilence) |
-|  |  | [Shifter](#shifter) | [Phantom](#phantom) |
-|  |  | [Swapper](#swapper) | [Plaguebearer](#plaguebearer) |
-|  |  | [Time Lord](#time-lord) | [Serial Killer](#serial-killer) |
-|  |  | [Tracker](#tracker) | [Survivor](#survivor) |
-|  |  | [Transporter](#transporter) | [Thief](#thief) |
-|  |  | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf) |
-|  |  | [Veteran](#veteran) | [Whisperer](#whisperer) |
-|  |  | [Vigilante](#vigilante) |  |
+| [Ambusher](#ambusher)       | [Anarchist](#anarchist)       | [Agent](#agent)                   | [Actor](#actor)                   |
+| [Blackmailer](#blackmailer) | [Banshee](#banshee)           | [Altruist](#altruist)             | [Amnesiac](#amnesiac)             |
+| [Camouflager](#camouflager) | [Beamer](#beamer)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             |
+| [Consigliere](#consigliere) | [Bomber](#bomber)             | [Coroner](#coroner)               | [Betrayer](betrayer)              |
+| [Consort](#consort)         | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |
+| [Disguiser](#disguiser)     | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |
+| [Ghoul](#ghoul)             | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
+| [Godfather](#godfather)     | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
+| [Grenadier](#grenadier)     | [Gorgon](#gorgon)             | [Inspector](#inspector)           | [Executioner](#executioner)       |
+| [Impostor](#impostor)       | [Poisoner](#poisoner)         | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
+| [Janitor](#janitor)         | [Rebel](#rebel)               | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso)         | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guesser](#guesser)               |
+| [Miner](#miner)             | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Jackal](#jackal)                 |
+| [Morphling](#morphling)     | [Warper](#warper)             | [Operative](#operative)           | [Jester](#jester)                 |
+| [Teleporter](#teleporter)   |                               | [Retributionist](#retributionist) | [Juggernaut](#juggernaut)         |
+| [Time Master](#time-master) |                               | [Revealer](#revealer)             | [Murderer](#murderer)             |
+| [Undertaker](#undertaker)   |                               | [Seer](#seer)                     | [Necromancer](#necromancer)       |
+| [Wraith](#wraith)           |                               | [Sheriff](#sheriff)               | [Pestilence](#pestilence)         |
+|                             |                               | [Shifter](#shifter)               | [Phantom](#phantom)               |
+|                             |                               | [Swapper](#swapper)               | [Plaguebearer](#plaguebearer)     |
+|                             |                               | [Time Lord](#time-lord)           | [Serial Killer](#serial-killer)   |
+|                             |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |
+|                             |                               | [Transporter](#transporter)       | [Thief](#thief)                   |
+|                             |                               | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf)             |
+|                             |                               | [Veteran](#veteran)               | [Whisperer](#whisperer)           |
+|                             |                               | [Vigilante](#vigilante)           |                                   |
 
 | [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
 |-------------------------|-------------------------|-------------------------------|
-| [Bait](#bait) | [Assassin](#assassin) | [Allied](#allied) |
-| [Coward](#coward) | [Button Barry](#button-barry) | [Corrupted](#corrupted) |
-| [Diseased](#diseased) | [Insider](#insider) | [Fanatic](#fanatic) |
-| [Drunk](#drunk) | [Multitasker](#multitasker) | [Lovers](#lovers) |
-| [Dwarf](#dwarf) | [Ninja](#ninja) | [Overlord](#overlord) |
-| [Flincher](#flincher) | [Radar](#radar) | [Rivals](#rivals) |
-| [Giant](#giant) | [Ruthless](#ruthless) | [Taskmaster](#taskmaster) |
-| [Indomitable](#indomitable) | [Snitch](#snitch) | [Traitor](#traitor) |
-| [Professional](#professional) | [Tiebreaker](#tiebreaker) |  |
-| [Shy](#shy) | [Torch](#torch) |  |
-| [VIP](#vip) | [Tunneler](#tunneler) |  |
-| [Volatile](#volatile) | [Underdog](#underdog) |  |
+| [Bait](#bait)                 | [Assassin](#assassin)         | [Allied](#allied)         |
+| [Coward](#coward)             | [Button Barry](#button-barry) | [Corrupted](#corrupted)   |
+| [Diseased](#diseased)         | [Insider](#insider)           | [Fanatic](#fanatic)       |
+| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Lovers](#lovers)         |
+| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Overlord](#overlord)     |
+| [Flincher](#flincher)         | [Radar](#radar)               | [Rivals](#rivals)         |
+| [Giant](#giant)               | [Ruthless](#ruthless)         | [Taskmaster](#taskmaster) |
+| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Traitor](#traitor)       |
+| [Professional](#professional) | [Tiebreaker](#tiebreaker)     |                           |
+| [Shy](#shy)                   | [Torch](#torch)               |                           |
+| [VIP](#vip)                   | [Tunneler](#tunneler)         |                           |
+| [Volatile](#volatile)         | [Underdog](#underdog)         |                           |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
@@ -85,7 +85,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 [**Extras**](#extras)
 - [New Colors](#new-colors)
 - [Custom Hats](#custom-hats)
-- [Bug Reports & Suggestions](#bug--suggestions)
+- [Bug Reports, Suggestions & Additions](#bug--suggestions--additions)
 
 [**Game Info**](#game-info)
 - [Lighter Darker Colors](#lighter-darker-colors)
@@ -101,6 +101,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.2.28 (s & e) | v0.0.2dev7 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev7/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev6 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev6/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev5/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev4/TownOfUsReworked.zip) |
@@ -120,6 +121,26 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.2dev7</summary>
+    <ul> <li>Addition: Some Lore</li> </ul>
+    <ul> <li>Addition: Added framework for translations, feel free to let me know when you want to add a language</li> </ul>
+    <ul> <li>Addition: 1 new nameplate</li> </ul>
+    <ul> <li>Code Change: Chat commands have been optimised</li> </ul>
+    <ul> <li>Code Change: The code was reorganised for better functionality</li> </ul>
+    <ul> <li>Improvement: The in-game wiki is now complete</li> </ul>
+    <ul> <li>Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)</li> </ul>
+    <ul> <li>Improvement: Flashes were changed to inclulde text and work like The Other Roles flashes</li> </ul>
+    <ul> <li>Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees</li> </ul>
+    <ul> <li>Bug Fix: Fixed the win screens not showing up properly</li> </ul>
+    <ul> <li>Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies</li> </ul>
+    <ul> <li>Visual Fix: Fixed outros sometimes not loading correctly</li> </ul>
+    <ul> <li>Modifier Fix: Stopped giving Shy to someone with the Button Barry ability</li> </ul>
+    <ul> <li>Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante</li> </ul>
+    <ul> <li>Ability Fix: Stopped giving Button Barry to someone who cannot button</li> </ul>
+    <ul> <li>Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off</li> </ul>
+    <ul> <li>Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents</li> </ul>
+  </details>
   <details>
     <summary>v0.0.2dev6</summary>
     <ul> <li>Critical Fix: Fixed buttons not working</li> </ul>
@@ -435,8 +456,6 @@ Delete these files and you're good to go!
 | Role/Modifier/Objectifier/Ability Is Unique In All Any | Dictates whether only one of the specified type should spawn in All Any | Toggle | Off |
 
 # Roles
-
------------------------
 
 # Crew Roles
 
@@ -1335,7 +1354,7 @@ The Morphling can morph into another player. At the beginning of each round, the
 ## Teleporter
 ### **Alignment: Intruder (Support)**
 
-The Teleporter can teleport to a marked positions. Once per round, the Teleporter can mark a location which they can then teleport to later in the round.
+The Teleporter can teleport to a marked positions. The Teleporter can mark a location which they can then teleport to later.
 
 ### Game Options
 | Name | Description | Type | Default |
@@ -1517,6 +1536,7 @@ Objectifiers are basically a second objective for the player. They can either ch
 
 ## Allied
 ### Applied To: Neutral (Killing)
+### Win Condition: Win with whichever faction they are aligned with.
 
 An Allied Neutral Killer now sides with either the Crew, the Intruders or the Syndicate. In the case of the latter two, all faction members are shown the Allied player's role, and can no longer kill them.
 
@@ -1526,20 +1546,21 @@ An Allied Neutral Killer now sides with either the Crew, the Intruders or the Sy
 |------|-------------|------|---------|
 | Allied Faction | Which faction the Allied joins | String | Random |
 
-## Lovers
-### Applied To: Everyone
-### Win Condition: Be 2 of the 3 final players.
+## Corrupted
+### Applied to: Crew
+### Win Condition: Kill everyone.
 
-The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover. Intruders cannot be Lovers with other Intruders.
+The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is a special as not even certain Neutrals are allowed to be spared
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Enable Lovers Chat | Whether the Lovers get a private chat in-between meetings | Toggle | True |
-| Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
+| Corrupted Kill Cooldown | Self descriptive | Time | 25s |
 
 ## Fanatic
+### Applied To: Crew
+### Win Condition: Get attacked by either the Intruders or the Syndicate to join their team.
 
 When attacked, the Fanatic joins whichever faction their attacker belongs to. From then on, their alliance sits with said faction.
 
@@ -1553,35 +1574,35 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 | Turned Fanatic gets Assassin | Whether a turned Fanatic gains the ability to guess | Toggle | False |
 | Turned Fanatic Swaps Colours for Investigative Roles | The Fanatic switches colours | Toggle | False |
 
-## Taskmaster
-### Win Condition: Finish tasks before the game ends or dying.
+## Lovers
+### Applied To: Everyone
+### Win Condition: Be 2 of the 3 final players.
 
-The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
-
-## Traitor
-
-The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction.
-If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
+The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Traitor knows who they are on game start | Whether the Traitor knows who they are | Toggle | True |
-| Snitch Sees Turned Intuder Traitor | Whether the Snitch sees a turned Traitor who has joined the Intruders | Toggle | True |
-| Revealer reveals Turned Traitor | Whether the Rvealer reveals a turned Traitor who has joined the Intruders | Toggle | True |
-| Turned Traitor gets Assassin | Whether a turned Traitor gains the ability to guess | Toggle | False |
-| Turned Traitor Swaps Colours for Investigative Roles | The Traitor switches colours | Toggle | False |
+| Enable Lovers Chat | Whether the Lovers get a private chat in-between meetings | Toggle | True |
+| Both Lovers Die | Whether the other Lover automatically dies if the other does | Toggle | True |
+
+## Overlord
+### Applied To: Neutrals
+### Win Condition: Survive a set amount of meetings.
+
+Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Overlord knows who they are on game start | Whether the Overlord knows who they are | Toggle | True |
+| Overlord Meeting Timer | How many meetings the Overlord must survive | Number | 2 |
 
 ## Rivals
 ### Applied To: Everyone
-### **Win condition: Get your rival killed without directly interfering, then live to the final 2.**
+### Win condition: Get the other rival killed without directly interfering, then live to the final 2.
 
 The Rivals cannot do anything to each other and must get the other one killed.
 
@@ -1593,27 +1614,33 @@ The Rivals cannot do anything to each other and must get the other one killed.
 | Rivals can be from the same faction | Whether both Rivals can be from the same faction | Toggle | False |
 | Rivals know each other's roles | Whether Rivals know each other's roles | Toggle | True |
 
-## Overlord
-### **Win Condition: Survive a set amount of meetings to win.**
+## Taskmaster
+### Applied To: Neutrals
+### Win Condition: Finish tasks before the game ends or dying.
+
+The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Overlord knows who they are on game start | Whether the Overlord knows who they are | Toggle | True |
-| Overlord Meeting Timer | How many meetings the Overlord must survive | Number | 2 |
+| Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
 
-## Corrupted
-### Applied to: Crew
-### **Win Condition: Kill everyone.**
+## Traitor
+### Applies To: Crew
+### Win Condition: Finish tasks to join either the Intruders or Syndicate.
 
-The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button.
+The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Corrupted Kill Cooldown | Self descriptive | Time | 10s |
+| Traitor knows who they are on game start | Whether the Traitor knows who they are | Toggle | True |
+| Snitch Sees Turned Intuder Traitor | Whether the Snitch sees a turned Traitor who has joined the Intruders | Toggle | True |
+| Revealer reveals Turned Traitor | Whether the Rvealer reveals a turned Traitor who has joined the Intruders | Toggle | True |
+| Turned Traitor gets Assassin | Whether a turned Traitor gains the ability to guess | Toggle | False |
+| Turned Traitor Swaps Colours for Investigative Roles | The Traitor switches colours | Toggle | False |
 
 # Modifiers
 Modifiers are passive afflictions that change a player's gameplay.
@@ -1630,27 +1657,10 @@ Killing the Bait makes the killer auto self-report.
 | Bait Minimum Delay | The minimum time the killer of the Bait reports the body | Time | 0s |
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
 
-## Button Barry
-### Applied To: Everyone
-
-Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages.
-They have the same amount of meetings as a regular player.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Percentage | 0% |
-
-## Insider
-### **Applied To: Crew**
-
-The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.
-
 ## Coward
 ### Applied To: Everyone
 
-The Coward cannot report bodies
+The Coward cannot report bodies.
 
 ## Diseased
 ### Applied To: Everyone
@@ -1753,14 +1763,12 @@ Abilities give you extra perks on top of your role's regular powers.
 ## Assassin
 ### Applied To: Intruders, Crew, Syndicate, Neutral (Killing) and Neutral (Neophyte)
 
-The Assassin is given to a certain number of Intruders, Syndicate and/or Neutral Killers.
-This ability gives the Intruder, Syndicate or Neutral Killer a chance to kill during meetings by guessing the roles or modifiers of others.
-If they guess wrong, they die instead.
+The Assassin is given to a certain number of Intruders, Syndicate and/or Neutral Killers. This ability gives the Intruder, Syndicate or Neutral Killer a chance to kill during meetings by guessing the roles or modifiers of others. If they guess wrong, they die instead.
 
 ### Game Options
 
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Number of Intruder Assassins | How many Intruders can Assassinate | Number | 1 |
 | Number of Syndicate Assassins | How many Syndicate members can Assassinate | Number | 1 |
 | Number of Neutral Killing Assassins | How many Neutral Killers can Assassinate | Number | 1 |
@@ -1774,27 +1782,42 @@ If they guess wrong, they die instead.
 | Assassin Can Guess Lovers | Whether the Assassin can Guess Lovers | Toggle | False |
 | Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
 
-## Tiebreaker
+## Button Barry
 ### Applied To: Everyone
 
-If any vote is a draw, the Tiebreaker's vote will go through. If they voted another player, they will get voted out. If the Tiebreaker is the Mayor, it applies to the Mayor's __first__ vote.
+Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a non-critical sabotage will fix the sabotage.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Tiebreaker | The percentage probability of the Tiebreaker appearing | Percentage | 0% |
+| Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Percentage | 0% |
 
-## Torch
-### Applied To: Non-Killers
+## Insider
+### **Applied To: Crew**
 
-The Torch's has high vision that cannot be affected by lights.
+The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.
+
+## Multitasker
+### Applied to: Roles with tasks
+
+When doing tasks, the Multitasker's task window is transparent.
+
+### Game Options
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Transperency | Decides how well can someone see when opening a task | Percentage | 50% |
+
+## Ninja
+### Applied To: Killers
+
+Ninjas don't lunge when killing.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Torch | The percentage probability of the Torch appearing | Percentage | 0% |
+| Ninja knows who they are on game start | Whether the Ninja knows who they are | Toggle | True |
 
 ## Radar
 ### Applied To: Everyone
@@ -1810,7 +1833,7 @@ The Radar always has an arrow pointing towards the nearest player.
 ## Ruthless
 ### Applied To: Killers
 
-The Ruthless ability allows any killer to bypass the protection a shield/vest/alert usually gives a person. Although they bypass alert protection, they will still die to a player on alert.
+A Ruthless killer can bypass all forms of protection. Although they bypass alert protection, they will still die to a player on alert.
 
 ### Game Options
 
@@ -1821,9 +1844,7 @@ The Ruthless ability allows any killer to bypass the protection a shield/vest/al
 ## Snitch
 ### Applied To: Crew
 
-The Snitch is an ability which allows any Crewmate to get arrows pointing towards the Intruders once all their tasks are finished.
-The names of the Intruders will also show up as red on their screen.
-However, when they only have a single task left, the Intruders get an arrow pointing towards the Snitch.
+The Snitch is an ability which allows any Crewmate to get arrows pointing towards the Intruders once all their tasks are finished. The names of the Intruders will also show up as red on their screen. However, when they only have a single task left, the Intruders get an arrow pointing towards the Snitch.
 
 ### Game Options
 
@@ -1836,11 +1857,37 @@ However, when they only have a single task left, the Intruders get an arrow poin
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
 | Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
 
+## Tiebreaker
+### Applied To: Everyone
+
+If any vote is a draw, the Tiebreaker's vote will go through. If they voted another player, they will get voted out. If the Tiebreaker is the Mayor, it applies to the Mayor's __first__ vote.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Tiebreaker | The percentage probability of the Tiebreaker appearing | Percentage | 0% |
+
+## Torch
+### Applied To: Non-Killers
+
+The Torch's has Intruder vision at all times.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Torch | The percentage probability of the Torch appearing | Percentage | 0% |
+
+## Tunneler
+### Applied To: Crew excluding Engineer
+
+The Tunneler will be able to vent when they finish their tasks.
+
 ## Underdog
 ### Applied To: Intruders
 
-The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
-When they are the only remaining Intruder, they will have their kill cooldown shortened.
+The Underdog is an Intruder with a prolonged kill cooldown when with a teammate. When they are the only remaining Intruder, they will have their kill cooldown shortened.
 
 ### Game Options
 
@@ -1849,32 +1896,21 @@ When they are the only remaining Intruder, they will have their kill cooldown sh
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
 | Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when 2+ Imps are alive | Toggle | True |
 
-## Ninja
-### Applied To: Killers
-
-You don't lunge when killing, which allows you to fake Vigilante/Shifter misfires.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Ninja knows who they are on game start | Whether the Ninja knows who they are | Toggle | True |
-
 # Custom Game Settings
 
 ## Game Mode Settings
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Game Mode | What game mode the next game will be | String | Classic |
 
 ## All Any Mode Settings
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Enable Uniques | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
 
 ## Killing Only Mode Settings
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Neutral Roles | How many neutrals roles will spawn | Number | 1 |
 | Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
 | Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
@@ -1882,7 +1918,7 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 
 ## Map Settings
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Map | Selects the next map | String | Skeld |
 | Choose Random Map | Whether the Map is randomly picked at the start of the game | Toggle | False |
 | Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
@@ -1901,7 +1937,7 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 
 ## Better Polus Settings
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Better Polus Vent Layout | Optimizes Vent Layout on Polus | Toggle | False |
 | Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
 | Cole Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
@@ -1909,7 +1945,7 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 
 ## Game Modifiers
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | False |
 | Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
 | Serial Venters | Whether everyone, no one or the default roles can vent | Default / Everyone / No One | Default |
@@ -1917,12 +1953,12 @@ You don't lunge when killing, which allows you to fake Vigilante/Shifter misfire
 
 ## Custom Game Options
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Game Start Cooldowns | The cooldown for all roles at the start of the game | Time | 10s |
 
 ## Quality Changes
 | Name | Description | Type | Default |
-|----------|---------------|--------|--------|
+|------|-------------|------|---------|
 | Impostors can see the roles of their team | Whether Impostors are able to see which Impostor roles their teammates have | Toggle | False |
 | Dead can see everyone's roles and Votes | Whether dead players are able to see the roles and votes of everyone else | Toggle | False |
 | Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
@@ -1942,8 +1978,8 @@ New colors are added for crewmates to pick from.
 ## Custom Cosmetics!
 Custom hats, nameplates and visors have been added, made by some very talented artists. These are mostly for streamers.
 
-## Bug / Suggestions
-If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/cd27aDQDY9) or create a ticket on GitHub.
+## Bug / Suggestions / Additions
+If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/cd27aDQDY9) or create an issue or pull request on GitHub.
 
 # Game Info
 
@@ -2004,7 +2040,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 - Each member of this faction has the ability to kill alongside an ability pertaining to their role
 - The main theme of this faction is destruction and raw power
 - This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are
-- The Intruders can sabotage to distract the Crew from their tasks
+- All members can sabotage to distract the Crew from their tasks
 
 **Syndicate**
 - Each member of this faction has a special ability and then after a certain number of meetings, can also kill
@@ -2069,9 +2105,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod\
-[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas and icons for some buttons
-
------------------------
+[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas
 
 # License
 This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System;
 using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
@@ -35,9 +36,9 @@ namespace TownOfUsReworked.Classes
             CheckForUpdate("TOU").GetAwaiter().GetResult();
 
             //Only check of Submerged update if Submerged is already installed
-            string codeBase = Assembly.GetExecutingAssembly().Location;
-            System.UriBuilder uri = new(codeBase);
-            string submergedPath = System.Uri.UnescapeDataString(uri.Path.Replace("TownOfUsReworked", "Submerged"));
+            var codeBase = Assembly.GetExecutingAssembly().Location;
+            UriBuilder uri = new(codeBase);
+            var submergedPath = System.Uri.UnescapeDataString(uri.Path.Replace("TownOfUsReworked", "Submerged"));
 
             if (File.Exists(submergedPath))
                 CheckForUpdate("Submerged").GetAwaiter().GetResult();
@@ -62,9 +63,7 @@ namespace TownOfUsReworked.Classes
                         info = "Unable to auto-update\nPlease update manually";
                 }
                 else
-                {
                     info = "Update might already\nbe in progress";
-                }
             }
             else if (updateType == "Submerged")
             {
@@ -79,16 +78,12 @@ namespace TownOfUsReworked.Classes
                         info = "Unable to auto-update\nPlease update manually";
                 }
                 else
-                {
                     info = "Update might already\nbe in progress";
-                }
             }
             else
-            {
                 return;
-            }
 
-            InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>(_ => SetPopupText(info))));
+            InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => SetPopupText(info))));
         }
 
         public static void ClearOldVersions()
@@ -101,7 +96,7 @@ namespace TownOfUsReworked.Classes
                 foreach (string f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
                     File.Delete(f);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Utils.LogSomething("Exception occured when clearing old versions:\n" + e);
             }
@@ -121,7 +116,7 @@ namespace TownOfUsReworked.Classes
 
                 HttpClient http = new();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
-                var response = await http.GetAsync(new System.Uri(githubURI), HttpCompletionOption.ResponseContentRead);
+                var response = await http.GetAsync(new Uri(githubURI), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
@@ -137,7 +132,7 @@ namespace TownOfUsReworked.Classes
                     return false; // Something went wrong
 
                 var diff = 0;
-                var ver = System.Version.Parse(tagname.Replace("v", ""));
+                var ver = Version.Parse(tagname.Replace("v", ""));
 
                 if (updateType == "TOU")
                 {
@@ -189,7 +184,7 @@ namespace TownOfUsReworked.Classes
                     }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Utils.LogSomething(ex);
             }
@@ -218,7 +213,7 @@ namespace TownOfUsReworked.Classes
             {
                 HttpClient http = new();
                 http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
-                var response = await http.GetAsync(new System.Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
+                var response = await http.GetAsync(new Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
@@ -227,8 +222,8 @@ namespace TownOfUsReworked.Classes
                 }
 
                 string codeBase = Assembly.GetExecutingAssembly().Location;
-                System.UriBuilder uri = new(codeBase);
-                string fullname = System.Uri.UnescapeDataString(uri.Path);
+                UriBuilder uri = new(codeBase);
+                string fullname = Uri.UnescapeDataString(uri.Path);
 
                 if (updateType == "Submerged")
                     fullname = fullname.Replace("TownOfUsReworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
@@ -245,7 +240,7 @@ namespace TownOfUsReworked.Classes
                 ShowPopup(info);
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Utils.LogSomething(ex);
             }

@@ -15,15 +15,14 @@ namespace TownOfUsReworked.Patches
         private static float vision;
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
-        [HarmonyPrefix]
         public static bool Prefix()
         {
             if (AmongUsClient.Instance.AmHost)
             {
-                previousMap = (byte)CustomGameOptions.Map;
+                previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
 
-                var map = (byte)CustomGameOptions.Map == 3 ? (byte)4 : ((byte)CustomGameOptions.Map == 4 ? (byte)5 : (byte)CustomGameOptions.Map);
+                var map = (byte)((int)CustomGameOptions.Map == 3 ? 4 : ((int)CustomGameOptions.Map == 4 ? 5 : (int)CustomGameOptions.Map));
 
                 if (CustomGameOptions.RandomMapEnabled || (map == 5 && !SubmergedCompatibility.Loaded))
                     map = GetRandomMap();
@@ -99,7 +98,7 @@ namespace TownOfUsReworked.Patches
                 totalWeight += CustomGameOptions.RandomMapSubmerged;
 
             if (totalWeight == 0)
-                return (byte)GameOptionsManager.Instance.currentNormalGameOptions.MapId;
+                return (byte)((int)CustomGameOptions.Map == 3 ? 4 : ((int)CustomGameOptions.Map == 4 ? 5 : (int)CustomGameOptions.Map));
 
             float randomNumber = _rnd.Next(0, (int)totalWeight);
 

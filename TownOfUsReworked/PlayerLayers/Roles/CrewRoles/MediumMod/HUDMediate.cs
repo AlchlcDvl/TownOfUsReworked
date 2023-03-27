@@ -3,8 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using System.Linq;
-using System;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
             var role = Role.GetRole<Medium>(PlayerControl.LocalPlayer);
 
             if (role.MediateButton == null)
-                role.MediateButton = Utils.InstantiateButton();
+                role.MediateButton = CustomButtons.InstantiateButton();
 
             role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, AssetManager.Mediate, AbilityTypes.Effect, "ActionSecondary");
 

@@ -4,6 +4,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
 {
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PlaguebearerMod
             var role = Role.GetRole<Plaguebearer>(PlayerControl.LocalPlayer);
 
             if (role.InfectButton == null)
-                role.InfectButton = Utils.InstantiateButton();
+                role.InfectButton = CustomButtons.InstantiateButton();
 
             var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.InfectedPlayers.Contains(player.PlayerId)).ToList();
             role.InfectButton.UpdateButton(role, "INFECT", role.InfectTimer(), CustomGameOptions.InfectCd, AssetManager.Infect, AbilityTypes.Direct, "ActionSecondary", notInfected);

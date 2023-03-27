@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {

@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
@@ -16,13 +17,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             var role = Role.GetRole<Glitch>(PlayerControl.LocalPlayer);
 
             if (role.KillButton == null)
-                role.KillButton = Utils.InstantiateButton();
+                role.KillButton = CustomButtons.InstantiateButton();
 
             if (role.HackButton == null)
-                role.HackButton = Utils.InstantiateButton();
+                role.HackButton = CustomButtons.InstantiateButton();
 
             if (role.MimicButton == null)
-                role.MimicButton = Utils.InstantiateButton();
+                role.MimicButton = CustomButtons.InstantiateButton();
 
             role.MimicButton.UpdateButton(role, "MIMIC", role.MimicTimer(), CustomGameOptions.MimicCooldown, AssetManager.Mimic, AbilityTypes.Effect, "Secondary", role.IsUsingMimic,
                 role.TimeRemaining2, CustomGameOptions.MimicDuration, true, !role.IsUsingMimic);

@@ -12,6 +12,8 @@ using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using System.Collections.Generic;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -23,10 +25,10 @@ namespace TownOfUsReworked.Patches
         [HarmonyPriority(Priority.Last)]
         private static void Postfix()
         {
-            if (GameStates.IsLobby || PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
+            if (ConstantVariables.IsLobby || PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            if (GameStates.IsHnS)
+            if (ConstantVariables.IsHnS)
                 return;
 
             if (MeetingHud.Instance)

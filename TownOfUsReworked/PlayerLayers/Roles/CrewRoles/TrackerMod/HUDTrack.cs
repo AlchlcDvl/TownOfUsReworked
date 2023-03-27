@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
             var role = Role.GetRole<Tracker>(PlayerControl.LocalPlayer);
 
             if (role.TrackButton == null)
-                role.TrackButton = Utils.InstantiateButton();
+                role.TrackButton = CustomButtons.InstantiateButton();
 
             var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.TrackerArrows.ContainsKey(x.PlayerId)).ToList();
             role.TrackButton.UpdateButton(role, "TRACK", role.TrackerTimer(), CustomGameOptions.TrackCd, AssetManager.Track, AbilityTypes.Direct, "ActionSecondary", notTracked,

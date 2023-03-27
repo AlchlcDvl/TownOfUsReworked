@@ -3,6 +3,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
 {
@@ -17,13 +18,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
             var role = Role.GetRole<Morphling>(PlayerControl.LocalPlayer);
 
             if (role.MorphButton == null)
-                role.MorphButton = Utils.InstantiateButton();
+                role.MorphButton = CustomButtons.InstantiateButton();
 
             role.MorphButton.UpdateButton(role, "MORPH", role.MorphTimer(), CustomGameOptions.MorphlingCd, AssetManager.Morph, AbilityTypes.Effect, "Secondary", role.Morphed,
                 role.TimeRemaining, CustomGameOptions.MorphlingDuration, role.SampledPlayer != null, !role.Morphed);
 
             if (role.SampleButton == null)
-                role.SampleButton = Utils.InstantiateButton();
+                role.SampleButton = CustomButtons.InstantiateButton();
 
             var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => role.SampledPlayer?.PlayerId != x.PlayerId).ToList();
             role.SampleButton.UpdateButton(role, "SAMPLE", role.SampleTimer(), CustomGameOptions.SampleCooldown, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", notSampled);

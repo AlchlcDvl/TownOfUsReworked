@@ -4,7 +4,8 @@ using Hazel;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 {
@@ -82,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
                 Utils.RpcMurderPlayer(drac, other);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Coroutines.Start(Utils.FlashCoroutine(dracRole.Color));
+                Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
         }
     }
 }

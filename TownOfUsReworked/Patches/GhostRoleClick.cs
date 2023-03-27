@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using System.Linq;
 using TownOfUsReworked.Enums;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
@@ -36,14 +36,9 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Revealer))
             {
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
-                    PlayerControl.LocalPlayer.Is(Faction.Syndicate)))
-                {
-                    return;
-                }
-
-                if (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && !(PlayerControl.LocalPlayer.Is(Faction.Intruder)||
-                    PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral)))
+                if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
+                    PlayerControl.LocalPlayer.Is(Faction.Syndicate))) || (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew &&
+                    !(PlayerControl.LocalPlayer.Is(Faction.Intruder)|| PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral))))
                 {
                     return;
                 }

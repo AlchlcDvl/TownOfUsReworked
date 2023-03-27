@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             {
                 //Borrowed from The Other Roles to get hats alt shaders to work
                 if (MagicShader == null)
-                    MagicShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
+                    MagicShader = new(Shader.Find("Unlit/PlayerShader"));
 
                 var sprite = GetSprite(id);
                 var a = ScriptableObject.CreateInstance<HatViewData>();

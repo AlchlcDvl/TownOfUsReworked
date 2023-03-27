@@ -1,7 +1,8 @@
 using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -36,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeLordRewindTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var num = (RecordRewind.rewinding ? CustomGameOptions.RewindDuration : Utils.GetModifiedCooldown(CustomGameOptions.RewindCooldown)) * 1000f / (RecordRewind.rewinding ? 3f : 1f);
+            var num = (RecordRewind.rewinding ? CustomGameOptions.RewindDuration : CustomButtons.GetModifiedCooldown(CustomGameOptions.RewindCooldown)) * 1000f / (RecordRewind.rewinding ? 3f : 1f);
             var timespan = utcNow - (RecordRewind.rewinding ? StartRewind : FinishRewind);
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;

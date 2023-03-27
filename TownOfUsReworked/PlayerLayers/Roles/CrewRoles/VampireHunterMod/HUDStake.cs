@@ -3,6 +3,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
             var role = Role.GetRole<VampireHunter>(PlayerControl.LocalPlayer);
 
             if (role.StakeButton == null)
-                role.StakeButton = Utils.InstantiateButton();
+                role.StakeButton = CustomButtons.InstantiateButton();
 
             role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary");
 

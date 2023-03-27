@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
     {
         public static bool Prefix(VitalsMinigame __instance)
         {
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.TimeLord) && !PlayerControl.LocalPlayer.Data.IsDead && Minigame.Instance)
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord) && Minigame.Instance && !PlayerControl.LocalPlayer.Data.IsDead)
                 __instance.Close();
 
             return true;

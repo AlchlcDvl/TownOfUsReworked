@@ -4,6 +4,7 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
@@ -22,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
                 if (role.BombTimer() != 0f)
                     return false;
 
-                role.Bombs.Add(BombExtentions.CreateBomb(PlayerControl.LocalPlayer.GetTruePosition()));
+                role.Bombs.Add(BombExtensions.CreateBomb(PlayerControl.LocalPlayer.GetTruePosition()));
                 role.LastPlaced = DateTime.UtcNow;
 
                 if (CustomGameOptions.BombCooldownsLinked)

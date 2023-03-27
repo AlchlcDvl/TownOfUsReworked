@@ -3,17 +3,17 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
-    internal sealed class Hauntpatch
+    public static class Hauntpatch
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (GameStates.IsHnS)
+            if (ConstantVariables.IsHnS)
                 return true;
 
             if (!CustomGameOptions.DeadSeeEverything)

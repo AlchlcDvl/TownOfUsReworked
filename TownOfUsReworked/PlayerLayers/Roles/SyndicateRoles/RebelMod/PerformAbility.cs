@@ -5,6 +5,8 @@ using Hazel;
 using TownOfUsReworked.CustomOptions;
 using System;
 using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -194,10 +196,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             sidekick.RoleUpdate(formerRole);
 
             if (target == PlayerControl.LocalPlayer)
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Rebel));
+                Utils.Flash(Colors.Rebel, "You have been promoted to <color=#979C9FFF>Sidekick</color>!");
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Seer));
+                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }
 }

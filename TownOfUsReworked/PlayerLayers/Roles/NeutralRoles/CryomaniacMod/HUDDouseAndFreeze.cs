@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
 {
@@ -17,10 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
             var role = Role.GetRole<Cryomaniac>(PlayerControl.LocalPlayer);
 
             if (role.FreezeButton == null)
-                role.FreezeButton = Utils.InstantiateButton();
+                role.FreezeButton = CustomButtons.InstantiateButton();
 
             if (role.DouseButton == null)
-                role.DouseButton = Utils.InstantiateButton();
+                role.DouseButton = CustomButtons.InstantiateButton();
 
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
             role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.CryoDouseCooldown, AssetManager.Douse, AbilityTypes.Direct, "ActionSecondary", notDoused);

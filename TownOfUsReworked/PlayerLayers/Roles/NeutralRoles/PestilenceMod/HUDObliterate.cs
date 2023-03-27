@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PestilenceMod
             var role = Role.GetRole<Pestilence>(PlayerControl.LocalPlayer);
 
             if (role.ObliterateButton == null)
-                role.ObliterateButton = Utils.InstantiateButton();
+                role.ObliterateButton = CustomButtons.InstantiateButton();
 
             role.ObliterateButton.UpdateButton(role, "OBLITERATE", role.KillTimer(), CustomGameOptions.PestKillCd, AssetManager.Obliterate, AbilityTypes.Direct, "ActionSecondary");
         }

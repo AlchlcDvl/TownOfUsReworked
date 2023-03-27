@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -26,14 +27,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (copyRole == RoleEnum.Altruist)
             {
                 if (role.ReviveButton == null)
-                    role.ReviveButton = Utils.InstantiateButton();
+                    role.ReviveButton = CustomButtons.InstantiateButton();
 
                 role.ReviveButton.UpdateButton(role, "REVIVE", 0, 1, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", !role.ReviveUsed);
             }
             else if (copyRole == RoleEnum.Operative)
             {
                 if (role.BugButton == null)
-                    role.BugButton = Utils.InstantiateButton();
+                    role.BugButton = CustomButtons.InstantiateButton();
 
                 role.BugButton.UpdateButton(role, "BUG", role.BugTimer(), CustomGameOptions.BugCooldown, AssetManager.Bug, AbilityTypes.Effect, "ActionSecondary", true, role.BugUsesLeft,
                     role.BugButtonUsable, role.BugButtonUsable);
@@ -41,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Chameleon)
             {
                 if (role.SwoopButton == null)
-                    role.SwoopButton = Utils.InstantiateButton();
+                    role.SwoopButton = CustomButtons.InstantiateButton();
 
                 role.SwoopButton.UpdateButton(role, "SWOOP", role.SwoopTimer(), CustomGameOptions.SwoopCooldown, AssetManager.Swoop, AbilityTypes.Effect, "ActionSecondary", null, true,
                     !role.IsSwooped, role.IsSwooped, role.SwoopTimeRemaining, CustomGameOptions.SwoopDuration);
@@ -49,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Engineer)
             {
                 if (role.FixButton == null)
-                    role.FixButton = Utils.InstantiateButton();
+                    role.FixButton = CustomButtons.InstantiateButton();
 
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
                 var dummyActive = (bool)system?.dummy.IsActive;
@@ -60,12 +61,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Coroner)
             {
                 if (role.AutopsyButton == null)
-                    role.AutopsyButton = Utils.InstantiateButton();
+                    role.AutopsyButton = CustomButtons.InstantiateButton();
 
                 role.AutopsyButton.UpdateButton(role, "AUTOPSY", role.AutopsyTimer(), 10, AssetManager.Placeholder, AbilityTypes.Dead, "ActionSecondary");
 
                 if (role.CompareButton == null)
-                    role.CompareButton = Utils.InstantiateButton();
+                    role.CompareButton = CustomButtons.InstantiateButton();
 
                 role.CompareButton.UpdateButton(role, "COMPARE", role.CompareTimer(), CustomGameOptions.CompareCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null,
                     true, role.CompareUsesLeft, role.ReferenceBody != null, role.CompareButtonUsable);
@@ -107,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Medic)
             {
                 if (role.ShieldButton == null)
-                    role.ShieldButton = Utils.InstantiateButton();
+                    role.ShieldButton = CustomButtons.InstantiateButton();
 
                 var notShielded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != role.ShieldedPlayer).ToList();
                 role.ShieldButton.UpdateButton(role, "SHIELD", 0, 1, AssetManager.Shield, AbilityTypes.Direct, "ActionSecondary", notShielded, !role.UsedAbility);
@@ -115,14 +116,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Detective)
             {
                 if (role.ExamineButton == null)
-                    role.ExamineButton = Utils.InstantiateButton();
+                    role.ExamineButton = CustomButtons.InstantiateButton();
 
                 role.ExamineButton.UpdateButton(role, "EXAMINE", role.ExamineTimer(), CustomGameOptions.ExamineCd, AssetManager.Examine, AbilityTypes.Direct, "ActionSecondary");
             }
             else if (copyRole == RoleEnum.Inspector)
             {
                 if (role.InspectButton == null)
-                    role.InspectButton = Utils.InstantiateButton();
+                    role.InspectButton = CustomButtons.InstantiateButton();
 
                 var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Inspected.Contains(x.PlayerId)).ToList();
                 role.InspectButton.UpdateButton(role, "INSPECT", role.InspectTimer(), CustomGameOptions.InspectCooldown, AssetManager.Inspect, AbilityTypes.Direct, "ActionSecondary",
@@ -131,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Sheriff)
             {
                 if (role.InterrogateButton == null)
-                    role.InterrogateButton = Utils.InstantiateButton();
+                    role.InterrogateButton = CustomButtons.InstantiateButton();
 
                 var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Interrogated.Contains(x.PlayerId)).ToList();
                 role.InterrogateButton.UpdateButton(role, "REVEAL", role.InterrogateTimer(), CustomGameOptions.InterrogateCd, AssetManager.Interrogate, AbilityTypes.Direct, "ActionSecondary",
@@ -140,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Tracker)
             {
                 if (role.TrackButton == null)
-                    role.TrackButton = Utils.InstantiateButton();
+                    role.TrackButton = CustomButtons.InstantiateButton();
 
                 var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.TrackerArrows.ContainsKey(x.PlayerId)).ToList();
                 role.TrackButton.UpdateButton(role, "REVEAL", role.TrackerTimer(), CustomGameOptions.TrackCd, AssetManager.Track, AbilityTypes.Direct, "ActionSecondary", notTracked,
@@ -149,14 +150,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.VampireHunter)
             {
                 if (role.StakeButton == null)
-                    role.StakeButton = Utils.InstantiateButton();
+                    role.StakeButton = CustomButtons.InstantiateButton();
 
                 role.StakeButton.UpdateButton(role, "STAKE", role.StakeTimer(), CustomGameOptions.StakeCooldown, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary");
             }
             else if (copyRole == RoleEnum.Veteran)
             {
                 if (role.AlertButton == null)
-                    role.AlertButton = Utils.InstantiateButton();
+                    role.AlertButton = CustomButtons.InstantiateButton();
 
                 role.AlertButton.UpdateButton(role, "ALERT", role.AlertTimer(), CustomGameOptions.AlertCd, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", null,
                     role.AlertButtonUsable, role.AlertButtonUsable && !role.OnAlert, role.OnAlert, role.AlertTimeRemaining, CustomGameOptions.AlertDuration, true, role.AlertUsesLeft);
@@ -164,7 +165,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Vigilante)
                 {
                 if (role.ShootButton == null)
-                    role.ShootButton = Utils.InstantiateButton();
+                    role.ShootButton = CustomButtons.InstantiateButton();
 
                 role.ShootButton.UpdateButton(role, "SHOOT", role.KillTimer(), CustomGameOptions.VigiKillCd, AssetManager.Shoot, AbilityTypes.Direct, "ActionSecondary", true,
                     role.BulletsLeft, role.ShootButtonUsable, role.ShootButtonUsable);
@@ -172,7 +173,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Medium)
             {
                 if (role.MediateButton == null)
-                    role.MediateButton = Utils.InstantiateButton();
+                    role.MediateButton = CustomButtons.InstantiateButton();
 
                 role.MediateButton.UpdateButton(role, "MEDIATE", role.MediateTimer(), CustomGameOptions.MediateCooldown, AssetManager.Mediate, AbilityTypes.Effect, "ActionSecondary");
 
@@ -205,14 +206,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             else if (copyRole == RoleEnum.Mystic)
             {
                 if (role.RevealButton == null)
-                    role.RevealButton = Utils.InstantiateButton();
+                    role.RevealButton = CustomButtons.InstantiateButton();
 
                 role.RevealButton.UpdateButton(role, "REVEAL", role.RevealTimer(), CustomGameOptions.RevealCooldown, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary");
             }
             else if (copyRole == RoleEnum.Seer)
             {
                 if (role.SeerButton == null)
-                    role.SeerButton = Utils.InstantiateButton();
+                    role.SeerButton = CustomButtons.InstantiateButton();
 
                 role.SeerButton.UpdateButton(role, "SEER", role.SeerTimer(), CustomGameOptions.SeerCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
             }

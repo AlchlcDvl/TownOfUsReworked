@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.TrollMod
             var role = Role.GetRole<Troll>(PlayerControl.LocalPlayer);
 
             if (role.InteractButton == null)
-                role.InteractButton = Utils.InstantiateButton();
+                role.InteractButton = CustomButtons.InstantiateButton();
 
             role.InteractButton.UpdateButton(role, "INTERACT", role.InteractTimer(), CustomGameOptions.InteractCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary");
         }

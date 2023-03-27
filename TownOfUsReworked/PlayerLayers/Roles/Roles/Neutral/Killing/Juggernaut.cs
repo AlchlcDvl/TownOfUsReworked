@@ -1,7 +1,8 @@
 ﻿using System;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -30,8 +31,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = Mathf.Clamp(Utils.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills)), 5, CustomGameOptions.JuggKillCooldown) *
-                1000f;
+            var num = Mathf.Clamp(CustomButtons.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills)), 5,
+                CustomGameOptions.JuggKillCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

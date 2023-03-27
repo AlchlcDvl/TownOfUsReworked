@@ -6,6 +6,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {
@@ -20,12 +21,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
             var role = Role.GetRole<Coroner>(PlayerControl.LocalPlayer);
 
             if (role.AutopsyButton == null)
-                role.AutopsyButton = Utils.InstantiateButton();
+                role.AutopsyButton = CustomButtons.InstantiateButton();
 
             role.AutopsyButton.UpdateButton(role, "AUTOPSY", role.AutopsyTimer(), 10, AssetManager.Placeholder, AbilityTypes.Dead, "ActionSecondary");
 
             if (role.CompareButton == null)
-                role.CompareButton = Utils.InstantiateButton();
+                role.CompareButton = CustomButtons.InstantiateButton();
 
             role.CompareButton.UpdateButton(role, "COMPARE", role.CompareTimer(), CustomGameOptions.CompareCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null,
                 true, role.UsesLeft, role.ReferenceBody != null, role.ButtonUsable);

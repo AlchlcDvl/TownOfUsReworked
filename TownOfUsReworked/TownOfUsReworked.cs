@@ -1,10 +1,7 @@
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Reactor;
@@ -17,6 +14,7 @@ using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfUsReworked.Patches;
+using System.IO;
 
 namespace TownOfUsReworked
 {
@@ -54,8 +52,8 @@ namespace TownOfUsReworked
         public readonly static string Hats = $"{Resources}Hats.";
         public readonly static string Visors = $"{Resources}Visors.";
         public readonly static string Nameplates = $"{Resources}Nameplates.";
+        public readonly static string Languages = $"{Resources}Languages.";
 
-        public static readonly Assembly assembly = Assembly.GetExecutingAssembly();
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
 
         #pragma warning disable
@@ -66,41 +64,24 @@ namespace TownOfUsReworked
 
         private Harmony _harmony;
 
-        public ConfigEntry<string> Ip { get; set; }
-        public ConfigEntry<ushort> Port { get; set; }
-
         public override void Load()
         {
+            Utils.LogSomething("Mod Loading...");
             _harmony = new("TownOfUsReworked");
 
-            var maxImpostors = (Il2CppStructArray<int>) Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
+            var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
             GameOptionsData.MaxImpostors = GameOptionsData.RecommendedImpostors = maxImpostors;
             NormalGameOptionsV07.MaxImpostors = NormalGameOptionsV07.RecommendedImpostors = maxImpostors;
             HideNSeekGameOptionsV07.MaxImpostors = maxImpostors;
 
-            var minPlayers = (Il2CppStructArray<int>) Enumerable.Repeat(1, byte.MaxValue).ToArray();
+            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, byte.MaxValue).ToArray();
             GameOptionsData.MinPlayers = minPlayers;
             NormalGameOptionsV07.MinPlayers = minPlayers;
             HideNSeekGameOptionsV07.MinPlayers = minPlayers;
 
-            Ip = Config.Bind("Custom", "Ipv4 or Hostname", "127.0.0.1");
-            Port = Config.Bind("Custom", "Port", (ushort) 22023);
-            var defaultRegions = ServerManager.DefaultRegions.ToList();
-            _ = Ip.Value;
+            if (!File.Exists("steam_appid.txt"))
+                File.WriteAllText("steam_appid.txt", "945360");
 
-            if (Uri.CheckHostName(Ip.Value).ToString() == "Dns")
-            {
-                foreach (var address in Dns.GetHostAddresses(Ip.Value))
-                {
-                    if (address.AddressFamily != AddressFamily.InterNetwork)
-                        continue;
-
-                    _ = address.ToString();
-                    break;
-                }
-            }
-
-            ServerManager.DefaultRegions = defaultRegions.ToArray();
             SubmergedCompatibility.Initialize();
             PalettePatch.Load();
             Generate.GenerateAll();
@@ -108,6 +89,7 @@ namespace TownOfUsReworked
             AssetManager.Load();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
             _harmony.PatchAll();
+            Utils.LogSomething("Mod Loaded!");
         }
     }
 }

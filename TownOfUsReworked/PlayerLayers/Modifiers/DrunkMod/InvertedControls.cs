@@ -1,6 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
 
@@ -30,11 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.DrunkMod
                         reversed = !reversed;
                     }
                 }
-                else
-                {
-                    if (__instance.AmOwner)
-                        __instance.body.velocity *= -1;
-                }
+                else if (__instance.AmOwner)
+                    __instance.body.velocity *= -1;
             }
         }
     }

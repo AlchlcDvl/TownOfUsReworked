@@ -7,6 +7,7 @@ using TownOfUsReworked.Enums;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {

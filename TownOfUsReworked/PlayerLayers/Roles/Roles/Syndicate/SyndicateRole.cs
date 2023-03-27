@@ -4,6 +4,9 @@ using TownOfUsReworked.Classes;
 using Hazel;
 using System;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -26,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, Utils.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -61,12 +64,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        internal override bool GameEnd(LogicGameFlowNormal __instance)
+        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
 
-            if (IsRecruit && Utils.CabalWin())
+            if (IsRecruit && ConstantVariables.CabalWin)
             {
                 CabalWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -75,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsPersuaded && Utils.SectWin())
+            else if (IsPersuaded && ConstantVariables.SectWin)
             {
                 SectWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -84,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsBitten && Utils.UndeadWin())
+            else if (IsBitten && ConstantVariables.UndeadWin)
             {
                 UndeadWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -93,7 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (IsResurrected && Utils.ReanimatedWin())
+            else if (IsResurrected && ConstantVariables.ReanimatedWin)
             {
                 ReanimatedWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -102,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.EndGame();
                 return false;
             }
-            else if (Utils.SyndicateWins() && NotDefective)
+            else if (ConstantVariables.SyndicateWins && NotDefective)
             {
                 SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);

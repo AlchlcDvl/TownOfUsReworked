@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 using System.Linq;
 using Object = UnityEngine.Object;
 
@@ -18,6 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastEaten;
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public bool EatWin => EatNeed <= 0;
+        public Vent ClosestVent;
 
         public Cannibal(PlayerControl player) : base(player)
         {

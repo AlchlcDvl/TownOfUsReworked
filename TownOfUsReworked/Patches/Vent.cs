@@ -3,7 +3,9 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using AmongUs.GameOptions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -12,13 +14,13 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(HudManager __instance)
         {
-            if (__instance.ImpostorVentButton == null || __instance.ImpostorVentButton.gameObject == null || __instance.ImpostorVentButton.IsNullOrDestroyed())
+            if (ConstantVariables.IsLobby)
                 return;
 
-            bool active = PlayerControl.LocalPlayer != null && Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) && !MeetingHud.Instance && !LobbyBehaviour.Instance;
-
-            if (active != __instance.ImpostorVentButton.gameObject.active)
-                __instance.ImpostorVentButton.gameObject.SetActive(active);
+            __instance.ImpostorVentButton.gameObject.SetActive(Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) || ((PlayerControl.LocalPlayer.Is(RoleEnum.Revealer)
+                || PlayerControl.LocalPlayer.Is(RoleEnum.Phantom) || PlayerControl.LocalPlayer.Is(RoleEnum.Banshee) || PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul)) &&
+                PlayerControl.LocalPlayer.inVent));
+            __instance.ImpostorVentButton.SetTarget(CustomButtons.GetClosestVent(PlayerControl.LocalPlayer));
         }
     }
 
@@ -28,22 +30,18 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse,  [HarmonyArgument(2)] ref bool couldUse,
             ref float __result)
         {
-            float num = float.MaxValue;
-            PlayerControl playerControl = playerInfo.Object;
+            var num = float.MaxValue;
+            var playerControl = playerInfo.Object;
 
-            if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal)
+            if (ConstantVariables.IsNormal)
             {
                 couldUse = Utils.CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) && (playerControl.CanMove
                     || playerControl.inVent);
             }
-            else if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek && playerControl.Data.IsImpostor())
-            {
+            else if (ConstantVariables.IsHnS && playerControl.Data.IsImpostor())
                 couldUse = false;
-            }
             else
-            {
                 couldUse = canUse;
-            }
 
             var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
@@ -92,8 +90,8 @@ namespace TownOfUsReworked.Patches
 
             if (canUse)
             {
-                Vector3 center = playerControl.Collider.bounds.center;
-                Vector3 position = __instance.transform.position;
+                var center = playerControl.Collider.bounds.center;
+                var position = __instance.transform.position;
                 num = Vector2.Distance((Vector2)center, (Vector2)position);
                 canUse = ((canUse ? 1 : 0) & ((double)num > (double)__instance.UsableDistance ? 0 : (!PhysicsHelpers.AnythingBetween(playerControl.Collider, (Vector2)center,
                     (Vector2)position, Constants.ShipOnlyMask, false) ? 1 : 0))) != 0;

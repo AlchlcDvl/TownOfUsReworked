@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -32,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMediated;
-            var num = Utils.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -53,7 +55,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             MediatedPlayers.Add(playerId, arrow);
-            Coroutines.Start(Utils.FlashCoroutine(Color));
+            Utils.Flash(Color, "There's a mediate in progress!");
+        }
+
+        protected internal override void OnLobby()
+        {
+            MediatedPlayers.Values.DestroyAll();
+            MediatedPlayers.Clear();
         }
     }
 }

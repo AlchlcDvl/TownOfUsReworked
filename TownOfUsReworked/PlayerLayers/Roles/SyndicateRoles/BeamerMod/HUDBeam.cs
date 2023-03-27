@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BeamerMod
             var role = Role.GetRole<Beamer>(PlayerControl.LocalPlayer);
 
             if (role.BeamButton == null)
-                role.BeamButton = Utils.InstantiateButton();
+                role.BeamButton = CustomButtons.InstantiateButton();
 
             role.BeamButton.UpdateButton(role, "BEAM", role.BeamTimer(), CustomGameOptions.BeamCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary");
             role.BeamListUpdate(__instance);

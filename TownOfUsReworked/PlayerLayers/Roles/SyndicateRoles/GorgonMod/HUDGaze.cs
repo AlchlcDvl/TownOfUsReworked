@@ -3,6 +3,8 @@ using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
 {
@@ -17,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
             var role = Role.GetRole<Gorgon>(PlayerControl.LocalPlayer);
 
             if (role.GazeButton == null)
-                role.GazeButton = Utils.InstantiateButton();
+                role.GazeButton = CustomButtons.InstantiateButton();
 
             var notGazed = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && !role.Gazed.Contains(x.PlayerId)).ToList();
             role.GazeButton.UpdateButton(role, "GAZE", role.GazeTimer(), CustomGameOptions.GazeCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", notGazed);

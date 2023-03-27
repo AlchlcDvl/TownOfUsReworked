@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
 {
@@ -22,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.RadarMod
 
             foreach (var arrow in radar.RadarArrow)
             {
-                radar.ClosestPlayer = Utils.GetClosestPlayer(PlayerControl.LocalPlayer, null, float.MaxValue);
+                radar.ClosestPlayer = CustomButtons.GetClosestPlayer(PlayerControl.LocalPlayer, null, float.MaxValue);
                 arrow.target = radar.ClosestPlayer.transform.position;
             }
         }

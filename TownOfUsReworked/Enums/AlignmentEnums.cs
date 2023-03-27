@@ -38,8 +38,6 @@ namespace TownOfUsReworked.Enums
         SyndicatePower,
         SyndicateUtil,
 
-        Other,
-
         None
     }
 

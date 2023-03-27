@@ -27,12 +27,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
 
                 Utils.Spread(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId));
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.CannibalEat);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write((byte)ActionsRPC.FadeBody);
                 writer.Write(role.CurrentTarget.ParentId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.LastEaten = DateTime.UtcNow;
-                Coroutines.Start(Coroutine.EatCoroutine(role.CurrentTarget, role));
+                role.EatNeed--;
+                Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
                 return false;
             }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -20,12 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierType = ObjectifierEnum.Lovers;
         }
 
-        public static void Gen(List<PlayerControl> canHaveObjectifiers)
+        public static void Gen(List<PlayerControl> canBeLover)
         {
-            var all = new List<PlayerControl>();
-            all.AddRange(canHaveObjectifiers);
-
-            if (all.Count < 5)
+            if (canBeLover.Count < 5)
                 return;
 
             PlayerControl firstLover = null;
@@ -33,20 +32,20 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             while (firstLover == null || secondLover == null || firstLover == secondLover || (firstLover.GetFaction() == secondLover.GetFaction() && !CustomGameOptions.LoversFaction))
             {
-                all.Shuffle();
+                canBeLover.Shuffle();
 
-                var num = Random.RandomRangeInt(0, all.Count);
-                firstLover = all[num];
+                var num = Random.RandomRangeInt(0, canBeLover.Count);
+                firstLover = canBeLover[num];
 
-                var num2 = Random.RandomRangeInt(0, all.Count);
-                secondLover = all[num2];
+                var num2 = Random.RandomRangeInt(0, canBeLover.Count);
+                secondLover = canBeLover[num2];
             }
-
-            canHaveObjectifiers.Remove(firstLover);
-            canHaveObjectifiers.Remove(secondLover);
 
             var lover1 = new Lovers(firstLover);
             var lover2 = new Lovers(secondLover);
+
+            canBeLover.Remove(firstLover);
+            canBeLover.Remove(secondLover);
 
             lover1.OtherLover = secondLover;
             lover2.OtherLover = firstLover;

@@ -10,6 +10,8 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -17,9 +19,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public abstract class Role : PlayerLayer
     {
         public static readonly Dictionary<byte, Role> RoleDictionary = new();
+        public static List<Role> AllRoles => RoleDictionary.Values.ToList();
         public static readonly List<GameObject> Buttons = new();
         public static readonly Dictionary<int, string> LightDarkColors = new();
         public readonly List<Footprint> AllPrints = new();
+        public readonly static List<(int, byte, bool)> HiddenBodies = new();
+        public readonly static List<Vent> AllVents = new();
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
 
@@ -84,6 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         protected internal bool Base;
 
         protected internal AbilityButton SpectateButton;
+        protected internal AbilityButton PullButton;
 
         protected internal AbilityButton ZoomButton;
         protected internal bool Zooming;
@@ -136,19 +142,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected Role(PlayerControl player) : base(player)
         {
-            Player = player;
-
             if (RoleDictionary.ContainsKey(player.PlayerId))
                 RoleDictionary.Remove(player.PlayerId);
 
             RoleDictionary.Add(player.PlayerId, this);
-            Color = Colors.Role;
+            Color = Colors.Layer;
         }
 
-        public static List<Role> AllRoles => RoleDictionary.Values.ToList();
-
-        public string FactionColorString => "<color=#" + FactionColor.ToHtmlStringRGBA() + ">";
-        public string SubFactionColorString => "<color=#" + SubFactionColor.ToHtmlStringRGBA() + ">";
+        public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
+        public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
 
         private bool Equals(Role other) => Equals(Player, other.Player) && RoleType == other.RoleType;
 
@@ -227,27 +229,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
 
-        public static Role GetRoleValue(RoleEnum roleEnum)
-        {
-            foreach (var role in AllRoles)
-            {
-                if (role.RoleType == roleEnum)
-                    return role;
-            }
+        public static List<Role> GetRoleValue(RoleEnum roleEnum) => AllRoles.Where(x => x.RoleType == roleEnum).ToList();
 
-            return null;
-        }
-
-        public static Role GetRoleFromName(string name)
-        {
-            foreach (var role in AllRoles)
-            {
-                if (role.Name == name)
-                    return role;
-            }
-
-            return null;
-        }
+        public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
 
         public static bool operator == (Role a, Role b)
         {
@@ -278,14 +262,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static List<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results).ToList();
 
-        public static List<Role> GetRoles(string name) => AllRoles.Where(x => x.Name == name).ToList();
-
         [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
         public static class CheckEndGame
         {
             public static bool Prefix(LogicGameFlowNormal __instance)
             {
-                if (GameStates.IsHnS)
+                if (ConstantVariables.IsHnS)
                     return true;
 
                 if (!AmongUsClient.Instance.AmHost)
@@ -299,7 +281,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         crewexists = true;
                 }
 
-                if (Utils.NoOneWins())
+                if (ConstantVariables.NoOneWins)
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.NobodyWins);
@@ -347,7 +329,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             return false;
                     }
 
-                    return Utils.GameHasEnded();
+                    return ConstantVariables.GameHasEnded;
                 }
             }
         }

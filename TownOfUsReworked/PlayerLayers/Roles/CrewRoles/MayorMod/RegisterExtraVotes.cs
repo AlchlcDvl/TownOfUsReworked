@@ -11,6 +11,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -113,20 +114,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
             {
                 foreach (var role in Role.GetRoles(RoleEnum.Mayor))
                 {
-                    if (role is Mayor mayor)
+                    if (role is Mayor mayor && mayor.VotedOnce)
                     {
-                        if (mayor.VotedOnce)
-                        {
-                            var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+                        var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
 
-                            if (mayor.Player == PlayerControl.LocalPlayer)
-                                mayor.VoteBank += votesRegained;
+                        if (mayor.Player == PlayerControl.LocalPlayer)
+                            mayor.VoteBank += votesRegained;
 
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
-                            writer.Write(mayor.Player.PlayerId);
-                            writer.Write(mayor.VoteBank);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
+                        writer.Write(mayor.Player.PlayerId);
+                        writer.Write(mayor.VoteBank);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
             }

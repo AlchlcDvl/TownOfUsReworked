@@ -4,6 +4,7 @@ using System;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using System.Collections.Generic;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {

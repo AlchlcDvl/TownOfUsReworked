@@ -6,6 +6,7 @@ using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
@@ -52,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 amneRole.BodyArrows.Values.DestroyAll();
                 amneRole.BodyArrows.Clear();
                 amneRole.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
-                Coroutines.Start(Utils.FlashCoroutine(amneRole.Color));
+                Utils.Flash(amneRole.Color, "You have attempted to remember who you were!");
             }
 
             Role newRole = role.RoleType switch

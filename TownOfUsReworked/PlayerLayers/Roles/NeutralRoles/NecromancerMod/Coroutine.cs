@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
@@ -11,6 +10,8 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
 using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
@@ -19,22 +20,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
         public static IEnumerator NecromancerResurrect(DeadBody target, Necromancer role)
         {
             var parentId = target.ParentId;
+            var player = Utils.PlayerById(parentId);
             var position = target.TruePosition;
 
             if (!Utils.PlayerById(parentId).Is(SubFaction.None))
             {
-                Coroutines.Start(Utils.FlashCoroutine(Color.red));
+                Utils.Flash(Color.red, $"{player.Data.PlayerName} cannot be resurrected!");
                 yield break;
             }
 
             if (PlayerControl.LocalPlayer.PlayerId == parentId)
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
+                Utils.Flash(Colors.Reanimated, "You are being ressurected!");
 
             role.Resurrecting = true;
 
             if (CustomGameOptions.NecromancerTargetBody)
             {
-                foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+                foreach (var deadBody in Object.FindObjectsOfType<DeadBody>())
                 {
                     if (deadBody.ParentId == parentId)
                         deadBody.gameObject.Destroy();
@@ -60,13 +62,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 }
             }
 
-            foreach (DeadBody deadBody in GameObject.FindObjectsOfType<DeadBody>())
+            foreach (var deadBody in Object.FindObjectsOfType<DeadBody>())
             {
                 if (deadBody.ParentId == role.Player.PlayerId)
                     deadBody.gameObject.Destroy();
             }
 
-            var player = Utils.PlayerById(parentId);
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
@@ -133,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             Utils.Spread(role.Player, player);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Coroutines.Start(Utils.FlashCoroutine(Colors.Reanimated));
+                Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
         }
     }
 }

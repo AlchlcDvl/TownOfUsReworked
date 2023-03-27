@@ -2,6 +2,7 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Enums;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
 {
@@ -21,14 +22,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
             if (otherLover.Data.IsDead)
                 return true;
 
-            if (reason == DeathReason.Exile)
+            if (!otherLover.Is(RoleEnum.Pestilence))
             {
-                if (!otherLover.Is(RoleEnum.Pestilence))
+                if (reason == DeathReason.Exile)
                     otherLover.Exiled();
-            }
-            else if (AmongUsClient.Instance.AmHost && !otherLover.Is(RoleEnum.Pestilence))
-            {
-                Utils.RpcMurderPlayer(otherLover, otherLover);
+                else if (AmongUsClient.Instance.AmHost)
+                    Utils.RpcMurderPlayer(otherLover, otherLover);
             }
 
             return true;

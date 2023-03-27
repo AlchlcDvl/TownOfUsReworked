@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
 {
@@ -15,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             var role = Role.GetRole<TimeLord>(PlayerControl.LocalPlayer);
 
             if (role.RewindButton == null)
-                role.RewindButton = Utils.InstantiateButton();
+                role.RewindButton = CustomButtons.InstantiateButton();
 
             role.RewindButton.UpdateButton(role, "REWIND", role.TimeLordRewindTimer(), TimeLord.GetCooldown(), AssetManager.Rewind, AbilityTypes.Effect, "ActionSecondary", true, role.UsesLeft,
                 role.ButtonUsable, role.ButtonUsable && !RecordRewind.rewinding);

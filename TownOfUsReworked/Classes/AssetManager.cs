@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Reactor.Utilities.Extensions;
 using HarmonyLib;
+using AmongUs.Data;
 
 namespace TownOfUsReworked.Classes
 {
@@ -12,6 +13,8 @@ namespace TownOfUsReworked.Classes
     {
         private readonly static Dictionary<string, AudioClip> SoundEffects = new();
         public readonly static List<string> Sounds = new();
+        private readonly static Dictionary<string, string> Translations = new();
+        public readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
 
         #pragma warning disable
         public static Sprite Clean;
@@ -100,6 +103,11 @@ namespace TownOfUsReworked.Classes
         public static Sprite Stake;
         public static Sprite Plus;
         public static Sprite Minus;
+
+        public static Sprite CommonVent;
+        public static Sprite CommonVentBloody;
+        public static Sprite PolusVent;
+        public static Sprite PolusVentBloody;
 
         public static Sprite Lighter;
         public static Sprite Blocked;
@@ -204,6 +212,33 @@ namespace TownOfUsReworked.Classes
             }
         }
 
+        public static string GetLanguage()
+        {
+            var language = (uint)DataManager.Settings.Language.CurrentLanguage;
+
+            return language switch
+            {
+                1U => "Latam",
+                2U => "Brazilian",
+                3U => "Portuguese",
+                4U => "Korean",
+                5U => "Russian",
+                6U => "Dutch",
+                7U => "Filipino",
+                8U => "French",
+                9U => "German",
+                10U => "Italian",
+                11U => "Japanese",
+                12U => "Spanish",
+                13U => "SChinese",
+                14U => "TChinese",
+                15U => "Irish",
+                _ => "English",
+            };
+        }
+
+        public static string Translate(string id) => Translations[id];
+
         public static void Load()
         {
             //Ability buttons
@@ -301,6 +336,11 @@ namespace TownOfUsReworked.Classes
             Plus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Plus");
             Minus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Minus");
 
+            CommonVent = Utils.CreateSprite($"{TownOfUsReworked.Misc}CommonVent");
+            CommonVentBloody = Utils.CreateSprite($"{TownOfUsReworked.Misc}CommonVentBloody");
+            PolusVent = Utils.CreateSprite($"{TownOfUsReworked.Misc}PolusVent");
+            PolusVentBloody = Utils.CreateSprite($"{TownOfUsReworked.Misc}PolusVentBloody");
+
             //Settings buttons
             SettingsButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}SettingsButton");
             CrewSettingsButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}Crew");
@@ -314,15 +354,15 @@ namespace TownOfUsReworked.Classes
             UpdateTOUButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}UpdateToUButton");
             UpdateSubmergedButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}UpdateSubmergedButton");
 
-            var stream1 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Bomber");
-            var stream2 = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Operative");
+            var stream1 = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Bomber");
+            var stream2 = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Operative");
             BombBundle = AssetBundle.LoadFromMemory(stream1.ReadFully());
             BugBundle = AssetBundle.LoadFromMemory(stream2.ReadFully());
             BombMaterial = BombBundle.LoadAsset<Material>("bomb").DontUnload();
             BugMaterial = BugBundle.LoadAsset<Material>("trap").DontUnload();
 
             //Better Airship stuff
-            var stream = TownOfUsReworked.assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Airship");
+            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Airship");
             AirshipBundle = AssetBundle.LoadFromMemory(stream.ReadFully());
 
             //Menu settings
@@ -344,7 +384,7 @@ namespace TownOfUsReworked.Classes
             SoundEffects.Clear();
             Sounds.Clear();
 
-            foreach (var resourceName in TownOfUsReworked.assembly.GetManifestResourceNames())
+            foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
                 if (resourceName.StartsWith($"{TownOfUsReworked.Sounds}") && resourceName.EndsWith(".raw"))
                 {
@@ -353,6 +393,20 @@ namespace TownOfUsReworked.Classes
                     name = name.Replace($"{TownOfUsReworked.Sounds}", "");
                     SoundEffects.Add(name, CreateAudio(resourceName));
                     Sounds.Add(name);
+                }
+            }
+
+            var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
+
+            if (TranslationKeys.Length != 0 && translation.Length != 0 && TranslationKeys.Length == translation.Length)
+            {
+                var position = 0;
+                Translations.Clear();
+
+                foreach (var key in TranslationKeys)
+                {
+                    Translations.Add(key, translation[position]);
+                    position++;
                 }
             }
         }

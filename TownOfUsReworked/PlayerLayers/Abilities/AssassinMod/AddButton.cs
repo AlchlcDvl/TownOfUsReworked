@@ -1,6 +1,6 @@
 ﻿using System;
 using HarmonyLib;
-using Reactor.Utilities;
+using TownOfUsReworked.Extensions;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Classes;
@@ -186,7 +186,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                         if (!modifier.LifeUsed)
                         {
                             modifier.LifeUsed = true;
-                            Coroutines.Start(Utils.FlashCoroutine(modifier.Color));
+                            Utils.Flash(modifier.Color, "You guessed wrong!");
                             ShowHideButtons.HideSingle(role, targetId, false, true);
                         }
                         else

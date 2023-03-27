@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Enums;
 using Hazel;
 using HarmonyLib;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -16,8 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         protected Ability(PlayerControl player) : base(player)
         {
-            Player = player;
-
             if (AbilityDictionary.ContainsKey(player.PlayerId))
                 AbilityDictionary.Remove(player.PlayerId);
 
