@@ -104,11 +104,6 @@ namespace TownOfUsReworked.Classes
         public static Sprite Plus;
         public static Sprite Minus;
 
-        public static Sprite CommonVent;
-        public static Sprite CommonVentBloody;
-        public static Sprite PolusVent;
-        public static Sprite PolusVentBloody;
-
         public static Sprite Lighter;
         public static Sprite Blocked;
         public static Sprite Darker;
@@ -334,11 +329,6 @@ namespace TownOfUsReworked.Classes
             Blocked = Utils.CreateSprite($"{TownOfUsReworked.Misc}Blocked");
             Plus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Plus");
             Minus = Utils.CreateSprite($"{TownOfUsReworked.Misc}Minus");
-
-            CommonVent = Utils.CreateSprite($"{TownOfUsReworked.Misc}CommonVent");
-            CommonVentBloody = Utils.CreateSprite($"{TownOfUsReworked.Misc}CommonVentBloody");
-            PolusVent = Utils.CreateSprite($"{TownOfUsReworked.Misc}PolusVent");
-            PolusVentBloody = Utils.CreateSprite($"{TownOfUsReworked.Misc}PolusVentBloody");
 
             //Settings buttons
             SettingsButton = Utils.CreateSprite($"{TownOfUsReworked.Misc}SettingsButton");
