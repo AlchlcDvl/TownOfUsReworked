@@ -126,6 +126,10 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <details>
   <summary>Change Log</summary>
   <details>
+    <summary>v0.0.2dev8.5</summary>
+    <ul> <li>Removed: Removed a couple things I forgot to</li> </ul>
+  </details>
+  <details>
     <summary>v0.0.2dev8</summary>
     <ul> <li>Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:</li> </ul>
     <ul> <li>Update: Updated the mod to v2023.3.28</li> </ul>
