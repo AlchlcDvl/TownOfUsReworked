@@ -103,6 +103,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.0.2dev8.75 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.75/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.2dev8.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.5/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.2dev8 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev7 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev7/TownOfUsReworked.zip) |
@@ -125,6 +126,10 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.2dev8.75</summary>
+    <ul> <li>Critical Fix: Fixed the issue of the mod not being recognised by BepInEx</li> </ul>
+  </details>
   <details>
     <summary>v0.0.2dev8.5</summary>
     <ul> <li>Removed: Removed a couple things I forgot to</li> </ul>

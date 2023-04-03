@@ -26,8 +26,8 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.2.8.5";
-        public const string CompleteVersionString = "0.0.2.8.5";
+        public const string VersionString = "0.0.2.8";
+        public const string CompleteVersionString = "0.0.2.8";
         public readonly static Version Version = Version.Parse(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -35,7 +35,7 @@ namespace TownOfUsReworked
         private readonly static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
         private readonly static bool isDev = dev != "0";
         public readonly static bool isTest = test != "" && VersionString != CompleteVersionString;
-        private readonly static string devString = isDev ? $"-dev{dev}" : "";
+        private readonly static string devString = isDev ? $"-dev{dev}.75" : "";
         private readonly static string testString = isTest ? "_test" : "";
         public readonly static string versionFinal = $"v{version}{devString}{testString}";
 

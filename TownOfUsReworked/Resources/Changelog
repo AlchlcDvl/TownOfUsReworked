@@ -1,2 +1,2 @@
 Changelog
-- Removed: Removed a couple things I forgot to
+- Critical Fix: Fixed the issue of the mod not being recognised by BepInEx
