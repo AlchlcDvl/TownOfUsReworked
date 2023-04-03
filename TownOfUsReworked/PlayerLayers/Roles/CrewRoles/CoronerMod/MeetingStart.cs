@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {

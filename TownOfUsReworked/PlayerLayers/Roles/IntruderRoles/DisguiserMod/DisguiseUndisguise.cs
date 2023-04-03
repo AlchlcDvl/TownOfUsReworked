@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
 {

@@ -5,7 +5,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Object = UnityEngine.Object;
 using Hazel;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches
@@ -109,7 +109,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveAllBodies, SendOption.Reliable);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeetingStart, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 foreach (var body in Object.FindObjectsOfType<DeadBody>())

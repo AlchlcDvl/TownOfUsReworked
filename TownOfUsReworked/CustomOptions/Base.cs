@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
@@ -8,7 +8,9 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomOption
     {
-        public readonly static List<CustomOption> AllOptions = new();
+        #pragma warning disable
+        public static List<CustomOption> AllOptions = new();
+        #pragma warning restore
         public readonly int ID;
         public readonly MultiMenu Menu;
         public Func<object, string> Format;
@@ -16,9 +18,15 @@ namespace TownOfUsReworked.CustomOptions
         protected internal object Value { get; set; }
         protected internal OptionBehaviour Setting { get; set; }
         protected internal CustomOptionType Type { get; set; }
+        protected internal RoleEnum ParentRole { get; set; } = RoleEnum.None;
+        protected internal ModifierEnum ParentModifier { get; set; } = ModifierEnum.None;
+        protected internal AbilityEnum ParentAbility { get; set; } = AbilityEnum.None;
+        protected internal ObjectifierEnum ParentObjectifier { get; set; } = ObjectifierEnum.None;
+        protected internal List<Map> ParentMaps { get; set; } = new();
+        protected internal bool Active { get; set; } = true;
+        protected internal List<bool> Actives { get; set; } = new();
         public object DefaultValue { get; set; }
         public static bool LobbyTextScroller { get; set; } = true;
-        protected internal bool Indent { get; set; }
 
         protected internal CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
         {
@@ -70,5 +78,15 @@ namespace TownOfUsReworked.CustomOptions
                 str.ValueText.text = ToString();
             }
         }
+
+        protected internal void SetRole(RoleEnum role) => ParentRole = role;
+
+        protected internal void SetAbility(AbilityEnum ability) => ParentAbility = ability;
+
+        protected internal void SetObjectifier(ObjectifierEnum objectifier) => ParentObjectifier = objectifier;
+
+        protected internal void SetModifier(ModifierEnum modifier) => ParentModifier = modifier;
+
+        protected internal void SetMaps(params Map[] maps) => ParentMaps.AddRange(maps);
     }
 }

@@ -1,11 +1,9 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
-using Reactor.Utilities;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Functions
 {

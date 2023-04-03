@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public DeadBody CurrentTarget;
         public AbilityButton RememberButton;
-        public Vent ClosestVent;
 
         public Amnesiac(PlayerControl player) : base(player)
         {
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "You Forgor :Skull:";
             AbilitiesText = "- You can copy over a player's role should you find their body." + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow " +
                 "pointing to their body." : "");
-            RoleType = RoleEnum.Amnesiac;
+            Type = RoleEnum.Amnesiac;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
@@ -39,6 +38,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Object.Destroy(arrow.Value.gameObject);
 
             BodyArrows.Remove(arrow.Key);
+        }
+
+        public override void OnLobby()
+        {
+            BodyArrows.Values.DestroyAll();
+            BodyArrows.Clear();
         }
     }
 }

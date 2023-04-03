@@ -1,10 +1,10 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             {
                 var ret = (Retributionist)role;
 
-                if (ret.RevivedRole?.RoleType != RoleEnum.Medic)
+                if (ret.RevivedRole?.Type != RoleEnum.Medic)
                     continue;
 
                 var exPlayer = ret.ExShielded;

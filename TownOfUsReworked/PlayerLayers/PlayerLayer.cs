@@ -4,7 +4,6 @@ using System.Linq;
 using Reactor.Utilities.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using HarmonyLib;
 using TownOfUsReworked.Data;
 
@@ -13,16 +12,23 @@ namespace TownOfUsReworked.PlayerLayers
     [HarmonyPatch]
     public abstract class PlayerLayer
     {
-        protected internal Color32 Color = Colors.Layer;
-        protected internal string Name = "Layerless";
-        protected internal PlayerLayerEnum LayerType = PlayerLayerEnum.None;
+        public Color32 Color = Colors.Layer;
+        public string Name = "Layerless";
+        public PlayerLayerEnum LayerType = PlayerLayerEnum.None;
 
-        protected internal string KilledBy = "";
-        protected internal DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
+        public string KilledBy = "";
+        public DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
+
+        public bool IsBlocked;
+        public bool RoleBlockImmune;
 
         public readonly static List<PlayerLayer> Layers = new();
 
-        protected internal virtual void OnLobby() {}
+        public virtual void OnLobby() {}
+
+        public virtual void UpdateHud(HudManager __instance) {}
+
+        public virtual void ButtonClick(AbilityButton __instance, out bool clicked) => clicked = true;
 
         protected PlayerLayer(PlayerControl player)
         {
@@ -48,10 +54,10 @@ namespace TownOfUsReworked.PlayerLayers
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)LayerType);
 
-        protected internal int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
-        protected internal int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
-        protected internal int TotalTasks => Player.Data.Tasks.ToArray().Length;
-        protected internal bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
+        public int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
+        public int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
+        public int TotalTasks => Player.Data.Tasks.ToArray().Length;
+        public bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
 
         public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
@@ -71,7 +77,9 @@ namespace TownOfUsReworked.PlayerLayers
             return Equals((PlayerLayer)obj);
         }
 
-        protected internal virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
+        public virtual bool GameEnd(LogicGameFlowNormal __instance) => true;
+
+        public static List<PlayerLayer> GetLayers(PlayerControl player) => Layers.Where(x => x.Player == player).ToList();
 
         public static bool operator == (PlayerLayer a, PlayerLayer b)
         {

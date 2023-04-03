@@ -1,11 +1,10 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Mystic(PlayerControl player) : base(player)
         {
             Name = "Mystic";
-            RoleType = RoleEnum.Mystic;
+            Type = RoleEnum.Mystic;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = CA;
@@ -40,6 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSeer()
         {
+            RevealButton.gameObject.SetActive(false);
             var role = new Seer(Player);
             role.RoleUpdate(this);
 

@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Ambush";
             AbilitiesText = "- You can crusade players.\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Crusader : Colors.Syndicate;
-            RoleType = RoleEnum.Crusader;
+            Type = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             InspectorResults = InspectorResults.SeeksToProtect;

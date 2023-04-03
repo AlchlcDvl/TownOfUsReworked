@@ -1,10 +1,10 @@
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Functions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
 {
@@ -173,10 +173,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                         break;
                 }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.EngineerFix);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
 

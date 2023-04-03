@@ -6,10 +6,11 @@ using Reactor.Utilities;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Enums;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -145,18 +146,14 @@ namespace TownOfUsReworked.CustomOptions
 
             var Loading = InternalOptions[0] as CustomHeaderOption;
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-
             __instance.Children = new[] { Loading.Setting };
-
             yield return new WaitForSeconds(0.5f);
-
             Loading.Setting.gameObject.Destroy();
 
             foreach (var option in OldButtons)
                 option.gameObject.SetActive(true);
 
             __instance.Children = OldButtons.ToArray();
-
             yield return new WaitForEndOfFrame();
             yield return flashCoro();
         }
@@ -165,6 +162,36 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             Setting.Cast<ToggleOption>().TitleText.text = Name;
+        }
+
+        protected internal void SetRole2(RoleEnum role)
+        {
+            foreach (var option in InternalOptions)
+                option.SetRole(role);
+        }
+
+        protected internal void SetAbility2(AbilityEnum ability)
+        {
+            foreach (var option in InternalOptions)
+                option.SetAbility(ability);
+        }
+
+        protected internal void SetObjectifier2(ObjectifierEnum objectifier)
+        {
+            foreach (var option in InternalOptions)
+                option.SetObjectifier(objectifier);
+        }
+
+        protected internal void SetModifier2(ModifierEnum modifier)
+        {
+            foreach (var option in InternalOptions)
+                option.SetModifier(modifier);
+        }
+
+        protected internal void SetMaps2(params Map[] maps)
+        {
+            foreach (var option in InternalOptions)
+                option.SetMaps(maps);
         }
     }
 }

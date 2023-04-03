@@ -1,9 +1,8 @@
 ﻿using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using UnityEngine;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
             LastKilled = DateTime.UtcNow;
-            RoleType = RoleEnum.Juggernaut;
+            Type = RoleEnum.Juggernaut;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             JuggKills = 0;

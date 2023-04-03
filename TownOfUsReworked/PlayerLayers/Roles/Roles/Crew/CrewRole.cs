@@ -1,9 +1,8 @@
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -18,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BaseFaction = Faction.Crew;
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance)
+        public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
         {
             if (Player != PlayerControl.LocalPlayer)
                 return;
@@ -42,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.teamToShow = team;
         }
 
-        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

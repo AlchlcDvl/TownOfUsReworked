@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Stalk Everyone To Monitor Their Movements";
             AbilitiesText = $"- You can track players which creates arrows that update every now and then.\n- You have {UsesLeft} bugs left.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
-            RoleType = RoleEnum.Tracker;
+            Type = RoleEnum.Tracker;
             UsesLeft = CustomGameOptions.MaxTracks;
             TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -55,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TrackerArrows.Remove(arrow.Key);
         }
 
-        protected internal override void OnLobby()
+        public override void OnLobby()
         {
             TrackerArrows.Values.DestroyAll();
             TrackerArrows.Clear();

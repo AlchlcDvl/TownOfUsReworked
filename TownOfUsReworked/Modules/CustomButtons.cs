@@ -4,12 +4,11 @@ using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Object = UnityEngine.Object;
 using UnityEngine;
 using System;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using TownOfUsReworked.Classes;
@@ -89,105 +88,9 @@ namespace TownOfUsReworked.Modules
             return closestVent;
         }
 
-        public static bool CanInteractWithBodyInVent(this PlayerControl player) => player.CanInteractWithDead() && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5;
-
-        public static void SetVentTarget(this AbilityButton button, Role role, bool condition = true)
-        {
-            if (role.Player != PlayerControl.LocalPlayer)
-                return;
-
-            if (!ButtonUsable(button) || !CanInteractWithBodyInVent(PlayerControl.LocalPlayer))
-                return;
-
-            var target = GetClosestVent(PlayerControl.LocalPlayer);
-            Vent oldTarget = null;
-
-            switch (role.RoleType)
-            {
-                case RoleEnum.Amnesiac:
-                    var amne = (Amnesiac)role;
-                    oldTarget = amne.ClosestVent;
-                    amne.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Altruist:
-                    var alt = (Altruist)role;
-                    oldTarget = alt.ClosestVent;
-                    alt.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Retributionist:
-                    var ret = (Retributionist)role;
-                    var revivedRole = ret.RevivedRole?.RoleType;
-
-                    if (revivedRole != RoleEnum.Altruist && revivedRole != RoleEnum.Coroner)
-                        return;
-
-                    oldTarget = ret.ClosestVent;
-                    ret.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Cannibal:
-                    var cann = (Cannibal)role;
-                    oldTarget = cann.ClosestVent;
-                    cann.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Necromancer:
-                    var necro = (Necromancer)role;
-                    oldTarget = necro.ClosestVent;
-                    necro.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Coroner:
-                    var cor = (Coroner)role;
-                    oldTarget = cor.ClosestVent;
-                    cor.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Janitor:
-                    var jani = (Janitor)role;
-                    oldTarget = jani.ClosestVent;
-                    jani.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Undertaker:
-                    var ut = (Undertaker)role;
-                    oldTarget = ut.ClosestVent;
-                    ut.ClosestVent = target;
-                    break;
-
-                case RoleEnum.Godfather:
-                    var gf = (Godfather)role;
-                    var formerRole = gf.FormerRole?.RoleType;
-
-                    if (formerRole != RoleEnum.Janitor && formerRole != RoleEnum.Undertaker)
-                        return;
-
-                    oldTarget = gf.ClosestVent;
-                    gf.ClosestVent = target;
-                    break;
-            }
-
-            var oldComponent = oldTarget?.myRend;
-
-            if (target != oldTarget && oldTarget != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
-
-            if (target != null && !button.isCoolingDown && condition && !CannotUse(PlayerControl.LocalPlayer))
-            {
-                var component = target.myRend;
-                component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", role.Color);
-                button.SetEnabled();
-            }
-            else
-                button.SetDisabled();
-        }
-
         public static bool CanInteractWithDead(this PlayerControl player) => player != null && !MeetingHud.Instance && (player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Amnesiac) ||
             player.Is(RoleEnum.Cannibal) || player.Is(RoleEnum.Necromancer) || player.Is(RoleEnum.Janitor) || player.Is(RoleEnum.Godfather) || player.Is(RoleEnum.Coroner) ||
-            player.Is(RoleEnum.Undertaker) || player.Is(RoleEnum.Retributionist));
+            player.Is(RoleEnum.Retributionist));
 
         public static void SetDeadTarget(this AbilityButton button, Role role, bool condition = true)
         {
@@ -200,7 +103,7 @@ namespace TownOfUsReworked.Modules
             var target = GetClosestDeadPlayer(PlayerControl.LocalPlayer);
             DeadBody oldTarget = null;
 
-            switch (role.RoleType)
+            switch (role.Type)
             {
                 case RoleEnum.Amnesiac:
                     var amne = (Amnesiac)role;
@@ -216,11 +119,6 @@ namespace TownOfUsReworked.Modules
 
                 case RoleEnum.Retributionist:
                     var ret = (Retributionist)role;
-                    var revivedRole = ret.RevivedRole?.RoleType;
-
-                    if (revivedRole != RoleEnum.Altruist && revivedRole != RoleEnum.Coroner)
-                        return;
-
                     oldTarget = ret.CurrentTarget;
                     ret.CurrentTarget = target;
                     break;
@@ -249,34 +147,27 @@ namespace TownOfUsReworked.Modules
                     jani.CurrentTarget = target;
                     break;
 
-                case RoleEnum.Undertaker:
-                    var ut = (Undertaker)role;
-                    oldTarget = ut.CurrentTarget;
-                    ut.CurrentTarget = target;
-                    break;
-
                 case RoleEnum.Godfather:
                     var gf = (Godfather)role;
-                    var formerRole = gf.FormerRole?.RoleType;
-
-                    if (formerRole != RoleEnum.Janitor && formerRole != RoleEnum.Undertaker)
-                        return;
-
                     oldTarget = gf.CurrentTarget;
                     gf.CurrentTarget = target;
                     break;
             }
 
-            var oldComponent = oldTarget?.bodyRenderer;
-
-            if (target != oldTarget && oldTarget != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
+            if (oldTarget != null && target != oldTarget)
+            {
+                foreach (var oldComponent in oldTarget.bodyRenderers)
+                    oldComponent?.material.SetFloat("_Outline", 0f);
+            }
 
             if (target != null && !button.isCoolingDown && condition && !CannotUse(PlayerControl.LocalPlayer))
             {
-                var component = target.bodyRenderer;
-                component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", role.Color);
+                foreach (var component in target?.bodyRenderers)
+                {
+                    component.material.SetFloat("_Outline", 1f);
+                    component.material.SetColor("_OutlineColor", role.Color);
+                }
+
                 button.SetEnabled();
             }
             else
@@ -298,11 +189,6 @@ namespace TownOfUsReworked.Modules
             if (!ButtonUsable(button) || !CanInteract(PlayerControl.LocalPlayer))
                 return;
 
-            #pragma warning disable
-            if (targets == null)
-                targets = PlayerControl.AllPlayerControls.ToArray().ToList();
-            #pragma warning restore
-
             var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets);
             PlayerControl oldTarget = null;
             PlayerControl oldTarget1 = null;
@@ -312,7 +198,7 @@ namespace TownOfUsReworked.Modules
             switch (role.Faction)
             {
                 case Faction.Intruder:
-                    if (role.Player.Is(ObjectifierEnum.Allied) || role.Player.Is(ObjectifierEnum.Fanatic) || role.Player.Is(ObjectifierEnum.Traitor))
+                    if (role.Player.IntruderSided())
                         break;
 
                     var intr = (IntruderRole)role;
@@ -321,7 +207,7 @@ namespace TownOfUsReworked.Modules
                     break;
 
                 case Faction.Syndicate:
-                    if (role.Player.Is(ObjectifierEnum.Allied) || role.Player.Is(ObjectifierEnum.Fanatic) || role.Player.Is(ObjectifierEnum.Traitor))
+                    if (role.Player.SyndicateSided())
                         break;
 
                     var syn = (SyndicateRole)role;
@@ -335,7 +221,7 @@ namespace TownOfUsReworked.Modules
             if (target != oldTarget && oldTarget != null && target != null)
                 oldComponent?.material.SetFloat("_Outline", 0f);
 
-            switch (role.RoleType)
+            switch (role.Type)
             {
                 case RoleEnum.Thief:
                     var thief = (Thief)role;
@@ -405,15 +291,6 @@ namespace TownOfUsReworked.Modules
 
                 case RoleEnum.Retributionist:
                     var ret = (Retributionist)role;
-                    var revivedRole = ret.RevivedRole?.RoleType;
-
-                    if (revivedRole != RoleEnum.Sheriff && revivedRole != RoleEnum.Coroner && revivedRole != RoleEnum.Detective && revivedRole != RoleEnum.Seer && revivedRole !=
-                        RoleEnum.VampireHunter && revivedRole != RoleEnum.Medic && revivedRole != RoleEnum.Mystic && revivedRole != RoleEnum.Vigilante && revivedRole != RoleEnum.Tracker &&
-                        revivedRole != RoleEnum.Inspector)
-                    {
-                        return;
-                    }
-
                     oldTarget = ret.ClosestPlayer;
                     ret.ClosestPlayer = target;
                     break;
@@ -675,7 +552,7 @@ namespace TownOfUsReworked.Modules
             if (target != oldTarget && oldTarget != null)
                 oldComponent?.material.SetFloat("_Outline", 0f);
 
-            switch (obj.ObjectifierType)
+            switch (obj.Type)
             {
                 case ObjectifierEnum.Corrupted:
                     var cor = (Corrupted)obj;
@@ -706,7 +583,7 @@ namespace TownOfUsReworked.Modules
             player.Is(RoleEnum.Grenadier) || player.Is(RoleEnum.Miner) || player.Is(RoleEnum.Teleporter) || player.Is(RoleEnum.TimeMaster) || player.Is(RoleEnum.Wraith) ||
             player.Is(RoleEnum.GuardianAngel) || player.Is(RoleEnum.Survivor) || player.Is(RoleEnum.Whisperer) || player.Is(RoleEnum.Bomber) || player.Is(RoleEnum.Concealer) ||
             player.Is(RoleEnum.Warper) || (player.Is(RoleEnum.Framer) && Role.SyndicateHasChaosDrive) || player.Is(RoleEnum.Drunkard) || player.Is(RoleEnum.Rebel) ||
-            player.Is(AbilityEnum.ButtonBarry) || player.Is(RoleEnum.Undertaker));
+            player.Is(AbilityEnum.ButtonBarry) || player.Is(RoleEnum.Janitor));
 
         public static void SetEffectTarget(this AbilityButton button, bool condition = true)
         {
@@ -726,6 +603,9 @@ namespace TownOfUsReworked.Modules
             false, int uses = 0, bool postDeath = false)
         {
             if (button == null)
+                return;
+
+            if (role.Player != PlayerControl.LocalPlayer)
                 return;
 
             if (type == AbilityTypes.Direct)
@@ -760,7 +640,7 @@ namespace TownOfUsReworked.Modules
             else if (postDeath && PlayerControl.LocalPlayer.Data.IsDead)
                 button.gameObject.SetActive(!MeetingHud.Instance && !ConstantVariables.IsLobby && usable);
             else
-                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, role.RoleType, usable));
+                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, role.Type, usable));
 
             if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && !effectActive && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
@@ -799,10 +679,16 @@ namespace TownOfUsReworked.Modules
         public static void UpdateButton(this AbilityButton button, Objectifier obj, float timer, float maxTimer, string label, Sprite sprite, AbilityTypes type, string keybind,
             List<PlayerControl> targets = null, bool condition = true, bool usesActive = false, int uses = 0)
         {
+            if (button == null)
+                return;
+
+            if (obj.Player != PlayerControl.LocalPlayer)
+                return;
+
             if (CanInteract(PlayerControl.LocalPlayer) && type == AbilityTypes.Direct)
                 button.SetAliveTarget(obj, targets, condition);
 
-            button.graphic.sprite = PlayerControl.LocalPlayer.IsBlocked() ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
+            button.graphic.sprite = obj.IsBlocked ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
             button.buttonLabelText.text = label;
             button.buttonLabelText.SetOutlineColor(obj.Color);
             button.commsDown?.gameObject?.SetActive(false);
@@ -817,7 +703,7 @@ namespace TownOfUsReworked.Modules
             if (MeetingHud.Instance)
                 button.gameObject.SetActive(false);
             else
-                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, obj.ObjectifierType, condition));
+                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, obj.Type, condition));
 
             if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
@@ -826,10 +712,16 @@ namespace TownOfUsReworked.Modules
         public static void UpdateButton(this AbilityButton button, Ability ability, Sprite sprite, string label, AbilityTypes type, bool condition, float timer, float maxTimer,
             string keybind, bool usesActive = false, int uses = 0)
         {
-            if (HasEffect(PlayerControl.LocalPlayer) && type == AbilityTypes.Effect)
+            if (button == null)
+                return;
+
+            if (ability.Player != PlayerControl.LocalPlayer)
+                return;
+
+            if (type == AbilityTypes.Effect)
                 button.SetEffectTarget(condition);
 
-            button.graphic.sprite = PlayerControl.LocalPlayer.IsBlocked() ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
+            button.graphic.sprite = ability.IsBlocked ? AssetManager.Blocked : (sprite ?? HudManager.Instance.AbilityButton.graphic.sprite);
             button.buttonLabelText.text = label;
             button.buttonLabelText.SetOutlineColor(ability.Color);
             button.commsDown?.gameObject?.SetActive(false);
@@ -844,7 +736,7 @@ namespace TownOfUsReworked.Modules
             if (MeetingHud.Instance)
                 button.gameObject.SetActive(false);
             else
-                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, ability.AbilityType, condition));
+                button.gameObject.SetActive(SetActive(PlayerControl.LocalPlayer, ability.Type, condition));
 
             if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(keybind) && condition && !CannotUse(PlayerControl.LocalPlayer))
                 button.DoClick();
@@ -896,10 +788,6 @@ namespace TownOfUsReworked.Modules
         {
             var local = PlayerControl.LocalPlayer;
             var role = Role.GetRole(local);
-
-            if (role == null)
-                return;
-
             local.RegenTask();
 
             if (local.Is(RoleEnum.Chameleon))
@@ -1132,7 +1020,7 @@ namespace TownOfUsReworked.Modules
                 if (role2.RevivedRole == null)
                     return;
 
-                switch (role2.RevivedRole.RoleType)
+                switch (role2.RevivedRole.Type)
                 {
                     case RoleEnum.Chameleon:
                         role2.LastSwooped = DateTime.UtcNow;
@@ -1273,10 +1161,10 @@ namespace TownOfUsReworked.Modules
                 if (start)
                     role2.FormerRole = null;
 
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Impostor || !role2.WasMafioso)
+                if (role2.FormerRole == null || role2.FormerRole?.Type == RoleEnum.Impostor || !role2.WasMafioso || start)
                     return;
 
-                switch (role2.FormerRole.RoleType)
+                switch (role2.FormerRole.Type)
                 {
                     case RoleEnum.Blackmailer:
                         role2.BlackmailedPlayer = null;
@@ -1309,6 +1197,8 @@ namespace TownOfUsReworked.Modules
 
                     case RoleEnum.Janitor:
                         role2.LastCleaned = DateTime.UtcNow;
+                        role2.CurrentlyDragging = null;
+                        role2.LastDragged = DateTime.UtcNow;
                         break;
 
                     case RoleEnum.Morphling:
@@ -1320,11 +1210,6 @@ namespace TownOfUsReworked.Modules
                     case RoleEnum.Teleporter:
                         role2.LastTeleport = DateTime.UtcNow;
                         role2.TeleportPoint = new(0, 0, 0);
-                        break;
-
-                    case RoleEnum.Undertaker:
-                        role2.CurrentlyDragging = null;
-                        role2.LastDragged = DateTime.UtcNow;
                         break;
 
                     case RoleEnum.TimeMaster:
@@ -1356,11 +1241,18 @@ namespace TownOfUsReworked.Modules
             else if (local.Is(RoleEnum.Janitor))
             {
                 var role2 = (Janitor)role;
+                role2.CurrentlyDragging = null;
 
                 if (start)
+                {
                     role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.JanitorCleanCd);
+                    role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DragCd);
+                }
                 else
+                {
                     role2.LastCleaned = DateTime.UtcNow;
+                    role2.LastDragged = DateTime.UtcNow;
+                }
             }
             else if (local.Is(RoleEnum.Miner))
             {
@@ -1401,16 +1293,6 @@ namespace TownOfUsReworked.Modules
                     role2.LastTeleport = DateTime.UtcNow;
                     role2.LastMarked = DateTime.UtcNow;
                 }
-            }
-            else if (local.Is(RoleEnum.Undertaker))
-            {
-                var role2 = (Undertaker)role;
-                role2.CurrentlyDragging = null;
-
-                if (start)
-                    role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DragCd);
-                else
-                    role2.LastDragged = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.TimeMaster))
             {
@@ -1531,10 +1413,10 @@ namespace TownOfUsReworked.Modules
                 if (start)
                     role2.FormerRole = null;
 
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Anarchist || !role2.WasSidekick)
+                if (role2.FormerRole == null || role2.FormerRole?.Type == RoleEnum.Anarchist || !role2.WasSidekick || start)
                     return;
 
-                switch (role2.FormerRole.RoleType)
+                switch (role2.FormerRole.Type)
                 {
                     case RoleEnum.Concealer:
                         role2.LastConcealed = DateTime.UtcNow;
@@ -1881,9 +1763,6 @@ namespace TownOfUsReworked.Modules
 
             var obj = Objectifier.GetObjectifier(local);
 
-            if (obj == null)
-                return;
-
             if (local.Is(ObjectifierEnum.Corrupted))
             {
                 var obj2 = (Corrupted)obj;
@@ -1896,9 +1775,6 @@ namespace TownOfUsReworked.Modules
             }
 
             var ab = Ability.GetAbility(local);
-
-            if (ab == null)
-                return;
 
             if (local.Is(AbilityEnum.ButtonBarry))
             {

@@ -1,9 +1,9 @@
 using System;
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, Faction.Syndicate))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
+            if (PlayerControl.LocalPlayer.SyndicateSided())
                 return false;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))

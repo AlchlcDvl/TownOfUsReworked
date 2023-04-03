@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -13,10 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             {
                 var reb = (Rebel)role;
 
-                if (reb.FormerRole == null || reb.FormerRole?.RoleType == RoleEnum.Anarchist || !reb.WasSidekick)
+                if (reb.FormerRole == null || reb.FormerRole?.Type == RoleEnum.Anarchist || !reb.WasSidekick)
                     continue;
 
-                var formerRole = reb.FormerRole.RoleType;
+                var formerRole = reb.FormerRole.Type;
 
                 if (formerRole == RoleEnum.Concealer)
                 {

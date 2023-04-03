@@ -2,7 +2,7 @@ using HarmonyLib;
 using Hazel;
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Classes;
 

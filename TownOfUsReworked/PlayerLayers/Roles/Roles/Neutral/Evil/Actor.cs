@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Play Pretend WIth The Others";
             Objectives = $"- Get guessed as one of your target roles.\n- Your target roles belong to the {PretendRoles} role list.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
-            RoleType = RoleEnum.Actor;
+            Type = RoleEnum.Actor;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
         }

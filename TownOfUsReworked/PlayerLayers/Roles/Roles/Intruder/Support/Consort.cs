@@ -1,10 +1,9 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Consort(PlayerControl player) : base(player)
         {
             Name = "Consort";
-            RoleType = RoleEnum.Consort;
+            Type = RoleEnum.Consort;
             StartText = "Roleblock The Crew And Stop Them From Progressing";
             AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
                 "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
@@ -35,8 +34,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnBlock()
         {
             Enabled = false;
-            var targetRole = GetRole(BlockTarget);
-            targetRole.IsBlocked = false;
+
+            foreach (var layer in GetLayers(BlockTarget))
+                layer.IsBlocked = false;
+
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);

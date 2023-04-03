@@ -1,9 +1,9 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.AmbusherMod
 {

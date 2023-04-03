@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using TownOfUsReworked.Extensions;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
@@ -10,6 +9,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
         public static IEnumerator RetributionistRevive(DeadBody target, Retributionist role)
         {
-            if (role.RevivedRole?.RoleType != RoleEnum.Altruist)
+            if (role.RevivedRole?.Type != RoleEnum.Altruist)
                 yield break;
 
             var parentId = target.ParentId;

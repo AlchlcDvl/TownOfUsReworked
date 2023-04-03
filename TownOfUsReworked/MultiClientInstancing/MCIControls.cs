@@ -118,8 +118,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                 if (!ConstantVariables.IsLobby)
                     return;
 
-                TownOfUsReworked.LobbyCapped = !TownOfUsReworked.LobbyCapped;
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The lobby limit is now {(TownOfUsReworked.LobbyCapped ? "" : "un")}capped.");
+                MCIUtils.RemovePlayer((byte)InstanceControl.Clients.Count);
             }
 
             if (Input.GetKeyDown(KeyCode.F10))
@@ -127,7 +126,8 @@ namespace TownOfUsReworked.MultiClientInstancing
                 if (!ConstantVariables.IsLobby)
                     return;
 
-                MCIUtils.RemovePlayer((byte)InstanceControl.Clients.Count);
+                TownOfUsReworked.LobbyCapped = !TownOfUsReworked.LobbyCapped;
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The lobby limit is now {(TownOfUsReworked.LobbyCapped ? "" : "un")}capped.");
             }
 
             if (Input.GetKeyDown(KeyCode.F11))
@@ -138,6 +138,9 @@ namespace TownOfUsReworked.MultiClientInstancing
                 TownOfUsReworked.Persistence = !TownOfUsReworked.Persistence;
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"The robots will now{(TownOfUsReworked.Persistence ? "" : " no longer")} persist.");
             }
+
+            if (Input.GetKeyDown(KeyCode.F12) && PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.Collider)
+                PlayerControl.LocalPlayer.Collider.enabled = !PlayerControl.LocalPlayer.Collider.enabled;
         }
     }
 }

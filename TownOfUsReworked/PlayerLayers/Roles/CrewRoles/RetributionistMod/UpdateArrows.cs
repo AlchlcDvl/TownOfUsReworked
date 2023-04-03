@@ -1,12 +1,12 @@
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Cosmetics.CustomColors;
 using UnityEngine;
 using System;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {

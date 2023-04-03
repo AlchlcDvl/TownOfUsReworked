@@ -2,10 +2,10 @@ using System.Collections;
 using System.Linq;
 using HarmonyLib;
 using Reactor.Utilities;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 if (Swap1 == null || Swap2 == null)
                     return;
 
-                foreach (var swapper in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Swapper))
+                foreach (var swapper in Role.AllRoles.Where(x => x.Type == RoleEnum.Swapper))
                 {
                     if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
                         return;

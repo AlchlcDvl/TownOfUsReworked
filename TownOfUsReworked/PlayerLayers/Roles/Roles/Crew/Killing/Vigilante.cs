@@ -1,5 +1,4 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can shoot players.\n- You you shoot someone you are not supposed to, you will die to guilt.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             LastKilled = DateTime.UtcNow;
-            RoleType = RoleEnum.Vigilante;
+            Type = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;
             InspectorResults = InspectorResults.UsesGuns;

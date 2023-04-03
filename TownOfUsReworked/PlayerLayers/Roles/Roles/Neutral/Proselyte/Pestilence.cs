@@ -1,8 +1,7 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Kill everyone with your unstoppable abilities!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
             LastKilled = DateTime.UtcNow;
-            RoleType = RoleEnum.Pestilence;
+            Type = RoleEnum.Pestilence;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
         }

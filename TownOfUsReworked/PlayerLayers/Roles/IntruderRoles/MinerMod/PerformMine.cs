@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod
 {

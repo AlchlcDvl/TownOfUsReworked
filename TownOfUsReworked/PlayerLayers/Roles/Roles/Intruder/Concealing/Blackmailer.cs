@@ -1,5 +1,4 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "Everyone will be alerted at the start of the meeting that someone has been blackmailed." + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during " +
                 "meetings." : "");
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
-            RoleType = RoleEnum.Blackmailer;
+            Type = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.HasInformation;

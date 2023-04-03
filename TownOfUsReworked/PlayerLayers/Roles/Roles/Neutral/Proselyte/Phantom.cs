@@ -1,5 +1,4 @@
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -18,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Phantom";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
-            RoleType = RoleEnum.Phantom;
+            Type = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
         }
@@ -56,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
         }
 
-        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (!Player.Data.IsDead || Player.Data.Disconnected)
                 return true;

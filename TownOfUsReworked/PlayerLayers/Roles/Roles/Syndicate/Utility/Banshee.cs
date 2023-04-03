@@ -1,10 +1,9 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using System.Collections.Generic;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Banshee(PlayerControl player) : base(player)
         {
             Name = "Banshee";
-            RoleType = RoleEnum.Banshee;
+            Type = RoleEnum.Banshee;
             StartText = "Scream";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SSu;
@@ -52,8 +51,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player?.Data.Disconnected == true)
                     continue;
 
-                var targetRole = GetRole(player);
-                targetRole.IsBlocked = false;
+                foreach (var layer in GetLayers(player))
+                    layer.IsBlocked = false;
             }
 
             Blocked.Clear();

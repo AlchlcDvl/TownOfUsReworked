@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Ruthless";
             TaskText = "- Your attacks cannot be stopped.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
-            AbilityType = AbilityEnum.Ruthless;
+            Type = AbilityEnum.Ruthless;
             Hidden = !CustomGameOptions.RuthlessKnows;
         }
     }

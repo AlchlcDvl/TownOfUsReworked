@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Make Everyone Suspicious";
             AbilitiesText = "- You can frame players.\n- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>.\n- Framed " +
                 "players will appear to have the wrong results to investigative roles till you are dead.";
-            RoleType = RoleEnum.Framer;
+            Type = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;

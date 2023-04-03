@@ -1,10 +1,9 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Kill everyone!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
             LastMauled = DateTime.UtcNow;
-            RoleType = RoleEnum.Werewolf;
+            Type = RoleEnum.Werewolf;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
         }

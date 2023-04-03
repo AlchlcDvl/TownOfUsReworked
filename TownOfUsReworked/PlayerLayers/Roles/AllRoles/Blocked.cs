@@ -2,8 +2,12 @@ using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using System.Linq;
+using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using System.Collections.Generic;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -16,21 +20,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix()
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
+                if (ConstantVariables.Inactive)
                     return true;
-                }
 
                 if (!Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data))
                     return false;
 
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
-                    return true;
-
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -40,18 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix()
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
-                    return true;
-                }
-
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
+                if (ConstantVariables.Inactive)
                     return true;
 
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -61,11 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix(UseButton __instance)
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
+                if (ConstantVariables.Inactive)
                     return true;
-                }
 
                 if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null)
                 {
@@ -73,12 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                     return false;
                 }
 
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
-                    return true;
-
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -88,18 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix()
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
-                    return true;
-                }
-
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
+                if (ConstantVariables.Inactive)
                     return true;
 
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -109,18 +81,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix()
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
-                    return true;
-                }
-
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
+                if (ConstantVariables.Inactive)
                     return true;
 
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -130,18 +94,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix()
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
-                    return true;
-                }
-
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                if (role == null)
+                if (ConstantVariables.Inactive)
                     return true;
 
-                return !role.IsBlocked;
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
             }
         }
 
@@ -151,25 +107,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             public static bool Prefix(AbilityButton __instance)
             {
-                if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !PlayerControl.LocalPlayer.CanMove ||
-                    !ConstantVariables.IsInGame)
-                {
+                if (ConstantVariables.Inactive)
                     return true;
-                }
+
+                PlayerControl.LocalPlayer.RegenTask();
 
                 if (!CustomButtons.ButtonUsable(__instance))
                     return false;
 
-                if (__instance == HudManager.Instance.AbilityButton)
+                return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            }
+        }
+
+        [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.DoClick))]
+        public static class PerformAbility2
+        {
+            public static bool Prefix(AbilityButton __instance)
+            {
+                if (ConstantVariables.Inactive)
                     return true;
 
                 PlayerControl.LocalPlayer.RegenTask();
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
 
-                if (role == null)
-                    return true;
+                if (!CustomButtons.ButtonUsable(__instance))
+                    return false;
 
-                return !role.IsBlocked;
+                if (PlayerControl.LocalPlayer.IsBlocked())
+                    return false;
+
+                var clicked = false;
+                var clickedList = new List<bool>();
+                Role.GetRole(PlayerControl.LocalPlayer)?.ButtonClick(__instance, out clicked);
+                clickedList.Add(clicked);
+                Ability.GetAbility(PlayerControl.LocalPlayer)?.ButtonClick(__instance, out clicked);
+                clickedList.Add(clicked);
+                Objectifier.GetObjectifier(PlayerControl.LocalPlayer)?.ButtonClick(__instance, out clicked);
+                clickedList.Add(clicked);
+                return clickedList.All(x => x);
             }
         }
     }

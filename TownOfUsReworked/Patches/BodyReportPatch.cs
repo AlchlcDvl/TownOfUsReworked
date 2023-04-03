@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -9,7 +10,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo info)
         {
-            if (Utils.Inactive() || info == null || (CustomGameOptions.PlaguebearerOn == 0 && CustomGameOptions.ArsonistOn == 0 && CustomGameOptions.CryomaniacOn == 0))
+            if (ConstantVariables.Inactive || info == null || (CustomGameOptions.PlaguebearerOn == 0 && CustomGameOptions.ArsonistOn == 0 && CustomGameOptions.CryomaniacOn == 0))
                 return;
 
             Utils.Spread(PlayerControl.LocalPlayer, info.Object);

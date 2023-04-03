@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
@@ -21,8 +21,7 @@ namespace TownOfUsReworked.Patches
             var role = Role.GetRole(player);
 
             var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Agent) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Engineer) ||
-                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative) ||
-                player.Is(RoleEnum.Undertaker);
+                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 

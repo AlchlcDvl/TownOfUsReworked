@@ -1,7 +1,7 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {

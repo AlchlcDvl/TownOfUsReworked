@@ -1,9 +1,8 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
 using System;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -17,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Inspector(PlayerControl player) : base(player)
         {
             Name = "Inspector";
-            RoleType = RoleEnum.Inspector;
+            Type = RoleEnum.Inspector;
             StartText = "Inspect Player For Their Roles";
             AbilitiesText = "- You can check a player to get a role list of what they could be.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;

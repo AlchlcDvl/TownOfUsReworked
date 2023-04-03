@@ -1,9 +1,7 @@
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
-using Reactor.Utilities;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
@@ -28,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Eject Your Target";
             Objectives = "- Eject your target.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
-            RoleType = RoleEnum.Executioner;
+            Type = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToDoom = new();

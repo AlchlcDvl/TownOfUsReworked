@@ -7,8 +7,11 @@ namespace TownOfUsReworked.MultiClientInstancing
     {
         public static void Prefix(AmongUsClient __instance)
         {
-            foreach (var p in __instance.allClients)
-                p.IsReady = true;
+            if (TownOfUsReworked.MCIActive)
+            {
+                foreach (var p in __instance.allClients)
+                    p.IsReady = true;
+            }
         }
     }
 }

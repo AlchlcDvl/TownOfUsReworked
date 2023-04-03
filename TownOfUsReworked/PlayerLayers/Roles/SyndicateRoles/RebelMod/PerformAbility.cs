@@ -1,12 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
 using System;
-using Reactor.Utilities;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -48,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             if (!role.WasSidekick || role.FormerRole == null)
                 return false;
 
-            var formerRole = role.FormerRole.RoleType;
+            var formerRole = role.FormerRole.Type;
 
             if (__instance == role.ConcealButton && formerRole == RoleEnum.Concealer)
             {

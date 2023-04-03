@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = $"- You can put on a vest, which makes you unkillable for a short duration of time.\n- You have {UsesLeft} vests remaining.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
             LastVested = DateTime.UtcNow;
-            RoleType = RoleEnum.Survivor;
+            Type = RoleEnum.Survivor;
             UsesLeft = CustomGameOptions.MaxVests;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;

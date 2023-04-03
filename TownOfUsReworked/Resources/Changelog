@@ -1,18 +1,17 @@
 Changelog
-- Addition: Some Lore
-- Addition: Added framework for translations, feel free to let me know when you want to add a language
-- Addition: 1 new nameplate
-- Code Change: Chat commands have been optimised
-- Code Change: The code was reorganised for better functionality
-- Improvement: The in-game wiki is now complete
-- Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)
-- Improvement: Flashes were changed to include text and work like The Other Roles flashes
-- Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees
-- Bug Fix: Fixed the win screens not showing up properly
-- Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies
-- Visual Fix: Fixed outros sometimes not loading correctly
-- Modifier Fix: Stopped giving Shy to someone with the Button Barry ability
-- Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante
-- Ability Fix: Stopped giving Button Barry to someone who cannot button
-- Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off
-- Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents
+- Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:
+- Update: Updated the mod to v2023.3.28
+- Changes: Made minor changes to how emergency buttons can be called (credits to @twix)
+- Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work
+- Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)
+- Improvement: Improved RPC handling between players
+- Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo from All The Roles for help)
+- Improvement: Improved how roleblocks work internally by a bit
+- Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions
+- Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players
+- Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier
+- Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in
+- Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on
+- Bug Fix: Potential fix for null errors regarding player layers
+- Role Fix: Fixed buttons not disappearing when changing roles
+- Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies

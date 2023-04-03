@@ -8,12 +8,12 @@ using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
@@ -145,7 +145,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int WraithOn => (int)Generate.WraithOn.Get();
         public static int ArsonistOn => (int)Generate.ArsonistOn.Get();
         public static int AltruistOn => (int)Generate.AltruistOn.Get();
-        public static int UndertakerOn => (int)Generate.UndertakerOn.Get();
         public static int JackalOn => (int)Generate.JackalOn.Get();
         public static int VigilanteOn => (int)Generate.VigilanteOn.Get();
         public static int GrenadierOn => (int)Generate.GrenadierOn.Get();
@@ -704,6 +703,9 @@ namespace TownOfUsReworked.CustomOptions
         public static bool SoloBoost => Generate.SoloBoost.Get();
         public static bool UniqueJanitor => Generate.UniqueJanitor.Get();
         public static bool JaniCooldownsLinked => Generate.JaniCooldownsLinked.Get();
+        public static JanitorOptions JanitorVentOptions => (JanitorOptions)Generate.JanitorVentOptions.Get();
+        public static int DragModifier => (int)Generate.DragModifier.Get();
+        public static float DragCd => Generate.DragCooldown.Get();
 
         //Blackmailer Settings
         public static float BlackmailCd => Generate.BlackmailCooldown.Get();
@@ -727,13 +729,6 @@ namespace TownOfUsReworked.CustomOptions
         public static float CamouflagerDuration => Generate.CamouflagerDuration.Get();
         public static int CamouflagerCount => (int)Generate.CamouflagerCount.Get();
         public static bool UniqueCamouflager => Generate.UniqueCamouflager.Get();
-
-        //Undertaker Settings
-        public static UndertakerOptions UndertakerVentOptions => (UndertakerOptions)Generate.UndertakerVentOptions.Get();
-        public static int DragModifier => (int)Generate.DragModifier.Get();
-        public static float DragCd => Generate.DragCooldown.Get();
-        public static int UndertakerCount => (int)Generate.UndertakerCount.Get();
-        public static bool UniqueUndertaker => Generate.UniqueUndertaker.Get();
 
         //Morphling Settings
         public static bool MorphlingVent => Generate.MorphlingVent.Get();
@@ -1005,14 +1000,12 @@ namespace TownOfUsReworked.CustomOptions
         public static int TraitorCount => (int)Generate.TraitorCount.Get();
         public static bool TraitorColourSwap => Generate.TraitorColourSwap.Get();
         public static bool TraitorKnows => Generate.TraitorKnows.Get();
-        public static bool TraitorCanAssassin => Generate.TraitorCanAssassin.Get();
         public static bool UniqueTraitor => Generate.UniqueTraitor.Get();
 
         //Fanatic Settings
         public static bool FanaticKnows => Generate.FanaticKnows.Get();
         public static int FanaticCount => (int)Generate.FanaticCount.Get();
         public static bool UniqueFanatic => Generate.UniqueFanatic.Get();
-        public static bool FanaticCanAssassin => Generate.FanaticCanAssassin.Get();
         public static bool FanaticColourSwap => Generate.FanaticColourSwap.Get();
 
         //Taskmaster Settings

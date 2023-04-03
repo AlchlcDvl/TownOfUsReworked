@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using System;
@@ -8,6 +7,7 @@ using System.Linq;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.CoronerMod
 {

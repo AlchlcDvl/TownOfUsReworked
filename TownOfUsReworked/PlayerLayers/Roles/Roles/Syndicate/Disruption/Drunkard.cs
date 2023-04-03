@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Functions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Confuse the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
             LastConfused = DateTime.UtcNow;
-            RoleType = RoleEnum.Drunkard;
+            Type = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
         }

@@ -2,7 +2,7 @@ using HarmonyLib;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using System.Collections.Generic;
 
 namespace TownOfUsReworked.Patches

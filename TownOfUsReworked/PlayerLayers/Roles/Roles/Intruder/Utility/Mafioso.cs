@@ -1,7 +1,6 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Mafioso(PlayerControl player) : base(player)
         {
             Name = "Mafioso";
-            RoleType = RoleEnum.Mafioso;
+            Type = RoleEnum.Mafioso;
             StartText = "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;

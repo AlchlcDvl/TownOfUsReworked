@@ -12,7 +12,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
     [RegisterInIl2Cpp]
     public class Tasks : MonoBehaviour
     {
-        public Tasks(IntPtr ptr) : base(ptr) { }
+        public Tasks(IntPtr ptr) : base(ptr) {}
 
         public readonly static List<GameObject> AllCustomPlateform = new();
         public byte Id;

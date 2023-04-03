@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
@@ -26,15 +26,11 @@ namespace TownOfUsReworked.Objects
             report += $"They were a {bodyRole.Name}!\n";
 
             if (selfFlag)
-            {
                 report += "There is evidence of self-harm!\n";
-            }
             else if (!selfFlag)
             {
                 if (CustomGameOptions.CoronerReportRole)
-                {
                     report += $"They were killed by a {killerRole.Name}!\n";
-                }
                 else
                 {
                     if (br.Killer.Is(Faction.Crew))

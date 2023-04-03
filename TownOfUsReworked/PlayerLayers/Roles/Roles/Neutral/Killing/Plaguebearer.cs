@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
-using Reactor.Utilities;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 
@@ -28,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Spread Disease To Become Pestilence";
             AbilitiesText = "Infect everyone to become Pestilence\nFake Tasks:";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
-            RoleType = RoleEnum.Plaguebearer;
+            Type = RoleEnum.Plaguebearer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             InfectedPlayers = new();
@@ -72,6 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnPestilence()
         {
+            InfectButton.gameObject.SetActive(false);
             var role = new Pestilence(Player);
             role.RoleUpdate(this);
 

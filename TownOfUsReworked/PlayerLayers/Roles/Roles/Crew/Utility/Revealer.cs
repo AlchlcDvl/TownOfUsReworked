@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Revealer";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
-            RoleType = RoleEnum.Revealer;
+            Type = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = CU;
             ImpArrows = new();

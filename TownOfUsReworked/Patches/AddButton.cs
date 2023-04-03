@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Patches
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player?.Data.Disconnected != false || !CustomGameOptions.LighterDarker;
+            return player?.Data.Disconnected == true || !CustomGameOptions.LighterDarker;
         }
 
         public static void GenButton(PlayerVoteArea voteArea)

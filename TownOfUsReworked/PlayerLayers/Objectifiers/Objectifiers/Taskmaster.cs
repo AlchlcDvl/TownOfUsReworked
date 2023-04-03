@@ -1,7 +1,7 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
-using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -17,8 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = "- Finish your tasks before the game ends.";
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Taskmaster;
+            Type = ObjectifierEnum.Taskmaster;
             ImpArrows = new();
         }
+
+        public override void OnLobby() => ImpArrows.DestroyAll();
     }
 }

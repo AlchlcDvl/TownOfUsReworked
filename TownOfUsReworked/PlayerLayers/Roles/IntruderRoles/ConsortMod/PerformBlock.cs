@@ -1,9 +1,9 @@
 ﻿using System;
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
@@ -36,8 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                     role.BlockTarget = role.ClosestPlayer;
-                    var targetRole = Role.GetRole(role.BlockTarget);
-                    targetRole.IsBlocked = !targetRole.RoleBlockImmune;
+
+                    foreach (var layer in PlayerLayer.GetLayers(role.BlockTarget))
+                        layer.IsBlocked = !layer.RoleBlockImmune;
+
                     role.Block();
                 }
                 else if (interact[0])

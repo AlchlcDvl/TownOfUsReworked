@@ -3,7 +3,6 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Assassin";
             TaskText = $"- You can guess players mid-meetings.\n- You have {RemainingKills} guess left.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
-            AbilityType = AbilityEnum.Assassin;
+            Type = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
             ColorMapping = new();
             Buttons = new();
@@ -129,9 +128,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
                     if (CustomGameOptions.WraithOn > 0)
                         ColorMapping.Add("Wraith", Colors.Wraith);
-
-                    if (CustomGameOptions.UndertakerOn > 0)
-                        ColorMapping.Add("Undertaker", Colors.Undertaker);
 
                     if (CustomGameOptions.GrenadierOn > 0)
                         ColorMapping.Add("Grenadier", Colors.Grenadier);

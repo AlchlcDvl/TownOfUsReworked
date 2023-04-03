@@ -14,7 +14,6 @@ using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfUsReworked.Patches;
-using System.IO;
 
 namespace TownOfUsReworked
 {
@@ -27,22 +26,18 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.2.7";
+        public const string VersionString = "0.0.2.8";
+        public const string CompleteVersionString = "0.0.2.8";
+        public readonly static Version Version = Version.Parse(VersionString);
 
-        #pragma warning disable
-        public static Version Version = Version.Parse(VersionString);
-        #pragma warning restore
-
-        public const int MaxPlayers = 127;
-        public const int MaxImpostors = 62;
-
-        public readonly static string dev = VersionString[6..];
-        public readonly static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
-        public readonly static bool isDev = dev != "0";
-        public readonly static bool isTest;
-        public readonly static string devString = isDev ? $"-dev{dev}" : "";
-        public readonly static string test = isTest ? "_test" : "";
-        public readonly static string versionFinal = $"v{version}{devString}{test}";
+        private readonly static string dev = VersionString[6..];
+        private readonly static string test = CompleteVersionString[7..];
+        private readonly static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
+        private readonly static bool isDev = dev != "0";
+        public readonly static bool isTest = test != "" && VersionString != CompleteVersionString;
+        private readonly static string devString = isDev ? $"-dev{dev}" : "";
+        private readonly static string testString = isTest ? "_test" : "";
+        public readonly static string versionFinal = $"v{version}{devString}{testString}";
 
         public readonly static string Resources = "TownOfUsReworked.Resources.";
         public readonly static string Buttons = $"{Resources}Buttons.";
@@ -55,6 +50,7 @@ namespace TownOfUsReworked
         public readonly static string Languages = $"{Resources}Languages.";
 
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
+        public static Assembly Executing => Assembly.GetExecutingAssembly();
 
         #pragma warning disable
         public static bool LobbyCapped;
@@ -69,18 +65,15 @@ namespace TownOfUsReworked
             Utils.LogSomething("Mod Loading...");
             _harmony = new("TownOfUsReworked");
 
-            var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat((int)byte.MaxValue, byte.MaxValue).ToArray();
-            GameOptionsData.MaxImpostors = GameOptionsData.RecommendedImpostors = maxImpostors;
-            NormalGameOptionsV07.MaxImpostors = NormalGameOptionsV07.RecommendedImpostors = maxImpostors;
+            var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat(255, 255).ToArray();
+            GameOptionsData.MaxImpostors = maxImpostors;
+            NormalGameOptionsV07.MaxImpostors = maxImpostors;
             HideNSeekGameOptionsV07.MaxImpostors = maxImpostors;
 
-            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, byte.MaxValue).ToArray();
+            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, 255).ToArray();
             GameOptionsData.MinPlayers = minPlayers;
             NormalGameOptionsV07.MinPlayers = minPlayers;
             HideNSeekGameOptionsV07.MinPlayers = minPlayers;
-
-            if (!File.Exists("steam_appid.txt"))
-                File.WriteAllText("steam_appid.txt", "945360");
 
             SubmergedCompatibility.Initialize();
             PalettePatch.Load();
@@ -90,6 +83,7 @@ namespace TownOfUsReworked
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
             _harmony.PatchAll();
             Utils.LogSomething("Mod Loaded!");
+            Utils.LogSomething($"Mod Version v{CompleteVersionString}");
         }
     }
 }

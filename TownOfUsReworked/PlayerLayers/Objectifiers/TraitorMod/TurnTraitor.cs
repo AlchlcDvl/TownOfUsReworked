@@ -5,10 +5,9 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using System.Linq;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
 {
@@ -99,9 +98,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             traitorObj.TaskText = "";
             traitorObj.Turned = true;
             traitor.RegenTask();
-
-            if (CustomGameOptions.TraitorCanAssassin)
-                Ability.GenAbility<Ability>(typeof(Assassin), traitor, 0);
 
             foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch).Cast<Snitch>())
             {

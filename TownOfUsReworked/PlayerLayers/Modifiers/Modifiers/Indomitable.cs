@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Indomitable";
             TaskText = "- You cannot be guessed.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Indomitable : Colors.Modifier;
-            ModifierType = ModifierEnum.Indomitable;
+            Type = ModifierEnum.Indomitable;
             Hidden = !CustomGameOptions.IndomitableKnows;
         }
     }

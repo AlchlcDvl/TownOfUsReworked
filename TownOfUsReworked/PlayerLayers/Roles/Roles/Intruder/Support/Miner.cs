@@ -1,9 +1,8 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using System.Collections.Generic;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Place vents around the map";
             Color = CustomGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
             LastMined = DateTime.UtcNow;
-            RoleType = RoleEnum.Miner;
+            Type = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
         }

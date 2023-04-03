@@ -1,8 +1,7 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Kill everyone!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
             LastKilled = DateTime.UtcNow;
-            RoleType = RoleEnum.Murderer;
+            Type = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
         }

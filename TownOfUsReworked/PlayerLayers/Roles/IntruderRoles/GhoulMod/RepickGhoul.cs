@@ -2,9 +2,9 @@ using HarmonyLib;
 using System.Linq;
 using Hazel;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
 {

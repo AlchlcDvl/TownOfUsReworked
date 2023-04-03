@@ -1,5 +1,5 @@
 using Hazel;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 

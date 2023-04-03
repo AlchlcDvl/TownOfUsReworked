@@ -1,8 +1,8 @@
 using System.Linq;
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
 {
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Revealer))
+            foreach (var role in Role.AllRoles.Where(x => x.Type == RoleEnum.Revealer))
             {
                 var haunter = (Revealer)role;
 

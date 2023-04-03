@@ -1,10 +1,9 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {

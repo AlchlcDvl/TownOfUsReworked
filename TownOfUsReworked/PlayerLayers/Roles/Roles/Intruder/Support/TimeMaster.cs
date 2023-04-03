@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Functions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving";
             Color = CustomGameOptions.CustomIntColors ? Colors.TimeMaster : Colors.Intruder;
             LastFrozen = DateTime.UtcNow;
-            RoleType = RoleEnum.TimeMaster;
+            Type = RoleEnum.TimeMaster;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
         }

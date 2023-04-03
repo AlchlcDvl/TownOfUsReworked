@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 
@@ -9,7 +9,7 @@ namespace TownOfUsReworked.Patches
 {
     public static class SubmergedPatches
     {
-        [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
+        [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]
         public static class SubmergedStartPatch
         {
             public static void Postfix()

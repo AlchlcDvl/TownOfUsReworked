@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TMPro;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
@@ -124,7 +124,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 if (isRet)
                 {
                     var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isAgent = retRole.RevivedRole?.RoleType == RoleEnum.Agent;
+                    isAgent = retRole.RevivedRole?.Type == RoleEnum.Agent;
                 }
             }
 

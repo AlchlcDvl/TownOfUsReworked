@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers.FlincherMod
 {

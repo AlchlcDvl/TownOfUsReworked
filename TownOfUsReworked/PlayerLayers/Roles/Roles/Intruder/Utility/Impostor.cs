@@ -1,4 +1,4 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Impostor(PlayerControl player) : base(player)
         {
             Name = "Impostor";
-            RoleType = RoleEnum.Impostor;
+            Type = RoleEnum.Impostor;
             StartText = "Sabotage And Kill Everyone";
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;

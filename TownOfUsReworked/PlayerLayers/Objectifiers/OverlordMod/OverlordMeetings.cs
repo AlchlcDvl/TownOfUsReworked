@@ -1,8 +1,8 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
 {
@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.OverlordMod
             if (__instance == null)
                 return;
 
-            var overlord2 = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)x).IsAlive);
+            var overlord2 = Objectifier.AllObjectifiers.Find(x => x.Type == ObjectifierEnum.Overlord && ((Overlord)x).IsAlive);
 
             if (overlord2 == null)
                 return;

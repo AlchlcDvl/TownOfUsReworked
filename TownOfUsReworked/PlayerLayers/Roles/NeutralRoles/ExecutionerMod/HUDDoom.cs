@@ -1,10 +1,10 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Detect Which Roles Are Here";
             AbilitiesText = "- You can place bugs around the map.\n- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
-            RoleType = RoleEnum.Operative;
+            Type = RoleEnum.Operative;
             BuggedPlayers = new();
             UsesLeft = CustomGameOptions.MaxBugs;
             RoleAlignment = RoleAlignment.CrewInvest;

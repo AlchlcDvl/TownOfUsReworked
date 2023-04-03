@@ -1,6 +1,6 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
 {
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             if (role == null)
                 return;
 
-            if (role.RoleType == RoleEnum.Jester)
+            if (role.Type == RoleEnum.Jester)
             {
                 var jest = (Jester)role;
                 jest.VotedOut = true;

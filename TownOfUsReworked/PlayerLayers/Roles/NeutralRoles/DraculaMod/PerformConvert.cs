@@ -1,7 +1,6 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;

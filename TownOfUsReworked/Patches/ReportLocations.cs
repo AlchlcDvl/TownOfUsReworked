@@ -1,7 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {

@@ -2,16 +2,14 @@ using Hazel;
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
 using Reactor.Utilities.Extensions;
 using Object = UnityEngine.Object;
 using Reactor.Networking.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
 using Random = UnityEngine.Random;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -27,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Warp The Crew Away From Each Other";
             AbilitiesText = "Separate the Crew";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
-            RoleType = RoleEnum.Warper;
+            Type = RoleEnum.Warper;
             AlignmentName = SSu;
         }
 

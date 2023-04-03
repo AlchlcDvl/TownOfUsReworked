@@ -1,7 +1,6 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Just Fix It";
             AbilitiesText = $"- You can fix sabotages at any time during the game.\n- You can vent.\n- You have {UsesLeft} fixes left.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
-            RoleType = RoleEnum.Engineer;
+            Type = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.DifferentLens;

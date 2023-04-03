@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Torch";
             TaskText = "- You can see in the dark.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Torch : Colors.Ability;
-            AbilityType = AbilityEnum.Torch;
+            Type = AbilityEnum.Torch;
         }
     }
 }

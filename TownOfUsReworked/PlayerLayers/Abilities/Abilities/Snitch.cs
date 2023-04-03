@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Snitch";
             TaskText = "- You can finish your tasks to get information on who's evil.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
-            AbilityType = AbilityEnum.Snitch;
+            Type = AbilityEnum.Snitch;
             Hidden = !CustomGameOptions.SnitchKnows;
             ImpArrows = new();
             SnitchArrows = new();
@@ -34,6 +34,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 Object.Destroy(arrow.Value.gameObject);
 
             SnitchArrows.Remove(arrow.Key);
+        }
+
+        public override void OnLobby()
+        {
+            SnitchArrows.Values.DestroyAll();
+            SnitchArrows.Clear();
+            ImpArrows.DestroyAll();
         }
     }
 }

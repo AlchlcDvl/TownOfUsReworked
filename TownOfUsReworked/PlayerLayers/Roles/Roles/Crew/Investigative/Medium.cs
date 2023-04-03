@@ -1,12 +1,10 @@
 using System;
 using UnityEngine;
-using Reactor.Utilities;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can mediate which makes ghosts visible to you." + (CustomGameOptions.ShowMediumToDead ? "\n- When mediating, dead players will be able to see " +
                 "you." : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
-            RoleType = RoleEnum.Medium;
+            Type = RoleEnum.Medium;
             MediatedPlayers = new();
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
@@ -58,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Flash(Color, "There's a mediate in progress!");
         }
 
-        protected internal override void OnLobby()
+        public override void OnLobby()
         {
             MediatedPlayers.Values.DestroyAll();
             MediatedPlayers.Clear();

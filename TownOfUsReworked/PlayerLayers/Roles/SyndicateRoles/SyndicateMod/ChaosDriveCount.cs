@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {

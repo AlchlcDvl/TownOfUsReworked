@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VampireHunterMod
 {

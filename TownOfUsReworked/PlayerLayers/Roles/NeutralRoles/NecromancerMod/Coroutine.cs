@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
@@ -9,9 +8,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
-using Reactor.Utilities;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
 {
@@ -35,13 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             role.Resurrecting = true;
 
             if (CustomGameOptions.NecromancerTargetBody)
-            {
-                foreach (var deadBody in Object.FindObjectsOfType<DeadBody>())
-                {
-                    if (deadBody.ParentId == parentId)
-                        deadBody.gameObject.Destroy();
-                }
-            }
+                Utils.BodyById(parentId)?.gameObject.Destroy();
 
             var startTime = DateTime.UtcNow;
 

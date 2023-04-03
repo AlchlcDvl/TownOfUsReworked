@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using Hazel;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles;
@@ -40,15 +39,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = Colors.Objectifier;
         }
 
-        protected internal ObjectifierEnum ObjectifierType = ObjectifierEnum.None;
-        protected internal string SymbolName = ":";
-        protected internal string TaskText = "- None.";
-        protected internal bool Hidden;
-        protected internal bool Winner;
+        public ObjectifierEnum Type = ObjectifierEnum.None;
+        public string SymbolName = ":";
+        public string TaskText = "- None.";
+        public bool Hidden;
+        public bool Winner;
 
-        protected internal string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
+        public string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
-        private bool Equals(Objectifier other) => Equals(Player, other.Player) && ObjectifierType == other.ObjectifierType;
+        private bool Equals(Objectifier other) => Equals(Player, other.Player) && Type == other.Type;
 
         public override bool Equals(object obj)
         {
@@ -64,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             return Equals((Objectifier)obj);
         }
 
-        public override int GetHashCode() => HashCode.Combine(Player, (int)ObjectifierType);
+        public override int GetHashCode() => HashCode.Combine(Player, (int)Type);
 
         public static bool operator == (Objectifier a, Objectifier b)
         {
@@ -74,14 +73,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (a is null || b is null)
                 return false;
 
-            return a.ObjectifierType == b.ObjectifierType && a.Player.PlayerId == b.Player.PlayerId;
+            return a.Type == b.Type && a.Player.PlayerId == b.Player.PlayerId;
         }
 
         public static Objectifier GetObjectifierValue(ObjectifierEnum objEnum)
         {
             foreach (var obj in AllObjectifiers)
             {
-                if (obj.ObjectifierType == objEnum)
+                if (obj.Type == objEnum)
                     return obj;
             }
 
@@ -98,19 +97,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public static Objectifier GetObjectifier(PlayerVoteArea area) => GetObjectifier(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype);
+        public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.Type == objectifiertype);
 
-        public static T GenObjectifier<T>(Type type, PlayerControl player, int id)
-        {
-            var objectifier = (T)Activator.CreateInstance(type, new object[] { player });
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetObjectifier, SendOption.Reliable);
-            writer.Write(player.PlayerId);
-            writer.Write(id);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return objectifier;
-        }
-
-        protected internal override bool GameEnd(LogicGameFlowNormal __instance)
+        public override bool GameEnd(LogicGameFlowNormal __instance)
         {
             if (Player.Data.IsDead || Player.Data.Disconnected)
                 return true;
@@ -158,7 +147,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (TasksDone && ObjectifierType == ObjectifierEnum.Taskmaster)
+            else if (TasksDone && Type == ObjectifierEnum.Taskmaster)
             {
                 TaskmasterWins = true;
                 Winner = true;
@@ -169,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)this).IsAlive)
+            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && Type == ObjectifierEnum.Overlord && ((Overlord)this).IsAlive)
             {
                 OverlordWins = true;
 

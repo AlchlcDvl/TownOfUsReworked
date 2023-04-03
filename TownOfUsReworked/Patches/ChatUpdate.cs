@@ -3,7 +3,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches

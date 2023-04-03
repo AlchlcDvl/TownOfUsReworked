@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using Reactor.Utilities;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
@@ -31,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Guesser(PlayerControl player) : base(player)
         {
             Name = "Guesser";
-            RoleType = RoleEnum.Guesser;
+            Type = RoleEnum.Guesser;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
@@ -135,9 +133,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     if (CustomGameOptions.WraithOn > 0)
                         ColorMapping.Add("Wraith", Colors.Wraith);
-
-                    if (CustomGameOptions.UndertakerOn > 0)
-                        ColorMapping.Add("Undertaker", Colors.Undertaker);
 
                     if (CustomGameOptions.GrenadierOn > 0)
                         ColorMapping.Add("Grenadier", Colors.Grenadier);

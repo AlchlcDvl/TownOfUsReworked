@@ -1,5 +1,4 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can steal another player's role.\n- You can only shift with <color=#8BFDFDFF>Crew</color>.\n- Shifting with non-<color=#8BFDFDFF>Crew</color> will " +
                 "cause you to kill yourself.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
-            RoleType = RoleEnum.Shifter;
+            Type = RoleEnum.Shifter;
             LastShifted = DateTime.UtcNow;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;

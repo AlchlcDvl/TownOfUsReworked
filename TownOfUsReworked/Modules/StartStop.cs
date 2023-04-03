@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.Functions;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
+namespace TownOfUsReworked.Modules
 {
     [HarmonyPatch]
     public static class StartStop

@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Modules;
@@ -29,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
             AbilitiesText = "- You can disguise a player into someone else's appearance.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
-            RoleType = RoleEnum.Disguiser;
+            Type = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
             MeasuredPlayer = null;

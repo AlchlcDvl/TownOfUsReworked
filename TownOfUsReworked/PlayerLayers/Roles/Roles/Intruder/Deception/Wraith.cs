@@ -1,11 +1,10 @@
 using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Turn invisible and kill undetected";
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
             LastInvis = DateTime.UtcNow;
-            RoleType = RoleEnum.Wraith;
+            Type = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
         }

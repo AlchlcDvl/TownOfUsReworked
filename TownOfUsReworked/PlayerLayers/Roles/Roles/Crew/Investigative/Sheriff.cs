@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Reveal The Alignment Of Other Players";
             AbilitiesText = "- You can reveal alignments of other players relative to the <color=#8BFDFDFF>Crew</color>.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
-            RoleType = RoleEnum.Sheriff;
+            Type = RoleEnum.Sheriff;
             Interrogated = new();
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CI;

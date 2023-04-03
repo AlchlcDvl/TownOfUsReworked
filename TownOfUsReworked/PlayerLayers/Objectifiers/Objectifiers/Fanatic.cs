@@ -1,6 +1,5 @@
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "♠";
             TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Fanatic;
+            Type = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
         }
 
@@ -60,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             var role = Role.GetRole(Player);
 
-            if (role.RoleType == RoleEnum.Betrayer)
+            if (role.Type == RoleEnum.Betrayer)
                 return;
 
             var betrayer = new Betrayer(Player);

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameObject = UnityEngine.Object;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public AbilityButton AutopsyButton;
-        public Vent ClosestVent;
 
         public Coroner(PlayerControl player) : base(player)
         {
@@ -32,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You know when players die and will be notified to as to where their body is for a brief period of time.\n- When reporting a body, you get all of " +
                 "the required info from it.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
-            RoleType = RoleEnum.Coroner;
+            Type = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             BodyArrows = new();
@@ -70,6 +69,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 GameObject.Destroy(arrow.Value.gameObject);
 
             BodyArrows.Remove(arrow.Key);
+        }
+
+        public override void OnLobby()
+        {
+            BodyArrows.Values.DestroyAll();
+            BodyArrows.Clear();
         }
     }
 }

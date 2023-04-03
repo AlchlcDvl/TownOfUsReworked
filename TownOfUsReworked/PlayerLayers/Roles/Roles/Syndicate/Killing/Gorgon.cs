@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using System.Collections.Generic;
 using TownOfUsReworked.Data;
+using System.Collections.Generic;
 using TownOfUsReworked.Modules;
 using System;
 using TownOfUsReworked.CustomOptions;
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can stone gaze players, that slows them down and forces them to stand still till a meeting is called.\n- Stoned players cannot move and will die when " +
                 "a meeting is called.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Gorgon : Colors.Syndicate;
-            RoleType = RoleEnum.Gorgon;
+            Type = RoleEnum.Gorgon;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             Gazed = new();

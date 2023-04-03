@@ -1,13 +1,13 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Patches;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {

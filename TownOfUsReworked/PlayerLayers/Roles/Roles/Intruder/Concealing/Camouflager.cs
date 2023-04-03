@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.\n- When camouflaged, everyone will appear grey with no name or " +
                 "cosmetics." + (CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage." : "");
             Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
-            RoleType = RoleEnum.Camouflager;
+            Type = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.BringsChaos;

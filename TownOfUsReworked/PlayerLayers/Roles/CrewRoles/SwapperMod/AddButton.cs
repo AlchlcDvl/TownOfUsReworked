@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {

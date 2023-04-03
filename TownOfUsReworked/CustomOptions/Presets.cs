@@ -7,7 +7,7 @@ using Reactor.Utilities.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
 
@@ -58,7 +58,7 @@ namespace TownOfUsReworked.CustomOptions
                 option.Setting.gameObject.Destroy();
 
             Loading = SlotButtons[0];
-            Loading.Do = () => { };
+            Loading.Do = () => {};
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
 
             __instance.Children = new[] { Loading.Setting };

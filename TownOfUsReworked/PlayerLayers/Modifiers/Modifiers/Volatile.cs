@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Volatile";
             TaskText = "- You experience a lot of hallucinations and lash out.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
-            ModifierType = ModifierEnum.Volatile;
+            Type = ModifierEnum.Volatile;
             Hidden = !CustomGameOptions.VolatileKnows;
         }
     }

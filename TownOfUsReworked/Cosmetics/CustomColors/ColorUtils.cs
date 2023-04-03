@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Cosmetics.CustomColors
 {
+    [HarmonyPatch]
     public static class ColorUtils
     {
         private static readonly int BackColor = Shader.PropertyToID("_BackColor");
@@ -74,53 +76,19 @@ namespace TownOfUsReworked.Cosmetics.CustomColors
             rend.material.SetColor(VisorColor, Palette.VisorColor);
         }
 
-        public static bool IsRainbow(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
+        private static bool OutOfBounds(int id) => id < 0 || id >= Palette.ColorNames.Count;
 
-            return (int)Palette.ColorNames[id] == 999999;
-        }
+        public static bool IsRainbow(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999999;
 
-        public static bool IsMonochrome(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
+        public static bool IsMonochrome(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999998;
 
-            return (int)Palette.ColorNames[id] == 999998;
-        }
+        public static bool IsGalaxy(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999997;
 
-        public static bool IsGalaxy(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
+        public static bool IsFire(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999996;
 
-            return (int)Palette.ColorNames[id] == 999997;
-        }
+        public static bool IsMantle(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999995;
 
-        public static bool IsFire(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
-
-            return (int)Palette.ColorNames[id] == 999996;
-        }
-
-        public static bool IsMantle(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
-
-            return (int)Palette.ColorNames[id] == 999995;
-        }
-
-        public static bool IsChroma(int id)
-        {
-            if (id < 0 || id >= Palette.ColorNames.Count)
-                return false;
-
-            return (int)Palette.ColorNames[id] == 999994;
-        }
+        public static bool IsChroma(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999994;
 
         public static bool IsChanging(int id) => IsRainbow(id) || IsFire(id) || IsGalaxy(id) || IsMantle(id) || IsMonochrome(id) || IsChroma(id);
     }

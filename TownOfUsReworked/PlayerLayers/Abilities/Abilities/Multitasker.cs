@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Multitasker";
             TaskText = "- Your task windows are transparent.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Multitasker : Colors.Ability;
-            AbilityType = AbilityEnum.Multitasker;
+            Type = AbilityEnum.Multitasker;
         }
     }
 }

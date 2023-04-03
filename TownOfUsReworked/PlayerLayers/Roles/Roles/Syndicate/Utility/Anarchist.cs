@@ -1,4 +1,4 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Anarchist(PlayerControl player) : base(player)
         {
             Name = "Anarchist";
-            RoleType = RoleEnum.Anarchist;
+            Type = RoleEnum.Anarchist;
             StartText = "Wreck Everyone With A Passion";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SU;

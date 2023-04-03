@@ -1,9 +1,8 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 

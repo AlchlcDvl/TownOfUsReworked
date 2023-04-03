@@ -11,14 +11,14 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Reactor.Utilities;
 using Il2CppInterop.Runtime.InteropTypes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -30,7 +30,6 @@ using TMPro;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Classes
 {
@@ -239,16 +238,11 @@ namespace TownOfUsReworked.Classes
             return impostors;
         }
 
-        public static PlayerControl PlayerById(byte id)
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == id)
-                    return player;
-            }
+        public static PlayerControl PlayerById(byte id) => PlayerControl.AllPlayerControls.ToArray().ToList().Find(x => x.PlayerId == id);
 
-            return null;
-        }
+        public static DeadBody BodyById(byte id) => Object.FindObjectsOfType<DeadBody>().ToArray().ToList().Find(x => x.ParentId == id);
+
+        public static Vent VentById(int id) => Object.FindObjectsOfType<Vent>().ToArray().ToList().Find(x => x.Id == id);
 
         public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
 
@@ -261,6 +255,16 @@ namespace TownOfUsReworked.Classes
                 return double.MaxValue;
 
             var truePosition = refplayer.GetTruePosition();
+            var truePosition2 = player.GetTruePosition();
+            return Vector2.Distance(truePosition, truePosition2);
+        }
+
+        public static double GetDistBetweenPlayers(PlayerControl player, Vent refplayer)
+        {
+            if (player == null || refplayer == null)
+                return double.MaxValue;
+
+            var truePosition = refplayer.transform.position;
             var truePosition2 = player.GetTruePosition();
             return Vector2.Distance(truePosition, truePosition2);
         }
@@ -595,13 +599,13 @@ namespace TownOfUsReworked.Classes
 
                     if (flag)
                         mainflag = true;
-                    else if (player.Is(RoleEnum.Undertaker))
+                    else if (player.Is(RoleEnum.Janitor))
                     {
-                        var undertaker = (Undertaker)playerRole;
+                        var janitor = (Janitor)playerRole;
 
-                        mainflag = CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always || (undertaker.CurrentlyDragging != null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body) || (undertaker.CurrentlyDragging == null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless);
+                        mainflag = CustomGameOptions.JanitorVentOptions == JanitorOptions.Always || (janitor.CurrentlyDragging != null &&
+                            CustomGameOptions.JanitorVentOptions == JanitorOptions.Body) || (janitor.CurrentlyDragging == null &&
+                            CustomGameOptions.JanitorVentOptions == JanitorOptions.Bodyless);
                     }
                     else
                         mainflag = true;
@@ -889,8 +893,14 @@ namespace TownOfUsReworked.Classes
             return GetDistBetweenPlayers(player, target) > maxDistance;
         }
 
-        public static bool Inactive() => PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null ||
-            !PlayerControl.LocalPlayer.CanMove || !ConstantVariables.IsRoaming;
+        public static bool IsTooFar(PlayerControl player, Vent target)
+        {
+            if (player == null || target == null)
+                return true;
+
+            var maxDistance = CustomGameOptions.InteractionDistance;
+            return GetDistBetweenPlayers(player, target) > maxDistance;
+        }
 
         public static bool NoButton(PlayerControl target, RoleEnum role) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
             !target.Is(role) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
@@ -940,12 +950,17 @@ namespace TownOfUsReworked.Classes
             return num <= probability;
         }
 
+        public static void StopDragging(byte id)
+        {
+            foreach (var janitor in Role.GetRoles(RoleEnum.Janitor).Where(x => ((Janitor)x).CurrentlyDragging != null && ((Janitor)x).CurrentlyDragging.ParentId == id))
+                ((Janitor)janitor).CurrentlyDragging = null;
+        }
+
         public static Sprite CreateSprite(string name)
         {
             name += ".png";
-            var assembly = Assembly.GetExecutingAssembly();
             var tex = CreateEmptyTexture();
-            var imageStream = assembly.GetManifestResourceStream(name);
+            var imageStream = TownOfUsReworked.Executing.GetManifestResourceStream(name);
             var img = imageStream.ReadFully();
             LoadImage(tex, img, true);
             tex.DontDestroy();
@@ -974,8 +989,7 @@ namespace TownOfUsReworked.Classes
             else
                 resourceName = TownOfUsReworked.Resources + itemName;
 
-            var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(resourceName);
+            var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
             var reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
@@ -1001,10 +1015,10 @@ namespace TownOfUsReworked.Classes
             writer.Write(AmongUsClient.Instance.AmHost ? GameStartManagerPatch.timer : -1f);
             writer.WritePacked(AmongUsClient.Instance.ClientId);
             writer.Write((byte)(TownOfUsReworked.Version.Revision < 0 ? 0xFF : TownOfUsReworked.Version.Revision));
-            writer.Write(Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId.ToByteArray());
+            writer.Write(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
-                Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
+                TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
         }
 
         public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId)
@@ -1016,7 +1030,7 @@ namespace TownOfUsReworked.Classes
             else
                 ver = new Version(major, minor, build, revision);
 
-            GameStartManagerPatch.PlayerVersions[clientId] = new GameStartManagerPatch.PlayerVersion(ver, guid);
+            GameStartManagerPatch.PlayerVersions[clientId] = new PlayerVersion(ver, guid);
         }
 
         public static IEnumerable<T> GetFastEnumerator<T>(this Il2CppSystem.Collections.Generic.List<T> list) where T : Il2CppSystem.Object => new Il2CppListEnumerable<T>(list);
@@ -1110,19 +1124,21 @@ namespace TownOfUsReworked.Classes
 
         public static IEnumerator FadeBody(DeadBody body)
         {
-            var renderer = body.bodyRenderer;
-            var backColor = renderer.material.GetColor(Shader.PropertyToID("_BackColor"));
-            var bodyColor = renderer.material.GetColor(Shader.PropertyToID("_BodyColor"));
-            var newColor = new Color(1f, 1f, 1f, 0f);
-
-            for (var i = 0; i < 60; i++)
+            foreach(var renderer in body.bodyRenderers)
             {
-                if (body == null)
-                    yield break;
+                var backColor = renderer.material.GetColor(Shader.PropertyToID("_BackColor"));
+                var bodyColor = renderer.material.GetColor(Shader.PropertyToID("_BodyColor"));
+                var newColor = new Color(1f, 1f, 1f, 0f);
 
-                renderer.color = Color.Lerp(backColor, newColor, i / 60f);
-                renderer.color = Color.Lerp(bodyColor, newColor, i / 60f);
-                yield return null;
+                for (var i = 0; i < 60; i++)
+                {
+                    if (body == null)
+                        yield break;
+
+                    renderer.color = Color.Lerp(backColor, newColor, i / 60f);
+                    renderer.color = Color.Lerp(bodyColor, newColor, i / 60f);
+                    yield return null;
+                }
             }
 
             Object.Destroy(body.gameObject);

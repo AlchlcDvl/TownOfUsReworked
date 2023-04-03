@@ -6,11 +6,11 @@ using Reactor.Utilities.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Objects;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -22,11 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static List<Role> AllRoles => RoleDictionary.Values.ToList();
         public static readonly List<GameObject> Buttons = new();
         public static readonly Dictionary<int, string> LightDarkColors = new();
-        public readonly List<Footprint> AllPrints = new();
-        public readonly static List<(int, byte, bool)> HiddenBodies = new();
-        public readonly static List<Vent> AllVents = new();
 
-        public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__32 __instance) {}
+        public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
         #pragma warning disable
         public static bool NobodyWins;
@@ -61,54 +58,76 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static bool SyndicateHasChaosDrive;
         #pragma warning restore
 
-        protected internal Color32 FactionColor = Colors.Faction;
-        protected internal Color32 SubFactionColor = Colors.SubFaction;
-        protected internal RoleEnum RoleType = RoleEnum.None;
-        protected internal Faction Faction = Faction.None;
-        protected internal Faction BaseFaction = Faction.None;
-        protected internal RoleAlignment RoleAlignment = RoleAlignment.None;
-        protected internal SubFaction SubFaction = SubFaction.None;
-        protected internal InspectorResults InspectorResults = InspectorResults.None;
-        protected internal List<Role> RoleHistory = new();
+        public Color32 FactionColor = Colors.Faction;
+        public Color32 SubFactionColor = Colors.SubFaction;
+        public RoleEnum Type = RoleEnum.None;
+        public Faction Faction = Faction.None;
+        public Faction BaseFaction = Faction.None;
+        public RoleAlignment RoleAlignment = RoleAlignment.None;
+        public SubFaction SubFaction = SubFaction.None;
+        public InspectorResults InspectorResults = InspectorResults.None;
+        public List<Role> RoleHistory = new();
 
-        protected internal string IntroSound => $"{Name}Intro";
-        protected internal bool IntroPlayed;
+        public string IntroSound => $"{Name}Intro";
+        public bool IntroPlayed;
 
-        protected internal string StartText = "Woah The Game Started";
-        protected internal string AbilitiesText = "- None.";
+        public string StartText = "Woah The Game Started";
+        public string AbilitiesText = "- None.";
 
-        protected internal string AlignmentName = "None";
-        protected internal string FactionName => $"{Faction}";
-        protected internal string SubFactionName => $"{SubFaction}";
+        public string AlignmentName = "None";
+        public string FactionName => $"{Faction}";
+        public string SubFactionName => $"{SubFaction}";
 
-        protected internal string Objectives = "- None.";
+        public string Objectives = "- None.";
 
-        protected internal bool RoleBlockImmune;
-        protected internal bool IsBlocked;
+        public bool Base;
 
-        protected internal bool Base;
+        public readonly List<Footprint> AllPrints = new();
 
-        protected internal AbilityButton SpectateButton;
-        protected internal AbilityButton PullButton;
+        public AbilityButton SpectateButton;
 
-        protected internal AbilityButton ZoomButton;
-        protected internal bool Zooming;
+        public AbilityButton ZoomButton;
+        public bool Zooming;
 
-        protected internal bool IsRecruit;
-        protected internal bool IsResurrected;
-        protected internal bool IsPersuaded;
-        protected internal bool IsBitten;
-        protected internal bool IsIntTraitor;
-        protected internal bool IsIntAlly;
-        protected internal bool IsIntFanatic;
-        protected internal bool IsSynTraitor;
-        protected internal bool IsSynAlly;
-        protected internal bool IsSynFanatic;
-        protected internal bool IsCrewAlly;
-        protected internal bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
+        public bool IsRecruit;
+        public bool IsResurrected;
+        public bool IsPersuaded;
+        public bool IsBitten;
+        public bool IsIntTraitor;
+        public bool IsIntAlly;
+        public bool IsIntFanatic;
+        public bool IsSynTraitor;
+        public bool IsSynAlly;
+        public bool IsSynFanatic;
+        public bool IsCrewAlly;
+        public bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
             !IsSynFanatic && !IsCrewAlly;
 
-        protected internal bool Winner;
+        public bool Winner;
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            if (Player.Data.IsDead)
+            {
+                var ghostRole = (Player.Is(RoleEnum.Revealer) && !GetRole<Revealer>(Player).Caught) || (Player.Is(RoleEnum.Ghoul) && !GetRole<Ghoul>(Player).Caught) ||
+                    (Player.Is(RoleEnum.Banshee) && !GetRole<Banshee>(Player).Caught) || (Player.Is(RoleEnum.Phantom) && !GetRole<Phantom>(Player).Caught);
+
+                if (!ghostRole)
+                {
+                    if (SpectateButton == null)
+                        SpectateButton = CustomButtons.InstantiateButton();
+
+                    SpectateButton.UpdateButton(this, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
+                        false, 0, !ghostRole);
+
+                    if (ZoomButton == null)
+                        ZoomButton = CustomButtons.InstantiateButton();
+
+                    ZoomButton.UpdateButton(this, "SPECTATE", 0, 1, Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
+                        false, 0, 1, false, 0, !ghostRole);
+                }
+            }
+        }
 
         public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds.\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>.";
         public static readonly string IS = "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>";
@@ -152,7 +171,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
 
-        private bool Equals(Role other) => Equals(Player, other.Player) && RoleType == other.RoleType;
+        private bool Equals(Role other) => Equals(Player, other.Player) && Type == other.Type;
 
         public override bool Equals(object obj)
         {
@@ -168,7 +187,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return Equals((Role)obj);
         }
 
-        public override int GetHashCode() => HashCode.Combine(Player, (int)RoleType);
+        public override int GetHashCode() => HashCode.Combine(Player, (int)Type);
 
         public static void SetColors()
         {
@@ -217,19 +236,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LightDarkColors.Add(41, "lighter"); // Rainbow
         }
 
-        public static T GenRole<T>(Type type, PlayerControl player, int id)
-        {
-            var role = (T)Activator.CreateInstance(type, new object[] { player });
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, SendOption.Reliable);
-            writer.Write(player.PlayerId);
-            writer.Write(id);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return role;
-        }
-
         public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
 
-        public static List<Role> GetRoleValue(RoleEnum roleEnum) => AllRoles.Where(x => x.RoleType == roleEnum).ToList();
+        public static List<Role> GetRoleValue(RoleEnum roleEnum) => AllRoles.Where(x => x.Type == roleEnum).ToList();
 
         public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
 
@@ -241,7 +250,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (a is null || b is null)
                 return false;
 
-            return a.RoleType == b.RoleType && a.Player.PlayerId == b.Player.PlayerId;
+            return a.Type == b.Type && a.Player == b.Player;
         }
 
         public static bool operator != (Role a, Role b) => !(a == b);
@@ -252,7 +261,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 
-        public static List<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype && x.NotDefective).ToList();
+        public static List<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.Type == roletype && x.NotDefective).ToList();
 
         public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && x.NotDefective).ToList();
 
@@ -334,10 +343,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__113), nameof(PlayerControl._CoSetTasks_d__113.MoveNext))]
+        [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__114), nameof(PlayerControl._CoSetTasks_d__114.MoveNext))]
         public static class PlayerControl_SetTasks
         {
-            public static void Postfix(PlayerControl._CoSetTasks_d__113 __instance)
+            public static void Postfix(PlayerControl._CoSetTasks_d__114 __instance)
             {
                 if (__instance == null)
                     return;

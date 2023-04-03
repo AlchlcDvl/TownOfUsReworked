@@ -17,11 +17,11 @@ namespace TownOfUsReworked.Classes
     {
         #pragma warning disable
         public static bool running;
-        public static bool hasTOUUpdate;
+        public static bool hasREWUpdate;
         public static bool hasSubmergedUpdate;
-        public static string updateTOUURI;
+        public static string updateREWURI;
         public static string updateSubmergedURI;
-        private static Task updateTOUTask;
+        private static Task updateREWTask;
         private static Task updateSubmergedTask;
         public static GenericPopup InfoPopup;
         #pragma warning restore
@@ -32,33 +32,35 @@ namespace TownOfUsReworked.Classes
                 return;
 
             running = true;
-
-            CheckForUpdate("TOU").GetAwaiter().GetResult();
-
+            CheckForUpdate("REW").GetAwaiter().GetResult();
             //Only check of Submerged update if Submerged is already installed
-            var codeBase = Assembly.GetExecutingAssembly().Location;
+            var codeBase = TownOfUsReworked.Executing.Location;
             UriBuilder uri = new(codeBase);
-            var submergedPath = System.Uri.UnescapeDataString(uri.Path.Replace("TownOfUsReworked", "Submerged"));
 
-            if (File.Exists(submergedPath))
-                CheckForUpdate("Submerged").GetAwaiter().GetResult();
+            if (SubmergedCompatibility.Loaded)
+            {
+                var submergedPath = Uri.UnescapeDataString(uri.Path.Replace("Reworked", "Submerged"));
+
+                if (File.Exists(submergedPath))
+                    CheckForUpdate("Submerged").GetAwaiter().GetResult();
+            }
 
             ClearOldVersions();
         }
 
         public static void ExecuteUpdate(string updateType)
         {
-            string info = "";
+            var info = "";
 
-            if (updateType == "TOU")
+            if (updateType == "REW")
             {
-                info = "Updating Town Of Us\nPlease wait...";
+                info = "Updating Town Of Us Reworked\nPlease wait...";
                 InfoPopup.Show(info);
 
-                if (updateTOUTask == null)
+                if (updateREWTask == null)
                 {
-                    if (updateTOUURI != null)
-                        updateTOUTask = DownloadUpdate("TOU");
+                    if (updateREWURI != null)
+                        updateREWTask = DownloadUpdate("REW");
                     else
                         info = "Unable to auto-update\nPlease update manually";
                 }
@@ -73,7 +75,7 @@ namespace TownOfUsReworked.Classes
                 if (updateSubmergedTask == null)
                 {
                     if (updateSubmergedURI != null)
-                        updateSubmergedTask = DownloadUpdate("Submerged");
+                        updateSubmergedTask = DownloadUpdate("SUB");
                     else
                         info = "Unable to auto-update\nPlease update manually";
                 }
@@ -93,7 +95,7 @@ namespace TownOfUsReworked.Classes
             {
                 DirectoryInfo d = new(Path.GetDirectoryName(Application.dataPath) + @"\BepInEx\plugins");
 
-                foreach (string f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
+                foreach (var f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
                     File.Delete(f);
             }
             catch (Exception e)
@@ -102,20 +104,20 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static async Task<bool> CheckForUpdate(string updateType = "TOU")
+        public static async Task<bool> CheckForUpdate(string updateType = "REW")
         {
-            //Checks the github api for Town Of Us tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version (on GitHub)
+            //Checks the github api for Town Of Us Reworked tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version (on GitHub)
             try
             {
                 string githubURI = "";
 
-                if (updateType == "TOU")
+                if (updateType == "REW")
                     githubURI = "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest";
                 else if (updateType == "Submerged")
                     githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
 
                 HttpClient http = new();
-                http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
+                http.DefaultRequestHeaders.Add("User-Agent", "Reworked Updater");
                 var response = await http.GetAsync(new Uri(githubURI), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
@@ -124,9 +126,9 @@ namespace TownOfUsReworked.Classes
                     return false;
                 }
 
-                string json = await response.Content.ReadAsStringAsync();
+                var json = await response.Content.ReadAsStringAsync();
                 var data = JsonSerializer.Deserialize<GitHubApiObject>(json);
-                string tagname = data.tag_name;
+                var tagname = data.tag_name;
 
                 if (tagname == null)
                     return false; // Something went wrong
@@ -134,24 +136,22 @@ namespace TownOfUsReworked.Classes
                 var diff = 0;
                 var ver = Version.Parse(tagname.Replace("v", ""));
 
-                if (updateType == "TOU")
+                if (updateType == "REW")
                 {
-                    //Check TOU version
+                    //Check REW version
                     diff = TownOfUsReworked.Version.CompareTo(ver);
 
                     if (diff < 0)
                     {
-                        //TOU update required
-                        hasTOUUpdate = true;
+                        //REW update required
+                        hasREWUpdate = true;
                     }
                 }
                 else if (updateType == "Submerged")
                 {
                     //Accounts for broken version
                     if (SubmergedCompatibility.Version == null)
-                    {
                         hasSubmergedUpdate = true;
-                    }
                     else
                     {
                         diff = SubmergedCompatibility.Version.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
@@ -175,9 +175,9 @@ namespace TownOfUsReworked.Classes
 
                     if (asset.browser_download_url.EndsWith(".dll"))
                     {
-                        if (updateType == "TOU")
-                            updateTOUURI = asset.browser_download_url;
-                        else if (updateType == "Submerged")
+                        if (updateType == "REW")
+                            updateREWURI = asset.browser_download_url;
+                        else if (updateType == "SUB")
                             updateSubmergedURI = asset.browser_download_url;
 
                         return true;
@@ -194,16 +194,16 @@ namespace TownOfUsReworked.Classes
 
         public static async Task<bool> DownloadUpdate(string updateType)
         {
-            //Downloads the new TownOfUsReworked/Submerged dll from GitHub into the plugins folder
-            string downloadDLL= "";
-            string info = "";
+            //Downloads the new Reworked/Submerged dll from GitHub into the plugins folder
+            var downloadDLL= "";
+            var info = "";
 
-            if (updateType == "TOU")
+            if (updateType == "REW")
             {
-                downloadDLL = updateTOUURI;
-                info = "Town Of Us\nupdated successfully.\nPlease RESTART the game.";
+                downloadDLL = updateREWURI;
+                info = "Town Of Us Reworked\nupdated successfully.\nPlease RESTART the game.";
             }
-            else if (updateType == "Submerged")
+            else if (updateType == "SUB")
             {
                 downloadDLL = updateSubmergedURI;
                 info = "Submerged\nupdated successfully.\nPlease RESTART the game.";
@@ -212,7 +212,7 @@ namespace TownOfUsReworked.Classes
             try
             {
                 HttpClient http = new();
-                http.DefaultRequestHeaders.Add("User-Agent", "TownOfUsReworked Updater");
+                http.DefaultRequestHeaders.Add("User-Agent", "Reworked Updater");
                 var response = await http.GetAsync(new Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
@@ -221,22 +221,20 @@ namespace TownOfUsReworked.Classes
                     return false;
                 }
 
-                string codeBase = Assembly.GetExecutingAssembly().Location;
+                var codeBase = TownOfUsReworked.Executing.Location;
                 UriBuilder uri = new(codeBase);
-                string fullname = Uri.UnescapeDataString(uri.Path);
+                var fullname = Uri.UnescapeDataString(uri.Path);
 
                 if (updateType == "Submerged")
-                    fullname = fullname.Replace("TownOfUsReworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
+                    fullname = fullname.Replace("Reworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
 
                 if (File.Exists(fullname + ".old")) //Clear old file in case it wasnt;
                     File.Delete(fullname + ".old");
 
                 File.Move(fullname, fullname + ".old"); //Rename current executable to old
-
-                using (var responseStream = await response.Content.ReadAsStreamAsync())
-                using (var fileStream = File.Create(fullname))
-                    responseStream.CopyTo(fileStream);
-
+                var responseStream = await response.Content.ReadAsStreamAsync();
+                var fileStream = File.Create(fullname);
+                responseStream.CopyTo(fileStream);
                 ShowPopup(info);
                 return true;
             }

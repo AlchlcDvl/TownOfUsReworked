@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 using System;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Troll Everyone With Your Death";
             AbilitiesText = "- You can interact with players.\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
-            RoleType = RoleEnum.Troll;
+            Type = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
         }

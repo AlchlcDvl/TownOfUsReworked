@@ -2,18 +2,19 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities.Extensions;
+using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.UndertakerMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod;
 using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
+using AmongUs.GameOptions;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -30,19 +31,19 @@ namespace TownOfUsReworked.Extensions
         public static string ModifierColorString => $"<color=#{Colors.Modifier.ToHtmlStringRGBA()}>";
         public static string AbilityColorString => $"<color=#{Colors.Ability.ToHtmlStringRGBA()}>";
 
-        public static bool Is(this PlayerControl player, RoleEnum roleType) => Role.GetRole(player)?.RoleType == roleType;
+        public static bool Is(this PlayerControl player, RoleEnum roleType) => Role.GetRole(player)?.Type == roleType;
 
-        public static bool Is(this Role role, RoleEnum roleType) => role?.RoleType == roleType;
+        public static bool Is(this Role role, RoleEnum roleType) => role?.Type == roleType;
 
         public static bool Is(this PlayerControl player, Role role) => Role.GetRole(player).Player == role.Player;
 
         public static bool Is(this PlayerControl player, SubFaction subFaction) => Role.GetRole(player)?.SubFaction == subFaction;
 
-        public static bool Is(this PlayerControl player, ModifierEnum modifierType) => Modifier.GetModifier(player)?.ModifierType == modifierType;
+        public static bool Is(this PlayerControl player, ModifierEnum modifierType) => Modifier.GetModifier(player)?.Type == modifierType;
 
-        public static bool Is(this PlayerControl player, ObjectifierEnum abilityType) => Objectifier.GetObjectifier(player)?.ObjectifierType == abilityType;
+        public static bool Is(this PlayerControl player, ObjectifierEnum abilityType) => Objectifier.GetObjectifier(player)?.Type == abilityType;
 
-        public static bool Is(this PlayerControl player, AbilityEnum ability) => Ability.GetAbility(player)?.AbilityType == ability;
+        public static bool Is(this PlayerControl player, AbilityEnum ability) => Ability.GetAbility(player)?.Type == ability;
 
         public static bool Is(this PlayerControl player, Faction faction) => Role.GetRole(player)?.Faction == faction;
 
@@ -336,10 +337,8 @@ namespace TownOfUsReworked.Extensions
             var NotOnTheSameSide = player.NotOnTheSameSide();
             var taskmasterflag = player.Is(ObjectifierEnum.Taskmaster);
 
-            var isdead = player.Data.IsDead;
-
             var flag1 = crewflag && !NotOnTheSameSide;
-            var flag2 = neutralflag && (taskmasterflag || (phantomflag && isdead));
+            var flag2 = neutralflag && (taskmasterflag || phantomflag);
             var flag3 = intruderflag && taskmasterflag;
             var flag4 = syndicateflag && taskmasterflag;
             return flag1 || flag2 || flag3 || flag4;
@@ -413,7 +412,7 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRoles(RoleEnum.Retributionist).Any(role =>
             {
                 var shieldedPlayer = ((Retributionist)role).ShieldedPlayer;
-                return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId && ((Retributionist)role).RevivedRole?.RoleType == RoleEnum.Medic;
+                return shieldedPlayer != null && player.PlayerId == shieldedPlayer.PlayerId && ((Retributionist)role).RevivedRole?.Type == RoleEnum.Medic;
             });
         }
 
@@ -435,7 +434,7 @@ namespace TownOfUsReworked.Extensions
             return Role.GetRoles(RoleEnum.Retributionist).Find(role =>
             {
                 var shieldedPlayer = ((Retributionist)role).ShieldedPlayer;
-                return shieldedPlayer != null && player == shieldedPlayer && ((Retributionist)role).RevivedRole?.RoleType == RoleEnum.Medic;
+                return shieldedPlayer != null && player == shieldedPlayer && ((Retributionist)role).RevivedRole?.Type == RoleEnum.Medic;
             }) as Retributionist;
         }
 
@@ -755,13 +754,12 @@ namespace TownOfUsReworked.Extensions
 
                     if (flag)
                         mainflag = true;
-                    else if (player.Is(RoleEnum.Undertaker))
+                    else if (player.Is(RoleEnum.Janitor))
                     {
-                        var undertaker = (Undertaker)playerRole;
+                        var janitor = (Janitor)playerRole;
 
-                        mainflag = CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Always || (undertaker.CurrentlyDragging != null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Body) || (undertaker.CurrentlyDragging == null &&
-                            CustomGameOptions.UndertakerVentOptions == UndertakerOptions.Bodyless);
+                        mainflag = CustomGameOptions.JanitorVentOptions == JanitorOptions.Always || (janitor.CurrentlyDragging != null && CustomGameOptions.JanitorVentOptions ==
+                            JanitorOptions.Body) || (janitor.CurrentlyDragging == null && CustomGameOptions.JanitorVentOptions == JanitorOptions.Bodyless);
                     }
                     else
                         mainflag = true;
@@ -836,15 +834,7 @@ namespace TownOfUsReworked.Extensions
 
         public static InspectorResults GetInspResults(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetInspResults();
 
-        public static bool IsBlocked(this PlayerControl player)
-        {
-            var role = Role.GetRole(player);
-
-            if (role == null)
-                return false;
-
-            return role.IsBlocked;
-        }
+        public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetLayers(player)?.Any(x => x.IsBlocked) == true;
 
         public static bool SeemsEvil(this PlayerControl player)
         {
@@ -887,8 +877,8 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
-        public static bool HasTarget(this Role role) => role.RoleType == RoleEnum.Executioner || role.RoleType == RoleEnum.GuardianAngel || role.RoleType == RoleEnum.Guesser ||
-            role.RoleType == RoleEnum.BountyHunter;
+        public static bool HasTarget(this Role role) => role.Type == RoleEnum.Executioner || role.Type == RoleEnum.GuardianAngel || role.Type == RoleEnum.Guesser ||
+            role.Type == RoleEnum.BountyHunter;
 
         public static List<object> AllPlayerInfo(this PlayerControl player)
         {
@@ -974,14 +964,14 @@ namespace TownOfUsReworked.Extensions
             var ability = info[2] as Ability;
             var objectifier = info[3] as Objectifier;
 
-            string objectives = $"{ObjectivesColorString}Objectives:";
-            string abilities = $"{AbilitiesColorString}Abilities:";
-            string attributes = $"{AttributesColorString}Attributes:";
-            string roleName = $"{RoleColorString}Role: ";
-            string objectifierName = $"{ObjectifierColorString}Objectifier: ";
-            string abilityName = $"{AbilityColorString}Ability: ";
-            string modifierName = $"{ModifierColorString}Modifier: ";
-            string alignment = $"{AlignmentColorString}Alignment: ";
+            var objectives = $"{ObjectivesColorString}Objectives:";
+            var abilities = $"{AbilitiesColorString}Abilities:";
+            var attributes = $"{AttributesColorString}Attributes:";
+            var roleName = $"{RoleColorString}Role: ";
+            var objectifierName = $"{ObjectifierColorString}Objectifier: ";
+            var abilityName = $"{AbilityColorString}Ability: ";
+            var modifierName = $"{ModifierColorString}Modifier: ";
+            var alignment = $"{AlignmentColorString}Alignment: ";
 
             if (info[0] != null)
             {
@@ -999,34 +989,25 @@ namespace TownOfUsReworked.Extensions
             roleName += "</color>";
             alignment += "</color>";
 
-            if (info[3] != null)
+            if (info[3] != null && !objectifier.Hidden && objectifier.Type != ObjectifierEnum.None)
             {
-                if (!objectifier.Hidden)
-                {
-                    objectives += $"\n{objectifier.ColorString}{objectifier.TaskText}</color>";
-                    objectifierName += $"{objectifier.ColorString}{objectifier.Name}</color>";
-                }
+                objectives += $"\n{objectifier.ColorString}{objectifier.TaskText}</color>";
+                objectifierName += $"{objectifier.ColorString}{objectifier.Name}</color>";
             }
             else
                 objectifierName += "None";
 
             objectifierName += "</color>";
 
-            if (info[2] != null)
-            {
-                if (!ability.Hidden)
-                    abilityName += $"{ability.ColorString}{ability.Name}</color>";
-            }
+            if (info[2] != null && !ability.Hidden && ability.Type != AbilityEnum.None)
+                abilityName += $"{ability.ColorString}{ability.Name}</color>";
             else
                 abilityName += "None";
 
             abilityName += "</color>";
 
-            if (info[1] != null)
-            {
-                if (!modifier.Hidden)
-                    modifierName += $"{modifier.ColorString}{modifier.Name}</color>";
-            }
+            if (info[1] != null && !modifier.Hidden && modifier.Type != ModifierEnum.None)
+                modifierName += $"{modifier.ColorString}{modifier.Name}</color>";
             else
                 modifierName += "None";
 
@@ -1055,27 +1036,27 @@ namespace TownOfUsReworked.Extensions
             }
 
             objectives += "</color>";
-            var hassomething = false;
+            var hasnothing = true;
 
             if (info[0] != null)
             {
                 abilities += $"\n{role.ColorString}{role.AbilitiesText}</color>";
-                hassomething = true;
+                hasnothing = false;
             }
 
-            if (info[2] != null && !ability.Hidden)
+            if (info[2] != null && !ability.Hidden && ability.Type != AbilityEnum.None)
             {
                 abilities += $"\n{ability.ColorString}{ability.TaskText}</color>";
-                hassomething = true;
+                hasnothing = false;
             }
 
-            if (!hassomething)
+            if (hasnothing)
                 abilities += "\n- None.";
 
             abilities += "</color>";
-            var hasnothing = true;
+            hasnothing = true;
 
-            if (info[1] != null && !modifier.Hidden)
+            if (info[1] != null && !modifier.Hidden && modifier.Type != ModifierEnum.None)
             {
                 attributes += $"\n{modifier.ColorString}{modifier.TaskText}</color>";
                 hasnothing = false;
@@ -1113,7 +1094,7 @@ namespace TownOfUsReworked.Extensions
 
             if (!player.CanDoTasks())
             {
-                attributes += "\n- Your tasks are fake.";
+                attributes += "\n<color=#ABCDEFFF>- Your tasks are fake.</color>";
                 hasnothing = false;
             }
 
@@ -1167,7 +1148,18 @@ namespace TownOfUsReworked.Extensions
             newRole.IsIntAlly = former.IsIntAlly;
             newRole.IsSynAlly = former.IsSynAlly;
             newRole.IsCrewAlly = former.IsCrewAlly;
+            newRole.IsBlocked = false;
             newRole.Player.RegenTask();
+        }
+
+        public static ShapeshifterMinigame GetShapeshifterMenu()
+        {
+            var rolePrefab = DestroyableSingleton<RoleManager>.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
+
+            if (rolePrefab.TryCast<ShapeshifterRole>() != null)
+                return Object.Instantiate(rolePrefab.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
+
+            return null;
         }
     }
 }

@@ -1,4 +1,4 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
@@ -6,7 +6,6 @@ using Reactor.Utilities;
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Seer(PlayerControl player) : base(player)
         {
             Name = "Seer";
-            RoleType = RoleEnum.Seer;
+            Type = RoleEnum.Seer;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
@@ -43,6 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSheriff()
         {
+            SeerButton.gameObject.SetActive(false);
             var role = new Sheriff(Player);
             role.RoleUpdate(this);
 

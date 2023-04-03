@@ -1,5 +1,4 @@
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
@@ -7,9 +6,8 @@ using UnityEngine;
 using Reactor.Utilities.Extensions;
 using System.Linq;
 using System.Collections.Generic;
-using Reactor.Utilities;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.Data;
+using Object = UnityEngine.Object;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Functions;
@@ -25,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Rebel(PlayerControl player) : base(player)
         {
             Name = "Rebel";
-            RoleType = RoleEnum.Rebel;
+            Type = RoleEnum.Rebel;
             StartText = "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
             AbilitiesText = "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor.\n- Promoting an <color=#008000FF>Syndicate</color> turns them " +
                 "into a <color=#979C9FFF>Sidekick</color>.\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better " +

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using Reactor.Utilities;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
@@ -23,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Whisperer";
             Color = Colors.Whisperer;
-            RoleType = RoleEnum.Whisperer;
+            Type = RoleEnum.Whisperer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFaction = SubFaction.Sect;
             SubFactionColor = Colors.Sect;

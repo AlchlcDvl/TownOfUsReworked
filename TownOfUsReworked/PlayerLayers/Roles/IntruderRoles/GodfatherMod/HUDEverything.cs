@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
@@ -7,6 +6,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -26,10 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Consort)).ToList();
             role.DeclareButton.UpdateButton(role, "PROMOTE", 0, 1, AssetManager.Promote, AbilityTypes.Direct, "Secondary", Imp, !role.HasDeclared);
 
-            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole?.RoleType == RoleEnum.Impostor)
+            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole?.Type == RoleEnum.Impostor)
                 return;
 
-            var formerRole = role.FormerRole?.RoleType;
+            var formerRole = role.FormerRole?.Type;
 
             if (formerRole == RoleEnum.Blackmailer)
             {
@@ -100,6 +100,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.CleanButton == null)
                     role.CleanButton = CustomButtons.InstantiateButton();
 
+                if (role.DragButton == null)
+                    role.DragButton = CustomButtons.InstantiateButton();
+
+                if (role.DropButton == null)
+                    role.DropButton = CustomButtons.InstantiateButton();
+
+                role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Dead, "Tertiary", role.CurrentlyDragging != null);
+                role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, AssetManager.Drag, AbilityTypes.Dead, "Tertiary", role.CurrentlyDragging == null);
                 role.CleanButton.UpdateButton(role, "CLEAN", role.CleanTimer(), CustomGameOptions.JanitorCleanCd, AssetManager.Clean, AbilityTypes.Dead, "Secondary");
             }
             else if (formerRole == RoleEnum.Miner)
@@ -151,18 +159,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 role.FreezeButton.UpdateButton(role, "TIME FREEZE", role.FreezeTimer(), CustomGameOptions.FreezeCooldown, AssetManager.TimeFreeze, AbilityTypes.Effect, "Secondary",
                     null, true, !role.Frozen, role.Frozen, role.FreezeTimeRemaining, CustomGameOptions.FreezeDuration);
-            }
-            else if (formerRole == RoleEnum.Undertaker)
-            {
-                if (role.DragButton == null)
-                    role.DragButton = CustomButtons.InstantiateButton();
-
-                role.DragButton.UpdateButton(role, "DRAG", role.DragTimer(), CustomGameOptions.DragCd, AssetManager.Drag, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging == null);
-
-                if (role.DropButton == null)
-                    role.DropButton = CustomButtons.InstantiateButton();
-
-                role.DropButton.UpdateButton(role, "DROP", 0, 1, AssetManager.Drop, AbilityTypes.Dead, "Secondary", role.CurrentlyDragging != null);
             }
             else if (formerRole == RoleEnum.Wraith)
             {

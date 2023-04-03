@@ -1,13 +1,12 @@
 using System;
 using UnityEngine;
 using System.Linq;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can drop a flashbang, which blinds players around you.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             LastFlashed = DateTime.UtcNow;
-            RoleType = RoleEnum.Grenadier;
+            Type = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName ="Intruder (Concealing)";
             InspectorResults = InspectorResults.DropsItems;

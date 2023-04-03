@@ -1,11 +1,10 @@
 using System.Linq;
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.DetectiveMod
 {

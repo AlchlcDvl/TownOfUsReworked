@@ -1,9 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "You Like To Play With Knives";
             AbilitiesText = "Engage in your bloodlust to kill everyone";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
-            RoleType = RoleEnum.SerialKiller;
+            Type = RoleEnum.SerialKiller;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
         }

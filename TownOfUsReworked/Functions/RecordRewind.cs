@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
+namespace TownOfUsReworked.Functions
 {
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPatch]
     public static class RecordRewind
     {
         #pragma warning disable
@@ -132,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod
             {
                 var rebRole = (Rebel)rebel;
 
-                if (rebRole.FormerRole.RoleType != RoleEnum.Poisoner)
+                if (rebRole.FormerRole.Type != RoleEnum.Poisoner)
                     continue;
 
                 if (rebRole.PoisonedPlayer == player)

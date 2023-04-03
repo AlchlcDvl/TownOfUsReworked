@@ -1,4 +1,3 @@
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using System;
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Betrayer(PlayerControl player) : base(player)
         {
             Name = "Betrayer";
-            RoleType = RoleEnum.Betrayer;
+            Type = RoleEnum.Betrayer;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;

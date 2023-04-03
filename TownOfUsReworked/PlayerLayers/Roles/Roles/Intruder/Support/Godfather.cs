@@ -1,13 +1,11 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Linq;
-using Reactor.Utilities;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Functions;
 
@@ -18,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Godfather(PlayerControl player) : base(player)
         {
             Name = "Godfather";
-            RoleType = RoleEnum.Godfather;
+            Type = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
             AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor.\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
                 "into a <color=#6400FFFF>Mafioso</color>.\n- If you die, the <color=#6400FFFF>Mafioso</color> become the new <color=#404C08FF>Godfather</color>\nand inherits better " +
@@ -37,7 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDeclared;
         public DeadBody CurrentTarget;
         public PlayerControl ClosestTarget;
-        public Vent ClosestVent;
 
         //Blackmailer Stuff
         public AbilityButton BlackmailButton;
@@ -177,6 +174,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         HudManager.Instance.FullScreen.color = NormalVision;
                         FlashTimeRemaining = 0f;
                     }
+
+                    if (MapBehaviour.Instance)
+                        MapBehaviour.Instance.Close();
+
+                    if (Minigame.Instance)
+                        Minigame.Instance.Close();
                 }
             }
         }
@@ -197,21 +200,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Janitor Stuff
         public AbilityButton CleanButton;
         public DateTime LastCleaned;
-
-        public float CleanTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCleaned;
-            var num = CustomButtons.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        //Undertaker Stuff
+        public DateTime LastDragged;
         public AbilityButton DragButton;
         public AbilityButton DropButton;
-        public DateTime LastDragged;
         public DeadBody CurrentlyDragging;
 
         public float DragTimer()
@@ -221,6 +212,71 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.DragCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public static void DragBody(PlayerControl __instance)
+        {
+            if (!__instance.Is(RoleEnum.Godfather))
+                return;
+
+            var role = GetRole<Godfather>(__instance);
+
+            if (role.FormerRole?.Type != RoleEnum.Janitor)
+                return;
+
+            var body = role.CurrentlyDragging;
+
+            if (body == null)
+                return;
+
+            if (__instance.Data.IsDead)
+            {
+                role.CurrentlyDragging = null;
+
+                foreach (var component in body?.bodyRenderers)
+                    component.material.SetFloat("_Outline", 0f);
+
+                return;
+            }
+
+            var truePosition = __instance.GetTruePosition();
+            var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
+            Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3f) + body.myCollider.offset;
+            newPos.z = 0.02f;
+
+            //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
+            //AD: idk ¯\_(ツ)_/¯
+            if (SubmergedCompatibility.IsSubmerged())
+            {
+                if (newPos.y > -7f)
+                    newPos.z = 0.0208f;
+                else
+                    newPos.z = -0.0273f;
+            }
+
+            if (!PhysicsHelpers.AnythingBetween(truePosition, newPos, Constants.ShipAndObjectsMask, false))
+                body.transform.position = newPos;
+
+            if (!__instance.AmOwner)
+                return;
+
+            foreach (var component in body?.bodyRenderers)
+            {
+                component.material.SetColor("_OutlineColor", UnityEngine.Color.green);
+                component.material.SetFloat("_Outline", 1f);
+            }
+
+            __instance.moveable = true;
+        }
+
+        public float CleanTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timespan = utcNow - LastCleaned;
+            var num = CustomButtons.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+                CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Disguiser Stuff

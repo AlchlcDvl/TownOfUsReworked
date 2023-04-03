@@ -2,11 +2,11 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {
@@ -50,13 +50,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             if (PlayerControl.LocalPlayer == amnesiac)
             {
-                amneRole.BodyArrows.Values.DestroyAll();
-                amneRole.BodyArrows.Clear();
-                amneRole.CurrentTarget.bodyRenderer.material.SetFloat("_Outline", 0f);
+                foreach (var component in amneRole.CurrentTarget?.bodyRenderers)
+                    component.material.SetFloat("_Outline", 0f);
+
+                amneRole.RememberButton.gameObject.SetActive(false);
                 Utils.Flash(amneRole.Color, "You have attempted to remember who you were!");
+                amneRole.OnLobby();
             }
 
-            Role newRole = role.RoleType switch
+            if (PlayerControl.LocalPlayer == other)
+            {
+                Utils.Flash(amneRole.Color, "Someone has attempted to remember what you were like!");
+                role.OnLobby();
+            }
+
+            Role newRole = role.Type switch
             {
                 RoleEnum.Agent => new Agent(amnesiac),
                 RoleEnum.Altruist => new Altruist(amnesiac),
@@ -123,7 +131,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 RoleEnum.TimeMaster => new TimeMaster(amnesiac),
                 RoleEnum.Troll => new Troll(amnesiac),
                 RoleEnum.Thief => new Thief(amnesiac),
-                RoleEnum.Undertaker => new Undertaker(amnesiac),
                 RoleEnum.VampireHunter => new VampireHunter(amnesiac),
                 RoleEnum.Veteran => new Veteran(amnesiac),
                 RoleEnum.Vigilante => new Vigilante(amnesiac),
@@ -211,7 +218,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 }
             }
 
-            amneRole.RememberButton.gameObject.SetActive(false);
+            CustomButtons.ResetCustomTimers(false);
         }
     }
 }

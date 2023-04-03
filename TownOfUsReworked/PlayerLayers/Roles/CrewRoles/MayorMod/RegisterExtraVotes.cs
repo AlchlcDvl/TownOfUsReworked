@@ -5,13 +5,13 @@ using HarmonyLib;
 using Hazel;
 using InnerNet;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
@@ -76,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     if (ability == null)
                         continue;
 
-                    if (ability.AbilityType == AbilityEnum.Tiebreaker)
+                    if (ability.Type == AbilityEnum.Tiebreaker)
                     {
                         if (dictionary.TryGetValue(player.VotedFor, out var num))
                             dictionary[player.VotedFor] = num + 1;

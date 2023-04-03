@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
@@ -14,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "β";
             TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Overlord;
+            Type = ObjectifierEnum.Overlord;
             Hidden = !CustomGameOptions.OverlordKnows;
         }
     }

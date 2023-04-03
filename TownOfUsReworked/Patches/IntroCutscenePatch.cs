@@ -5,13 +5,12 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -49,10 +48,10 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__29), nameof(IntroCutscene._CoBegin_d__29.MoveNext))]
+        [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__33), nameof(IntroCutscene._CoBegin_d__33.MoveNext))]
         public static class IntroCutscene_CoBegin_d__29
         {
-            public static void Postfix(IntroCutscene._CoBegin_d__29 __instance)
+            public static void Postfix(IntroCutscene._CoBegin_d__33 __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -88,37 +87,36 @@ namespace TownOfUsReworked.Patches
                     var statusString = "";
                     var status = "";
 
-                    if (modifier?.Hidden == false)
+                    if (!modifier.Hidden)
                         status += $" {modifier.ColorString}{modifier.Name}</color>";
 
-                    if (objectifier?.Hidden == false)
+                    if (!objectifier.Hidden)
                         status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
-                    if (ability?.Hidden == false)
+                    if (!ability.Hidden)
                         status += $" {ability.ColorString}{ability.Name}</color>";
 
                     if (status.Length != 0)
-                        statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
+                        statusString = $"<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{statusString}{status}</size>";
 
                     StatusText.text = statusString;
                     StatusText.outlineColor = Colors.Status;
-
                     StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
                     StatusText.gameObject.SetActive(true);
                 }
             }
         }
 
-        [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__32), nameof(IntroCutscene._ShowTeam_d__32.MoveNext))]
+        [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__36), nameof(IntroCutscene._ShowTeam_d__36.MoveNext))]
         public static class IntroCutscene_ShowTeam__d_21
         {
-            public static void Prefix(IntroCutscene._ShowTeam_d__32 __instance)
+            public static void Prefix(IntroCutscene._ShowTeam_d__36 __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
                 role?.IntroPrefix(__instance);
             }
 
-            public static void Postfix(IntroCutscene._ShowTeam_d__32 __instance)
+            public static void Postfix(IntroCutscene._ShowTeam_d__36 __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
@@ -141,17 +139,17 @@ namespace TownOfUsReworked.Patches
                     var statusString = "";
                     var status = "";
 
-                    if (modifier?.Hidden == false)
+                    if (!modifier.Hidden)
                         status += $" {modifier.ColorString}{modifier.Name}</color>";
 
-                    if (objectifier?.Hidden == false)
+                    if (!objectifier.Hidden)
                         status += $" {objectifier.ColorString}{objectifier.Name}</color>";
 
-                    if (ability?.Hidden == false)
+                    if (!ability.Hidden)
                         status += $" {ability.ColorString}{ability.Name}</color>";
 
                     if (status.Length != 0)
-                        statusString = "<size=4><color=#" + Colors.Status.ToHtmlStringRGBA() + ">Status</color>:" + statusString + status + "</size>";
+                        statusString = $"<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{statusString}{status}</size>";
 
                     StatusText.text = statusString;
                     StatusText.outlineColor = Colors.Status;
@@ -162,10 +160,10 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__35), nameof(IntroCutscene._ShowRole_d__35.MoveNext))]
+        [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]
         public static class IntroCutscene_ShowRole_d__24
         {
-            public static void Postfix(IntroCutscene._ShowRole_d__35 __instance)
+            public static void Postfix(IntroCutscene._ShowRole_d__39 __instance)
             {
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 

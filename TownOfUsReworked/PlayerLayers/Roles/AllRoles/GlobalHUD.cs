@@ -1,11 +1,10 @@
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -16,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
         {
             var local = PlayerControl.LocalPlayer;
 
-            if (PlayerControl.AllPlayerControls.Count <= 1 || local == null || local.Data == null || (ConstantVariables.IsInGame && ConstantVariables.IsHnS) || ConstantVariables.IsEnded)
+            if (ConstantVariables.Inactive)
                 return;
 
             __instance.KillButton.SetTarget(null);
@@ -27,8 +26,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             if (role == null)
                 return;
 
-            if (local.Data.IsDead)
-                role.IsBlocked = false;
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                Janitor.DragBody(player);
+                Godfather.DragBody(player);
+            }
+
+            foreach (var layer in PlayerLayer.GetLayers(local))
+                layer.UpdateHud(__instance);
 
             if (Utils.CanVent(local, local.Data))
             {
@@ -107,39 +112,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             else
                 __instance.SabotageButton.SetEnabled();
 
-            if (role.IsBlocked && Minigame.Instance)
+            if (local.IsBlocked() && Minigame.Instance)
                 Minigame.Instance.Close();
 
-            if (role.IsBlocked && MapBehaviour.Instance)
+            if (local.IsBlocked() && MapBehaviour.Instance)
                 MapBehaviour.Instance.Close();
-
-            if (local.Data.IsDead)
-            {
-                var ghostRole = (local.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(local).Caught) || (local.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(local).Caught) ||
-                    (local.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(local).Caught) || (local.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(local).Caught);
-
-                if (!ghostRole)
-                {
-                    if (role.SpectateButton == null)
-                        role.SpectateButton = CustomButtons.InstantiateButton();
-
-                    role.SpectateButton.UpdateButton(role, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
-                        false, 0, !ghostRole);
-
-                    if (role.ZoomButton == null)
-                        role.ZoomButton = CustomButtons.InstantiateButton();
-
-                    role.ZoomButton.UpdateButton(role, "SPECTATE", 0, 1, role.Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
-                        false, 0, 1, false, 0, !ghostRole);
-                }
-            }
-            else if (local.CanInteractWithBodyInVent())
-            {
-                if (role.PullButton == null)
-                    role.PullButton = CustomButtons.InstantiateButton();
-
-                role.PullButton.UpdateButton(role, "PULL BODY", 0, 1, AssetManager.Placeholder, AbilityTypes.Vent, "Quarternary", null, local.CanInteractWithBodyInVent());
-            }
         }
     }
 }

@@ -11,7 +11,7 @@ using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
@@ -116,6 +116,7 @@ namespace TownOfUsReworked.Classes
 
             Plugin = plugin!.Instance as BasePlugin;
             Version = plugin.Metadata.Version;
+            Utils.LogSomething(Version);
 
             Assembly = Plugin!.GetType().Assembly;
             Types = AccessTools.GetTypesFromAssembly(Assembly);
@@ -362,6 +363,6 @@ namespace TownOfUsReworked.Classes
     public class MissingSubmergedBehaviour : MonoBehaviour
     {
         static MissingSubmergedBehaviour() => ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
-        public MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) { }
+        public MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) {}
     }
 }

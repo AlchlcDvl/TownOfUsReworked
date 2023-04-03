@@ -2,7 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.Patches

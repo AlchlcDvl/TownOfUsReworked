@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Gasoline + Bean + Lighter = Bonfire";
             AbilitiesText = "- You can douse players in gasoline.\n- Doused players can then be ignite to kill all doused players at once.\n- People who interact with you will also " +
                 "get doused.";
-            RoleType = RoleEnum.Arsonist;
+            Type = RoleEnum.Arsonist;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
@@ -79,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             _ = new WaitForSeconds(1f);
 
-            if (!source.Is(RoleType))
+            if (!source.Is(Type))
                 return;
 
             DousedPlayers.Add(target.PlayerId);

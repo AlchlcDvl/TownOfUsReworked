@@ -1,7 +1,7 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 {

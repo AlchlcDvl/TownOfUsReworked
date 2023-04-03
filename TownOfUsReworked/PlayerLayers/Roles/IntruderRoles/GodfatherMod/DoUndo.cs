@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
@@ -13,10 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 var gf = (Godfather)role;
 
-                if (gf.FormerRole == null || gf.FormerRole?.RoleType == RoleEnum.Impostor || !gf.WasMafioso)
+                if (gf.FormerRole == null || gf.FormerRole?.Type == RoleEnum.Impostor || !gf.WasMafioso)
                     continue;
 
-                var formerRole = gf.FormerRole.RoleType;
+                var formerRole = gf.FormerRole.Type;
 
                 if (formerRole == RoleEnum.Grenadier)
                 {

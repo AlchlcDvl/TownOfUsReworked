@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "ζ";
             TaskText = Objective;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Allied;
+            Type = ObjectifierEnum.Allied;
         }
     }
 }

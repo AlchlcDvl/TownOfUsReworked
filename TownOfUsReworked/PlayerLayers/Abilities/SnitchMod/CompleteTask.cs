@@ -2,9 +2,9 @@ using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {

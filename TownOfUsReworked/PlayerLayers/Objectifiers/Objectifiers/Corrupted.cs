@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using System;
 using TownOfUsReworked.Data;
 
@@ -17,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "δ";
             TaskText = "- Kill everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Corrupted;
+            Type = ObjectifierEnum.Corrupted;
         }
 
         public float KillTimer()

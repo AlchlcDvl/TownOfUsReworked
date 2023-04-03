@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can turn invisible.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             LastSwooped = DateTime.UtcNow;
-            RoleType = RoleEnum.Chameleon;
+            Type = RoleEnum.Chameleon;
             AlignmentName = CS;
             InspectorResults = InspectorResults.Unseen;
         }

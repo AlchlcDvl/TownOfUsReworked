@@ -3,13 +3,13 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using UnityEngine.UI;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 return self;
 
-            foreach (var swapper in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Swapper))
+            foreach (var swapper in Role.AllRoles.Where(x => x.Type == RoleEnum.Swapper))
             {
                 if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
                     return self;

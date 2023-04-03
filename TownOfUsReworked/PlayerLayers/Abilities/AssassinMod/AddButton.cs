@@ -4,7 +4,6 @@ using TownOfUsReworked.Extensions;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -14,6 +13,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
 using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {

@@ -1,8 +1,7 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
@@ -18,13 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             var role = Role.GetRole<Phantom>(__instance);
 
             if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted)
-            {
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    if (player == PlayerControl.LocalPlayer)
-                        Utils.Flash(role.Color, "A <color=#45076AFF>Phantom</color> is nearly done with their tasks!");
-                }
-            }
+                Utils.Flash(role.Color, "A <color=#45076AFF>Phantom</color> is nearly done with their tasks!");
 
             if (role.TasksDone && !role.Caught)
                 role.CompletedTasks = true;

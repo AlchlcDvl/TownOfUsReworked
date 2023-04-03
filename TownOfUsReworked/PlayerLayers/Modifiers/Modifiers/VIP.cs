@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "VIP";
             TaskText = "- Your death will alert everyone.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.VIP : Colors.Modifier;
-            ModifierType = ModifierEnum.VIP;
+            Type = ModifierEnum.VIP;
             Hidden = !CustomGameOptions.VIPKnows;
         }
     }

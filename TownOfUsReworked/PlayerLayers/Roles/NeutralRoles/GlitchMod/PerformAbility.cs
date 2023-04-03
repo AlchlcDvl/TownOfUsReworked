@@ -1,13 +1,9 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
 using Hazel;
-using Object = UnityEngine.Object;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using System.Linq;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
@@ -38,11 +34,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.TimeRemaining = CustomGameOptions.HackDuration;
                     role.HackTarget = role.ClosestPlayer;
-                    var targetRole = Role.GetRole(role.HackTarget);
-                    targetRole.IsBlocked = !targetRole.RoleBlockImmune;
+                    role.TimeRemaining = CustomGameOptions.HackDuration;
                     role.Hack();
+
+                    foreach (var layer in PlayerLayer.GetLayers(role.HackTarget))
+                        layer.IsBlocked = !Role.GetRole(role.HackTarget).RoleBlockImmune;
                 }
                 else if (interact[0])
                     role.LastHack = DateTime.UtcNow;
@@ -75,70 +72,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                 if (role.MimicTimer() != 0f)
                     return false;
 
-                if (role.MimicList == null)
-                {
-                    role.MimicTarget = null;
-                    HudManager.Instance.Chat.SetVisible(false);
-                    role.MimicList = Object.Instantiate(HudManager.Instance.Chat);
-                    role.MimicList.transform.SetParent(Camera.main.transform);
-                    role.MimicList.SetVisible(true);
-                    role.MimicList.Toggle();
-                    role.MimicList.TextBubble.enabled = false;
-                    role.MimicList.TextBubble.gameObject.SetActive(false);
-                    role.MimicList.TextArea.enabled = false;
-                    role.MimicList.TextArea.gameObject.SetActive(false);
-                    role.MimicList.BanButton.enabled = false;
-                    role.MimicList.BanButton.gameObject.SetActive(false);
-                    role.MimicList.CharCount.enabled = false;
-                    role.MimicList.CharCount.gameObject.SetActive(false);
-                    role.MimicList.OpenKeyboardButton.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                    role.MimicList.OpenKeyboardButton.Destroy();
-                    role.MimicList.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
-                    role.MimicList.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-                    role.MimicList.BackgroundImage.enabled = false;
+                if (role.MimicTarget == null)
+                    return false;
 
-                    foreach (var rend in role.MimicList.Content.GetComponentsInChildren<SpriteRenderer>())
-                    {
-                        if (rend.name == "SendButton" || rend.name == "QuickChatButton")
-                        {
-                            rend.enabled = false;
-                            rend.gameObject.SetActive(false);
-                        }
-                    }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Mimic);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                role.TimeRemaining2 = CustomGameOptions.MimicDuration;
+                role.Mimic();
+                return false;
+            }
+            else if (__instance == role.SampleButton)
+            {
+                if (role.MimicTimer() != 0f)
+                    return false;
 
-                    foreach (var bubble in role.MimicList.chatBubPool.activeChildren)
-                    {
-                        bubble.enabled = false;
-                        bubble.gameObject.SetActive(false);
-                    }
-
-                    role.MimicList.chatBubPool.activeChildren.Clear();
-
-                    foreach (var player in PlayerControl.AllPlayerControls.ToArray().Where(x => x?.Data != null && x != PlayerControl.LocalPlayer && !x.Data.Disconnected))
-                    {
-                        if (!player.Data.IsDead)
-                            role.MimicList.AddChat(player, "Click Here");
-                        else
-                        {
-                            foreach (var body in Object.FindObjectsOfType<DeadBody>())
-                            {
-                                if (body.ParentId == player.PlayerId)
-                                {
-                                    player.Data.IsDead = false;
-                                    role.MimicList.AddChat(player, "Click Here");
-                                    player.Data.IsDead = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    role.MimicList.Toggle();
-                    role.MimicList.SetVisible(false);
-                    role.MimicList = null;
-                }
-
+                role.OpenMimicMenu();
                 return false;
             }
 

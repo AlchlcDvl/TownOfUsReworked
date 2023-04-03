@@ -1,4 +1,3 @@
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Insider";
             TaskText = "- You can finish your tasks to see the votes of others.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Insider : Colors.Ability;
-            AbilityType = AbilityEnum.Insider;
+            Type = AbilityEnum.Insider;
             Hidden = !CustomGameOptions.InsiderKnows;
         }
     }

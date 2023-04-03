@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Ambush";
             AbilitiesText = "- You can ambush players.\n- Ambushed players will be forced to be on alert and will kill whoever interacts with then.";
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
-            RoleType = RoleEnum.Ambusher;
+            Type = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
             AlignmentName = IK;
             InspectorResults = InspectorResults.TracksOthers;

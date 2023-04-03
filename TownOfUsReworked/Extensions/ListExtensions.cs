@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using HarmonyLib;
+using System.Linq;
 
-namespace TownOfUsReworked.Classes
+namespace TownOfUsReworked.Extensions
 {
     [HarmonyPatch]
     public static class ListExtensions
@@ -62,6 +63,18 @@ namespace TownOfUsReworked.Classes
                 if (!list.Contains(item))
                     list.Add(item);
             }
+        }
+
+        public static List<T> Il2CppToSystem<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.ToArray().ToList();
+
+        public static Il2CppSystem.Collections.Generic.List<T> SystemToIl2Cpp<T>(this List<T> list)
+        {
+            var newList = new Il2CppSystem.Collections.Generic.List<T>();
+
+            foreach (var item in list)
+                newList.Add(item);
+
+            return newList;
         }
     }
 }

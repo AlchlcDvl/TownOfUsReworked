@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can save your votes into your vote bank, so you can vote multiple times later.\n- You can vote multiple times as long as you haven't abstained or " +
                 "are the last player voting.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
-            RoleType = RoleEnum.Mayor;
+            Type = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;

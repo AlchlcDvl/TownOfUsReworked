@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using System;
 using System.Linq;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
@@ -23,10 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
             else
             {
-                string message = "The following roles triggered your bug:\n";
-                int position = 0;
+                var message = "The following roles triggered your bug:\n";
+                var position = 0;
 
-                foreach (RoleEnum role in opRole.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
+                foreach (var role in opRole.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
                 {
                     if (position < opRole.BuggedPlayers.Count - 1)
                         message += $" {role},";

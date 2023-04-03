@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Have your target live to the end of the game.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             LastProtected = DateTime.UtcNow;
-            RoleType = RoleEnum.GuardianAngel;
+            Type = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
@@ -55,11 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSurv()
         {
-            var newRole = new Survivor(Player)
-            {
-                UsesLeft = UsesLeft
-            };
-
+            ProtectButton.gameObject.SetActive(false);
+            var newRole = new Survivor(Player) { UsesLeft = UsesLeft };
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)

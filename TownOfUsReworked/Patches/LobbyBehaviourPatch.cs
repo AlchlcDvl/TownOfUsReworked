@@ -1,13 +1,12 @@
 ﻿using HarmonyLib;
-using System.Linq;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.PlayerLayers;
+using TownOfUsReworked.MultiClientInstancing;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -18,49 +17,6 @@ namespace TownOfUsReworked.Patches
         {
             //Fix Grenadier and screwed blind in lobby
             HudManager.Instance.FullScreen.gameObject.active = false;
-
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Tracker))
-            {
-                ((Tracker)role).TrackerArrows.Values.DestroyAll();
-                ((Tracker)role).TrackerArrows.Clear();
-            }
-
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Amnesiac))
-            {
-                ((Amnesiac)role).BodyArrows.Values.DestroyAll();
-                ((Amnesiac)role).BodyArrows.Clear();
-            }
-
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Cannibal))
-            {
-                ((Cannibal)role).BodyArrows.Values.DestroyAll();
-                ((Cannibal)role).BodyArrows.Clear();
-            }
-
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Medium))
-            {
-                ((Medium)role).MediatedPlayers.Values.DestroyAll();
-                ((Medium)role).MediatedPlayers.Clear();
-            }
-
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Coroner))
-            {
-                ((Coroner)role).BodyArrows.Values.DestroyAll();
-                ((Coroner)role).BodyArrows.Clear();
-            }
-
-            foreach (var obj in Objectifier.AllObjectifiers.Where(x => x.ObjectifierType == ObjectifierEnum.Taskmaster))
-                ((Taskmaster)obj).ImpArrows.DestroyAll();
-
-            foreach (var ab in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Snitch))
-            {
-                ((Snitch)ab).ImpArrows.DestroyAll();
-                ((Snitch)ab).SnitchArrows.Values.DestroyAll();
-                ((Snitch)ab).SnitchArrows.Clear();
-            }
-
-            foreach (var ab in Ability.AllAbilities.Where(x => x.AbilityType == AbilityEnum.Radar))
-                ((Radar)ab).RadarArrow.DestroyAll();
 
             foreach (var layer in PlayerLayer.Layers)
                 layer.OnLobby();
@@ -73,6 +29,19 @@ namespace TownOfUsReworked.Patches
 
             Tasks.AllCustomPlateform.Clear();
             Tasks.NearestTask = null;
+
+            if (InstanceControl.Clients.Count != 0 && TownOfUsReworked.MCIActive && ConstantVariables.IsLocalGame)
+            {
+                int count = InstanceControl.Clients.Count;
+                InstanceControl.Clients.Clear();
+                InstanceControl.PlayerIdClientId.Clear();
+
+                if (TownOfUsReworked.Persistence)
+                {
+                    for (var i = 0; i < count; i++)
+                        MCIUtils.CreatePlayerInstance();
+                }
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 using System;
 using System.Collections.Generic;
 
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Jackal(PlayerControl player) : base(player)
         {
             Name = "Jackal";
-            RoleType = RoleEnum.Jackal;
+            Type = RoleEnum.Jackal;
             StartText = "Gain A Majority";
             AbilitiesText = "- You can recruit one player into joining your organisation.\n- You start off with 2 recruits. 1 of them is always <color=#8BFDFDFF>Crew</color>" +
                 "\nand the other is either a <color=#008000FF>Syndicate</color>, <color=#FF0000FF>Intruder</color> or a <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killer</color>.";

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
@@ -51,23 +51,29 @@ namespace TownOfUsReworked.Objects
 
                     if (Players[entry.PlayerId] > CustomGameOptions.MinAmountOfTimeInBug)
                     {
-                        foreach (Operative t in Role.GetRoles(RoleEnum.Operative).Cast<Operative>())
+                        foreach (var t in Role.GetRoles(RoleEnum.Operative).Cast<Operative>())
                         {
-                            var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                            if (t.Bugs.Contains(this))
+                            {
+                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).Type;
 
-                            if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
-                                t.BuggedPlayers.Add(playerrole);
+                                if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
+                                    t.BuggedPlayers.Add(playerrole);
+                            }
                         }
 
-                        foreach (Retributionist t in Role.GetRoles(RoleEnum.Retributionist).Cast<Retributionist>())
+                        foreach (var t in Role.GetRoles(RoleEnum.Retributionist).Cast<Retributionist>())
                         {
-                            if (t.RevivedRole?.RoleType != RoleEnum.Operative)
+                            if (t.RevivedRole?.Type != RoleEnum.Operative)
                                 continue;
 
-                            var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                            if (t.Bugs.Contains(this))
+                            {
+                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).Type;
 
-                            if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
-                                t.BuggedPlayers.Add(playerrole);
+                                if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
+                                    t.BuggedPlayers.Add(playerrole);
+                            }
                         }
                     }
                 }

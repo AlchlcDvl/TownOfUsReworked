@@ -1,9 +1,8 @@
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "♣";
             TaskText = "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Traitor;
+            Type = ObjectifierEnum.Traitor;
             Hidden = !CustomGameOptions.TraitorKnows && !Turned;
         }
 
@@ -29,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             var role = Role.GetRole(Player);
 
-            if (role.RoleType == RoleEnum.Betrayer)
+            if (role.Type == RoleEnum.Betrayer)
                 return;
 
             var betrayer = new Betrayer(Player);

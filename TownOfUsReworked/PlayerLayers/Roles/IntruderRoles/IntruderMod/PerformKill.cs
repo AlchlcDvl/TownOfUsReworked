@@ -1,9 +1,9 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, Faction.Intruder))
                 return true;
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
+            if (PlayerControl.LocalPlayer.IntruderSided())
                 return false;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
@@ -69,21 +69,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     {
                         gf.LastKilled = DateTime.UtcNow;
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
                             gf.LastCleaned = DateTime.UtcNow;
                     }
                     else if (interact[1])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
                             gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                     }
                     else if (interact[2])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
                             gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
                     }
 

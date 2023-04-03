@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 {
@@ -16,12 +16,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, Faction.Syndicate))
                 return;
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
+            if (PlayerControl.LocalPlayer.SyndicateSided())
                 return;
 
             var role = Role.GetRole<SyndicateRole>(PlayerControl.LocalPlayer);
 
-            if (role.RoleType == RoleEnum.Banshee)
+            if (role.Type == RoleEnum.Banshee)
             {
                 role.KillButton.gameObject.SetActive(false);
                 return;

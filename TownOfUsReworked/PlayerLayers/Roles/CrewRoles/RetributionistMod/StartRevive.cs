@@ -3,9 +3,9 @@ using HarmonyLib;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {

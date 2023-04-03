@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 {
@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
             if (Utils.NoButton(PlayerControl.LocalPlayer, Faction.Intruder))
                 return;
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Allied) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Traitor) || PlayerControl.LocalPlayer.Is(ObjectifierEnum.Fanatic))
+            if (PlayerControl.LocalPlayer.IntruderSided())
                 return;
 
             var role = Role.GetRole<IntruderRole>(PlayerControl.LocalPlayer);

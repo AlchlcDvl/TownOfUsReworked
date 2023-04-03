@@ -1,7 +1,6 @@
 using HarmonyLib;
-using Hazel;
+using TownOfUsReworked.Data;
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.WhispererMod

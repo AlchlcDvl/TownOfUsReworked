@@ -1,6 +1,6 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
 {
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             {
                 var player = Utils.PlayerById(arrow.Key);
 
-                if (player == null || player.Data?.IsDead != false || player.Data.Disconnected)
+                if (player?.Data.IsDead == true || player?.Data.Disconnected == true)
                     snitch.DestroyArrow(arrow.Key);
                 else
                     arrow.Value.target = player.transform.position;

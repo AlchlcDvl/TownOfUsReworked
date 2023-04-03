@@ -7,7 +7,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
@@ -145,7 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             if (player.AmOwner)
                 meetingHud.SetForegroundForDead();
 
-            foreach (var role in Role.AllRoles.Where(x => x.RoleType == RoleEnum.Blackmailer).Cast<Blackmailer>())
+            foreach (var role in Role.AllRoles.Where(x => x.Type == RoleEnum.Blackmailer).Cast<Blackmailer>())
             {
                 if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId)
                 {

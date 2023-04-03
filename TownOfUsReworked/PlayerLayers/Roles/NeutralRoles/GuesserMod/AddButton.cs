@@ -3,11 +3,11 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {

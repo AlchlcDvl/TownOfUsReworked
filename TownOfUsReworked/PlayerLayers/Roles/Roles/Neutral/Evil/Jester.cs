@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- After you get ejected, you can haunt a player.";
             Objectives = "- Get ejected.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
-            RoleType = RoleEnum.Jester;
+            Type = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToHaunt = new();

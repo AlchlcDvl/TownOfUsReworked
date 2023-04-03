@@ -1,10 +1,10 @@
 using System;
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
@@ -60,7 +60,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 return;
             }
 
-            Role newRole = role.RoleType switch
+            if (PlayerControl.LocalPlayer == other)
+            {
+                Utils.Flash(shifterRole.Color, "Someone has stolen your role!");
+                role.OnLobby();
+            }
+
+            if (PlayerControl.LocalPlayer == shifter)
+            {
+                Utils.Flash(shifterRole.Color, "You stole someone's role!");
+                shifterRole.ShiftButton.gameObject.SetActive(false);
+                shifterRole.OnLobby();
+            }
+
+            Role newRole = role.Type switch
             {
                 RoleEnum.Agent => new Agent(shifter),
                 RoleEnum.Altruist => new Altruist(shifter),

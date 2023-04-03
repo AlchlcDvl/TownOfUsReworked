@@ -4,8 +4,8 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -94,12 +94,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     if (player.PlayerId == __instance.playerStates[i].TargetPlayerId)
                     {
                         var revivable = false;
-                        var revivedRole = Role.GetRole(player).RoleType;
+                        var revivedRole = Role.GetRole(player).Type;
 
                         if (revivedRole == RoleEnum.Revealer)
                         {
                             var haunter = Role.GetRole<Revealer>(player);
-                            revivedRole = haunter.FormerRole.RoleType;
+                            revivedRole = haunter.FormerRole.Type;
                         }
 
                         if (player.Data.IsDead && !player.Data.Disconnected && (revivedRole == RoleEnum.Detective || revivedRole == RoleEnum.Seer || revivedRole == RoleEnum.Mystic ||

@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions
@@ -24,9 +24,9 @@ namespace TownOfUsReworked.CustomOptions
 
         protected internal void Increase()
         {
-            var increment = Increment > 5 && Input.GetKeyInt(KeyCode.LeftShift) ? 5 : Increment;
+            var increment = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
-            if (Get() + increment > Max)
+            if (Get() >= Max)
                 Set(Min);
             else
                 Set(Get() + increment);
@@ -34,9 +34,9 @@ namespace TownOfUsReworked.CustomOptions
 
         protected internal void Decrease()
         {
-            var increment = Increment > 5 && Input.GetKeyInt(KeyCode.LeftShift) ? 5 : Increment;
+            var increment = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
-            if (Get() - increment < Min)
+            if (Get() <= Min)
                 Set(Max);
             else
                 Set(Get() - increment);

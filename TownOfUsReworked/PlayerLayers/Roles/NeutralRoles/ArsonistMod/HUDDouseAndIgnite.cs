@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using HarmonyLib;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
 {
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                 role.DouseButton = CustomButtons.InstantiateButton();
 
             var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !role.DousedPlayers.Contains(player.PlayerId)).ToList();
-            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.DouseCd, AssetManager.Douse, AbilityTypes.Direct, "ActionSecondary", notDoused);
+            role.DouseButton.UpdateButton(role, "DOUSE", role.DouseTimer(), CustomGameOptions.DouseCd, AssetManager.ArsoDouse, AbilityTypes.Direct, "ActionSecondary", notDoused);
 
             if (role.IgniteButton == null)
                 role.IgniteButton = CustomButtons.InstantiateButton();

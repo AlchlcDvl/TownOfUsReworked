@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Make The <color=#8BFDFDFF>Crew</color> Invisible For Some Chaos";
             AbilitiesText = "- You can turn off player's ability to see things properly, making all other players appear invisible.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
-            RoleType = RoleEnum.Concealer;
+            Type = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             InspectorResults = InspectorResults.Unseen;

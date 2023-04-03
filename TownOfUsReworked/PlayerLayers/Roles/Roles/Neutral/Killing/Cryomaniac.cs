@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using System.Linq;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can douse players in coolant.\n- You can choose to freeze all currently doused players which kills them at the start of the next meeting." +
                 "\n- People who interact with you will also get doused.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
-            RoleType = RoleEnum.Cryomaniac;
+            Type = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             DousedPlayers = new List<byte>();
@@ -50,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             _ = new WaitForSeconds(1f);
 
-            if (!source.Is(RoleType))
+            if (!source.Is(Type))
                 return;
 
             DousedPlayers.Add(target.PlayerId);

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Hazel;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
 

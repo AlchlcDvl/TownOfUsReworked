@@ -1,6 +1,5 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using Hazel;
 using System;
@@ -49,10 +48,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 return false;
             }
 
-            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole.RoleType == RoleEnum.Impostor)
+            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole.Type == RoleEnum.Impostor)
                 return false;
 
-            var formerRole = role.FormerRole.RoleType;
+            var formerRole = role.FormerRole.Type;
 
             if (__instance == role.BlackmailButton && formerRole == RoleEnum.Blackmailer)
             {
@@ -203,25 +202,74 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 role.Flash();
                 return false;
             }
-            else if (__instance == role.CleanButton && formerRole == RoleEnum.Janitor)
+            else if (formerRole == RoleEnum.Janitor)
             {
-                if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                if (__instance == role.CleanButton)
+                {
+                    if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                        return false;
+
+                    var playerId = role.CurrentTarget.ParentId;
+                    var player = Utils.PlayerById(playerId);
+                    Utils.Spread(role.Player, player);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.FadeBody);
+                    writer.Write(playerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
+                    role.LastCleaned = DateTime.UtcNow;
+
+                    if (CustomGameOptions.JaniCooldownsLinked)
+                        role.LastKilled = DateTime.UtcNow;
+
                     return false;
+                }
+                else if (__instance == role.DragButton)
+                {
+                    if (Utils.IsTooFar(role.Player, role.CurrentTarget))
+                        return false;
 
-                var playerId = role.CurrentTarget.ParentId;
-                var player = Utils.PlayerById(playerId);
-                Utils.Spread(role.Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.FadeBody);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
-                role.LastCleaned = DateTime.UtcNow;
+                    var playerId = role.CurrentTarget.ParentId;
+                    var player = Utils.PlayerById(playerId);
+                    Utils.Spread(role.Player, player);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.GodfatherAction);
+                    writer.Write((byte)GodfatherActionsRPC.Drag);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(playerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    role.CurrentlyDragging = role.CurrentTarget;
+                    return false;
+                }
+                else if (__instance == role.DropButton)
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.GodfatherAction);
+                    writer.Write((byte)GodfatherActionsRPC.Drop);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-                if (CustomGameOptions.JaniCooldownsLinked)
-                    role.LastKilled = DateTime.UtcNow;
+                    if (SubmergedCompatibility.IsSubmerged())
+                    {
+                        if (position.y > -7f)
+                            position.z = 0.0208f;
+                        else
+                            position.z = -0.0273f;
+                    }
 
-                return false;
+                    writer.Write(position);
+                    writer.Write(position.z);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    var body = role.CurrentlyDragging;
+
+                    foreach (var component in body?.bodyRenderers)
+                        component.material.SetFloat("_Outline", 0f);
+
+                    role.CurrentlyDragging = null;
+                    role.LastDragged = DateTime.UtcNow;
+                    body.transform.position = position;
+                    return false;
+                }
             }
             else if (__instance == role.MineButton && formerRole == RoleEnum.Miner)
             {
@@ -357,52 +405,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 role.FreezeTimeRemaining = CustomGameOptions.FreezeDuration;
                 role.TimeFreeze();
                 return false;
-            }
-            else if (formerRole == RoleEnum.Undertaker)
-            {
-                if (__instance == role.DragButton)
-                {
-                    if (Utils.IsTooFar(role.Player, role.CurrentTarget))
-                        return false;
-
-                    var playerId = role.CurrentTarget.ParentId;
-                    var player = Utils.PlayerById(playerId);
-                    Utils.Spread(role.Player, player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.GodfatherAction);
-                    writer.Write((byte)GodfatherActionsRPC.Drag);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(playerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role.CurrentlyDragging = role.CurrentTarget;
-                    return false;
-                }
-                else if (__instance == role.DropButton)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.GodfatherAction);
-                    writer.Write((byte)GodfatherActionsRPC.Drop);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
-
-                    if (SubmergedCompatibility.IsSubmerged())
-                    {
-                        if (position.y > -7f)
-                            position.z = 0.0208f;
-                        else
-                            position.z = -0.0273f;
-                    }
-
-                    writer.Write(position);
-                    writer.Write(position.z);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    var body = role.CurrentlyDragging;
-                    body.bodyRenderer.material.SetFloat("_Outline", 0f);
-                    role.CurrentlyDragging = null;
-                    role.LastDragged = DateTime.UtcNow;
-                    body.transform.position = position;
-                    return false;
-                }
             }
             else if (__instance == role.InvisButton && formerRole == RoleEnum.Wraith)
             {

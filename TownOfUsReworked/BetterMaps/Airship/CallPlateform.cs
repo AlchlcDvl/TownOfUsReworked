@@ -2,7 +2,7 @@
 using Hazel;
 using System.Collections;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
 

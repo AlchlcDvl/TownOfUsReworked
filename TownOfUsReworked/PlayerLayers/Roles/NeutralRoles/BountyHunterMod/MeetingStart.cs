@@ -1,8 +1,8 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
-using Random = UnityEngine.Random;
+using UnityEngine;
 using System.Collections.Generic;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.BountyHunterMod
 {

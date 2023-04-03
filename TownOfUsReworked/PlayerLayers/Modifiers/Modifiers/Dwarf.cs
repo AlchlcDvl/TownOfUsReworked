@@ -1,7 +1,6 @@
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Dwarf";
             TaskText = $"- You are tiny{fastText}.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
-            ModifierType = ModifierEnum.Dwarf;
+            Type = ModifierEnum.Dwarf;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

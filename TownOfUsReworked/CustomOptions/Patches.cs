@@ -4,7 +4,7 @@ using HarmonyLib;
 using Reactor.Utilities.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using static UnityEngine.UI.Button;
 
@@ -80,6 +80,9 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
             {
+                if (!option.Active)
+                    continue;
+
                 if (option.Setting != null)
                 {
                     option.Setting.gameObject.SetActive(true);
@@ -244,22 +247,17 @@ namespace TownOfUsReworked.CustomOptions
 
             public static Sprite GetSettingSprite(int index)
             {
-                if (index == 1)
-                    return AssetManager.CrewSettingsButton;
-                else if (index == 2)
-                    return AssetManager.NeutralSettingsButton;
-                else if (index == 3)
-                    return AssetManager.IntruderSettingsButton;
-                else if (index == 4)
-                    return AssetManager.SyndicateSettingsButton;
-                else if (index == 5)
-                    return AssetManager.ModifierSettingsButton;
-                else if (index == 6)
-                    return AssetManager.ObjectifierSettingsButton;
-                else if (index == 7)
-                    return AssetManager.AbilitySettingsButton;
-
-                return AssetManager.SettingsButton;
+                return index switch
+                {
+                    1 => AssetManager.CrewSettingsButton,
+                    2 => AssetManager.NeutralSettingsButton,
+                    3 => AssetManager.IntruderSettingsButton,
+                    4 => AssetManager.SyndicateSettingsButton,
+                    5 => AssetManager.ModifierSettingsButton,
+                    6 => AssetManager.ObjectifierSettingsButton,
+                    7 => AssetManager.AbilitySettingsButton,
+                    _ => AssetManager.SettingsButton
+                };
             }
         }
 
@@ -278,6 +276,16 @@ namespace TownOfUsReworked.CustomOptions
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
                 __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+
+                foreach (var option in CustomOption.AllOptions)
+                {
+                    switch (option.ParentRole)
+                    {
+                        case RoleEnum.Mystic:
+                            option.Active = CustomGameOptions.MysticOn > 0;
+                            break;
+                    }
+                }
             }
         }
 

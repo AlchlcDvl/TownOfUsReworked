@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 
@@ -17,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Swap Votes For Maximum Chaos";
             AbilitiesText = "- You can swap the votes against 2 players in meetings.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Swapper : Colors.Crew;
-            RoleType = RoleEnum.Swapper;
+            Type = RoleEnum.Swapper;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
             InspectorResults = InspectorResults.BringsChaos;

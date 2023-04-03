@@ -26,49 +26,49 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles) | [Neutrals](#neutral-roles) |
-|------------------------------|-------------------------------|---------------------|----------------------------|
-| [Ambusher](#ambusher)       | [Anarchist](#anarchist)       | [Agent](#agent)                   | [Actor](#actor)                   |
-| [Blackmailer](#blackmailer) | [Banshee](#banshee)           | [Altruist](#altruist)             | [Amnesiac](#amnesiac)             |
-| [Camouflager](#camouflager) | [Beamer](#beamer)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             |
-| [Consigliere](#consigliere) | [Bomber](#bomber)             | [Coroner](#coroner)               | [Betrayer](betrayer)              |
-| [Consort](#consort)         | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |
-| [Disguiser](#disguiser)     | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |
-| [Ghoul](#ghoul)             | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
-| [Godfather](#godfather)     | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
-| [Grenadier](#grenadier)     | [Gorgon](#gorgon)             | [Inspector](#inspector)           | [Executioner](#executioner)       |
-| [Impostor](#impostor)       | [Poisoner](#poisoner)         | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
-| [Janitor](#janitor)         | [Rebel](#rebel)               | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
-| [Mafioso](#mafioso)         | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guesser](#guesser)               |
-| [Miner](#miner)             | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Jackal](#jackal)                 |
-| [Morphling](#morphling)     | [Warper](#warper)             | [Operative](#operative)           | [Jester](#jester)                 |
-| [Teleporter](#teleporter)   |                               | [Retributionist](#retributionist) | [Juggernaut](#juggernaut)         |
-| [Time Master](#time-master) |                               | [Revealer](#revealer)             | [Murderer](#murderer)             |
-| [Undertaker](#undertaker)   |                               | [Seer](#seer)                     | [Necromancer](#necromancer)       |
-| [Wraith](#wraith)           |                               | [Sheriff](#sheriff)               | [Pestilence](#pestilence)         |
-|                             |                               | [Shifter](#shifter)               | [Phantom](#phantom)               |
-|                             |                               | [Swapper](#swapper)               | [Plaguebearer](#plaguebearer)     |
-|                             |                               | [Time Lord](#time-lord)           | [Serial Killer](#serial-killer)   |
-|                             |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |
-|                             |                               | [Transporter](#transporter)       | [Thief](#thief)                   |
-|                             |                               | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf)             |
-|                             |                               | [Veteran](#veteran)               | [Whisperer](#whisperer)           |
-|                             |                               | [Vigilante](#vigilante)           |                                   |
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        |
+|------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
+| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Agent](#agent)                   | [Actor](#actor)                   |
+| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Altruist](#altruist)             | [Amnesiac](#amnesiac)             |
+| [Camouflager](#camouflager)  | [Beamer](#beamer)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             |
+| [Consigliere](#consigliere)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Betrayer](betrayer)              |
+| [Consort](#consort)          | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |
+| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |
+| [Ghoul](#ghoul)              | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
+| [Godfather](#godfather)      | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
+| [Grenadier](#grenadier)      | [Gorgon](#gorgon)             | [Inspector](#inspector)           | [Executioner](#executioner)       |
+| [Impostor](#impostor)        | [Poisoner](#poisoner)         | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
+| [Janitor](#janitor)          | [Rebel](#rebel)               | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
+| [Mafioso](#mafioso)          | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guesser](#guesser)               |
+| [Miner](#miner)              | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Jackal](#jackal)                 |
+| [Morphling](#morphling)      | [Warper](#warper)             | [Operative](#operative)           | [Jester](#jester)                 |
+| [Teleporter](#teleporter)    |                               | [Retributionist](#retributionist) | [Juggernaut](#juggernaut)         |
+| [Time Master](#time-master)  |                               | [Revealer](#revealer)             | [Murderer](#murderer)             |
+| [Wraith](#wraith)            |                               | [Seer](#seer)                     | [Necromancer](#necromancer)       |
+|                              |                               | [Sheriff](#sheriff)               | [Pestilence](#pestilence)         |
+|                              |                               | [Shifter](#shifter)               | [Phantom](#phantom)               |
+|                              |                               | [Swapper](#swapper)               | [Plaguebearer](#plaguebearer)     |
+|                              |                               | [Time Lord](#time-lord)           | [Serial Killer](#serial-killer)   |
+|                              |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |
+|                              |                               | [Transporter](#transporter)       | [Thief](#thief)                   |
+|                              |                               | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf)             |
+|                              |                               | [Veteran](#veteran)               | [Whisperer](#whisperer)           |
+|                              |                               | [Vigilante](#vigilante)           |                                   |
 
-| [Modifiers](#modifiers) | [Abilities](#abilities) | [Objectifiers](#objectifiers) |
-|-------------------------|-------------------------|-------------------------------|
-| [Bait](#bait)                 | [Assassin](#assassin)         | [Allied](#allied)         |
-| [Coward](#coward)             | [Button Barry](#button-barry) | [Corrupted](#corrupted)   |
-| [Diseased](#diseased)         | [Insider](#insider)           | [Fanatic](#fanatic)       |
-| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Lovers](#lovers)         |
-| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Overlord](#overlord)     |
-| [Flincher](#flincher)         | [Radar](#radar)               | [Rivals](#rivals)         |
-| [Giant](#giant)               | [Ruthless](#ruthless)         | [Taskmaster](#taskmaster) |
-| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Traitor](#traitor)       |
-| [Professional](#professional) | [Tiebreaker](#tiebreaker)     |                           |
-| [Shy](#shy)                   | [Torch](#torch)               |                           |
-| [VIP](#vip)                   | [Tunneler](#tunneler)         |                           |
-| [Volatile](#volatile)         | [Underdog](#underdog)         |                           |
+| [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
+|-------------------------------|-------------------------------|-------------------------------|
+| [Bait](#bait)                 | [Assassin](#assassin)         | [Allied](#allied)             |
+| [Coward](#coward)             | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
+| [Diseased](#diseased)         | [Insider](#insider)           | [Fanatic](#fanatic)           |
+| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Lovers](#lovers)             |
+| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Overlord](#overlord)         |
+| [Flincher](#flincher)         | [Radar](#radar)               | [Rivals](#rivals)             |
+| [Giant](#giant)               | [Ruthless](#ruthless)         | [Taskmaster](#taskmaster)     |
+| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Traitor](#traitor)           |
+| [Professional](#professional) | [Tiebreaker](#tiebreaker)     |                               |
+| [Shy](#shy)                   | [Torch](#torch)               |                               |
+| [VIP](#vip)                   | [Tunneler](#tunneler)         |                               |
+| [Volatile](#volatile)         | [Underdog](#underdog)         |                               |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Global Settings](#global-settings)
@@ -99,8 +99,11 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 # Releases
 
+**Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when it updates.**
+
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.0.2dev8 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev7 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev7/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev6 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev6/TownOfUsReworked.zip) |
 | 2023.2.28 (s & e) | v0.0.2dev5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev5/TownOfUsReworked.zip) |
@@ -121,6 +124,25 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.2dev8</summary>
+    <ul> <li>Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:</li> </ul>
+    <ul> <li>Update: Updated the mod to v2023.3.28</li> </ul>
+    <ul> <li>Changes: Made minor changes to how emergency buttons can be called (credits to @twix)</li> </ul>
+    <ul> <li>Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work</li> </ul>
+    <ul> <li>Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)</li> </ul>
+    <ul> <li>Improvement: Improved RPC handling between players</li> </ul>
+    <ul> <li>Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo from All The Roles for help)</li> </ul>
+    <ul> <li>Improvement: Improved how roleblocks work internally by a bit</li> </ul>
+    <ul> <li>Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions</li> </ul>
+    <ul> <li>Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players</li> </ul>
+    <ul> <li>Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in</li> </ul>
+    <ul> <li>Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on</li> </ul>
+    <ul> <li>Bug Fix: Potential fix for null errors regarding player layers</li> </ul>
+    <ul> <li>Role Fix: Fixed buttons not disappearing when changing roles</li> </ul>
+    <ul> <li>Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies</li> </ul>
+  </details>
   <details>
     <summary>v0.0.2dev7</summary>
     <ul> <li>Addition: Some Lore</li> </ul>
@@ -1312,7 +1334,7 @@ Just a plain Intruder with no abilities and only spawns if all the other roles a
 ## Janitor
 ### **Alignment: Intruder (Concealing)**
 
-The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want to use.
+The Janitor can drag, drop and clean up bodies. Both their Kill and Clean ability usually have a shared cooldown, meaning they have to choose which one they want to use.
 
 ### Game Options
 
@@ -1321,6 +1343,9 @@ The Janitor can clean up bodies. Both their Kill and Clean ability have a shared
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
 | Janitor Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
 | Janitor Kill And Clean Cooldowns Are Linked | Self explanatory | Toggle | False |
+| Drag Cooldown | The cooldown of the Janitor Drag ability | Time | 25s |
+| Janitor Can Vent | Whether the Janitor can Vent | String | Never |
+| Drag Speed | How fast will the Janitor become when dragging a body | Factor | x0.5 |
 
 ## Mafioso
 ### **Alignment: Intruder (Utility)**
@@ -1375,19 +1400,6 @@ The Time Master can freeze time, causing everyone to freeze in place and unable 
 | Freeze Duration | How long the time freeze lasts for | Time | 10s |
 | Time Master Immunity To Freeze And Rewind | Whether the Time master is immune to their own time freeze and the Time Lord's rewind | Toggle | False |
 | Other Intruders Are Immune to Freeze | Whether the other Intruders are immune to the Time Master's time freeze | Toggle | False |
-
-## Undertaker
-### **Alignment: Intruder (Concealing)**
-
-The Undertaker can drag, drop bodies and hide them in vents.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Undertaker Drag Cooldown | The cooldown of the Undertaker Drag ability | Time | 25s |
-| Undertaker can Vent | Whether the Undertaker can Vent | Never / Body / Bodyless / Always | Never |
-| Drag Speed | How fast will the Undertaker become when dragging a body | Factor | x0.5 |
 
 ## Wraith
 ### **Alignment: Intruder (Concealing)**
@@ -1571,7 +1583,6 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 | Fanatic knows who they are on game start | Whether the Fanatic knows who they are | Toggle | True |
 | Snitch Sees Fanatic | Whether the Snitch sees a turned Fanatic | Toggle | True |
 | Revealer reveals Fanatic | Whether the Revealer reveals a turned Fanatic | Toggle | True |
-| Turned Fanatic gets Assassin | Whether a turned Fanatic gains the ability to guess | Toggle | False |
 | Turned Fanatic Swaps Colours for Investigative Roles | The Fanatic switches colours | Toggle | False |
 
 ## Lovers
@@ -1639,7 +1650,6 @@ The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doin
 | Traitor knows who they are on game start | Whether the Traitor knows who they are | Toggle | True |
 | Snitch Sees Turned Intuder Traitor | Whether the Snitch sees a turned Traitor who has joined the Intruders | Toggle | True |
 | Revealer reveals Turned Traitor | Whether the Rvealer reveals a turned Traitor who has joined the Intruders | Toggle | True |
-| Turned Traitor gets Assassin | Whether a turned Traitor gains the ability to guess | Toggle | False |
 | Turned Traitor Swaps Colours for Investigative Roles | The Traitor switches colours | Toggle | False |
 
 # Modifiers
@@ -2093,9 +2103,10 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For the code used for Coward, Volatile, Bait, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
-[Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into a modifier and Task Tracking\
-[Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer, Plaguebearer, Sleuth and porting v2.5.0 to the new Among Us version (v2021.12.15)\
+[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
+[Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\
+[Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer and Plaguebearer and porting v2.5.0 to the new Among Us version (v2021.12.15)\
+[Zeo](https://github.com/Zeo666/AllTheRoles) - For the idea of Ruthless and help with migrating to the use of shapeshifter menus\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\

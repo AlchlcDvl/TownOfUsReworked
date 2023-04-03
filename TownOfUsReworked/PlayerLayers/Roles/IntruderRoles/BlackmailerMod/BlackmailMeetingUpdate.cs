@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using UnityEngine;
 using System.Linq;
 using System.Collections;
 using Reactor.Utilities;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 {

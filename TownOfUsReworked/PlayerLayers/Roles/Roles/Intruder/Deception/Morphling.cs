@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Modules;
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             LastMorphed = DateTime.UtcNow;
-            RoleType = RoleEnum.Morphling;
+            Type = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
         }

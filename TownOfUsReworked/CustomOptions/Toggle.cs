@@ -1,4 +1,4 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.CustomOptions

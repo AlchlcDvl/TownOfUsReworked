@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Syndicate;
             LastPoisoned = DateTime.UtcNow;
-            RoleType = RoleEnum.Poisoner;
+            Type = RoleEnum.Poisoner;
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;

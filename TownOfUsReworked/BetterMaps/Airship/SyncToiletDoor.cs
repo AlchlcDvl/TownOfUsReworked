@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {

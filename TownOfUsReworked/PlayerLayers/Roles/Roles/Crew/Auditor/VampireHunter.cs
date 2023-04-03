@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can stake players to see if they have been turned.\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color>" +
                 " tries to interact with you, you will kill them.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
-            RoleType = RoleEnum.VampireHunter;
+            Type = RoleEnum.VampireHunter;
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = CA;
             InspectorResults = InspectorResults.TracksOthers;
@@ -40,6 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnVigilante()
         {
+            StakeButton.gameObject.SetActive(false);
             var role = new Vigilante(Player);
             role.RoleUpdate(this);
 

@@ -1,6 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {

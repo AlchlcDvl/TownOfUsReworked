@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.Data
@@ -537,8 +537,8 @@ namespace TownOfUsReworked.Data
                 " time.", RoleAlignment.IntruderConceal, Faction.Intruder, "AAAAAAAAAAAAA YOUR EYES"),
             new RoleInfo("Impostor", "Imp", "Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.",
                 RoleAlignment.IntruderUtil, Faction.Intruder, "If you ever feel useless, just remember I exist."),
-            new RoleInfo("Janitor", "Jani", "The Janitor can clean up bodies. Both their Kill and Clean ability have a shared cooldown, meaning they have to choose which one they want " +
-                "to use.", RoleAlignment.IntruderConceal, Faction.Intruder, "I'm the guy you call to clean up after you."),
+            new RoleInfo("Janitor", "Jani", "The Janitor can drag, drop and clean up bodies. Both their Kill and Clean usually ability have a shared cooldown, meaning they have to choose " +
+                "which one they want to use.", RoleAlignment.IntruderConceal, Faction.Intruder, "I'm the guy you call to clean up after you."),
             new RoleInfo("Mafioso", "Mafi", "The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies," +
                 " the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.", RoleAlignment.IntruderUtil,
                 Faction.Intruder, "Yes, boss. Got it, boss."),
@@ -551,8 +551,6 @@ namespace TownOfUsReworked.Data
                 RoleAlignment.IntruderSupport, Faction.Intruder, "He's here, he's there, he's everywhere. Who are ya gonna call? Psychic friend fr-"),
             new RoleInfo("Time Master", "TM", "The Time Master can freeze time, causing everyone to freeze in place and unable to move for a short while. Time freeze and sabotages cannot" +
                 " happen for obvious reasons.", RoleAlignment.IntruderSupport, Faction.Intruder, "Aww can't move, can you? It'll be alright~"),
-            new RoleInfo("Undertaker", "UT", "The Undertaker can drag, drop bodies and hide them in vents.", RoleAlignment.IntruderConceal, Faction.Intruder, "The Janitor was on a strike" +
-                " so I exist now."),
             new RoleInfo("Wraith", "Wraith", "The Wraith can temporarily turn invisible.", RoleAlignment.IntruderDecep, Faction.Intruder, "Now you see me, now you don't."),
             new RoleInfo("Anarchist", "Anarch", "Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode." +
                 " Its only benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", RoleAlignment.SyndicateUtil,
@@ -655,7 +653,6 @@ namespace TownOfUsReworked.Data
 
         public readonly static List<Lore> AllLore = new()
         {
-            new Lore("Invalid", "None", "Invalid"),
             new Lore("All", "The story takes place several hundred years in the future. There is a giant leap in scientific advancement. As a result, space travel is a common thing and" +
                 " is commonly used for mining resources from nearby celestial bodies. A multi-billion dollar government space exploration corporation called “Mira” just recently " +
                 "discovered a new habitable planet several light years away. They named it “Polus”. Soon enough, they build a ship that can carry over 200 passengers with plenty of " +
@@ -672,7 +669,63 @@ namespace TownOfUsReworked.Data
                 "the votes get tallied. Soon the faces of confidence turn into faces of pure shock, as the votes are tallied not against the Crewmate, but against the Godfather. A " +
                 "mechanical arm juts out from the walls and grabs the Godfather and starts moving towards the airlock. The Crew, held aback by the sudden change in air, looked at the " +
                 "Crewmate. The Godfather looked at the Crewmate with a face of horror through the window in the airlock door. The Crewmate simply meets his gaze with a face of pure joy " +
-                "and confidence, and mouths, \"I’m the Swapper, bitch.\"", "Swap")
+                "and confidence, and mouths, \"I'm the Swapper, bitch.\"", "Swap"),
+            new Lore("Amnesiac", "A lonely Mystic walked down the hallway. His head was aching and the bandages around his head were starting to loosen. The Mystic just wanted to " +
+                "finish his checklist of tasks assigned to him by the Mayor. But he forgot how to do them. He sat at the panel, confused. The Mystic fumbled with the wires a bit. He " +
+                "felt a sudden tingle but he paid it no mind. Soon a loud alarm rang. A meeting was in order. Blue had just died, and Green said that the body was in Navigation. " +
+                "Everyone started accusing each other, but the Mystic sat at the table with fuzzy memories. He tried to remember what roles he, Blue or Green were, but to no avail. The" +
+                " meeting ended with a voting tie between Red and Green. The Mystic with no memories looked at Red, he noticed a sinister glare on his face. The Amnesiac suddenly felt a " +
+                "repressed memory try to make its way back to the surface, but he still couldn't completely remember it. The Amnesiac moved to the kitchen to make himself a sandwich. He" +
+                " just looked at the knife, enamoured by it. He picked it and sliced the tomato in half. A certain joy filled the Amnesiac's heart. Just behind him, Red, the Grenadier, " +
+                "was being murdered by Green, the Glitch. Green ran away, unnoticed by the Amnesiac. The Amnesiac's sense rang loudly as he turned around to see the wheezing and dying " +
+                "Red. He soon realised what he wanted in life, what his true goal was. He had finally remembered what his purpose was. A creepy smile began to set onto the Amnesiac's " +
+                "face as he raised his kitchen knife into the air. A meeting was called as Red's body was discovered to have multiple stab wounds, his backpack emptied. The Glitch was " +
+                "confused, he only remembered stabbing the Grenadier once. The Amnesiac sat there in silence, playing around with the toys he had found. He enjoyed the clicking sounds " +
+                "the new toys in his hand made and was itching to use them. Green was being ejected thanks to the close tie he had with Red in the last meeting. Soon the meeting came to " +
+                "a close. Just as everyone was dispersing, the spirit of the Grenadier looked at the Amnesiac, with a cold smile on his face. He had raised his successor well.", "Amne"),
+            new Lore("Glitch", "The Spy woke up to see a dreary yellow maze-like world around him. The maze seemed infinitely large, as there was no limit to be seen. He tried his best " +
+                "to survive in this maze, preserving what was left of his sanity. Several years passed by and by some miracle, he found a vent. Not even thinking that it might be leading" +
+                " to nowhere, he hopped into it. He was nearing death so he was not at liberty to decide. As he fell further down, he questioned his choice, thinking it might just be his " +
+                "end. But then there he was, lying on the floor of the laboratory, in front of the vitals screen. His body seemed fine, heck, even better. The Spy was shocked, it was as " +
+                "if he was not gone for a second in the main world. Everything was as it was when he \"glitched\" through. What greeted him wasn't any of the Crew, it was a parasite. The " +
+                "parasite entered the Spy's body. The parasite and the Spy struggled to gain control of the body, and the Spy succeeded. But he felt...new. Powerful, even. In his " +
+                "mind, all he could think of was the pain and suffering he went through. He couldn't forgive the Crew who didn't even bother to look for him, let alone save him. He " +
+                "needed to make the world aware of what he went through. And he had just the right tools with him. Controlling the dead parasite within his body, along with his warped " +
+                "anatomy thanks to reality breaking, the Spy fused himself with a lot of the technology around him, in an attempt to get stronger. He invented devices to hack the Crew's " +
+                "and Intruders' systems alike, and an illusion device to change his appearance. It was showtime. The best thing the Spy could do right now was kill everyone and hope they " +
+                "get transported to the maze, to feel what he did. He was the one who transcended reality, he was the one with the knowledge to break through the universe's strongest " +
+                "barrier. He was...the Glitch.", "Gli"),
+            new Lore("Juggernaut", "A paranoid Veteran watched his loved one die to the hands of the Crew. He couldn't bear to think he wasn't there to save her. \"If only I was stronger" +
+                ".\" was the thought that plagued his mind. Day in and day out, he pursued strength, in his ultimate goal to destroy Mira, the very company that killed his wife in cold " +
+                "blood. But, he just couldn't shake off the paranoia from the war. No amount of self healing or meditating could take away those horrid memories from wartime. His wife " +
+                "was his only way to support himself, his lifeline. Everytime he thought of her, he would be engulfed in deadly rage, unable to calm down until his fists bled from " +
+                "punching the walls. One day, he saw a job listing to explore a newly discovered planet, Polus. The advertiser? Mira. \"Perfect.\" thought the Veteran as he lifted himself " +
+                "up from his couch, and readied his uniform to go to the application site. He got to the site, to only see that Mira wasn't even performing background checks on the " +
+                "applicants. \"That lax behaviour will get you killed, Mira.\" After a few days, he received an acceptance letter. He was accepted! He boarded the ship to see familiar " +
+                "faces, as well suspicious ones. The Mayor, the one who led the team that killed his wife and the Godfather, who he suspected was the cause. Aboard the ship he met new " +
+                "faces, the weak Crewmate, the just Sheriff and the lovely Medic. She reminded him of his wife. But he could not spare his feelings for her. She was affiliated with Mira, " +
+                "making her his enemy. A couple days later, he set off on the journey to Polus. He thought this was his time to shine, but he couldn't bring himself to kill anyone. Most " +
+                "of the people here were innocent, forced to go on the mission with him. He couldn't hurt these poor souls. The Godfather paid mind to the Veteran's antics, and struck a " +
+                "deal with him. They met up in the infirmary to talk business. As they were discussing, the Godfather let loose a parasite, to take over and control the Veteran. Just as " +
+                "he began, the Veteran felt a tingle, but thought nothing of it. The infirmary doors burst open with the Sheriff and the Seer entering with full force. \"AHA! I KNEW YOU " +
+                "WERE UP TO NO GOOD!\" said the robust Sheriff, preparing his gun to fire. But that declaration triggered something within the Veteran. He heard an audible snap and then " +
+                "he felt bliss. A couple minutes later, a meeting was called by the Medic. \"3 bodies were found in the infirmary...brutally mangled beyond recognition.\" she declared, " +
+                "holding back the urge to puke. As the rest of the Crew gasped in horror, only the Juggernaut smiled.", "Jugg"),
+            new Lore("Medic", "The Medic came from a highly evaluated university, with the highest grades possible. She was the best in the field, until an accident took her ability to " +
+                "heal others. Ashamed of her incident and only being able to perform rudimentary first aid, the Medic sought for a job on the Polus mission. She was accepted! This was " +
+                "her turning point, one where she would be known for something else, and hopefully heal herself in the process. The Medic's dreams fell short as people started dying " +
+                "to mysterious killers among the Crew. She tried her best to find people to protect, but her arrivals were too little too late. The only things waiting for her were the " +
+                "bodies of those she swore to protect and a lingering sense of dread. She couldn't get by just looking for people to heal and instead decided to concentrate on one " +
+                "person, so at least they'd be safe. It was the Crewmate, a loveable simpleton who only stood for justice. She would know when he would be attacked. All she had to do " +
+                "was just sit and lie in wait, patiently waiting for a killer to slip up and attack the Crewmate and alerting her. But on her way to the cafeteria, she heard wheezing. " +
+                "It was the corrupt Mayor, the one who was the sole reason behind the Medic's accident. Her entire being said let him die, but only her heart said to save him, for she " +
+                "was not a monster, but a barrier between life and death for the Crew. She slowly approached the Mayor, pushing down her hatred for him. \"Where does it hurt?\"", "Medic"),
+            new Lore("Crewmate", "Nothing fruitful ever happened in the Crewmate's life. He was just lucky enough to get a spot in the exploration trip to Polus. Only useful for " +
+                "finishing tasks and basic repairs, he decided to make the most of his time aboard the Skeld. Getting acquainted with all those famous celebrities from Mira, the " +
+                "Crewmate felt a sense of bliss and happiness. He was going to make history. He was finally going to be able to stand with the celebrities like the Mayor. That would'" +
+                "ve happened, if it were not for the Intruder aboard their ship. First it was the disruption of their tasks, then it was the sabotages and then finally the Intruders " +
+                "took a step further. Killing. The Crewmate feared the loss of his life and went into hiding. He knew one thing, he had to ensure the killers got thrown out of the ship" +
+                " in order for him to survive.", "Crew")
         };
     }
 }

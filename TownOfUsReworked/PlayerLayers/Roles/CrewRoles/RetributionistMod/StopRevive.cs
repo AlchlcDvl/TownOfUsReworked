@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
 using System.Linq;
@@ -8,6 +7,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Roles.AllRoles;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (ret.RevivedRole == null)
                 return;
 
-            if (ret.RevivedRole.RoleType == RoleEnum.Operative)
+            if (ret.RevivedRole.Type == RoleEnum.Operative)
             {
                 if (ret.BuggedPlayers.Count == 0)
                     HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
@@ -32,10 +32,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
                 else
                 {
-                    string message = "Roles caught in your bugs:\n";
-                    int position = 0;
+                    var message = "Roles caught in your bugs:\n";
+                    var position = 0;
 
-                    foreach (RoleEnum role in ret.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
+                    foreach (var role in ret.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
                     {
                         if (position < ret.BuggedPlayers.Count - 1)
                             message += $" {role},";
@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         HudManager.Instance.Chat.AddChat(ret.Player, message);
                 }
             }
-            else if (ret.RevivedRole.RoleType == RoleEnum.Coroner)
+            else if (ret.RevivedRole.Type == RoleEnum.Coroner)
             {
                 var matches = Murder.KilledPlayers.ToArray();
                 DeadPlayer killer = null;
@@ -83,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 if (HudManager.Instance)
                     HudManager.Instance.Chat.AddChat(ret.Player, reportMsg);
             }
-            else if (ret.RevivedRole.RoleType == RoleEnum.Detective)
+            else if (ret.RevivedRole.Type == RoleEnum.Detective)
                 EndGame.Reset();
 
             ret.RevivedRole = null;

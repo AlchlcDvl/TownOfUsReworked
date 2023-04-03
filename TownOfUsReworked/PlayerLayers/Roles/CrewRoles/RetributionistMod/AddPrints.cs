@@ -1,11 +1,10 @@
 using System.Linq;
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            if (ret.RevivedRole?.RoleType != RoleEnum.Detective)
+            if (ret.RevivedRole?.Type != RoleEnum.Detective)
                 return;
 
             _time += Time.deltaTime;

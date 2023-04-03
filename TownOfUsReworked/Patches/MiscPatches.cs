@@ -25,6 +25,12 @@ namespace TownOfUsReworked.Patches
             public static void Prefix(GameStartManager __instance) => __instance.MinPlayers = 1;
         }
 
+        [HarmonyPatch(typeof(RoleBehaviour), nameof(RoleBehaviour.IsAffectedByComms), MethodType.Getter)]
+        public static class ButtonsPatch
+        {
+            public static void Postfix(ref bool __result) => __result = false;
+        }
+
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
         [HarmonyPriority(Priority.First)]
         public static class ExileControllerPatch

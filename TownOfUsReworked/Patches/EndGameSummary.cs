@@ -10,7 +10,7 @@ using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using AmongUs.GameOptions;
 using TMPro;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -36,22 +36,22 @@ namespace TownOfUsReworked.Patches
             public static void Postfix()
             {
                 AdditionalTempData.Clear();
+                const string endString = "</color>";
 
                 //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
                 //AD says - Done.
                 foreach (var playerControl in PlayerControl.AllPlayerControls)
                 {
                     var summary = "";
-                    const string endString = "</color>";
-                    var TotalTasks = playerControl.Data.Tasks.ToArray().Length;
-                    var playerTasksDone = playerControl.Data.Tasks.ToArray().Count(x => x.Complete);
 
                     var info = playerControl.AllPlayerInfo();
+                    var role = info[0] as Role;
+                    var modifier = info[1] as Modifier;
+                    var ability = info[2] as Ability;
+                    var objectifier = info[3] as Objectifier;
 
                     if (info[0] != null)
                     {
-                        var role = info[0] as Role;
-
                         if (role.RoleHistory.Count != 0)
                         {
                             role.RoleHistory.Reverse();
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.Patches
                                 summary += $"{role2.ColorString}{role2.Name}{endString} → ";
                         }
 
-                        summary += $"{role.ColorString}{role.Name}{endString}";
+                        summary += role.ColorString + role.Name + endString;
                     }
 
                     if (playerControl.IsRecruit())
@@ -75,23 +75,14 @@ namespace TownOfUsReworked.Patches
                     if (playerControl.IsBitten())
                         summary += " <color=#7B8968FF>γ</color>";
 
-                    if (info[3] != null)
-                    {
-                        var objectifier = info[3] as Objectifier;
+                    if (objectifier.Type != ObjectifierEnum.None)
                         summary += $" {objectifier.GetColoredSymbol()}";
-                    }
 
-                    if (info[1] != null)
-                    {
-                        var modifier = info[1] as Modifier;
+                    if (modifier.Type != ModifierEnum.None)
                         summary += $" ({modifier.ColorString}{modifier.Name}{endString})";
-                    }
 
-                    if (info[2] != null)
-                    {
-                        var ability = info[2] as Ability;
+                    if (ability.Type != AbilityEnum.None)
                         summary += $" [{ability.ColorString}{ability.Name}{endString}]";
-                    }
 
                     if (playerControl.IsGATarget())
                         summary += " <color=#FFFFFFFF>★</color>";
@@ -106,10 +97,17 @@ namespace TownOfUsReworked.Patches
                         summary += " <color=#EEE5BEFF>π</color>";
 
                     if (playerControl.CanDoTasks())
-                        summary += " {" + playerTasksDone + "/" + TotalTasks + "}";
+                        summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
 
-                    summary += " | " + playerControl.DeathReason();
-                    AdditionalTempData.PlayerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Role = summary });
+                    summary += $" | {playerControl.DeathReason()}";
+
+                    var info2 = new AdditionalTempData.PlayerRoleInfo()
+                    {
+                        PlayerName = playerControl.Data.PlayerName,
+                        Role = summary
+                    };
+
+                    AdditionalTempData.PlayerRoles.Add(info2);
                 }
             }
         }
@@ -186,16 +184,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        private static bool IsWinner(this string playerName)
-        {
-            foreach (var win in TempData.winners)
-            {
-                if (win.PlayerName == playerName)
-                    return true;
-            }
-
-            return false;
-        }
+        private static bool IsWinner(this string playerName) => TempData.winners.ToArray().Any(x => x.PlayerName == playerName);
 
         private static string DeathReason(this PlayerControl player)
         {

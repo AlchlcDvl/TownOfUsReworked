@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
@@ -7,6 +6,7 @@ using Object = UnityEngine.Object;
 using System.Linq;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 {

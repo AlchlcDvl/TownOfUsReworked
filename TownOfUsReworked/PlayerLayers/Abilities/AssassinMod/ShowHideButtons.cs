@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 {

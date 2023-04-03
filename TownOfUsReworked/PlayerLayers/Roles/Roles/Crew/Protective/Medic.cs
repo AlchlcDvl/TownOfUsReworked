@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can shield a player to prevent them from dying to others.\n- If your target is attacked, you will be notified of it by default.\n- Your shield does " +
                 "not save your target from suicides.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
-            RoleType = RoleEnum.Medic;
+            Type = RoleEnum.Medic;
             ShieldedPlayer = null;
             ExShielded = null;
             RoleAlignment = RoleAlignment.CrewProt;

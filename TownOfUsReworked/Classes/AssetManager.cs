@@ -31,7 +31,7 @@ namespace TownOfUsReworked.Classes
         public static Sprite Morph;
         public static Sprite Mine;
         public static Sprite Invis;
-        public static Sprite Douse;
+        public static Sprite ArsoDouse;
         public static Sprite Ignite;
         public static Sprite Revive;
         public static Sprite Button;
@@ -189,8 +189,7 @@ namespace TownOfUsReworked.Classes
         {
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                var stream = assembly.GetManifestResourceStream(path);
+                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
                 var byteAudio = new byte[stream.Length];
                 _ = stream.Read(byteAudio, 0, (int)stream.Length);
                 var samples = new float[byteAudio.Length / 4];
@@ -253,7 +252,7 @@ namespace TownOfUsReworked.Classes
             Morph = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Morph");
             Mine = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Mine");
             Invis = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Invis");
-            Douse = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Douse");
+            ArsoDouse = Utils.CreateSprite($"{TownOfUsReworked.Buttons}ArsoDouse");
             Ignite = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Ignite");
             Revive = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Revive");
             Button = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Button");

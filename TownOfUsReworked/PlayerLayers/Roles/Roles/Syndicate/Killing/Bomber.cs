@@ -1,10 +1,9 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using System.Collections.Generic;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can place bombs which you can detonate at any time to kill anyone within a certain radius.\n- Your bombs can even kill you and your fellow Syndicate " +
                 "so be careful when making people explode.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
-            RoleType = RoleEnum.Bomber;
+            Type = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             Bombs = new();

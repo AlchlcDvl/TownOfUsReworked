@@ -1,7 +1,6 @@
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
@@ -15,6 +14,7 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Functions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return false;
 
-            var revivedRole = role.RevivedRole?.RoleType;
+            var revivedRole = role.RevivedRole?.Type;
 
             if (__instance == role.ReviveButton && revivedRole == RoleEnum.Altruist)
             {
@@ -239,11 +239,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                         break;
                 }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RetributionistAction);
-                writer.Write((byte)RetributionistActionsRPC.EngineerFix);
-                writer.Write(PlayerControl.LocalPlayer.NetId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
             else if (__instance == role.ExamineButton && revivedRole == RoleEnum.Detective)

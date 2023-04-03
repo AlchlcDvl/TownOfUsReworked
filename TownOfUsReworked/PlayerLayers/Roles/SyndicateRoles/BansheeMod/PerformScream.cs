@@ -1,9 +1,9 @@
 using HarmonyLib;
 using Hazel;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
 {
@@ -33,8 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
                 {
                     if (!player.Data.IsDead && !player.Data.Disconnected && !player.Is(Faction.Syndicate))
                     {
-                        var targetRole = Role.GetRole(player);
-                        targetRole.IsBlocked = !targetRole.RoleBlockImmune;
+                        foreach (var layer in PlayerLayer.GetLayers(player))
+                            layer.IsBlocked = !layer.RoleBlockImmune;
+
                         role.Blocked.Add(player.PlayerId);
                     }
                 }

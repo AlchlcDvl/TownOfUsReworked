@@ -1,7 +1,7 @@
 using AmongUs.GameOptions;
 using InnerNet;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
@@ -31,6 +31,8 @@ namespace TownOfUsReworked.Data
         public static bool IsClassic => CustomGameOptions.GameMode == GameMode.Classic;
         public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
         public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
+        public static bool Inactive => PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !IsRoaming ||
+            !PlayerControl.LocalPlayer.CanMove;
         public static bool CrewWins => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide()) && !x.IsCrewAlly());
         public static bool IntrudersWin => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Crew) || x.NotOnTheSameSide() ||
@@ -58,10 +60,7 @@ namespace TownOfUsReworked.Data
         public static bool ReanimatedWin => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.IsPersuaded() ||
             x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Necromancer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
             x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Lovers) || x.IsWinningRival() || x.IsRecruit() || x.IsBitten()) && !x.IsResurrected());
-        public static bool GameHasEnded => Role.SyndicateWin || Role.CrewWin || Role.NobodyWins || Role.IntruderWin || Role.AllNeutralsWin || Role.NKWins || Role.PhantomWins ||
-            Role.ArsonistWins || Role.CabalWin || Role.SectWin || Role.UndeadWin || Role.ReanimatedWin || Role.CryomaniacWins || Role.JuggernautWins || Role.WerewolfWins ||
-            Role.MurdererWins || Role.SerialKillerWins || Role.GlitchWins || Role.InfectorsWin || Objectifier.NobodyWins || Objectifier.LoveWins || Objectifier.RivalWins ||
-            Objectifier.TaskmasterWins || Objectifier.OverlordWins || Objectifier.CorruptedWins;
+        public static bool GameHasEnded => Role.RoleWins || Role.NobodyWins || Objectifier.NobodyWins || Objectifier.ObjectifierWins;
 
         public static bool SameNKWins(RoleEnum nk) => nk != RoleEnum.Plaguebearer && !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected &&
             (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||

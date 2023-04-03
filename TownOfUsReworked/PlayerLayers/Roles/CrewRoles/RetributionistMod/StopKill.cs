@@ -1,5 +1,4 @@
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.Data;
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             foreach (var role2 in Role.GetRoles(RoleEnum.Retributionist))
             {
-                if (((Retributionist)role2).RevivedRole?.RoleType != RoleEnum.Medic)
+                if (((Retributionist)role2).RevivedRole?.Type != RoleEnum.Medic)
                     continue;
 
                 if (((Retributionist)role2).ShieldedPlayer.PlayerId == playerId)

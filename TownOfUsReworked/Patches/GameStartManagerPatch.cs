@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.Patches
 {
@@ -82,7 +82,7 @@ namespace TownOfUsReworked.Patches
                         if (!PlayerVersions.ContainsKey(client.Id))
                         {
                             versionMismatch = true;
-                            message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a different or no version of Town Of Us Reworked.\n</color>";
+                            message += $"{client.Character.Data.PlayerName} has a different or no version of Town Of Us Reworked.\n";
                         }
                         else
                         {
@@ -92,19 +92,18 @@ namespace TownOfUsReworked.Patches
                             if (diff > 0)
                             {
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has an older version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n</color>";
+                                message += $"{client.Character.Data.PlayerName} has an older version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
                             }
                             else if (diff < 0)
                             {
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n</color>";
+                                message += $"{client.Character.Data.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
                             }
-                            else if (!PV.GuidMatches())
+                            else if (!PV.GuidMatches)
                             {
                                 //Version presumably matches, check if Guid matches
                                 versionMismatch = true;
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version}" +
-                                    $" <size=30%>({PV.Guid})</size>\n</color>";
+                                message += $"{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version} ({PV.Guid})\n";
                             }
                         }
                     }
@@ -137,13 +136,12 @@ namespace TownOfUsReworked.Patches
                             SceneChanger.ChangeScene("MainMenu");
                         }
 
-                        __instance.GameStartText.text = "<color=#FF0000FF>The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in" +
-                            $" {Math.Round(10 - kickingTimer)}s</color>";
+                        __instance.GameStartText.text = $"The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in {Math.Round(10 - kickingTimer)}s.";
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
                     else if (versionMismatch)
                     {
-                        __instance.GameStartText.text = "<color=#FF0000FF>Players With Different Versions:\n</color>" + message;
+                        __instance.GameStartText.text = "Players With Different Versions:\n" + message;
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
                     else
@@ -151,9 +149,7 @@ namespace TownOfUsReworked.Patches
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
 
                         if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0)
-                        {
                             __instance.GameStartText.text = string.Empty;
-                        }
                         else
                         {
                             __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
@@ -176,8 +172,8 @@ namespace TownOfUsReworked.Patches
                     currentText = __instance.PlayerCounter.text;
 
                 timer = Mathf.Max(0f, timer -= Time.deltaTime);
-                var minutes = (int)timer / 60;
-                var seconds = (int)timer % 60;
+                var minutes = (int)(timer / 60);
+                var seconds = (int)(timer % 60);
                 var suffix = $" ({minutes}:{seconds})";
 
                 __instance.PlayerCounter.text = $"<size=75%>{currentText}{suffix}</size>";
@@ -211,10 +207,10 @@ namespace TownOfUsReworked.Patches
                             break;
                         }
 
-                        PlayerVersion PV = PlayerVersions[client.Id];
+                        var PV = PlayerVersions[client.Id];
                         var diff = TownOfUsReworked.Version.CompareTo(PV.Version);
 
-                        if (diff != 0 || !PV.GuidMatches())
+                        if (diff != 0 || !PV.GuidMatches)
                         {
                             continueStart = false;
                             break;
@@ -224,20 +220,6 @@ namespace TownOfUsReworked.Patches
 
                 return continueStart;
             }
-        }
-
-        public class PlayerVersion
-        {
-            public readonly Version Version;
-            public readonly Guid Guid;
-
-            public PlayerVersion(Version Version, Guid Guid)
-            {
-                this.Version = Version;
-                this.Guid = Guid;
-            }
-
-            public bool GuidMatches() => TownOfUsReworked.Assembly.ManifestModule.ModuleVersionId.Equals(Guid);
         }
     }
 }

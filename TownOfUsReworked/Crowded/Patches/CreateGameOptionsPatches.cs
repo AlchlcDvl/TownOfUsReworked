@@ -51,7 +51,7 @@ namespace TownOfUsReworked.Crowded.Patches
                     {
                         var playerButton = __instance.MaxPlayerButtons[i];
                         var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                        var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, TownOfUsReworked.MaxPlayers - 14 + byte.Parse(playerButton.name));
+                        var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, 113 + byte.Parse(playerButton.name));
                         tmp.text = newValue.ToString();
                     }
 

@@ -90,7 +90,6 @@ namespace TownOfUsReworked.Data
         public static Color32 Grenadier => new(133, 170, 91, 255); //#85AA5BFF
         public static Color32 Morphling => new(187, 69, 176, 255); //#BB45B0FF
         public static Color32 Wraith => new(92, 79, 117, 255); //#5C4F75FF
-        public static Color32 Undertaker => new(0, 86, 67, 255); //#005643FF
         public static Color32 Camouflager => new(55, 138, 192, 255); //#378AC0FF
         public static Color32 Janitor => new(38, 71, 162, 255); //#2647A2FF
         public static Color32 Miner => new(170, 118, 50, 255); //#AA7632FF
@@ -169,7 +168,7 @@ namespace TownOfUsReworked.Data
         //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #005643
 
         //Symbol Storage
         //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω Ӫ

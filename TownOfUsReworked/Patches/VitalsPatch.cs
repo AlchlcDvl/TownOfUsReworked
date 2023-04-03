@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.CustomOptions;
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 if (isRet)
                 {
                     var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isAgent = retRole.RevivedRole?.RoleType == RoleEnum.Agent;
+                    isAgent = retRole.RevivedRole?.Type == RoleEnum.Agent;
                 }
             }
 

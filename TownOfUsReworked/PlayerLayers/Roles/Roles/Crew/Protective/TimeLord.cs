@@ -1,9 +1,8 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TimeLordMod;
+using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew;
             StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
             FinishRewind = DateTime.UtcNow;
-            RoleType = RoleEnum.TimeLord;
+            Type = RoleEnum.TimeLord;
             UsesLeft = CustomGameOptions.RewindMaxUses;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;

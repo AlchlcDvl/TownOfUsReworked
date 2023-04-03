@@ -1,11 +1,8 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Functions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Alert To Kill Anyone Who Touches You";
             AbilitiesText = "- You can go on alert.\n- When on alert, you will kill whoever interacts with you.";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
-            RoleType = RoleEnum.Veteran;
+            Type = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;

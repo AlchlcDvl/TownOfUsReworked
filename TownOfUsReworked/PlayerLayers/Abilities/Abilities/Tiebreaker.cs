@@ -1,6 +1,5 @@
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Tiebreaker";
             TaskText = "- Your votes break ties.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tiebreaker : Colors.Ability;
-            AbilityType = AbilityEnum.Tiebreaker;
+            Type = AbilityEnum.Tiebreaker;
             Hidden = !CustomGameOptions.TiebreakerKnows;
         }
     }

@@ -10,12 +10,11 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.Data;
 using AmongUs.GameOptions;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -69,12 +68,21 @@ namespace TownOfUsReworked.Patches
                         "info commands, visiting the GitHub page at \nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
                 }
                 //Credits
-                else if (text.StartsWith("/credits") || text.StartsWith("/cr"))
+                else if (text.StartsWith("/credits") || text.StartsWith("/cr "))
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "The mod would not have been possible without these people!\nMod Creator: slushiegoose\nContinued By: polus.gg\n" +
                         "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H\nWith Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator and" +
                         " MyDragonBreath\nRemaining credits are on the GitHub!");
+                }
+                //Control
+                else if (text.StartsWith("/controls") || text.StartsWith("/ctrl"))
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "Here are the controls for MCI:-\nF1: Spawn a robot and toggle MCI to active (only in lobby)\nF2/F3: Swap control over the bots (only " +
+                        "in game)\nF4: End the game in a stalemate\nF5: Fix a sabotage\nF6: Finish all tasks\nF7: Replay the intro cutscene (only in game)\nF8: Remove all bots and toggle" +
+                        " MCI to inactive (only in lobby)\nF9: Remove the latest bot and toggle MCI to inactive if there was only one bot (only in lobby)\nF10: Toggle lobby cap\nF11: " +
+                        "Toggle bot persistence");
                 }
                 //RoleInfo help
                 else if (text == "/roleinfo" || text == "/roleinfo " || text == "/ri" || text == "/ri ")

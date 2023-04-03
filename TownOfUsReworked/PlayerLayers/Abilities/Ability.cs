@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Enums;
 using Hazel;
 using HarmonyLib;
 using TownOfUsReworked.Data;
@@ -24,11 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = Colors.Ability;
         }
 
-        protected internal string TaskText = "- None.";
-        protected internal AbilityEnum AbilityType = AbilityEnum.None;
-        protected internal bool Hidden;
+        public string TaskText = "- None.";
+        public AbilityEnum Type = AbilityEnum.None;
+        public bool Hidden;
 
-        private bool Equals(Ability other) => Equals(Player, other.Player) && AbilityType == other.AbilityType;
+        private bool Equals(Ability other) => Equals(Player, other.Player) && Type == other.Type;
 
         public override bool Equals(object obj)
         {
@@ -44,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             return Equals((Ability)obj);
         }
 
-        public override int GetHashCode() => HashCode.Combine(Player, (int)AbilityType);
+        public override int GetHashCode() => HashCode.Combine(Player, (int)Type);
 
         public static Ability GetAbility(PlayerControl player) => AllAbilities.Find(x => x.Player == player);
 
@@ -54,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             foreach (var ability in AllAbilities)
             {
-                if (ability.AbilityType == abilityEnum)
+                if (ability.Type == abilityEnum)
                     return ability;
             }
 
@@ -65,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public static Ability GetAbility(PlayerVoteArea area) => GetAbility(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Ability> GetAbilities(AbilityEnum abilitytype) => AllAbilities.Where(x => x.AbilityType == abilitytype);
+        public static IEnumerable<Ability> GetAbilities(AbilityEnum abilitytype) => AllAbilities.Where(x => x.Type == abilitytype);
 
         public static bool operator == (Ability a, Ability b)
         {
@@ -75,19 +74,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             if (a is null || b is null)
                 return false;
 
-            return a.AbilityType == b.AbilityType && a.Player.PlayerId == b.Player.PlayerId;
+            return a.Type == b.Type && a.Player.PlayerId == b.Player.PlayerId;
         }
 
         public static bool operator != (Ability a, Ability b) => !(a == b);
-
-        public static T GenAbility<T>(Type type, PlayerControl player, int id)
-        {
-            var ability = (T)Activator.CreateInstance(type, new object[] { player });
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetAbility, SendOption.Reliable);
-            writer.Write(player.PlayerId);
-            writer.Write(id);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            return ability;
-        }
     }
 }

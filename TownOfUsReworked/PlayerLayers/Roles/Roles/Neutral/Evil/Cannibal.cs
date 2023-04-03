@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
 using System.Linq;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -18,13 +18,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastEaten;
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public bool EatWin => EatNeed <= 0;
-        public Vent ClosestVent;
 
         public Cannibal(PlayerControl player) : base(player)
         {
             Name = "Cannibal";
             StartText = "Eat The Bodies Of The Dead";
-            RoleType = RoleEnum.Cannibal;
+            Type = RoleEnum.Cannibal;
             AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
@@ -54,6 +53,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Object.Destroy(arrow.Value.gameObject);
 
             BodyArrows.Remove(arrow.Key);
+        }
+
+        public override void OnLobby()
+        {
+            BodyArrows.Values.DestroyAll();
+            BodyArrows.Clear();
         }
     }
 }

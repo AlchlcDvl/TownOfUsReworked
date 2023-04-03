@@ -1,11 +1,9 @@
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -24,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Get Away From Kills With Ease";
             AbilitiesText = "Teleport to get away from bodies";
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
-            RoleType = RoleEnum.Teleporter;
+            Type = RoleEnum.Teleporter;
         }
 
         public float TeleportTimer()

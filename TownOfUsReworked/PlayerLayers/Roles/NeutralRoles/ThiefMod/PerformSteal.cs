@@ -2,11 +2,12 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using System;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 {
@@ -68,12 +69,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
             var target = other.GetTarget();
             var leader = other.GetLeader();
 
-            Role newRole = role.RoleType switch
+            if (PlayerControl.LocalPlayer == other)
+            {
+                Utils.Flash(thiefRole.Color, "Someone has stolen your role!");
+                role.OnLobby();
+            }
+
+            if (PlayerControl.LocalPlayer == thief)
+            {
+                Utils.Flash(thiefRole.Color, "You stole someone's role!");
+                thiefRole.StealButton.gameObject.SetActive(false);
+                thiefRole.OnLobby();
+            }
+
+            Role newRole = role.Type switch
             {
                 RoleEnum.Anarchist => new Anarchist(thief),
                 RoleEnum.Arsonist => new Arsonist(thief) { DousedPlayers = ((Arsonist)role).DousedPlayers },
                 RoleEnum.Blackmailer => new Blackmailer(thief),
-                RoleEnum.Bomber => new Bomber(thief),
+                RoleEnum.Bomber => new Bomber(thief) { Bombs = ((Bomber)role).Bombs },
                 RoleEnum.Camouflager => new Camouflager(thief),
                 RoleEnum.Concealer => new Concealer(thief),
                 RoleEnum.Consigliere => new Consigliere(thief) { Investigated = ((Consigliere)role).Investigated },
@@ -84,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 RoleEnum.Framer => new Framer(thief),
                 RoleEnum.Glitch => new Glitch(thief),
                 RoleEnum.Godfather => new Godfather(thief),
-                RoleEnum.Gorgon => new Gorgon(thief),
+                RoleEnum.Gorgon => new Gorgon(thief) { Gazed = ((Gorgon)role).Gazed },
                 RoleEnum.Grenadier => new Grenadier(thief),
                 RoleEnum.Impostor => new Impostor(thief),
                 RoleEnum.Juggernaut => new Juggernaut(thief) { JuggKills = ((Juggernaut)role).JuggKills },
@@ -103,10 +117,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 RoleEnum.Poisoner => new Poisoner(thief),
                 RoleEnum.Teleporter => new Teleporter(thief),
                 RoleEnum.TimeMaster => new TimeMaster(thief),
-                RoleEnum.Undertaker => new Undertaker(thief),
                 RoleEnum.VampireHunter => new VampireHunter(thief),
-                RoleEnum.Veteran => new Veteran(thief),
-                RoleEnum.Vigilante => new Vigilante(thief),
+                RoleEnum.Veteran => new Veteran(thief) { UsesLeft = ((Veteran)role).UsesLeft },
+                RoleEnum.Vigilante => new Vigilante(thief) { UsesLeft = ((Vigilante)role).UsesLeft },
                 RoleEnum.Warper => new Warper(thief),
                 RoleEnum.Wraith => new Wraith(thief),
                 RoleEnum.BountyHunter => new BountyHunter(thief) { TargetPlayer = target },
@@ -158,14 +171,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 
             if (CustomGameOptions.ThiefSteals)
             {
-                var newRole2 = new Thief(other);
-                newRole2.RoleUpdate(role);
-
                 if (PlayerControl.LocalPlayer == other && other.Is(Faction.Intruder))
                 {
                     HudManager.Instance.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
                 }
+
+                var newRole2 = new Thief(other);
+                newRole2.RoleUpdate(role);
             }
 
             if (thief.Is(Faction.Intruder) || thief.Is(Faction.Syndicate))
@@ -199,7 +212,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 }
             }
 
-            thiefRole.StealButton.gameObject.SetActive(false);
+            CustomButtons.ResetCustomTimers(false);
         }
     }
 }

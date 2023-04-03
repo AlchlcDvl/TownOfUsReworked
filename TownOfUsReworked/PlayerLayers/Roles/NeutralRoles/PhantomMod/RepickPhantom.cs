@@ -2,9 +2,9 @@ using HarmonyLib;
 using System.Linq;
 using Hazel;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
 {
@@ -19,7 +19,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             if (PlayerControl.LocalPlayer != SetPhantom.WillBePhantom || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+            var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected &&
+                !LayerExtentions.NeutralHasUnfinishedBusiness(x)).ToList();
 
             if (toChooseFrom.Count == 0)
                 return;

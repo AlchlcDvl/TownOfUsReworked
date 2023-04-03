@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 
@@ -16,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dracula(PlayerControl player) : base(player)
         {
             Name = "Dracula";
-            RoleType = RoleEnum.Dracula;
+            Type = RoleEnum.Dracula;
             StartText = "Lead The <color=#7B8968FF>Undead</color> To Victory";
             AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction.\n- If the target is a killing role, they are converted to " +
                 "<color=#DF7AE8FF>Dampyr</color> otherwise they convert into a <color=#2BD29CFF>Vampire</color>.\n- If the target cannot be converted, they will be attacked instead." +

@@ -1,10 +1,8 @@
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Random = UnityEngine.Random;
 using System;
-using Reactor.Utilities;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
@@ -31,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Find And Kill Your Target";
             Objectives = "- Find And Kill your target.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
-            RoleType = RoleEnum.BountyHunter;
+            Type = RoleEnum.BountyHunter;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             UsesLeft = CustomGameOptions.BountyHunterGuesses;

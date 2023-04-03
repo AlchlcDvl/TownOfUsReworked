@@ -1,11 +1,11 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System.Linq;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return;
 
-            var copyRole = role.RevivedRole.RoleType;
+            var copyRole = role.RevivedRole.Type;
 
             if (copyRole == RoleEnum.Altruist)
             {

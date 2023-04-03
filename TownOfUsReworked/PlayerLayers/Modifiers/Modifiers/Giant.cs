@@ -1,7 +1,6 @@
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 
@@ -15,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Giant";
             TaskText = $"- You are ginormous{slowText}.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
-            ModifierType = ModifierEnum.Giant;
+            Type = ModifierEnum.Giant;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

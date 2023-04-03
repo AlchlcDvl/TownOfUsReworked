@@ -1,6 +1,6 @@
 using System;
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;

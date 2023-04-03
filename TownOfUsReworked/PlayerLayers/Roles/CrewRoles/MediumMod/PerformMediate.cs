@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
@@ -8,6 +7,8 @@ using System.Linq;
 using System;
 using Hazel;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
 {

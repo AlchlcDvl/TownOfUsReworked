@@ -1,7 +1,7 @@
 ﻿using Hazel;
 using Reactor.Networking.Attributes;
 using Reactor.Networking.Rpc;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Crowded.Net
 {

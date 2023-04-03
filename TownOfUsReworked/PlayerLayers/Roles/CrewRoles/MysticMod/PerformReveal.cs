@@ -1,8 +1,7 @@
 using System;
-using Reactor.Utilities;
+using TownOfUsReworked.Data;
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;

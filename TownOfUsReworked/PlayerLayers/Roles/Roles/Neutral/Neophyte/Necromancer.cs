@@ -1,7 +1,6 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System.Collections.Generic;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
 using System;
 using UnityEngine;
@@ -27,7 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Resurrecting;
         public float TimeRemaining;
         public bool IsResurrecting => TimeRemaining > 0f;
-        public Vent ClosestVent;
 
         public Necromancer(PlayerControl player) : base(player)
         {
@@ -35,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Resurrect The Dead Into Doing Your Bidding";
             AbilitiesText = "- You can revive a dead body and bring them to your team.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
-            RoleType = RoleEnum.Necromancer;
+            Type = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
             Objectives = "- Resurrect the dead into helping you gain control of the crew.";

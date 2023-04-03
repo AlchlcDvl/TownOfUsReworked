@@ -1,7 +1,6 @@
 using System;
-using TownOfUsReworked.Enums;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -18,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can kill players to steal their roles.\n- You cannot steal roles from players who cannot kill.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             LastStolen = DateTime.UtcNow;
-            RoleType = RoleEnum.Thief;
+            Type = RoleEnum.Thief;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
         }

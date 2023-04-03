@@ -1,10 +1,10 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.Classes;
 using System.Linq;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
 {
@@ -24,10 +24,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !x.Is(RoleEnum.Gorgon)).ToList();
             role.DeclareButton.UpdateButton(role, "SIDEKICK", 0, 1, AssetManager.Sidekick, AbilityTypes.Direct, "Secondary", Syn, !role.HasDeclared);
 
-            if (role.FormerRole == null || !role.WasSidekick || role.FormerRole?.RoleType == RoleEnum.Anarchist)
+            if (role.FormerRole == null || !role.WasSidekick || role.FormerRole?.Type == RoleEnum.Anarchist)
                 return;
 
-            var formerRole = role.FormerRole.RoleType;
+            var formerRole = role.FormerRole.Type;
 
             if (formerRole == RoleEnum.Concealer)
             {

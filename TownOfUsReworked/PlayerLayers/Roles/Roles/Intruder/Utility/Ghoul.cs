@@ -1,9 +1,8 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Ghoul(PlayerControl player) : base(player)
         {
             Name = "Ghoul";
-            RoleType = RoleEnum.Ghoul;
+            Type = RoleEnum.Ghoul;
             StartText = "BOO!";
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;

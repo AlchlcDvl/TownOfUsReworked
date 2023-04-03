@@ -1,8 +1,7 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Reactor.Utilities;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -16,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Sidekick(PlayerControl player) : base(player)
         {
             Name = "Sidekick";
-            RoleType = RoleEnum.Sidekick;
+            Type = RoleEnum.Sidekick;
             StartText = "Succeed The <color=#FFFCCEFF>Rebel</color>";
             AbilitiesText = "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former role.";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;

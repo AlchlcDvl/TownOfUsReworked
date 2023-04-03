@@ -1,8 +1,7 @@
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Escort(PlayerControl player) : base(player)
         {
             Name = "Escort";
-            RoleType = RoleEnum.Escort;
+            Type = RoleEnum.Escort;
             StartText = "Roleblock Players And Stop Them From Harming Others";
             AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
                 "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
@@ -35,8 +34,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnBlock()
         {
             Enabled = false;
-            var targetRole = GetRole(BlockTarget);
-            targetRole.IsBlocked = false;
+
+            foreach (var layer in GetLayers(BlockTarget))
+                layer.IsBlocked = false;
+
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
         }

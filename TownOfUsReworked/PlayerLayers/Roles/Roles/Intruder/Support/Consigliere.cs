@@ -1,12 +1,11 @@
 using System;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -26,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "See Players For Who They Really Are";
             AbilitiesText = $"- You can reveal a player's {role}.{CanAssassinate}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
-            RoleType = RoleEnum.Consigliere;
+            Type = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             Investigated = new();

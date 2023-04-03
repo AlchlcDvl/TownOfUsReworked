@@ -1,5 +1,5 @@
 using HarmonyLib;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.RevivedRoles.Chameleon
 {
@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Revive
                 if (ret.RevivedRole == null)
                     continue;
 
-                var revivedRole = ret.RevivedRole.RoleType;
+                var revivedRole = ret.RevivedRole.Type;
 
                 if (revivedRole == RoleEnum.Chameleon)
                 {

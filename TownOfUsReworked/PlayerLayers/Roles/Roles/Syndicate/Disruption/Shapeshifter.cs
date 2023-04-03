@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
-using TownOfUsReworked.Enums;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -22,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Change Everyone's Appearances";
             AbilitiesText = "No one will know who they were";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
-            RoleType = RoleEnum.Shapeshifter;
+            Type = RoleEnum.Shapeshifter;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
         }

@@ -4,7 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Enums;
+using TownOfUsReworked.Data;
 using TownOfUsReworked.Objects;
 using System.Collections.Generic;
 using TownOfUsReworked.Classes;
