@@ -8,9 +8,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomOption
     {
-        #pragma warning disable
-        public static List<CustomOption> AllOptions = new();
-        #pragma warning restore
+        public readonly static List<CustomOption> AllOptions = new();
         public readonly int ID;
         public readonly MultiMenu Menu;
         public Func<object, string> Format;

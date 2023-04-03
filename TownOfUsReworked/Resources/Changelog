@@ -1,17 +1,2 @@
 Changelog
-- Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:
-- Update: Updated the mod to v2023.3.28
-- Changes: Made minor changes to how emergency buttons can be called (credits to @twix)
-- Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work
-- Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)
-- Improvement: Improved RPC handling between players
-- Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo from All The Roles for help)
-- Improvement: Improved how roleblocks work internally by a bit
-- Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions
-- Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players
-- Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier
-- Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in
-- Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on
-- Bug Fix: Potential fix for null errors regarding player layers
-- Role Fix: Fixed buttons not disappearing when changing roles
-- Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies
+- Removed: Removed a couple things I forgot to

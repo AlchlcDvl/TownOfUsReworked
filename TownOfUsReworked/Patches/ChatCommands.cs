@@ -72,7 +72,7 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "The mod would not have been possible without these people!\nMod Creator: slushiegoose\nContinued By: polus.gg\n" +
-                        "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H\nWith Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator and" +
+                        "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H\nWith Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator, Zeo and" +
                         " MyDragonBreath\nRemaining credits are on the GitHub!");
                 }
                 //Control

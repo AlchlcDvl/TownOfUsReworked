@@ -450,7 +450,8 @@ namespace TownOfUsReworked.Patches
                         break;
 
                     case CustomRPC.SetSettings:
-                        GameOptionsManager.Instance.currentNormalGameOptions.MapId = reader.ReadByte() == byte.MaxValue ? (byte)0 : reader.ReadByte();
+                        var map = reader.ReadByte();
+                        GameOptionsManager.Instance.currentNormalGameOptions.MapId = map == byte.MaxValue ? (byte)0 : map;
                         GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                         GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -473,7 +474,7 @@ namespace TownOfUsReworked.Patches
                         GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
 
                         if (CustomGameOptions.AutoAdjustSettings)
-                            RandomMap.AdjustSettings(reader.ReadByte());
+                            RandomMap.AdjustSettings(map);
 
                         break;
 
