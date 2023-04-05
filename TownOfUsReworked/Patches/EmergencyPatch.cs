@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -21,7 +22,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void Postfix2()
         {
-            if (!GameManager.Instance.GameHasStarted || Time >= CustomGameOptions.InitialCooldowns)
+            if (!ConstantVariables.IsInGame || Time >= CustomGameOptions.InitialCooldowns)
                 return;
 
             Time += UnityEngine.Time.deltaTime;

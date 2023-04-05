@@ -8,17 +8,27 @@ using System.Linq;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
+    [HarmonyPriority(Priority.First)]
     public static class ConfirmEjects
     {
+        #pragma warning disable
+        public static ExileController lastExiled;
+        #pragma warning restore
+
+        public static void Prefix(ExileController __instance) => lastExiled = __instance;
+
         public static void Postfix(ExileController __instance)
         {
             if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
                 return;
 
-            var exiled = __instance.exiled;
+            var exiled = lastExiled.exiled;
 
             if (exiled == null)
+            {
+                __instance.completeString = "Everyone's safe...for now.";
                 return;
+            }
 
             var player = exiled.Object;
             var role = Role.GetRole(player);
@@ -32,7 +42,7 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
+            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
                 x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
             var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";
@@ -71,8 +81,6 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                     ejectString = $"{player.name} was ejected.";
-
-                __instance.completeString = ejectString;
             }
             else
             {
@@ -93,8 +101,9 @@ namespace TownOfUsReworked.Patches
                     ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
 
                 __instance.ImpostorText.text = totalEvils;
-                __instance.completeString = ejectString;
             }
+
+            __instance.completeString = ejectString;
         }
     }
 }

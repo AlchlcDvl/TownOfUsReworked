@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
-                ExileControllerPostfix(MiscPatches.ExileControllerPatch.lastExiled);
+                ExileControllerPostfix(ConfirmEjects.lastExiled);
         }
 
         public static void Revive(Retributionist ret, PlayerControl revived)

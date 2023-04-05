@@ -74,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
-                ExileControllerPostfix(MiscPatches.ExileControllerPatch.lastExiled);
+                ExileControllerPostfix(ConfirmEjects.lastExiled);
         }
     }
 }

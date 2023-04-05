@@ -2998,7 +2998,7 @@ namespace TownOfUsReworked.Classes
 
             UpdateNames.PlayerNames.Clear();
 
-            MiscPatches.ExileControllerPatch.lastExiled = null;
+            ConfirmEjects.lastExiled = null;
 
             Role.RoleDictionary.Clear();
             Objectifier.ObjectifierDictionary.Clear();

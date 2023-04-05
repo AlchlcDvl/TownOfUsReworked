@@ -31,17 +31,6 @@ namespace TownOfUsReworked.Patches
             public static void Postfix(ref bool __result) => __result = false;
         }
 
-        [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-        [HarmonyPriority(Priority.First)]
-        public static class ExileControllerPatch
-        {
-            #pragma warning disable
-            public static ExileController lastExiled;
-            #pragma warning restore
-
-            public static void Prefix(ExileController __instance) => lastExiled = __instance;
-        }
-
         //Vent and kill shit
         //Yes thank you Discussions - AD
         [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
