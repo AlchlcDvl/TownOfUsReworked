@@ -809,6 +809,7 @@ namespace TownOfUsReworked.Extensions
             newRole.IsCrewAlly = former.IsCrewAlly;
             newRole.IsBlocked = former.IsBlocked;
             newRole.Player.RegenTask();
+            former.Player = null;
         }
 
         public static ShapeshifterMinigame GetShapeshifterMenu()

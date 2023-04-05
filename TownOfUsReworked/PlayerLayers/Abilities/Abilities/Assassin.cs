@@ -138,6 +138,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.DisguiserOn > 0)
                         ColorMapping.Add("Disguiser", Colors.Disguiser);
 
+                    if (CustomGameOptions.EnforcerOn > 0)
+                        ColorMapping.Add("Enforcer", Colors.Enforcer);
+
                     if (CustomGameOptions.TimeMasterOn > 0)
                         ColorMapping.Add("Time Master", Colors.TimeMaster);
 
@@ -187,6 +190,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
                     if (CustomGameOptions.BeamerOn > 0)
                         ColorMapping.Add("Beamer", Colors.Beamer);
+
+                    if (CustomGameOptions.PoliticianOn > 0)
+                        ColorMapping.Add("Politician", Colors.Politician);
 
                     if (CustomGameOptions.RebelOn > 0)
                     {

@@ -26,7 +26,8 @@ namespace TownOfUsReworked.Patches
 
             spriteRenderer.transform.SetParent(parent);
             spriteRenderer.transform.localScale = Vector3.zero;
-            __instance.StartCoroutine(Effects.Bloop(index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
+            var Base = __instance as MonoBehaviour;
+            Base.StartCoroutine(Effects.Bloop(index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
             parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
             return false;
         }

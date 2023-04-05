@@ -66,7 +66,7 @@ namespace TownOfUsReworked.Patches
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Allied ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
+                    foreach (var ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
                     {
                         if (!ally.Player.Data.Disconnected && ally.Side == Faction.Crew)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == ally.PlayerName).ToList()[0]);
@@ -83,19 +83,19 @@ namespace TownOfUsReworked.Patches
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Allied ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
+                    foreach (var ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
                     {
                         if (!ally.Player.Data.Disconnected && ally.Side == Faction.Intruder)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == ally.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Traitor traitor in Objectifier.GetObjectifiers<Traitor>(ObjectifierEnum.Traitor))
+                    foreach (var traitor in Objectifier.GetObjectifiers<Traitor>(ObjectifierEnum.Traitor))
                     {
                         if (!traitor.Player.Data.Disconnected && traitor.Side == Faction.Intruder)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == traitor.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Fanatic fanatic in Objectifier.GetObjectifiers<Fanatic>(ObjectifierEnum.Fanatic))
+                    foreach (var fanatic in Objectifier.GetObjectifiers<Fanatic>(ObjectifierEnum.Fanatic))
                     {
                         if (!fanatic.Player.Data.Disconnected && fanatic.Side == Faction.Intruder)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == fanatic.PlayerName).ToList()[0]);
@@ -112,19 +112,19 @@ namespace TownOfUsReworked.Patches
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Allied ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
+                    foreach (var ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
                     {
                         if (!ally.Player.Data.Disconnected && ally.Side == Faction.Syndicate)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == ally.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Traitor traitor in Objectifier.GetObjectifiers<Traitor>(ObjectifierEnum.Traitor))
+                    foreach (var traitor in Objectifier.GetObjectifiers<Traitor>(ObjectifierEnum.Traitor))
                     {
                         if (!traitor.Player.Data.Disconnected && traitor.Side == Faction.Syndicate)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == traitor.PlayerName).ToList()[0]);
                     }
 
-                    foreach (Fanatic fanatic in Objectifier.GetObjectifiers<Fanatic>(ObjectifierEnum.Fanatic))
+                    foreach (var fanatic in Objectifier.GetObjectifiers<Fanatic>(ObjectifierEnum.Fanatic))
                     {
                         if (!fanatic.Player.Data.Disconnected && fanatic.Side == Faction.Syndicate)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == fanatic.PlayerName).ToList()[0]);
